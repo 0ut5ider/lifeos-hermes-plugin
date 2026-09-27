@@ -571,6 +571,62 @@ class HookBridgeTests(unittest.TestCase):
         payload = json.loads(marker.read_text())
         self.assertIs(payload["tool_input"]["run_in_background"], True)
 
+    def test_background_agent_watchdog_instruction_uses_hermes_delivery(self):
+        command = self.make_hook(
+            "watchdog-context.py",
+            "import json\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse',"
+            "'additionalContext':'WATCHDOG: Start Monitor({ command: test })'}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        with patch.object(bridge, "_ensure_agent_watchdog", return_value=True) as ensure:
+            bridge.pre_tool_call(
+                "delegate_task", {"goal": "Inspect a synthetic report", "background": True},
+                session_id="s1", tool_call_id="agent-1",
+            )
+        ensure.assert_called_once_with("s1")
+        context = bridge.pending_tool_context[("s1", "agent-1")]
+        self.assertIn("Hermes process notifications", context[0])
+        self.assertNotIn("Monitor(", context[0])
+
+    def test_watchdog_mirror_tracks_only_active_children_in_own_session(self):
+        bridge = self.bridge({})
+        bridge.watchdog_dir.mkdir(parents=True)
+        starts, activity = bridge._watchdog_paths("s1")
+        starts.write_text("{}")
+        activity.touch()
+        old = time.time() - 20
+        os.utime(activity, (old, old))
+        bridge.watchdog_processes["s1"] = "fake-process"
+        bridge.watchdog_last_active["s1"] = time.monotonic()
+        bridge._sync_agent_watchdogs([
+            {"delegation_id": "child-1", "parent_session_id": "s1", "status": "running",
+             "role": "worker", "seconds_since_progress": 2},
+            {"delegation_id": "child-2", "parent_session_id": "s2", "status": "running",
+             "role": "other", "seconds_since_progress": 1},
+        ])
+        self.assertEqual(json.loads(starts.read_text()), {"child-1": {"subagent_type": "worker"}})
+        self.assertGreater(activity.stat().st_mtime, old)
+        bridge._sync_agent_watchdogs([])
+        self.assertEqual(json.loads(starts.read_text()), {})
+        bridge.watchdog_processes.clear()
+
+    def test_watchdog_mirror_does_not_invent_progress(self):
+        bridge = self.bridge({})
+        bridge.watchdog_dir.mkdir(parents=True)
+        starts, activity = bridge._watchdog_paths("s1")
+        starts.write_text("{}")
+        activity.touch()
+        old = time.time() - 20
+        os.utime(activity, (old, old))
+        bridge.watchdog_processes["s1"] = "fake-process"
+        bridge.watchdog_last_active["s1"] = time.monotonic()
+        bridge._sync_agent_watchdogs([
+            {"delegation_id": "child-1", "parent_session_id": "s1", "status": "running"},
+        ])
+        self.assertLess(activity.stat().st_mtime, time.time() - 10)
+        bridge.watchdog_processes.clear()
+
     def test_mcp_name_matches_native_safety_hook(self):
         command = self.make_hook(
             "mcp.py",

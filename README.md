@@ -15,6 +15,8 @@ See the [LifeOS installation guide](https://github.com/danielmiessler/LifeOS/blo
 
 The [hook parity record](docs/hook-parity.md) lists mapped events, tested effects, and missing behavior. The isolated Hermes installation and its current limits are recorded in [docs/test-environment.md](docs/test-environment.md). A separate [Claude Code reference installation](docs/claude-reference.md) uses synthetic LifeOS data and the same local model to measure native hook behavior.
 
+The bridge needs the [Hermes core extension](patches/hermes-hook-controls.patch) for Stop and approval behavior. The [LifeOS task patch](patches/lifeos-task-governance.patch) lets the native TaskCreated hook use a Hermes session count. Apply the [LifeOS watchdog patch](patches/lifeos-agent-watchdog.patch) after the task patch to route background agent silence alerts through Hermes. These patches are tested on the isolated `.212` checkout. The hook parity record describes their exact base revisions and remaining limits.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).

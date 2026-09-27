@@ -1,0 +1,60 @@
+diff --git a/LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts b/LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts
+index 7aded5b..97e39c6 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts
+@@ -10,7 +10,7 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  * AgentWatchdog.ts — Monitor script for detecting hung background agents
+  *
+  * Designed to run inside the Monitor tool. Watches tool-activity.jsonl for
+- * silence while agents are active per subagent-starts.json.
++ * silence while agents are active per agent-starts.json.
+  *
+  * Emits alert lines to stdout (= Monitor notifications) when no tool calls
+  * detected for THRESHOLD seconds with active agents.
+@@ -37,11 +37,16 @@ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ 
+ const LIFEOS_DIR = process.env.LIFEOS_DIR || join(homedir(), ".claude", "LIFEOS");
+ const OBS_DIR = join(LIFEOS_DIR, "MEMORY", "OBSERVABILITY");
+-const ACTIVITY_FILE = join(OBS_DIR, "tool-activity.jsonl");
+-const STARTS_FILE = join(OBS_DIR, "subagent-starts.json");
++const ACTIVITY_FILE = process.env.LIFEOS_WATCHDOG_ACTIVITY_FILE || join(OBS_DIR, "tool-activity.jsonl");
++const STARTS_FILE = process.env.LIFEOS_WATCHDOG_STARTS_FILE || join(OBS_DIR, "agent-starts.json");
+ 
+-const SILENCE_THRESHOLD_S = 90;
+-const CHECK_INTERVAL_S = 15;
++function positiveSeconds(value: string | undefined, fallback: number): number {
++  const parsed = Number(value);
++  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
++}
++
++const SILENCE_THRESHOLD_S = positiveSeconds(process.env.LIFEOS_WATCHDOG_SILENCE_SECONDS, 90);
++const CHECK_INTERVAL_S = positiveSeconds(process.env.LIFEOS_WATCHDOG_CHECK_SECONDS, 15);
+ const ALERT_COOLDOWN_S = 60;
+ 
+ let lastAlertEpoch = 0;
+@@ -50,10 +55,10 @@ function getActiveAgents(): { count: number; names: string[] } {
+   try {
+     if (!existsSync(STARTS_FILE)) return { count: 0, names: [] };
+     const data = JSON.parse(readFileSync(STARTS_FILE, "utf-8"));
+-    const entries = Object.entries(data) as [string, { type: string }][];
++    const entries = Object.entries(data) as [string, { type?: string; subagent_type?: string }][];
+     return {
+       count: entries.length,
+-      names: entries.map(([id, info]) => `${info.type}(${id.slice(0, 8)})`),
++      names: entries.map(([id, info]) => `${info.subagent_type || info.type || "agent"}(${id.slice(0, 8)})`),
+     };
+   } catch {
+     return { count: 0, names: [] };
+@@ -79,8 +84,11 @@ function check() {
+ 
+   if (silenceS > SILENCE_THRESHOLD_S && now - lastAlertEpoch >= ALERT_COOLDOWN_S) {
+     const agentList = names.length > 0 ? names.join(", ") : `${count} agent(s)`;
++    const advice = process.env.LIFEOS_WATCHDOG_STARTS_FILE
++      ? "Check the background task status in Hermes."
++      : "Check with TaskList or SendMessage.";
+     console.log(
+-      `WATCHDOG: No tool activity for ${silenceS}s — ${agentList} may be hung. Check with TaskList or SendMessage.`
++      `WATCHDOG: No tool activity for ${silenceS}s; ${agentList} may be hung. ${advice}`
+     );
+     lastAlertEpoch = now;
+   }

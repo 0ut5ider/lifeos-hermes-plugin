@@ -8,6 +8,8 @@ import hashlib
 import logging
 import os
 import re
+import shlex
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -227,6 +229,11 @@ class HookBridge:
         self.last_config_poll = 0.0
         self.watcher_stop = threading.Event()
         self.watcher: threading.Thread | None = None
+        self.watchdog_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-watchdogs"
+        self.watchdog_processes: dict[str, str] = {}
+        self.watchdog_last_active: dict[str, float] = {}
+        self.watchdog_stop = threading.Event()
+        self.watchdog_thread: threading.Thread | None = None
 
     def _start_config_watcher(self) -> None:
         if "ConfigChange" not in self.hooks:
@@ -253,6 +260,140 @@ class HookBridge:
         self.watcher_stop.set()
         if self.watcher is not None and self.watcher is not threading.current_thread():
             self.watcher.join(timeout=2)
+        self.watchdog_stop.set()
+        if self.watchdog_thread is not None and self.watchdog_thread is not threading.current_thread():
+            self.watchdog_thread.join(timeout=3)
+        for session_id in tuple(self.watchdog_processes):
+            self._stop_agent_watchdog(session_id)
+
+    def _watchdog_paths(self, session_id: str) -> tuple[Path, Path]:
+        name = hashlib.sha256(session_id.encode()).hexdigest()[:24]
+        return self.watchdog_dir / f"{name}-starts.json", self.watchdog_dir / f"{name}-activity.jsonl"
+
+    def _ensure_agent_watchdog(self, session_id: str) -> bool:
+        if not session_id:
+            return False
+        try:
+            from gateway.session_context import async_delivery_supported, get_session_env
+            from tools.process_registry import process_registry
+            from tools.terminal_tool_background import _stamp_gateway_routing
+            if not async_delivery_supported():
+                return False
+        except ImportError:
+            return False
+        script = self.root / "LIFEOS/TOOLS/AgentWatchdog.ts"
+        bun = shutil.which("bun", path=self.environment.get("PATH"))
+        if not script.is_file() or not bun:
+            return False
+        with self.session_lock:
+            existing = self.watchdog_processes.get(session_id)
+            if existing:
+                process = process_registry.get(existing)
+                if process is not None and not process.exited:
+                    return True
+                self.watchdog_processes.pop(session_id, None)
+            owner = f"lifeos-watchdog:{session_id}"
+            for old in process_registry.list_sessions(task_id=owner):
+                if old.get("status") == "running" and old.get("owner_task_id") == owner:
+                    process_registry.kill_process(old["session_id"], source="lifeos-watchdog-replace")
+            self.watchdog_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+            starts, activity = self._watchdog_paths(session_id)
+            starts.write_text("{}")
+            activity.touch()
+            starts.chmod(0o600)
+            activity.chmod(0o600)
+            environment = dict(self.environment)
+            environment.update(
+                LIFEOS_WATCHDOG_STARTS_FILE=str(starts),
+                LIFEOS_WATCHDOG_ACTIVITY_FILE=str(activity),
+            )
+            command = f"exec {shlex.quote(bun)} {shlex.quote(str(script))}"
+            try:
+                process = process_registry.spawn_local(
+                    command, cwd=str(self.root), task_id=owner, owner_task_id=owner,
+                    session_key=get_session_env("HERMES_SESSION_KEY", ""),
+                    env_vars=environment, persist_on_release=True,
+                )
+                process.watch_patterns = ["WATCHDOG:"]
+                _stamp_gateway_routing(process, get_session_env)
+            except Exception as error:
+                LOG.warning("LifeOS agent watchdog could not start: %s", error)
+                return False
+            self.watchdog_processes[session_id] = process.id
+            self.watchdog_last_active[session_id] = time.monotonic()
+            if self.watchdog_thread is None or not self.watchdog_thread.is_alive():
+                self.watchdog_stop.clear()
+                context = copy_context()
+                self.watchdog_thread = threading.Thread(
+                    target=context.run, args=(self._watch_agent_watchdogs,), daemon=True,
+                    name="lifeos-agent-watchdogs",
+                )
+                self.watchdog_thread.start()
+        return True
+
+    def _stop_agent_watchdog(self, session_id: str) -> None:
+        with self.session_lock:
+            process_id = self.watchdog_processes.pop(session_id, None)
+            self.watchdog_last_active.pop(session_id, None)
+        if process_id:
+            try:
+                from tools.process_registry import process_registry
+                process_registry.kill_process(process_id, source="lifeos-watchdog", consume_output=True)
+            except Exception as error:
+                LOG.warning("LifeOS agent watchdog could not stop: %s", error)
+        for path in self._watchdog_paths(session_id):
+            path.unlink(missing_ok=True)
+
+    def _sync_agent_watchdogs(self, delegations: list[dict[str, Any]]) -> None:
+        with self.session_lock:
+            sessions = tuple(self.watchdog_processes)
+        now = time.time()
+        for session_id in sessions:
+            active = [
+                item for item in delegations
+                if item.get("parent_session_id") == session_id and item.get("status") in {"running", "stalling"}
+            ]
+            starts, activity = self._watchdog_paths(session_id)
+            records = {
+                str(item["delegation_id"]): {"subagent_type": item.get("role") or "general-purpose"}
+                for item in active if item.get("delegation_id")
+            }
+            temp = starts.with_name(f"{starts.name}.{uuid4().hex}.tmp")
+            try:
+                with temp.open("w") as stream:
+                    json.dump(records, stream)
+                temp.chmod(0o600)
+                os.replace(temp, starts)
+                if active:
+                    progress = []
+                    for item in active:
+                        children = item.get("children_activity") or []
+                        progress.extend(
+                            now - child["seconds_since_activity"] for child in children
+                            if isinstance(child, dict) and isinstance(child.get("seconds_since_activity"), (int, float))
+                        )
+                        if isinstance(item.get("seconds_since_progress"), (int, float)):
+                            progress.append(now - item["seconds_since_progress"])
+                    latest = max(progress, default=activity.stat().st_mtime)
+                    if latest > activity.stat().st_mtime + 0.5:
+                        os.utime(activity, (latest, latest))
+                    with self.session_lock:
+                        self.watchdog_last_active[session_id] = time.monotonic()
+                elif time.monotonic() - self.watchdog_last_active.get(session_id, 0) > 30:
+                    self._stop_agent_watchdog(session_id)
+            finally:
+                temp.unlink(missing_ok=True)
+
+    def _watch_agent_watchdogs(self) -> None:
+        while not self.watchdog_stop.wait(2.0):
+            with self.session_lock:
+                if not self.watchdog_processes:
+                    return
+            try:
+                from tools.async_delegation import list_async_delegations
+                self._sync_agent_watchdogs(list_async_delegations())
+            except Exception as error:
+                LOG.warning("LifeOS agent watchdog sync failed: %s", error)
 
     def _apply_settings(self, settings: dict[str, Any]) -> None:
         hooks = settings.get("hooks", {})
@@ -572,6 +713,14 @@ class HookBridge:
                     updated_args = _hermes_input(native_name, updated)
                 context = specific.get("additionalContext") or (output or {}).get("additionalContext")
                 if isinstance(context, str) and context.strip():
+                    if native_name == "Agent" and "WATCHDOG:" in context and "Monitor(" in context:
+                        watching = self._ensure_agent_watchdog(session_id)
+                        context = (
+                            "LifeOS watchdog is monitoring this Hermes background agent. "
+                            "Alerts will reach this session through Hermes process notifications."
+                            if watching else
+                            "LifeOS watchdog is unavailable here. Hermes delegation stall monitoring still applies."
+                        )
                     extra_context.append(context.strip())
         if extra_context:
             with self.session_lock:
@@ -778,6 +927,7 @@ class HookBridge:
 
     def session_end(self, session_id: str = "", **_: Any) -> None:
         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
+        self._stop_agent_watchdog(session_id)
         with self.session_lock:
             self.started_sessions.discard(session_id)
             self.session_projects.pop(session_id, None)
