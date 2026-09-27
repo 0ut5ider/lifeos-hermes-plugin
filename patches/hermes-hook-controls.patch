@@ -402,10 +402,10 @@ index 810fd962a..45fc7e658 100644
  
 diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
 new file mode 100644
-index 000000000..5692e3a4c
+index 000000000..fb2921482
 --- /dev/null
 +++ b/tests/tools/test_plugin_command_approval.py
-@@ -0,0 +1,82 @@
+@@ -0,0 +1,136 @@
 +# ABOUTME: Checks plugin approval decisions against Hermes command safety floors.
 +# ABOUTME: Verifies safe grants and refusals at the real command guard entry points.
 +
@@ -488,11 +488,86 @@ index 000000000..5692e3a4c
 +            approval_callback=lambda *args, **kwargs: "deny",
 +        )
 +    assert result["approved"] is False
++
++
++def test_smart_plugin_grant_after_guardian_escalates(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    with patch("tools.approval._smart_verdict", return_value="escalate") as guardian, patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}],
++    ), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is True
++    guardian.assert_called_once()
++
++
++def test_smart_plugin_grant_does_not_override_guardian_deny(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    decisions = []
++
++    def decline(*args, **kwargs):
++        decisions.append(True)
++        return "deny"
++
++    with patch("tools.approval._smart_verdict", return_value="deny"), patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}],
++    ), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
++    assert result["approved"] is False
++    assert decisions == [True]
++
++
++def test_smart_plugin_grant_does_not_override_tirith(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    decisions = []
++
++    def decline(*args, **kwargs):
++        decisions.append(True)
++        return "deny"
++
++    with patch("tools.approval._smart_verdict", return_value="escalate"), patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}],
++    ), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "warn", "findings": [{"rule_id": "fixture"}], "summary": "fixture"},
++    ):
++        result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
++    assert result["approved"] is False
++    assert decisions == [True]
 diff --git a/tools/approval.py b/tools/approval.py
-index cff8d0d8d..3b7a35401 100644
+index cff8d0d8d..109b72cc6 100644
 --- a/tools/approval.py
 +++ b/tools/approval.py
-@@ -1075,6 +1075,25 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+@@ -794,7 +794,8 @@ def _human_decision(spec: _GateSpec, *, command: str, description: str,
+                     pattern_key: str, pattern_keys: list[str], warnings: list[tuple],
+                     session_key: str, approval_callback, is_cli: bool, is_gateway: bool,
+                     is_ask: bool, smart: bool = False,
+-                    permanent_capable: bool = True, pending_body=None) -> dict:
++                    permanent_capable: bool = True, pending_body=None,
++                    plugin_grant=None) -> dict:
+     """Ask a human (after the optional guardian-LLM step) and turn the answer into the gate result.
+ 
+     ``warnings`` are the ``(key, _, is_tirith)`` tuples :func:`_persist_choice` stores on
+@@ -811,6 +812,10 @@ def _human_decision(spec: _GateSpec, *, command: str, description: str,
+                                            session_key, human_present=is_cli or is_gateway or is_ask)
+         if result is not None:
+             return result
++    # A native policy grant may resolve an escalation, but not a guardian denial.
++    # Hardline, user deny, and Tirith checks already ran at the caller.
++    if plugin_grant is not None and not smart_denied and plugin_grant():
++        return _approved()
+     pending_body = pending_body() if pending_body else None
+     allow_permanent = permanent_capable and not smart_denied
+ 
+@@ -1075,6 +1080,25 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
      return _user_deny_block(command)
  
  
@@ -518,7 +593,7 @@ index cff8d0d8d..3b7a35401 100644
  def check_dangerous_command(command: str, env_type: str,
                              approval_callback=None,
                              has_host_access: bool = False) -> dict:
-@@ -1093,6 +1112,8 @@ def check_dangerous_command(command: str, env_type: str,
+@@ -1093,6 +1117,8 @@ def check_dangerous_command(command: str, env_type: str,
      is_dangerous, pattern_key, description = detect_dangerous_command(command)
      if not is_dangerous:
          return _approved()
@@ -527,7 +602,7 @@ index cff8d0d8d..3b7a35401 100644
      return _run_approval_gate(
          pattern_key=pattern_key, description=description, display_target=command, approval_callback=approval_callback,
          subject=f"Command flagged as dangerous ({description})", noun="dangerous commands",
-@@ -1217,6 +1238,13 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1217,6 +1243,13 @@ def check_all_command_guards(command: str, env_type: str,
      if not warnings:
          return _approved()
  
@@ -541,3 +616,12 @@ index cff8d0d8d..3b7a35401 100644
      combined_desc = "; ".join(desc for _, desc, _ in warnings)
      primary_key = warnings[0][0]
      all_keys = [key for key, _, _ in warnings]
+@@ -1230,6 +1263,8 @@ def check_all_command_guards(command: str, env_type: str,
+         session_key=session_key, approval_callback=approval_callback,
+         is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask, smart=approval_mode == "smart",
+         permanent_capable=any(not is_t for _, _, is_t in warnings),
++        plugin_grant=(lambda: _plugin_allows_command(command, pattern_key, description))
++        if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
+     )
+ 
+ 
