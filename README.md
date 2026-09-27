@@ -13,7 +13,7 @@ This project will connect a LifeOS installation to Hermes through a separately i
 
 See the [LifeOS installation guide](https://github.com/danielmiessler/LifeOS/blob/main/LifeOS/INSTALL.md) and the [Hermes event hook reference](https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks) for the current upstream contracts.
 
-The isolated test installation and its current limits are recorded in [docs/test-environment.md](docs/test-environment.md).
+The isolated Hermes installation and its current limits are recorded in [docs/test-environment.md](docs/test-environment.md). A separate [Claude Code reference installation](docs/claude-reference.md) uses synthetic LifeOS data and the same local model to measure native hook behavior.
 
 ## License
 
