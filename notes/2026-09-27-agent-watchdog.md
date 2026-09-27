@@ -1,0 +1,5 @@
+# Agent watchdog path mismatch
+
+On the isolated `.212` LifeOS install at commit `5e2f2e8`, `hooks/AgentInvocation.hook.ts` writes active records to `LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json`. `LIFEOS/TOOLS/AgentWatchdog.ts` reads `subagent-starts.json` from the same directory. A search of installed hook and tool source found no writer for `subagent-starts.json`. Thus the watchdog sees zero active agents even if its process starts. This mismatch is present in LifeOS source independently of the Hermes bridge.
+
+Pulse's Agent guard adds text asking the model to invoke `Monitor({ ..., command: "bun .../AgentWatchdog.ts" })` for a background agent. Hermes has no corresponding `Monitor` tool, so the text cannot start the watchdog. The bridge currently forwards that text. A plugin-side adapter could run a watchdog process, but the stock script still reads the wrong file and has Claude-specific `TaskList` and `SendMessage` advice. Fixing LifeOS itself would make both Claude Code and Hermes benefit, but it changes the upstream installation. No watchdog adaptation is included in this note.

@@ -60,6 +60,7 @@ The stock Hermes plugin API cannot continue a non-coding turn from a Stop hook. 
 - Multimodal prompts pass text portions to UserPromptSubmit. Image and attachment content remains in the bridge transcript but is not represented in the prompt string, so hooks that interpret that content can differ from Claude Code.
 - Async LifeOS hooks run through a detached child process with a private spool file so a one-shot Hermes process can exit without truncating their input. Hook output is not injected into the model. A service manager that kills an entire process group or control group can still stop the child.
 - LifeOS's nested inference tool clears local gateway variables. The optional `bin/claude` child launcher restores private gateway settings and maps model and effort flags. This still requires the Claude Code CLI as a child helper; Hermes remains the main conversation agent.
+- The Pulse background Agent hook asks for Claude Code's `Monitor` tool, which Hermes does not provide. The installed LifeOS watchdog also reads `subagent-starts.json` while `AgentInvocation` writes `agent-starts.json`; no effective watchdog is running for Hermes delegates. See [the watchdog record](../notes/2026-09-27-agent-watchdog.md).
 - The isolated test account uses LAN-only outbound rules. The plugin does not install a firewall or credentials. Pulse runs on loopback and is not part of the plugin installation.
 
 ## Test installation
