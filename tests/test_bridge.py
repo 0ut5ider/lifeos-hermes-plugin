@@ -2,12 +2,15 @@
 # ABOUTME: Uses real child processes and Claude hook JSON contracts.
 
 import json
+import importlib.util
+import os
 import sys
 import tempfile
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
+from unittest.mock import patch
 
 from bridge import HookBridge
 
@@ -227,6 +230,58 @@ class HookBridgeTests(unittest.TestCase):
         command = self.make_hook("abstain.py", "import sys\nsys.stdin.read()\n")
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
         self.assertIsNone(bridge.command_approval("sudo systemctl restart example.service", session_key="s1"))
+
+    def test_session_end_registers_on_actual_session_boundary(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({"hooks": {"SessionEnd": []}}))
+        hooks = {}
+
+        class Context:
+            def register_hook(self, name, callback):
+                hooks[name] = callback
+
+        plugin_root = Path(__file__).resolve().parents[1]
+        specification = importlib.util.spec_from_file_location(
+            "lifeos_fixture_plugin", plugin_root / "__init__.py",
+            submodule_search_locations=[str(plugin_root)],
+        )
+        module = importlib.util.module_from_spec(specification)
+        sys.modules[specification.name] = module
+        self.addCleanup(sys.modules.pop, specification.name, None)
+        specification.loader.exec_module(module)
+        with patch.dict(os.environ, {"LIFEOS_HOOK_SETTINGS": str(settings)}):
+            module.register(Context())
+        self.assertIn("on_session_finalize", hooks)
+        self.assertIn("on_session_end", hooks)
+        self.assertNotIn("on_session_reset", hooks)
+
+    def test_stop_failure_logs_only_terminal_api_error(self):
+        marker = self.root / "stop-failure.json"
+        command = self.make_hook(
+            "stop_failure.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
+        )
+        bridge = self.bridge({"StopFailure": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.api_request_error(
+            session_id="s1", turn_id="turn-1", reason="rate_limit",
+            error={"type": "RateLimitError", "message": "429 synthetic limit"},
+        )
+        bridge.turn_end(session_id="s1", turn_id="turn-1", failed=False, turn_exit_reason="text_response")
+        self.assertFalse(marker.exists())
+        bridge.api_request_error(
+            session_id="s1", turn_id="turn-2", reason="rate_limit",
+            error={"type": "RateLimitError", "message": "429 synthetic limit"},
+        )
+        bridge.turn_end(
+            session_id="s1", turn_id="turn-2", failed=True,
+            turn_exit_reason="all_retries_exhausted_no_response",
+        )
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["hook_event_name"], "StopFailure")
+        self.assertEqual(payload["error"], "rate_limit")
+        self.assertEqual(payload["error_details"], "429 synthetic limit")
 
 
 if __name__ == "__main__":

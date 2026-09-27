@@ -8,5 +8,6 @@ provides_hooks:
   - augment_tool_result
   - pre_llm_call
   - pre_turn_stop
+  - on_session_finalize
+  - api_request_error
   - on_session_end
-  - on_session_reset

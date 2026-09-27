@@ -30,6 +30,18 @@ TOOL_NAMES = {
     "skill_view": "Skill",
     "tool_search": "ToolSearch",
 }
+API_ERROR_NAMES = {
+    "rate_limit": "rate_limit",
+    "upstream_rate_limit": "rate_limit",
+    "overloaded": "overloaded",
+    "auth": "authentication_failed",
+    "auth_permanent": "authentication_failed",
+    "billing": "billing_error",
+    "model_not_found": "model_not_found",
+    "format_error": "invalid_request",
+    "server_error": "server_error",
+    "timeout": "server_error",
+}
 
 
 def _native_tool_name(tool_name: str) -> str | None:
@@ -91,6 +103,7 @@ class HookBridge:
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
+        self.api_errors: dict[tuple[str, str], tuple[str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
 
@@ -343,6 +356,30 @@ class HookBridge:
             self.started_sessions.discard(session_id)
             self.task_ids.pop(session_id, None)
             self.task_counts.pop(session_id, None)
+
+    def api_request_error(
+        self, session_id: str = "", turn_id: str = "", reason: str = "", error: Any = None, **_: Any,
+    ) -> None:
+        detail = error.get("message", "") if isinstance(error, dict) else ""
+        with self.session_lock:
+            self.api_errors[(session_id, turn_id)] = (API_ERROR_NAMES.get(reason, "unknown"), str(detail))
+            if len(self.api_errors) > 1024:
+                self.api_errors.pop(next(iter(self.api_errors)))
+
+    def turn_end(
+        self, session_id: str = "", turn_id: str = "", failed: bool = False,
+        turn_exit_reason: str = "", **_: Any,
+    ) -> None:
+        with self.session_lock:
+            error = self.api_errors.pop((session_id, turn_id), None)
+        if not failed or turn_exit_reason != "all_retries_exhausted_no_response":
+            return
+        error_name, detail = error or ("unknown", "")
+        payload = self._payload(
+            "StopFailure", session_id, error=error_name,
+            **({"error_details": detail} if detail else {}),
+        )
+        self._run("StopFailure", payload, error_name)
 
     def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False, **_: Any) -> dict[str, str] | None:
         self._append_transcript(session_id, "assistant", response)
