@@ -11,7 +11,7 @@ This record describes the public LifeOS hook settings installed from commit `5e2
 | `UserPromptSubmit` | 9 | `pre_llm_call` | Hooks execute on a text prompt. Their context is added to the current user turn. Async hooks start without blocking. |
 | `Stop` | 8 | `pre_turn_stop` | Hooks execute on each text answer. A block continues the same Hermes turn, up to eight consecutive times by default. `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` overrides the cap. A private transcript supplies `transcript_path`. |
 | `SessionStart` | 5 | first `pre_llm_call` | Hooks execute before the first user prompt is sent to the model. Their text output joins that prompt's context. |
-| `SessionEnd` | 6 | `on_session_finalize` | Hooks run at the session boundary. Their effects have not been checked end to end. |
+| `SessionEnd` | 6 | `on_session_finalize` | All six installed handlers completed successfully on a synthetic session boundary. Their state-changing effects have not been checked end to end. |
 | `PostToolUseFailure` | 3 | `augment_tool_result` on tool error | The failure payload is tested with a real child process. |
 | `PermissionRequest` | 2 | `pre_command_approval` for Bash and `pre_tool_call` for files and MCP | Native `Safety.hook.ts` can grant a recoverable dangerous-command warning in Hermes manual approval mode. Hermes hardline, user deny, and Tirith warnings remain effective. For Write, Edit, and MCP, a native grant proceeds; a neutral decision requests human review, and a deny blocks. Hermes file guards still apply after a grant. |
 | `TaskCreated` | 1 | `pre_tool_call` and `post_tool_call` on `todo_list` and `kanban_create` | The bridge enforces the installed hook's minimum description and shared 50-task session limit. Slots are reserved before a call and committed only after success. This is equivalent policy code, not native hook execution. |
@@ -38,6 +38,7 @@ The native bridge executes the installed registration types with partial coverag
 - The installed LifeOS file permission hook granted a synthetic write under `~/.claude` and requested review for synthetic Write and Edit calls to a credential path. No file write was executed.
 - Matching synchronous hook handlers now run concurrently. A blocking PreToolUse handler does not suppress another matching observer. A direct run of the installed Stop hooks completed with this dispatch path.
 - An async hook read a one-megabyte synthetic prompt after its parent Hermes process exited. The detached runner removed its private spool file.
+- All six installed SessionEnd handlers returned exit code zero for a synthetic session on `.212`.
 
 ## Hermes core dependency
 
