@@ -8,4 +8,6 @@ On `.212`, a synthetic project hook was skipped while its root was untrusted. A 
 
 A follow-up characterization test found that project `env` values were absent in the hook child process. The bridge now merges trusted project and local `env` values into a copy of the user hook environment for the matching session. A second project session did not inherit the first project's value. A process test on `.212` confirmed the value reached a native command hook.
 
-Current limits: The bridge does not discover a project root above the observed working directory. A session that enters multiple repositories needs a separate scope test. Project hook commands are powerful, so the trust gate remains fail closed if Hermes's trust function is unavailable.
+A nested working directory initially missed hooks at the repository root. The bridge now uses Hermes's Git project root resolver and retains an equivalent local fallback for tests. A direct `.212` probe found and ran a root hook from a nested directory. A local test sent one session into two repositories; each tool call received only that repository's hook result.
+
+Current limits: Non-Git project settings must be at the observed working directory. Other session-level behavior across several repositories remains unverified. Project hook commands are powerful, so the trust gate remains fail closed if Hermes's trust function is unavailable.

@@ -105,6 +105,46 @@ class HookBridgeTests(unittest.TestCase):
             result = bridge.pre_tool_call("terminal", args, session_id="s1")
         self.assertEqual(result, {"action": "block", "message": "reloaded deny"})
 
+    def test_nested_workdir_finds_trusted_repository_hooks(self):
+        project = self.root / "repository"
+        nested = project / "src" / "nested"
+        (project / ".git").mkdir(parents=True)
+        (project / ".claude").mkdir()
+        nested.mkdir(parents=True)
+        deny = self.make_hook("root-deny.py", "import sys\nprint('root hook', file=sys.stderr)\nsys.exit(2)\n")
+        (project / ".claude/settings.json").write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
+        }}))
+        bridge = self.bridge({})
+        with patch("bridge._trusted_project", side_effect=lambda path: path == project):
+            result = bridge.pre_tool_call(
+                "terminal", {"command": "pwd", "workdir": str(nested)}, session_id="s1",
+            )
+        self.assertEqual(result, {"action": "block", "message": "root hook"})
+
+    def test_one_session_uses_hooks_for_each_repository_workdir(self):
+        projects = []
+        for label in ("alpha", "beta"):
+            project = self.root / label
+            (project / ".git").mkdir(parents=True)
+            (project / ".claude").mkdir()
+            nested = project / "src"
+            nested.mkdir()
+            command = self.make_hook(
+                f"{label}.py", f"import sys\nprint({label!r}, file=sys.stderr)\nsys.exit(2)\n",
+            )
+            (project / ".claude/settings.json").write_text(json.dumps({"hooks": {
+                "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}],
+            }}))
+            projects.append((project, nested, label))
+        bridge = self.bridge({})
+        with patch("bridge._trusted_project", return_value=True):
+            for _, nested, label in projects:
+                result = bridge.pre_tool_call(
+                    "terminal", {"command": "pwd", "workdir": str(nested)}, session_id="shared-session",
+                )
+                self.assertEqual(result, {"action": "block", "message": label})
+
     def test_untrusted_project_hook_does_not_execute(self):
         project = self.root / "untrusted"
         (project / ".claude").mkdir(parents=True)

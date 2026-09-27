@@ -216,6 +216,18 @@ def _trusted_project(project_dir: Path) -> bool:
     return is_project_root_trusted(project_dir)
 
 
+def _project_root_for_cwd(cwd: str) -> Path:
+    directory = Path(cwd).resolve()
+    try:
+        from agent.skill_utils import find_project_root
+    except ImportError:
+        for path in (directory, *directory.parents):
+            if (path / ".git").exists() and path != Path.home():
+                return path
+        return directory
+    return find_project_root(directory) or directory
+
+
 class HookBridge:
     def __init__(self, settings_path: Path, root: Path):
         self.settings_path = Path(settings_path)
@@ -445,7 +457,7 @@ class HookBridge:
         return sources
 
     def _remember_project(self, cwd: str, session_id: str) -> None:
-        project_dir = Path(cwd).resolve()
+        project_dir = _project_root_for_cwd(cwd)
         with self.session_lock:
             projects = self.session_projects.setdefault(session_id, set())
             if project_dir in projects:
