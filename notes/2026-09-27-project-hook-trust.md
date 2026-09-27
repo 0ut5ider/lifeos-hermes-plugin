@@ -6,4 +6,6 @@ The first implementation loaded project hooks from every observed tool working d
 
 On `.212`, a synthetic project hook was skipped while its root was untrusted. A process-local test then supplied that root through Hermes's trusted project function. The same hook blocked the synthetic Bash call. No persistent trust list changed. The full local suite passed 58 tests, with four optional native tests skipped. The native TaskCreated probe still blocked a short description and task 51 after this change.
 
-Current limits: The bridge does not apply project `env` values or discover a project root above the observed working directory. A session that enters multiple repositories needs a separate scope test. Project hook commands are powerful, so the trust gate remains fail closed if Hermes's trust function is unavailable.
+A follow-up characterization test found that project `env` values were absent in the hook child process. The bridge now merges trusted project and local `env` values into a copy of the user hook environment for the matching session. A second project session did not inherit the first project's value. A process test on `.212` confirmed the value reached a native command hook.
+
+Current limits: The bridge does not discover a project root above the observed working directory. A session that enters multiple repositories needs a separate scope test. Project hook commands are powerful, so the trust gate remains fail closed if Hermes's trust function is unavailable.

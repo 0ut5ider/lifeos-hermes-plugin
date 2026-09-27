@@ -469,8 +469,7 @@ class HookBridge:
             return {}
         return settings if isinstance(settings, dict) and isinstance(settings.get("hooks", {}), dict) else {}
 
-    def _hook_groups(self, event: str, payload: dict[str, Any]) -> list[dict[str, Any]]:
-        groups = list(self.hooks.get(event, []))
+    def _matching_project(self, payload: dict[str, Any]) -> Path | None:
         cwd = Path(payload.get("cwd") or _scope_cwd()).resolve()
         session_id = payload.get("session_id", "")
         with self.session_lock:
@@ -479,11 +478,29 @@ class HookBridge:
                             if cwd.is_relative_to(path)), None)
             if project is None and "tool_name" not in payload and len(projects) == 1:
                 project = next(iter(projects))
-            if project is not None and _trusted_project(project):
+        return project if project is not None and _trusted_project(project) else None
+
+    def _hook_groups(self, event: str, payload: dict[str, Any]) -> list[dict[str, Any]]:
+        groups = list(self.hooks.get(event, []))
+        project = self._matching_project(payload)
+        if project is not None:
+            with self.session_lock:
                 for name in ("settings.json", "settings.local.json"):
                     settings = self.project_hook_settings.get(project / ".claude" / name, {})
                     groups.extend(settings.get("hooks", {}).get(event, []))
         return groups
+
+    def _event_environment(self, payload: dict[str, Any]) -> dict[str, str]:
+        environment = dict(self.environment)
+        project = self._matching_project(payload)
+        if project is not None:
+            with self.session_lock:
+                for name in ("settings.json", "settings.local.json"):
+                    settings = self.project_hook_settings.get(project / ".claude" / name, {})
+                    for key, value in settings.get("env", {}).items():
+                        if isinstance(value, str):
+                            environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+        return environment
 
     def _config_files(self) -> dict[Path, tuple[int, int]]:
         result = {}
@@ -552,6 +569,7 @@ class HookBridge:
 
     def _run(self, event: str, payload: dict[str, Any], tool_name: str = "") -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         sync_hooks = []
+        environment = self._event_environment(payload)
         for group in self._hook_groups(event, payload):
             matcher = group.get("matcher", "")
             if matcher and not re.fullmatch(matcher, tool_name):
@@ -568,9 +586,9 @@ class HookBridge:
                     continue
                 timeout = max(1, min(int(hook.get("timeout", 60)), 300))
                 if hook.get("async"):
-                    self._run_async(command, payload, timeout)
+                    self._run_async(command, payload, timeout, environment)
                     continue
-                sync_hooks.append((self._run_command, (event, command, payload, timeout)))
+                sync_hooks.append((self._run_command, (event, command, payload, timeout, environment)))
         outcomes = []
         if not sync_hooks:
             return outcomes
@@ -588,12 +606,13 @@ class HookBridge:
 
     def _run_command(
         self, event: str, command: str, payload: dict[str, Any], timeout: int,
+        environment: dict[str, str],
     ) -> subprocess.CompletedProcess[str] | None:
         try:
             process = subprocess.run(
                 ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
                 capture_output=True, timeout=timeout, cwd=payload.get("cwd") or self.root,
-                env=self.environment, check=False,
+                env=environment, check=False,
             )
         except (OSError, subprocess.TimeoutExpired) as error:
             LOG.error("LifeOS %s hook failed to execute: %s", event, error)
@@ -618,7 +637,9 @@ class HookBridge:
             LOG.warning("LifeOS HTTP hook unavailable: %s", error)
             return None
 
-    def _run_async(self, command: str, payload: dict[str, Any], timeout: int) -> None:
+    def _run_async(
+        self, command: str, payload: dict[str, Any], timeout: int, environment: dict[str, str],
+    ) -> None:
         spool_path = None
         try:
             with tempfile.NamedTemporaryFile(
@@ -633,7 +654,7 @@ class HookBridge:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 cwd=payload.get("cwd") or self.root,
-                env=self.environment,
+                env=environment,
                 start_new_session=True,
                 close_fds=True,
             )

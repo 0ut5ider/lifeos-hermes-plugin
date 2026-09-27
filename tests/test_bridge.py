@@ -118,6 +118,32 @@ class HookBridgeTests(unittest.TestCase):
             bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(project)}, session_id="s1")
         self.assertFalse(marker.exists())
 
+    def test_trusted_project_environment_reaches_its_hook(self):
+        project = self.root / "project-env"
+        (project / ".claude").mkdir(parents=True)
+        marker = self.root / "project-env-value"
+        command = self.make_hook(
+            "project-env.py",
+            "import os\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(os.environ.get('LIFEOS_PROJECT_PROBE', 'missing'))\n",
+        )
+        (project / ".claude/settings.json").write_text(json.dumps({
+            "env": {"LIFEOS_PROJECT_PROBE": "project-value"},
+            "hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]},
+        }))
+        bridge = self.bridge({})
+        with patch("bridge._trusted_project", return_value=True):
+            bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(project)}, session_id="s1")
+        self.assertEqual(marker.read_text(), "project-value")
+        other = self.root / "other-project"
+        (other / ".claude").mkdir(parents=True)
+        (other / ".claude/settings.json").write_text(json.dumps({
+            "hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]},
+        }))
+        with patch("bridge._trusted_project", return_value=True):
+            bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(other)}, session_id="s2")
+        self.assertEqual(marker.read_text(), "missing")
+
     def test_blocked_pre_tool_hook_still_runs_later_observer(self):
         marker = self.root / "observer-ran"
         deny = self.make_hook("deny.py", "import sys\nprint('blocked',file=sys.stderr)\nsys.exit(2)\n")
