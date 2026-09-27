@@ -50,6 +50,21 @@ class HookBridgeTests(unittest.TestCase):
         result = bridge.pre_tool_call("terminal", {"command": "echo hi"}, session_id="s1")
         self.assertEqual(result, {"action": "block", "message": "blocked by test"})
 
+    def test_terminal_hook_uses_tool_workdir(self):
+        workdir = self.root / "tool-workspace"
+        workdir.mkdir()
+        marker = workdir / "observed-cwd"
+        command = self.make_hook(
+            "record-cwd.py",
+            "import json,os,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['cwd']==os.getcwd()\n"
+            f"Path({str(marker)!r}).write_text(data['cwd'])\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(workdir)}, session_id="s1")
+        self.assertEqual(marker.read_text(), str(workdir))
+
     def test_blocked_pre_tool_hook_still_runs_later_observer(self):
         marker = self.root / "observer-ran"
         deny = self.make_hook("deny.py", "import sys\nprint('blocked',file=sys.stderr)\nsys.exit(2)\n")

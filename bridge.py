@@ -117,6 +117,24 @@ def _decode_output(stdout: str) -> dict[str, Any] | None:
         return None
 
 
+def _scope_cwd() -> str:
+    try:
+        from agent.runtime_cwd import resolve_agent_cwd
+    except ImportError:
+        return str(Path.cwd())
+    return str(resolve_agent_cwd())
+
+
+def _tool_cwd(tool_name: str, args: dict[str, Any], task_id: str) -> str:
+    if tool_name == "terminal" and isinstance(args.get("workdir"), str) and args["workdir"].strip():
+        return args["workdir"]
+    try:
+        from tools.file_tools_paths import _authoritative_workspace_root
+    except ImportError:
+        return _scope_cwd()
+    return _authoritative_workspace_root(task_id or "default") or _scope_cwd()
+
+
 class HookBridge:
     def __init__(self, settings_path: Path, root: Path):
         self.settings_path = Path(settings_path)
@@ -316,7 +334,7 @@ class HookBridge:
             "hook_event_name": event,
             "session_id": session_id,
             "transcript_path": str(self.transcript_path(session_id)),
-            "cwd": str(Path.cwd()),
+            "cwd": _scope_cwd(),
             **fields,
         }
 
@@ -332,12 +350,12 @@ class HookBridge:
         return None
 
     def _mcp_permission_verdict(
-        self, tool_name: str, args: dict[str, Any], session_id: str,
+        self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str,
     ) -> dict[str, Any] | None:
         groups = self.hooks.get("PermissionRequest", [])
         if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
             return None
-        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args)
+        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
         outcomes = self._run("PermissionRequest", payload, tool_name)
         granted = False
         for process, output in outcomes:
@@ -358,7 +376,7 @@ class HookBridge:
         }
 
     def _file_permission_verdict(
-        self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str,
+        self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str, cwd: str,
     ) -> dict[str, Any] | None:
         groups = self.hooks.get("PermissionRequest", [])
         if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
@@ -366,7 +384,7 @@ class HookBridge:
         review_paths = []
         for native_input in native_inputs:
             payload = self._payload(
-                "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input,
+                "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd,
             )
             outcomes = self._run("PermissionRequest", payload, native_name)
             granted = False
@@ -390,7 +408,8 @@ class HookBridge:
         }
 
     def pre_tool_call(
-        self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "", **_: Any,
+        self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "",
+        task_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
         if tool_name == "todo_list" and "TaskCreated" in self.hooks:
             task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name)
@@ -403,12 +422,13 @@ class HookBridge:
         native_name = _native_tool_name(tool_name)
         if native_name is None:
             return None
+        cwd = _tool_cwd(tool_name, args, task_id)
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = _v4a_edit_inputs(args["patch"]) if v4a else [_tool_input(native_name, args)]
         updated_args = None
         extra_context = []
         for native_input in native_inputs:
-            payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=native_input)
+            payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd)
             for process, output in self._run("PreToolUse", payload, native_name):
                 specific = (output or {}).get("hookSpecificOutput") or {}
                 decision = specific.get("permissionDecision") or (output or {}).get("decision")
@@ -428,14 +448,14 @@ class HookBridge:
                 if len(self.pending_tool_context) > 1024:
                     self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
         if tool_name.startswith("mcp__"):
-            verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id)
+            verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
         if native_name in {"Write", "Edit"}:
             permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args)]
-            verdict = self._file_permission_verdict(native_name, permission_inputs, session_id)
+            verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
@@ -527,7 +547,8 @@ class HookBridge:
 
     def post_tool_call(
         self, tool_name: str, args: dict[str, Any], result: str,
-        session_id: str = "", tool_call_id: str = "", status: str = "success", error_message: str = "", **_: Any,
+        session_id: str = "", tool_call_id: str = "", task_id: str = "",
+        status: str = "success", error_message: str = "", **_: Any,
     ) -> str | None:
         native_name = _native_tool_name(tool_name)
         if native_name is None:
@@ -551,6 +572,7 @@ class HookBridge:
         payload = self._payload(
             event, session_id, tool_name=native_name,
             tool_input=_tool_input(native_name, args),
+            cwd=_tool_cwd(tool_name, args, task_id),
             **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": response}),
         )
         context = self._context(self._run(event, payload, native_name))
