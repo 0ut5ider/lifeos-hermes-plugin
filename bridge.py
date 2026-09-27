@@ -208,6 +208,14 @@ def _prompt_text(message: Any) -> str:
     return ""
 
 
+def _trusted_project(project_dir: Path) -> bool:
+    try:
+        from agent.skill_utils import is_project_root_trusted
+    except ImportError:
+        return False
+    return is_project_root_trusted(project_dir)
+
+
 class HookBridge:
     def __init__(self, settings_path: Path, root: Path):
         self.settings_path = Path(settings_path)
@@ -215,7 +223,7 @@ class HookBridge:
         self.base_environment = dict(os.environ)
         self._apply_settings(json.loads(self.settings_path.read_text()))
         self.started_sessions: set[str] = set()
-        self.session_lock = threading.Lock()
+        self.session_lock = threading.RLock()
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
@@ -225,6 +233,7 @@ class HookBridge:
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.project_dirs = (Path.cwd(),)
         self.session_projects: dict[str, set[Path]] = {}
+        self.project_hook_settings: dict[Path, dict[str, Any]] = {}
         self.config_files = self._config_files()
         self.last_config_poll = 0.0
         self.watcher_stop = threading.Event()
@@ -236,7 +245,10 @@ class HookBridge:
         self.watchdog_thread: threading.Thread | None = None
 
     def _start_config_watcher(self) -> None:
-        if "ConfigChange" not in self.hooks:
+        if "ConfigChange" not in self.hooks and not any(
+            _trusted_project(path.parent.parent) and "ConfigChange" in settings.get("hooks", {})
+            for path, settings in self.project_hook_settings.items()
+        ):
             return
         with self.session_lock:
             if self.watcher is not None and self.watcher.is_alive() and not self.watcher_stop.is_set():
@@ -410,7 +422,7 @@ class HookBridge:
         )
         self.hooks = hooks
         self.environment = environment
-        self.native_task_hook_supported = None
+        self.native_task_hook_supported: dict[tuple[str, str], bool] = {}
 
     def _config_sources(self) -> dict[Path, str]:
         sources = {
@@ -441,8 +453,37 @@ class HookBridge:
             projects.add(project_dir)
             if project_dir not in self.project_dirs:
                 self.project_dirs += (project_dir,)
+            for name in ("settings.json", "settings.local.json"):
+                path = project_dir / ".claude" / name
+                self.project_hook_settings[path] = self._read_project_settings(path)
             for path, fingerprint in self._config_files().items():
                 self.config_files.setdefault(path, fingerprint)
+
+    @staticmethod
+    def _read_project_settings(path: Path) -> dict[str, Any]:
+        try:
+            settings = json.loads(path.read_text())
+        except (OSError, ValueError) as error:
+            if path.exists():
+                LOG.warning("LifeOS project settings cannot be loaded from %s: %s", path, error)
+            return {}
+        return settings if isinstance(settings, dict) and isinstance(settings.get("hooks", {}), dict) else {}
+
+    def _hook_groups(self, event: str, payload: dict[str, Any]) -> list[dict[str, Any]]:
+        groups = list(self.hooks.get(event, []))
+        cwd = Path(payload.get("cwd") or _scope_cwd()).resolve()
+        session_id = payload.get("session_id", "")
+        with self.session_lock:
+            projects = self.session_projects.get(session_id, set())
+            project = next((path for path in sorted(projects, key=lambda value: len(value.parts), reverse=True)
+                            if cwd.is_relative_to(path)), None)
+            if project is None and "tool_name" not in payload and len(projects) == 1:
+                project = next(iter(projects))
+            if project is not None and _trusted_project(project):
+                for name in ("settings.json", "settings.local.json"):
+                    settings = self.project_hook_settings.get(project / ".claude" / name, {})
+                    groups.extend(settings.get("hooks", {}).get(event, []))
+        return groups
 
     def _config_files(self) -> dict[Path, tuple[int, int]]:
         result = {}
@@ -487,6 +528,11 @@ class HookBridge:
                     self._apply_settings(json.loads(self.settings_path.read_text()))
                 except (OSError, ValueError, TypeError) as error:
                     LOG.warning("LifeOS settings change cannot be loaded: %s", error)
+            elif source in {"project_settings", "local_settings"} and not blocked:
+                with self.session_lock:
+                    self.project_hook_settings[path] = self._read_project_settings(path)
+                    self.native_task_hook_supported.clear()
+                self._start_config_watcher()
 
     def transcript_path(self, session_id: str) -> Path:
         name = re.sub(r"[^A-Za-z0-9._-]", "_", session_id or "default")
@@ -506,7 +552,7 @@ class HookBridge:
 
     def _run(self, event: str, payload: dict[str, Any], tool_name: str = "") -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         sync_hooks = []
-        for group in self.hooks.get(event, []):
+        for group in self._hook_groups(event, payload):
             matcher = group.get("matcher", "")
             if matcher and not re.fullmatch(matcher, tool_name):
                 continue
@@ -619,7 +665,9 @@ class HookBridge:
     def _mcp_permission_verdict(
         self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str,
     ) -> dict[str, Any] | None:
-        groups = self.hooks.get("PermissionRequest", [])
+        groups = self._hook_groups(
+            "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
+        )
         if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
             return None
         payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
@@ -645,7 +693,9 @@ class HookBridge:
     def _file_permission_verdict(
         self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str, cwd: str,
     ) -> dict[str, Any] | None:
-        groups = self.hooks.get("PermissionRequest", [])
+        groups = self._hook_groups(
+            "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=native_name),
+        )
         if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
             return None
         review_paths = []
@@ -680,19 +730,23 @@ class HookBridge:
         self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "",
         task_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
-        if tool_name == "todo_list" and "TaskCreated" in self.hooks:
+        cwd = _tool_cwd(tool_name, args, task_id)
+        self._remember_project(cwd, session_id)
+        if tool_name == "todo_list" and self._hook_groups(
+            "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
+        ):
             task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name)
             if task_verdict:
                 return task_verdict
-        if tool_name == "kanban_create" and "TaskCreated" in self.hooks:
+        if tool_name == "kanban_create" and self._hook_groups(
+            "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
+        ):
             task_verdict = self._kanban_task_verdict(args, session_id, tool_call_id or tool_name)
             if task_verdict:
                 return task_verdict
         native_name = _native_tool_name(tool_name)
         if native_name is None:
             return None
-        cwd = _tool_cwd(tool_name, args, task_id)
-        self._remember_project(cwd, session_id)
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = (
             _v4a_edit_inputs(args["patch"]) if v4a else
@@ -746,14 +800,15 @@ class HookBridge:
     def _reserved_task_count(self, session_id: str) -> int:
         return sum(count for (owner, _), (_, count) in self.pending_tasks.items() if owner == session_id)
 
-    def _supports_native_task_hook(self) -> bool:
-        if self.native_task_hook_supported is None:
-            payload = self._payload("TaskCreated", "probe", hermes_bridge_probe=True)
-            self.native_task_hook_supported = any(
+    def _supports_native_task_hook(self, session_id: str, cwd: str) -> bool:
+        key = (session_id, cwd)
+        if key not in self.native_task_hook_supported:
+            payload = self._payload("TaskCreated", session_id, cwd=cwd, hermes_bridge_probe=True)
+            self.native_task_hook_supported[key] = any(
                 process.returncode == 0 and (output or {}).get("hermes_bridge_task_governance") == 1
                 for process, output in self._run("TaskCreated", payload)
             )
-        return self.native_task_hook_supported
+        return self.native_task_hook_supported[key]
 
     def _native_task_verdict(
         self, session_id: str, task_id: str, subject: str, description: str, count: int,
@@ -772,7 +827,7 @@ class HookBridge:
         todos = args.get("todos")
         if not isinstance(todos, list):
             return None
-        native = self._supports_native_task_hook()
+        native = self._supports_native_task_hook(session_id, _scope_cwd())
         with self.session_lock:
             key = (session_id, call_id)
             self.pending_tasks.pop(key, None)
@@ -801,7 +856,7 @@ class HookBridge:
 
     def _kanban_task_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
         description = args.get("body") or args.get("title", "")
-        native = self._supports_native_task_hook()
+        native = self._supports_native_task_hook(session_id, _scope_cwd())
         with self.session_lock:
             key = (session_id, call_id)
             self.pending_tasks.pop(key, None)
@@ -933,6 +988,13 @@ class HookBridge:
             self.session_projects.pop(session_id, None)
             active_projects = {project for projects in self.session_projects.values() for project in projects}
             self.project_dirs = tuple(sorted(active_projects)) or (Path.cwd(),)
+            self.project_hook_settings = {
+                path: settings for path, settings in self.project_hook_settings.items()
+                if path.parent.parent in active_projects
+            }
+            for key in tuple(self.native_task_hook_supported):
+                if key[0] == session_id:
+                    self.native_task_hook_supported.pop(key, None)
             watched = self._config_sources()
             self.config_files = {path: fingerprint for path, fingerprint in self.config_files.items() if path in watched}
             self.task_ids.pop(session_id, None)

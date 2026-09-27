@@ -67,6 +67,57 @@ class HookBridgeTests(unittest.TestCase):
         bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(workdir)}, session_id="s1")
         self.assertEqual(marker.read_text(), str(workdir))
 
+    def test_project_hook_applies_only_to_its_project(self):
+        project = self.root / "project-a"
+        other = self.root / "project-b"
+        (project / ".claude").mkdir(parents=True)
+        other.mkdir()
+        deny = self.make_hook("project-deny.py", "import sys\nprint('project denied', file=sys.stderr)\nsys.exit(2)\n")
+        (project / ".claude/settings.json").write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
+        }}))
+        bridge = self.bridge({})
+        with patch("bridge._trusted_project", side_effect=lambda path: path == project):
+            result = bridge.pre_tool_call(
+                "terminal", {"command": "pwd", "workdir": str(project)}, session_id="project-a-session",
+            )
+        self.assertEqual(result, {"action": "block", "message": "project denied"})
+        result = bridge.pre_tool_call(
+            "terminal", {"command": "pwd", "workdir": str(other)}, session_id="project-b-session",
+        )
+        self.assertIsNone(result)
+
+    def test_project_hook_reloads_after_settings_change(self):
+        project = self.root / "project-a"
+        settings_dir = project / ".claude"
+        settings_dir.mkdir(parents=True)
+        settings = settings_dir / "settings.json"
+        settings.write_text(json.dumps({"hooks": {}}))
+        deny = self.make_hook("project-deny.py", "import sys\nprint('reloaded deny', file=sys.stderr)\nsys.exit(2)\n")
+        bridge = self.bridge({})
+        args = {"command": "pwd", "workdir": str(project)}
+        self.assertIsNone(bridge.pre_tool_call("terminal", args, session_id="s1"))
+        settings.write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
+        }}))
+        bridge.poll_config_changes(force=True)
+        with patch("bridge._trusted_project", return_value=True):
+            result = bridge.pre_tool_call("terminal", args, session_id="s1")
+        self.assertEqual(result, {"action": "block", "message": "reloaded deny"})
+
+    def test_untrusted_project_hook_does_not_execute(self):
+        project = self.root / "untrusted"
+        (project / ".claude").mkdir(parents=True)
+        marker = self.root / "ran"
+        command = self.make_hook("unsafe.py", f"from pathlib import Path\nPath({str(marker)!r}).touch()\n")
+        (project / ".claude/settings.json").write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}],
+        }}))
+        bridge = self.bridge({})
+        with patch("bridge._trusted_project", return_value=False):
+            bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(project)}, session_id="s1")
+        self.assertFalse(marker.exists())
+
     def test_blocked_pre_tool_hook_still_runs_later_observer(self):
         marker = self.root / "observer-ran"
         deny = self.make_hook("deny.py", "import sys\nprint('blocked',file=sys.stderr)\nsys.exit(2)\n")

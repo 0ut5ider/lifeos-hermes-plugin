@@ -17,6 +17,8 @@ The [hook parity record](docs/hook-parity.md) lists mapped events, tested effect
 
 The bridge needs the [Hermes core extension](patches/hermes-hook-controls.patch) for Stop and approval behavior. The [LifeOS task patch](patches/lifeos-task-governance.patch) lets the native TaskCreated hook use a Hermes session count. Apply the [LifeOS watchdog patch](patches/lifeos-agent-watchdog.patch) after the task patch to route background agent silence alerts through Hermes. These patches are tested on the isolated `.212` checkout. The hook parity record describes their exact base revisions and remaining limits.
 
+Project hook registrations run only when the project root appears in Hermes's `skills.trusted_project_dirs`. A project settings file can contain shell commands, so the bridge does not execute it from an untrusted checkout.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
