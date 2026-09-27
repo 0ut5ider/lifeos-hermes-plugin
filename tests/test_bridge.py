@@ -364,6 +364,21 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(rows[1]["message"]["content"][0]["tool_use_id"], "tc1")
         self.assertTrue(rows[1]["message"]["content"][0]["is_error"])
 
+    def test_post_patch_reports_each_changed_file(self):
+        marker = self.root / "post-edit.jsonl"
+        command = self.make_hook(
+            "record-edit.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        bridge = self.bridge({"PostToolUse": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
+        patch_text = "*** Begin Patch\n*** Update File: first.txt\n@@\n-old\n+new\n*** Add File: second.txt\n+hello\n*** End Patch"
+        bridge.post_tool_call("patch", {"mode": "patch", "patch": patch_text}, "Done", session_id="s1")
+        payloads = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([payload["tool_input"]["file_path"] for payload in payloads], ["first.txt", "second.txt"])
+        self.assertEqual([payload["tool_input"]["new_string"] for payload in payloads], ["new", "hello"])
+
     def test_post_tool_context_is_appended_after_guarded_result(self):
         command = self.make_hook(
             "annotate.py",

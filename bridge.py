@@ -621,13 +621,17 @@ class HookBridge:
                 "is_error": status in {"error", "blocked"},
             }],
         )
-        payload = self._payload(
-            event, session_id, tool_name=native_name,
-            tool_input=_tool_input(native_name, args),
-            cwd=_tool_cwd(tool_name, args, task_id),
-            **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": response}),
-        )
-        context = self._context(self._run(event, payload, native_name))
+        v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
+        native_inputs = _v4a_edit_inputs(args["patch"]) if v4a and event == "PostToolUse" else [_tool_input(native_name, args)]
+        context = []
+        for native_input in native_inputs:
+            payload = self._payload(
+                event, session_id, tool_name=native_name,
+                tool_input=native_input,
+                cwd=_tool_cwd(tool_name, args, task_id),
+                **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": response}),
+            )
+            context.extend(self._context(self._run(event, payload, native_name)))
         return "\n\n".join(context) if context else None
 
     def augment_tool_result(
