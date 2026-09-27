@@ -330,6 +330,62 @@ class HookBridgeTests(unittest.TestCase):
         bridge.poll_config_changes(force=True)
         self.assertEqual(bridge.pre_tool_call("terminal", {"command": "echo input"}, session_id="s1")["args"]["command"], "echo first")
 
+    def test_clarify_maps_to_ask_user_question_hooks(self):
+        marker = self.root / "question-events.jsonl"
+        command = self.make_hook(
+            "question.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        bridge = self.bridge({
+            "PreToolUse": [{"matcher": "AskUserQuestion", "hooks": [{"type": "command", "command": command}]}],
+            "PostToolUse": [{"matcher": "AskUserQuestion", "hooks": [{"type": "command", "command": command}]}],
+        })
+        args = {"questions": [{"question": "Which option works?", "choices": ["A", "B"]}]}
+        bridge.pre_tool_call("clarify", args, session_id="s1")
+        bridge.post_tool_call("clarify", args, "A", session_id="s1")
+        events = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([event["hook_event_name"] for event in events], ["PreToolUse", "PostToolUse"])
+        self.assertTrue(all(event["tool_name"] == "AskUserQuestion" for event in events))
+        self.assertEqual(events[0]["tool_input"]["questions"][0]["question"], "Which option works?")
+
+    def test_multi_file_patch_checks_each_changed_file(self):
+        command = self.make_hook(
+            "patch_guard.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "entry=data['tool_input']\n"
+            "if entry.get('file_path')=='/tmp/second.txt' and 'SENSITIVE' in entry.get('new_string',''):\n"
+            " print('blocked second file',file=sys.stderr)\n sys.exit(2)\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
+        patch_text = """*** Begin Patch
+*** Update File: /tmp/first.txt
+@@
+-old
++safe
+*** Update File: /tmp/second.txt
+@@
+-old
++SENSITIVE
+*** End Patch"""
+        result = bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
+        self.assertEqual(result, {"action": "block", "message": "blocked second file"})
+
+    def test_hook_process_uses_agent_working_directory(self):
+        marker = self.root / "cwd.json"
+        command = self.make_hook(
+            "cwd.py",
+            "import json,os,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps({{'process':os.getcwd(),'payload':data['cwd']}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_tool_call("terminal", {"command": "echo test"}, session_id="s1")
+        location = json.loads(marker.read_text())
+        self.assertEqual(location, {"process": str(Path.cwd()), "payload": str(Path.cwd())})
+
 
 if __name__ == "__main__":
     unittest.main()

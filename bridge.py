@@ -30,7 +30,9 @@ TOOL_NAMES = {
     "web_fetch": "WebFetch",
     "skill_view": "Skill",
     "tool_search": "ToolSearch",
+    "clarify": "AskUserQuestion",
 }
+V4A_WRITE_HEADER = re.compile(r"^\*\*\*\s*(?:Update|Add)\s+File:\s*(.+)$")
 API_ERROR_NAMES = {
     "rate_limit": "rate_limit",
     "upstream_rate_limit": "rate_limit",
@@ -62,6 +64,31 @@ def _tool_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
     if name == "Skill" and "name" in translated:
         translated["skill"] = translated.pop("name")
     return translated
+
+
+def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
+    edits = []
+    path = None
+    added = []
+
+    def finish() -> None:
+        if path is not None:
+            edits.append({"file_path": path, "new_string": "\n".join(added)})
+
+    for line in patch_text.splitlines():
+        header = V4A_WRITE_HEADER.match(line)
+        if header:
+            finish()
+            path = header.group(1).strip()
+            added = []
+        elif line.startswith("***"):
+            finish()
+            path = None
+            added = []
+        elif path is not None and line.startswith("+"):
+            added.append(line[1:])
+    finish()
+    return edits
 
 
 def _hermes_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
@@ -205,7 +232,7 @@ class HookBridge:
                         text=True,
                         capture_output=True,
                         timeout=timeout,
-                        cwd=self.root,
+                        cwd=payload.get("cwd") or self.root,
                         env=self.environment,
                         check=False,
                     )
@@ -243,7 +270,7 @@ class HookBridge:
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
                 text=True,
-                cwd=self.root,
+                cwd=payload.get("cwd") or self.root,
                 env=self.environment,
             )
         except OSError as error:
@@ -265,7 +292,7 @@ class HookBridge:
             "hook_event_name": event,
             "session_id": session_id,
             "transcript_path": str(self.transcript_path(session_id)),
-            "cwd": str(self.root),
+            "cwd": str(Path.cwd()),
             **fields,
         }
 
@@ -290,21 +317,24 @@ class HookBridge:
         native_name = _native_tool_name(tool_name)
         if native_name is None:
             return None
-        payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=_tool_input(native_name, args))
+        v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
+        native_inputs = _v4a_edit_inputs(args["patch"]) if v4a else [_tool_input(native_name, args)]
         updated_args = None
         extra_context = []
-        for process, output in self._run("PreToolUse", payload, native_name):
-            specific = (output or {}).get("hookSpecificOutput") or {}
-            decision = specific.get("permissionDecision") or (output or {}).get("decision")
-            if process.returncode == 2 or decision in {"deny", "block"}:
-                message = specific.get("permissionDecisionReason") or (output or {}).get("reason") or process.stderr.strip() or "Blocked by a LifeOS hook"
-                return {"action": "block", "message": str(message)[:2000]}
-            updated = specific.get("updatedInput") or (output or {}).get("updatedInput")
-            if isinstance(updated, dict):
-                updated_args = _hermes_input(native_name, updated)
-            context = specific.get("additionalContext") or (output or {}).get("additionalContext")
-            if isinstance(context, str) and context.strip():
-                extra_context.append(context.strip())
+        for native_input in native_inputs:
+            payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=native_input)
+            for process, output in self._run("PreToolUse", payload, native_name):
+                specific = (output or {}).get("hookSpecificOutput") or {}
+                decision = specific.get("permissionDecision") or (output or {}).get("decision")
+                if process.returncode == 2 or decision in {"deny", "block"}:
+                    message = specific.get("permissionDecisionReason") or (output or {}).get("reason") or process.stderr.strip() or "Blocked by a LifeOS hook"
+                    return {"action": "block", "message": str(message)[:2000]}
+                updated = specific.get("updatedInput") or (output or {}).get("updatedInput")
+                if isinstance(updated, dict) and not v4a:
+                    updated_args = _hermes_input(native_name, updated)
+                context = specific.get("additionalContext") or (output or {}).get("additionalContext")
+                if isinstance(context, str) and context.strip():
+                    extra_context.append(context.strip())
         if extra_context:
             with self.session_lock:
                 key = (session_id, tool_call_id or tool_name)
