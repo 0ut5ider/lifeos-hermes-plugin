@@ -124,6 +124,86 @@ class HookBridgeTests(unittest.TestCase):
         result = bridge.pre_tool_call("terminal", {"command": "echo original"}, session_id="s1")
         self.assertEqual(result, {"action": "modify", "args": {"command": "echo safe"}})
 
+    def test_file_permission_grant_allows_a_write(self):
+        marker = self.root / "grant-ran"
+        command = self.make_hook(
+            "file-permission.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['hook_event_name']=='PermissionRequest'\n"
+            "assert data['tool_name']=='Write'\n"
+            "assert data['tool_input']['file_path']=='/tmp/example.txt'\n"
+            f"from pathlib import Path; Path({str(marker)!r}).touch()\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
+        self.assertIsNone(bridge.pre_tool_call("write_file", {"path": "/tmp/example.txt", "content": "safe"}, session_id="s1"))
+        self.assertTrue(marker.exists())
+
+    def test_file_permission_neutral_requests_review(self):
+        command = self.make_hook("neutral.py", "import json,sys\nassert json.load(sys.stdin)['tool_name']=='Edit'\n")
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
+        verdict = bridge.pre_tool_call("patch", {"path": "/tmp/example.txt", "new_string": "change"}, session_id="s1")
+        self.assertEqual(verdict["action"], "approve")
+        self.assertIn("/tmp/example.txt", verdict["message"])
+
+    def test_file_review_keeps_pre_tool_input_change(self):
+        change = self.make_hook(
+            "change-path.py",
+            "import json,sys\n"
+            "assert json.load(sys.stdin)['tool_name']=='Write'\n"
+            "print(json.dumps({'hookSpecificOutput':{'updatedInput':{'file_path':'/tmp/reviewed.txt','content':'safe'}}}))\n",
+        )
+        neutral = self.make_hook(
+            "review-path.py",
+            "import json,sys\n"
+            "assert json.load(sys.stdin)['tool_input']['file_path']=='/tmp/reviewed.txt'\n",
+        )
+        bridge = self.bridge({
+            "PreToolUse": [{"matcher": "Write", "hooks": [{"type": "command", "command": change}]}],
+            "PermissionRequest": [{"matcher": "Write", "hooks": [{"type": "command", "command": neutral}]}],
+        })
+        verdict = bridge.pre_tool_call("write_file", {"path": "/tmp/original.txt", "content": "unsafe"}, session_id="s1")
+        self.assertEqual(verdict["action"], "approve")
+        self.assertEqual(verdict["args"], {"path": "/tmp/reviewed.txt", "content": "safe"})
+
+    def test_file_permission_checks_every_v4a_target_before_review(self):
+        marker = self.root / "permission-paths"
+        command = self.make_hook(
+            "record-permission.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(data['tool_input']['file_path']+'\\n')\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
+        patch_text = "*** Begin Patch\n*** Update File: /tmp/first.txt\n+one\n*** Update File: /tmp/second.txt\n+two\n*** End Patch"
+        verdict = bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
+        self.assertEqual(verdict["action"], "approve")
+        self.assertEqual(set(marker.read_text().splitlines()), {"/tmp/first.txt", "/tmp/second.txt"})
+
+    def test_file_permission_checks_delete_and_move_targets(self):
+        marker = self.root / "all-patch-paths"
+        command = self.make_hook(
+            "record-target.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(data['tool_input']['file_path']+'\\n')\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
+        patch_text = (
+            "*** Begin Patch\n"
+            "*** Delete File: /tmp/deleted.txt\n"
+            "*** Update File: /tmp/old.txt\n"
+            "*** Move to: /tmp/new.txt\n"
+            "+changed\n"
+            "*** End Patch"
+        )
+        verdict = bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
+        self.assertEqual(verdict["action"], "approve")
+        self.assertEqual(set(marker.read_text().splitlines()), {
+            "/tmp/deleted.txt", "/tmp/old.txt", "/tmp/new.txt",
+        })
+
     def test_prompt_context_preserves_hook_order(self):
         first = self.make_hook("first.py", "print('first context')\n")
         second = self.make_hook("second.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'additionalContext':'second context'}}))\n")

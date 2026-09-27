@@ -36,7 +36,8 @@ TOOL_NAMES = {
     "tool_search": "ToolSearch",
     "clarify": "AskUserQuestion",
 }
-V4A_WRITE_HEADER = re.compile(r"^\*\*\*\s*(?:Update|Add)\s+File:\s*(.+)$")
+V4A_WRITE_HEADER = re.compile(r"^\*\*\*\s*(?:Update|Add|Delete)\s+File:\s*(.+)$")
+V4A_MOVE_HEADER = re.compile(r"^\*\*\*\s*Move\s+to:\s*(.+)$")
 API_ERROR_NAMES = {
     "rate_limit": "rate_limit",
     "upstream_rate_limit": "rate_limit",
@@ -81,10 +82,13 @@ def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
 
     for line in patch_text.splitlines():
         header = V4A_WRITE_HEADER.match(line)
+        move = V4A_MOVE_HEADER.match(line)
         if header:
             finish()
             path = header.group(1).strip()
             added = []
+        elif move:
+            edits.append({"file_path": move.group(1).strip(), "new_string": ""})
         elif line.startswith("***"):
             finish()
             path = None
@@ -319,7 +323,7 @@ class HookBridge:
 
     def _mcp_permission_verdict(
         self, tool_name: str, args: dict[str, Any], session_id: str,
-    ) -> dict[str, str] | None:
+    ) -> dict[str, Any] | None:
         groups = self.hooks.get("PermissionRequest", [])
         if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
             return None
@@ -341,6 +345,38 @@ class HookBridge:
             "action": "approve",
             "message": f"LifeOS requests review of MCP call {tool_name}",
             "rule_key": f"lifeos-mcp:{tool_name}:{fingerprint}",
+        }
+
+    def _file_permission_verdict(
+        self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str,
+    ) -> dict[str, Any] | None:
+        groups = self.hooks.get("PermissionRequest", [])
+        if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
+            return None
+        review_paths = []
+        for native_input in native_inputs:
+            payload = self._payload(
+                "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input,
+            )
+            outcomes = self._run("PermissionRequest", payload, native_name)
+            granted = False
+            for process, output in outcomes:
+                specific = (output or {}).get("hookSpecificOutput") or {}
+                decision = specific.get("decision") or {}
+                if decision.get("behavior") == "deny" or process.returncode == 2:
+                    message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the file change"
+                    return {"action": "block", "message": str(message)[:2000]}
+                if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+                    granted = True
+            if not granted:
+                review_paths.append(str(native_input.get("file_path", "unknown path")))
+        if not review_paths:
+            return None
+        fingerprint = hashlib.sha256(json.dumps(native_inputs, sort_keys=True).encode()).hexdigest()[:16]
+        return {
+            "action": "approve",
+            "message": f"LifeOS requests review of {native_name} for {', '.join(review_paths)}",
+            "rule_key": f"lifeos-file:{native_name}:{fingerprint}",
         }
 
     def pre_tool_call(
@@ -384,6 +420,15 @@ class HookBridge:
         if tool_name.startswith("mcp__"):
             verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id)
             if verdict:
+                if verdict["action"] == "approve" and updated_args is not None:
+                    verdict["args"] = updated_args
+                return verdict
+        if native_name in {"Write", "Edit"}:
+            permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args)]
+            verdict = self._file_permission_verdict(native_name, permission_inputs, session_id)
+            if verdict:
+                if verdict["action"] == "approve" and updated_args is not None:
+                    verdict["args"] = updated_args
                 return verdict
         return {"action": "modify", "args": updated_args} if updated_args is not None else None
 
