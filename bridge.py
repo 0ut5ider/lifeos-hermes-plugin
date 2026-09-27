@@ -314,6 +314,10 @@ class HookBridge:
             task_verdict = self._task_created_verdict(args, session_id)
             if task_verdict:
                 return task_verdict
+        if tool_name == "kanban_create" and "TaskCreated" in self.hooks:
+            task_verdict = self._kanban_task_verdict(args, session_id)
+            if task_verdict:
+                return task_verdict
         native_name = _native_tool_name(tool_name)
         if native_name is None:
             return None
@@ -360,6 +364,18 @@ class HookBridge:
                 return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
             known.update(str(item.get("id", "")) for item in new_items)
             self.task_counts[session_id] = count + len(new_items)
+        return None
+
+    def _kanban_task_verdict(self, args: dict[str, Any], session_id: str) -> dict[str, str] | None:
+        description = args.get("body") or args.get("title", "")
+        if not isinstance(description, str) or len(description.strip()) < 10:
+            length = len(description) if isinstance(description, str) else 0
+            return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
+        with self.session_lock:
+            count = self.task_counts.get(session_id, 0)
+            if count >= 50:
+                return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
+            self.task_counts[session_id] = count + 1
         return None
 
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:

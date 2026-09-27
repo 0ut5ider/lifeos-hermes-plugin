@@ -210,6 +210,15 @@ class HookBridgeTests(unittest.TestCase):
         over_limit = {"todos": [{"id": "task-51", "content": "Meaningful task 51", "status": "pending"}]}
         self.assertIn("limit of 50", bridge.pre_tool_call("todo_list", over_limit, session_id="s1")["message"])
 
+    def test_kanban_task_creation_uses_same_lifeos_limit(self):
+        bridge = self.bridge({"TaskCreated": [{"hooks": [{"type": "command", "command": "true"}]}]})
+        short = bridge.pre_tool_call("kanban_create", {"title": "short", "assignee": "worker"}, session_id="s1")
+        self.assertEqual(short["action"], "block")
+        valid = {"title": "Meaningful task title", "body": "Describe the work", "assignee": "worker"}
+        for _ in range(50):
+            self.assertIsNone(bridge.pre_tool_call("kanban_create", valid, session_id="s1"))
+        self.assertIn("limit of 50", bridge.pre_tool_call("kanban_create", valid, session_id="s1")["message"])
+
     def test_native_permission_grant_applies_to_command(self):
         command = self.make_hook(
             "permission.py",
