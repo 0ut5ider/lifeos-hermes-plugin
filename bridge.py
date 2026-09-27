@@ -269,6 +269,7 @@ class HookBridge:
         )
         self.hooks = hooks
         self.environment = environment
+        self.native_task_hook_supported = None
 
     def _config_sources(self) -> dict[Path, str]:
         sources = {
@@ -596,23 +597,54 @@ class HookBridge:
     def _reserved_task_count(self, session_id: str) -> int:
         return sum(count for (owner, _), (_, count) in self.pending_tasks.items() if owner == session_id)
 
+    def _supports_native_task_hook(self) -> bool:
+        if self.native_task_hook_supported is None:
+            payload = self._payload("TaskCreated", "probe", hermes_bridge_probe=True)
+            self.native_task_hook_supported = any(
+                process.returncode == 0 and (output or {}).get("hermes_bridge_task_governance") == 1
+                for process, output in self._run("TaskCreated", payload)
+            )
+        return self.native_task_hook_supported
+
+    def _native_task_verdict(
+        self, session_id: str, task_id: str, subject: str, description: str, count: int,
+    ) -> dict[str, str] | None:
+        payload = self._payload(
+            "TaskCreated", session_id, task_id=task_id, task_subject=subject,
+            task_description=description, hermes_task_count=count,
+        )
+        for process, output in self._run("TaskCreated", payload):
+            if process.returncode == 2 or (output or {}).get("decision") == "block":
+                message = (output or {}).get("reason") or process.stderr.strip() or "LifeOS blocked task creation"
+                return {"action": "block", "message": str(message)[:2000]}
+        return None
+
     def _task_created_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
         todos = args.get("todos")
         if not isinstance(todos, list):
             return None
+        native = self._supports_native_task_hook()
         with self.session_lock:
             key = (session_id, call_id)
             self.pending_tasks.pop(key, None)
             known = self.task_ids.setdefault(session_id, set())
             new_items = [item for item in todos if isinstance(item, dict) and str(item.get("id", "")) not in known]
-            for item in new_items:
+            count = self.task_counts.get(session_id, 0)
+            reserved = self._reserved_task_count(session_id)
+            for index, item in enumerate(new_items):
                 description = item.get("content", "")
+                if native:
+                    verdict = self._native_task_verdict(
+                        session_id, str(item.get("id", "")), str(description),
+                        description if isinstance(description, str) else "", count + reserved + index,
+                    )
+                    if verdict:
+                        return verdict
                 if not isinstance(description, str) or len(description.strip()) < 10:
                     length = len(description) if isinstance(description, str) else 0
                     return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
-            count = self.task_counts.get(session_id, 0)
             new_ids = {str(item.get("id", "")) for item in new_items}
-            if count + self._reserved_task_count(session_id) + len(new_ids) > 50:
+            if count + reserved + len(new_ids) > 50:
                 return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
             if new_ids:
                 self.pending_tasks[key] = (new_ids, len(new_ids))
@@ -620,14 +652,23 @@ class HookBridge:
 
     def _kanban_task_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
         description = args.get("body") or args.get("title", "")
-        if not isinstance(description, str) or len(description.strip()) < 10:
-            length = len(description) if isinstance(description, str) else 0
-            return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
+        native = self._supports_native_task_hook()
         with self.session_lock:
             key = (session_id, call_id)
             self.pending_tasks.pop(key, None)
             count = self.task_counts.get(session_id, 0)
-            if count + self._reserved_task_count(session_id) >= 50:
+            reserved = self._reserved_task_count(session_id)
+            if native:
+                verdict = self._native_task_verdict(
+                    session_id, call_id, str(args.get("title", "")),
+                    description if isinstance(description, str) else "", count + reserved,
+                )
+                if verdict:
+                    return verdict
+            if not isinstance(description, str) or len(description.strip()) < 10:
+                length = len(description) if isinstance(description, str) else 0
+                return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
+            if count + reserved >= 50:
                 return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
             self.pending_tasks[key] = (set(), 1)
         return None
