@@ -611,18 +611,20 @@ class HookBridge:
         except (json.JSONDecodeError, TypeError):
             response = result
         use_id = tool_call_id or uuid4().hex
-        self._append_transcript(session_id, "assistant", [{
-            "type": "tool_use", "id": use_id, "name": native_name, "input": _tool_input(native_name, args),
-        }])
-        self._append_transcript(
-            session_id, "user", [{
-                "type": "tool_result", "tool_use_id": use_id,
-                "content": result if isinstance(result, str) else json.dumps(result),
-                "is_error": status in {"error", "blocked"},
-            }],
-        )
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = _v4a_edit_inputs(args["patch"]) if v4a and event == "PostToolUse" else [_tool_input(native_name, args)]
+        use_ids = [f"{use_id}:{index}" for index in range(len(native_inputs))] if v4a and event == "PostToolUse" else [use_id]
+        self._append_transcript(session_id, "assistant", [
+            {"type": "tool_use", "id": item_id, "name": native_name, "input": native_input}
+            for item_id, native_input in zip(use_ids, native_inputs)
+        ])
+        self._append_transcript(
+            session_id, "user", [{
+                "type": "tool_result", "tool_use_id": item_id,
+                "content": result if isinstance(result, str) else json.dumps(result),
+                "is_error": status in {"error", "blocked"},
+            } for item_id in use_ids],
+        )
         context = []
         for native_input in native_inputs:
             payload = self._payload(
