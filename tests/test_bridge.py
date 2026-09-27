@@ -48,6 +48,41 @@ class HookBridgeTests(unittest.TestCase):
         result = bridge.pre_tool_call("terminal", {"command": "echo hi"}, session_id="s1")
         self.assertEqual(result, {"action": "block", "message": "blocked by test"})
 
+    def test_blocked_pre_tool_hook_still_runs_later_observer(self):
+        marker = self.root / "observer-ran"
+        deny = self.make_hook("deny.py", "import sys\nprint('blocked',file=sys.stderr)\nsys.exit(2)\n")
+        observe = self.make_hook("observe.py", f"from pathlib import Path\nPath({str(marker)!r}).write_text('ran')\n")
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": deny}, {"type": "command", "command": observe},
+        ]}]})
+        result = bridge.pre_tool_call("terminal", {"command": "echo test"}, session_id="s1")
+        self.assertEqual(result["action"], "block")
+        self.assertEqual(marker.read_text(), "ran")
+
+    def test_matching_hooks_can_progress_concurrently(self):
+        first_marker = self.root / "first-ready"
+        second_marker = self.root / "second-ready"
+        completed = self.root / "first-complete"
+        first = self.make_hook(
+            "first.py",
+            "import time\nfrom pathlib import Path\n"
+            f"Path({str(first_marker)!r}).touch()\n"
+            f"other=Path({str(second_marker)!r})\n"
+            "for _ in range(100):\n"
+            " if other.exists(): break\n"
+            " time.sleep(0.01)\n"
+            "else: raise RuntimeError('second hook did not run concurrently')\n"
+            f"Path({str(completed)!r}).touch()\n",
+        )
+        second = self.make_hook("second.py", f"from pathlib import Path\nPath({str(second_marker)!r}).touch()\n")
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [
+            {"type": "command", "command": first}, {"type": "command", "command": second},
+        ]}]})
+        bridge.pre_llm_call("hello", session_id="s1")
+        self.assertTrue(first_marker.exists())
+        self.assertTrue(second_marker.exists())
+        self.assertTrue(completed.exists())
+
     def test_pre_tool_updated_input_maps_back_to_hermes(self):
         command = self.make_hook(
             "modify.py",

@@ -11,6 +11,7 @@ import re
 import subprocess
 import threading
 import time
+from concurrent.futures import ThreadPoolExecutor
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import ProxyHandler, Request, build_opener
@@ -203,18 +204,14 @@ class HookBridge:
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
 
     def _run(self, event: str, payload: dict[str, Any], tool_name: str = "") -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
-        outcomes = []
+        sync_hooks = []
         for group in self.hooks.get(event, []):
             matcher = group.get("matcher", "")
             if matcher and not re.fullmatch(matcher, tool_name):
                 continue
             for hook in group.get("hooks", []):
                 if hook.get("type") == "http":
-                    outcome = self._run_http(hook, payload)
-                    if outcome is not None:
-                        outcomes.append((outcome, _decode_output(outcome.stdout)))
-                        if event == "PreToolUse" and ((outcomes[-1][1] or {}).get("hookSpecificOutput") or {}).get("permissionDecision") == "deny":
-                            return outcomes
+                    sync_hooks.append((self._run_http, (hook, payload)))
                     continue
                 if hook.get("type") != "command":
                     LOG.warning("LifeOS %s hook type %r is not executable by this bridge", event, hook.get("type"))
@@ -226,26 +223,37 @@ class HookBridge:
                 if hook.get("async"):
                     self._run_async(command, payload, timeout)
                     continue
+                sync_hooks.append((self._run_command, (event, command, payload, timeout)))
+        outcomes = []
+        if not sync_hooks:
+            return outcomes
+        with ThreadPoolExecutor(max_workers=min(len(sync_hooks), 32)) as executor:
+            futures = [executor.submit(callback, *arguments) for callback, arguments in sync_hooks]
+            for future in futures:
                 try:
-                    process = subprocess.run(
-                        ["/bin/bash", "-c", command],
-                        input=json.dumps(payload),
-                        text=True,
-                        capture_output=True,
-                        timeout=timeout,
-                        cwd=payload.get("cwd") or self.root,
-                        env=self.environment,
-                        check=False,
-                    )
-                except (OSError, subprocess.TimeoutExpired) as error:
-                    LOG.error("LifeOS %s hook failed to execute: %s", event, error)
+                    process = future.result()
+                except Exception as error:
+                    LOG.error("LifeOS %s hook failed: %s", event, error)
                     continue
-                if process.returncode not in (0, 2):
-                    LOG.warning("LifeOS %s hook exited %s: %s", event, process.returncode, process.stderr[:400])
-                outcomes.append((process, _decode_output(process.stdout)))
-                if event in {"PreToolUse", "Stop"} and (process.returncode == 2 or (outcomes[-1][1] or {}).get("decision") == "block"):
-                    return outcomes
+                if process is not None:
+                    outcomes.append((process, _decode_output(process.stdout)))
         return outcomes
+
+    def _run_command(
+        self, event: str, command: str, payload: dict[str, Any], timeout: int,
+    ) -> subprocess.CompletedProcess[str] | None:
+        try:
+            process = subprocess.run(
+                ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
+                capture_output=True, timeout=timeout, cwd=payload.get("cwd") or self.root,
+                env=self.environment, check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as error:
+            LOG.error("LifeOS %s hook failed to execute: %s", event, error)
+            return None
+        if process.returncode not in (0, 2):
+            LOG.warning("LifeOS %s hook exited %s: %s", event, process.returncode, process.stderr[:400])
+        return process
 
     @staticmethod
     def _run_http(hook: dict[str, Any], payload: dict[str, Any]) -> subprocess.CompletedProcess[str] | None:

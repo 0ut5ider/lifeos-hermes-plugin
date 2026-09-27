@@ -28,11 +28,12 @@ The native bridge executes 70 complete registrations at matching event types, wi
 - A temporary Stop hook blocked the first answer. Hermes continued and produced a second answer. The hook saw `stop_hook_active: false` followed by `true`.
 - Native LifeOS Format, Verification, and Writing gates wrote observability records from a Hermes turn after the bridge supplied a transcript.
 - A temporary PostToolUse hook appended its marker after the LifeOS sidecar transformed a tool result.
-- Twenty-four bridge tests exercise real command processes, a local HTTP server, context, blocking, task governance, argument changes, transcript creation, permission grants, failure logging, config changes, multi-file patch guards, clarification hooks, and session boundary registration. Eighteen focused Hermes tests passed after the first two generic core changes.
+- Twenty-six bridge tests exercise real command processes, a local HTTP server, context, blocking, task governance, argument changes, transcript creation, permission grants, failure logging, config changes, multi-file patch guards, clarification hooks, concurrent hook dispatch, and session boundary registration. Eighteen focused Hermes tests passed after the first two generic core changes.
 - The installed LifeOS safety hook granted a synthetic `/tmp` removal in the test account. It abstained on a `sudo systemctl restart`, and Hermes kept its hardline block on `rm -rf /`. Fifty-five focused Hermes approval tests passed with the new event.
 - A synthetic terminal API error reached the installed native LifeOS StopFailure logger once. The test account contains its JSONL record.
 - A synthetic settings change reached the installed native LifeOS ConfigChange logger. The test account contains its JSONL record.
 - The installed LifeOS MCP permission hook allowed an ordinary synthetic message and requested review for a synthetic token-shaped message. Hermes blocked the latter in an unattended session.
+- Matching synchronous hook handlers now run concurrently. A blocking PreToolUse handler does not suppress another matching observer. A direct run of the installed Stop hooks completed with this dispatch path.
 
 ## Hermes core dependency
 
