@@ -9,6 +9,7 @@ import os
 import re
 import subprocess
 import threading
+import time
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import ProxyHandler, Request, build_opener
@@ -85,19 +86,8 @@ class HookBridge:
     def __init__(self, settings_path: Path, root: Path):
         self.settings_path = Path(settings_path)
         self.root = Path(root)
-        settings = json.loads(self.settings_path.read_text())
-        self.hooks = settings.get("hooks", {})
-        if not isinstance(self.hooks, dict):
-            raise ValueError("LifeOS hooks setting must be an object")
-        self.environment = dict(os.environ)
-        for key, value in settings.get("env", {}).items():
-            if isinstance(value, str):
-                self.environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
-        self.environment.setdefault("LIFEOS_DIR", str(self.root / "LIFEOS"))
-        self.environment["PATH"] = (
-            f"{Path(__file__).parent / 'bin'}:{Path.home() / '.bun/bin'}:"
-            f"{Path.home() / '.local/bin'}:{self.environment.get('PATH', '')}"
-        )
+        self.base_environment = dict(os.environ)
+        self._apply_settings(json.loads(self.settings_path.read_text()))
         self.started_sessions: set[str] = set()
         self.session_lock = threading.Lock()
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
@@ -106,6 +96,67 @@ class HookBridge:
         self.api_errors: dict[tuple[str, str], tuple[str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+        self.config_files = self._config_files()
+        self.last_config_poll = 0.0
+
+    def _apply_settings(self, settings: dict[str, Any]) -> None:
+        hooks = settings.get("hooks", {})
+        if not isinstance(hooks, dict):
+            raise ValueError("LifeOS hooks setting must be an object")
+        environment = dict(self.base_environment)
+        for key, value in settings.get("env", {}).items():
+            if isinstance(value, str):
+                environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+        environment.setdefault("LIFEOS_DIR", str(self.root / "LIFEOS"))
+        environment["PATH"] = (
+            f"{Path(__file__).parent / 'bin'}:{Path.home() / '.bun/bin'}:"
+            f"{Path.home() / '.local/bin'}:{environment.get('PATH', '')}"
+        )
+        self.hooks = hooks
+        self.environment = environment
+
+    def _config_files(self) -> dict[Path, tuple[int, int]]:
+        paths = [self.settings_path]
+        skills = self.settings_path.parent / "skills"
+        if skills.is_dir():
+            paths.extend(path for path in skills.rglob("*") if path.is_file())
+        result = {}
+        for path in paths:
+            try:
+                stat = path.stat()
+                result[path] = (stat.st_mtime_ns, stat.st_size)
+            except OSError:
+                continue
+        return result
+
+    def poll_config_changes(self, force: bool = False) -> None:
+        now = time.monotonic()
+        with self.session_lock:
+            if not force and now - self.last_config_poll < 1.0:
+                return
+            self.last_config_poll = now
+        current = self._config_files()
+        with self.session_lock:
+            changed = set(current) ^ set(self.config_files)
+            changed.update(path for path in current.keys() & self.config_files.keys() if current[path] != self.config_files[path])
+            self.config_files = current
+            sessions = tuple(self.started_sessions)
+        for path in sorted(changed):
+            source = "user_settings" if path == self.settings_path else "skills"
+            blocked = False
+            for session_id in sessions:
+                outcomes = self._run("ConfigChange", self._payload(
+                    "ConfigChange", session_id, source=source, file_path=str(path),
+                ), source)
+                blocked = blocked or any(
+                    process.returncode == 2 or (output or {}).get("decision") == "block"
+                    for process, output in outcomes
+                )
+            if path == self.settings_path and not blocked:
+                try:
+                    self._apply_settings(json.loads(self.settings_path.read_text()))
+                except (OSError, ValueError, TypeError) as error:
+                    LOG.warning("LifeOS settings change cannot be loaded: %s", error)
 
     def transcript_path(self, session_id: str) -> Path:
         name = re.sub(r"[^A-Za-z0-9._-]", "_", session_id or "default")
@@ -288,6 +339,7 @@ class HookBridge:
         with self.session_lock:
             first_turn = session_id not in self.started_sessions
             self.started_sessions.add(session_id)
+        self.poll_config_changes()
         if first_turn:
             start_payload = self._payload("SessionStart", session_id, source="startup")
             context.extend(self._context(self._run("SessionStart", start_payload)))
@@ -343,6 +395,7 @@ class HookBridge:
         self, tool_name: str, args: dict[str, Any], result: str,
         original_result: str, **kwargs: Any,
     ) -> str | None:
+        self.poll_config_changes()
         context = self.post_tool_call(tool_name, args, original_result, **kwargs)
         key = (kwargs.get("session_id", ""), kwargs.get("tool_call_id") or tool_name)
         with self.session_lock:

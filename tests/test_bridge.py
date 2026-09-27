@@ -283,6 +283,53 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(payload["error"], "rate_limit")
         self.assertEqual(payload["error_details"], "429 synthetic limit")
 
+    def test_config_change_runs_audit_hook_after_settings_edit(self):
+        marker = self.root / "config-change.json"
+        command = self.make_hook(
+            "config_change.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
+        )
+        bridge = self.bridge({"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call("first", session_id="s1")
+        bridge.poll_config_changes(force=True)
+        self.assertFalse(marker.exists())
+        settings = json.loads(bridge.settings_path.read_text())
+        settings["env"] = {"SYNTHETIC_CONFIG_VALUE": "changed"}
+        bridge.settings_path.write_text(json.dumps(settings))
+        bridge.poll_config_changes(force=True)
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["hook_event_name"], "ConfigChange")
+        self.assertEqual(payload["source"], "user_settings")
+        self.assertEqual(payload["file_path"], str(bridge.settings_path))
+
+    def test_settings_change_updates_hook_registrations(self):
+        first = self.make_hook("first_tool.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'echo first'}}}))\n")
+        second = self.make_hook("second_tool.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'echo second'}}}))\n")
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": first}]}]})
+        self.assertEqual(bridge.pre_tool_call("terminal", {"command": "echo input"}, session_id="s1")["args"]["command"], "echo first")
+        bridge.settings_path.write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": second}]}],
+        }}))
+        bridge.poll_config_changes(force=True)
+        self.assertEqual(bridge.pre_tool_call("terminal", {"command": "echo input"}, session_id="s1")["args"]["command"], "echo second")
+
+    def test_config_change_block_keeps_active_hook_settings(self):
+        gate = self.make_hook("config_block.py", "import json\nprint(json.dumps({'decision':'block'}))\n")
+        first = self.make_hook("first.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'echo first'}}}))\n")
+        second = self.make_hook("second.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'echo second'}}}))\n")
+        settings_hooks = {
+            "ConfigChange": [{"hooks": [{"type": "command", "command": gate}]}],
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": first}]}],
+        }
+        bridge = self.bridge(settings_hooks)
+        bridge.pre_llm_call("first", session_id="s1")
+        settings_hooks["PreToolUse"][0]["hooks"][0]["command"] = second
+        bridge.settings_path.write_text(json.dumps({"hooks": settings_hooks}))
+        bridge.poll_config_changes(force=True)
+        self.assertEqual(bridge.pre_tool_call("terminal", {"command": "echo input"}, session_id="s1")["args"]["command"], "echo first")
+
 
 if __name__ == "__main__":
     unittest.main()
