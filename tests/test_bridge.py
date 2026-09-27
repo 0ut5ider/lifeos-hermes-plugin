@@ -245,6 +245,61 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual({row["source"] for row in rows}, {"project_settings", "local_settings"})
 
+    def test_config_change_follows_later_project(self):
+        first = self.root / "first-project"
+        second = self.root / "second-project"
+        first.mkdir()
+        (second / ".claude").mkdir(parents=True)
+        settings = second / ".claude" / "settings.local.json"
+        settings.write_text("{}")
+        marker = self.root / "later-project.jsonl"
+        command = self.make_hook(
+            "record-later-project.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        previous = Path.cwd()
+        try:
+            os.chdir(first)
+            bridge = self.bridge({"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]})
+            bridge.pre_llm_call("first", session_id="s1")
+            os.chdir(second)
+            bridge.pre_llm_call("second", session_id="s2")
+            self.assertFalse(marker.exists())
+            settings.write_text('{"changed":true}')
+            bridge.poll_config_changes(force=True)
+        finally:
+            os.chdir(previous)
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual({row["file_path"] for row in rows}, {str(settings)})
+
+    def test_config_change_reaches_only_project_session(self):
+        first = self.root / "first-project"
+        second = self.root / "second-project"
+        (first / ".claude").mkdir(parents=True)
+        (second / ".claude").mkdir(parents=True)
+        marker = self.root / "project-sessions.jsonl"
+        command = self.make_hook(
+            "record-project-session.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        previous = Path.cwd()
+        try:
+            os.chdir(first)
+            bridge = self.bridge({"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]})
+            bridge.pre_llm_call("first", session_id="s1")
+            os.chdir(second)
+            bridge.pre_llm_call("second", session_id="s2")
+            (first / ".claude" / "settings.json").write_text("{}")
+            bridge.poll_config_changes(force=True)
+        finally:
+            os.chdir(previous)
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([row["session_id"] for row in rows], ["s1"])
+
     def test_config_change_reports_managed_policy_files(self):
         policy = self.root / "managed-policy"
         dropins = policy / "managed-settings.d"
@@ -445,6 +500,35 @@ class HookBridgeTests(unittest.TestCase):
             bridge.augment_tool_result("delegate_task", args, "done", original_result="done", session_id="s1", tool_call_id="t1"),
             "Watch the child task",
         )
+
+    def test_agent_hooks_receive_each_delegated_task(self):
+        marker = self.root / "agent-events.jsonl"
+        command = self.make_hook(
+            "record-agent.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        hooks = {
+            event: [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]
+            for event in ("PreToolUse", "PostToolUse")
+        }
+        bridge = self.bridge(hooks)
+        args = {"tasks": [
+            {"goal": "Inspect the first file", "context": "Read only", "model": "local-small"},
+            {"goal": "Inspect the second file", "context": "Read only"},
+        ]}
+        bridge.pre_tool_call("delegate_task", args, session_id="s1")
+        bridge.post_tool_call("delegate_task", args, "completed", session_id="s1")
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([row["tool_input"]["prompt"] for row in rows], [
+            "Inspect the first file\n\nRead only", "Inspect the second file\n\nRead only",
+            "Inspect the first file\n\nRead only", "Inspect the second file\n\nRead only",
+        ])
+        self.assertEqual([row["tool_input"]["description"] for row in rows[:2]], [
+            "Inspect the first file", "Inspect the second file",
+        ])
+        self.assertEqual(rows[0]["tool_input"]["model"], "local-small")
 
     def test_mcp_name_matches_native_safety_hook(self):
         command = self.make_hook(

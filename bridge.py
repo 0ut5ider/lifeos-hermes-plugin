@@ -106,6 +106,35 @@ def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
     return edits
 
 
+def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
+    if args.get("action"):
+        return []
+    tasks = args.get("tasks")
+    if not isinstance(tasks, list) or not tasks:
+        tasks = [args]
+    inputs = []
+    descriptions = set()
+    for index, task in enumerate(tasks):
+        if not isinstance(task, dict) or not isinstance(task.get("goal"), str) or not task["goal"].strip():
+            continue
+        goal = task["goal"].strip()
+        context = task.get("context")
+        description = goal[:80]
+        if description in descriptions:
+            description = f"{goal[:72]} ({index + 1})"
+        descriptions.add(description)
+        native_input = {
+            "subagent_type": "general-purpose",
+            "description": description,
+            "prompt": goal + (f"\n\n{context}" if isinstance(context, str) and context.strip() else ""),
+        }
+        model = task.get("model") or args.get("model")
+        if isinstance(model, str) and model.strip():
+            native_input["model"] = model
+        inputs.append(native_input)
+    return inputs
+
+
 def _hermes_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
     translated = dict(args)
     if name in {"Write", "Edit", "Read"} and "file_path" in translated:
@@ -170,7 +199,8 @@ class HookBridge:
         self.api_errors: dict[tuple[str, str], tuple[str, str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
-        self.project_dir = Path.cwd()
+        self.project_dirs = (Path.cwd(),)
+        self.session_projects: dict[str, set[Path]] = {}
         self.config_files = self._config_files()
         self.last_config_poll = 0.0
         self.watcher_stop = threading.Event()
@@ -219,20 +249,36 @@ class HookBridge:
         self.environment = environment
 
     def _config_sources(self) -> dict[Path, str]:
-        project_settings = self.project_dir / ".claude"
         sources = {
             self.settings_path: "user_settings",
-            project_settings / "settings.json": "project_settings",
-            project_settings / "settings.local.json": "local_settings",
             POLICY_DIRECTORY / "managed-settings.json": "policy_settings",
         }
+        for project_dir in self.project_dirs:
+            project_settings = project_dir / ".claude"
+            sources[project_settings / "settings.json"] = "project_settings"
+            sources[project_settings / "settings.local.json"] = "local_settings"
+            skills = project_settings / "skills"
+            if skills.is_dir():
+                sources.update((path, "skills") for path in skills.rglob("*") if path.is_file())
         dropins = POLICY_DIRECTORY / "managed-settings.d"
         if dropins.is_dir():
             sources.update((path, "policy_settings") for path in dropins.glob("*.json") if path.is_file())
-        for skills in (self.settings_path.parent / "skills", project_settings / "skills"):
-            if skills.is_dir():
-                sources.update((path, "skills") for path in skills.rglob("*") if path.is_file())
+        user_skills = self.settings_path.parent / "skills"
+        if user_skills.is_dir():
+            sources.update((path, "skills") for path in user_skills.rglob("*") if path.is_file())
         return sources
+
+    def _remember_project(self, cwd: str, session_id: str) -> None:
+        project_dir = Path(cwd).resolve()
+        with self.session_lock:
+            projects = self.session_projects.setdefault(session_id, set())
+            if project_dir in projects:
+                return
+            projects.add(project_dir)
+            if project_dir not in self.project_dirs:
+                self.project_dirs += (project_dir,)
+            for path, fingerprint in self._config_files().items():
+                self.config_files.setdefault(path, fingerprint)
 
     def _config_files(self) -> dict[Path, tuple[int, int]]:
         result = {}
@@ -250,16 +296,21 @@ class HookBridge:
             if not force and now - self.last_config_poll < 1.0:
                 return
             self.last_config_poll = now
-        current = self._config_files()
-        with self.session_lock:
+            current = self._config_files()
             changed = set(current) ^ set(self.config_files)
             changed.update(path for path in current.keys() & self.config_files.keys() if current[path] != self.config_files[path])
             self.config_files = current
             sessions = tuple(self.started_sessions)
+            session_projects = {key: set(value) for key, value in self.session_projects.items()}
         for path in sorted(changed):
             source = self._config_sources().get(path, "skills")
             blocked = False
             for session_id in sessions:
+                if source in {"project_settings", "local_settings"} or (
+                    source == "skills" and not path.is_relative_to(self.settings_path.parent / "skills")
+                ):
+                    if not any(path.is_relative_to(project / ".claude") for project in session_projects.get(session_id, ())):
+                        continue
                 outcomes = self._run("ConfigChange", self._payload(
                     "ConfigChange", session_id, source=source, file_path=str(path), config_path=str(path),
                 ), source)
@@ -475,8 +526,12 @@ class HookBridge:
         if native_name is None:
             return None
         cwd = _tool_cwd(tool_name, args, task_id)
+        self._remember_project(cwd, session_id)
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
-        native_inputs = _v4a_edit_inputs(args["patch"]) if v4a else [_tool_input(native_name, args)]
+        native_inputs = (
+            _v4a_edit_inputs(args["patch"]) if v4a else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args)]
+        )
         updated_args = None
         extra_context = []
         for native_input in native_inputs:
@@ -571,6 +626,7 @@ class HookBridge:
 
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
         prompt = _prompt_text(user_message)
+        self._remember_project(_scope_cwd(), session_id)
         context = []
         with self.session_lock:
             first_turn = session_id not in self.started_sessions
@@ -605,6 +661,8 @@ class HookBridge:
         native_name = _native_tool_name(tool_name)
         if native_name is None:
             return
+        cwd = _tool_cwd(tool_name, args, task_id)
+        self._remember_project(cwd, session_id)
         event = "PostToolUseFailure" if status in {"error", "blocked"} else "PostToolUse"
         try:
             response = json.loads(result)
@@ -612,8 +670,13 @@ class HookBridge:
             response = result
         use_id = tool_call_id or uuid4().hex
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
-        native_inputs = _v4a_edit_inputs(args["patch"]) if v4a and event == "PostToolUse" else [_tool_input(native_name, args)]
-        use_ids = [f"{use_id}:{index}" for index in range(len(native_inputs))] if v4a and event == "PostToolUse" else [use_id]
+        native_inputs = (
+            _v4a_edit_inputs(args["patch"]) if v4a and event == "PostToolUse" else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args)]
+        )
+        if not native_inputs:
+            return None
+        use_ids = [f"{use_id}:{index}" for index in range(len(native_inputs))] if len(native_inputs) > 1 else [use_id]
         self._append_transcript(session_id, "assistant", [
             {"type": "tool_use", "id": item_id, "name": native_name, "input": native_input}
             for item_id, native_input in zip(use_ids, native_inputs)
@@ -630,7 +693,7 @@ class HookBridge:
             payload = self._payload(
                 event, session_id, tool_name=native_name,
                 tool_input=native_input,
-                cwd=_tool_cwd(tool_name, args, task_id),
+                cwd=cwd,
                 **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": response}),
             )
             context.extend(self._context(self._run(event, payload, native_name)))
@@ -652,6 +715,11 @@ class HookBridge:
         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
         with self.session_lock:
             self.started_sessions.discard(session_id)
+            self.session_projects.pop(session_id, None)
+            active_projects = {project for projects in self.session_projects.values() for project in projects}
+            self.project_dirs = tuple(sorted(active_projects)) or (Path.cwd(),)
+            watched = self._config_sources()
+            self.config_files = {path: fingerprint for path, fingerprint in self.config_files.items() if path in watched}
             self.task_ids.pop(session_id, None)
             self.task_counts.pop(session_id, None)
             for key in tuple(self.pending_tasks):
