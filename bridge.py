@@ -142,6 +142,19 @@ def _tool_cwd(tool_name: str, args: dict[str, Any], task_id: str) -> str:
     return _authoritative_workspace_root(task_id or "default") or _scope_cwd()
 
 
+def _prompt_text(message: Any) -> str:
+    if isinstance(message, str):
+        return message
+    if isinstance(message, list):
+        return "\n".join(part for item in message if (part := _prompt_text(item)))
+    if isinstance(message, dict):
+        if message.get("type") == "image_url":
+            return ""
+        content = message.get("text", message.get("content", ""))
+        return _prompt_text(content)
+    return ""
+
+
 class HookBridge:
     def __init__(self, settings_path: Path, root: Path):
         self.settings_path = Path(settings_path)
@@ -557,8 +570,7 @@ class HookBridge:
             self.task_counts[session_id] = self.task_counts.get(session_id, 0) + (len(new_ids) if ids else count)
 
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
-        if not isinstance(user_message, str):
-            return None
+        prompt = _prompt_text(user_message)
         context = []
         with self.session_lock:
             first_turn = session_id not in self.started_sessions
@@ -569,7 +581,7 @@ class HookBridge:
             start_payload = self._payload("SessionStart", session_id, source="startup")
             context.extend(self._context(self._run("SessionStart", start_payload)))
         self._append_transcript(session_id, "user", user_message)
-        payload = self._payload("UserPromptSubmit", session_id, prompt=user_message)
+        payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
         context.extend(self._context(self._run("UserPromptSubmit", payload)))
         return {"context": "\n\n".join(context)} if context else None
 

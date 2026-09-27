@@ -324,6 +324,27 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in transcript.read_text().splitlines()]
         self.assertEqual([row["message"]["content"] for row in rows], ["first", "second"])
 
+    def test_multimodal_first_prompt_runs_start_and_prompt_hooks(self):
+        marker = self.root / "multimodal-events.jsonl"
+        command = self.make_hook(
+            "record-prompt.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        bridge = self.bridge({
+            "SessionStart": [{"hooks": [{"type": "command", "command": command}]}],
+            "UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}],
+        })
+        message = [
+            {"type": "text", "text": "Describe this photo"},
+            {"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}},
+        ]
+        bridge.pre_llm_call(message, session_id="s1")
+        events = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([item["hook_event_name"] for item in events], ["SessionStart", "UserPromptSubmit"])
+        self.assertEqual(events[1]["prompt"], "Describe this photo")
+
     def test_post_tool_failure_runs_failure_hook(self):
         marker = self.root / "failure.json"
         command = self.make_hook(
