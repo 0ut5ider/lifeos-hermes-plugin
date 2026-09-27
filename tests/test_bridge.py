@@ -33,7 +33,9 @@ class HookBridgeTests(unittest.TestCase):
     def bridge(self, hooks):
         settings = self.root / "settings.json"
         settings.write_text(json.dumps({"hooks": hooks}))
-        return HookBridge(settings, self.root)
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        return bridge
 
     def test_pre_tool_block_uses_claude_payload_and_exit_code(self):
         command = self.make_hook(
@@ -263,6 +265,25 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual(len(rows), 2)
         self.assertEqual({row["source"] for row in rows}, {"policy_settings"})
+
+    def test_config_change_runs_while_session_is_idle(self):
+        marker = self.root / "idle-config-change"
+        command = self.make_hook(
+            "record-idle-config.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(data['source'])\n",
+        )
+        bridge = self.bridge({"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call("start", session_id="s1")
+        settings = json.loads(bridge.settings_path.read_text())
+        settings["env"] = {"SYNTHETIC_IDLE_CHANGE": "yes"}
+        bridge.settings_path.write_text(json.dumps(settings))
+        for _ in range(60):
+            if marker.exists():
+                break
+            time.sleep(0.05)
+        self.assertEqual(marker.read_text(), "user_settings")
 
     def test_prompt_context_preserves_hook_order(self):
         first = self.make_hook("first.py", "print('first context')\n")
@@ -584,6 +605,7 @@ class HookBridgeTests(unittest.TestCase):
         bridge.poll_config_changes(force=True)
         payload = json.loads(marker.read_text())
         self.assertEqual(payload["hook_event_name"], "ConfigChange")
+        self.assertEqual(payload["config_path"], payload["file_path"])
         self.assertEqual(payload["source"], "user_settings")
         self.assertEqual(payload["file_path"], str(bridge.settings_path))
 

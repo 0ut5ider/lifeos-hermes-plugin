@@ -14,6 +14,7 @@ import tempfile
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from contextvars import copy_context
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import ProxyHandler, Request, build_opener
@@ -159,6 +160,34 @@ class HookBridge:
         self.project_dir = Path.cwd()
         self.config_files = self._config_files()
         self.last_config_poll = 0.0
+        self.watcher_stop = threading.Event()
+        self.watcher: threading.Thread | None = None
+
+    def _start_config_watcher(self) -> None:
+        if "ConfigChange" not in self.hooks:
+            return
+        with self.session_lock:
+            if self.watcher is not None and self.watcher.is_alive() and not self.watcher_stop.is_set():
+                return
+            self.watcher_stop = threading.Event()
+            context = copy_context()
+            self.watcher = threading.Thread(
+                target=context.run, args=(self._watch_config_changes, self.watcher_stop), daemon=True,
+                name="lifeos-config-change",
+            )
+            self.watcher.start()
+
+    def _watch_config_changes(self, stop: threading.Event) -> None:
+        while not stop.wait(1.0):
+            try:
+                self.poll_config_changes(force=True)
+            except Exception as error:
+                LOG.error("LifeOS config watcher failed: %s", error)
+
+    def close(self) -> None:
+        self.watcher_stop.set()
+        if self.watcher is not None and self.watcher is not threading.current_thread():
+            self.watcher.join(timeout=2)
 
     def _apply_settings(self, settings: dict[str, Any]) -> None:
         hooks = settings.get("hooks", {})
@@ -219,7 +248,7 @@ class HookBridge:
             blocked = False
             for session_id in sessions:
                 outcomes = self._run("ConfigChange", self._payload(
-                    "ConfigChange", session_id, source=source, file_path=str(path),
+                    "ConfigChange", session_id, source=source, file_path=str(path), config_path=str(path),
                 ), source)
                 blocked = blocked or any(
                     process.returncode == 2 or (output or {}).get("decision") == "block"
@@ -535,6 +564,7 @@ class HookBridge:
             first_turn = session_id not in self.started_sessions
             self.started_sessions.add(session_id)
         self.poll_config_changes()
+        self._start_config_watcher()
         if first_turn:
             start_payload = self._payload("SessionStart", session_id, source="startup")
             context.extend(self._context(self._run("SessionStart", start_payload)))
@@ -609,6 +639,8 @@ class HookBridge:
             for key in tuple(self.pending_tasks):
                 if key[0] == session_id:
                     self.pending_tasks.pop(key, None)
+            if not self.started_sessions:
+                self.watcher_stop.set()
 
     def api_request_error(
         self, session_id: str = "", turn_id: str = "", reason: str = "", error: Any = None, **_: Any,
