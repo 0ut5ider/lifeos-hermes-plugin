@@ -83,9 +83,10 @@ class HookBridgeTests(unittest.TestCase):
     def test_session_context_is_injected_on_first_prompt(self):
         command = self.make_hook(
             "start.py",
-            "import json,sys\n"
+            "import json,sys\nfrom pathlib import Path\n"
             "data=json.load(sys.stdin)\n"
             "assert data['hook_event_name']=='SessionStart'\n"
+            "assert not Path(data['transcript_path']).exists()\n"
             "print('<session>loaded</session>')\n",
         )
         bridge = self.bridge({"SessionStart": [{"hooks": [{"type": "command", "command": command}]}]})
@@ -104,11 +105,15 @@ class HookBridgeTests(unittest.TestCase):
             f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
         )
         bridge = self.bridge({"PostToolUseFailure": [{"hooks": [{"type": "command", "command": command}]}]})
-        bridge.post_tool_call("terminal", {"command": "false"}, '{"error":"failed"}', session_id="s1", status="error", error_message="failed")
+        bridge.post_tool_call("terminal", {"command": "false"}, '{"error":"failed"}', session_id="s1", tool_call_id="tc1", status="error", error_message="failed")
         payload = json.loads(marker.read_text())
         self.assertEqual(payload["hook_event_name"], "PostToolUseFailure")
         self.assertEqual(payload["tool_name"], "Bash")
         self.assertEqual(payload["error"], "failed")
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual(rows[0]["message"]["content"][0]["id"], "tc1")
+        self.assertEqual(rows[1]["message"]["content"][0]["tool_use_id"], "tc1")
+        self.assertTrue(rows[1]["message"]["content"][0]["is_error"])
 
     def test_post_tool_context_is_appended_after_guarded_result(self):
         command = self.make_hook(
@@ -181,6 +186,26 @@ class HookBridgeTests(unittest.TestCase):
             bridge.augment_tool_result("mcp__calendar__events", {}, "result", original_result="result", session_id="s1"),
             "External content warning",
         )
+
+    def test_todo_creation_uses_lifeos_task_governance_rules(self):
+        bridge = self.bridge({"TaskCreated": [{"hooks": [{"type": "command", "command": "true"}]}]})
+        short = {"todos": [{"id": "task-1", "content": "short", "status": "pending"}]}
+        result = bridge.pre_tool_call("todo_list", short, session_id="s1")
+        self.assertEqual(result["action"], "block")
+        self.assertIn("at least 10 characters", result["message"])
+
+        valid = {"todos": [{"id": "task-1", "content": "A meaningful task", "status": "pending"}]}
+        self.assertIsNone(bridge.pre_tool_call("todo_list", valid, session_id="s1"))
+        self.assertIsNone(bridge.pre_tool_call("todo_list", valid, session_id="s1"))
+        self.assertEqual(bridge.task_counts["s1"], 1)
+
+        other = {"todos": [
+            {"id": f"task-{number}", "content": f"Meaningful task {number}", "status": "pending"}
+            for number in range(2, 51)
+        ]}
+        self.assertIsNone(bridge.pre_tool_call("todo_list", other, session_id="s1"))
+        over_limit = {"todos": [{"id": "task-51", "content": "Meaningful task 51", "status": "pending"}]}
+        self.assertIn("limit of 50", bridge.pre_tool_call("todo_list", over_limit, session_id="s1")["message"])
 
 
 if __name__ == "__main__":

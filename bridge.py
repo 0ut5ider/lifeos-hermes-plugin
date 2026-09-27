@@ -12,6 +12,7 @@ import threading
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import ProxyHandler, Request, build_opener
+from uuid import uuid4
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -88,6 +89,8 @@ class HookBridge:
         self.started_sessions: set[str] = set()
         self.session_lock = threading.Lock()
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
+        self.task_ids: dict[str, set[str]] = {}
+        self.task_counts: dict[str, int] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
 
@@ -205,6 +208,10 @@ class HookBridge:
     def pre_tool_call(
         self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
+        if tool_name == "todo_list" and "TaskCreated" in self.hooks:
+            task_verdict = self._task_created_verdict(args, session_id)
+            if task_verdict:
+                return task_verdict
         native_name = _native_tool_name(tool_name)
         if native_name is None:
             return None
@@ -231,10 +238,28 @@ class HookBridge:
                     self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
         return {"action": "modify", "args": updated_args} if updated_args is not None else None
 
+    def _task_created_verdict(self, args: dict[str, Any], session_id: str) -> dict[str, str] | None:
+        todos = args.get("todos")
+        if not isinstance(todos, list):
+            return None
+        with self.session_lock:
+            known = self.task_ids.setdefault(session_id, set())
+            new_items = [item for item in todos if isinstance(item, dict) and str(item.get("id", "")) not in known]
+            for item in new_items:
+                description = item.get("content", "")
+                if not isinstance(description, str) or len(description.strip()) < 10:
+                    length = len(description) if isinstance(description, str) else 0
+                    return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
+            count = self.task_counts.get(session_id, 0)
+            if count + len(new_items) > 50:
+                return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
+            known.update(str(item.get("id", "")) for item in new_items)
+            self.task_counts[session_id] = count + len(new_items)
+        return None
+
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
         if not isinstance(user_message, str):
             return None
-        self._append_transcript(session_id, "user", user_message)
         context = []
         with self.session_lock:
             first_turn = session_id not in self.started_sessions
@@ -242,6 +267,7 @@ class HookBridge:
         if first_turn:
             start_payload = self._payload("SessionStart", session_id, source="startup")
             context.extend(self._context(self._run("SessionStart", start_payload)))
+        self._append_transcript(session_id, "user", user_message)
         payload = self._payload("UserPromptSubmit", session_id, prompt=user_message)
         context.extend(self._context(self._run("UserPromptSubmit", payload)))
         return {"context": "\n\n".join(context)} if context else None
@@ -260,7 +286,7 @@ class HookBridge:
 
     def post_tool_call(
         self, tool_name: str, args: dict[str, Any], result: str,
-        session_id: str = "", status: str = "success", error_message: str = "", **_: Any,
+        session_id: str = "", tool_call_id: str = "", status: str = "success", error_message: str = "", **_: Any,
     ) -> str | None:
         native_name = _native_tool_name(tool_name)
         if native_name is None:
@@ -270,11 +296,16 @@ class HookBridge:
             response = json.loads(result)
         except (json.JSONDecodeError, TypeError):
             response = result
+        use_id = tool_call_id or uuid4().hex
+        self._append_transcript(session_id, "assistant", [{
+            "type": "tool_use", "id": use_id, "name": native_name, "input": _tool_input(native_name, args),
+        }])
         self._append_transcript(
-            session_id, "assistant", [{"type": "tool_use", "name": native_name, "input": _tool_input(native_name, args)}],
-        )
-        self._append_transcript(
-            session_id, "user", [{"type": "tool_result", "content": response}],
+            session_id, "user", [{
+                "type": "tool_result", "tool_use_id": use_id,
+                "content": result if isinstance(result, str) else json.dumps(result),
+                "is_error": status in {"error", "blocked"},
+            }],
         )
         payload = self._payload(
             event, session_id, tool_name=native_name,
@@ -299,6 +330,8 @@ class HookBridge:
         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
         with self.session_lock:
             self.started_sessions.discard(session_id)
+            self.task_ids.pop(session_id, None)
+            self.task_counts.pop(session_id, None)
 
     def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False, **_: Any) -> dict[str, str] | None:
         self._append_transcript(session_id, "assistant", response)

@@ -14,11 +14,11 @@ This record describes the public LifeOS hook settings installed from commit `5e2
 | `SessionEnd` | 6 | `on_session_end`, `on_session_reset` | Hooks are registered for both boundaries. Their effects have not been checked end to end. |
 | `PostToolUseFailure` | 3 | `augment_tool_result` on tool error | The failure payload is tested with a real child process. |
 | `PermissionRequest` | 2 | none | Hermes's approval observer cannot auto-approve as the LifeOS safety hook can. |
-| `TaskCreated` | 1 | none | Hermes task-list and kanban events do not yet supply this Claude Code event. |
+| `TaskCreated` | 1 | `pre_tool_call` on `todo_list` | The bridge enforces the installed hook's minimum description and 50-task session limit for new todo IDs. This is equivalent policy code, not native hook execution. Kanban task creation is not covered. |
 | `ConfigChange` | 1 | none | No equivalent Hermes config-change event is wired. |
 | `StopFailure` | 1 | none | No equivalent failed-stop event is wired. |
 
-The mapped rows contain 69 of 74 registrations. This count is an event-level mapping, not 69 passing behavioral tests. Hermes tool names currently mapped are `terminal`, `read_file`, `write_file`, `patch`, `delegate_task`, `web_search`, `web_fetch`, `skill_view`, `tool_search`, and `mcp__*`. Claude Code's `AskUserQuestion` and `MultiEdit` have no exact Hermes tool mapping. The LifeOS `Agent` HTTP hook uses fields that Hermes delegation does not always supply. Local Pulse routes fail open when Pulse is not running, as they do in Claude Code.
+The native bridge executes 69 of 74 registrations at matching event types. It also enforces the `TaskCreated` policy for new Hermes todo IDs without executing that native hook. This count is an event-level mapping, not 69 passing behavioral tests. Hermes tool names currently mapped are `terminal`, `read_file`, `write_file`, `patch`, `delegate_task`, `web_search`, `web_fetch`, `skill_view`, `tool_search`, and `mcp__*`. Claude Code's `AskUserQuestion` and `MultiEdit` have no exact Hermes tool mapping. The LifeOS `Agent` HTTP hook uses fields that Hermes delegation does not always supply. Local Pulse routes fail open when Pulse is not running, as they do in Claude Code.
 
 ## Verified effects
 
@@ -28,7 +28,7 @@ The mapped rows contain 69 of 74 registrations. This count is an event-level map
 - A temporary Stop hook blocked the first answer. Hermes continued and produced a second answer. The hook saw `stop_hook_active: false` followed by `true`.
 - Native LifeOS Format, Verification, and Writing gates wrote observability records from a Hermes turn after the bridge supplied a transcript.
 - A temporary PostToolUse hook appended its marker after the LifeOS sidecar transformed a tool result.
-- Ten bridge tests exercise real command processes, a local HTTP server, context, blocking, argument changes, and transcript creation. Eighteen focused Hermes tests passed after the two generic core changes.
+- Eleven bridge tests exercise real command processes, a local HTTP server, context, blocking, task governance, argument changes, and transcript creation. Eighteen focused Hermes tests passed after the two generic core changes.
 
 ## Hermes core dependency
 
@@ -36,7 +36,7 @@ The stock Hermes plugin API cannot continue a non-coding turn from a Stop hook. 
 
 ## Current limits
 
-- Full hook parity is not achieved. The four unmapped event types above need explicit Hermes event and approval contracts.
+- Full hook parity is not achieved. `PermissionRequest`, `ConfigChange`, and `StopFailure` need explicit Hermes event and approval contracts. The `TaskCreated` adaptation does not cover kanban task creation.
 - The bridge creates a private Claude-shaped transcript from the events it sees. It is sufficient for the tested Stop gates, but it is not a byte-for-byte Claude Code transcript. Hook behavior that depends on Claude-specific transcript entries needs separate verification.
 - Async LifeOS hooks are started as child processes and their output is not injected. A short-lived Hermes process can exit before an async child completes.
 - LifeOS's nested inference tool clears local gateway variables. The optional `bin/claude` child launcher restores private gateway settings and maps model and effort flags. This still requires the Claude Code CLI as a child helper; Hermes remains the main conversation agent.
