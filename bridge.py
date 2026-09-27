@@ -50,6 +50,12 @@ API_ERROR_NAMES = {
     "server_error": "server_error",
     "timeout": "server_error",
 }
+if sys.platform == "darwin":
+    POLICY_DIRECTORY = Path("/Library/Application Support/ClaudeCode")
+elif os.name == "nt":
+    POLICY_DIRECTORY = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "ClaudeCode"
+else:
+    POLICY_DIRECTORY = Path("/etc/claude-code")
 
 
 def _native_tool_name(tool_name: str) -> str | None:
@@ -176,7 +182,11 @@ class HookBridge:
             self.settings_path: "user_settings",
             project_settings / "settings.json": "project_settings",
             project_settings / "settings.local.json": "local_settings",
+            POLICY_DIRECTORY / "managed-settings.json": "policy_settings",
         }
+        dropins = POLICY_DIRECTORY / "managed-settings.d"
+        if dropins.is_dir():
+            sources.update((path, "policy_settings") for path in dropins.glob("*.json") if path.is_file())
         for skills in (self.settings_path.parent / "skills", project_settings / "skills"):
             if skills.is_dir():
                 sources.update((path, "skills") for path in skills.rglob("*") if path.is_file())

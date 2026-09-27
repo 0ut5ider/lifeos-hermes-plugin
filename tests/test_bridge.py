@@ -243,6 +243,27 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual({row["source"] for row in rows}, {"project_settings", "local_settings"})
 
+    def test_config_change_reports_managed_policy_files(self):
+        policy = self.root / "managed-policy"
+        dropins = policy / "managed-settings.d"
+        dropins.mkdir(parents=True)
+        marker = self.root / "policy-sources.jsonl"
+        command = self.make_hook(
+            "record-policy.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        with patch("bridge.POLICY_DIRECTORY", policy):
+            bridge = self.bridge({"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]})
+            bridge.pre_llm_call("start", session_id="s1")
+            (policy / "managed-settings.json").write_text("{}")
+            (dropins / "team.json").write_text("{}")
+            bridge.poll_config_changes(force=True)
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual(len(rows), 2)
+        self.assertEqual({row["source"] for row in rows}, {"policy_settings"})
+
     def test_prompt_context_preserves_hook_order(self):
         first = self.make_hook("first.py", "print('first context')\n")
         second = self.make_hook("second.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'additionalContext':'second context'}}))\n")
