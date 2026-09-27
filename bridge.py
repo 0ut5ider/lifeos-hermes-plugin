@@ -131,6 +131,7 @@ class HookBridge:
         self.api_errors: dict[tuple[str, str], tuple[str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+        self.project_dir = Path.cwd()
         self.config_files = self._config_files()
         self.last_config_poll = 0.0
 
@@ -150,13 +151,21 @@ class HookBridge:
         self.hooks = hooks
         self.environment = environment
 
+    def _config_sources(self) -> dict[Path, str]:
+        project_settings = self.project_dir / ".claude"
+        sources = {
+            self.settings_path: "user_settings",
+            project_settings / "settings.json": "project_settings",
+            project_settings / "settings.local.json": "local_settings",
+        }
+        for skills in (self.settings_path.parent / "skills", project_settings / "skills"):
+            if skills.is_dir():
+                sources.update((path, "skills") for path in skills.rglob("*") if path.is_file())
+        return sources
+
     def _config_files(self) -> dict[Path, tuple[int, int]]:
-        paths = [self.settings_path]
-        skills = self.settings_path.parent / "skills"
-        if skills.is_dir():
-            paths.extend(path for path in skills.rglob("*") if path.is_file())
         result = {}
-        for path in paths:
+        for path in self._config_sources():
             try:
                 stat = path.stat()
                 result[path] = (stat.st_mtime_ns, stat.st_size)
@@ -177,7 +186,7 @@ class HookBridge:
             self.config_files = current
             sessions = tuple(self.started_sessions)
         for path in sorted(changed):
-            source = "user_settings" if path == self.settings_path else "skills"
+            source = self._config_sources().get(path, "skills")
             blocked = False
             for session_id in sessions:
                 outcomes = self._run("ConfigChange", self._payload(
