@@ -1,3 +1,28 @@
+diff --git a/agent/conversation_loop.py b/agent/conversation_loop.py
+index 9028cb926..2f3dc1ab8 100644
+--- a/agent/conversation_loop.py
++++ b/agent/conversation_loop.py
+@@ -1697,6 +1697,20 @@ def run_conversation(
+         )
+     result = export_current_turn_boundary(agent, result, user_message)
+     _close_durable_failed_turn(agent, result)
++    if not getattr(agent, "_persist_disabled", False) and isinstance(result, dict):
++        try:
++            from hermes_cli.lifecycle import invoke_hook as _invoke_hook
++            _invoke_hook(
++                "on_turn_result", session_id=agent.session_id,
++                turn_id=result.get("turn_id", ""),
++                failed=result.get("failed", False),
++                interrupted=result.get("interrupted", False),
++                failure_reason=result.get("failure_reason", ""),
++                turn_exit_reason=result.get("turn_exit_reason", ""),
++                final_response=result.get("final_response", ""),
++            )
++        except Exception as exc:
++            logger.warning("on_turn_result hook failed: %s", exc)
+     return result
+ 
+ 
 diff --git a/agent/turn_context.py b/agent/turn_context.py
 index 452a2f519..93b2dcb78 100644
 --- a/agent/turn_context.py
@@ -67,7 +92,7 @@ index dc202a010..67cf4355a 100644
      if _verify_nudge:
          agent._verification_stop_nudges = getattr(agent, "_verification_stop_nudges", 0) + 1
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
-index bba82a3b4..c8a89b7b5 100644
+index bba82a3b4..5935501f4 100644
 --- a/hermes_cli/plugins.py
 +++ b/hermes_cli/plugins.py
 @@ -107,6 +107,11 @@ _install_plugin_debug_handler()
@@ -91,6 +116,15 @@ index bba82a3b4..c8a89b7b5 100644
      # pre/post_auxiliary_call: once per physical provider attempt of an auxiliary LLM call
      # (agent/auxiliary_hooks.py — titling, compression, MoA, vision, approval, ...). Same payload
      # shape as pre/post_api_request plus ``aux_task``; distinct events so turn-scoped
+@@ -128,7 +133,7 @@ VALID_HOOKS: Set[str] = {
+     # "should_rotate_credential"/"should_fallback": bool, "message": str, "error_context": dict}.
+     # Run-all-then-pick-first (see get_plugin_error_classification). Privacy: error_message/
+     # error_body may be unredacted.
+-    "transform_api_error_classification", "on_session_start", "on_session_end",
++    "transform_api_error_classification", "on_session_start", "on_session_end", "on_turn_result",
+     "on_session_finalize", "on_session_reset",
+     # on_skill_lifecycle: successful skill lifecycle facts (local skill name visible to plugins).
+     "on_skill_lifecycle", "subagent_start", "subagent_stop",
 @@ -1969,15 +1974,15 @@ def _get_pre_tool_call_directive_details(
          if not isinstance(result, dict):
              continue
@@ -232,10 +266,10 @@ index 000000000..c2dea9efe
 +    assert seen["status"] == "error"
 +    assert seen["error_message"] == "failed"
 diff --git a/tests/agent/test_verification_continuation_budget.py b/tests/agent/test_verification_continuation_budget.py
-index 2231b2c17..8bee91a83 100644
+index 2231b2c17..7aa1025e0 100644
 --- a/tests/agent/test_verification_continuation_budget.py
 +++ b/tests/agent/test_verification_continuation_budget.py
-@@ -251,3 +251,71 @@ def test_streamed_interim_then_different_summary_not_marked_previewed(agent, mon
+@@ -251,3 +251,95 @@ def test_streamed_interim_then_different_summary_not_marked_previewed(agent, mon
      # CRITICAL: response_previewed must be False — the interim narration was
      # NOT the final response, so the CLI must render the summary.
      assert result["response_previewed"] is False
@@ -307,6 +341,30 @@ index 2231b2c17..8bee91a83 100644
 +    assert stop_hook.call_count == 1
 +    assert agent._interruptible_api_call.call_count == 2
 +    assert result["final_response"] == "answer 1"
++
++
++def test_terminal_api_failure_emits_turn_result_event(agent, monkeypatch):
++    class Rejected(Exception):
++        status_code = 401
++
++    agent.max_iterations = 1
++    agent._interruptible_api_call = MagicMock(side_effect=Rejected("HTTP 401: invalid api key"))
++    monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
++    observed = []
++
++    def record_hook(name, **payload):
++        if name == "on_turn_result":
++            observed.append(payload)
++        return []
++
++    with patch("hermes_cli.lifecycle.invoke_hook", side_effect=record_hook):
++        result = agent.run_conversation("ask provider")
++
++    assert result["failed"] is True
++    assert len(observed) == 1
++    assert observed[0]["failed"] is True
++    assert observed[0]["failure_reason"] == result["failure_reason"]
++    assert observed[0]["turn_id"] == result["turn_id"]
 diff --git a/tests/hermes_cli/test_plugins.py b/tests/hermes_cli/test_plugins.py
 index 3fe75a3b2..e9eacc7fd 100644
 --- a/tests/hermes_cli/test_plugins.py

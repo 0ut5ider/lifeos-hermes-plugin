@@ -128,7 +128,7 @@ class HookBridge:
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
-        self.api_errors: dict[tuple[str, str], tuple[str, str]] = {}
+        self.api_errors: dict[tuple[str, str], tuple[str, str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.project_dir = Path.cwd()
@@ -555,22 +555,26 @@ class HookBridge:
     ) -> None:
         detail = error.get("message", "") if isinstance(error, dict) else ""
         with self.session_lock:
-            self.api_errors[(session_id, turn_id)] = (API_ERROR_NAMES.get(reason, "unknown"), str(detail))
+            self.api_errors[(session_id, turn_id)] = (API_ERROR_NAMES.get(reason, "unknown"), str(detail), reason)
             if len(self.api_errors) > 1024:
                 self.api_errors.pop(next(iter(self.api_errors)))
 
     def turn_end(
         self, session_id: str = "", turn_id: str = "", failed: bool = False,
-        turn_exit_reason: str = "", **_: Any,
+        turn_exit_reason: str = "", failure_reason: str = "", final_response: str = "",
+        interrupted: bool = False, **_: Any,
     ) -> None:
         with self.session_lock:
             error = self.api_errors.pop((session_id, turn_id), None)
-        if not failed or turn_exit_reason != "all_retries_exhausted_no_response":
+        if not failed or interrupted or error is None:
             return
-        error_name, detail = error or ("unknown", "")
+        error_name, detail, raw_reason = error
+        if turn_exit_reason != "all_retries_exhausted_no_response" and failure_reason != raw_reason:
+            return
         payload = self._payload(
             "StopFailure", session_id, error=error_name,
             **({"error_details": detail} if detail else {}),
+            **({"last_assistant_message": final_response} if final_response else {}),
         )
         self._run("StopFailure", payload, error_name)
 

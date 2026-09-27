@@ -22,4 +22,4 @@ def register(ctx: Any) -> None:
     ctx.register_hook("pre_turn_stop", lambda final_response="", session_id="", attempt=0, **kwargs: bridge.stop(final_response, session_id, stop_hook_active=attempt > 0, **kwargs))
     ctx.register_hook("on_session_finalize", bridge.session_end)
     ctx.register_hook("api_request_error", bridge.api_request_error)
-    ctx.register_hook("on_session_end", bridge.turn_end)
+    ctx.register_hook("on_turn_result", bridge.turn_end)

@@ -455,7 +455,7 @@ class HookBridgeTests(unittest.TestCase):
         with patch.dict(os.environ, {"LIFEOS_HOOK_SETTINGS": str(settings)}):
             module.register(Context())
         self.assertIn("on_session_finalize", hooks)
-        self.assertIn("on_session_end", hooks)
+        self.assertIn("on_turn_result", hooks)
         self.assertNotIn("on_session_reset", hooks)
 
     def test_stop_failure_logs_only_terminal_api_error(self):
@@ -485,6 +485,37 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(payload["hook_event_name"], "StopFailure")
         self.assertEqual(payload["error"], "rate_limit")
         self.assertEqual(payload["error_details"], "429 synthetic limit")
+
+    def test_stop_failure_logs_direct_terminal_api_error(self):
+        marker = self.root / "direct-api-failure.json"
+        command = self.make_hook(
+            "record-direct-failure.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
+        )
+        bridge = self.bridge({"StopFailure": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.api_request_error(
+            session_id="s1", turn_id="turn-1", reason="auth_permanent",
+            error={"message": "401 synthetic rejection"},
+        )
+        bridge.turn_end(
+            session_id="s1", turn_id="turn-1", failed=True,
+            failure_reason="auth_permanent", final_response="Provider rejected the request",
+        )
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["error"], "authentication_failed")
+        self.assertEqual(payload["last_assistant_message"], "Provider rejected the request")
+
+    def test_prior_api_error_does_not_turn_local_failure_into_stop_failure(self):
+        marker = self.root / "wrong-stop-failure"
+        command = self.make_hook("record.py", f"from pathlib import Path\nPath({str(marker)!r}).touch()\n")
+        bridge = self.bridge({"StopFailure": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.api_request_error(
+            session_id="s1", turn_id="turn-1", reason="rate_limit", error={"message": "429"},
+        )
+        bridge.turn_end(session_id="s1", turn_id="turn-1", failed=True, failure_reason="loop_error")
+        self.assertFalse(marker.exists())
 
     def test_config_change_runs_audit_hook_after_settings_edit(self):
         marker = self.root / "config-change.json"
