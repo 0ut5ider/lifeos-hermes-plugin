@@ -8,6 +8,7 @@ As of 2026-09-27, the development fixture is an unprivileged Linux account with 
 - LifeOS at commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`.
 - A fresh personal tree from `ScaffoldUser.ts --config-root ~/.hermes --apply`, linked by `LinkUser.ts --config-root ~/.hermes --apply`.
 - LifeOS's shipped Hermes sidecar mount, including its identity renderer and guard plugin.
+- LifeOS's 74 native Claude Code hook registrations installed in the test account, plus the separate `lifeos-hook-bridge` Hermes plugin.
 - Bun 1.4.2 and ripgrep 15.2.0.
 
 The installer detects Hermes, but its deployment tools default to `~/.claude`. Pass `--config-root ~/.hermes` explicitly. One runtime generator still writes to `~/.claude`, and many shipped files refer to that path. The fixture uses `~/.claude` as a link to `~/.hermes` until the path behavior has been mapped and addressed. This link is a test workaround, not a portable plugin installation method.
@@ -24,4 +25,4 @@ Identity substitution also replaces placeholder literals in LifeOS's installed `
 - The dashboard remains active and rejects an unauthenticated API request with HTTP 401.
 - LifeOS Doctor reports identity rendering and filesystem search live.
 
-LifeOS's native Claude Code hook registrations are not installed in Hermes. Doctor reports hook interpreter resolution unavailable. Full hook behavior remains the purpose of this plugin and has not been verified yet. Optional external services such as voice, Cloudflare, browser verification, and a GitHub login are not configured in the fixture.
+LifeOS Doctor now reports that every registered hook interpreter resolves. The bridge executes mapped events through the Hermes plugin API and two generic core extensions in the test fork. The [hook parity record](hook-parity.md) identifies unverified effects and missing events. Full hook parity has not been verified. Optional external services such as voice, Cloudflare, browser verification, and a GitHub login are not configured in the fixture.

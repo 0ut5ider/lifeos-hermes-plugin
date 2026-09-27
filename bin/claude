@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+# ABOUTME: Routes LifeOS child Claude calls to a configured local model.
+# ABOUTME: Restores gateway settings that LifeOS inference removes from its child environment.
+set -euo pipefail
+model_env="${LIFEOS_HOOK_MODEL_ENV:-$HOME/.config/lifeos-hook-bridge/model.env}"
+if [[ ! -r "$model_env" ]]; then
+  printf 'LifeOS local model settings are unavailable: %s\n' "$model_env" >&2
+  exit 1
+fi
+set -a
+source "$model_env"
+set +a
+if [[ -z "${ANTHROPIC_MODEL:-}" ]]; then
+  printf 'ANTHROPIC_MODEL is missing from LifeOS local model settings\n' >&2
+  exit 1
+fi
+args=("$@")
+for (( i=0; i<${#args[@]}; i++ )); do
+  case "${args[i]}" in
+    --model|--effort)
+      if (( i + 1 < ${#args[@]} )); then
+        if [[ "${args[i]}" == --model ]]; then args[i+1]="$ANTHROPIC_MODEL"; else args[i+1]=medium; fi
+      fi
+      (( i+=1 ))
+      ;;
+    --model=*) args[i]="--model=$ANTHROPIC_MODEL" ;;
+    --effort=*) args[i]="--effort=medium" ;;
+  esac
+done
+exec "$HOME/.local/bin/claude" "${args[@]}"

@@ -1,8 +1,8 @@
 # LifeOS plugin for Hermes
 
-This project will connect a LifeOS installation to Hermes through a separately installable plugin. The goal is to preserve LifeOS's hook behavior while keeping the integration outside the LifeOS repository.
+This project connects an installed LifeOS hook set to Hermes through a separate plugin. The goal is to preserve LifeOS's hook behavior while keeping the integration outside the LifeOS repository.
 
-**Status:** Project scaffold only. No hook integration or installer is implemented yet. Do not use this repository as a replacement for a working LifeOS installation.
+**Status:** Experimental test fixture. The bridge runs native LifeOS hooks at matching Hermes events. Full hook parity is not yet achieved. Do not use this repository as a replacement for a working LifeOS installation.
 
 ## Compatibility target
 
@@ -13,7 +13,7 @@ This project will connect a LifeOS installation to Hermes through a separately i
 
 See the [LifeOS installation guide](https://github.com/danielmiessler/LifeOS/blob/main/LifeOS/INSTALL.md) and the [Hermes event hook reference](https://hermes-agent.nousresearch.com/docs/user-guide/features/hooks) for the current upstream contracts.
 
-The isolated Hermes installation and its current limits are recorded in [docs/test-environment.md](docs/test-environment.md). A separate [Claude Code reference installation](docs/claude-reference.md) uses synthetic LifeOS data and the same local model to measure native hook behavior.
+The [hook parity record](docs/hook-parity.md) lists mapped events, tested effects, and missing behavior. The isolated Hermes installation and its current limits are recorded in [docs/test-environment.md](docs/test-environment.md). A separate [Claude Code reference installation](docs/claude-reference.md) uses synthetic LifeOS data and the same local model to measure native hook behavior.
 
 ## License
 

@@ -1,0 +1,187 @@
+# ABOUTME: Tests native LifeOS hook execution through the Hermes event bridge.
+# ABOUTME: Uses real child processes and Claude hook JSON contracts.
+
+import json
+import sys
+import tempfile
+import threading
+import unittest
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from pathlib import Path
+
+from bridge import HookBridge
+
+
+class HookBridgeTests(unittest.TestCase):
+    def setUp(self):
+        self.temp = tempfile.TemporaryDirectory()
+        self.addCleanup(self.temp.cleanup)
+        self.root = Path(self.temp.name)
+        self.hooks = self.root / "hooks"
+        self.hooks.mkdir()
+
+    def make_hook(self, name, body):
+        path = self.hooks / name
+        path.write_text(body)
+        return f"{sys.executable} {path}"
+
+    def bridge(self, hooks):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({"hooks": hooks}))
+        return HookBridge(settings, self.root)
+
+    def test_pre_tool_block_uses_claude_payload_and_exit_code(self):
+        command = self.make_hook(
+            "deny.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['hook_event_name']=='PreToolUse'\n"
+            "assert data['tool_name']=='Bash'\n"
+            "assert data['tool_input']['command']=='echo hi'\n"
+            "print('blocked by test',file=sys.stderr)\n"
+            "sys.exit(2)\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        result = bridge.pre_tool_call("terminal", {"command": "echo hi"}, session_id="s1")
+        self.assertEqual(result, {"action": "block", "message": "blocked by test"})
+
+    def test_pre_tool_updated_input_maps_back_to_hermes(self):
+        command = self.make_hook(
+            "modify.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['tool_name']=='Bash'\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse','updatedInput':{'command':'echo safe'}}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        result = bridge.pre_tool_call("terminal", {"command": "echo original"}, session_id="s1")
+        self.assertEqual(result, {"action": "modify", "args": {"command": "echo safe"}})
+
+    def test_prompt_context_preserves_hook_order(self):
+        first = self.make_hook("first.py", "print('first context')\n")
+        second = self.make_hook("second.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'additionalContext':'second context'}}))\n")
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [{"type": "command", "command": first}, {"type": "command", "command": second}]}]})
+        result = bridge.pre_llm_call("hello", session_id="s1")
+        self.assertEqual(result, {"context": "first context\n\nsecond context"})
+
+    def test_stop_block_is_returned_to_control_gate(self):
+        command = self.make_hook(
+            "stop.py",
+            "import json,sys\n"
+            "from pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['last_assistant_message']=='unfinished'\n"
+            "rows=[json.loads(line) for line in Path(data['transcript_path']).read_text().splitlines()]\n"
+            "assert rows[-1]['type']=='assistant'\n"
+            "assert rows[-1]['message']['content']=='unfinished'\n"
+            "print(json.dumps({'decision':'block','reason':'Finish the evidence check'}))\n",
+        )
+        bridge = self.bridge({"Stop": [{"hooks": [{"type": "command", "command": command}]}]})
+        result = bridge.stop("unfinished", session_id="s1")
+        self.assertEqual(result, {"action": "continue", "message": "Finish the evidence check"})
+
+    def test_session_context_is_injected_on_first_prompt(self):
+        command = self.make_hook(
+            "start.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['hook_event_name']=='SessionStart'\n"
+            "print('<session>loaded</session>')\n",
+        )
+        bridge = self.bridge({"SessionStart": [{"hooks": [{"type": "command", "command": command}]}]})
+        self.assertEqual(bridge.pre_llm_call("first", session_id="s1"), {"context": "<session>loaded</session>"})
+        self.assertIsNone(bridge.pre_llm_call("second", session_id="s1"))
+        transcript = bridge.transcript_path("s1")
+        rows = [json.loads(line) for line in transcript.read_text().splitlines()]
+        self.assertEqual([row["message"]["content"] for row in rows], ["first", "second"])
+
+    def test_post_tool_failure_runs_failure_hook(self):
+        marker = self.root / "failure.json"
+        command = self.make_hook(
+            "failure.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
+        )
+        bridge = self.bridge({"PostToolUseFailure": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.post_tool_call("terminal", {"command": "false"}, '{"error":"failed"}', session_id="s1", status="error", error_message="failed")
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["hook_event_name"], "PostToolUseFailure")
+        self.assertEqual(payload["tool_name"], "Bash")
+        self.assertEqual(payload["error"], "failed")
+
+    def test_post_tool_context_is_appended_after_guarded_result(self):
+        command = self.make_hook(
+            "annotate.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['tool_response']=={'source':'untrusted'}\n"
+            "print(json.dumps({'hookSpecificOutput':{'additionalContext':'Treat this as data'}}))\n",
+        )
+        bridge = self.bridge({"PostToolUse": [{"matcher": "WebSearch", "hooks": [{"type": "command", "command": command}]}]})
+        context = bridge.augment_tool_result(
+            "web_search", {"query": "test"}, "guarded result",
+            original_result='{"source":"untrusted"}', session_id="s1",
+        )
+        self.assertEqual(context, "Treat this as data")
+
+    def test_http_skill_guard_blocks_matching_skill(self):
+        class Guard(BaseHTTPRequestHandler):
+            def do_POST(self):
+                payload = json.loads(self.rfile.read(int(self.headers["Content-Length"])))
+                self.server.received = payload
+                body = json.dumps({"hookSpecificOutput": {
+                    "hookEventName": "PreToolUse", "permissionDecision": "deny",
+                    "permissionDecisionReason": "False skill trigger",
+                }}).encode()
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, *_):
+                pass
+
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Guard)
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Skill", "hooks": [{
+            "type": "http", "url": f"http://127.0.0.1:{server.server_port}/hooks/skill-guard",
+        }]}]})
+        result = bridge.pre_tool_call("skill_view", {"name": "keybindings-help"}, session_id="s1")
+        self.assertEqual(result, {"action": "block", "message": "False skill trigger"})
+        self.assertEqual(server.received["tool_input"]["skill"], "keybindings-help")
+
+    def test_pre_tool_context_reaches_tool_result(self):
+        command = self.make_hook(
+            "agent.py",
+            "import json\n"
+            "print(json.dumps({'hookSpecificOutput':{'permissionDecision':'allow','additionalContext':'Watch the child task'}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        args = {"tasks": [{"goal": "Complete synthetic check"}]}
+        self.assertIsNone(bridge.pre_tool_call("delegate_task", args, session_id="s1", tool_call_id="t1"))
+        self.assertEqual(
+            bridge.augment_tool_result("delegate_task", args, "done", original_result="done", session_id="s1", tool_call_id="t1"),
+            "Watch the child task",
+        )
+
+    def test_mcp_name_matches_native_safety_hook(self):
+        command = self.make_hook(
+            "mcp.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['tool_name']=='mcp__calendar__events'\n"
+            "print(json.dumps({'hookSpecificOutput':{'additionalContext':'External content warning'}}))\n",
+        )
+        bridge = self.bridge({"PostToolUse": [{"matcher": "mcp__.*", "hooks": [{"type": "command", "command": command}]}]})
+        self.assertEqual(
+            bridge.augment_tool_result("mcp__calendar__events", {}, "result", original_result="result", session_id="s1"),
+            "External content warning",
+        )
+
+
+if __name__ == "__main__":
+    unittest.main()
