@@ -50,18 +50,22 @@ index dc202a010..578e3901e 100644
      if _verify_nudge:
          agent._verification_stop_nudges = getattr(agent, "_verification_stop_nudges", 0) + 1
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
-index bba82a3b4..d37aa752f 100644
+index bba82a3b4..51853b12c 100644
 --- a/hermes_cli/plugins.py
 +++ b/hermes_cli/plugins.py
-@@ -107,6 +107,7 @@ _install_plugin_debug_handler()
+@@ -107,6 +107,11 @@ _install_plugin_debug_handler()
  
  VALID_HOOKS: Set[str] = {
      "pre_tool_call", "post_tool_call", "transform_terminal_output", "transform_tool_result",
 +    "augment_tool_result",
++    # pre_command_approval: recoverable command-pattern warning only, after hardline and
++    # user deny floors. A callback can return {"action": "allow"}; any deny wins.
++    # The raw command reaches installed plugins, unlike the redacted approval observers.
++    "pre_command_approval",
      # transform_llm_output: return a replacement string (first non-None wins) or None.
      "transform_llm_output", "pre_llm_call", "post_llm_call",
      # Streaming observers (agent.plugin_stream_hooks), off the token path; payloads are immutable
-@@ -115,7 +116,7 @@ VALID_HOOKS: Set[str] = {
+@@ -115,7 +120,7 @@ VALID_HOOKS: Set[str] = {
      # pre_verify: once per turn when the agent edited code and is about to verify/finish. Return
      # {"action": "continue", "message"} (or Claude-Code Stop {"decision": "block", "reason"}) to keep
      # going; anything else finishes. Bounded by agent.max_verify_nudges.
@@ -70,7 +74,7 @@ index bba82a3b4..d37aa752f 100644
      # pre/post_auxiliary_call: once per physical provider attempt of an auxiliary LLM call
      # (agent/auxiliary_hooks.py — titling, compression, MoA, vision, approval, ...). Same payload
      # shape as pre/post_api_request plus ``aux_task``; distinct events so turn-scoped
-@@ -2086,6 +2087,25 @@ def get_pre_verify_continue_message(
+@@ -2086,6 +2091,25 @@ def get_pre_verify_continue_message(
      return None
  
  
@@ -228,3 +232,144 @@ index 810fd962a..45fc7e658 100644
      )
      assert out == "first"
  
+diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+new file mode 100644
+index 000000000..5692e3a4c
+--- /dev/null
++++ b/tests/tools/test_plugin_command_approval.py
+@@ -0,0 +1,82 @@
++# ABOUTME: Checks plugin approval decisions against Hermes command safety floors.
++# ABOUTME: Verifies safe grants and refusals at the real command guard entry points.
++
++from unittest.mock import patch
++
++import pytest
++
++from tools import approval_context
++from tools.approval import check_all_command_guards, check_dangerous_command
++
++
++@pytest.fixture(autouse=True)
++def interactive(monkeypatch):
++    monkeypatch.setenv("HERMES_INTERACTIVE", "1")
++    monkeypatch.delenv("HERMES_GATEWAY_SESSION", raising=False)
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "manual")
++
++
++def test_plugin_grant_skips_dangerous_pattern_prompt():
++    def grant(name, **kwargs):
++        return [{"action": "allow"}] if name == "pre_command_approval" else []
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=grant), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is True
++
++
++def test_plugin_grant_does_not_skip_tirith_warning():
++    def grant(name, **kwargs):
++        return [{"action": "allow"}] if name == "pre_command_approval" else []
++
++    decisions = []
++
++    def decline(*args, **kwargs):
++        decisions.append(True)
++        return "deny"
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=grant), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "warn", "findings": [{"rule_id": "fixture"}], "summary": "fixture"},
++    ):
++        result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
++    assert result["approved"] is False
++    assert decisions == [True]
++
++
++def test_plugin_grant_does_not_skip_floor():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}]):
++        assert check_all_command_guards("rm -rf /", "local")["approved"] is False
++
++
++def test_plugin_grant_does_not_skip_user_deny(monkeypatch):
++    monkeypatch.setattr("tools.approval._match_user_deny_rule", lambda command: "rm -rf *")
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}]):
++        assert check_all_command_guards("rm -rf /tmp/plugin-fixture", "local")["approved"] is False
++
++
++def test_plugin_grant_on_simple_guard():
++    def grant(name, **kwargs):
++        return [{"action": "allow"}] if name == "pre_command_approval" else []
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=grant):
++        result = check_dangerous_command(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is True
++
++
++def test_plugin_grant_does_not_override_another_plugin_rejection():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}, {"action": "deny"}]):
++        result = check_dangerous_command(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: "deny",
++        )
++    assert result["approved"] is False
+diff --git a/tools/approval.py b/tools/approval.py
+index cff8d0d8d..3b7a35401 100644
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -1075,6 +1075,25 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+     return _user_deny_block(command)
+ 
+ 
++def _plugin_allows_command(command: str, pattern_key: str, description: str) -> bool:
++    """Accept an explicit plugin grant for the recoverable command-pattern warning.
++
++    Callers must check the hardline and user deny floors first. This grant never
++    overrides a separate Tirith finding.
++    """
++    try:
++        from hermes_cli.plugins import invoke_hook
++        decisions = invoke_hook(
++            "pre_command_approval", command=command, pattern_key=pattern_key,
++            description=description, session_key=get_current_session_key(),
++        )
++    except Exception:
++        logger.exception("pre_command_approval hook failed")
++        return False
++    actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
++    return "allow" in actions and "deny" not in actions
++
++
+ def check_dangerous_command(command: str, env_type: str,
+                             approval_callback=None,
+                             has_host_access: bool = False) -> dict:
+@@ -1093,6 +1112,8 @@ def check_dangerous_command(command: str, env_type: str,
+     is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     if not is_dangerous:
+         return _approved()
++    if approval_context._get_approval_mode() == "manual" and _plugin_allows_command(command, pattern_key, description):
++        return _approved()
+     return _run_approval_gate(
+         pattern_key=pattern_key, description=description, display_target=command, approval_callback=approval_callback,
+         subject=f"Command flagged as dangerous ({description})", noun="dangerous commands",
+@@ -1217,6 +1238,13 @@ def check_all_command_guards(command: str, env_type: str,
+     if not warnings:
+         return _approved()
+ 
++    # Plugin grants cover only the recoverable pattern layer. A Tirith finding
++    # still reaches the human approval path.
++    if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and _plugin_allows_command(
++        command, warnings[0][0], warnings[0][1],
++    ):
++        return _approved()
++
+     combined_desc = "; ".join(desc for _, desc, _ in warnings)
+     primary_key = warnings[0][0]
+     all_keys = [key for key, _, _ in warnings]

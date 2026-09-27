@@ -207,6 +207,27 @@ class HookBridgeTests(unittest.TestCase):
         over_limit = {"todos": [{"id": "task-51", "content": "Meaningful task 51", "status": "pending"}]}
         self.assertIn("limit of 50", bridge.pre_tool_call("todo_list", over_limit, session_id="s1")["message"])
 
+    def test_native_permission_grant_applies_to_command(self):
+        command = self.make_hook(
+            "permission.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['hook_event_name']=='PermissionRequest'\n"
+            "assert data['tool_name']=='Bash'\n"
+            "assert data['tool_input']['command']=='rm -rf /tmp/synthetic'\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        self.assertEqual(
+            bridge.command_approval("rm -rf /tmp/synthetic", session_key="s1"),
+            {"action": "allow"},
+        )
+
+    def test_native_permission_without_grant_defers_to_hermes(self):
+        command = self.make_hook("abstain.py", "import sys\nsys.stdin.read()\n")
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        self.assertIsNone(bridge.command_approval("sudo systemctl restart example.service", session_key="s1"))
+
 
 if __name__ == "__main__":
     unittest.main()

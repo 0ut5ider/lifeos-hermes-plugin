@@ -205,6 +205,17 @@ class HookBridge:
             **fields,
         }
 
+    def command_approval(self, command: str, session_key: str = "", **_: Any) -> dict[str, str] | None:
+        payload = self._payload(
+            "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command},
+        )
+        for _, output in self._run("PermissionRequest", payload, "Bash"):
+            specific = (output or {}).get("hookSpecificOutput") or {}
+            decision = specific.get("decision") or {}
+            if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+                return {"action": "allow"}
+        return None
+
     def pre_tool_call(
         self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
