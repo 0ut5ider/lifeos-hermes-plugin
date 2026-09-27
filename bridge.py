@@ -65,6 +65,21 @@ def _native_tool_name(tool_name: str) -> str | None:
     return TOOL_NAMES.get(tool_name)
 
 
+def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
+    """Use Hermes's own path classifier so one guarded write gets one human prompt."""
+    try:
+        from agent.file_safety import is_write_approval_required
+        candidate = Path(path).expanduser()
+        if not candidate.is_absolute():
+            candidate = Path(cwd) / candidate
+        return bool(is_write_approval_required(str(candidate)))
+    except ImportError:
+        return False
+    except Exception as error:
+        LOG.warning("Hermes file approval classifier unavailable: %s", error)
+        return False
+
+
 def _tool_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
     translated = dict(args)
     if name in {"Write", "Edit", "Read"} and "path" in translated:
@@ -509,6 +524,8 @@ class HookBridge:
             if not granted:
                 review_paths.append(str(native_input.get("file_path", "unknown path")))
         if not review_paths:
+            return None
+        if any(_hermes_write_requires_approval(path, cwd) for path in review_paths):
             return None
         fingerprint = hashlib.sha256(json.dumps(native_inputs, sort_keys=True).encode()).hexdigest()[:16]
         return {

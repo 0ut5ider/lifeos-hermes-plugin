@@ -164,6 +164,34 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(verdict["action"], "approve")
         self.assertIn("/tmp/example.txt", verdict["message"])
 
+    def test_file_permission_defers_to_existing_hermes_ssh_guard(self):
+        marker = self.root / "lifeos-permission-ran"
+        command = self.make_hook(
+            "neutral-ssh.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "assert json.load(sys.stdin)['tool_name']=='Write'\n"
+            f"Path({str(marker)!r}).touch()\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
+        with patch("bridge._hermes_write_requires_approval", return_value=True) as guard:
+            verdict = bridge.pre_tool_call(
+                "write_file", {"path": str(self.root / ".ssh/config"), "content": "Host example"}, session_id="s1",
+            )
+        self.assertIsNone(verdict)
+        self.assertTrue(marker.exists())
+        guard.assert_called_once()
+
+    def test_file_permission_deny_still_blocks_hermes_guarded_write(self):
+        command = self.make_hook(
+            "deny-ssh.py",
+            "import json,sys\njson.load(sys.stdin)\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny','reason':'LifeOS denial'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
+        with patch("bridge._hermes_write_requires_approval", return_value=True):
+            verdict = bridge.pre_tool_call("write_file", {"path": str(self.root / ".ssh/config")}, session_id="s1")
+        self.assertEqual(verdict, {"action": "block", "message": "LifeOS denial"})
+
     def test_file_review_keeps_pre_tool_input_change(self):
         change = self.make_hook(
             "change-path.py",
