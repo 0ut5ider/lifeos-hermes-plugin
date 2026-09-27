@@ -219,6 +219,25 @@ class HookBridgeTests(unittest.TestCase):
         self.assertTrue(second_marker.exists())
         self.assertTrue(completed.exists())
 
+    def test_session_end_handlers_run_in_registration_order(self):
+        marker = self.root / "learning-ready"
+        first = self.make_hook(
+            "capture-learning.py",
+            "import time\nfrom pathlib import Path\n"
+            "time.sleep(0.2)\n"
+            f"Path({str(marker)!r}).touch()\n",
+        )
+        second = self.make_hook(
+            "cleanup-work.py",
+            "import sys\nfrom pathlib import Path\n"
+            f"sys.exit(0 if Path({str(marker)!r}).exists() else 2)\n",
+        )
+        bridge = self.bridge({"SessionEnd": [{"hooks": [
+            {"type": "command", "command": first}, {"type": "command", "command": second},
+        ]}]})
+        outcomes = bridge._run("SessionEnd", bridge._payload("SessionEnd", "s1"))
+        self.assertEqual([process.returncode for process, _ in outcomes], [0, 0])
+
     def test_async_hook_receives_complete_input_after_parent_exits(self):
         marker = self.root / "async-complete"
         command = self.make_hook(

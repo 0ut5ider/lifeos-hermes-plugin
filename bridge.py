@@ -580,7 +580,7 @@ class HookBridge:
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
 
     def _run(self, event: str, payload: dict[str, Any], tool_name: str = "") -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
-        sync_hooks = []
+        jobs = []
         environment = self._event_environment(payload)
         for group in self._hook_groups(event, payload):
             matcher = group.get("matcher", "")
@@ -588,7 +588,7 @@ class HookBridge:
                 continue
             for hook in group.get("hooks", []):
                 if hook.get("type") == "http":
-                    sync_hooks.append((self._run_http, (hook, payload)))
+                    jobs.append((self._run_http, (hook, payload), False))
                     continue
                 if hook.get("type") != "command":
                     LOG.warning("LifeOS %s hook type %r is not executable by this bridge", event, hook.get("type"))
@@ -598,10 +598,28 @@ class HookBridge:
                     continue
                 timeout = max(1, min(int(hook.get("timeout", 60)), 300))
                 if hook.get("async"):
-                    self._run_async(command, payload, timeout, environment)
+                    jobs.append((self._run_async, (command, payload, timeout, environment), True))
                     continue
-                sync_hooks.append((self._run_command, (event, command, payload, timeout, environment)))
+                jobs.append((self._run_command, (event, command, payload, timeout, environment), False))
         outcomes = []
+        if not jobs:
+            return outcomes
+        if event == "SessionEnd":
+            for callback, arguments, asynchronous in jobs:
+                try:
+                    process = callback(*arguments)
+                except Exception as error:
+                    LOG.error("LifeOS %s hook failed: %s", event, error)
+                    continue
+                if not asynchronous and process is not None:
+                    outcomes.append((process, _decode_output(process.stdout)))
+            return outcomes
+        sync_hooks = []
+        for callback, arguments, asynchronous in jobs:
+            if asynchronous:
+                callback(*arguments)
+            else:
+                sync_hooks.append((callback, arguments))
         if not sync_hooks:
             return outcomes
         with ThreadPoolExecutor(max_workers=min(len(sync_hooks), 32)) as executor:
