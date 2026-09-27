@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import json
+import hashlib
 import logging
 import os
 import re
@@ -307,6 +308,32 @@ class HookBridge:
                 return {"action": "allow"}
         return None
 
+    def _mcp_permission_verdict(
+        self, tool_name: str, args: dict[str, Any], session_id: str,
+    ) -> dict[str, str] | None:
+        groups = self.hooks.get("PermissionRequest", [])
+        if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
+            return None
+        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args)
+        outcomes = self._run("PermissionRequest", payload, tool_name)
+        granted = False
+        for process, output in outcomes:
+            specific = (output or {}).get("hookSpecificOutput") or {}
+            decision = specific.get("decision") or {}
+            if decision.get("behavior") == "deny" or process.returncode == 2:
+                message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the MCP call"
+                return {"action": "block", "message": str(message)[:2000]}
+            if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+                granted = True
+        if granted:
+            return None
+        fingerprint = hashlib.sha256(json.dumps(args, sort_keys=True).encode()).hexdigest()[:16]
+        return {
+            "action": "approve",
+            "message": f"LifeOS requests review of MCP call {tool_name}",
+            "rule_key": f"lifeos-mcp:{tool_name}:{fingerprint}",
+        }
+
     def pre_tool_call(
         self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
@@ -345,6 +372,10 @@ class HookBridge:
                 self.pending_tool_context[key] = extra_context
                 if len(self.pending_tool_context) > 1024:
                     self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
+        if tool_name.startswith("mcp__"):
+            verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id)
+            if verdict:
+                return verdict
         return {"action": "modify", "args": updated_args} if updated_args is not None else None
 
     def _task_created_verdict(self, args: dict[str, Any], session_id: str) -> dict[str, str] | None:

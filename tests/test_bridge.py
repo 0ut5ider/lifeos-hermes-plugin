@@ -240,6 +240,32 @@ class HookBridgeTests(unittest.TestCase):
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
         self.assertIsNone(bridge.command_approval("sudo systemctl restart example.service", session_key="s1"))
 
+    def test_mcp_permission_requests_review_for_secret_shaped_input(self):
+        command = self.make_hook(
+            "mcp_permission.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['hook_event_name']=='PermissionRequest'\n"
+            "assert data['tool_name']=='mcp__example__send'\n"
+            "if data['tool_input'].get('message')=='ordinary text':\n"
+            " print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "mcp__.*", "hooks": [{"type": "command", "command": command}]}]})
+        self.assertIsNone(bridge.pre_tool_call("mcp__example__send", {"message": "ordinary text"}, session_id="s1"))
+        review = bridge.pre_tool_call("mcp__example__send", {"message": "synthetic secret shape"}, session_id="s1")
+        self.assertEqual(review["action"], "approve")
+
+    def test_mcp_permission_deny_overrides_another_grant(self):
+        grant = self.make_hook("grant.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n")
+        deny = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny','reason':'Sensitive egress'}}}))\n")
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "mcp__.*", "hooks": [
+            {"type": "command", "command": grant}, {"type": "command", "command": deny},
+        ]}]})
+        self.assertEqual(
+            bridge.pre_tool_call("mcp__example__send", {"message": "test"}, session_id="s1"),
+            {"action": "block", "message": "Sensitive egress"},
+        )
+
     def test_session_end_registers_on_actual_session_boundary(self):
         settings = self.root / "settings.json"
         settings.write_text(json.dumps({"hooks": {"SessionEnd": []}}))
