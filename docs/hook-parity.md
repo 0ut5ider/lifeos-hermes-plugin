@@ -29,6 +29,7 @@ The native bridge executes the installed registration types with partial coverag
 - Native LifeOS Format, Verification, and Writing gates wrote observability records from a Hermes turn after the bridge supplied a transcript.
 - A temporary PostToolUse hook appended its marker after the LifeOS sidecar transformed a tool result.
 - Forty-one bridge tests exercise real command processes, a local HTTP server, context, blocking, task governance, argument changes, transcript creation, permission grants, failure logging, config changes, multi-file patch guards and audit, clarification hooks, concurrent hook dispatch, async process survival, and session boundary registration. One hundred sixteen focused Hermes agent and plugin tests passed after the turn result change.
+- LifeOS's native `parseTurnEvents` function read a bridge-generated two-file patch transcript on the isolated account. It found two `edit` events, one for each path, and paired both with successful tool results.
 - The installed LifeOS safety hook granted a synthetic `/tmp` removal in the test account. It abstained on a `sudo systemctl restart`, and Hermes kept its hardline block on `rm -rf /`. Fifty-five focused Hermes approval tests passed with the new event.
 - A synthetic terminal API error reached the installed native LifeOS StopFailure logger once. The test account contains its JSONL record.
 - A synthetic direct authentication failure also reached the installed native LifeOS StopFailure logger. A real Hermes 401 turn test confirmed the observer event fires on that direct return path.
