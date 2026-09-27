@@ -114,6 +114,12 @@ def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
         tasks = [args]
     inputs = []
     descriptions = set()
+    try:
+        from agent.delegation_context import is_delegated_child_context
+    except ImportError:
+        background = bool(args.get("background"))
+    else:
+        background = not is_delegated_child_context()
     for index, task in enumerate(tasks):
         if not isinstance(task, dict) or not isinstance(task.get("goal"), str) or not task["goal"].strip():
             continue
@@ -127,6 +133,7 @@ def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
             "subagent_type": "general-purpose",
             "description": description,
             "prompt": goal + (f"\n\n{context}" if isinstance(context, str) and context.strip() else ""),
+            "run_in_background": background,
         }
         model = task.get("model") or args.get("model")
         if isinstance(model, str) and model.strip():

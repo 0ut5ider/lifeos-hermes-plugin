@@ -530,6 +530,19 @@ class HookBridgeTests(unittest.TestCase):
         ])
         self.assertEqual(rows[0]["tool_input"]["model"], "local-small")
 
+    def test_background_delegation_reaches_agent_hook(self):
+        marker = self.root / "background-agent.json"
+        command = self.make_hook(
+            "record-background.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": True}, session_id="s1")
+        payload = json.loads(marker.read_text())
+        self.assertIs(payload["tool_input"]["run_in_background"], True)
+
     def test_mcp_name_matches_native_safety_hook(self):
         command = self.make_hook(
             "mcp.py",
