@@ -28,12 +28,13 @@ The native bridge executes 70 complete registrations at matching event types, wi
 - A temporary Stop hook blocked the first answer. Hermes continued and produced a second answer. The hook saw `stop_hook_active: false` followed by `true`.
 - Native LifeOS Format, Verification, and Writing gates wrote observability records from a Hermes turn after the bridge supplied a transcript.
 - A temporary PostToolUse hook appended its marker after the LifeOS sidecar transformed a tool result.
-- Twenty-six bridge tests exercise real command processes, a local HTTP server, context, blocking, task governance, argument changes, transcript creation, permission grants, failure logging, config changes, multi-file patch guards, clarification hooks, concurrent hook dispatch, and session boundary registration. Eighteen focused Hermes tests passed after the first two generic core changes.
+- Twenty-seven bridge tests exercise real command processes, a local HTTP server, context, blocking, task governance, argument changes, transcript creation, permission grants, failure logging, config changes, multi-file patch guards, clarification hooks, concurrent hook dispatch, async process survival, and session boundary registration. Eighteen focused Hermes tests passed after the first two generic core changes.
 - The installed LifeOS safety hook granted a synthetic `/tmp` removal in the test account. It abstained on a `sudo systemctl restart`, and Hermes kept its hardline block on `rm -rf /`. Fifty-five focused Hermes approval tests passed with the new event.
 - A synthetic terminal API error reached the installed native LifeOS StopFailure logger once. The test account contains its JSONL record.
 - A synthetic settings change reached the installed native LifeOS ConfigChange logger. The test account contains its JSONL record.
 - The installed LifeOS MCP permission hook allowed an ordinary synthetic message and requested review for a synthetic token-shaped message. Hermes blocked the latter in an unattended session.
 - Matching synchronous hook handlers now run concurrently. A blocking PreToolUse handler does not suppress another matching observer. A direct run of the installed Stop hooks completed with this dispatch path.
+- An async hook read a one-megabyte synthetic prompt after its parent Hermes process exited. The detached runner removed its private spool file.
 
 ## Hermes core dependency
 
@@ -45,7 +46,7 @@ The stock Hermes plugin API cannot continue a non-coding turn from a Stop hook. 
 - Config changes are detected on the next prompt or tool result, rather than at the moment of an external edit. The bridge checks file size and modification time at most once a second during active events. It does not watch files while Hermes is idle.
 - A Hermes multi-file patch is presented to `Edit` PreToolUse hooks once per changed file with that file's added text. PostToolUse audit for that patch still receives the original Hermes patch shape. Relative file paths depend on the Hermes process working directory; a separate terminal or file workspace override can make them differ.
 - The bridge creates a private Claude-shaped transcript from the events it sees. It is sufficient for the tested Stop gates, but it is not a byte-for-byte Claude Code transcript. Hook behavior that depends on Claude-specific transcript entries needs separate verification.
-- Async LifeOS hooks are started as child processes and their output is not injected. A short-lived Hermes process can exit before an async child completes.
+- Async LifeOS hooks run through a detached child process with a private spool file so a one-shot Hermes process can exit without truncating their input. Hook output is not injected into the model. A service manager that kills an entire process group or control group can still stop the child.
 - LifeOS's nested inference tool clears local gateway variables. The optional `bin/claude` child launcher restores private gateway settings and maps model and effort flags. This still requires the Claude Code CLI as a child helper; Hermes remains the main conversation agent.
 - The isolated test account uses LAN-only outbound rules. The plugin does not install a firewall or credentials.
 

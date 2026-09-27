@@ -9,6 +9,8 @@ import logging
 import os
 import re
 import subprocess
+import sys
+import tempfile
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -272,29 +274,28 @@ class HookBridge:
             return None
 
     def _run_async(self, command: str, payload: dict[str, Any], timeout: int) -> None:
+        spool_path = None
         try:
-            process = subprocess.Popen(
-                ["/bin/bash", "-c", command],
-                stdin=subprocess.PIPE,
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=self.transcript_dir,
+                prefix="async-hook-", suffix=".json", delete=False,
+            ) as spool:
+                spool_path = Path(spool.name)
+                json.dump({"command": command, "payload": payload, "timeout": timeout}, spool)
+            subprocess.Popen(
+                [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)],
+                stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                text=True,
                 cwd=payload.get("cwd") or self.root,
                 env=self.environment,
+                start_new_session=True,
+                close_fds=True,
             )
         except OSError as error:
             LOG.error("LifeOS async hook failed to start: %s", error)
-            return
-
-        def finish() -> None:
-            try:
-                process.communicate(json.dumps(payload), timeout=timeout)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.communicate()
-                LOG.error("LifeOS async hook timed out: %s", command)
-
-        threading.Thread(target=finish, daemon=True).start()
+            if spool_path is not None:
+                spool_path.unlink(missing_ok=True)
 
     def _payload(self, event: str, session_id: str, **fields: Any) -> dict[str, Any]:
         return {

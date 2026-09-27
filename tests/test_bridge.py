@@ -4,9 +4,11 @@
 import json
 import importlib.util
 import os
+import subprocess
 import sys
 import tempfile
 import threading
+import time
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -82,6 +84,33 @@ class HookBridgeTests(unittest.TestCase):
         self.assertTrue(first_marker.exists())
         self.assertTrue(second_marker.exists())
         self.assertTrue(completed.exists())
+
+    def test_async_hook_receives_complete_input_after_parent_exits(self):
+        marker = self.root / "async-complete"
+        command = self.make_hook(
+            "async.py",
+            "import json,sys,time\nfrom pathlib import Path\n"
+            "time.sleep(0.2)\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(str(len(data['prompt'])))\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
+            {"type": "command", "command": command, "async": True},
+        ]}]}}))
+        driver = (
+            "import os\nfrom pathlib import Path\nfrom bridge import HookBridge\n"
+            f"bridge=HookBridge(Path({str(settings)!r}),Path({str(self.root)!r}))\n"
+            "bridge.pre_llm_call('X'*1048576,session_id='s1')\n"
+            "os._exit(0)\n"
+        )
+        process = subprocess.run([sys.executable, "-c", driver], cwd=Path(__file__).resolve().parents[1], timeout=10)
+        self.assertEqual(process.returncode, 0)
+        for _ in range(40):
+            if marker.exists():
+                break
+            time.sleep(0.05)
+        self.assertEqual(marker.read_text(), "1048576")
 
     def test_pre_tool_updated_input_maps_back_to_hermes(self):
         command = self.make_hook(
