@@ -128,6 +128,7 @@ class HookBridge:
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
+        self.pending_tasks: dict[tuple[str, str], tuple[set[str], int]] = {}
         self.api_errors: dict[tuple[str, str], tuple[str, str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
         self.transcript_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -392,11 +393,11 @@ class HookBridge:
         self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
         if tool_name == "todo_list" and "TaskCreated" in self.hooks:
-            task_verdict = self._task_created_verdict(args, session_id)
+            task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name)
             if task_verdict:
                 return task_verdict
         if tool_name == "kanban_create" and "TaskCreated" in self.hooks:
-            task_verdict = self._kanban_task_verdict(args, session_id)
+            task_verdict = self._kanban_task_verdict(args, session_id, tool_call_id or tool_name)
             if task_verdict:
                 return task_verdict
         native_name = _native_tool_name(tool_name)
@@ -441,11 +442,16 @@ class HookBridge:
                 return verdict
         return {"action": "modify", "args": updated_args} if updated_args is not None else None
 
-    def _task_created_verdict(self, args: dict[str, Any], session_id: str) -> dict[str, str] | None:
+    def _reserved_task_count(self, session_id: str) -> int:
+        return sum(count for (owner, _), (_, count) in self.pending_tasks.items() if owner == session_id)
+
+    def _task_created_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
         todos = args.get("todos")
         if not isinstance(todos, list):
             return None
         with self.session_lock:
+            key = (session_id, call_id)
+            self.pending_tasks.pop(key, None)
             known = self.task_ids.setdefault(session_id, set())
             new_items = [item for item in todos if isinstance(item, dict) and str(item.get("id", "")) not in known]
             for item in new_items:
@@ -454,23 +460,42 @@ class HookBridge:
                     length = len(description) if isinstance(description, str) else 0
                     return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
             count = self.task_counts.get(session_id, 0)
-            if count + len(new_items) > 50:
+            new_ids = {str(item.get("id", "")) for item in new_items}
+            if count + self._reserved_task_count(session_id) + len(new_ids) > 50:
                 return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
-            known.update(str(item.get("id", "")) for item in new_items)
-            self.task_counts[session_id] = count + len(new_items)
+            if new_ids:
+                self.pending_tasks[key] = (new_ids, len(new_ids))
         return None
 
-    def _kanban_task_verdict(self, args: dict[str, Any], session_id: str) -> dict[str, str] | None:
+    def _kanban_task_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
         description = args.get("body") or args.get("title", "")
         if not isinstance(description, str) or len(description.strip()) < 10:
             length = len(description) if isinstance(description, str) else 0
             return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
         with self.session_lock:
+            key = (session_id, call_id)
+            self.pending_tasks.pop(key, None)
             count = self.task_counts.get(session_id, 0)
-            if count >= 50:
+            if count + self._reserved_task_count(session_id) >= 50:
                 return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
-            self.task_counts[session_id] = count + 1
+            self.pending_tasks[key] = (set(), 1)
         return None
+
+    def task_result(
+        self, tool_name: str, args: dict[str, Any], result: str,
+        session_id: str = "", tool_call_id: str = "", status: str = "", **_: Any,
+    ) -> None:
+        if tool_name not in {"todo_list", "kanban_create"}:
+            return
+        with self.session_lock:
+            reserved = self.pending_tasks.pop((session_id, tool_call_id or tool_name), None)
+            if reserved is None or status not in {"ok", "success"}:
+                return
+            ids, count = reserved
+            known = self.task_ids.setdefault(session_id, set())
+            new_ids = ids - known
+            known.update(new_ids)
+            self.task_counts[session_id] = self.task_counts.get(session_id, 0) + (len(new_ids) if ids else count)
 
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
         if not isinstance(user_message, str):
@@ -549,6 +574,9 @@ class HookBridge:
             self.started_sessions.discard(session_id)
             self.task_ids.pop(session_id, None)
             self.task_counts.pop(session_id, None)
+            for key in tuple(self.pending_tasks):
+                if key[0] == session_id:
+                    self.pending_tasks.pop(key, None)
 
     def api_request_error(
         self, session_id: str = "", turn_id: str = "", reason: str = "", error: Any = None, **_: Any,

@@ -366,7 +366,8 @@ class HookBridgeTests(unittest.TestCase):
         self.assertIn("at least 10 characters", result["message"])
 
         valid = {"todos": [{"id": "task-1", "content": "A meaningful task", "status": "pending"}]}
-        self.assertIsNone(bridge.pre_tool_call("todo_list", valid, session_id="s1"))
+        self.assertIsNone(bridge.pre_tool_call("todo_list", valid, session_id="s1", tool_call_id="t1"))
+        bridge.task_result("todo_list", valid, '{"ok":true}', session_id="s1", tool_call_id="t1", status="ok")
         self.assertIsNone(bridge.pre_tool_call("todo_list", valid, session_id="s1"))
         self.assertEqual(bridge.task_counts["s1"], 1)
 
@@ -374,7 +375,7 @@ class HookBridgeTests(unittest.TestCase):
             {"id": f"task-{number}", "content": f"Meaningful task {number}", "status": "pending"}
             for number in range(2, 51)
         ]}
-        self.assertIsNone(bridge.pre_tool_call("todo_list", other, session_id="s1"))
+        self.assertIsNone(bridge.pre_tool_call("todo_list", other, session_id="s1", tool_call_id="t2"))
         over_limit = {"todos": [{"id": "task-51", "content": "Meaningful task 51", "status": "pending"}]}
         self.assertIn("limit of 50", bridge.pre_tool_call("todo_list", over_limit, session_id="s1")["message"])
 
@@ -383,9 +384,21 @@ class HookBridgeTests(unittest.TestCase):
         short = bridge.pre_tool_call("kanban_create", {"title": "short", "assignee": "worker"}, session_id="s1")
         self.assertEqual(short["action"], "block")
         valid = {"title": "Meaningful task title", "body": "Describe the work", "assignee": "worker"}
-        for _ in range(50):
-            self.assertIsNone(bridge.pre_tool_call("kanban_create", valid, session_id="s1"))
+        for number in range(50):
+            call_id = f"kanban-{number}"
+            self.assertIsNone(bridge.pre_tool_call("kanban_create", valid, session_id="s1", tool_call_id=call_id))
+            bridge.task_result("kanban_create", valid, '{"ok":true}', session_id="s1", tool_call_id=call_id, status="ok")
         self.assertIn("limit of 50", bridge.pre_tool_call("kanban_create", valid, session_id="s1")["message"])
+
+    def test_failed_task_creation_releases_reserved_slot(self):
+        bridge = self.bridge({"TaskCreated": [{"hooks": [{"type": "command", "command": "true"}]}]})
+        valid = {"title": "Meaningful task title", "assignee": "worker"}
+        self.assertIsNone(bridge.pre_tool_call("kanban_create", valid, session_id="s1", tool_call_id="failed"))
+        bridge.task_result("kanban_create", valid, '{"error":"validation failed"}', session_id="s1", tool_call_id="failed", status="error")
+        self.assertEqual(bridge.task_counts.get("s1", 0), 0)
+        for number in range(50):
+            self.assertIsNone(bridge.pre_tool_call("kanban_create", valid, session_id="s1", tool_call_id=f"pending-{number}"))
+        self.assertIn("limit of 50", bridge.pre_tool_call("kanban_create", valid, session_id="s1", tool_call_id="extra")["message"])
 
     def test_native_permission_grant_applies_to_command(self):
         command = self.make_hook(

@@ -16,6 +16,7 @@ def register(ctx: Any) -> None:
         raise FileNotFoundError(f"LifeOS Claude hook settings not found: {settings}")
     bridge = HookBridge(settings, settings.parent)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
+    ctx.register_hook("post_tool_call", bridge.task_result)
     ctx.register_hook("pre_command_approval", bridge.command_approval)
     ctx.register_hook("augment_tool_result", bridge.augment_tool_result)
     ctx.register_hook("pre_llm_call", bridge.pre_llm_call)

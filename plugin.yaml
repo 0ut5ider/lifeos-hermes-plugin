@@ -4,6 +4,7 @@ description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycl
 author: 0ut5ider
 provides_hooks:
   - pre_tool_call
+  - post_tool_call
   - pre_command_approval
   - augment_tool_result
   - pre_llm_call
