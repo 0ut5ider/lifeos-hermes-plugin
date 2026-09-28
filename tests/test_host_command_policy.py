@@ -77,6 +77,38 @@ class HostCommandPolicyTests(unittest.TestCase):
                         log = Path(directory) / "LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl"
                         decisions = [json.loads(line) for line in log.read_text().splitlines()]
                         self.assertEqual([item["decision"] for item in decisions], ["neutral", "neutral"])
+
+                        exact_command = "curl -I --max-time 1 http://192.168.8.1:9"
+                        settings.write_text(json.dumps({
+                            "hooks": {"PermissionRequest": [{
+                                "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                            }]},
+                            "permissions": {"allow": [f"Bash({exact_command})"]},
+                        }))
+                        allow_prompts = []
+                        allowed = check_all_command_guards(
+                            exact_command, "local",
+                            approval_callback=lambda *args, **kwargs: allow_prompts.append(args) or "deny",
+                        )
+                        self.assertFalse(allowed["approved"])
+                        self.assertEqual(allowed["pattern_key"], "tirith:raw_ip_url")
+                        self.assertEqual(len(allow_prompts), 1, "Hermes security scan remains authoritative")
+                        self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
+                                         ["neutral", "neutral"])
+
+                        settings.write_text(json.dumps({
+                            "hooks": {"PermissionRequest": [{
+                                "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                            }]},
+                            "permissions": {"deny": [f"Bash({exact_command})"]},
+                        }))
+                        denied = check_all_command_guards(
+                            exact_command, "local",
+                            approval_callback=lambda *args, **kwargs: self.fail("Denied rule asked for approval"),
+                        )
+                        self.assertFalse(denied["approved"])
+                        self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
+                                         ["neutral", "neutral"])
                     finally:
                         plugins_mod._reset_plugin_managers_for_tests()
         finally:

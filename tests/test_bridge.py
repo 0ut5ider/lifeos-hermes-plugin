@@ -1903,6 +1903,168 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(bridge.command_approval("pwd", session_key="s1"), {"action": "review"})
         self.assertTrue(marker.exists())
 
+    def test_exact_bash_allow_rule_skips_permission_request(self):
+        marker = self.root / "allow-rule-invoked"
+        hook = self.make_hook(
+            "allow-rule.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text('invoked')\n",
+        )
+        command = "curl -I --max-time 1 http://192.168.8.1:9"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval(command, session_key="s1"))
+        self.assertFalse(marker.exists())
+
+    def test_exact_bash_deny_rule_blocks_without_permission_request(self):
+        marker = self.root / "deny-rule-invoked"
+        hook = self.make_hook(
+            "deny-rule.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text('invoked')\n",
+        )
+        command = "curl -I --max-time 1 http://192.168.8.1:9"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"deny": [f"Bash({command})"], "allow": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+        self.assertFalse(marker.exists())
+
+    def test_unrelated_exact_ask_rule_keeps_read_only_command_automatic(self):
+        marker = self.root / "unrelated-rule-invoked"
+        hook = self.make_hook(
+            "unrelated-rule.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text('invoked')\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"ask": ["Bash(curl -I http://192.168.8.1:9)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval("pwd", session_key="s1"))
+        self.assertFalse(marker.exists())
+
+    def test_project_deny_beats_user_allow_for_same_bash_command(self):
+        command = "curl -I --max-time 1 http://192.168.8.1:9"
+        project = self.root / "project"
+        (project / ".git").mkdir(parents=True)
+        (project / ".claude").mkdir()
+        (project / ".claude/settings.json").write_text(json.dumps({
+            "permissions": {"deny": [f"Bash({command})"]},
+        }))
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
+            self.assertEqual(bridge.command_approval(
+                command, session_key="s1", cwd=str(project),
+            ), {"action": "deny"})
+
+    def test_ask_rule_requests_review_without_permission_hook(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"ask": ["Bash(pwd)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("pwd", session_key="s1"), {"action": "review"})
+
+    def test_unsupported_deny_pattern_prevents_allow_shortcut(self):
+        hook = self.make_hook("uncertain-deny.py", "import sys\nsys.stdin.read()\n")
+        command = "curl -I --max-time 1 http://192.168.8.1:9"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"deny": ["Bash(curl *)"], "allow": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+
+    def test_unsupported_deny_pattern_cannot_be_granted_by_hook(self):
+        grant = self.make_hook(
+            "uncertain-grant.py",
+            "import json\nprint(json.dumps({'hookSpecificOutput':{"
+            "'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": grant},
+            ]}]},
+            "permissions": {"deny": ["Bash(curl *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("curl https://example.com", session_key="s1"),
+                         {"action": "review"})
+
+    def test_unsupported_deny_pattern_requests_review_without_hook(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(curl *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("curl https://example.com", session_key="s1"),
+                         {"action": "review"})
+
+    def test_unread_managed_policy_prevents_user_allow_shortcut(self):
+        policy = self.root / "managed-policy"
+        policy.mkdir()
+        (policy / "managed-settings.json").write_text(json.dumps({
+            "permissions": {"deny": ["Bash(curl *)"]},
+        }))
+        settings = self.root / "settings.json"
+        command = "curl https://example.com"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+
+    def test_command_rule_change_applies_before_next_approval(self):
+        command = "curl -I --max-time 1 http://192.168.8.1:9"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval(command, session_key="s1"))
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": [f"Bash({command})"]},
+        }))
+        self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+
     def test_command_permission_uses_target_workspace_context(self):
         workspace = self.root / "target-workspace"
         workspace.mkdir()

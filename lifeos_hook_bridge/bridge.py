@@ -84,6 +84,52 @@ def _claude_simple_read_only_bash(command: str) -> bool:
     return command == "pwd" or _SIMPLE_READ_ONLY_ECHO.fullmatch(command) is not None
 
 
+def _literal_bash_rule_matches(rule: Any, command: str) -> bool | None:
+    """Match only Bash permission forms whose meaning is unambiguous here."""
+    if not isinstance(rule, str):
+        return None
+    if rule in {"Bash", "Bash(*)"}:
+        return True
+    if not rule.startswith("Bash("):
+        return False
+    if not rule.endswith(")"):
+        return None
+    specifier = rule[5:-1]
+    if "*" in specifier or specifier.startswith("run_in_background:"):
+        return None
+    return specifier == command
+
+
+def _literal_bash_rule_decision(command: str, sources: list[Any]) -> str:
+    """Apply deny, ask, allow order without granting through unsupported patterns."""
+    matches: dict[str, bool] = {"deny": False, "ask": False, "allow": False}
+    uncertain: dict[str, bool] = {"deny": False, "ask": False}
+    for settings in sources:
+        if not isinstance(settings, dict):
+            uncertain["deny"] = True
+            continue
+        for action in matches:
+            rules = settings.get(action, [])
+            if not isinstance(rules, list):
+                uncertain["deny"] = True
+                continue
+            for rule in rules:
+                match = _literal_bash_rule_matches(rule, command)
+                if match is True:
+                    matches[action] = True
+                elif match is None and action in uncertain:
+                    uncertain[action] = True
+    if matches["deny"]:
+        return "deny"
+    if uncertain["deny"]:
+        return "unknown"
+    if matches["ask"]:
+        return "ask"
+    if uncertain["ask"]:
+        return "unknown"
+    return "allow" if matches["allow"] else "none"
+
+
 def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
     """Use Hermes's own path classifier so one guarded write gets one human prompt."""
     try:
@@ -1214,25 +1260,34 @@ class HookBridge:
     ) -> dict[str, str] | None:
         cwd = cwd or _tool_cwd("terminal", {}, task_id)
         self._remember_project(cwd, session_key, task_id)
+        self.poll_config_changes(force=True)
         payload = self._payload(
             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
         )
         host_paths = _task_uses_host_paths(task_id)
+        project = self._matching_project(payload, host_paths)
+        project_permissions = [
+            self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {})
+            for name in ("settings.json", "settings.local.json")
+        ] if project is not None else []
+        rule_decision = _literal_bash_rule_decision(
+            command, [self.user_permission_rules, *project_permissions],
+        )
+        if rule_decision == "deny":
+            return {"action": "deny"}
+        managed_policy = (POLICY_DIRECTORY / "managed-settings.json").exists() or (
+            POLICY_DIRECTORY / "managed-settings.d"
+        ).is_dir()
+        if managed_policy:
+            rule_decision = "unknown"
+        if host_paths and not managed_policy and rule_decision == "allow":
+            return None
+        if host_paths and not managed_policy and rule_decision == "none" and _claude_simple_read_only_bash(command):
+            return None
         groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
         if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
                    for group in groups):
-            return None
-        if host_paths and _claude_simple_read_only_bash(command) and not self.user_permission_rules:
-            project = self._matching_project(payload, host_paths)
-            project_rules = (
-                self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions")
-                for name in ("settings.json", "settings.local.json")
-            ) if project is not None else ()
-            managed_policy = (POLICY_DIRECTORY / "managed-settings.json").exists() or (
-                POLICY_DIRECTORY / "managed-settings.d"
-            ).is_dir()
-            if not any(project_rules) and not managed_policy:
-                return None
+            return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
         granted = False
         denied = False
         for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
@@ -1245,7 +1300,7 @@ class HookBridge:
         if denied:
             return {"action": "deny"}
         if granted:
-            return {"action": "allow"}
+            return {"action": "review"} if rule_decision == "unknown" else {"action": "allow"}
         return {"action": "review"}
 
     def _mcp_permission_verdict(
