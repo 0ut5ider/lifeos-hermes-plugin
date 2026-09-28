@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
-from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _web_cache_read
+from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _native_file_input, _tool_input, _web_cache_read
 
 
 class HookBridgeTests(unittest.TestCase):
@@ -37,6 +37,25 @@ class HookBridgeTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
         return bridge
+
+    def test_remote_isa_input_uses_backend_digest_and_rejects_spoof(self):
+        backend = types.SimpleNamespace(env=types.SimpleNamespace(_session_id="ssh-session"))
+        backend.file_digest = lambda path: ("file", "a" * 64)
+        file_tools = types.ModuleType("tools.file_tools")
+        file_tools._get_file_ops = lambda task_id: backend
+        file_tools._file_ops_uses_host_paths = lambda ops: False
+        file_tools._remote_baseline_key = lambda ops, path: (ops.env._session_id, path)
+        args = {"path": "/remote/ISA.md", "lifeos_remote_file": {"sha256": "b" * 64}}
+        translated = _tool_input("Read", args, "/tmp", "task")
+        self.assertNotIn("lifeos_remote_file", translated)
+        with patch.dict(sys.modules, {"tools.file_tools": file_tools}):
+            native = _native_file_input("Read", translated, "task")
+            self.assertEqual(native["lifeos_remote_file"], {
+                "status": "file", "sha256": "a" * 64, "identity": "ssh-session",
+            })
+            self.assertNotIn("lifeos_remote_file", _native_file_input("Read", {"file_path": "/remote/notes.md"}, "task"))
+            file_tools._file_ops_uses_host_paths = lambda ops: True
+            self.assertEqual(_native_file_input("Read", translated, "task"), translated)
 
     def test_pre_tool_block_uses_claude_payload_and_exit_code(self):
         command = self.make_hook(

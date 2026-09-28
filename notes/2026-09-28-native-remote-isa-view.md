@@ -1,0 +1,7 @@
+# Native ISA guard view for a remote file
+
+On 2026-09-28, a Bun probe called the installed `ISAStaleWriteGuard` after a synthetic remote `Read`. The target `ISA.md` path was absent on the Hermes host. The unmodified hook exited successfully and wrote no session view file. That is its documented local-file fail-open path, but it means the native guard cannot detect a later remote edit.
+
+Hermes already computes a SHA-256 digest on the active file backend to protect whole-file writes. The bridge now attaches that digest and backend session identity to native hook payloads for ISA `Read`, `Write`, and `Edit` events. It removes a model-supplied value with the same field name before injecting its own. The LifeOS patch records remote views under a key with backend identity and path. Local file behavior stays on the existing filesystem path.
+
+The same Bun probe now records a view for the absent host path, blocks a changed digest, permits an unchanged digest, keeps views on two backend identities separate, and permits a fresh read after the edit. It also blocks a stale local ISA write and declines to treat a host file as a remote view when the backend reports `missing`. The bridge unit test verifies digest provenance. The plugin suite passed 142 tests with 32 optional fixture skips. All seven LifeOS patches applied cleanly to a fresh checkout at `5e2f2e8`. A combined live SSH plus native hook run has not yet been completed.

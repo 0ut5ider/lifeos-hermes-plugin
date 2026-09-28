@@ -104,6 +104,7 @@ def _hook_file_path(path: str, cwd: str, task_id: str = "default", *, entry: boo
 
 def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "default") -> dict[str, Any]:
     translated = dict(args)
+    translated.pop("lifeos_remote_file", None)
     if name in {"Write", "Edit", "Read"} and "path" in translated:
         path = translated.pop("path")
         translated["file_path"] = _hook_file_path(path, cwd, task_id) if isinstance(path, str) and path else path
@@ -123,6 +124,28 @@ def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "defau
         question["multiSelect"] = bool(translated.get("multi_select"))
         return {"questions": [question]}
     return translated
+
+
+def _native_file_input(name: str, native_input: dict[str, Any], task_id: str) -> dict[str, Any]:
+    """Give the ISA guard a digest from the filesystem that owns a remote path."""
+    if name not in {"Read", "Write", "Edit"}:
+        return native_input
+    path = native_input.get("file_path")
+    if not isinstance(path, str) or not re.fullmatch(r"(?:isa|[^/]+\.isa)\.md", os.path.basename(path), re.I):
+        return native_input
+    try:
+        from tools.file_tools import _file_ops_uses_host_paths, _get_file_ops, _remote_baseline_key
+        file_ops = _get_file_ops(task_id or "default")
+        if _file_ops_uses_host_paths(file_ops):
+            return native_input
+        status, digest = file_ops.file_digest(path)
+        owner, _ = _remote_baseline_key(file_ops, path)
+        return {**native_input, "lifeos_remote_file": {
+            "status": status, "sha256": digest, "identity": owner,
+        }}
+    except (ImportError, OSError, ValueError) as error:
+        LOG.warning("Remote ISA digest unavailable: %s", error)
+        return native_input
 
 
 def _web_cache_read(tool_input: dict[str, Any], cwd: str, task_id: str) -> bool:
@@ -967,7 +990,8 @@ class HookBridge:
         updated_args = None
         extra_context = []
         for native_input in native_inputs:
-            payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd)
+            hook_input = _native_file_input(native_name, native_input, task_id)
+            payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=hook_input, cwd=cwd)
             code = args.get("code") if tool_name == "execute_code" else None
             for process, output in self._run(
                 "PreToolUse", payload, native_name,
@@ -1247,9 +1271,10 @@ class HookBridge:
         )
         context = []
         for native_input in native_inputs:
+            hook_input = _native_file_input(native_name, native_input, task_id) if event == "PostToolUse" else native_input
             payload = self._payload(
                 event, session_id, tool_name=native_name,
-                tool_input=native_input,
+                tool_input=hook_input,
                 cwd=cwd,
                 **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": hook_response}),
             )

@@ -1,0 +1,85 @@
+diff --git a/LifeOS/install/hooks/ISAStaleWriteGuard.hook.ts b/LifeOS/install/hooks/ISAStaleWriteGuard.hook.ts
+index fde80a4..837eed8 100755
+--- a/LifeOS/install/hooks/ISAStaleWriteGuard.hook.ts
++++ b/LifeOS/install/hooks/ISAStaleWriteGuard.hook.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Records the ISA content a session observed and rejects stale whole-file writes.
++// ABOUTME: Accepts backend digests for remote files while preserving local file checks.
+ /**
+  * @version 1.1.1
+  * ISAStaleWriteGuard.hook.ts — stop a whole-file Write from silently discarding
+@@ -53,6 +55,7 @@ import { basename, join } from "node:path";
+ import { homedir } from "node:os";
+ 
+ type BlockResult = { block: true; message: string } | null;
++type RemoteFile = { status: string; sha256?: string | null; identity: string };
+ 
+ const STATE_DIR = join(homedir(), ".claude/LIFEOS/MEMORY/STATE/isa-session-view");
+ const PRUNE_AFTER_MS = 7 * 24 * 60 * 60 * 1000;
+@@ -73,6 +76,15 @@ function hashOf(content: string): string {
+   return createHash("sha256").update(content, "utf-8").digest("hex");
+ }
+ 
++function remoteView(filePath: string, remote?: RemoteFile): { key: string; hash: string | null } | null {
++  if (!remote) return null;
++  if (typeof remote.identity !== "string" || !remote.identity) return { key: "", hash: null };
++  const key = `remote:${remote.identity}:${filePath}`;
++  if (remote.status !== "file" || typeof remote.sha256 !== "string" ||
++      !/^[0-9a-f]{64}$/i.test(remote.sha256)) return { key, hash: null };
++  return { key, hash: remote.sha256.toLowerCase() };
++}
++
+ function viewFile(sessionId: string): string {
+   // Session ids are harness-generated UUIDs; strip anything that is not one so a
+   // malformed id can never escape the state dir.
+@@ -110,14 +122,16 @@ function pruneStale(): void {
+  * (the view was established) and after a successful Write/Edit/MultiEdit (the
+  * view advanced to what this session just produced).
+  */
+-export function recordView(sessionId: string, filePath: string): void {
++export function recordView(sessionId: string, filePath: string, remote?: RemoteFile): void {
+   try {
+-    if (!sessionId || !isISAPath(filePath) || !existsSync(filePath)) return;
++    if (!sessionId || !isISAPath(filePath)) return;
++    const backend = remoteView(filePath, remote);
++    if (backend ? !backend.hash : !existsSync(filePath)) return;
+     mkdirSync(STATE_DIR, { recursive: true });
+     const f = viewFile(sessionId);
+     if (!existsSync(f)) pruneStale();
+     const views = readViews(sessionId);
+-    views[filePath] = hashOf(readFileSync(filePath, "utf-8"));
++    views[backend ? backend.key : filePath] = backend ? backend.hash! : hashOf(readFileSync(filePath, "utf-8"));
+     const tmp = `${f}.tmp`;
+     writeFileSync(tmp, JSON.stringify({ session_id: sessionId, views, updated: new Date().toISOString() }));
+     // tmp+rename so a concurrent reader never observes a half-written view file.
+@@ -166,16 +180,17 @@ export function check(input: any): BlockResult {
+     if (input?.tool_name !== "Write") return null; // Edit/MultiEdit are safe by construction
+     const filePath = input?.tool_input?.file_path;
+     if (!filePath || !isISAPath(filePath)) return null;
+-    if (!existsSync(filePath)) return null; // creating it — nothing to lose
++    const backend = remoteView(filePath, input?.tool_input?.lifeos_remote_file);
++    if (backend ? !backend.hash : !existsSync(filePath)) return null; // creating it or no usable digest
+ 
+     const sessionId = input?.session_id;
+     if (!sessionId) return null;
+ 
+-    const recorded = readViews(sessionId)[filePath];
++    const recorded = readViews(sessionId)[backend ? backend.key : filePath];
+     if (!recorded) return null; // never observed here — the harness's own
+     // read-before-overwrite rule is the guard for that case
+ 
+-    const current = hashOf(readFileSync(filePath, "utf-8"));
++    const current = backend ? backend.hash! : hashOf(readFileSync(filePath, "utf-8"));
+     if (current === recorded) return null; // unchanged since we looked
+ 
+     return { block: true, message: denyMessage(filePath, current, recorded) };
+@@ -190,7 +205,7 @@ if (import.meta.main) {
+     const input = JSON.parse(readFileSync(0, "utf-8"));
+     const tool = input?.tool_name;
+     if (tool === "Read" || tool === "Write" || tool === "Edit" || tool === "MultiEdit") {
+-      recordView(input?.session_id, input?.tool_input?.file_path || "");
++      recordView(input?.session_id, input?.tool_input?.file_path || "", input?.tool_input?.lifeos_remote_file);
+     }
+   } catch {}
+   console.log(JSON.stringify({ continue: true }));
