@@ -838,13 +838,25 @@ class HookBridgeTests(unittest.TestCase):
             "UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}],
         })
         message = [
-            {"type": "text", "text": "Describe this photo"},
+            {"type": "text", "text": "First sentence."},
             {"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}},
+            {"type": "text", "text": "Second sentence."},
         ]
         bridge.pre_llm_call(message, session_id="s1")
         events = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual([item["hook_event_name"] for item in events], ["SessionStart", "UserPromptSubmit"])
-        self.assertEqual(events[1]["prompt"], "Describe this photo")
+        self.assertEqual(events[1]["prompt"], "First sentence.\nSecond sentence.")
+
+    def test_image_only_prompt_reaches_hook_as_empty_text(self):
+        marker = self.root / "image-prompt.json"
+        command = self.make_hook(
+            "record-image-prompt.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call([{"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}}], session_id="s1")
+        self.assertEqual(json.loads(marker.read_text())["prompt"], "")
 
     def test_post_tool_failure_runs_failure_hook(self):
         marker = self.root / "failure.json"
