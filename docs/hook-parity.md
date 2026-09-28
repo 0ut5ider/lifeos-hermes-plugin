@@ -52,6 +52,7 @@ The native bridge executes the installed registration types with partial coverag
 - All six installed SessionEnd handlers returned exit code zero for a synthetic session on `.212`.
 - The installed native SessionCleanup hook removed a synthetic entry from `session-names.json` at a Hermes session boundary. The probe confirmed all unrelated entries matched the original file and then restored the original bytes.
 - The installed native WorkCompletionLearning hook captured one closed claim before SessionCleanup marked the synthetic work complete. Both effects were observed under a temporary LifeOS root on `.212`. SessionEnd handlers now run in registration order; other synchronous events still run concurrently. See [the ordering probe](../notes/2026-09-27-session-end-order.md).
+- The installed native KnowledgeWriteGuard and ComplexityRatchet hooks returned advisories for synthetic writes. The native ISAStaleWriteGuard blocked a stale whole-file ISA replacement after an external edit, then allowed it after another read. Each probe used a temporary LifeOS root. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
 
 ## Hermes core dependency
 

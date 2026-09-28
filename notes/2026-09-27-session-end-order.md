@@ -5,3 +5,5 @@ The bridge ran all matching command hooks concurrently. LifeOS registers WorkCom
 The bridge now runs SessionEnd handlers in registration order. Other hook events retain concurrent synchronous dispatch. The same characterization test returned `[0, 0]` after the change.
 
 An isolated `.212` probe used the installed native WorkCompletionLearning and SessionCleanup hooks with a synthetic work registry and one closed claim. The bridge produced one learning file containing the synthetic session ID. It also changed the synthetic work row and ISA phase to `complete`. The fixture lived in a temporary LifeOS root; the probe did not alter the installed work registry.
+
+All six installed SessionEnd commands then ran sequentially with a separate synthetic session and temporary LifeOS root. They returned six zero exit codes in 0.465 seconds. Hermes's gateway shutdown finalization budget is 10 seconds. This timing result covers the no-active-work path; the learning capture path was verified separately with two handlers.
