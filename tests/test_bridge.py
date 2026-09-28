@@ -773,6 +773,7 @@ class HookBridgeTests(unittest.TestCase):
         payloads = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual([payload["tool_input"]["file_path"] for payload in payloads], ["first.txt", "second.txt"])
         self.assertEqual([payload["tool_input"]["new_string"] for payload in payloads], ["new", "hello"])
+        self.assertEqual([payload["tool_input"]["old_string"] for payload in payloads], ["old", ""])
         rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
         self.assertEqual(
             [item["input"]["file_path"] for item in rows[0]["message"]["content"]],

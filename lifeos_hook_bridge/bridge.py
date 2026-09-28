@@ -108,10 +108,13 @@ def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
     edits = []
     path = None
     added = []
+    removed = []
 
     def finish() -> None:
         if path is not None:
-            edits.append({"file_path": path, "new_string": "\n".join(added)})
+            edits.append({
+                "file_path": path, "old_string": "\n".join(removed), "new_string": "\n".join(added),
+            })
 
     for line in patch_text.splitlines():
         header = V4A_WRITE_HEADER.match(line)
@@ -120,14 +123,18 @@ def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
             finish()
             path = header.group(1).strip()
             added = []
+            removed = []
         elif move:
-            edits.append({"file_path": move.group(1).strip(), "new_string": ""})
+            edits.append({"file_path": move.group(1).strip(), "old_string": "", "new_string": ""})
         elif line.startswith("***"):
             finish()
             path = None
             added = []
+            removed = []
         elif path is not None and line.startswith("+"):
             added.append(line[1:])
+        elif path is not None and line.startswith("-"):
+            removed.append(line[1:])
     finish()
     return edits
 
