@@ -239,6 +239,13 @@ def _decode_output(stdout: str) -> dict[str, Any] | None:
         return None
 
 
+def _specific_output(output: dict[str, Any] | None, event: str) -> dict[str, Any]:
+    specific = (output or {}).get("hookSpecificOutput")
+    if isinstance(specific, dict) and specific.get("hookEventName") == event:
+        return specific
+    return {}
+
+
 def _scope_cwd() -> str:
     try:
         from agent.runtime_cwd import resolve_agent_cwd
@@ -861,7 +868,7 @@ class HookBridge:
             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command},
         )
         for _, output in self._run("PermissionRequest", payload, "Bash"):
-            specific = (output or {}).get("hookSpecificOutput") or {}
+            specific = _specific_output(output, "PermissionRequest")
             decision = specific.get("decision") or {}
             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
                 return {"action": "allow"}
@@ -879,7 +886,7 @@ class HookBridge:
         outcomes = self._run("PermissionRequest", payload, tool_name)
         granted = False
         for process, output in outcomes:
-            specific = (output or {}).get("hookSpecificOutput") or {}
+            specific = _specific_output(output, "PermissionRequest")
             decision = specific.get("decision") or {}
             if decision.get("behavior") == "deny" or process.returncode == 2:
                 message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the MCP call"
@@ -911,7 +918,7 @@ class HookBridge:
             outcomes = self._run("PermissionRequest", payload, native_name)
             granted = False
             for process, output in outcomes:
-                specific = (output or {}).get("hookSpecificOutput") or {}
+                specific = _specific_output(output, "PermissionRequest")
                 decision = specific.get("decision") or {}
                 if decision.get("behavior") == "deny" or process.returncode == 2:
                     message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the file change"
@@ -967,17 +974,17 @@ class HookBridge:
                 matcher_alias="Bash" if isinstance(code, str) and code else "",
                 alias_input={"command": code} if isinstance(code, str) and code else None,
             ):
-                specific = (output or {}).get("hookSpecificOutput") or {}
-                decision = specific.get("permissionDecision") or (output or {}).get("decision")
+                specific = _specific_output(output, "PreToolUse")
+                decision = specific.get("permissionDecision")
                 if process.returncode == 2 or decision in {"deny", "block"}:
-                    message = specific.get("permissionDecisionReason") or (output or {}).get("reason") or process.stderr.strip() or "Blocked by a LifeOS hook"
+                    message = specific.get("permissionDecisionReason") or process.stderr.strip() or "Blocked by a LifeOS hook"
                     return {"action": "block", "message": str(message)[:2000]}
-                updated = specific.get("updatedInput") or (output or {}).get("updatedInput")
+                updated = specific.get("updatedInput")
                 if isinstance(updated, dict) and not v4a and not (
                     tool_name == "execute_code" and "command" in updated
                 ):
                     updated_args = _hermes_input(native_name, updated)
-                context = specific.get("additionalContext") or (output or {}).get("additionalContext")
+                context = specific.get("additionalContext")
                 if isinstance(context, str) and context.strip():
                     if native_name == "Agent" and "WATCHDOG:" in context and "Monitor(" in context:
                         watching = self._ensure_agent_watchdog(session_id)
@@ -1166,7 +1173,7 @@ class HookBridge:
             )
             source = "resume" if resumed else "startup"
             start_payload = self._payload("SessionStart", session_id, source=source)
-            context.extend(self._context(self._run("SessionStart", start_payload), allow_plain=True))
+            context.extend(self._context(self._run("SessionStart", start_payload), "SessionStart", allow_plain=True))
         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
         outcomes = self._run("UserPromptSubmit", payload)
         for process, output in outcomes:
@@ -1174,19 +1181,24 @@ class HookBridge:
                 reason = (output or {}).get("reason") or process.stderr.strip() or "Prompt blocked by a hook"
                 return {"action": "block", "message": str(reason)}
         self._append_transcript(session_id, "user", user_message)
-        context.extend(self._context(outcomes, allow_plain=True))
+        context.extend(self._context(outcomes, "UserPromptSubmit", allow_plain=True))
         return {"context": "\n\n".join(context)} if context else None
 
     @staticmethod
     def _context(
         outcomes: list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]],
+        event: str,
         allow_plain: bool = False,
     ) -> list[str]:
         context = []
         for process, output in outcomes:
-            specific = (output or {}).get("hookSpecificOutput") or {}
-            value = specific.get("additionalContext") or (output or {}).get("additionalContext")
-            if allow_plain and not value and not output and process.returncode == 0:
+            specific = _specific_output(output, event)
+            value = specific.get("additionalContext")
+            if (
+                allow_plain and not value and not output and process.returncode == 0
+                and isinstance(process.args, list) and process.args[:1] == ["/bin/bash"]
+                and not (process.stdout.strip().startswith("{") and process.stdout.strip().endswith("}"))
+            ):
                 value = process.stdout.strip()
             if isinstance(value, str) and value.strip():
                 context.append(value.strip())
@@ -1248,7 +1260,7 @@ class HookBridge:
                 event, payload, native_name,
                 matcher_alias="WebFetch" if event == "PostToolUse" and external_content else "",
             )
-            context.extend(self._context(outcomes))
+            context.extend(self._context(outcomes, event))
             context.extend(
                 process.stderr.strip() for process, _ in outcomes
                 if process.returncode == 2 and process.stderr.strip()

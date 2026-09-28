@@ -1,0 +1,7 @@
+# Hook output event names and HTTP text
+
+On 2026-09-28, the [Claude Code hook contract](https://code.claude.com/docs/en/hooks#json-output) required nested `hookSpecificOutput.hookEventName` to match the event. An instrumented bridge probe returned a `SessionStart` object from PreToolUse and PostToolUse. Before the fix, it blocked a Read and appended `WRONG_EVENT_CONTEXT` to its result. A nested object without an event name also added post-tool context.
+
+The bridge now reads nested fields only for the matching event. PreToolUse no longer treats top-level `decision`, `updatedInput`, or `additionalContext` as event-specific output. The detached runner applies the same event-name rule to async context. The synchronous context path accepts plain stdout only from command hooks on SessionStart and UserPromptSubmit; an HTTP hook's plain text is ignored, as Claude Code specifies. Malformed JSON objects do not enter prompt context, while a quoted JSON string remains plain text on the asynchronous prompt path.
+
+Nine new regressions failed on the original behavior or checked the corrected permission path. Existing synthetic fixtures were updated to emit valid event names. The installed LifeOS hooks already use event-tagged nested output for the exercised paths. The full suite passed 130 tests on isolated `.212` with Bun and the patched LifeOS checkout. These tests do not validate every Claude Code output field or every installed hook branch.

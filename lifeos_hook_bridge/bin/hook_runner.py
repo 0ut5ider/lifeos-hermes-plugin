@@ -36,16 +36,23 @@ def main() -> int:
 
 
 def _save_context(request: dict, response: str) -> None:
-    try:
-        parsed = json.loads(response)
-    except (json.JSONDecodeError, ValueError):
-        parsed = {"additionalContext": response.strip()} if response.strip() else {}
+    event = request["payload"].get("hook_event_name", "")
+    text = response.strip()
+    if text.startswith("{") and text.endswith("}"):
+        try:
+            parsed = json.loads(text)
+        except (json.JSONDecodeError, ValueError):
+            return
+    else:
+        if event not in {"SessionStart", "UserPromptSubmit"} or not response.strip():
+            return
+        parsed = {"hookSpecificOutput": {"hookEventName": event, "additionalContext": text}}
     if not isinstance(parsed, dict):
         return
     specific = parsed.get("hookSpecificOutput") or {}
-    if not isinstance(specific, dict):
+    if not isinstance(specific, dict) or specific.get("hookEventName") != event:
         specific = {}
-    context = specific.get("additionalContext", parsed.get("additionalContext"))
+    context = specific.get("additionalContext")
     message = parsed.get("systemMessage")
     values = {
         "session_id": request["payload"].get("session_id", ""),
