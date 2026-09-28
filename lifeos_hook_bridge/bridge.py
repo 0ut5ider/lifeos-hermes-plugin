@@ -1166,7 +1166,7 @@ class HookBridge:
             )
             source = "resume" if resumed else "startup"
             start_payload = self._payload("SessionStart", session_id, source=source)
-            context.extend(self._context(self._run("SessionStart", start_payload)))
+            context.extend(self._context(self._run("SessionStart", start_payload), allow_plain=True))
         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
         outcomes = self._run("UserPromptSubmit", payload)
         for process, output in outcomes:
@@ -1174,16 +1174,19 @@ class HookBridge:
                 reason = (output or {}).get("reason") or process.stderr.strip() or "Prompt blocked by a hook"
                 return {"action": "block", "message": str(reason)}
         self._append_transcript(session_id, "user", user_message)
-        context.extend(self._context(outcomes))
+        context.extend(self._context(outcomes, allow_plain=True))
         return {"context": "\n\n".join(context)} if context else None
 
     @staticmethod
-    def _context(outcomes: list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]) -> list[str]:
+    def _context(
+        outcomes: list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]],
+        allow_plain: bool = False,
+    ) -> list[str]:
         context = []
         for process, output in outcomes:
             specific = (output or {}).get("hookSpecificOutput") or {}
             value = specific.get("additionalContext") or (output or {}).get("additionalContext")
-            if not value and not output:
+            if allow_plain and not value and not output and process.returncode == 0:
                 value = process.stdout.strip()
             if isinstance(value, str) and value.strip():
                 context.append(value.strip())
@@ -1241,10 +1244,15 @@ class HookBridge:
             external_content = tool_name in WEB_CONTENT_TOOLS or (
                 native_name == "Read" and _web_cache_read(native_input, cwd, task_id)
             )
-            context.extend(self._context(self._run(
+            outcomes = self._run(
                 event, payload, native_name,
                 matcher_alias="WebFetch" if event == "PostToolUse" and external_content else "",
-            )))
+            )
+            context.extend(self._context(outcomes))
+            context.extend(
+                process.stderr.strip() for process, _ in outcomes
+                if process.returncode == 2 and process.stderr.strip()
+            )
         return "\n\n".join(context) if context else None
 
     def augment_tool_result(

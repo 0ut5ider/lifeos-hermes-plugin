@@ -936,6 +936,48 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(rows[1]["message"]["content"][0]["tool_use_id"], "tc1")
         self.assertTrue(rows[1]["message"]["content"][0]["is_error"])
 
+    def test_post_tool_plain_stdout_is_not_model_context(self):
+        command = self.make_hook("diagnostic.py", "print('diagnostic only')\n")
+        bridge = self.bridge({"PostToolUse": [{"matcher": "Read", "hooks": [{"type": "command", "command": command}]}]})
+
+        context = bridge.post_tool_call("read_file", {"path": str(self.root / "sample.txt")}, "file body", session_id="s1")
+
+        self.assertIsNone(context)
+
+    def test_post_tool_failure_plain_stdout_is_not_model_context(self):
+        command = self.make_hook("failure-diagnostic.py", "print('diagnostic only')\n")
+        bridge = self.bridge({"PostToolUseFailure": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+
+        context = bridge.post_tool_call(
+            "terminal", {"command": "false"}, "failed", session_id="s1", status="error", error_message="failed",
+        )
+
+        self.assertIsNone(context)
+
+    def test_post_tool_exit_two_stderr_reaches_model(self):
+        command = self.make_hook(
+            "tool-warning.py",
+            "import sys\nprint('Review this tool result', file=sys.stderr)\nsys.exit(2)\n",
+        )
+        bridge = self.bridge({"PostToolUse": [{"matcher": "Read", "hooks": [{"type": "command", "command": command}]}]})
+
+        context = bridge.post_tool_call("read_file", {"path": str(self.root / "sample.txt")}, "file body", session_id="s1")
+
+        self.assertEqual(context, "Review this tool result")
+
+    def test_post_tool_failure_exit_two_stderr_reaches_model(self):
+        command = self.make_hook(
+            "failure-warning.py",
+            "import sys\nprint('Investigate failed command', file=sys.stderr)\nsys.exit(2)\n",
+        )
+        bridge = self.bridge({"PostToolUseFailure": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+
+        context = bridge.post_tool_call(
+            "terminal", {"command": "false"}, "failed", session_id="s1", status="error", error_message="failed",
+        )
+
+        self.assertEqual(context, "Investigate failed command")
+
     def test_unmapped_hermes_tool_reaches_generic_hooks_and_transcript(self):
         marker = self.root / "unmapped.jsonl"
         command = self.make_hook(
