@@ -720,6 +720,53 @@ class HookBridgeTests(unittest.TestCase):
         self.assertIsNone(bridge.pre_tool_call("write_file", {"path": "/tmp/example.txt", "content": "safe"}, session_id="s1"))
         self.assertTrue(marker.exists())
 
+    def test_file_permission_grant_replaces_write_input(self):
+        original = self.root / "original.txt"
+        rewritten = self.root / "rewritten.txt"
+        output = {"hookSpecificOutput": {"hookEventName": "PermissionRequest", "decision": {
+            "behavior": "allow", "updatedInput": {"file_path": str(rewritten), "content": "MODIFIED"},
+        }}}
+        command = self.make_hook(
+            "rewrite-write.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            f"assert data['tool_input']['file_path']=={str(original)!r}\n"
+            f"print(json.dumps({output!r}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Write", "hooks": [
+            {"type": "command", "command": command},
+        ]}]})
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)):
+            self.assertEqual(
+                bridge.pre_tool_call("write_file", {"path": str(original), "content": "ORIGINAL"}, session_id="s1"),
+                {"action": "modify", "args": {"path": str(rewritten), "content": "MODIFIED"}},
+            )
+
+    def test_file_permission_rewrite_checks_final_target_deny(self):
+        original = self.root / "original.txt"
+        rewritten = self.root / "rewritten.txt"
+        output = {"hookSpecificOutput": {"hookEventName": "PermissionRequest", "decision": {
+            "behavior": "allow", "updatedInput": {"file_path": str(rewritten), "content": "MODIFIED"},
+        }}}
+        command = self.make_hook(
+            "rewrite-denied-write.py",
+            "import json\n"
+            f"print(json.dumps({output!r}))\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Write", "hooks": [
+                {"type": "command", "command": command},
+            ]}]},
+            "permissions": {"deny": [f"Edit(//{str(rewritten).lstrip('/')})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        verdict = bridge.pre_tool_call(
+            "write_file", {"path": str(original), "content": "ORIGINAL"}, session_id="s1",
+        )
+        self.assertEqual(verdict["action"], "block")
+
     def test_file_rule_deny_blocks_direct_read_and_write_despite_hook_grant(self):
         grant = self.make_hook(
             "grant-file.py",
@@ -2080,6 +2127,23 @@ class HookBridgeTests(unittest.TestCase):
             {"action": "allow"},
         )
 
+    def test_native_permission_grant_replaces_command(self):
+        command = self.make_hook(
+            "replace-command.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['tool_input']['command']=='printf ORIGINAL > original; printf DONE'\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow','updatedInput':{'command':'pwd'}}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": command},
+        ]}]})
+        self.assertEqual(
+            bridge.command_approval("printf ORIGINAL > original; printf DONE", session_key="s1"),
+            {"action": "rewrite", "command": "pwd"},
+        )
+
     def test_native_permission_without_grant_requests_review(self):
         command = self.make_hook("abstain.py", "import sys\nsys.stdin.read()\n")
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
@@ -2949,6 +3013,43 @@ class HookBridgeTests(unittest.TestCase):
         self.assertIsNone(bridge.pre_tool_call("mcp__example__send", {"message": "ordinary text"}, session_id="s1"))
         review = bridge.pre_tool_call("mcp__example__send", {"message": "synthetic secret shape"}, session_id="s1")
         self.assertEqual(review["action"], "approve")
+
+    def test_mcp_permission_grant_replaces_tool_input(self):
+        output = {"hookSpecificOutput": {"hookEventName": "PermissionRequest", "decision": {
+            "behavior": "allow", "updatedInput": {"value": "MODIFIED"},
+        }}}
+        command = self.make_hook(
+            "mcp-rewrite.py",
+            "import json,sys\n"
+            "assert json.load(sys.stdin)['tool_input']=={'value':'ORIGINAL'}\n"
+            f"print(json.dumps({output!r}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "mcp__probe__echo", "hooks": [
+            {"type": "command", "command": command},
+        ]}]})
+        self.assertEqual(
+            bridge.pre_tool_call("mcp__probe__echo", {"value": "ORIGINAL"}, session_id="s1"),
+            {"action": "modify", "args": {"value": "MODIFIED"}},
+        )
+
+    def test_mcp_permission_deny_overrides_replacement(self):
+        grant = self.make_hook(
+            "mcp-rewrite-grant.py",
+            "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow','updatedInput':{'value':'MODIFIED'}}}}))\n",
+        )
+        deny = self.make_hook(
+            "mcp-rewrite-deny.py",
+            "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'deny','reason':'Native MCP denial'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "mcp__probe__echo", "hooks": [
+            {"type": "command", "command": grant}, {"type": "command", "command": deny},
+        ]}]})
+        self.assertEqual(
+            bridge.pre_tool_call("mcp__probe__echo", {"value": "ORIGINAL"}, session_id="s1"),
+            {"action": "block", "message": "Native MCP denial"},
+        )
 
     def test_mcp_permission_deny_overrides_another_grant(self):
         grant = self.make_hook("grant.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n")

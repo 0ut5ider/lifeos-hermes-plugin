@@ -11,7 +11,7 @@ python scripts/prepare_sources.py \
   --output "$HOME/workspace/lifeos-prepared"
 ```
 
-The command checks each patch against the preceding result and publishes both trees only after all 20 patches pass. It refuses an existing output path and leaves the source repositories untouched. `manifest.json` records the base commits and patch hashes. The prepared Git branches contain the applied patches as uncommitted changes for review. A real-source test on `.212` prepared both trees and passed `git diff --check` for each. This step prepares source code; it does not install LifeOS or Hermes into the account.
+The command checks each patch against the preceding result and publishes both trees only after all 21 patches pass. It refuses an existing output path and leaves the source repositories untouched. `manifest.json` records the base commits and patch hashes. The prepared Git branches contain the applied patches as uncommitted changes for review. A real-source test on `.212` prepared both trees and passed `git diff --check` for each. This step prepares source code; it does not install LifeOS or Hermes into the account.
 
 Run the commands as the new account from its own home directory. Install Bun first and keep it on `PATH`. Set `LIFEOS_SRC` and `HERMES_SRC` to the two patched source checkouts:
 

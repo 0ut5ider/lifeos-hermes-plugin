@@ -1,0 +1,527 @@
+48f0a3d12d5afad6d186f5358f57cc33b2fd4b2f
+def _plugin_command_decision(
+    command: str, pattern_key: str, description: str, *,
+    env_type: str = "", cwd: str = "", task_id: str = "",
+) -> str | None:
+    """Combine plugin command decisions after the applicable safety floors.
+
+    A grant never overrides a separate Tirith finding or smart guardian denial.
+    """
+    try:
+        from hermes_cli.plugins import invoke_hook
+        decisions = invoke_hook(
+            "pre_command_approval", command=command, pattern_key=pattern_key,
+            description=description, session_key=get_current_session_key(),
+            env_type=env_type, cwd=cwd, task_id=task_id,
+        )
+    except Exception:
+        logger.exception("pre_command_approval hook failed")
+        return None
+    actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
+    if "deny" in actions:
+        return "deny"
+    if "review" in actions:
+        return "review"
+    return "allow" if "allow" in actions else None
+
+
+def check_dangerous_command(command: str, env_type: str,
+                            approval_callback=None,
+                            has_host_access: bool = False) -> dict:
+    """Detect a dangerous command and handle approval (pattern layer only). ``has_host_access``:
+    a Docker sandbox that bind-mounts host paths must not skip approval.
+    Returns ``{"approved": True/False, "message": str or None, ...}``."""
+    if _should_skip_container_guards(env_type, has_host_access=has_host_access):
+        return _user_deny_block(command) or _approved()
+    blocked = _floor_block(command)
+    if blocked is not None:
+        return blocked
+    if _yolo_active():
+        return _approved()
+    if _command_matches_permanent_allowlist(command):
+        return _approved()
+    is_dangerous, pattern_key, description = detect_dangerous_command(command)
+    if not is_dangerous:
+        return _approved()
+    plugin_decision = _plugin_command_decision(command, pattern_key, description)
+    if plugin_decision == "deny":
+        return _denied(
+            "BLOCKED: a plugin command policy denied this command.",
+            pattern_key=pattern_key, description=description, outcome="plugin_denied",
+        )
+    if approval_context._get_approval_mode() == "manual" and plugin_decision == "allow":
+        return _approved()
+    return _run_approval_gate(
+        pattern_key=pattern_key, description=description, display_target=command, approval_callback=approval_callback,
+        subject=f"Command flagged as dangerous ({description})", noun="dangerous commands",
+        advice="Find an alternative approach that avoids this command.",
+        autoapprove_log_prefix="AUTO-APPROVED dangerous command in non-interactive non-gateway context",
+    )
+
+
+def request_tool_approval(tool_name: str, reason: str, *, rule_key: str = "", approval_callback=None) -> dict:
+    """Escalate an arbitrary tool call to the human-approval gate.
+
+    Entry point for a plugin ``pre_tool_call`` hook returning ``{"action": "approve", ...}``:
+    it asks the SAME human gate as Tier-2 dangerous shell patterns (session/permanent
+    allowlist, CLI prompt, gateway pending, once/session/always/deny, timeout fail-closed), so
+    the LLM cannot skip it. Cron honors ``approvals.cron_mode``; any OTHER non-interactive
+    context without an approval bridge fails CLOSED. ``rule_key`` controls the ``[a]lways``
+    allowlist grain; when empty it is ``tool_name`` + a hash of ``reason`` so DISTINCT reasons
+    on the same tool persist independently. Returns the ``check_dangerous_command`` result shape.
+    """
+    description = reason or f"Plugin requires approval for {tool_name}"
+    if not rule_key:
+def check_all_command_guards(command: str, env_type: str,
+                             approval_callback=None,
+                             has_host_access: bool = False,
+                             cwd: str = "", task_id: str = "") -> dict:
+    """Run all pre-exec security checks and return a single approval decision. Tirith and
+    dangerous-command findings are presented as ONE combined approval request, so a gateway
+    force=True replay cannot bypass one check when only the other was shown to the user.
+    ``has_host_access``: a Docker sandbox with bind-mounted host paths takes the normal flow."""
+    isolated_container = _should_skip_container_guards(env_type, has_host_access=has_host_access)
+    if isolated_container:
+        blocked = _user_deny_block(command)
+    else:
+        blocked = _floor_block(command, sudo_guard=True)
+    if blocked is not None:
+        return blocked
+
+    if not isolated_container:
+        from agent.terminal_approval_batch import consume_prepared_guard
+        prepared = consume_prepared_guard(command, env_type, has_host_access, cwd, task_id)
+        if prepared is not None:
+            return prepared
+
+    approval_mode = approval_context._get_approval_mode()
+    if _yolo_active() or approval_mode == "off":
+        return _approved()
+    if _command_matches_permanent_allowlist(command):
+        return _approved()
+
+    is_dangerous, pattern_key, description = detect_dangerous_command(command)
+    session_key = get_current_session_key()
+    policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
+    policy_key = f"plugin_rule:{policy_rule_key}"
+    plugin_decision = _plugin_command_decision(
+        command, pattern_key or "", description or "",
+        env_type=env_type, cwd=cwd, task_id=task_id,
+    )
+    # An earlier review approval never suppresses a later policy denial.
+    if plugin_decision == "review" and is_approved(session_key, policy_key):
+        plugin_decision = None
+    if plugin_decision == "deny":
+        return _denied(
+            "BLOCKED: a plugin command policy denied this command.",
+            pattern_key=pattern_key or policy_key,
+            description=description or "Plugin command policy denied the command",
+            outcome="plugin_denied",
+        )
+
+    if isolated_container:
+        if plugin_decision == "review":
+            return request_tool_approval(
+                "Bash", f"Plugin command policy requires review: {command}",
+                rule_key=policy_rule_key, approval_callback=approval_callback,
+            )
+        return _approved()
+
+    approval_callback, is_cli, is_gateway, is_ask = _presence(approval_callback)
+    if plugin_decision == "review" and not (is_cli or is_gateway or is_ask):
+        return request_tool_approval(
+            "Bash", "Plugin command policy requires review",
+            rule_key=policy_rule_key, approval_callback=approval_callback,
+        )
+    # Outside CLI/gateway/ask flows we never block on approvals: each
+    # unattended context applies its configured deny/approve mode, else allow.
+    if not is_cli and not is_gateway and not is_ask:
+        for ctx in _unattended_contexts():
+            result = _unattended_deny(command, ctx)
+            if result is not None:
+                return result
+        return _approved()
+
+    # Gather findings: warnings = [(pattern_key, description, is_tirith)]. Tirith block AND warn both go through the
+    # approval flow (block used to be a hard stop) so users can inspect the findings and approve.
+    tirith_result = _tirith_scan(command)
+    warnings = []
+    if tirith_result["action"] in {"block", "warn"}:
+        findings = tirith_result.get("findings") or []
+        rule_id = findings[0].get("rule_id", "unknown") if findings else "unknown"
+        tirith_key = f"tirith:{rule_id}"
+        if not is_approved(session_key, tirith_key):
+            warnings.append((tirith_key, _format_tirith_description(tirith_result), True))
+    if is_dangerous and not is_approved(session_key, pattern_key):
+        warnings.append((pattern_key, description, False))
+    if plugin_decision == "review" and not warnings:
+        warnings.append((policy_key, "Plugin command policy requires review", False))
+    if not warnings:
+        return _approved()
+
+    # A plugin grant cannot override a Tirith warning or a smart guardian denial.
+    if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
+        return _approved()
+
+    combined_desc = "; ".join(desc for _, desc, _ in warnings)
+    primary_key = warnings[0][0]
+    all_keys = [key for key, _, _ in warnings]
+
+    # "Always" is offered when at least one warning is a dangerous-pattern key the persistence layer would actually
+    # allowlist permanently. Pure-tirith findings are session-max by design, so a tirith-only prompt hides Always;
+    # mixed prompts offer it (the pattern key persists, tirith downgrades to session — see _persist_choice).
+    return _human_decision(
+        _COMMAND_GATE, command=command, description=combined_desc,
+        pattern_key=primary_key, pattern_keys=all_keys, warnings=warnings,
+        session_key=session_key, approval_callback=approval_callback,
+        is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask,
+        smart=approval_mode == "smart" and plugin_decision != "review",
+        permanent_capable=any(not is_t for _, _, is_t in warnings),
+        plugin_grant=(lambda: plugin_decision == "allow")
+        if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
+    )
+
+
+_EXECUTE_CODE_DESCRIPTION = (
+    "execute_code script execution. The script can spawn subprocesses or "
+    "mutate files without passing through terminal command approval; approval is one-shot for this run."
+)
+@dataclass
+class _ApprovalVerdict:
+    """Outcome of the pre-exec guard pass.
+
+    ``note`` is the audit note attached to the result. ``approved_run`` is True
+    when the user explicitly approved (or pre-confirmed via ``force``); it drives
+    the clean-interrupt-slate clear before ``env.execute`` so an approved command
+    can't be SIGINT-killed by a bit that landed during the approval-wait.
+    """
+    note: Optional[str] = None
+    approved_run: bool = False
+
+
+def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
+                         force: bool, cwd: str = "", task_id: str = "") -> _ApprovalVerdict:
+    """Run tirith + dangerous-command guards; ``force`` skips them entirely.
+    Raises :class:`_Rejected` when the command may not run (denied, or pending
+    gateway approval)."""
+    if force:
+        return _ApprovalVerdict(approved_run=True)
+    approval = _check_all_guards(
+        command, env_type, has_host_access=_docker_has_host_access(config), cwd=cwd, task_id=task_id,
+    )
+    if not approval["approved"]:
+        if approval.get("status") == "pending_approval":  # gateway ask mode
+            raise _Rejected(_error_json(
+                "", status="pending_approval",
+                approval_pending=True,
+                command=approval.get("command", command),
+                description=approval.get("description", "command flagged"),
+                pattern_key=approval.get("pattern_key", ""),
+                smart_denied=approval.get("smart_denied", False),
+                allow_permanent=approval.get("allow_permanent", True),
+            ))
+        desc = approval.get("description", "command flagged")
+        fallback_msg = (
+            f"Command denied: {desc}. "
+            "Use the approval prompt to allow it, or rephrase the command."
+        )
+        raise _Rejected(_error_json(approval.get("message", fallback_msg), status="blocked",
+                                    **({"user_summary": approval["user_summary"]} if approval.get("user_summary") else {})))
+    desc = approval.get("description", "flagged as dangerous")
+    if approval.get("user_approved"):
+        return _ApprovalVerdict(
+            note=f"Command required approval ({desc}) and was approved by the user.",
+            approved_run=True,
+        )
+    if approval.get("smart_approved"):
+        return _ApprovalVerdict(note=f"Command was flagged ({desc}) and auto-approved by smart approval.")
+    return _ApprovalVerdict()
+
+
+@dataclass
+class _ExecPlan:
+    """Per-call execution parameters resolved before any environment is touched."""
+    command: Any, *, task_id: Optional[str], timeout: Optional[int],
+    background: bool, _host_local: bool,
+) -> _ExecPlan:
+    """Resolve backend, env-cache key, image, cwd and timeout for one call.
+
+    Raises :class:`_Rejected` when the call is rejected up front (non-string
+    command, non-positive or over-cap timeout, a foreground command that must
+    run in the background).
+    """
+    if not isinstance(command, str):
+        logger.warning("Rejected invalid terminal command value: %s", type(command).__name__)
+        raise _Rejected(_error_json(
+            f"Invalid command: expected string, got {type(command).__name__}", status="error",
+        ))
+
+    config = _get_env_config()
+    env_type = "local" if _host_local else config["env_type"]
+
+    # Fail closed under a refusal scope: the routed profile's terminal
+    # policy could not be resolved, so running with the launch process's
+    # ambient policy is forbidden.
+    # See #68559.
+    if not _host_local:
+        from tools.terminal_scope import enforce_no_refusal
+
+        enforce_no_refusal()
+
+    effective_task_id = _resolve_container_task_id(task_id)
+    if _host_local:
+        # Control-plane children run beside this interpreter, never inside
+        # the configured Docker/SSH backend; keep their env cache separate.
+        effective_task_id = f"host-local-{effective_task_id}"
+
+    # Per-task overrides (RL/benchmark envs, ACP workspace cwd) win over
+    # the global env-var config; ``resolve_task_overrides`` reads the raw
+    # task id first, then the collapsed container id.
+    overrides = resolve_task_overrides(task_id)
+    image = _select_image(env_type, overrides, config)
+
+    cwd = coerce_ssh_remote_cwd(
+        overrides.get("cwd") or get_session_cwd(task_id) or config["cwd"], env_type)
+    host_cwd = _resolve_task_host_cwd(config, task_id)
+    # config["cwd"] was sanitized for container backends in _get_env_config
+    # but an override / session record is raw: a host path would reach
+    # `docker run -w` and fail with exit 125. Re-apply the guard to the
+    # resolved cwd; when the host path IS this session's mounted workspace,
+    # remap to /workspace instead of discarding it. Mount equality is part of
+    # the unusable check so /mnt and /srv are not left as the container cwd.
+    if _is_container_backend(env_type) and _is_unusable_container_cwd(cwd, mounted_host=host_cwd):
+        remapped = "/workspace" if host_cwd else config["cwd"]
+        if cwd != remapped:
+            logger.info(
+                "Remapping host/relative cwd override %r for %s backend "
+                "(won't exist in sandbox). Using %r instead.",
+                cwd, env_type, remapped,
+            )
+        cwd = remapped
+    # Reject non-positive timeouts before deadline math: ``timeout or
+    # default`` would silently turn 0 into the default, and a negative
+    # value is truthy and would fire an immediate "-Ns" timeout.
+    if timeout is not None and timeout <= 0:
+        raise _Rejected(tool_error(f"timeout must be a positive number of seconds (got {timeout})."))
+    promoted = None
+    if not background:
+        # An over-cap foreground timeout is a bounded job the caller wants to wait for (test suites,
+        # builds). Refusing it only bought a mechanical retry: 454 refusals in one run, every one
+        # re-sent lower/split/background. Promote to a tracked background process instead; the
+        # caller is told in the result. The `&`/nohup/server guidance below stays a refusal: those
+        # need the command itself rewritten, which the tool cannot do safely.
+        # The detachment guidance applies whether or not the call is promoted: a promoted `cmd &`
+        # would start a tracked shell that exits at once while its payload runs untracked.
+        guidance = _foreground_background_guidance(command)
+        if guidance:
+            raise _Rejected(_error_json(guidance, status="error"))
+        if timeout and timeout > FOREGROUND_MAX_TIMEOUT:
+            promoted = timeout
+
+    return _ExecPlan(
+        config=config, env_type=env_type, effective_task_id=effective_task_id,
+        image=image, cwd=cwd, host_cwd=host_cwd, effective_timeout=timeout or config["timeout"],
+        promoted_from_foreground_timeout=promoted,
+    )
+
+
+_PROMOTED_NOTE_POLL_ONLY = (
+    "Requested foreground timeout {requested}s exceeds the {cap}s cap, so this command was started as a "
+    "tracked background process instead of being refused. Do NOT re-run it. This session cannot receive "
+    "completion notifications, so poll it with process(action=\"poll\", session_id=...) until it exits."
+)
+def _pre_exec_block(
+    command: str, *, env: Any, env_type: str, cwd: str,
+    workdir: Optional[str], session_key: str,
+) -> None:
+    """Raise :class:`_Rejected` with the blocked-result JSON when the command must not run.
+
+    Order matters: gateway lifecycle first (protects the running gateway),
+    then the dangerous-workdir check, then the self-repo guard (local only).
+    """
+    blocked = gateway_lifecycle_block(
+        command=command, env=env, env_type=env_type, cwd=cwd, workdir=workdir, session_key=session_key,
+    )
+    if blocked:
+        raise _Rejected(blocked)
+    if workdir:
+        workdir_error = _validate_workdir(workdir)
+        if workdir_error:
+            logger.warning("Blocked dangerous workdir: %s (command: %s)",
+                           workdir[:200], _safe_command_preview(command))
+            raise _Rejected(_error_json(workdir_error, status="blocked"))
+    if env_type == "local":
+        blocked = self_repo_block(command=command, cwd=cwd, workdir=workdir, session_key=session_key)
+        if blocked:
+            raise _Rejected(blocked)
+
+
+    """
+    try:
+        plan = _plan_execution(
+            command, task_id=task_id, timeout=timeout, background=background, _host_local=_host_local,
+        )
+        env = _acquire_env(plan, task_id)
+        env_type, cwd, effective_task_id = plan.env_type, plan.cwd, plan.effective_task_id
+
+        # Session key for cwd records: the contextvar doesn't cross tool-worker
+        # threads, so fall back to the raw task_id (the top-level agent's
+        # session_key) as a stable anchor.
+        from tools.approval import get_current_session_key
+
+        session_key = get_current_session_key(default="") or (task_id or "")
+
+        # The supervised-gateway identity probe ends in a kernel process query
+        # (psutil create_time) that has wedged for the better part of an hour on
+        # macOS; ``env.execute`` is already behind ``run_bounded_sync`` but this
+        # chain ran ahead of it, so the tool call never returned and the cron
+        # slot stayed occupied (#111922). Share the command's own deadline. A
+        # guard that never rendered a verdict fails CLOSED: these checks apply
+        # unconditionally (``force`` cannot bypass them), so the command is
+        # refused with a retryable error instead of running unguarded.
+        from agent.deadline import run_bounded_sync
+        from tools.interrupt import acting_for_tid
+
+        # The guard chain runs on the deadline worker; keep it answerable to /stop
+        # aimed at this tool thread (a remote-backend script read polls is_interrupted()).
+        guard_timeout = max(plan.effective_timeout, _PRE_EXEC_GUARD_MIN_TIMEOUT_S)
+        _acting_token = acting_for_tid.set(threading.current_thread().ident)
+        try:
+            bounded_guard = run_bounded_sync(
+                lambda: _pre_exec_block(
+                    command, env=env, env_type=env_type, cwd=cwd, workdir=workdir, session_key=session_key,
+                ),
+                guard_timeout,
+                label="terminal.pre-exec-guard",
+            )
+        finally:
+            acting_for_tid.reset(_acting_token)
+        if bounded_guard.timed_out:
+            raise _Rejected(_error_json(
+                f"Terminal pre-execution guard did not finish within {guard_timeout}s "
+                "(process-identity probe wedged); the command was not run. Retry the call.",
+                status="error",
+            ))
+        # Pre-exec security checks (tirith + dangerous command detection);
+        # force=True means the user already confirmed.
+        verdict = _run_approval_guards(
+            command, env_type, plan.config, force=force,
+            cwd=workdir or cwd, task_id=task_id or "",
+        )
+
+        pty_disabled = pty and _command_requires_pipe_stdin(command)
+        if plan.promoted_from_foreground_timeout is not None:
+            # Promotion implies notify_on_complete; watch_patterns is a background-only flag the
+            # caller could not have meant for a foreground call, and the two are exclusive anyway.
+            background, notify_on_complete, watch_patterns = True, True, None
+        if background:
+            result = spawn_background_process(
+                command=command, env=env, env_type=env_type, effective_task_id=effective_task_id,
+                task_id=task_id, session_key=session_key, workdir=workdir, cwd=cwd,
+                mounted_host=getattr(env, "host_cwd", None) or plan.host_cwd,
+                effective_pty=pty and not pty_disabled, notify_on_complete=notify_on_complete,
+                watch_patterns=watch_patterns, approval_note=verdict.note,
+                pty_disabled_reason=_PTY_DISABLED_REASON if pty_disabled else None,
+                completion_output_chars=_completion_output_chars,
+                heartbeat_seconds=heartbeat,
+                persist_on_release=persist_on_release,
+            )
+            if plan.promoted_from_foreground_timeout is not None:
+                result = _with_promoted_note(result, plan.promoted_from_foreground_timeout)
+            return result
+        return _run_foreground(
+            command, env, plan,
+            task_id=task_id, session_id=session_id, session_key=session_key,
+            workdir=workdir, approval_note=verdict.note, clear_interrupt=verdict.approved_run,
+        )
+    except _Rejected as r:
+        return r.result_json
+    except EnvironmentConnectionError as e:
+        return _degraded_result(e, task_id)
+    except Exception as e:
+        return _fatal_error_json(e)
+
+    def check_cancelled(self):
+        if self.batch.cancelled.is_set() or self.batch.agent._interrupt_requested:
+            raise _CancelledPreparation("Terminal approval preparation cancelled; command was not started")
+
+    def prepare(self, ref):
+        from tools import terminal_tool as tt
+        self.check_cancelled()
+        self.args = copy.deepcopy(ref.args)
+        self.preparing = True
+        try:
+            # Read policy only. _plan_execution/_acquire_env resolve cwd and
+            # shell state later, after the previous result has been persisted.
+            config = tt._get_env_config()
+            if isinstance(ref.args.get("command"), str):
+                from tools.approval_context import set_current_observability_context, reset_current_observability_context
+                tokens = set_current_observability_context(
+                    tool_call_id=ref.call_id, session_id=self.batch.agent.session_id or "",
+                    turn_id=getattr(self.batch.agent, "_current_turn_id", "") or "",
+                )
+                try:
+                    overrides = tt.resolve_task_overrides(self.batch.task_id)
+                    base_cwd = tt.coerce_ssh_remote_cwd(
+                        overrides.get("cwd") or tt.get_session_cwd(self.batch.task_id) or config["cwd"],
+                        config["env_type"],
+                    )
+                    target_cwd = ref.args.get("workdir") or base_cwd
+                    self.guard_key = (
+                        ref.args["command"], config["env_type"], tt._docker_has_host_access(config),
+                        target_cwd, self.batch.task_id or "",
+                    )
+                    self.decision = tt._check_all_guards(*self.guard_key)
+                finally:
+                    reset_current_observability_context(tokens)
+        finally:
+def consume_prepared_guard(command, env_type, has_host_access, cwd="", task_id=""):
+    slot = _slot.get()
+    if slot is None or slot.preparing:
+        return None
+    slot.check_cancelled()
+    # Re-gate after an earlier slot in the same batch failed (#113158): the
+    # user approved a batch where every command was expected to run; once one
+    # failed, that informed consent is stale for the commands after it, so
+    # drop the pre-made decision and let the guard run its live flow (tirith
+    # scan, allowlist, human approval). Nothing is auto-denied: an explicit
+    # human answer still wins; the prepared (often auto/policy) decision is
+    # simply not consumed.
+    if slot.batch.failure_seen and slot.decision is not None:
+        slot.decision = None
+        return None
+    from tools.approval_context import _approval_tool_call_id
+    if (_approval_tool_call_id.get() != slot.parsed.ref(slot.batch.task_id).call_id
+            or slot.guard_key != (command, env_type, has_host_access, cwd, task_id)):
+        return None
+    decision, slot.decision = slot.decision, None  # single-use, even for identical calls
+    return decision
+
+
+def _handle_terminal(args, **kw):
+    from agent.terminal_approval_batch import validate_prepared_terminal
+    validate_prepared_terminal(args)
+    # Models sometimes send execute_code's ``code`` here; name the stray
+    # argument and the right tool instead of failing on command=None.
+    if "command" not in args and "code" in args:
+        return tool_error(
+            "terminal received a 'code' parameter, but it requires a shell "
+            "command in 'command'. Use execute_code(code=...) for Python; "
+            "for shell, retry as terminal(command=...)."
+        """Emit the one terminal ``post_tool_call`` for this call (``outcome`` = status /
+        error_type / error_message / duration_ms). Resolved through the module attribute so
+        tests patching ``_emit_terminal_post_tool_call`` still intercept."""
+        _emit_terminal_post_tool_call(
+            agent,
+            function_name=self.name,
+            function_args=self.args,
+            result=result,
+            effective_task_id=self.task_id,
+            tool_call_id=self.call_id,
+            middleware_trace=list(self.trace if trace is None else trace),
+            **outcome,
+        )
+
+    def emit_cancelled(self, agent, start_time: float) -> str:
+        """Synthesize the ``cancelled`` result for a KeyboardInterrupt mid-tool and emit its hook."""
+        message = "Tool execution cancelled by user interrupt"

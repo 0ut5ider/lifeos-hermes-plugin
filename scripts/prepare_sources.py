@@ -30,6 +30,7 @@ SOURCES = {
             "hermes-stop-fail-closed.patch",
             "hermes-command-policy.patch",
             "hermes-command-context.patch",
+            "hermes-command-rewrite.patch",
         ),
     },
     "lifeos": {

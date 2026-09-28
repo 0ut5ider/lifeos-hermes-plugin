@@ -1435,6 +1435,8 @@ class HookBridge:
             return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
         granted = False
         denied = False
+        invalid_replacement = False
+        replacement = None
         for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
             specific = _specific_output(output, "PermissionRequest")
             decision = specific.get("decision") or {}
@@ -1442,9 +1444,21 @@ class HookBridge:
                 denied = True
             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
                 granted = True
+                updated = decision.get("updatedInput")
+                if updated is not None:
+                    if not isinstance(updated, dict) or not isinstance(updated.get("command"), str):
+                        invalid_replacement = True
+                    elif replacement is not None and replacement != updated["command"]:
+                        invalid_replacement = True
+                    else:
+                        replacement = updated["command"]
         if denied:
             return {"action": "deny"}
         if granted:
+            if invalid_replacement:
+                return {"action": "review"}
+            if replacement is not None and replacement != command:
+                return {"action": "rewrite", "command": replacement}
             return {"action": "review"} if rule_decision in {"ask", "unknown"} else {"action": "allow"}
         return {"action": "review"}
 
@@ -1460,6 +1474,7 @@ class HookBridge:
         payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
         outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
         granted = False
+        replacement = None
         for process, output in outcomes:
             specific = _specific_output(output, "PermissionRequest")
             decision = specific.get("decision") or {}
@@ -1468,7 +1483,16 @@ class HookBridge:
                 return {"action": "block", "message": str(message)[:2000]}
             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
                 granted = True
+                updated = decision.get("updatedInput")
+                if updated is not None:
+                    if not isinstance(updated, dict):
+                        return {"action": "block", "message": "LifeOS supplied an invalid MCP replacement"}
+                    if replacement is not None and replacement != updated:
+                        return {"action": "block", "message": "LifeOS supplied conflicting MCP replacements"}
+                    replacement = updated
         if granted:
+            if replacement is not None and replacement != args:
+                return {"action": "modify", "args": replacement}
             return None
         fingerprint = hashlib.sha256(json.dumps(args, sort_keys=True).encode()).hexdigest()[:16]
         return {
@@ -1488,6 +1512,7 @@ class HookBridge:
         if not any(_hook_matcher_matches(group.get("matcher", ""), native_name) for group in groups):
             return None
         review_paths = []
+        replacement = None
         for native_input in native_inputs:
             payload = self._payload(
                 "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd,
@@ -1502,8 +1527,21 @@ class HookBridge:
                     return {"action": "block", "message": str(message)[:2000]}
                 if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
                     granted = True
+                    updated = decision.get("updatedInput")
+                    if updated is not None:
+                        if not isinstance(updated, dict) or not isinstance(updated.get("file_path"), str) or not updated["file_path"]:
+                            return {"action": "block", "message": "LifeOS supplied an invalid file replacement"}
+                        if native_name == "Write" and not isinstance(updated.get("content"), str):
+                            return {"action": "block", "message": "LifeOS supplied an invalid Write replacement"}
+                        if replacement is not None and replacement != updated:
+                            return {"action": "block", "message": "LifeOS supplied conflicting file replacements"}
+                        replacement = updated
             if not granted:
                 review_paths.append(str(native_input.get("file_path", "unknown path")))
+        if replacement is not None:
+            if len(native_inputs) != 1:
+                return {"action": "block", "message": "LifeOS cannot replace a multi-file patch input"}
+            return {"action": "modify", "args": _hermes_input(native_name, replacement)}
         if not review_paths:
             return None
         if any(_hermes_write_requires_approval(path, cwd) for path in review_paths):
@@ -1608,6 +1646,9 @@ class HookBridge:
             if verdict:
                 if verdict["action"] == "block":
                     return verdict
+                if verdict["action"] == "modify":
+                    updated_args = verdict["args"]
+                    return pretool_review() if review_requests else verdict
                 if review_requests:
                     return pretool_review()
                 if verdict["action"] == "approve" and updated_args is not None:
@@ -1642,6 +1683,32 @@ class HookBridge:
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
             if verdict:
                 if verdict["action"] == "block":
+                    return verdict
+                if verdict["action"] == "modify":
+                    updated_args = verdict["args"]
+                    file_rule_review_paths = []
+                    final_input = _tool_input(native_name, updated_args, cwd, task_id)
+                    path = final_input.get("file_path")
+                    if not isinstance(path, str) or not path:
+                        return {"action": "block", "message": "LifeOS supplied an invalid file path"}
+                    resolved = None if host_paths else _backend_file_path(path, cwd, task_id)
+                    decision = file_target_decision(
+                        path, "write", cwd, permission_sources,
+                        host_paths=host_paths, resolved_path=resolved,
+                    )
+                    if decision == "deny":
+                        return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+                    if decision in {"ask", "unknown", "invalid_policy"}:
+                        file_rule_review_paths.append(path)
+                    if review_requests:
+                        return pretool_review()
+                    if file_rule_review_paths:
+                        fingerprint = hashlib.sha256(json.dumps(updated_args, sort_keys=True).encode()).hexdigest()[:16]
+                        return {
+                            "action": "approve", "args": updated_args,
+                            "message": f"LifeOS file rule requests review of {native_name} for {path}",
+                            "rule_key": f"lifeos-file-rule:{native_name}:{fingerprint}",
+                        }
                     return verdict
                 if review_requests:
                     return pretool_review()

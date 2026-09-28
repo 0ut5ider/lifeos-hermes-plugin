@@ -1,0 +1,51 @@
+[
+  {
+    "input": [
+      {
+        "action": "review"
+      },
+      {
+        "action": "rewrite",
+        "command": "printf REPLACED"
+      }
+    ],
+    "result": "review"
+  },
+  {
+    "input": [
+      {
+        "action": "review"
+      },
+      {
+        "action": "rewrite",
+        "command": ""
+      }
+    ],
+    "result": "review"
+  },
+  {
+    "input": [
+      {
+        "action": "review"
+      },
+      {
+        "action": "rewrite",
+        "command": "pwd"
+      },
+      {
+        "action": "rewrite",
+        "command": "date"
+      }
+    ],
+    "result": "review"
+  },
+  {
+    "audit_original_args": {
+      "command": "printf ORIGINAL"
+    },
+    "registry_mutated_args": {
+      "command": "printf REPLACED"
+    },
+    "same_object": false
+  }
+]

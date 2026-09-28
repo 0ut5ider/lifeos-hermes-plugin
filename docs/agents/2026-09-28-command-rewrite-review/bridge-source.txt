@@ -1,0 +1,69 @@
+1392:     def command_approval(
+1393:         self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+1394:     ) -> dict[str, str] | None:
+1395:         cwd = cwd or _tool_cwd("terminal", {}, task_id)
+1396:         self._remember_project(cwd, session_key, task_id)
+1397:         self.poll_config_changes(force=True)
+1398:         payload = self._payload(
+1399:             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
+1400:         )
+1401:         host_paths = _task_uses_host_paths(task_id)
+1402:         permission_sources = self._permission_sources(payload, task_id, host_paths)
+1403:         from .bash_permissions import bash_file_targets
+1404:         from .file_permissions import file_target_decision
+1405:
+1406:         targets, targets_certain = bash_file_targets(command)
+1407:         file_decision = "unknown" if not targets_certain else "allow"
+1408:         for operation, target in targets:
+1409:             resolved = None if host_paths else _backend_file_path(target, cwd, task_id)
+1410:             decision = file_target_decision(
+1411:                 target, operation, cwd, permission_sources,
+1412:                 host_paths=host_paths, resolved_path=resolved,
+1413:             )
+1414:             if decision == "deny":
+1415:                 return {"action": "deny"}
+1416:             if decision in {"ask", "unknown", "invalid_policy"} or (
+1417:                 operation == "write" and host_paths and _hermes_write_requires_approval(target, cwd)
+1418:             ):
+1419:                 file_decision = "unknown"
+1420:         rule_decision = _bash_permission_rule_decision(
+1421:             command, [settings for settings, _ in permission_sources],
+1422:             checked_file_targets=file_decision == "allow",
+1423:         )
+1424:         if rule_decision == "deny":
+1425:             return {"action": "deny"}
+1426:         if file_decision == "unknown":
+1427:             rule_decision = "unknown"
+1428:         if host_paths and rule_decision == "allow":
+1429:             return None
+1430:         if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):
+1431:             return None
+1432:         groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
+1433:         if not any(group.get("hooks") and _hook_matcher_matches(group.get("matcher", ""), "Bash")
+1434:                    for group in groups):
+1435:             return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
+1436:         granted = False
+1437:         denied = False
+1438:         invalid_replacement = False
+1439:         replacement = None
+1440:         for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
+1441:             specific = _specific_output(output, "PermissionRequest")
+1442:             decision = specific.get("decision") or {}
+1443:             if decision.get("behavior") == "deny" or process.returncode == 2:
+1444:                 denied = True
+1445:             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+1446:                 granted = True
+1447:                 updated = decision.get("updatedInput")
+1448:                 if updated is not None:
+1449:                     if not isinstance(updated, dict) or not isinstance(updated.get("command"), str):
+1450:                         invalid_replacement = True
+1451:                     elif replacement is not None and replacement != updated["command"]:
+1452:                         invalid_replacement = True
+1453:                     else:
+1454:                         replacement = updated["command"]
+1455:         if denied:
+1456:             return {"action": "deny"}
+1457:         if granted:
+1458:             if invalid_replacement:
+1459:                 return {"action": "review"}
+1460:             if replacement is not None and replacement != command:
