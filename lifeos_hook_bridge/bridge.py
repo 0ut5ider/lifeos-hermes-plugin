@@ -1030,7 +1030,9 @@ class HookBridge:
             self.task_counts[session_id] = self.task_counts.get(session_id, 0) + (len(new_ids) if ids else count)
             self._save_task_state(session_id)
 
-    def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
+    def pre_llm_call(
+        self, user_message: Any, session_id: str = "", is_first_turn: bool | None = None, **_: Any,
+    ) -> dict[str, str] | None:
         prompt = _prompt_text(user_message)
         self._remember_project(_scope_cwd(), session_id)
         context = self._drain_async_context(session_id)
@@ -1041,7 +1043,10 @@ class HookBridge:
         self._start_config_watcher()
         if first_turn:
             transcript = self.transcript_path(session_id)
-            source = "resume" if transcript.exists() and transcript.stat().st_size > 0 else "startup"
+            resumed = (not is_first_turn) if is_first_turn is not None else (
+                transcript.exists() and transcript.stat().st_size > 0
+            )
+            source = "resume" if resumed else "startup"
             start_payload = self._payload("SessionStart", session_id, source=source)
             context.extend(self._context(self._run("SessionStart", start_payload)))
         self._append_transcript(session_id, "user", user_message)

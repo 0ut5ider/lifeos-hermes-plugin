@@ -620,6 +620,18 @@ class HookBridgeTests(unittest.TestCase):
         second = self.bridge(hooks)
         self.assertEqual(second.pre_llm_call("next prompt", session_id="resumed"), {"context": "resume"})
 
+    def test_session_start_uses_hermes_resume_flag_when_transcript_is_missing(self):
+        command = self.make_hook(
+            "missing-transcript-source.py",
+            "import json,sys\n"
+            "print(json.dumps({'additionalContext': json.load(sys.stdin)['source']}))\n",
+        )
+        bridge = self.bridge({"SessionStart": [{"hooks": [{"type": "command", "command": command}]}]})
+        self.assertEqual(
+            bridge.pre_llm_call("resumed prompt", session_id="missing", is_first_turn=False),
+            {"context": "resume"},
+        )
+
     def test_multimodal_first_prompt_runs_start_and_prompt_hooks(self):
         marker = self.root / "multimodal-events.jsonl"
         command = self.make_hook(
