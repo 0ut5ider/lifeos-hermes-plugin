@@ -686,6 +686,40 @@ class HookBridgeTests(unittest.TestCase):
                 self.assertIsNotNone(decision)
                 self.assertEqual(decision["action"], "approve")
 
+    def test_invalid_managed_policy_reviews_direct_file_calls(self):
+        from lifeos_hook_bridge import bridge as module
+
+        grant = self.make_hook(
+            "grant-under-invalid-policy.py",
+            "import json,sys\njson.load(sys.stdin)\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow'}}}))\n",
+        )
+        policy = self.root / "policy"
+        policy.mkdir()
+        (policy / "managed-settings.json").write_text("{")
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Write", "hooks": [
+                {"type": "command", "command": grant},
+            ]}]},
+        }))
+        with patch.object(module, "POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            target = self.root / "allowed.txt"
+            with self.assertLogs("lifeos_hook_bridge.bridge", level="WARNING") as logs:
+                for tool, args in (
+                    ("read_file", {"path": str(target)}),
+                    ("write_file", {"path": str(target), "content": "synthetic"}),
+                ):
+                    with self.subTest(tool=tool):
+                        verdict = bridge.pre_tool_call(tool, args, session_id="s1")
+                        self.assertIsNotNone(verdict)
+                        self.assertEqual(verdict["action"], "approve")
+            self.assertEqual(len(logs.output), 2)
+            self.assertTrue(all("managed permission policy could not be read" in line for line in logs.output))
+
     def test_file_rule_deny_checks_every_patch_target(self):
         first = self.root / "first.txt"
         second = self.root / "second.txt"

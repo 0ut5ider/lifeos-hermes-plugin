@@ -115,7 +115,7 @@ def file_target_decision(
     target: str, operation: str, cwd: str, sources: list[tuple[Any, str]], *, host_paths: bool,
     resolved_path: str | None = None,
 ) -> str:
-    """Return deny, ask, allow, or unknown for one literal Bash file target."""
+    """Return a file rule decision, distinguishing invalid policy from unknown paths."""
     if not os.path.isabs(cwd):
         return "unknown"
     requested = os.path.normpath(target if os.path.isabs(target) else os.path.join(cwd, target))
@@ -134,7 +134,7 @@ def file_target_decision(
                 if match is None:
                     uncertain = True
         if uncertain:
-            return "unknown"
+            return "invalid_policy"
     if not host_paths and resolved_path is None:
         return "unknown"
     allow_tool = "Edit" if operation == "write" else "Read"
@@ -144,7 +144,7 @@ def file_target_decision(
         if match is True:
             explicitly_allowed = True
         elif match is None:
-            return "unknown"
+            return "invalid_policy"
     inside_cwd = requested == cwd or requested.startswith(cwd.rstrip("/") + "/")
     if resolved != requested:
         inside_cwd = inside_cwd and (resolved == cwd or resolved.startswith(cwd.rstrip("/") + "/"))

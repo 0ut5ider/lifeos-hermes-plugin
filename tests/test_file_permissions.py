@@ -89,6 +89,12 @@ class FilePermissionTests(unittest.TestCase):
     def test_read_deny_applies_to_output_target(self):
         self.assertEqual(self.decide("blocked.txt", {"deny": ["Read(./blocked.txt)"]}), "deny")
 
+    def test_invalid_policy_differs_from_outside_workspace(self):
+        self.assertEqual(self.decide("../external.txt", {}), "unknown")
+        self.assertEqual(self.decide("allowed.txt", None, operation="read"), "invalid_policy")
+        self.assertEqual(self.decide("allowed.txt", {"deny": ["Read("]}, operation="read"),
+                         "invalid_policy")
+
     def test_negation_only_carves_same_source(self):
         rules = {"deny": ["Edit(*.env)", "Edit(!sample.env)"]}
         self.assertEqual(self.decide("sample.env", rules), "allow")

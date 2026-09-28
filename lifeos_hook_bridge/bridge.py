@@ -1401,7 +1401,7 @@ class HookBridge:
             )
             if decision == "deny":
                 return {"action": "deny"}
-            if decision in {"ask", "unknown"} or (
+            if decision in {"ask", "unknown", "invalid_policy"} or (
                 operation == "write" and host_paths and _hermes_write_requires_approval(target, cwd)
             ):
                 file_decision = "unknown"
@@ -1599,7 +1599,7 @@ class HookBridge:
                 )
                 if decision == "deny":
                     return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
-                if decision == "ask" or (decision == "unknown" and not host_paths):
+                if decision in {"ask", "invalid_policy"} or (decision == "unknown" and not host_paths):
                     file_rule_review_paths.append(path)
         if native_name in {"Write", "Edit"}:
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
