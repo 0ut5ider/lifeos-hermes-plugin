@@ -1,0 +1,11 @@
+# Clean LifeOS and Hermes installation probe
+
+Date: 2026-09-28. A disposable `.212` account named `lifeos-install-probe` has separate `~/.claude` and `~/.hermes` directories. It uses public LifeOS base `5e2f2e8` with the eight repository patches and public Hermes base `758ad514e` with the five existing patches plus the two provider patches. The account received no LifeOS user data from `.211` or the other `.212` account.
+
+The fresh LifeOS install ran `InstallSettings`, `DeployCore`, `ScaffoldUser`, `LinkUser`, `InstallHooks`, and `ActivateImports` with `--config-root ~/.claude --skill-root <checkout>/LifeOS --apply`. `DeployCore` failed without `--skill-root` because it could not find the nested skill payload. With that path, each step returned `ok: true`, and `settings.json` registered 11 hook event groups.
+
+Hermes `setup-hermes.sh --runtime-only` installed the managed runtime but left `~/.hermes/config.yaml` absent. LifeOS `Mount.ts` needs that file. A minimal YAML config with `model.default: probe-local` let Mount render a 38,104-character SOUL, mount 56 skills, and install the LifeOS guard. `Mount.ts --check` then reported both SOUL and config current. Hermes `config check` parsed the result. The probe installed plugin commit `41c5ff3385b1d6786ff5c25a120c0a1bc9764557` through the public GitHub identifier with `--ref`, enabled it, and passed `hermes plugins validate`.
+
+The first native prompt-hook test ran under the probe UID but inherited `/home/outsider` as its working directory. It emitted 14 permission-denied hook errors. Running from `/home/lifeos-install-probe` made the same test return a `context` result, create a transcript, and load all 11 event groups. The installation procedure must set an accessible working directory before starting Hermes. This is a command invocation issue, not a LifeOS hook failure.
+
+The probe has no model credentials and did not test a model response or messaging. It still uses the earlier public plugin commit; reinstall it from the new pinned commit after publishing the picker update.

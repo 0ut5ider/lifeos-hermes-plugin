@@ -11,13 +11,13 @@ class ModelTierTests(unittest.TestCase):
         mapping = configured_model_map(lambda key, default: default)
         self.assertEqual(mapping["pin"], "fable")
         self.assertEqual(
-            {tier: (route["model"], route["effort"]) for tier, route in mapping.items() if tier != "pin"},
+            {tier: (route["provider"], route["model"], route["effort"]) for tier, route in mapping.items() if tier != "pin"},
             {
-                "haiku": ("", "low"), "sonnet": ("", "medium"),
-                "opus": ("", "xhigh"), "fable": ("", "xhigh"),
+                "haiku": ("", "", "low"), "sonnet": ("", "", "medium"),
+                "opus": ("", "", "xhigh"), "fable": ("", "", "xhigh"),
             },
         )
-        self.assertEqual(resolve_route("claude-opus-5", "default-local", mapping), ("default-local", "xhigh"))
+        self.assertEqual(resolve_route("claude-opus-5", "default-local", mapping), ("", "default-local", "xhigh"))
 
     def test_each_tier_can_select_its_own_model_and_effort(self):
         settings = {
@@ -35,7 +35,14 @@ class ModelTierTests(unittest.TestCase):
             ("fable", "largest-local", "ultra"),
         ):
             with self.subTest(tier=tier):
-                self.assertEqual(resolve_route(tier, "", mapping), (model, effort))
+                self.assertEqual(resolve_route(tier, "", mapping), ("", model, effort))
+
+    def test_direct_route_includes_selected_provider(self):
+        mapping = configured_model_map({
+            "haiku_provider": "local-fast", "haiku_model": "small-model",
+        }.get)
+        self.assertEqual(resolve_route("haiku", "default-local", mapping),
+                         ("local-fast", "small-model", "low"))
 
     def test_invalid_pin_and_effort_are_rejected(self):
         with self.assertRaisesRegex(ValueError, "pinned_tier"):
@@ -44,6 +51,17 @@ class ModelTierTests(unittest.TestCase):
             configured_model_map({"sonnet_effort": "unbounded"}.get)
         with self.assertRaisesRegex(ValueError, "no configured model"):
             resolve_route("sonnet", "", configured_model_map(lambda key, default: default))
+        with self.assertRaisesRegex(ValueError, "haiku_provider"):
+            configured_model_map({"haiku_provider": "bad\nprovider"}.get)
+
+    def test_delegated_tier_carries_selected_provider(self):
+        mapping = configured_model_map({
+            "haiku_provider": "local-fast", "haiku_model": "small-model",
+        }.get)
+        routed = route_delegate_args({"tasks": [{"goal": "quick", "model": "haiku"}]}, mapping)
+        self.assertEqual(routed["tasks"], [{
+            "goal": "quick", "model": "small-model", "provider": "local-fast", "reasoning_effort": "low",
+        }])
 
     def test_delegated_tiers_use_configured_routes(self):
         mapping = configured_model_map({

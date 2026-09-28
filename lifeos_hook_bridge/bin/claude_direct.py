@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# ABOUTME: Runs LifeOS child inference against an Anthropic Messages compatible local gateway.
+# ABOUTME: Runs LifeOS child inference against a selected Hermes provider or local gateway.
 # ABOUTME: Emits the small Claude CLI JSON envelope that LifeOS Inference.ts reads.
 
 import argparse
@@ -59,14 +59,62 @@ def _message_content(prompt: str, allow_images: bool) -> str | list[dict[str, ob
     return content
 
 
+def _hermes_content(content: str | list[dict[str, object]]) -> str | list[dict[str, object]]:
+    if isinstance(content, str):
+        return content
+    converted = []
+    for block in content:
+        if block["type"] == "image":
+            source = block["source"]
+            converted.append({"type": "image_url", "image_url": {
+                "url": f"data:{source['media_type']};base64,{source['data']}"
+            }})
+        else:
+            converted.append(block)
+    return converted
+
+
+def _field(value: object, key: str, default: object = None) -> object:
+    return value.get(key, default) if isinstance(value, dict) else getattr(value, key, default)
+
+
+def _run_hermes_provider(args: argparse.Namespace, system_prompt: str,
+                         content: str | list[dict[str, object]], provider: str) -> int:
+    from agent.auxiliary_client import call_llm, extract_content_or_reasoning
+
+    response = call_llm(
+        provider=provider, model=args.model,
+        messages=[{"role": "system", "content": system_prompt},
+                  {"role": "user", "content": _hermes_content(content)}],
+        max_tokens=int(os.environ.get("LIFEOS_CHILD_MAX_TOKENS", "4096")),
+        timeout=180, reasoning_config={"enabled": True, "effort": args.effort},
+        allow_provider_fallback=False,
+    )
+    choices = _field(response, "choices", [])
+    first_choice = choices[0] if choices else {}
+    model = str(_field(response, "model", args.model) or args.model)
+    usage = _field(response, "usage", {})
+    output_tokens = _field(usage, "completion_tokens", 0)
+    print(json.dumps({
+        "result": extract_content_or_reasoning(response),
+        "is_error": False,
+        "stop_reason": _field(first_choice, "finish_reason"),
+        "modelUsage": {model: {"outputTokens": output_tokens or 0}},
+    }))
+    return 0
+
+
 def main() -> int:
     args = _arguments()
+    system_prompt = args.system_prompt if args.system_prompt is not None else Path(args.system_prompt_file).read_text()
+    content = _message_content(sys.stdin.read(), args.allowedTools == "Read")
+    provider = os.environ.get("LIFEOS_CHILD_PROVIDER", "").strip()
+    if provider:
+        return _run_hermes_provider(args, system_prompt, content, provider)
     base_url = os.environ.get("ANTHROPIC_BASE_URL", "").rstrip("/")
     token = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
     if not base_url or not token:
         raise ValueError("local gateway URL and bearer token are required")
-    system_prompt = args.system_prompt if args.system_prompt is not None else Path(args.system_prompt_file).read_text()
-    content = _message_content(sys.stdin.read(), args.allowedTools == "Read")
     request_body = {
         "model": args.model,
         "max_tokens": int(os.environ.get("LIFEOS_CHILD_MAX_TOKENS", "4096")),

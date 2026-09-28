@@ -18,13 +18,16 @@ VALID_PINS = frozenset({"none", *DEFAULT_EFFORTS})
 def configured_tiers(read_setting: Callable[[str, Any], Any]) -> dict[str, dict[str, str]]:
     tiers = {}
     for tier, default_effort in DEFAULT_EFFORTS.items():
+        provider = read_setting(f"{tier}_provider", "")
         model = read_setting(f"{tier}_model", "")
         effort = read_setting(f"{tier}_effort", default_effort)
+        if not isinstance(provider, str) or "\n" in provider or "\r" in provider:
+            raise ValueError(f"{tier}_provider must be one provider name on one line")
         if not isinstance(model, str) or "\n" in model or "\r" in model:
             raise ValueError(f"{tier}_model must be one model name on one line")
         if not isinstance(effort, str) or effort not in VALID_EFFORTS:
             raise ValueError(f"{tier}_effort is not a supported Hermes effort")
-        tiers[tier] = {"model": model.strip(), "effort": effort}
+        tiers[tier] = {"provider": provider.strip(), "model": model.strip(), "effort": effort}
     return tiers
 
 
@@ -68,9 +71,12 @@ def route_delegate_args(args: Mapping[str, Any], mapping: Mapping[str, Any]) -> 
         if not isinstance(route, Mapping):
             raise ValueError(f"{tier} route is not configured")
         model = route.get("model", "")
+        provider = route.get("provider", "")
         effort = route.get("effort", DEFAULT_EFFORTS[tier])
         if not isinstance(model, str) or "\n" in model or "\r" in model:
             raise ValueError(f"{tier} model must be one model name on one line")
+        if not isinstance(provider, str) or "\n" in provider or "\r" in provider:
+            raise ValueError(f"{tier} provider must be one provider name on one line")
         if effort not in VALID_EFFORTS:
             raise ValueError(f"{tier} effort is not supported")
         child = dict(task)
@@ -78,6 +84,12 @@ def route_delegate_args(args: Mapping[str, Any], mapping: Mapping[str, Any]) -> 
             child["model"] = model.strip()
         else:
             child.pop("model", None)
+        if provider.strip():
+            if not model.strip():
+                raise ValueError(f"{tier} provider requires a configured model")
+            child["provider"] = provider.strip()
+        else:
+            child.pop("provider", None)
         child["reasoning_effort"] = effort
         mapped_tasks.append(child)
         changed = True
@@ -88,13 +100,16 @@ def route_delegate_args(args: Mapping[str, Any], mapping: Mapping[str, Any]) -> 
     return routed
 
 
-def resolve_route(requested_model: str, default_model: str, mapping: Mapping[str, Any]) -> tuple[str, str]:
+def resolve_route(requested_model: str, default_model: str, mapping: Mapping[str, Any]) -> tuple[str, str, str]:
     tier = _tier_name(requested_model)
     raw = mapping.get(tier, {})
     if not isinstance(raw, Mapping):
         raise ValueError(f"{tier} route must be an object")
     model = raw.get("model", "")
+    provider = raw.get("provider", "")
     effort = raw.get("effort", DEFAULT_EFFORTS[tier])
+    if not isinstance(provider, str) or "\n" in provider or "\r" in provider:
+        raise ValueError(f"{tier} provider must be one provider name on one line")
     if not isinstance(model, str) or "\n" in model or "\r" in model:
         raise ValueError(f"{tier} model must be one model name on one line")
     if not isinstance(effort, str) or effort not in VALID_EFFORTS:
@@ -102,7 +117,9 @@ def resolve_route(requested_model: str, default_model: str, mapping: Mapping[str
     selected_model = model.strip() or default_model
     if not selected_model:
         raise ValueError(f"{tier} has no configured model")
-    return selected_model, effort
+    if provider.strip() and not model.strip():
+        raise ValueError(f"{tier} provider requires a configured model")
+    return provider.strip(), selected_model, effort
 
 
 def main() -> int:
@@ -110,9 +127,10 @@ def main() -> int:
     mapping = json.loads(os.environ.get("LIFEOS_MODEL_TIER_MAP", "{}"))
     if not isinstance(mapping, dict):
         raise ValueError("LIFEOS_MODEL_TIER_MAP must be an object")
-    model, effort = resolve_route(requested_model, os.environ.get("ANTHROPIC_MODEL", ""), mapping)
+    provider, model, effort = resolve_route(requested_model, os.environ.get("ANTHROPIC_MODEL", ""), mapping)
     print(model)
     print(effort)
+    print(provider)
     return 0
 
 

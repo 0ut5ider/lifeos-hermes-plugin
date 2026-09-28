@@ -955,8 +955,8 @@ class HookBridgeTests(unittest.TestCase):
         values.update(fable_model="second-local", fable_effort="ultra")
         bridge.pre_llm_call("two", session_id="tiers")
         rows = [json.loads(line) for line in marker.read_text().splitlines()]
-        self.assertEqual(rows[0]["fable"], {"model": "first-local", "effort": "xhigh"})
-        self.assertEqual(rows[1]["fable"], {"model": "second-local", "effort": "ultra"})
+        self.assertEqual(rows[0]["fable"], {"provider": "", "model": "first-local", "effort": "xhigh"})
+        self.assertEqual(rows[1]["fable"], {"provider": "", "model": "second-local", "effort": "ultra"})
 
     def test_session_context_is_injected_on_first_prompt(self):
         command = self.make_hook(

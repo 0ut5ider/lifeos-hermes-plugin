@@ -170,6 +170,58 @@ class ClaudeAdapterTests(unittest.TestCase):
                         ["--model", route["model"], "--effort", route["effort"], "hello"],
                     )
 
+    def test_configured_provider_uses_hermes_runtime_for_direct_inference(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            (home / ".config/lifeos-hook-bridge").mkdir(parents=True)
+            (home / ".config/lifeos-hook-bridge/model.env").write_text(
+                "ANTHROPIC_MODEL=default-local\nLIFEOS_CHILD_INFERENCE_DIRECT=1\n"
+            )
+            bin_dir = home / "bin"
+            bin_dir.mkdir()
+            hermes = bin_dir / "hermes"
+            hermes.write_text(
+                "#!/usr/bin/env python3\n"
+                "import json,os,sys\n"
+                "print(json.dumps({'provider': os.getenv('LIFEOS_CHILD_PROVIDER'), "
+                "'args': sys.argv[1:]}))\n"
+            )
+            hermes.chmod(0o700)
+            result = subprocess.run(
+                [str(ADAPTER), "--print", "--model", "haiku", "--output-format", "json",
+                 "--system-prompt", "Answer briefly."],
+                input="Say READY.", text=True, capture_output=True,
+                env={**os.environ, "HOME": str(home), "PATH": str(bin_dir) + ":" + os.environ["PATH"],
+                     "LIFEOS_MODEL_TIER_MAP": json.dumps({"haiku": {
+                         "provider": "custom", "model": "flashnext", "effort": "low",
+                     }})},
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            payload = json.loads(result.stdout)
+            self.assertEqual(payload["provider"], "custom")
+            self.assertEqual(payload["args"][:2], ["--run-file", str(ADAPTER.parent / "claude_direct.py")])
+            self.assertEqual(payload["args"][3:5], ["--model", "flashnext"])
+
+    def test_selected_provider_needs_no_legacy_model_file(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            bin_dir = home / "bin"
+            bin_dir.mkdir()
+            hermes = bin_dir / "hermes"
+            hermes.write_text("#!/bin/sh\nprintf 'READY\\n'\n")
+            hermes.chmod(0o700)
+            result = subprocess.run(
+                [str(ADAPTER), "--print", "--model", "haiku", "--output-format", "json",
+                 "--system-prompt", "Answer briefly."],
+                input="Say READY.", text=True, capture_output=True,
+                env={**os.environ, "HOME": str(home), "PATH": str(bin_dir) + ":" + os.environ["PATH"],
+                     "LIFEOS_MODEL_TIER_MAP": json.dumps({
+                         "haiku": {"provider": "custom", "model": "flashnext", "effort": "low"},
+                     })},
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout.strip(), "READY")
+
 
 if __name__ == "__main__":
     unittest.main()
