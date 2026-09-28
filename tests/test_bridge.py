@@ -1144,10 +1144,12 @@ class HookBridgeTests(unittest.TestCase):
         hooks = {"TaskCreated": [{"hooks": [{"type": "command", "command": "true"}]}]}
         bridge = self.bridge(hooks)
         bridge._task_state_path("damaged").write_text("not JSON")
-        result = bridge.pre_tool_call(
-            "todo_list", {"todos": [{"id": "first", "content": "Document the first task"}]},
-            session_id="damaged", tool_call_id="first",
-        )
+        with self.assertLogs("lifeos_hook_bridge.bridge", level="ERROR") as captured:
+            result = bridge.pre_tool_call(
+                "todo_list", {"todos": [{"id": "first", "content": "Document the first task"}]},
+                session_id="damaged", tool_call_id="first",
+            )
+        self.assertIn("cannot be loaded for session damaged", captured.output[0])
         self.assertIn("limit of 50", result["message"])
 
     def test_native_task_hook_receives_session_count_and_controls_creation(self):
