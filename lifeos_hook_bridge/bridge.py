@@ -84,8 +84,11 @@ def _claude_simple_read_only_bash(command: str) -> bool:
     return command == "pwd" or _SIMPLE_READ_ONLY_ECHO.fullmatch(command) is not None
 
 
-def _literal_bash_rule_matches(rule: Any, command: str) -> bool | None:
-    """Match only Bash permission forms whose meaning is unambiguous here."""
+_SHELL_CONTROL = re.compile(r"[\n;&|`]|\$\(")
+
+
+def _bash_permission_rule_matches(rule: Any, command: str, action: str) -> bool | None:
+    """Match simple Bash forms; defer compound commands and broad grants."""
     if not isinstance(rule, str):
         return None
     if rule in {"Bash", "Bash(*)"}:
@@ -95,12 +98,20 @@ def _literal_bash_rule_matches(rule: Any, command: str) -> bool | None:
     if not rule.endswith(")"):
         return None
     specifier = rule[5:-1]
-    if "*" in specifier or specifier.startswith("run_in_background:"):
+    if specifier.startswith("run_in_background:"):
         return None
+    if "*" in specifier:
+        if action == "allow" or _SHELL_CONTROL.search(command):
+            return None
+        if specifier.endswith(":*"):
+            specifier = specifier[:-2] + " *"
+        if specifier.endswith(" *") and specifier.count("*") == 1 and command == specifier[:-2]:
+            return True
+        return re.fullmatch(re.escape(specifier).replace(r"\*", ".*"), command) is not None
     return specifier == command
 
 
-def _literal_bash_rule_decision(command: str, sources: list[Any]) -> str:
+def _bash_permission_rule_decision(command: str, sources: list[Any]) -> str:
     """Apply deny, ask, allow order without granting through unsupported patterns."""
     matches: dict[str, bool] = {"deny": False, "ask": False, "allow": False}
     uncertain: dict[str, bool] = {"deny": False, "ask": False}
@@ -114,7 +125,7 @@ def _literal_bash_rule_decision(command: str, sources: list[Any]) -> str:
                 uncertain["deny"] = True
                 continue
             for rule in rules:
-                match = _literal_bash_rule_matches(rule, command)
+                match = _bash_permission_rule_matches(rule, command, action)
                 if match is True:
                     matches[action] = True
                 elif match is None and action in uncertain:
@@ -1270,7 +1281,7 @@ class HookBridge:
             self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {})
             for name in ("settings.json", "settings.local.json")
         ] if project is not None else []
-        rule_decision = _literal_bash_rule_decision(
+        rule_decision = _bash_permission_rule_decision(
             command, [self.user_permission_rules, *project_permissions],
         )
         if rule_decision == "deny":

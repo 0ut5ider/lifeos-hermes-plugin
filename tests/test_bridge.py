@@ -1993,7 +1993,7 @@ class HookBridgeTests(unittest.TestCase):
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval("pwd", session_key="s1"), {"action": "review"})
 
-    def test_unsupported_deny_pattern_prevents_allow_shortcut(self):
+    def test_deny_pattern_overrides_exact_allow(self):
         hook = self.make_hook("uncertain-deny.py", "import sys\nsys.stdin.read()\n")
         command = "curl -I --max-time 1 http://192.168.8.1:9"
         settings = self.root / "settings.json"
@@ -2005,7 +2005,7 @@ class HookBridgeTests(unittest.TestCase):
         }))
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
-        self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+        self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
 
     def test_unsupported_deny_pattern_cannot_be_granted_by_hook(self):
         grant = self.make_hook(
@@ -2023,7 +2023,7 @@ class HookBridgeTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval("curl https://example.com", session_key="s1"),
-                         {"action": "review"})
+                         {"action": "deny"})
 
     def test_unsupported_deny_pattern_requests_review_without_hook(self):
         settings = self.root / "settings.json"
@@ -2033,6 +2033,36 @@ class HookBridgeTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval("curl https://example.com", session_key="s1"),
+                         {"action": "deny"})
+
+    def test_bash_deny_pattern_matches_bare_command_with_trailing_space_star(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(ls *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("ls", session_key="s1"), {"action": "deny"})
+        self.assertIsNone(bridge.command_approval("lsof", session_key="s1"))
+
+    def test_bash_ask_pattern_requests_review_for_simple_command(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"ask": ["Bash(git status *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("git status --short", session_key="s1"),
+                         {"action": "review"})
+
+    def test_compound_command_with_deny_pattern_stays_on_review_path(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(curl *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("echo ready; curl https://example.com", session_key="s1"),
                          {"action": "review"})
 
     def test_unread_managed_policy_prevents_user_allow_shortcut(self):
