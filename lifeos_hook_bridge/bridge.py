@@ -570,13 +570,15 @@ class HookBridge:
         name = re.sub(r"[^A-Za-z0-9._-]", "_", session_id or "default")
         return self.transcript_dir / f"{name}.jsonl"
 
-    def _append_transcript(self, session_id: str, kind: str, content: Any) -> None:
+    def _append_transcript(self, session_id: str, kind: str, content: Any, model: str = "") -> None:
         row = {
             "type": kind,
             "sessionId": session_id,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "message": {"role": kind, "content": content},
         }
+        if kind == "assistant" and model:
+            row["message"]["model"] = model
         path = self.transcript_path(session_id)
         descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
         with os.fdopen(descriptor, "w") as stream:
@@ -1173,8 +1175,8 @@ class HookBridge:
         )
         self._run("StopFailure", payload, error_name)
 
-    def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False, **_: Any) -> dict[str, str] | None:
-        self._append_transcript(session_id, "assistant", response)
+    def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False, model: str = "", **_: Any) -> dict[str, str] | None:
+        self._append_transcript(session_id, "assistant", response, model=model)
         payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
         for process, output in self._run("Stop", payload):
             if (output or {}).get("decision") == "block" or process.returncode == 2:

@@ -584,6 +584,12 @@ class HookBridgeTests(unittest.TestCase):
         result = bridge.stop("unfinished", session_id="s1")
         self.assertEqual(result, {"action": "continue", "message": "Finish the evidence check"})
 
+    def test_stop_transcript_records_actual_hermes_model(self):
+        bridge = self.bridge({})
+        bridge.stop("answered", session_id="model-session", model="flashnext-w4a16-fp8ple")
+        row = json.loads(bridge.transcript_path("model-session").read_text().splitlines()[-1])
+        self.assertEqual(row["message"]["model"], "flashnext-w4a16-fp8ple")
+
     def test_session_context_is_injected_on_first_prompt(self):
         command = self.make_hook(
             "start.py",
