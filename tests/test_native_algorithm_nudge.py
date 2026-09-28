@@ -16,6 +16,28 @@ HOOK_PATH = os.environ.get("LIFEOS_ALGORITHM_NUDGE_PATH")
 
 @unittest.skipUnless(HOOK_PATH and shutil.which("bun"), "LifeOS AlgorithmNudge and Bun are required")
 class NativeAlgorithmNudgeTests(unittest.TestCase):
+    def test_depth_directive_returns_one_prompt_nudge(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            root = home / ".claude"
+            root.mkdir()
+            settings = root / "settings.json"
+            settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
+                {"type": "command", "command": f"bun {HOOK_PATH}"},
+            ]}]}}))
+            bridge = HookBridge(settings, root)
+            bridge.environment["HOME"] = str(home)
+            try:
+                first = bridge.pre_llm_call("go deep", session_id="depth-probe")
+                second = bridge.pre_llm_call("go deep", session_id="depth-probe")
+            finally:
+                bridge.close()
+
+            self.assertIn("He directed depth", first["context"])
+            self.assertIsNone(second)
+            state = json.loads((root / "LIFEOS/MEMORY/STATE/isa-nudge/depth-probe.json").read_text())
+            self.assertIn("depth", state["lastNudgeAt"])
+
     def test_broken_capability_failure_returns_one_nudge(self):
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory)
