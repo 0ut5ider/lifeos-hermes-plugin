@@ -4,8 +4,8 @@ As of 2026-09-27, the development fixture is an unprivileged Linux account with 
 
 ## Installed baseline
 
-- Hermes v0.21.5 with the generic hook-control test branch at `aa0b6e5c8`, a local model, a LAN dashboard, and no messaging channel in this test account. The branch also has the remote whole-file write guard; both core changes are published as patches in this repository.
-- LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout has a local `feature/hermes-task-hook` branch at `9c95b11` with TaskGovernance, AgentWatchdog, EventLogger, CheckpointPerISC, FailureCapture, KittyEnvPersist, tab-setter, and ISAStaleWriteGuard changes installed in the test account. All seven compatibility patches are shipped in this plugin repository.
+- Hermes v0.21.5 with the generic hook-control test branch at `3ac8c09a5`, a local model, a LAN dashboard, and no messaging channel in this test account. The branch also has the remote whole-file write guard and Stop effort forwarding. All three core changes are published as patches in this repository.
+- LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout has a local `feature/hermes-task-hook` branch at `af60000` with TaskGovernance, AgentWatchdog, EventLogger, CheckpointPerISC, FailureCapture, KittyEnvPersist, tab-setter, ISAStaleWriteGuard, and ModelRungGuard changes installed in the test account. All eight compatibility patches are shipped in this plugin repository.
 - A fresh personal tree from `ScaffoldUser.ts --config-root ~/.hermes --apply`, linked by `LinkUser.ts --config-root ~/.hermes --apply`.
 - LifeOS's shipped Hermes sidecar mount, including its identity renderer and guard plugin.
 - LifeOS's 74 native Claude Code hook registrations installed in the test account, plus the separate `lifeos-hook-bridge` Hermes plugin.

@@ -72,13 +72,22 @@ class ClaudeAdapterTests(unittest.TestCase):
                 input="Say READY.", text=True, capture_output=True,
                 env={**os.environ, "HOME": str(home)}, timeout=10,
             )
+            future_result = subprocess.run(
+                [str(ADAPTER), "--print", "--model", "fable", "--effort", "low",
+                 "--tools", "", "--output-format", "json", "--system-prompt", "Answer briefly."],
+                input="Say READY.", text=True, capture_output=True,
+                env={**os.environ, "HOME": str(home), "LIFEOS_MODEL_TIER_MAP": json.dumps({
+                    "fable": {"model": "future-local", "effort": "max"},
+                })}, timeout=10,
+            )
 
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(file_result.returncode, 0, file_result.stderr)
+        self.assertEqual(future_result.returncode, 0, future_result.stderr)
         envelope = json.loads(result.stdout)
         self.assertEqual(envelope["result"], "READY")
         self.assertEqual(envelope["modelUsage"]["local-model"]["outputTokens"], 8)
-        self.assertEqual(len(requests), 2)
+        self.assertEqual(len(requests), 3)
         path, headers, request = requests[0]
         self.assertEqual(path, "/v1/messages")
         self.assertEqual(headers["Authorization"], "Bearer test-token")
@@ -88,6 +97,8 @@ class ClaudeAdapterTests(unittest.TestCase):
         self.assertEqual(request["messages"][0]["content"][1]["text"], "Say READY.")
         self.assertEqual(requests[1][2]["system"], "Use the file prompt.")
         self.assertEqual(requests[1][2]["output_config"]["effort"], "medium")
+        self.assertEqual(requests[2][2]["model"], "future-local")
+        self.assertEqual(requests[2][2]["output_config"]["effort"], "max")
 
     def test_lifeos_model_rungs_map_to_local_effort(self):
         with tempfile.TemporaryDirectory() as directory:
@@ -131,6 +142,33 @@ class ClaudeAdapterTests(unittest.TestCase):
                 json.loads(equals_form.stdout),
                 ["--model=local-model", "--effort=xhigh", "hello"],
             )
+
+    def test_plugin_tier_settings_select_distinct_models_and_efforts(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            (home / ".local/bin").mkdir(parents=True)
+            (home / ".config/lifeos-hook-bridge").mkdir(parents=True)
+            (home / ".config/lifeos-hook-bridge/model.env").write_text("")
+            target = home / ".local/bin/claude"
+            target.write_text("#!/usr/bin/env python3\nimport json,sys\nprint(json.dumps(sys.argv[1:]))\n")
+            target.chmod(0o700)
+            tiers = {
+                "haiku": {"model": "fast-local", "effort": "minimal"},
+                "sonnet": {"model": "balanced-local", "effort": "high"},
+                "opus": {"model": "large-local", "effort": "max"},
+                "fable": {"model": "largest-local", "effort": "ultra"},
+            }
+            for tier, route in tiers.items():
+                with self.subTest(tier=tier):
+                    result = subprocess.run(
+                        [str(ADAPTER), "--model", tier, "--effort", "medium", "hello"],
+                        text=True, capture_output=True, check=True,
+                        env={**os.environ, "HOME": str(home), "LIFEOS_MODEL_TIER_MAP": json.dumps(tiers)},
+                    )
+                    self.assertEqual(
+                        json.loads(result.stdout),
+                        ["--model", route["model"], "--effort", route["effort"], "hello"],
+                    )
 
 
 if __name__ == "__main__":

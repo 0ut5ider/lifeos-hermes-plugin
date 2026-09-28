@@ -2,6 +2,53 @@ name: lifeos-hook-bridge
 version: 0.1.0
 description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
 author: 0ut5ider
+config_schema:
+  pinned_tier:
+    type: str
+    label: Pinned LifeOS tier
+    description: Used when LifeOS settings.json names a local model instead of a Claude tier.
+    choices: [fable, opus, sonnet, haiku, none]
+    default: fable
+  haiku_model:
+    type: str
+    label: Haiku local model
+    description: Leave blank to use ANTHROPIC_MODEL from model.env.
+    default: ""
+  haiku_effort:
+    type: str
+    label: Haiku effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: low
+  sonnet_model:
+    type: str
+    label: Sonnet local model
+    description: Leave blank to use ANTHROPIC_MODEL from model.env.
+    default: ""
+  sonnet_effort:
+    type: str
+    label: Sonnet effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: medium
+  opus_model:
+    type: str
+    label: Opus local model
+    description: Leave blank to use ANTHROPIC_MODEL from model.env.
+    default: ""
+  opus_effort:
+    type: str
+    label: Opus effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: xhigh
+  fable_model:
+    type: str
+    label: Fable local model
+    description: Leave blank to use ANTHROPIC_MODEL from model.env.
+    default: ""
+  fable_effort:
+    type: str
+    label: Fable effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: xhigh
 provides_hooks:
   - pre_tool_call
   - post_tool_call

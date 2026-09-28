@@ -16,6 +16,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _native_file_input, _tool_input, _web_cache_read
+from lifeos_hook_bridge.model_tiers import configured_tiers
 
 
 class HookBridgeTests(unittest.TestCase):
@@ -924,6 +925,38 @@ class HookBridgeTests(unittest.TestCase):
         bridge.stop("answered", session_id="model-session", model="flashnext-w4a16-fp8ple")
         row = json.loads(bridge.transcript_path("model-session").read_text().splitlines()[-1])
         self.assertEqual(row["message"]["model"], "flashnext-w4a16-fp8ple")
+
+    def test_stop_transcript_records_effective_reasoning_effort(self):
+        bridge = self.bridge({})
+        bridge.stop(
+            "answered", session_id="effort-session", model="flashnext-w4a16-fp8ple",
+            reasoning_effort="xhigh",
+        )
+        row = json.loads(bridge.transcript_path("effort-session").read_text().splitlines()[-1])
+        self.assertEqual(row["message"]["model"], "flashnext-w4a16-fp8ple")
+        self.assertEqual(row["message"]["reasoning_effort"], "xhigh")
+
+    def test_hook_environment_reads_current_tier_settings(self):
+        marker = self.root / "tiers.jsonl"
+        command = self.make_hook(
+            "record-tiers.py",
+            "import json,os\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as output: "
+            "output.write(os.environ['LIFEOS_MODEL_TIER_MAP']+'\\n')\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
+            {"type": "command", "command": command},
+        ]}]}}))
+        values = {"fable_model": "first-local", "fable_effort": "xhigh"}
+        bridge = HookBridge(settings, self.root, model_tiers_provider=lambda: configured_tiers(values.get))
+        self.addCleanup(bridge.close)
+        bridge.pre_llm_call("one", session_id="tiers")
+        values.update(fable_model="second-local", fable_effort="ultra")
+        bridge.pre_llm_call("two", session_id="tiers")
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual(rows[0]["fable"], {"model": "first-local", "effort": "xhigh"})
+        self.assertEqual(rows[1]["fable"], {"model": "second-local", "effort": "ultra"})
 
     def test_session_context_is_injected_on_first_prompt(self):
         command = self.make_hook(

@@ -17,7 +17,7 @@ def _arguments() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="LifeOS local child inference")
     parser.add_argument("--print", action="store_true", required=True)
     parser.add_argument("--model", required=True)
-    parser.add_argument("--effort", choices=("low", "medium", "xhigh"), default="medium")
+    parser.add_argument("--effort", choices=("minimal", "low", "medium", "high", "xhigh", "max", "ultra"), default="medium")
     parser.add_argument("--output-format", choices=("json",), required=True)
     parser.add_argument("--system-prompt")
     parser.add_argument("--system-prompt-file")

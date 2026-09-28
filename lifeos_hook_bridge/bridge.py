@@ -23,7 +23,7 @@ from urllib.request import ProxyHandler, Request, build_opener
 from uuid import uuid4
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 
 
 LOG = logging.getLogger(__name__)
@@ -359,9 +359,13 @@ def _project_root_for_cwd(cwd: str) -> Path:
 
 
 class HookBridge:
-    def __init__(self, settings_path: Path, root: Path):
+    def __init__(
+        self, settings_path: Path, root: Path,
+        model_tiers_provider: Callable[[], dict[str, Any]] | None = None,
+    ):
         self.settings_path = Path(settings_path)
         self.root = Path(root)
+        self.model_tiers_provider = model_tiers_provider
         self.base_environment = dict(os.environ)
         self._apply_settings(json.loads(self.settings_path.read_text()))
         self.started_sessions: set[str] = set()
@@ -815,6 +819,8 @@ class HookBridge:
                             environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
         if platform and platform not in {"cli", "tui", "desktop"}:
             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
+        if self.model_tiers_provider is not None:
+            environment["LIFEOS_MODEL_TIER_MAP"] = json.dumps(self.model_tiers_provider())
         return environment
 
     def _config_files(self) -> dict[Path, tuple[int, int, int, int, int]]:
@@ -879,7 +885,9 @@ class HookBridge:
         name = re.sub(r"[^A-Za-z0-9._-]", "_", session_id or "default")
         return self.transcript_dir / f"{name}.jsonl"
 
-    def _append_transcript(self, session_id: str, kind: str, content: Any, model: str = "") -> None:
+    def _append_transcript(
+        self, session_id: str, kind: str, content: Any, model: str = "", reasoning_effort: str = "",
+    ) -> None:
         row = {
             "type": kind,
             "sessionId": session_id,
@@ -888,6 +896,8 @@ class HookBridge:
         }
         if kind == "assistant" and model:
             row["message"]["model"] = model
+        if kind == "assistant" and reasoning_effort:
+            row["message"]["reasoning_effort"] = reasoning_effort
         path = self.transcript_path(session_id)
         descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
         with os.fdopen(descriptor, "w") as stream:
@@ -1662,11 +1672,12 @@ class HookBridge:
         self._run("StopFailure", payload, error_name)
 
     def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False,
-             model: str = "", platform: str = "", **_: Any) -> dict[str, str] | None:
+             model: str = "", platform: str = "", reasoning_effort: str = "",
+             **_: Any) -> dict[str, str] | None:
         if platform:
             with self.session_lock:
                 self.session_platforms[session_id] = platform.lower()
-        self._append_transcript(session_id, "assistant", response, model=model)
+        self._append_transcript(session_id, "assistant", response, model=model, reasoning_effort=reasoning_effort)
         payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
         for process, output in self._run("Stop", payload):
             if (output or {}).get("decision") == "block" or process.returncode == 2:

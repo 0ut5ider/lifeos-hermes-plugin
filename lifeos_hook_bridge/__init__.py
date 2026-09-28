@@ -8,13 +8,17 @@ from pathlib import Path
 from typing import Any
 
 from .bridge import HookBridge
+from .model_tiers import configured_model_map
 
 
 def register(ctx: Any) -> None:
     settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(Path.home() / ".claude/settings.json"))).expanduser()
     if not settings.is_file():
         raise FileNotFoundError(f"LifeOS Claude hook settings not found: {settings}")
-    bridge = HookBridge(settings, settings.parent)
+    bridge = HookBridge(
+        settings, settings.parent,
+        model_tiers_provider=lambda: configured_model_map(ctx.get_config),
+    )
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
     ctx.register_hook("post_tool_call", bridge.task_result)
     ctx.register_hook("pre_command_approval", bridge.command_approval)

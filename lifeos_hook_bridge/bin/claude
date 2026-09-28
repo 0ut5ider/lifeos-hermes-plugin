@@ -10,10 +10,6 @@ fi
 set -a
 source "$model_env"
 set +a
-if [[ -z "${ANTHROPIC_MODEL:-}" ]]; then
-  printf 'ANTHROPIC_MODEL is missing from LifeOS local model settings\n' >&2
-  exit 1
-fi
 args=("$@")
 requested_model=""
 for (( i=0; i<${#args[@]}; i++ )); do
@@ -24,21 +20,19 @@ for (( i=0; i<${#args[@]}; i++ )); do
     --model=*) requested_model="${args[i]#--model=}" ;;
   esac
 done
-case "$requested_model" in
-  haiku|claude-haiku-*) local_effort=low ;;
-  sonnet|claude-sonnet-*) local_effort=medium ;;
-  opus|claude-opus-*|fable|claude-fable-*) local_effort=xhigh ;;
-  *) local_effort=medium ;;
-esac
+route_text="$(python3 "$(dirname "$0")/../model_tiers.py" "$requested_model")"
+mapfile -t route <<< "$route_text"
+local_model="${route[0]}"
+local_effort="${route[1]}"
 for (( i=0; i<${#args[@]}; i++ )); do
   case "${args[i]}" in
     --model|--effort)
       if (( i + 1 < ${#args[@]} )); then
-        if [[ "${args[i]}" == --model ]]; then args[i+1]="$ANTHROPIC_MODEL"; else args[i+1]="$local_effort"; fi
+        if [[ "${args[i]}" == --model ]]; then args[i+1]="$local_model"; else args[i+1]="$local_effort"; fi
       fi
       (( i+=1 ))
       ;;
-    --model=*) args[i]="--model=$ANTHROPIC_MODEL" ;;
+    --model=*) args[i]="--model=$local_model" ;;
     --effort=*) args[i]="--effort=$local_effort" ;;
   esac
 done
