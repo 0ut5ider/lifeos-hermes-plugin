@@ -3,7 +3,7 @@
 
 import unittest
 
-from lifeos_hook_bridge.model_tiers import configured_model_map, resolve_route
+from lifeos_hook_bridge.model_tiers import configured_model_map, resolve_route, route_delegate_args
 
 
 class ModelTierTests(unittest.TestCase):
@@ -44,6 +44,30 @@ class ModelTierTests(unittest.TestCase):
             configured_model_map({"sonnet_effort": "unbounded"}.get)
         with self.assertRaisesRegex(ValueError, "no configured model"):
             resolve_route("sonnet", "", configured_model_map(lambda key, default: default))
+
+    def test_delegated_tiers_use_configured_routes(self):
+        mapping = configured_model_map({
+            "haiku_model": "fast-local", "sonnet_model": "balanced-local",
+            "fable_model": "largest-local", "fable_effort": "ultra",
+        }.get)
+        args = {"tasks": [
+            {"goal": "quick", "model": "haiku"},
+            {"goal": "review", "model": "claude-sonnet-4"},
+            {"goal": "advise", "model": "fable"},
+            {"goal": "direct", "model": "named-local", "reasoning_effort": "high"},
+        ]}
+        routed = route_delegate_args(args, mapping)
+        self.assertEqual([(task.get("model"), task.get("reasoning_effort")) for task in routed["tasks"]], [
+            ("fast-local", "low"), ("balanced-local", "medium"),
+            ("largest-local", "ultra"), ("named-local", "high"),
+        ])
+        self.assertEqual(args["tasks"][0]["model"], "haiku")
+
+    def test_unset_model_inherits_hermes_parent_with_mapped_effort(self):
+        routed = route_delegate_args(
+            {"goal": "advise", "model": "fable"}, configured_model_map(lambda key, default: default),
+        )
+        self.assertEqual(routed, {"tasks": [{"goal": "advise", "reasoning_effort": "xhigh"}]})
 
 
 if __name__ == "__main__":

@@ -43,6 +43,51 @@ def _tier_name(requested_model: str) -> str:
     return "sonnet"
 
 
+def route_delegate_args(args: Mapping[str, Any], mapping: Mapping[str, Any]) -> dict[str, Any]:
+    """Replace LifeOS child aliases with the configured Hermes model and effort."""
+    routed = dict(args)
+    if routed.get("action"):
+        return routed
+    tasks = routed.get("tasks")
+    if not isinstance(tasks, list) or not tasks:
+        if not isinstance(routed.get("goal"), str):
+            return routed
+        tasks = [{key: routed[key] for key in ("goal", "context", "model", "reasoning_effort") if key in routed}]
+    mapped_tasks = []
+    changed = False
+    for task in tasks:
+        if not isinstance(task, dict):
+            mapped_tasks.append(task)
+            continue
+        requested = task.get("model")
+        tier = _tier_name(requested) if isinstance(requested, str) else None
+        if tier is None or not (requested.lower() == tier or requested.lower().startswith(f"claude-{tier}-")):
+            mapped_tasks.append(task)
+            continue
+        route = mapping.get(tier)
+        if not isinstance(route, Mapping):
+            raise ValueError(f"{tier} route is not configured")
+        model = route.get("model", "")
+        effort = route.get("effort", DEFAULT_EFFORTS[tier])
+        if not isinstance(model, str) or "\n" in model or "\r" in model:
+            raise ValueError(f"{tier} model must be one model name on one line")
+        if effort not in VALID_EFFORTS:
+            raise ValueError(f"{tier} effort is not supported")
+        child = dict(task)
+        if model.strip():
+            child["model"] = model.strip()
+        else:
+            child.pop("model", None)
+        child["reasoning_effort"] = effort
+        mapped_tasks.append(child)
+        changed = True
+    if changed:
+        routed["tasks"] = mapped_tasks
+        for key in ("goal", "context", "model", "reasoning_effort"):
+            routed.pop(key, None)
+    return routed
+
+
 def resolve_route(requested_model: str, default_model: str, mapping: Mapping[str, Any]) -> tuple[str, str]:
     tier = _tier_name(requested_model)
     raw = mapping.get(tier, {})

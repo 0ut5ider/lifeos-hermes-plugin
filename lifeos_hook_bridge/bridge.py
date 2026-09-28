@@ -1335,6 +1335,15 @@ class HookBridge:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
+        if tool_name == "delegate_task" and self.model_tiers_provider is not None:
+            from .model_tiers import route_delegate_args
+            current = updated_args or args
+            try:
+                routed = route_delegate_args(current, self.model_tiers_provider())
+            except ValueError as error:
+                return {"action": "block", "message": str(error)}
+            if routed != current:
+                updated_args = routed
         return {"action": "modify", "args": updated_args} if updated_args is not None else None
 
     def _reserved_task_count(self, session_id: str) -> int:

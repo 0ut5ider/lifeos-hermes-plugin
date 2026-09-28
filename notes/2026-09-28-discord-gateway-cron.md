@@ -1,0 +1,11 @@
+# Discord gateway and cron verification, 2026-09-28
+
+The isolated `.212` Hermes account initially could not install Discord support or connect its bot. Its nftables service rejected non-LAN traffic for UID 1004. With Adrian's approval, a persistent outbound TCP port 443 exception was added before the reject rules. The ruleset passed `nft --check`. This permits HTTPS to any destination for that account, not only Discord. The prior ruleset is backed up at `/etc/lifeos-hermes-test-egress.nft.before-discord-20260928-082859`.
+
+The account installed Discord dependencies with `hermes pm install --extra discord`. The dashboard-started gateway stopped during a restart, and the dashboard Start action reported that the service was missing. `hermes gateway install --start-now --start-on-login` installed an enabled user systemd service. Linger was already enabled. The gateway connected as Shiny Hermes Bot.
+
+An outbound `hermes send` message appeared in `#general`. Adrian's first `READY-212` channel message had no bot mention, so Hermes ignored it under the default channel rule. A message mentioning the bot created a thread, and the bot replied `READY-212`. This demonstrated inbound Gateway events as well as outbound delivery. An outbound REST send alone would not have done that.
+
+A one-time no-agent cron job then failed before delivery with `ModuleNotFoundError: No module named 'ruamel'`. The source-install gateway launched its external worker through the store Python rather than Hermes's managed dependency environment. The [worker bootstrap patch](../patches/hermes-cron-worker-bootstrap.patch) changes the launch command to use `hermes_cli._launchers.runtime_command`. After the gateway restarted, a second one-time job completed, and its marker appeared in `#general`. Its job was automatically removed after one run, and its temporary script was removed. The run history remains available through `hermes cron runs`.
+
+The five Hermes patches applied in order to a clean `758ad514e` worktree. The focused delegation and cron tests passed there: 34 passed, with five existing cron thread warnings. The plugin suite passed 172 tests with 45 optional skips. The live watchdog alert route and daily thread creation have not been verified.
