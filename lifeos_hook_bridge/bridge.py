@@ -40,6 +40,10 @@ TOOL_NAMES = {
     "tool_search": "ToolSearch",
     "clarify": "AskUserQuestion",
 }
+WEB_CONTENT_TOOLS = frozenset({
+    "browser_navigate", "browser_snapshot", "browser_console", "browser_get_images",
+    "browser_vision", "browser_cdp", "browser_exec", "browser_dialog",
+})
 V4A_WRITE_HEADER = re.compile(r"^\*\*\*\s*(Update|Add|Delete)\s+File:\s*(.+)$")
 V4A_MOVE_HEADER = re.compile(r"^\*\*\*\s*Move\s+File:\s*(.+?)\s*->\s*(.+)$")
 API_ERROR_NAMES = {
@@ -650,16 +654,21 @@ class HookBridge:
         with os.fdopen(descriptor, "w") as stream:
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
 
-    def _run(self, event: str, payload: dict[str, Any], tool_name: str = "") -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
+    def _run(
+        self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
+    ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         environment = self._event_environment(payload)
         for group in self._hook_groups(event, payload):
             matcher = group.get("matcher", "")
-            if matcher and not re.fullmatch(matcher, tool_name):
+            native_match = not matcher or bool(re.fullmatch(matcher, tool_name))
+            alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
+            if not native_match and not alias_match:
                 continue
+            group_payload = payload if native_match else {**payload, "tool_name": matcher_alias}
             for hook in group.get("hooks", []):
                 if hook.get("type") == "http":
-                    jobs.append((self._run_http, (hook, payload), False))
+                    jobs.append((self._run_http, (hook, group_payload), False))
                     continue
                 if hook.get("type") != "command":
                     LOG.warning("LifeOS %s hook type %r is not executable by this bridge", event, hook.get("type"))
@@ -668,10 +677,10 @@ class HookBridge:
                 if not isinstance(command, str) or not command.strip():
                     continue
                 if hook.get("async"):
-                    jobs.append((self._run_async, (command, payload, environment), True))
+                    jobs.append((self._run_async, (command, group_payload, environment), True))
                     continue
                 timeout = max(1, min(int(hook.get("timeout", 60)), 300))
-                jobs.append((self._run_command, (event, command, payload, timeout, environment), False))
+                jobs.append((self._run_command, (event, command, group_payload, timeout, environment), False))
         outcomes = []
         if not jobs:
             return outcomes
@@ -1201,7 +1210,10 @@ class HookBridge:
                 cwd=cwd,
                 **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": hook_response}),
             )
-            context.extend(self._context(self._run(event, payload, native_name)))
+            context.extend(self._context(self._run(
+                event, payload, native_name,
+                matcher_alias="WebFetch" if event == "PostToolUse" and tool_name in WEB_CONTENT_TOOLS else "",
+            )))
         return "\n\n".join(context) if context else None
 
     def augment_tool_result(
