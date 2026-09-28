@@ -55,6 +55,8 @@ The native bridge executes the installed registration types with partial coverag
 - The installed native WorkCompletionLearning hook captured one closed claim before SessionCleanup marked the synthetic work complete. Both effects were observed under a temporary LifeOS root on `.212`. SessionEnd handlers now run in registration order; other synchronous events still run concurrently. See [the ordering probe](../notes/2026-09-27-session-end-order.md).
 - The installed native KnowledgeWriteGuard and ComplexityRatchet hooks returned advisories for synthetic writes. The native ISAStaleWriteGuard blocked a stale whole-file ISA replacement after an external edit, then allowed it after another read. Each probe used a temporary LifeOS root. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
 - The installed native ISASync hook updated a temporary work registry after a synthetic ISA write. The native LoopDetector returned an advisory on the third identical Read and recorded three events in session state. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
+- The installed native ConfigEvalFire hook spawned a harmless replacement runner and wrote its debounce state after a synthetic `CLAUDE.md` edit. AtlasEventCapture wrote one `systemd` hint for a synthetic Bash result. Neither the real evaluation nor the Bash command ran. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
+- The installed native PostToolObserver hook recorded a synthetic doctrine file edit in its per-session system-delta ledger and returned `SYSTEM: CLAUDE.md` to the model-bound tool result. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
 
 ## Hermes core dependency
 
