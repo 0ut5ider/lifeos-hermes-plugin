@@ -1,0 +1,378 @@
+diff --git a/agent/conversation_compression.py b/agent/conversation_compression.py
+index 0fe34c1ca..083255a77 100644
+--- a/agent/conversation_compression.py
++++ b/agent/conversation_compression.py
+@@ -2255,7 +2255,7 @@ def _message_text(message: Any) -> str:
+ 
+ 
+ _SYNTHETIC_USER_FLAGS = (
+-    "_todo_snapshot_synthetic", "_empty_recovery_synthetic", "_verification_stop_synthetic", "_pre_verify_synthetic",
++    "_todo_snapshot_synthetic", "_empty_recovery_synthetic", "_verification_stop_synthetic", "_pre_verify_synthetic", "_stop_gate_synthetic",
+     "_dropped_toolcall_nudge",
+ )
+ 
+diff --git a/agent/session_persistence.py b/agent/session_persistence.py
+index 1c5c04a5c..a2f3c9474 100644
+--- a/agent/session_persistence.py
++++ b/agent/session_persistence.py
+@@ -36,6 +36,7 @@ _EPHEMERAL_SCAFFOLDING_FLAGS = (
+     "_thinking_prefill",
+     "_verification_stop_synthetic",  # verify-on-stop nudge; the assistant candidate itself is NOT synthetic
+     "_pre_verify_synthetic",
++    "_stop_gate_synthetic",
+     "_kanban_stop_synthetic",  # kanban worker stop-guard
+     "_dropped_toolcall_nudge",  # internal retry instruction; must not replay as user context
+ )
+diff --git a/agent/turn_api_call.py b/agent/turn_api_call.py
+index 36d8c977a..462829c4a 100644
+--- a/agent/turn_api_call.py
++++ b/agent/turn_api_call.py
+@@ -51,6 +51,9 @@ def _should_stream(agent: Any) -> bool:
+     tests (SimpleNamespace, not stream iterators)."""
+     if getattr(agent, "_disable_streaming", False):
+         return False
++    from hermes_cli.lifecycle import has_hook
++    if has_hook("pre_turn_stop"):
++        return False
+     _base = str(agent.base_url or "").lower()
+     from hermes_cli.runtime_provider_backends import _is_external_process_provider
+ 
+diff --git a/agent/turn_context.py b/agent/turn_context.py
+index 8fb9e7be0..6fc1c5c77 100644
+--- a/agent/turn_context.py
++++ b/agent/turn_context.py
+@@ -580,6 +580,7 @@ _PER_TURN_RESET_STATE: Tuple[Tuple[str, Any], ...] = (
+     ("_iteration_budget_warning_injected", False),
+     ("_run_budget_wrapup_injected", False), ("_verification_stop_nudges", 0),
+     ("_pre_verify_nudges", 0), ("_pre_turn_stop_nudges", 0),
++    ("_stop_gate_blocked_at_budget", False),
+ )
+ 
+ 
+diff --git a/agent/turn_failure_copy.py b/agent/turn_failure_copy.py
+index 115231f66..63da31337 100644
+--- a/agent/turn_failure_copy.py
++++ b/agent/turn_failure_copy.py
+@@ -18,7 +18,7 @@ from hermes_constants import display_hermes_home
+ # Failure codes minted by loop sites that are not provider verdicts (see module docstring).
+ SITE_FAILURE_CODES = frozenset({
+     "context_overflow", "truncated", "invalid_response", "empty_response", "loop_error",
+-    "interpreter_shutdown", "session_busy",
++    "interpreter_shutdown", "session_busy", "stop_gate_blocked",
+ })
+ 
+ 
+@@ -98,6 +98,7 @@ _EXIT_REASON_FAILURES: Tuple[Tuple[str, str, bool, bool], ...] = (
+     # finalizer synthesizes the visible close and fails the turn.
+     ("pending_tool_result", "loop_error", True, True),
+     ("interpreter_shutdown", "interpreter_shutdown", False, True),
++    ("stop_gate_blocked", "stop_gate_blocked", True, True),
+     # Advisory: a deterministic local bug is not a task failure for the kanban breaker.
+     ("local_processing_error", "loop_error", False, False),
+     ("repeated_outer_errors", "loop_error", True, True),
+diff --git a/agent/turn_final_response.py b/agent/turn_final_response.py
+index 6ebc40503..0ea5264ad 100644
+--- a/agent/turn_final_response.py
++++ b/agent/turn_final_response.py
+@@ -330,6 +330,10 @@ def finish_text_response(
+     if _sg.continue_turn:
+         final_response = None
+         return _verdict("continue")
++    if _sg.failure_message:
++        final_response = _sg.failure_message
++        final_msg = {"role": "assistant", "content": final_response, "finish_reason": "stop_gate_blocked"}
++        _turn_exit_reason = "stop_gate_blocked"
+ 
+     # Plugins rewrite the reply BEFORE it is appended and flushed: SQLite treats a non-blank
+     # assistant row as settled, so a transform after this write would reach the user but never
+@@ -360,7 +364,8 @@ def finish_text_response(
+             exc_info=True,
+         )
+ 
+-    _turn_exit_reason = f"text_response(finish_reason={finish_reason})"
+-    if not agent.quiet_mode:
++    if not _sg.failure_message:
++        _turn_exit_reason = f"text_response(finish_reason={finish_reason})"
++    if not agent.quiet_mode and not _sg.failure_message:
+         agent._safe_print(f"🎉 Conversation completed after {api_call_count} OpenAI-compatible API call(s)")
+     return _verdict("break")
+diff --git a/agent/turn_finalizer.py b/agent/turn_finalizer.py
+index 9c4446743..cb01a960f 100644
+--- a/agent/turn_finalizer.py
++++ b/agent/turn_finalizer.py
+@@ -22,10 +22,11 @@ from agent.message_metadata import append_message, stamp_message_timestamp
+ from agent.message_sanitization import _sanitize_surrogates
+ from agent.served_model import result_model_fields
+ 
+-# Verification-continuation nudges (verify-on-stop / pre_verify) must be stripped from
+-# returned/live history to avoid role-alternation breaks; the assistant response is
+-# real content and is not flagged. (#65919)
+-_VERIFICATION_CONTINUATION_FLAGS = ("_verification_stop_synthetic", "_pre_verify_synthetic")
++# Strip synthetic continuation rows before returning or persisting history. Edit
++# verification candidates remain real content; blocked universal Stop candidates do not.
++_VERIFICATION_CONTINUATION_FLAGS = (
++    "_verification_stop_synthetic", "_pre_verify_synthetic", "_stop_gate_synthetic",
++)
+ 
+ _SENTENCE_END = {".", "!", "?", "。", "！", "？", "`", ")"}
+ 
+@@ -85,8 +86,7 @@ def _record_kanban_budget_exhausted(
+ 
+ 
+ def _drop_verification_continuation_scaffolding(messages) -> None:
+-    """Remove verification-continuation nudges in place; only the synthetic nudges carry
+-    these flags, so the real attempted final answer persisted to state.db survives."""
++    """Remove continuation scaffolding while retaining accepted and edit-verification text."""
+     messages[:] = [
+         m for m in messages
+         if not (isinstance(m, dict) and any(m.get(f) for f in _VERIFICATION_CONTINUATION_FLAGS))
+@@ -136,7 +136,11 @@ def _resolve_budget_fallback(
+         and str(_turn_exit_reason) in {"unknown", "budget_exhausted"}
+     ):
+         _turn_exit_reason = f"max_iterations_reached({api_call_count}/{agent.max_iterations})"
+-        if _pending_verification_response:
++        if getattr(agent, "_stop_gate_blocked_at_budget", False):
++            from agent.turn_stop_gates import STOP_GATE_FAILURE_MESSAGE
++            final_response = STOP_GATE_FAILURE_MESSAGE
++            _turn_exit_reason = "stop_gate_blocked"
++        elif _pending_verification_response:
+             # A verification gate withheld a composed answer, then the budget ran out:
+             # preserve it rather than make another fallible call. The explicit pending
+             # value is the provenance guard; unrelated error exits never enter here.
+@@ -214,8 +218,7 @@ def _rollback_interrupted_preflight_display(agent, interrupted) -> None:
+ 
+ def _drop_transcript_scaffolding(agent, messages) -> None:
+     """Strip private retry scaffolding first, or a later "continue" replays
+-    assistant("(empty)") / recovery nudges into the same empty-response loop. Only
+-    the synthetic verification nudges go; the assistant candidate persists (#65919)."""
++    assistant("(empty)") / recovery nudges into the same empty-response loop."""
+     agent._drop_trailing_empty_response_scaffolding(messages)
+     _drop_verification_continuation_scaffolding(messages)
+ 
+diff --git a/agent/turn_stop_gates.py b/agent/turn_stop_gates.py
+index 7ed38d109..bb5f8562e 100644
+--- a/agent/turn_stop_gates.py
++++ b/agent/turn_stop_gates.py
+@@ -1,12 +1,8 @@
+ """Text-response stop gates for the conversation turn loop.
+ 
+-When the model stops with a text answer, three gates may instead append the answer as an
+-interim row plus a synthetic user-role nudge and continue the turn: verify-on-stop (#65919),
+-the ``pre_verify`` plugin hook after code edits, and the kanban worker terminal-tool guard.
+-Each keeps the candidate answer as a budget-exhaustion fallback
+-(``pending_verification_response``) and clears ``final_response`` so the finalizer can tell
+-this gate from error exits (#61631). Nothing here imports ``agent.conversation_loop`` at
+-module level (cycle).
++When the model stops with a text answer, a universal plugin gate can withhold the answer
++and continue the turn. Edit verification can also continue with an interim answer and keep
++it as a budget fallback. Nothing here imports ``agent.conversation_loop`` at module level.
+ """
+ 
+ from __future__ import annotations
+@@ -30,6 +26,12 @@ class StopGateVerdict:
+     final_response: Any
+     pending_verification_response: Any
+     pending_verification_response_previewed: Any
++    failure_message: Optional[str] = None
++
++
++STOP_GATE_FAILURE_MESSAGE = (
++    "The response did not pass a required final check. Please try again."
++)
+ 
+ 
+ def _verify_on_stop_nudge(agent) -> Optional[str]:
+@@ -78,12 +80,6 @@ def _pre_verify_nudge(agent, final_response, attempt: int) -> Optional[str]:
+ 
+ def _pre_turn_stop_nudge(agent, final_response, attempt: int) -> Optional[str]:
+     """Let plugins inspect every candidate answer, including turns without code edits."""
+-    try:
+-        cap = int(os.getenv("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP", "8"))
+-    except ValueError:
+-        cap = 8
+-    if attempt >= max(0, cap):
+-        return None
+     try:
+         from hermes_cli.lifecycle import has_hook
+         from hermes_cli.plugins import get_pre_turn_stop_continue_message
+@@ -134,39 +130,51 @@ def apply_stop_gates(
+     conversation_history: Any, pending_verification_response: Any,
+     pending_verification_response_previewed: Any,
+ ) -> StopGateVerdict:
+-    """Run verify-on-stop → pre_verify hook → kanban stop guard, in that order. Nudges
++    """Run universal Stop → verify-on-stop → pre_verify → kanban, in that order. Nudges
+     are user-role rows appended only after the assistant answer row, so role alternation
+     holds. Hook lookups are imported lazily from their origin modules (tests patch them
+     there)."""
+ 
+-    def _continue(nudge: str, flag: str) -> StopGateVerdict:
++    def _continue(nudge: str, flag: str, *, withhold: bool = False) -> StopGateVerdict:
+         """Append the synthetic nudge row and hand the turn back to the loop."""
+         append_message(messages, {"role": "user", "content": nudge, flag: True})
+         agent._session_messages = messages
+-        # Keep the answer only as a budget-exhaustion fallback; clear ``final_response`` so
+-        # the finalizer can tell this gate from error exits. Mark previewed only if the
+-        # candidate is reused (#61631).
++        # Edit verification may reuse the answer at budget exhaustion. A universal Stop
++        # rejection withholds it from both delivery and the budget fallback.
+         return StopGateVerdict(
+             continue_turn=True, final_response=None,
+-            pending_verification_response=final_response,
++            pending_verification_response=None if withhold else final_response,
+             # Prefix semantics on purpose: the streamed prefix IS on screen here. The gateway
+             # interim verdict uses _interim_content_fully_streamed instead (#88954).
+-            pending_verification_response_previewed=agent._interim_content_was_streamed(
+-                final_response or ""
++            pending_verification_response_previewed=(
++                False if withhold else agent._interim_content_was_streamed(final_response or "")
+             ),
+         )
+ 
+     _stop_attempt = getattr(agent, "_pre_turn_stop_nudges", 0)
+     _stop_nudge = _pre_turn_stop_nudge(agent, final_response, _stop_attempt)
+     if _stop_nudge:
++        try:
++            cap = max(0, int(os.getenv("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP", "8")))
++        except ValueError:
++            cap = 8
++        if _stop_attempt >= cap:
++            agent._stop_gate_blocked_at_budget = True
++            return StopGateVerdict(
++                continue_turn=False, final_response=STOP_GATE_FAILURE_MESSAGE,
++                pending_verification_response=None,
++                pending_verification_response_previewed=False,
++                failure_message=STOP_GATE_FAILURE_MESSAGE,
++            )
+         agent._pre_turn_stop_nudges = _stop_attempt + 1
++        agent._stop_gate_blocked_at_budget = True
+         final_msg["finish_reason"] = "verify_hook_continue"
+-        _append_interim_answer(
+-            agent, final_msg, messages, conversation_history, "pre_turn_stop interim flush failed"
+-        )
+-        verdict = _continue(_stop_nudge, "_pre_verify_synthetic")
++        final_msg["_stop_gate_synthetic"] = True
++        append_message(messages, final_msg)
++        verdict = _continue(_stop_nudge, "_stop_gate_synthetic", withhold=True)
+         logger.debug("pre_turn_stop nudge issued (attempt %d)", agent._pre_turn_stop_nudges)
+         return verdict
++    agent._stop_gate_blocked_at_budget = False
+ 
+     _verify_nudge = _verify_on_stop_nudge(agent)
+     if _verify_nudge:
+diff --git a/tests/agent/test_verification_continuation_budget.py b/tests/agent/test_verification_continuation_budget.py
+index 7aa1025e0..4136c22eb 100644
+--- a/tests/agent/test_verification_continuation_budget.py
++++ b/tests/agent/test_verification_continuation_budget.py
+@@ -270,7 +270,7 @@ def test_universal_stop_hook_continues_without_code_edits(agent, monkeypatch):
+     assert result["final_response"] == "finished"
+     assert not agent._turn_file_mutation_paths
+ 
+-def test_universal_stop_hook_allows_eight_consecutive_continuations(agent, monkeypatch):
++def test_universal_stop_hook_fails_after_eight_consecutive_continuations(agent, monkeypatch):
+     agent.max_iterations = 9
+     agent._interruptible_api_call = MagicMock(side_effect=[_response(f"answer {i}") for i in range(9)])
+     monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
+@@ -282,9 +282,11 @@ def test_universal_stop_hook_allows_eight_consecutive_continuations(agent, monke
+     ):
+         result = agent.run_conversation("continue up to the Stop hook limit")
+ 
+-    assert stop_hook.call_count == 8
++    assert stop_hook.call_count == 9
+     assert agent._interruptible_api_call.call_count == 9
+-    assert result["final_response"] == "answer 8"
++    assert result["failed"] is True
++    assert result["failure_reason"] == "stop_gate_blocked"
++    assert "answer 8" not in result["final_response"]
+ 
+ 
+ def test_universal_stop_counter_resets_for_each_turn(agent, monkeypatch):
+@@ -316,9 +318,11 @@ def test_universal_stop_hook_uses_configured_cap(agent, monkeypatch):
+     ):
+         result = agent.run_conversation("honor a smaller Stop hook cap")
+ 
+-    assert stop_hook.call_count == 1
++    assert stop_hook.call_count == 2
+     assert agent._interruptible_api_call.call_count == 2
+-    assert result["final_response"] == "answer 1"
++    assert result["failed"] is True
++    assert result["failure_reason"] == "stop_gate_blocked"
++    assert "answer 1" not in result["final_response"]
+ 
+ 
+ def test_terminal_api_failure_emits_turn_result_event(agent, monkeypatch):
+@@ -343,3 +347,75 @@ def test_terminal_api_failure_emits_turn_result_event(agent, monkeypatch):
+     assert observed[0]["failed"] is True
+     assert observed[0]["failure_reason"] == result["failure_reason"]
+     assert observed[0]["turn_id"] == result["turn_id"]
++def test_stop_continuation_withholds_rejected_draft(agent, monkeypatch):
++    agent.max_iterations = 2
++    agent._interruptible_api_call = MagicMock(side_effect=[
++        _response("withheld candidate"), _response("allowed final"),
++    ])
++    emitted = []
++    agent.interim_assistant_callback = lambda text, **kwargs: emitted.append(text)
++    monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
++
++    with (
++        patch("hermes_cli.plugins.has_hook", side_effect=lambda name: name == "pre_turn_stop"),
++        patch("hermes_cli.plugins.get_pre_turn_stop_continue_message", side_effect=["check first", None]),
++        patch("hermes_cli.plugins.invoke_hook", return_value=[]),
++    ):
++        result = agent.run_conversation("answer this")
++
++    assert result["final_response"] == "allowed final"
++    assert "withheld candidate" not in emitted
++    assert all("withheld candidate" not in str(message) for message in result["messages"])
++
++
++def test_stop_continuation_exhaustion_fails_closed(agent, monkeypatch):
++    agent.max_iterations = 1
++    agent._interruptible_api_call = MagicMock(return_value=_response("withheld candidate"))
++    monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
++
++    with (
++        patch("hermes_cli.plugins.has_hook", side_effect=lambda name: name == "pre_turn_stop"),
++        patch("hermes_cli.plugins.get_pre_turn_stop_continue_message", return_value="check first"),
++        patch("hermes_cli.plugins.invoke_hook", return_value=[]),
++    ):
++        result = agent.run_conversation("answer this")
++
++    assert result["completed"] is False
++    assert result["final_response"] != "withheld candidate"
++    assert all("withheld candidate" not in str(message) for message in result["messages"])
++
++
++def test_stop_hook_prevents_response_streaming(agent):
++    from agent.turn_api_call import _should_stream
++
++    agent.client = object()
++    agent._disable_streaming = False
++    agent._has_stream_consumers = lambda: True
++    with patch("hermes_cli.lifecycle.has_hook", return_value=True):
++        assert _should_stream(agent) is False
++
++
++def test_stop_rejected_candidate_is_absent_from_session_db(agent, monkeypatch, tmp_path):
++    from hermes_state import SessionDB
++
++    db = SessionDB(db_path=tmp_path / "state.db")
++    db.create_session(agent.session_id, source="cli")
++    agent._session_db = db
++    agent.max_iterations = 2
++    agent._interruptible_api_call = MagicMock(side_effect=[
++        _response("withheld candidate"), _response("allowed final"),
++    ])
++    monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
++
++    with (
++        patch("hermes_cli.plugins.has_hook", side_effect=lambda name: name == "pre_turn_stop"),
++        patch("hermes_cli.plugins.get_pre_turn_stop_continue_message", side_effect=["check first", None]),
++        patch("hermes_cli.plugins.invoke_hook", return_value=[]),
++    ):
++        result = agent.run_conversation("answer this")
++
++    assert result["final_response"] == "allowed final"
++    rows = SessionDB(db_path=tmp_path / "state.db").get_messages_as_conversation(agent.session_id)
++    assert any(row.get("content") == "allowed final" for row in rows)
++    assert all("withheld candidate" not in str(row) for row in rows)
++    assert all("check first" not in str(row) for row in rows)
