@@ -239,6 +239,9 @@ class HookBridge:
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
+        self.task_state_loaded: set[str] = set()
+        self.task_state_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-task-counts"
+        self.task_state_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
         self.pending_tasks: dict[tuple[str, str], tuple[set[str], int]] = {}
         self.api_errors: dict[tuple[str, str], tuple[str, str, str]] = {}
         self.transcript_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-transcripts"
@@ -893,6 +896,42 @@ class HookBridge:
     def _reserved_task_count(self, session_id: str) -> int:
         return sum(count for (owner, _), (_, count) in self.pending_tasks.items() if owner == session_id)
 
+    def _task_state_path(self, session_id: str) -> Path:
+        name = hashlib.sha256(session_id.encode()).hexdigest()
+        return self.task_state_dir / f"{name}.json"
+
+    def _load_task_state(self, session_id: str) -> None:
+        if session_id in self.task_state_loaded:
+            return
+        self.task_state_loaded.add(session_id)
+        path = self._task_state_path(session_id)
+        if not path.exists():
+            return
+        try:
+            state = json.loads(path.read_text())
+            count = state["count"]
+            ids = state["ids"]
+            if not isinstance(count, int) or count < 0 or not isinstance(ids, list) or not all(isinstance(item, str) for item in ids):
+                raise ValueError("invalid task state")
+            self.task_counts[session_id] = count
+            self.task_ids[session_id] = set(ids)
+        except (OSError, ValueError, TypeError, KeyError) as error:
+            LOG.error("LifeOS task state cannot be loaded for session %s: %s", session_id, error)
+            self.task_counts[session_id] = 50
+
+    def _save_task_state(self, session_id: str) -> None:
+        path = self._task_state_path(session_id)
+        temporary = None
+        try:
+            with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=self.task_state_dir, delete=False) as stream:
+                temporary = Path(stream.name)
+                json.dump({"count": self.task_counts.get(session_id, 0), "ids": sorted(self.task_ids.get(session_id, set()))}, stream)
+            os.replace(temporary, path)
+        except OSError as error:
+            LOG.error("LifeOS task state cannot be saved for session %s: %s", session_id, error)
+            if temporary is not None:
+                temporary.unlink(missing_ok=True)
+
     def _supports_native_task_hook(self, session_id: str, cwd: str) -> bool:
         key = (session_id, cwd)
         if key not in self.native_task_hook_supported:
@@ -922,6 +961,7 @@ class HookBridge:
             return None
         native = self._supports_native_task_hook(session_id, _scope_cwd())
         with self.session_lock:
+            self._load_task_state(session_id)
             key = (session_id, call_id)
             self.pending_tasks.pop(key, None)
             known = self.task_ids.setdefault(session_id, set())
@@ -951,6 +991,7 @@ class HookBridge:
         description = args.get("body") or args.get("title", "")
         native = self._supports_native_task_hook(session_id, _scope_cwd())
         with self.session_lock:
+            self._load_task_state(session_id)
             key = (session_id, call_id)
             self.pending_tasks.pop(key, None)
             count = self.task_counts.get(session_id, 0)
@@ -985,6 +1026,7 @@ class HookBridge:
             new_ids = ids - known
             known.update(new_ids)
             self.task_counts[session_id] = self.task_counts.get(session_id, 0) + (len(new_ids) if ids else count)
+            self._save_task_state(session_id)
 
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
         prompt = _prompt_text(user_message)
@@ -1093,6 +1135,8 @@ class HookBridge:
             self.config_files = {path: fingerprint for path, fingerprint in self.config_files.items() if path in watched}
             self.task_ids.pop(session_id, None)
             self.task_counts.pop(session_id, None)
+            self.task_state_loaded.discard(session_id)
+            self._task_state_path(session_id).unlink(missing_ok=True)
             for key in tuple(self.pending_tasks):
                 if key[0] == session_id:
                     self.pending_tasks.pop(key, None)

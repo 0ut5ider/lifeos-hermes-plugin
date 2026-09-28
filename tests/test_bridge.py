@@ -876,6 +876,38 @@ class HookBridgeTests(unittest.TestCase):
             self.assertIsNone(bridge.pre_tool_call("kanban_create", valid, session_id="s1", tool_call_id=f"pending-{number}"))
         self.assertIn("limit of 50", bridge.pre_tool_call("kanban_create", valid, session_id="s1", tool_call_id="extra")["message"])
 
+    def test_task_count_survives_bridge_restart_until_session_end(self):
+        hooks = {"TaskCreated": [{"hooks": [{"type": "command", "command": "true"}]}]}
+        first = self.bridge(hooks)
+        todos = [{"id": str(number), "content": f"Document task number {number}"} for number in range(50)]
+        args = {"todos": todos}
+        self.assertIsNone(first.pre_tool_call("todo_list", args, session_id="persisted", tool_call_id="first"))
+        first.task_result("todo_list", args, '{"ok":true}', session_id="persisted", tool_call_id="first", status="ok")
+        first.close()
+
+        second = self.bridge(hooks)
+        self.assertIsNone(second.pre_tool_call("todo_list", args, session_id="persisted", tool_call_id="repeat"))
+        more = {"todos": todos + [{"id": "50", "content": "Document the final extra task"}]}
+        self.assertIn(
+            "limit of 50",
+            second.pre_tool_call("todo_list", more, session_id="persisted", tool_call_id="extra")["message"],
+        )
+        second.session_end(session_id="persisted")
+        third = self.bridge(hooks)
+        self.assertIsNone(third.pre_tool_call(
+            "todo_list", {"todos": [more["todos"][-1]]}, session_id="persisted", tool_call_id="new",
+        ))
+
+    def test_malformed_task_state_blocks_new_task(self):
+        hooks = {"TaskCreated": [{"hooks": [{"type": "command", "command": "true"}]}]}
+        bridge = self.bridge(hooks)
+        bridge._task_state_path("damaged").write_text("not JSON")
+        result = bridge.pre_tool_call(
+            "todo_list", {"todos": [{"id": "first", "content": "Document the first task"}]},
+            session_id="damaged", tool_call_id="first",
+        )
+        self.assertIn("limit of 50", result["message"])
+
     def test_native_task_hook_receives_session_count_and_controls_creation(self):
         marker = self.root / "native-task-counts"
         command = self.make_hook(
