@@ -1,5 +1,5 @@
 diff --git a/agent/conversation_loop.py b/agent/conversation_loop.py
-index 9028cb926..eb649088b 100644
+index 9028cb926..05740e2c6 100644
 --- a/agent/conversation_loop.py
 +++ b/agent/conversation_loop.py
 @@ -33,7 +33,7 @@ from agent.runtime_cwd import resolve_agent_cwd
@@ -24,7 +24,7 @@ index 9028cb926..eb649088b 100644
 +            "final_response": str(_prompt_block),
 +            "messages": list(conversation_history or []),
 +            "api_calls": 0,
-+            "completed": False,
++            "completed": True,
 +            "failed": False,
 +            "turn_exit_reason": "prompt_blocked",
 +        }
@@ -297,10 +297,10 @@ index 9a068d5a1..6a29ac938 100644
  def _elapsed_ms(start: float) -> int:
 diff --git a/tests/agent/test_prompt_hook_block.py b/tests/agent/test_prompt_hook_block.py
 new file mode 100644
-index 000000000..dd65b5bd4
+index 000000000..ab5bd9c9d
 --- /dev/null
 +++ b/tests/agent/test_prompt_hook_block.py
-@@ -0,0 +1,60 @@
+@@ -0,0 +1,61 @@
 +# ABOUTME: Tests prompt hook denial at the turn boundary.
 +# ABOUTME: Ensures blocked user text never reaches the provider or saved history.
 +
@@ -342,6 +342,7 @@ index 000000000..dd65b5bd4
 +    assert result["messages"] == history
 +    assert result["api_calls"] == 0
 +    assert result["turn_exit_reason"] == "prompt_blocked"
++    assert result["completed"] is True
 +    assert "current_turn_user_idx" not in result
 +    agent.client.chat.completions.create.assert_not_called()
 +    persist.assert_not_called()
