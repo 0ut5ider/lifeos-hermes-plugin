@@ -1084,6 +1084,51 @@ class HookBridgeTests(unittest.TestCase):
                 {"file_path": "/root/.hermes/cache/documents/private.md"}, str(self.root), "remote-task",
             ))
 
+    def test_execute_code_runs_bash_guard_with_python_source(self):
+        marker = self.root / "generic-code.json"
+        generic = self.make_hook(
+            "generic-code.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        guard = self.make_hook(
+            "code-bash-guard.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['tool_name']=='Bash'\n"
+            "assert data['tool_input']['command']=='import os\\nos.system(\"bun gmail.ts send\")'\n"
+            "print('LifeOS blocked the send',file=sys.stderr)\n"
+            "sys.exit(2)\n",
+        )
+        bridge = self.bridge({"PreToolUse": [
+            {"hooks": [{"type": "command", "command": generic}]},
+            {"matcher": "Bash", "hooks": [{"type": "command", "command": guard}]},
+        ]})
+        code = 'import os\nos.system("bun gmail.ts send")'
+
+        result = bridge.pre_tool_call("execute_code", {"code": code}, session_id="code-session")
+
+        self.assertEqual(result, {"action": "block", "message": "LifeOS blocked the send"})
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["tool_name"], "execute_code")
+        self.assertEqual(payload["tool_input"], {"code": code})
+
+    def test_execute_code_ignores_bash_command_rewrite(self):
+        command = self.make_hook(
+            "rewrite-bash.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "assert data['tool_name']=='Bash'\n"
+            "print(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'rtk git status'}}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [
+            {"matcher": "Bash", "hooks": [{"type": "command", "command": command}]},
+        ]})
+
+        result = bridge.pre_tool_call("execute_code", {"code": "print('git status')"}, session_id="s1")
+
+        self.assertIsNone(result)
+
     def test_delegated_child_tool_events_carry_agent_identity(self):
         marker = self.root / "child-hook-input.json"
         command = self.make_hook(

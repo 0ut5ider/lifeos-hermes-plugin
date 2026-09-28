@@ -673,6 +673,7 @@ class HookBridge:
 
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
+        alias_input: dict[str, Any] | None = None,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         environment = self._event_environment(payload)
@@ -682,7 +683,10 @@ class HookBridge:
             alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
             if not native_match and not alias_match:
                 continue
-            group_payload = payload if native_match else {**payload, "tool_name": matcher_alias}
+            group_payload = payload if native_match else {
+                **payload, "tool_name": matcher_alias,
+                **({"tool_input": alias_input} if alias_input is not None else {}),
+            }
             for hook in group.get("hooks", []):
                 if hook.get("type") == "http":
                     jobs.append((self._run_http, (hook, group_payload), False))
@@ -957,14 +961,21 @@ class HookBridge:
         extra_context = []
         for native_input in native_inputs:
             payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd)
-            for process, output in self._run("PreToolUse", payload, native_name):
+            code = args.get("code") if tool_name == "execute_code" else None
+            for process, output in self._run(
+                "PreToolUse", payload, native_name,
+                matcher_alias="Bash" if isinstance(code, str) and code else "",
+                alias_input={"command": code} if isinstance(code, str) and code else None,
+            ):
                 specific = (output or {}).get("hookSpecificOutput") or {}
                 decision = specific.get("permissionDecision") or (output or {}).get("decision")
                 if process.returncode == 2 or decision in {"deny", "block"}:
                     message = specific.get("permissionDecisionReason") or (output or {}).get("reason") or process.stderr.strip() or "Blocked by a LifeOS hook"
                     return {"action": "block", "message": str(message)[:2000]}
                 updated = specific.get("updatedInput") or (output or {}).get("updatedInput")
-                if isinstance(updated, dict) and not v4a:
+                if isinstance(updated, dict) and not v4a and not (
+                    tool_name == "execute_code" and "command" in updated
+                ):
                     updated_args = _hermes_input(native_name, updated)
                 context = specific.get("additionalContext") or (output or {}).get("additionalContext")
                 if isinstance(context, str) and context.strip():
