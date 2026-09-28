@@ -936,6 +936,57 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(rows[1]["message"]["content"][0]["tool_use_id"], "tc1")
         self.assertTrue(rows[1]["message"]["content"][0]["is_error"])
 
+    def test_unmapped_hermes_tool_reaches_generic_hooks_and_transcript(self):
+        marker = self.root / "unmapped.jsonl"
+        command = self.make_hook(
+            "unmapped.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        group = [{"hooks": [{"type": "command", "command": command}]}]
+        bridge = self.bridge({"PreToolUse": group, "PostToolUse": group, "PostToolUseFailure": group})
+        args = {"todos": [{"id": "one", "content": "Document the task"}]}
+
+        bridge.pre_tool_call("todo_list", args, session_id="s1", tool_call_id="tc1")
+        bridge.post_tool_call("todo_list", args, '{"ok":true}', session_id="s1", tool_call_id="tc1")
+        bridge.post_tool_call(
+            "todo_list", args, '{"error":"failed"}', session_id="s1", tool_call_id="tc2",
+            status="error", error_message="failed",
+        )
+
+        payloads = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([payload["hook_event_name"] for payload in payloads], [
+            "PreToolUse", "PostToolUse", "PostToolUseFailure",
+        ])
+        self.assertTrue(all(payload["tool_name"] == "todo_list" for payload in payloads))
+        self.assertEqual(payloads[1]["tool_input"], args)
+        self.assertEqual(payloads[2]["error"], "failed")
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual([row["message"]["content"][0]["name"] for row in rows[::2]], [
+            "todo_list", "todo_list",
+        ])
+
+    def test_web_extract_uses_webfetch_matcher_for_safety_hook(self):
+        marker = self.root / "web-fetch.json"
+        command = self.make_hook(
+            "web-fetch.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({
+            "PostToolUse": [{"matcher": "WebFetch", "hooks": [{"type": "command", "command": command}]}],
+        })
+
+        bridge.post_tool_call(
+            "web_extract", {"urls": ["https://example.com/"]}, "External page text", session_id="s1",
+        )
+
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["tool_name"], "WebFetch")
+        self.assertEqual(payload["tool_input"], {"urls": ["https://example.com/"]})
+        self.assertEqual(payload["tool_response"], "External page text")
+
     def test_delegated_child_tool_events_carry_agent_identity(self):
         marker = self.root / "child-hook-input.json"
         command = self.make_hook(

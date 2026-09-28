@@ -35,6 +35,7 @@ TOOL_NAMES = {
     "delegate_task": "Agent",
     "web_search": "WebSearch",
     "web_fetch": "WebFetch",
+    "web_extract": "WebFetch",
     "skill_view": "Skill",
     "tool_search": "ToolSearch",
     "clarify": "AskUserQuestion",
@@ -64,7 +65,7 @@ else:
 def _native_tool_name(tool_name: str) -> str | None:
     if tool_name.startswith("mcp__"):
         return tool_name
-    return TOOL_NAMES.get(tool_name)
+    return TOOL_NAMES.get(tool_name, tool_name or None)
 
 
 def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
