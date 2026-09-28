@@ -1038,7 +1038,9 @@ class HookBridge:
         self.poll_config_changes()
         self._start_config_watcher()
         if first_turn:
-            start_payload = self._payload("SessionStart", session_id, source="startup")
+            transcript = self.transcript_path(session_id)
+            source = "resume" if transcript.exists() and transcript.stat().st_size > 0 else "startup"
+            start_payload = self._payload("SessionStart", session_id, source=source)
             context.extend(self._context(self._run("SessionStart", start_payload)))
         self._append_transcript(session_id, "user", user_message)
         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)

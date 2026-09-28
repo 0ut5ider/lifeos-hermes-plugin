@@ -600,6 +600,20 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in transcript.read_text().splitlines()]
         self.assertEqual([row["message"]["content"] for row in rows], ["first", "second"])
 
+    def test_session_start_uses_resume_source_after_bridge_restart(self):
+        command = self.make_hook(
+            "session-source.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "print(json.dumps({'additionalContext': data['source']}))\n",
+        )
+        hooks = {"SessionStart": [{"hooks": [{"type": "command", "command": command}]}]}
+        first = self.bridge(hooks)
+        self.assertEqual(first.pre_llm_call("first prompt", session_id="resumed"), {"context": "startup"})
+        first.close()
+        second = self.bridge(hooks)
+        self.assertEqual(second.pre_llm_call("next prompt", session_id="resumed"), {"context": "resume"})
+
     def test_multimodal_first_prompt_runs_start_and_prompt_hooks(self):
         marker = self.root / "multimodal-events.jsonl"
         command = self.make_hook(
