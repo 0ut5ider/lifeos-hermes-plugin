@@ -2066,7 +2066,7 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(bridge.command_approval("git status --short", session_key="s1"),
                          {"action": "review"})
 
-    def test_compound_command_with_deny_pattern_stays_on_review_path(self):
+    def test_compound_command_with_deny_pattern_blocks_matching_subcommand(self):
         settings = self.root / "settings.json"
         settings.write_text(json.dumps({
             "hooks": {}, "permissions": {"deny": ["Bash(curl *)"]},
@@ -2074,7 +2074,104 @@ class HookBridgeTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval("echo ready; curl https://example.com", session_key="s1"),
-                         {"action": "review"})
+                         {"action": "deny"})
+
+    def test_compound_command_denies_matching_second_subcommand(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(printf world)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("printf hello; printf world", session_key="s1"),
+                         {"action": "deny"})
+
+    def test_nested_command_substitution_applies_deny_rule(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(printf world)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval('echo "$(printf world)"', session_key="s1"),
+                         {"action": "deny"})
+
+    def test_timeout_wrapper_applies_inner_deny_rule(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(printf world)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("timeout 30 printf world", session_key="s1"),
+                         {"action": "deny"})
+
+    def test_compound_allow_requires_each_subcommand(self):
+        hook = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny'}}}))\n")
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(printf hello)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("printf hello && printf world", session_key="s1"),
+                         {"action": "deny"})
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(printf hello)", "Bash(printf world)"]},
+        }))
+        self.assertIsNone(bridge.command_approval("printf hello && printf world", session_key="s1"))
+
+    def test_wildcard_allow_matches_one_simple_command(self):
+        hook = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny'}}}))\n")
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(printf *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval("printf hello", session_key="s1"))
+
+    def test_deny_does_not_match_quoted_text_or_shell_c_argument(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(printf world)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval("echo 'printf world'", session_key="s1"))
+        self.assertIsNone(bridge.command_approval("sh -c 'printf world'", session_key="s1"))
+
+    def test_deny_wildcard_does_not_span_compound_commands(self):
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"deny": ["Bash(printf *world)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval("printf hello; echo world", session_key="s1"))
+
+    def test_wildcard_allow_does_not_skip_redirect_permission_check(self):
+        hook = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny'}}}))\n")
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(printf *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("printf world > /tmp/guarded", session_key="s1"),
+                         {"action": "deny"})
 
     def test_managed_deny_overrides_user_allow(self):
         policy = self.root / "managed-policy"

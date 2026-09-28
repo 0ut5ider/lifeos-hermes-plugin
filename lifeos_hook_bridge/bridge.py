@@ -84,11 +84,8 @@ def _claude_simple_read_only_bash(command: str) -> bool:
     return command == "pwd" or _SIMPLE_READ_ONLY_ECHO.fullmatch(command) is not None
 
 
-_SHELL_CONTROL = re.compile(r"[\n;&|`]|\$\(")
-
-
-def _bash_permission_rule_matches(rule: Any, command: str, action: str) -> bool | None:
-    """Match simple Bash forms; defer compound commands and broad grants."""
+def _bash_permission_rule_matches(rule: Any, command: str) -> bool | None:
+    """Match one Bash command against a Claude Code permission rule."""
     if not isinstance(rule, str):
         return None
     if rule in {"Bash", "Bash(*)"}:
@@ -101,8 +98,6 @@ def _bash_permission_rule_matches(rule: Any, command: str, action: str) -> bool 
     if specifier.startswith("run_in_background:"):
         return None
     if "*" in specifier:
-        if action == "allow" or _SHELL_CONTROL.search(command):
-            return None
         if specifier.endswith(":*"):
             specifier = specifier[:-2] + " *"
         if specifier.endswith(" *") and specifier.count("*") == 1 and command == specifier[:-2]:
@@ -113,23 +108,38 @@ def _bash_permission_rule_matches(rule: Any, command: str, action: str) -> bool 
 
 def _bash_permission_rule_decision(command: str, sources: list[Any]) -> str:
     """Apply deny, ask, allow order without granting through unsupported patterns."""
-    matches: dict[str, bool] = {"deny": False, "ask": False, "allow": False}
+    from .bash_permissions import bash_command_forms
+
+    forms, parsed, allow_safe = bash_command_forms(command)
+    candidates = [(command,)] if not forms else forms
+    matches: dict[str, bool] = {"deny": False, "ask": False}
     uncertain: dict[str, bool] = {"deny": False, "ask": False}
+    allowed = [False] * len(candidates)
     for settings in sources:
         if not isinstance(settings, dict):
             uncertain["deny"] = True
             continue
-        for action in matches:
+        for action in ("deny", "ask", "allow"):
             rules = settings.get(action, [])
             if not isinstance(rules, list):
                 uncertain["deny"] = True
                 continue
             for rule in rules:
-                match = _bash_permission_rule_matches(rule, command, action)
-                if match is True:
-                    matches[action] = True
-                elif match is None and action in uncertain:
-                    uncertain[action] = True
+                if action in {"deny", "ask"}:
+                    matches_for_rule = [
+                        _bash_permission_rule_matches(rule, form)
+                        for aliases in candidates for form in aliases
+                    ]
+                    if not parsed:
+                        matches_for_rule.append(_bash_permission_rule_matches(rule, command))
+                    if True in matches_for_rule:
+                        matches[action] = True
+                    elif None in matches_for_rule or (not parsed and isinstance(rule, str) and rule.startswith("Bash")):
+                        uncertain[action] = True
+                else:
+                    for index, aliases in enumerate(candidates):
+                        if any(_bash_permission_rule_matches(rule, form) is True for form in aliases):
+                            allowed[index] = True
     if matches["deny"]:
         return "deny"
     if uncertain["deny"]:
@@ -138,7 +148,7 @@ def _bash_permission_rule_decision(command: str, sources: list[Any]) -> str:
         return "ask"
     if uncertain["ask"]:
         return "unknown"
-    return "allow" if matches["allow"] else "none"
+    return "allow" if allow_safe and allowed and all(allowed) else "none"
 
 
 def _is_native_version_drift(command: str, root: Path) -> bool:

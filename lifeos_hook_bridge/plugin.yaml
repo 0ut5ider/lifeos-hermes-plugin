@@ -2,6 +2,9 @@ name: lifeos-hook-bridge
 version: 0.1.0
 description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
 author: 0ut5ider
+python_dependencies:
+  - tree-sitter==0.26.0
+  - tree-sitter-bash==0.25.1
 config_schema:
   lifeos_source_dir:
     type: str
