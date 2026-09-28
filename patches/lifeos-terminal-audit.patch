@@ -1,0 +1,15 @@
+diff --git a/LifeOS/install/hooks/EventLogger.hook.ts b/LifeOS/install/hooks/EventLogger.hook.ts
+index f3eda88..d87baeb 100755
+--- a/LifeOS/install/hooks/EventLogger.hook.ts
++++ b/LifeOS/install/hooks/EventLogger.hook.ts
+@@ -155,6 +155,10 @@ function captureGroundTruth(toolName: string, input: Record<string, unknown>, re
+     // Claude Code puts stdout/stderr/exit in tool_response — shape varies.
+     if (response && typeof response === 'object') {
+       const r = response as Record<string, unknown>;
++      if (typeof r.output === 'string' && !('stdout' in r) && !('stderr' in r)) {
++        gt.combined_output_preview = truncate(r.output, 800);
++        gt.combined_output_bytes = r.output.length;
++      }
+       if ('stdout' in r && typeof r.stdout === 'string') {
+         gt.stdout_preview = truncate(r.stdout, 800);
+         gt.stdout_bytes = r.stdout.length;
