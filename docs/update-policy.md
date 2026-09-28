@@ -4,7 +4,7 @@ The current bridge is a tested combination of three independent code bases. The 
 
 | Component | Current test source | Update risk |
 | --- | --- | --- |
-| Hermes | Base `758ad514eb0e800547e015edf05aa18f78b78d82` plus ten patches | Stock plugin events do not provide every LifeOS control. A normal source update can switch away from the patched feature branch or leave untested patch merges. |
+| Hermes | Base `758ad514eb0e800547e015edf05aa18f78b78d82` plus eleven patches | Stock plugin events do not provide every LifeOS control. A normal source update can switch away from the patched feature branch or leave untested patch merges. |
 | LifeOS | Base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c` plus nine patches | Hook files and registrations can change. The current `DeployCore.ts` uses `copyMissing`, which does not replace an already installed system file. Repeating the install commands alone cannot prove deployed hooks match a new source release. |
 | Bridge plugin | Public Git commit pinned during install | A plugin update cannot restore missing Hermes events or port LifeOS source changes. Hermes refuses automatic updates of a pinned plugin. |
 

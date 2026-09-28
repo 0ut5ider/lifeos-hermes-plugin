@@ -1,0 +1,11 @@
+# Bash permission workspace context
+
+Date: 2026-09-28. The bridge's Bash `PermissionRequest` callback used the Hermes process directory and an empty task ID. A disposable hook confirmed that passing a target `cwd` and task ID had no effect. The host's `pre_command_approval` event did not provide either field.
+
+A live Docker terminal test used an explicitly trusted project under `/tmp`. The project registered a Bash permission hook that wrote a marker and exited with code 2. The installed `.212` host ran the user Safety hook, then asked the human to review the command. The project hook did not run. The test also revealed a second `default` container created while the bridge inspected the empty task ID. The actual terminal container used the request's task ID.
+
+The generic Hermes command policy callback now receives `env_type`, `cwd`, and `task_id`. The terminal tool supplies its target workspace, and early batch approvals bind their cached decision to the same workspace and task ID. The bridge uses those fields to select a trusted local, SSH, or Docker project and run its native permission hook through the active backend.
+
+Against the patched Hermes worktree, the same live Docker test ran the trusted project hook in the target container. The hook's exit code 2 denied the command without a second human prompt, and the marker appeared inside that container. The current installed host failed this regression; the patched worktree passed it in 3.321 seconds. The focused Hermes tests passed 245 cases, and the plugin suite passed 202 cases with 50 optional fixture skips. This probe establishes Docker behavior for one trusted project.
+
+A separate live SSH test used a disposable loopback project whose path differed from the terminal's default directory. The test first denied a command through human review, then installed a project `PermissionRequest` hook that wrote a marker and exited 2. After reloading the plugin settings, the old host asked the human again and missed the project hook. The patched host ran the hook inside the target SSH workspace and denied the command without another human prompt. Both probes used an explicit `workdir`; the SSH key, authorized-key entry, project files, and test directory were removed afterward. This establishes one trusted SSH project's behavior, not all SSH backends or permission rule forms.

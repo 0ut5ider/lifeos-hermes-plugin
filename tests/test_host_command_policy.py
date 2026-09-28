@@ -76,7 +76,7 @@ class HostCommandPolicyTests(unittest.TestCase):
 
                         log = Path(directory) / "LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl"
                         decisions = [json.loads(line) for line in log.read_text().splitlines()]
-                        self.assertEqual([item["decision"] for item in decisions], ["allow", "neutral", "neutral"])
+                        self.assertEqual([item["decision"] for item in decisions], ["neutral", "neutral"])
                     finally:
                         plugins_mod._reset_plugin_managers_for_tests()
         finally:

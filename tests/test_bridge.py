@@ -1862,6 +1862,65 @@ class HookBridgeTests(unittest.TestCase):
         bridge = self.bridge({})
         self.assertIsNone(bridge.command_approval("echo 12345", session_key="s1"))
 
+    def test_simple_builtin_read_only_commands_skip_permission_request(self):
+        marker = self.root / "permission-invoked"
+        deny = self.make_hook(
+            "deny-read-only.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text('invoked')\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'deny'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": deny},
+        ]}]})
+        for command in ("echo 12345", "pwd"):
+            with self.subTest(command=command):
+                self.assertIsNone(bridge.command_approval(command, session_key="s1"))
+                self.assertFalse(marker.exists())
+        self.assertEqual(bridge.command_approval("echo 12345; pwd", session_key="s1"),
+                         {"action": "deny"})
+        self.assertTrue(marker.exists())
+
+    def test_explicit_bash_permission_rule_keeps_read_only_review(self):
+        marker = self.root / "explicit-rule-invoked"
+        hook = self.make_hook(
+            "explicit-rule.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text('invoked')\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"ask": ["Bash(pwd)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("pwd", session_key="s1"), {"action": "review"})
+        self.assertTrue(marker.exists())
+
+    def test_command_permission_uses_target_workspace_context(self):
+        workspace = self.root / "target-workspace"
+        workspace.mkdir()
+        marker = self.root / "permission-cwd"
+        hook = self.make_hook(
+            "record-permission-cwd.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(data['cwd'])\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": hook},
+        ]}]})
+        self.assertEqual(bridge.command_approval(
+            "curl -I http://192.168.8.1:9", session_key="s1", cwd=str(workspace), task_id="task-1",
+        ), {"action": "review"})
+        self.assertEqual(marker.read_text(), str(workspace))
+
     def test_native_command_permission_deny_overrides_grant(self):
         grant = self.make_hook("grant.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n")
         deny = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny','reason':'Native denial'}}}))\n")

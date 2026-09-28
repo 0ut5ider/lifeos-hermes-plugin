@@ -29,6 +29,7 @@ SOURCES = {
             "hermes-direct-provider-inference.patch",
             "hermes-stop-fail-closed.patch",
             "hermes-command-policy.patch",
+            "hermes-command-context.patch",
         ),
     },
     "lifeos": {

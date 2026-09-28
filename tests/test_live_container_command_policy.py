@@ -3,7 +3,9 @@
 
 import json
 import os
+import shlex
 import shutil
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,6 +41,7 @@ class LiveContainerCommandPolicyTests(unittest.TestCase):
                 "HERMES_HOME": str(home),
                 "LIFEOS_HOOK_SETTINGS": str(settings),
                 "LIFEOS_DIR": str(root / "LIFEOS"),
+                "LIFEOS_REMOTE_PROJECT_TRUST": str(root / "remote-projects.json"),
                 "HERMES_INTERACTIVE": "1",
                 "TERMINAL_ENV": "docker",
                 "TERMINAL_DOCKER_IMAGE": IMAGE,
@@ -77,13 +80,42 @@ class LiveContainerCommandPolicyTests(unittest.TestCase):
                     log = root / "LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl"
                     decisions = [json.loads(line)["decision"] for line in log.read_text().splitlines()]
                     self.assertEqual(decisions, ["neutral", "allow"])
+
+                    with terminal_module._env_lock:
+                        added_keys = set(terminal_module._active_environments) - previous_environments
+                        self.assertIn(task_id, added_keys)
+                        container = terminal_module._active_environments[task_id]
+                    image_id = subprocess.run(
+                        [container._docker_exe, "inspect", "--format", "{{.Image}}", container._container_id],
+                        capture_output=True, text=True, check=True, timeout=20,
+                    ).stdout.strip()
+                    (root / "remote-projects.json").write_text(json.dumps({"projects": [{
+                        "type": "docker", "image_id": image_id, "root": "/tmp",
+                    }]}))
+                    marker = "/tmp/lifeos-permission-project-invoked"
+                    project_hook = "sh -c " + shlex.quote(f"printf hit > {marker}; exit 2")
+                    project_settings = {"hooks": {"PermissionRequest": [{
+                        "matcher": "Bash", "hooks": [{"type": "command", "command": project_hook}],
+                    }]}}
+                    prepared = container.execute(
+                        "mkdir -p .claude && cat > .claude/settings.json", cwd="/tmp",
+                        stdin_data=json.dumps(project_settings), timeout=20,
+                    )
+                    self.assertEqual(prepared["returncode"], 0, prepared)
+                    result = json.loads(terminal_module.terminal_tool(
+                        "curl -I http://192.168.8.1:9", task_id=task_id, timeout=20,
+                    ))
+                    self.assertEqual(result["status"], "blocked", result)
+                    self.assertEqual(len(prompts), 1, "Project denial must not ask for human approval")
+                    observed = container.execute(f"cat {marker}", cwd="/tmp", timeout=20)
+                    self.assertEqual(observed["output"], "hit", observed)
                 finally:
                     terminal_module.set_approval_callback(previous_callback)
                     plugins_mod._reset_plugin_managers_for_tests()
                     with terminal_module._env_lock:
                         added_keys = set(terminal_module._active_environments) - previous_environments
                         environments = [terminal_module._active_environments.pop(key) for key in added_keys]
-                    for item in environments:
+                    for item in {id(value): value for value in environments}.values():
                         item.cleanup(force_remove=True)
                         self.assertTrue(item.wait_for_cleanup(timeout=30))
 

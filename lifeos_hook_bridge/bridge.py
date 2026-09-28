@@ -72,6 +72,18 @@ def _native_tool_name(tool_name: str) -> str | None:
     return TOOL_NAMES.get(tool_name, tool_name or None)
 
 
+_SIMPLE_READ_ONLY_ECHO = re.compile(r"echo(?: [A-Za-z0-9_./:=+-]+)*\Z")
+
+
+def _claude_simple_read_only_bash(command: str) -> bool:
+    """Recognize only probed commands that Claude runs without PermissionRequest.
+
+    Compound commands, shell expansion, redirects, and unrecognized forms stay
+    in the approval path until their permission behavior has been characterized.
+    """
+    return command == "pwd" or _SIMPLE_READ_ONLY_ECHO.fullmatch(command) is not None
+
+
 def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
     """Use Hermes's own path classifier so one guarded write gets one human prompt."""
     try:
@@ -592,6 +604,7 @@ class HookBridge:
             f"{Path.home() / '.local/bin'}:{environment.get('PATH', '')}"
         )
         self.hooks = hooks
+        self.user_permission_rules = settings.get("permissions") or {}
         self.environment = environment
         self.native_task_hook_supported: dict[tuple[str, str], bool] = {}
 
@@ -1196,17 +1209,33 @@ class HookBridge:
             **fields,
         }
 
-    def command_approval(self, command: str, session_key: str = "", **_: Any) -> dict[str, str] | None:
+    def command_approval(
+        self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+    ) -> dict[str, str] | None:
+        cwd = cwd or _tool_cwd("terminal", {}, task_id)
+        self._remember_project(cwd, session_key, task_id)
         payload = self._payload(
-            "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command},
+            "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
         )
-        groups = self._hook_groups("PermissionRequest", payload, _task_uses_host_paths(""), "")
+        host_paths = _task_uses_host_paths(task_id)
+        groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
         if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
                    for group in groups):
             return None
+        if host_paths and _claude_simple_read_only_bash(command) and not self.user_permission_rules:
+            project = self._matching_project(payload, host_paths)
+            project_rules = (
+                self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions")
+                for name in ("settings.json", "settings.local.json")
+            ) if project is not None else ()
+            managed_policy = (POLICY_DIRECTORY / "managed-settings.json").exists() or (
+                POLICY_DIRECTORY / "managed-settings.d"
+            ).is_dir()
+            if not any(project_rules) and not managed_policy:
+                return None
         granted = False
         denied = False
-        for process, output in self._run("PermissionRequest", payload, "Bash"):
+        for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
             specific = _specific_output(output, "PermissionRequest")
             decision = specific.get("decision") or {}
             if decision.get("behavior") == "deny" or process.returncode == 2:
