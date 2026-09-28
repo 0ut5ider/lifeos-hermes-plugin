@@ -6,6 +6,8 @@ The installed `VersionDrift.hook.ts` calls three Git operations from `$HOME/.cla
 
 Initializing Git in the shared Hermes home would put credentials, sessions, caches, and runtime files under a repository worktree. It also includes about 76,558 files under `skills/` and 29,359 under `LIFEOS/PULSE/` because those trees contain generated dependencies. A naive baseline would be large and easy to populate incorrectly. The LifeOS source install contains about 1,816 system files across the hook's core paths before generated dependencies.
 
+A source-to-install audit found all 55 `.hook.ts` files present and byte-identical. Among 200 source `LIFEOS/TOOLS` files, 25 installed copies differed. After normalizing the principal and DA name placeholders, only `CommitmentDetect.ts` and `GenerateTelosSummary.ts` remained, and those differences were substitutions of the principal's full name in comments. Two documentation files also changed through generated content. The eight source `agents/` files and seven `commands/` files are absent because `DeployComponents.ts` treats those components as opt-in; this audit did not install them. This comparison supports using the source payload as the baseline file list, with explicit handling for installed identity substitutions and generated documents.
+
 ## Proposed plugin contract
 
 1. A plugin command creates a local baseline from the installed LifeOS source manifest and its deployed system files. It records the installed `LIFEOS/VERSION`, the baseline time, the source commit, and content hashes for an explicit file list. It stores the baseline outside `$HOME/.hermes` Git state with mode `0600`. It never records `USER/`, `LIFEOS/MEMORY/`, credentials, sessions, caches, or generated dependency trees.
