@@ -870,6 +870,21 @@ class HookBridgeTests(unittest.TestCase):
         ])
         self.assertEqual(rows[0]["tool_input"]["model"], "local-small")
 
+    def test_background_dispatch_is_reported_as_spawn_to_agent_hook(self):
+        marker = self.root / "agent-dispatch.json"
+        command = self.make_hook(
+            "record-dispatch.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"PostToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        args = {"goal": "Inspect a synthetic report", "background": True}
+        result = json.dumps({"status": "dispatched", "mode": "background", "delegation_id": "test-child"})
+        bridge.post_tool_call("delegate_task", args, result, session_id="s1")
+        payload = json.loads(marker.read_text())
+        self.assertIn("Spawned successfully", payload["tool_response"])
+        self.assertEqual(json.loads(bridge.transcript_path("s1").read_text().splitlines()[-1])["message"]["content"][0]["content"], result)
+
     def test_background_delegation_reaches_agent_hook(self):
         marker = self.root / "background-agent.json"
         command = self.make_hook(

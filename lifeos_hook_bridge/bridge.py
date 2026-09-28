@@ -1104,6 +1104,12 @@ class HookBridge:
             response = json.loads(result)
         except (json.JSONDecodeError, TypeError):
             response = result
+        hook_response = response
+        if (
+            native_name == "Agent" and event == "PostToolUse" and isinstance(response, dict)
+            and response.get("status") == "dispatched" and response.get("mode") == "background"
+        ):
+            hook_response = f"Spawned successfully: {json.dumps(response)}"
         use_id = tool_call_id or uuid4().hex
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = (
@@ -1130,7 +1136,7 @@ class HookBridge:
                 event, session_id, tool_name=native_name,
                 tool_input=native_input,
                 cwd=cwd,
-                **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": response}),
+                **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": hook_response}),
             )
             context.extend(self._context(self._run(event, payload, native_name)))
         return "\n\n".join(context) if context else None
