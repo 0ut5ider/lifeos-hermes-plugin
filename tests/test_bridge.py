@@ -1984,6 +1984,17 @@ class HookBridgeTests(unittest.TestCase):
                 command, session_key="s1", cwd=str(project),
             ), {"action": "deny"})
 
+    def test_remote_project_bash_deny_applies_to_approval(self):
+        command = "curl https://example.com"
+        bridge = self.bridge({})
+        with patch("lifeos_hook_bridge.bridge._task_uses_host_paths", return_value=False), \
+             patch.object(bridge, "_remote_project_settings", return_value=(object(), [{
+                 "permissions": {"deny": [f"Bash({command})"]},
+             }])):
+            self.assertEqual(bridge.command_approval(
+                command, session_key="s1", cwd="/remote/project", task_id="remote",
+            ), {"action": "deny"})
+
     def test_ask_rule_requests_review_without_permission_hook(self):
         settings = self.root / "settings.json"
         settings.write_text(json.dumps({

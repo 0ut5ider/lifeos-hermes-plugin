@@ -1337,6 +1337,10 @@ class HookBridge:
             self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {})
             for name in ("settings.json", "settings.local.json")
         ] if project is not None else []
+        if not host_paths:
+            remote = self._remote_project_settings(payload, task_id)
+            if remote is not None:
+                project_permissions.extend(settings.get("permissions", {}) for settings in remote[1])
         managed_permissions, managed_only = _managed_permission_sources()
         local_permissions = [] if managed_only else [self.user_permission_rules, *project_permissions]
         rule_decision = _bash_permission_rule_decision(command, [*local_permissions, *managed_permissions])

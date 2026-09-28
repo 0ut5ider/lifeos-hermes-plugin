@@ -18,6 +18,57 @@ from lifeos_hook_bridge.bridge import HookBridge
 
 
 class LiveRemoteProjectHookTests(unittest.TestCase):
+    def test_ssh_project_bash_deny_requires_backend_bound_trust(self):
+        host = os.environ.get("LIFEOS_SSH_PROBE_HOST")
+        user = os.environ.get("LIFEOS_SSH_PROBE_USER")
+        key = os.environ.get("LIFEOS_SSH_PROBE_KEY")
+        project = os.environ.get("LIFEOS_SSH_PROBE_PROJECT")
+        if not all((host, user, key, project)):
+            self.skipTest("disposable SSH project is required")
+
+        from tools.environments.ssh import SSHEnvironment
+        from tools.file_tools import clear_file_ops_cache
+        from tools.terminal_tool import _active_environments, _env_lock
+
+        env = SSHEnvironment(host=host, user=user, cwd=project, key_path=key, probe_only=True)
+        with _env_lock:
+            _active_environments["default"] = env
+        try:
+            command = "curl https://example.com"
+            settings_path = f"{project}/.claude/settings.local.json"
+            write = env.execute(
+                f"cat > {shlex.quote(settings_path)}", cwd=project,
+                stdin_data=json.dumps({"permissions": {"deny": [f"Bash({command})"]}}), timeout=20,
+            )
+            self.assertEqual(write["returncode"], 0, write)
+            with TemporaryDirectory(prefix="remote-project-policy-") as directory:
+                root = Path(directory)
+                user_settings = root / "settings.json"
+                user_settings.write_text(json.dumps({
+                    "hooks": {}, "permissions": {"allow": [f"Bash({command})"]},
+                }))
+                trust = root / "remote-projects.json"
+                trust.write_text('{"projects":[]}')
+                with patch.dict(os.environ, {"LIFEOS_REMOTE_PROJECT_TRUST": str(trust)}):
+                    bridge = HookBridge(user_settings, root)
+                try:
+                    self.assertIsNone(bridge.command_approval(
+                        command, session_key="remote-permission", cwd=project, task_id="default",
+                    ))
+                    trust.write_text(json.dumps({"projects": [{
+                        "type": "ssh", "host": host, "user": user, "port": 22, "root": project,
+                    }]}))
+                    self.assertEqual(bridge.command_approval(
+                        command, session_key="remote-permission", cwd=project, task_id="default",
+                    ), {"action": "deny"})
+                finally:
+                    bridge.close()
+        finally:
+            env.execute(f"rm -f {shlex.quote(settings_path)}", cwd=project, timeout=20)
+            clear_file_ops_cache("default")
+            with _env_lock:
+                _active_environments.pop("default", None)
+
     def test_ssh_project_hook_requires_backend_bound_trust(self):
         host = os.environ.get("LIFEOS_SSH_PROBE_HOST")
         user = os.environ.get("LIFEOS_SSH_PROBE_USER")
