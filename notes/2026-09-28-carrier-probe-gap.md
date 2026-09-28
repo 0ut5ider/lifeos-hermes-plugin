@@ -1,0 +1,7 @@
+# Claude carrier probe on the Hermes test install
+
+Date: 2026-09-28. The installed LifeOS `CarrierProbe.ts --check` on `.212` exited 1 with `CarrierProbe: NEVER RUN`. `IntegrityCheck.ts` invokes this check and records a blocking `carrier-probe` finding when it fails. This is an active LifeOS integrity gap, not merely a missing optional test.
+
+The native probe starts a Claude Code Haiku session, requests an Agent dispatch with `model: fable`, then reads Claude Code subagent transcript files. It compares the executed model name to `DISPATCH_EXECUTES_FABLE` in LifeOS `models.ts`. The Hermes installation instead maps Fable to a configurable Hermes provider, model, and effort. Its ordinary LifeOS child launcher performs direct inference, so running the Claude-specific probe through that launcher would not establish Hermes delegation behavior. Writing a successful state file without observing a real child request would hide the gap.
+
+A separate clean-account probe already demonstrated that a real Hermes delegated Agent used the selected beta provider and model, and failed without a chat request to alpha when beta returned HTTP 503. That probe did not run `CarrierProbe.ts` or produce the persistent freshness evidence that LifeOS IntegrityCheck expects. The next implementation needs a Hermes-specific probe with the same periodic freshness gate, based on observed delegated child execution and the current Fable route. It must remain separate from the native Claude Code probe used by Claude Code installations.
