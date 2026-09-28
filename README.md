@@ -40,6 +40,10 @@ The install source is the `lifeos_hook_bridge/` directory, which contains only r
 
 The Git installer was verified on the isolated `.212` account with a temporary local Git source and a disabled probe name. The probe plugin was removed afterward. The account blocks outbound downloads, so a direct GitHub install was not tested there. The core patch applied to public Hermes HEAD `9a0a1625` on 2026-09-27, and 153 focused tests passed in a disposable checkout on `.212`. All five LifeOS patches applied to public LifeOS HEAD `5e2f2e8`. The current plugin suite passed 90 tests on `.212` with the native hook paths configured and Bun on `PATH`. Discord delivery remains unverified in the test account.
 
+## Reminder routing and privacy
+
+LifeOS's `ReminderRouter` hook creates a GitHub issue containing the original prompt when `WORK.REPO` is configured and the prompt matches an explicit reminder, research, or queue phrase. The isolated test account has no `WORK.REPO`, so this route is inactive there. Decide where reminder text may be stored before enabling that configuration in a private deployment. See [the egress record](notes/2026-09-28-reminder-router-egress.md).
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
