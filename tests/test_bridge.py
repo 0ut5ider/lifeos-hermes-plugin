@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
-from lifeos_hook_bridge.bridge import HookBridge
+from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path
 
 
 class HookBridgeTests(unittest.TestCase):
@@ -97,6 +97,24 @@ class HookBridgeTests(unittest.TestCase):
             bridge.pre_tool_call("write_file", {"path": "notes/example.md", "content": "hello"}, session_id="s1")
         payload = json.loads(marker.read_text())
         self.assertEqual(payload["tool_input"]["file_path"], str(workspace / "notes/example.md"))
+
+    def test_relative_file_path_stays_relative_for_task_resolver(self):
+        path_module = types.ModuleType("tools.file_tools_paths")
+        seen = []
+
+        def resolve(path, task_id):
+            seen.append((path, task_id))
+            return "/remote/work/notes/example.md" if path == "notes/example.md" else path
+
+        path_module._resolve_path_for_task = resolve
+        path_module._resolve_entry_for_task = resolve
+        tools_package = types.ModuleType("tools")
+        tools_package.__path__ = []
+        with patch.dict(sys.modules, {"tools": tools_package, "tools.file_tools_paths": path_module}):
+            result = _hook_file_path("notes/example.md", "/home/local/work", "remote-task")
+
+        self.assertEqual(seen, [("notes/example.md", "remote-task")])
+        self.assertEqual(result, "/remote/work/notes/example.md")
 
     def test_project_hook_applies_only_to_its_project(self):
         project = self.root / "project-a"

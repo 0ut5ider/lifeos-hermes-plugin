@@ -91,7 +91,7 @@ def _hook_file_path(path: str, cwd: str, task_id: str = "default", *, entry: boo
         return os.path.join(os.path.realpath(os.path.dirname(expanded)), os.path.basename(expanded)) if entry else os.path.realpath(expanded)
     try:
         resolver = _resolve_entry_for_task if entry else _resolve_path_for_task
-        return str(resolver(candidate, task_id or "default"))
+        return str(resolver(path, task_id or "default"))
     except Exception as error:
         LOG.warning("Hermes file path resolver unavailable: %s", error)
         return os.path.normpath(candidate)
