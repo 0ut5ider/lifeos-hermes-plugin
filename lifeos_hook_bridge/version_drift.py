@@ -79,7 +79,20 @@ def _digest(path: Path) -> str:
 
 
 def _git(source: Path, *args: str) -> str:
-    return subprocess.check_output(["git", "-C", str(source), *args], text=True).strip()
+    return subprocess.check_output(["git", "-C", str(source), *args], text=True,
+                                   stderr=subprocess.PIPE).strip()
+
+
+def _tracked_source_files(source: Path, *paths: str) -> list[str]:
+    try:
+        prefix = _git(source, "rev-parse", "--show-prefix")
+        tracked = subprocess.check_output(
+            ["git", "-C", str(source), "ls-files", "-z", "--full-name", "--", *paths],
+            stderr=subprocess.PIPE,
+        ).decode("utf-8").split("\0")
+    except (OSError, UnicodeError, subprocess.CalledProcessError) as error:
+        raise ValueError("LifeOS source manifest unavailable") from error
+    return [item[len(prefix):] for item in tracked if item and item.startswith(prefix)]
 
 
 def create_baseline(source: Path, installed: Path) -> dict[str, Any]:
@@ -89,33 +102,27 @@ def create_baseline(source: Path, installed: Path) -> dict[str, Any]:
     installed_version = (installed / "LIFEOS/VERSION").read_text().strip()
     if not VERSION.fullmatch(installed_version) or source_version != installed_version:
         raise ValueError("Source and installed LifeOS versions must match a semantic version")
-    prefix = _git(source, "rev-parse", "--show-prefix")
     commit = _git(source, "rev-parse", "HEAD")
-    tracked = subprocess.check_output(
-        ["git", "-C", str(source), "ls-files", "-z", "--full-name", "--", *CORE_PATHS],
-    ).decode("utf-8").split("\0")
     files = {}
-    for item in tracked:
-        if not item or not item.startswith(prefix):
-            continue
-        name = item[len(prefix):]
+    for name in _tracked_source_files(source, *CORE_PATHS):
         path = _installed_file(installed, name)
         if path is not None:
             files[name] = _digest(path)
     if not files:
         raise ValueError("No tracked LifeOS system files are installed")
     return {
-        "schema": 1,
+        "schema": 2,
         "version": installed_version,
         "created_at": int(time.time()),
         "source_commit": commit,
+        "source_root": str(source),
         "installed_root": str(installed),
         "files": dict(sorted(files.items())),
     }
 
 
 def baseline_fingerprint(baseline: dict[str, Any]) -> str:
-    reviewed = {key: baseline[key] for key in ("version", "source_commit", "installed_root", "files")}
+    reviewed = {key: baseline[key] for key in ("version", "source_commit", "source_root", "installed_root", "files")}
     return hashlib.sha256(json.dumps(reviewed, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
 
 
@@ -139,12 +146,15 @@ def save_baseline(baseline: dict[str, Any], path: Path, renew: bool = False) -> 
 
 def load_baseline(path: Path, installed: Path) -> dict[str, Any]:
     baseline = json.loads(Path(path).read_text(encoding="utf-8"))
-    if not isinstance(baseline, dict) or baseline.get("schema") != 1:
+    if not isinstance(baseline, dict) or baseline.get("schema") != 2:
         raise ValueError("Unsupported VersionDrift baseline schema")
     if not VERSION.fullmatch(str(baseline.get("version", ""))):
         raise ValueError("Invalid VersionDrift baseline version")
     if baseline.get("installed_root") != str(Path(installed).resolve()):
         raise ValueError("VersionDrift baseline belongs to another installation")
+    source_root = baseline.get("source_root")
+    if not isinstance(source_root, str) or not Path(source_root).is_absolute():
+        raise ValueError("Invalid VersionDrift source root")
     if not isinstance(baseline.get("created_at"), int) or baseline["created_at"] <= 0:
         raise ValueError("Invalid VersionDrift baseline timestamp")
     files = baseline.get("files")
@@ -156,11 +166,15 @@ def load_baseline(path: Path, installed: Path) -> dict[str, Any]:
     return baseline
 
 
-def _new_system_files(installed: Path, baseline_files: dict[str, str]):
+def _new_system_files(installed: Path, baseline_files: dict[str, str], source: Path):
     owned_skills = {
         Path(name).parts[1] for name in baseline_files
         if name.startswith("skills/") and len(Path(name).parts) > 2
     }
+    owned_skills.update(
+        Path(name).parts[1] for name in _tracked_source_files(source, "skills/")
+        if name.startswith("skills/") and len(Path(name).parts) > 2
+    )
     for core in CORE_PATHS:
         if not core.endswith("/"):
             continue
@@ -191,7 +205,8 @@ def changed_paths(baseline: dict[str, Any], installed: Path) -> list[str]:
         path = _installed_file(installed, name)
         if path is None or _digest(path) != previous:
             changed.add(name)
-    changed.update(name for name in _new_system_files(installed, files) if name not in files)
+    changed.update(name for name in _new_system_files(installed, files, Path(baseline["source_root"]))
+                   if name not in files)
     return sorted(changed)
 
 

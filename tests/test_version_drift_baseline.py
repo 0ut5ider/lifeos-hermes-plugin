@@ -73,6 +73,25 @@ class VersionDriftBaselineTests(unittest.TestCase):
             "skills/research/new.md",
         ])
 
+    def test_changed_paths_include_new_source_owned_skill_root(self):
+        baseline = create_baseline(self.source, self.installed)
+        self.assertEqual(baseline["source_root"], str(self.source.resolve()))
+        new_skill = "skills/new-source-skill/SKILL.md"
+        self._file(new_skill, "added after baseline")
+        subprocess.run(["git", "-C", str(self.source), "add", new_skill], check=True)
+        (self.installed / "skills/unrelated/SKILL.md").parent.mkdir()
+        (self.installed / "skills/unrelated/SKILL.md").write_text("Hermes skill")
+        self.assertEqual(changed_paths(baseline, self.installed), [new_skill])
+
+    def test_loaded_baseline_requires_source_manifest(self):
+        baseline = create_baseline(self.source, self.installed)
+        destination = self.root / "baseline.json"
+        save_baseline(baseline, destination)
+        self.assertEqual(load_baseline(destination, self.installed)["source_root"], str(self.source.resolve()))
+        (self.source / ".git").rename(self.source / "git-away")
+        with self.assertRaisesRegex(ValueError, "source manifest unavailable"):
+            changed_paths(baseline, self.installed)
+
     def test_adapter_answers_only_native_read_only_queries(self):
         baseline = create_baseline(self.source, self.installed)
         self.assertEqual(git_response(baseline, self.installed, ["tag", "-l", "v[0-9]*.[0-9]*.[0-9]*"]), "v7.40.4\n")

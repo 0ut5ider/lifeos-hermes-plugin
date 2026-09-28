@@ -20,6 +20,44 @@ TAGGED_REPO_PATH = os.environ.get("LIFEOS_VERSION_DRIFT_TAGGED_REPO_PATH")
 
 @unittest.skipUnless(HOOK_PATH and shutil.which("bun"), "LifeOS VersionDrift and Bun are required")
 class NativeVersionDriftTests(unittest.TestCase):
+    def test_new_source_skill_reaches_native_drift_warning(self):
+        with tempfile.TemporaryDirectory(prefix="lifeos-version-drift-skill-") as directory:
+            home = Path(directory)
+            source = home / "source"
+            root = home / ".claude"
+            for base in (source, root):
+                (base / "hooks").mkdir(parents=True)
+                (base / "LIFEOS/VERSION").parent.mkdir(parents=True)
+                (base / "LIFEOS/VERSION").write_text("7.40.4\n")
+            hook = root / "hooks/VersionDrift.hook.ts"
+            shutil.copy2(HOOK_PATH, hook)
+            hook.chmod(0o755)
+            shutil.copy2(HOOK_PATH, source / "hooks/VersionDrift.hook.ts")
+            subprocess.run(["git", "init", "-q", str(source)], check=True)
+            subprocess.run(["git", "-C", str(source), "add", "hooks", "LIFEOS"], check=True)
+            subprocess.run(["git", "-C", str(source), "-c", "user.name=Test", "-c", "user.email=test@example.invalid",
+                            "commit", "-qm", "fixture"], check=True)
+            baseline = create_baseline(source, root)
+            baseline["created_at"] -= 49 * 3600
+            baseline_path = home / "baseline.json"
+            save_baseline(baseline, baseline_path)
+            for base in (source, root):
+                skill = base / "skills/new-source-skill/SKILL.md"
+                skill.parent.mkdir(parents=True)
+                skill.write_text("new skill")
+            subprocess.run(["git", "-C", str(source), "add", "skills/new-source-skill/SKILL.md"], check=True)
+            settings = root / "settings.json"
+            settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
+                {"type": "command", "command": str(hook), "timeout": 10},
+            ]}]}}))
+            bridge = HookBridge(settings, root)
+            bridge.environment.update(HOME=str(home), LIFEOS_VERSION_DRIFT_BASELINE=str(baseline_path))
+            try:
+                result = bridge.pre_llm_call("Check a new skill", session_id="new-skill-probe")
+                self.assertIn("VERSION-DRIFT: 1 core file(s)", result["context"])
+            finally:
+                bridge.close()
+
     def test_plugin_baseline_drives_native_hook_without_git_in_home(self):
         with tempfile.TemporaryDirectory(prefix="lifeos-version-drift-baseline-") as directory:
             home = Path(directory)
