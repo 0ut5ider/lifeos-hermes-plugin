@@ -1,8 +1,19 @@
 diff --git a/LifeOS/install/hooks/CheckpointPerISC.hook.ts b/LifeOS/install/hooks/CheckpointPerISC.hook.ts
-index 99ac352..2f00af6 100755
+index 99ac352..1bc1872 100755
 --- a/LifeOS/install/hooks/CheckpointPerISC.hook.ts
 +++ b/LifeOS/install/hooks/CheckpointPerISC.hook.ts
-@@ -197,10 +197,15 @@ function commitInRepo(repo: string, iscId: string, slug: string, description: st
+@@ -8,8 +8,8 @@
+  *
+  * For each newly-checked ISC, iterates through the allowlist of opted-in repos
+  * (~/.claude/checkpoint-repos.txt per spec) and creates one git commit per
+- * repo that has uncommitted changes. Commit subject:
+- *   "<ISC-id> (<slug>): <sanitized description>"
++ * repo that has uncommitted changes. The conventional commit subject is short;
++ * the commit body carries the full ISC ID, slug, and description for lookup.
+  *
+  * Idempotent via sidecar state file: MEMORY/WORK/<slug>/.checkpoint-state.json.
+  * Allowlist is empty by default; repos must be opted in explicitly by {{PRINCIPAL_NAME}}.
+@@ -197,10 +197,14 @@ function commitInRepo(repo: string, iscId: string, slug: string, description: st
      gitRun(repo, ['add', '--', ...paths]);
      // iscId already has the canonical "ISC-<N>" form (or "ISC-<N>-A-<M>" for
      // anti-criteria) per parseCriteriaList — use it verbatim, do not re-prefix.
@@ -12,17 +23,16 @@ index 99ac352..2f00af6 100755
 -    gitRun(repo, ['commit', '-m', subject, '--quiet', '--no-verify', '--no-gpg-sign']);
 +    const checkpoint = `${iscId} (${slug}): ${sanitizeMessage(description)}`;
 +    const prefix = `chore(checkpoint): ${iscId} (${slug}): `;
-+    if (prefix.length >= 50) {
-+      console.error(`[CheckpointPerISC] commit subject prefix is too long: ${prefix}`);
-+      return null;
-+    }
-+    const subject = (prefix + sanitizeMessage(description)).slice(0, 49).trimEnd();
++    let subjectPrefix = prefix;
++    if (subjectPrefix.length >= 50) subjectPrefix = `chore(checkpoint): ${iscId}: `;
++    if (subjectPrefix.length >= 50) subjectPrefix = 'chore(checkpoint): criterion ';
++    const subject = (subjectPrefix + sanitizeMessage(description)).slice(0, 49).trimEnd();
 +    // Run repository hooks. --no-gpg-sign avoids an interactive signing prompt.
 +    gitRun(repo, ['commit', '-m', subject, '-m', checkpoint, '--quiet', '--no-gpg-sign']);
      const sha = gitRun(repo, ['rev-parse', 'HEAD']).trim();
      return sha;
    } catch (err: unknown) {
-@@ -279,20 +284,24 @@ async function main() {
+@@ -279,20 +283,24 @@ async function main() {
    }
  
    for (const isc of newlyChecked) {

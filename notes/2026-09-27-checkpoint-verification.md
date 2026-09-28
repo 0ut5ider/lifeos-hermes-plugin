@@ -10,4 +10,4 @@ In the isolated `.212` account, a temporary Git worktree held an untracked proof
 
 Finally, the installed native hook ran through the Hermes bridge's Write PostToolUse path in a second temporary worktree. The pre-commit hook ran, the worktree received a checkpoint commit, and `committed_iscs` contained `ISC-1`. Both worktrees and temporary homes were removed after their probes. No production repository or LifeOS data was touched.
 
-An exceptionally long project slug can make the required subject prefix at least 50 characters. The patch reports that case and leaves the criterion pending. A failed pre-commit may leave files staged, which is normal Git behavior and preserves the operator's ability to inspect them.
+A later [long-slug probe](2026-09-27-long-checkpoint-slug.md) found that an exceptionally long project slug left the criterion pending. The compatibility patch now uses a short subject and retains the full marker in the body for that case. A failed pre-commit may leave files staged, which is normal Git behavior and preserves the operator's ability to inspect them.
