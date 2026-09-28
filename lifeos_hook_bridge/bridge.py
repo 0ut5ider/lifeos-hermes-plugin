@@ -839,6 +839,7 @@ class HookBridge:
             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
         if self.model_tiers_provider is not None:
             environment["LIFEOS_MODEL_TIER_MAP"] = json.dumps(self.model_tiers_provider())
+            environment["LIFEOS_HERMES_CARRIER_PROBE"] = str(Path(__file__).with_name("carrier_probe.py"))
         return environment
 
     def _config_files(self) -> dict[Path, tuple[int, int, int, int, int]]:

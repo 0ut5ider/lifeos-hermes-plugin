@@ -51,3 +51,7 @@ After the plugin branch is published, install a full 40-character commit ID from
 Start Hermes from a directory that the account can read. The first clean prompt-hook probe inherited `/home/outsider` as its working directory and all 14 native hook starts failed with permission denied. The same probe from the new account's home returned hook context and created a transcript. Run a native hook test before you configure Discord or start a long-running gateway.
 
 The clean probe verified the mount, plugin installation, registration, and prompt hooks. It did not test a model call because the account had no model credentials. The tested `.212` service account uses the local model and verified a selected-provider child inference call separately. See [the probe record](../notes/2026-09-28-clean-install-probe.md).
+
+## Carrier probe after model setup
+
+Set the Hermes main-loop model and effort to the LifeOS top tier. Select the Fable route in the LifeOS Bridge settings page. Run `hermes --run-file ~/.hermes/plugins/lifeos-hook-bridge/carrier_probe.py --run` after configuring the model and again whenever you change the Fable route. The command creates one real delegated child call and stores its evidence under `~/.claude/LIFEOS/MEMORY/STATE/`. IntegrityCheck rejects evidence older than 30 days. The clean account without model credentials cannot run this probe. The configured `.212` account passed it with the local model.

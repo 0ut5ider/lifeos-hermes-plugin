@@ -5,11 +5,12 @@ As of 2026-09-28, the development fixture is an unprivileged Linux account with 
 ## Installed baseline
 
 - Hermes v0.21.5 with the generic hook-control test branch at `3f74c15f2`, a local model, a LAN dashboard, and a separate Discord test bot. The branch also has the remote whole-file write guard, Stop effort forwarding, and per-child delegation model and effort routing. The hook, delegation, and cron worker changes are published as seven patches in this repository.
-- LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout has a local `feature/hermes-task-hook` branch at `af60000` with TaskGovernance, AgentWatchdog, EventLogger, CheckpointPerISC, FailureCapture, KittyEnvPersist, tab-setter, ISAStaleWriteGuard, and ModelRungGuard changes installed in the test account. All eight compatibility patches are shipped in this plugin repository.
+- LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout has a local `feature/hermes-task-hook` branch at `af60000` with TaskGovernance, AgentWatchdog, EventLogger, CheckpointPerISC, FailureCapture, KittyEnvPersist, tab-setter, ISAStaleWriteGuard, and ModelRungGuard changes installed in the test account. All nine compatibility patches are shipped in this plugin repository.
 - A fresh personal tree from `ScaffoldUser.ts --config-root ~/.hermes --apply`, linked by `LinkUser.ts --config-root ~/.hermes --apply`.
 - LifeOS's shipped Hermes sidecar mount, including its identity renderer and guard plugin.
 - LifeOS's 74 native Claude Code hook registrations installed in the test account, plus the separate `lifeos-hook-bridge` Hermes plugin.
 - Bun 1.4.2 and ripgrep 15.2.0.
+- The Hermes main loop uses xhigh effort, matching the configured Fable tier. A native IntegrityCheck test passed the Hermes carrier and model-rung sections after this change. The previous medium setting produced a main-rung mismatch.
 - The private child-model configuration enables the plugin's direct Anthropic Messages adapter. Native LifeOS inference no longer starts Claude Code for ordinary text or image requests. Claude Code remains installed for reference tests.
 - The Discord extra is installed through `hermes pm install --extra discord`. The `hermes-gateway.service` user service is enabled, and systemd linger keeps it running after logout.
 - Hermes's `agent-browser` and `chromium` packages are installed through `hermes pm install agent-browser chromium` for local browser hook tests.

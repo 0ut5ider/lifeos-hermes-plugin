@@ -957,6 +957,11 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual(rows[0]["fable"], {"provider": "", "model": "first-local", "effort": "xhigh"})
         self.assertEqual(rows[1]["fable"], {"provider": "", "model": "second-local", "effort": "ultra"})
+        environment = bridge._event_environment({"session_id": "tiers"})
+        self.assertEqual(
+            environment["LIFEOS_HERMES_CARRIER_PROBE"],
+            str(Path(__file__).resolve().parents[1] / "lifeos_hook_bridge/carrier_probe.py"),
+        )
 
     def test_session_context_is_injected_on_first_prompt(self):
         command = self.make_hook(
