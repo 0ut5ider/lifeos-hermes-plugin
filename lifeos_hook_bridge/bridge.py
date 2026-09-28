@@ -141,6 +141,25 @@ def _bash_permission_rule_decision(command: str, sources: list[Any]) -> str:
     return "allow" if matches["allow"] else "none"
 
 
+def _managed_permission_sources() -> list[Any]:
+    paths = [POLICY_DIRECTORY / "managed-settings.json"]
+    dropins = POLICY_DIRECTORY / "managed-settings.d"
+    if dropins.is_dir():
+        paths.extend(sorted(dropins.glob("*.json")))
+    sources = []
+    for path in paths:
+        if not path.exists():
+            continue
+        try:
+            settings = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, UnicodeError, ValueError) as error:
+            LOG.warning("LifeOS managed permission policy could not be read: %s", error)
+            sources.append(None)
+            continue
+        sources.append(settings.get("permissions", {}) if isinstance(settings, dict) else None)
+    return sources
+
+
 def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
     """Use Hermes's own path classifier so one guarded write gets one human prompt."""
     try:
@@ -1282,18 +1301,13 @@ class HookBridge:
             for name in ("settings.json", "settings.local.json")
         ] if project is not None else []
         rule_decision = _bash_permission_rule_decision(
-            command, [self.user_permission_rules, *project_permissions],
+            command, [self.user_permission_rules, *project_permissions, *_managed_permission_sources()],
         )
         if rule_decision == "deny":
             return {"action": "deny"}
-        managed_policy = (POLICY_DIRECTORY / "managed-settings.json").exists() or (
-            POLICY_DIRECTORY / "managed-settings.d"
-        ).is_dir()
-        if managed_policy:
-            rule_decision = "unknown"
-        if host_paths and not managed_policy and rule_decision == "allow":
+        if host_paths and rule_decision == "allow":
             return None
-        if host_paths and not managed_policy and rule_decision == "none" and _claude_simple_read_only_bash(command):
+        if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):
             return None
         groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
         if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
@@ -1311,7 +1325,7 @@ class HookBridge:
         if denied:
             return {"action": "deny"}
         if granted:
-            return {"action": "review"} if rule_decision == "unknown" else {"action": "allow"}
+            return {"action": "review"} if rule_decision in {"ask", "unknown"} else {"action": "allow"}
         return {"action": "review"}
 
     def _mcp_permission_verdict(

@@ -2065,7 +2065,7 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(bridge.command_approval("echo ready; curl https://example.com", session_key="s1"),
                          {"action": "review"})
 
-    def test_unread_managed_policy_prevents_user_allow_shortcut(self):
+    def test_managed_deny_overrides_user_allow(self):
         policy = self.root / "managed-policy"
         policy.mkdir()
         (policy / "managed-settings.json").write_text(json.dumps({
@@ -2079,7 +2079,54 @@ class HookBridgeTests(unittest.TestCase):
         with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
             bridge = HookBridge(settings, self.root)
             self.addCleanup(bridge.close)
-            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+
+    def test_managed_dropin_deny_applies_after_policy_change(self):
+        policy = self.root / "managed-policy"
+        dropins = policy / "managed-settings.d"
+        dropins.mkdir(parents=True)
+        settings = self.root / "settings.json"
+        command = "curl https://example.com"
+        settings.write_text(json.dumps({"hooks": {}, "permissions": {"allow": [f"Bash({command})"]}}))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertIsNone(bridge.command_approval(command, session_key="s1"))
+            (dropins / "network.json").write_text(json.dumps({
+                "permissions": {"deny": [f"Bash({command})"]},
+            }))
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+
+    def test_invalid_managed_policy_prevents_user_allow_shortcut(self):
+        policy = self.root / "managed-policy"
+        policy.mkdir()
+        (policy / "managed-settings.json").write_text("{")
+        settings = self.root / "settings.json"
+        command = "curl https://example.com"
+        settings.write_text(json.dumps({"hooks": {}, "permissions": {"allow": [f"Bash({command})"]}}))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            with self.assertLogs("lifeos_hook_bridge.bridge", level="WARNING") as logs:
+                self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+            self.assertIn("managed permission policy could not be read", logs.output[0])
+
+    def test_native_grant_does_not_override_ask_rule(self):
+        grant = self.make_hook(
+            "grant.py",
+            "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n",
+        )
+        settings = self.root / "settings.json"
+        command = "curl https://example.com"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": grant},
+            ]}]},
+            "permissions": {"ask": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
 
     def test_command_rule_change_applies_before_next_approval(self):
         command = "curl -I --max-time 1 http://192.168.8.1:9"
