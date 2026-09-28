@@ -3,6 +3,12 @@ version: 0.1.0
 description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
 author: 0ut5ider
 config_schema:
+  stop_cap_policy:
+    type: str
+    label: Stop hook limit
+    description: After the continuation limit, allow the last answer like Claude Code or fail the turn without releasing it.
+    choices: [claude, fail_closed]
+    default: claude
   pinned_tier:
     type: str
     label: Pinned LifeOS tier

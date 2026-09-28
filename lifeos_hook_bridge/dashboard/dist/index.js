@@ -121,6 +121,7 @@
     }
 
     const pinField = fields.find(function (field) { return field.key === "pinned_tier"; });
+    const stopField = fields.find(function (field) { return field.key === "stop_cap_policy"; });
     return h("main", { className: "mx-auto max-w-4xl space-y-6 p-6" },
       h("div", null,
         h("h1", { className: "text-2xl font-semibold" }, "LifeOS Bridge"),
@@ -129,6 +130,17 @@
         h("a", { href: "/models", className: "text-sm underline" }, "Manage Hermes models")),
       h("form", { onSubmit: save, className: "space-y-4" },
         fields.length ? tiers.map(renderTier) : null,
+        stopField ? h("section", { className: "rounded border border-border p-4" },
+          h("h2", { className: "mb-2 text-lg font-semibold" }, "Stop hook limit"),
+          h("p", { className: "mb-3 text-sm text-muted-foreground" }, stopField.description),
+          h("select", {
+            id: "stop_cap_policy", value: values.stop_cap_policy ?? "claude",
+            onChange: function (event) { update("stop_cap_policy", event.target.value); },
+            className: "w-full rounded border border-border bg-background p-2",
+          }, [
+            h("option", { key: "claude", value: "claude" }, "Match Claude Code: allow the last answer"),
+            h("option", { key: "fail_closed", value: "fail_closed" }, "Fail the turn: withhold the last answer"),
+          ])) : null,
         pinField ? h("details", { className: "rounded border border-border p-4" },
           h("summary", { className: "cursor-pointer font-medium" }, "Advanced: pinned LifeOS tier"),
           h("p", { className: "mt-2 text-sm text-muted-foreground" }, pinField.description),

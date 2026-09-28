@@ -25,6 +25,7 @@ test("model picker saves the selected provider, model, and effort", async () => 
     { key: tier + "_model", type: "string", value: "" },
     { key: tier + "_effort", type: "enum", value: "low", choices: ["low", "high"] },
   ]);
+  fields.push({ key: "stop_cap_policy", type: "enum", value: "claude", choices: ["claude", "fail_closed"] });
   const models = { providers: [
     { slug: "custom", name: "Local endpoint", models: ["flashnext"] },
     { slug: "remote", name: "Remote endpoint", models: ["other"] },
@@ -82,5 +83,13 @@ test("model picker saves the selected provider, model, and effort", async () => 
   assert.equal(values.haiku_provider, "custom");
   assert.equal(values.haiku_model, "flashnext");
   assert.equal(values.haiku_effort, "high");
+  const stopPolicy = find(render(), (node) => node.type === "select" && node.props.id === "stop_cap_policy");
+  assert.ok(stopPolicy);
+  stopPolicy.props.onChange({ target: { value: "fail_closed" } });
+  const policyForm = find(render(), (node) => node.type === "form");
+  policyForm.props.onSubmit({ preventDefault() {} });
+  await new Promise(setImmediate);
+  const lastSave = calls.filter((call) => call.init?.method === "PUT").at(-1);
+  assert.equal(JSON.parse(lastSave.init.body).stop_cap_policy, "fail_closed");
   assert.ok(calls.some((call) => call.url.includes("/api/model/options?explicit_only=1")));
 });

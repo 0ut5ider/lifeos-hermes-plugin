@@ -1,5 +1,5 @@
 diff --git a/agent/conversation_compression.py b/agent/conversation_compression.py
-index 0fe34c1ca..083255a77 100644
+index 0fe34c1ca7..083255a779 100644
 --- a/agent/conversation_compression.py
 +++ b/agent/conversation_compression.py
 @@ -2255,7 +2255,7 @@ def _message_text(message: Any) -> str:
@@ -12,7 +12,7 @@ index 0fe34c1ca..083255a77 100644
  )
  
 diff --git a/agent/session_persistence.py b/agent/session_persistence.py
-index 1c5c04a5c..a2f3c9474 100644
+index 1c5c04a5c0..a2f3c9474f 100644
 --- a/agent/session_persistence.py
 +++ b/agent/session_persistence.py
 @@ -36,6 +36,7 @@ _EPHEMERAL_SCAFFOLDING_FLAGS = (
@@ -24,7 +24,7 @@ index 1c5c04a5c..a2f3c9474 100644
      "_dropped_toolcall_nudge",  # internal retry instruction; must not replay as user context
  )
 diff --git a/agent/turn_api_call.py b/agent/turn_api_call.py
-index 36d8c977a..462829c4a 100644
+index 36d8c977ab..462829c4a2 100644
 --- a/agent/turn_api_call.py
 +++ b/agent/turn_api_call.py
 @@ -51,6 +51,9 @@ def _should_stream(agent: Any) -> bool:
@@ -38,7 +38,7 @@ index 36d8c977a..462829c4a 100644
      from hermes_cli.runtime_provider_backends import _is_external_process_provider
  
 diff --git a/agent/turn_context.py b/agent/turn_context.py
-index 8fb9e7be0..6fc1c5c77 100644
+index 8fb9e7be03..6fc1c5c772 100644
 --- a/agent/turn_context.py
 +++ b/agent/turn_context.py
 @@ -580,6 +580,7 @@ _PER_TURN_RESET_STATE: Tuple[Tuple[str, Any], ...] = (
@@ -50,7 +50,7 @@ index 8fb9e7be0..6fc1c5c77 100644
  
  
 diff --git a/agent/turn_failure_copy.py b/agent/turn_failure_copy.py
-index 115231f66..63da31337 100644
+index 115231f66a..63da313376 100644
 --- a/agent/turn_failure_copy.py
 +++ b/agent/turn_failure_copy.py
 @@ -18,7 +18,7 @@ from hermes_constants import display_hermes_home
@@ -71,7 +71,7 @@ index 115231f66..63da31337 100644
      ("local_processing_error", "loop_error", False, False),
      ("repeated_outer_errors", "loop_error", True, True),
 diff --git a/agent/turn_final_response.py b/agent/turn_final_response.py
-index 6ebc40503..0ea5264ad 100644
+index 6ebc40503d..0ea5264ad4 100644
 --- a/agent/turn_final_response.py
 +++ b/agent/turn_final_response.py
 @@ -330,6 +330,10 @@ def finish_text_response(
@@ -97,7 +97,7 @@ index 6ebc40503..0ea5264ad 100644
          agent._safe_print(f"🎉 Conversation completed after {api_call_count} OpenAI-compatible API call(s)")
      return _verdict("break")
 diff --git a/agent/turn_finalizer.py b/agent/turn_finalizer.py
-index 9c4446743..cb01a960f 100644
+index 9c44467439..cb01a960fa 100644
 --- a/agent/turn_finalizer.py
 +++ b/agent/turn_finalizer.py
 @@ -22,10 +22,11 @@ from agent.message_metadata import append_message, stamp_message_timestamp
@@ -150,7 +150,7 @@ index 9c4446743..cb01a960f 100644
      _drop_verification_continuation_scaffolding(messages)
  
 diff --git a/agent/turn_stop_gates.py b/agent/turn_stop_gates.py
-index 7ed38d109..bb5f8562e 100644
+index 7ed38d109f..d81d5f51b2 100644
 --- a/agent/turn_stop_gates.py
 +++ b/agent/turn_stop_gates.py
 @@ -1,12 +1,8 @@
@@ -182,9 +182,12 @@ index 7ed38d109..bb5f8562e 100644
  
  
  def _verify_on_stop_nudge(agent) -> Optional[str]:
-@@ -78,12 +80,6 @@ def _pre_verify_nudge(agent, final_response, attempt: int) -> Optional[str]:
+@@ -76,14 +78,8 @@ def _pre_verify_nudge(agent, final_response, attempt: int) -> Optional[str]:
+     return None
  
- def _pre_turn_stop_nudge(agent, final_response, attempt: int) -> Optional[str]:
+ 
+-def _pre_turn_stop_nudge(agent, final_response, attempt: int) -> Optional[str]:
++def _pre_turn_stop_nudge(agent, final_response, attempt: int) -> Optional[str | Dict[str, str]]:
      """Let plugins inspect every candidate answer, including turns without code edits."""
 -    try:
 -        cap = int(os.getenv("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP", "8"))
@@ -195,7 +198,7 @@ index 7ed38d109..bb5f8562e 100644
      try:
          from hermes_cli.lifecycle import has_hook
          from hermes_cli.plugins import get_pre_turn_stop_continue_message
-@@ -134,39 +130,51 @@ def apply_stop_gates(
+@@ -134,39 +130,57 @@ def apply_stop_gates(
      conversation_history: Any, pending_verification_response: Any,
      pending_verification_response_previewed: Any,
  ) -> StopGateVerdict:
@@ -230,37 +233,69 @@ index 7ed38d109..bb5f8562e 100644
  
      _stop_attempt = getattr(agent, "_pre_turn_stop_nudges", 0)
      _stop_nudge = _pre_turn_stop_nudge(agent, final_response, _stop_attempt)
++    _stop_limit_policy = "allow"
++    if isinstance(_stop_nudge, dict):
++        _stop_limit_policy = _stop_nudge.get("on_limit", "allow")
++        _stop_nudge = _stop_nudge.get("message")
      if _stop_nudge:
+-        agent._pre_turn_stop_nudges = _stop_attempt + 1
+-        final_msg["finish_reason"] = "verify_hook_continue"
+-        _append_interim_answer(
+-            agent, final_msg, messages, conversation_history, "pre_turn_stop interim flush failed"
+-        )
+-        verdict = _continue(_stop_nudge, "_pre_verify_synthetic")
+-        logger.debug("pre_turn_stop nudge issued (attempt %d)", agent._pre_turn_stop_nudges)
+-        return verdict
 +        try:
 +            cap = max(0, int(os.getenv("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP", "8")))
 +        except ValueError:
 +            cap = 8
 +        if _stop_attempt >= cap:
++            if _stop_limit_policy == "fail":
++                agent._stop_gate_blocked_at_budget = True
++                return StopGateVerdict(
++                    continue_turn=False, final_response=STOP_GATE_FAILURE_MESSAGE,
++                    pending_verification_response=None,
++                    pending_verification_response_previewed=False,
++                    failure_message=STOP_GATE_FAILURE_MESSAGE,
++                )
++        else:
++            agent._pre_turn_stop_nudges = _stop_attempt + 1
 +            agent._stop_gate_blocked_at_budget = True
-+            return StopGateVerdict(
-+                continue_turn=False, final_response=STOP_GATE_FAILURE_MESSAGE,
-+                pending_verification_response=None,
-+                pending_verification_response_previewed=False,
-+                failure_message=STOP_GATE_FAILURE_MESSAGE,
-+            )
-         agent._pre_turn_stop_nudges = _stop_attempt + 1
-+        agent._stop_gate_blocked_at_budget = True
-         final_msg["finish_reason"] = "verify_hook_continue"
--        _append_interim_answer(
--            agent, final_msg, messages, conversation_history, "pre_turn_stop interim flush failed"
--        )
--        verdict = _continue(_stop_nudge, "_pre_verify_synthetic")
-+        final_msg["_stop_gate_synthetic"] = True
-+        append_message(messages, final_msg)
-+        verdict = _continue(_stop_nudge, "_stop_gate_synthetic", withhold=True)
-         logger.debug("pre_turn_stop nudge issued (attempt %d)", agent._pre_turn_stop_nudges)
-         return verdict
++            final_msg["finish_reason"] = "verify_hook_continue"
++            final_msg["_stop_gate_synthetic"] = True
++            append_message(messages, final_msg)
++            verdict = _continue(_stop_nudge, "_stop_gate_synthetic", withhold=True)
++            logger.debug("pre_turn_stop nudge issued (attempt %d)", agent._pre_turn_stop_nudges)
++            return verdict
 +    agent._stop_gate_blocked_at_budget = False
  
      _verify_nudge = _verify_on_stop_nudge(agent)
      if _verify_nudge:
+diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
+index 523f9b0127..02df95e9d9 100644
+--- a/hermes_cli/plugins.py
++++ b/hermes_cli/plugins.py
+@@ -2094,7 +2094,7 @@ def get_pre_verify_continue_message(
+ def get_pre_turn_stop_continue_message(
+     *, session_id: str = "", platform: str = "", model: str = "", reasoning_effort: str = "",
+     attempt: int = 0, final_response: str = "",
+-) -> Optional[str]:
++) -> Optional[str | Dict[str, str]]:
+     """Ask plugins whether a candidate answer needs another agent turn."""
+     results = invoke_hook(
+         "pre_turn_stop", session_id=session_id, platform=platform, model=model,
+@@ -2106,6 +2106,8 @@ def get_pre_turn_stop_continue_message(
+         action = str(result.get("action") or result.get("decision") or "").strip().lower()
+         message = result.get("message") or result.get("reason")
+         if action in ("continue", "block") and isinstance(message, str) and message.strip():
++            if result.get("on_limit") == "fail":
++                return {"message": message.strip(), "on_limit": "fail"}
+             return message.strip()
+     return None
+ 
 diff --git a/tests/agent/test_verification_continuation_budget.py b/tests/agent/test_verification_continuation_budget.py
-index 7aa1025e0..4136c22eb 100644
+index 7aa1025e08..65383e1683 100644
 --- a/tests/agent/test_verification_continuation_budget.py
 +++ b/tests/agent/test_verification_continuation_budget.py
 @@ -270,7 +270,7 @@ def test_universal_stop_hook_continues_without_code_edits(agent, monkeypatch):
@@ -268,39 +303,64 @@ index 7aa1025e0..4136c22eb 100644
      assert not agent._turn_file_mutation_paths
  
 -def test_universal_stop_hook_allows_eight_consecutive_continuations(agent, monkeypatch):
-+def test_universal_stop_hook_fails_after_eight_consecutive_continuations(agent, monkeypatch):
++def test_universal_stop_hook_allows_answer_after_eight_consecutive_continuations(agent, monkeypatch):
      agent.max_iterations = 9
      agent._interruptible_api_call = MagicMock(side_effect=[_response(f"answer {i}") for i in range(9)])
      monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
-@@ -282,9 +282,11 @@ def test_universal_stop_hook_allows_eight_consecutive_continuations(agent, monke
+@@ -282,9 +282,10 @@ def test_universal_stop_hook_allows_eight_consecutive_continuations(agent, monke
      ):
          result = agent.run_conversation("continue up to the Stop hook limit")
  
 -    assert stop_hook.call_count == 8
 +    assert stop_hook.call_count == 9
      assert agent._interruptible_api_call.call_count == 9
--    assert result["final_response"] == "answer 8"
-+    assert result["failed"] is True
-+    assert result["failure_reason"] == "stop_gate_blocked"
-+    assert "answer 8" not in result["final_response"]
+     assert result["final_response"] == "answer 8"
++    assert result["failed"] is False
  
  
  def test_universal_stop_counter_resets_for_each_turn(agent, monkeypatch):
-@@ -316,9 +318,11 @@ def test_universal_stop_hook_uses_configured_cap(agent, monkeypatch):
+@@ -316,9 +317,39 @@ def test_universal_stop_hook_uses_configured_cap(agent, monkeypatch):
      ):
          result = agent.run_conversation("honor a smaller Stop hook cap")
  
 -    assert stop_hook.call_count == 1
 +    assert stop_hook.call_count == 2
      assert agent._interruptible_api_call.call_count == 2
--    assert result["final_response"] == "answer 1"
+     assert result["final_response"] == "answer 1"
++    assert result["failed"] is False
++
++
++def test_universal_stop_hook_can_fail_at_cap_when_plugin_requests_it(agent, monkeypatch):
++    agent.max_iterations = 3
++    agent._interruptible_api_call = MagicMock(side_effect=[_response("draft 0"), _response("draft 1")])
++    monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
++    monkeypatch.setenv("CLAUDE_CODE_STOP_HOOK_BLOCK_CAP", "1")
++
++    with (
++        patch("hermes_cli.plugins.has_hook", side_effect=lambda name: name == "pre_turn_stop"),
++        patch("hermes_cli.plugins.get_pre_turn_stop_continue_message", return_value={"message": "continue", "on_limit": "fail"}),
++        patch("hermes_cli.plugins.invoke_hook", return_value=[]),
++    ):
++        result = agent.run_conversation("require this final gate")
++
 +    assert result["failed"] is True
 +    assert result["failure_reason"] == "stop_gate_blocked"
-+    assert "answer 1" not in result["final_response"]
++    assert "draft 1" not in result["final_response"]
++
++
++def test_stop_plugin_can_request_fail_at_cap():
++    from hermes_cli.plugins import get_pre_turn_stop_continue_message
++
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[
++        {"action": "continue", "message": "run checks", "on_limit": "fail"},
++    ]):
++        assert get_pre_turn_stop_continue_message(final_response="draft") == {
++            "message": "run checks", "on_limit": "fail",
++        }
  
  
  def test_terminal_api_failure_emits_turn_result_event(agent, monkeypatch):
-@@ -343,3 +347,75 @@ def test_terminal_api_failure_emits_turn_result_event(agent, monkeypatch):
+@@ -343,3 +374,75 @@ def test_terminal_api_failure_emits_turn_result_event(agent, monkeypatch):
      assert observed[0]["failed"] is True
      assert observed[0]["failure_reason"] == result["failure_reason"]
      assert observed[0]["turn_id"] == result["turn_id"]

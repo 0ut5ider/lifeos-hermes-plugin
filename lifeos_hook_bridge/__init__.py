@@ -24,7 +24,13 @@ def register(ctx: Any) -> None:
     ctx.register_hook("pre_command_approval", bridge.command_approval)
     ctx.register_hook("augment_tool_result", bridge.augment_tool_result)
     ctx.register_hook("pre_llm_call", bridge.pre_llm_call)
-    ctx.register_hook("pre_turn_stop", lambda final_response="", session_id="", attempt=0, **kwargs: bridge.stop(final_response, session_id, stop_hook_active=attempt > 0, **kwargs))
+    def stop(final_response="", session_id="", attempt=0, **kwargs):
+        result = bridge.stop(final_response, session_id, stop_hook_active=attempt > 0, **kwargs)
+        if result and ctx.get_config("stop_cap_policy", "claude") == "fail_closed":
+            return {**result, "on_limit": "fail"}
+        return result
+
+    ctx.register_hook("pre_turn_stop", stop)
     ctx.register_hook("on_session_finalize", bridge.session_end)
     ctx.register_hook("api_request_error", bridge.api_request_error)
     ctx.register_hook("on_turn_result", bridge.turn_end)
