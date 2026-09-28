@@ -155,12 +155,13 @@ def _is_native_version_drift(command: str, root: Path) -> bool:
     return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
 
 
-def _managed_permission_sources() -> list[Any]:
+def _managed_permission_sources() -> tuple[list[Any], bool]:
     paths = [POLICY_DIRECTORY / "managed-settings.json"]
     dropins = POLICY_DIRECTORY / "managed-settings.d"
     if dropins.is_dir():
         paths.extend(sorted(dropins.glob("*.json")))
     sources = []
+    managed_only = False
     for path in paths:
         if not path.exists():
             continue
@@ -170,8 +171,17 @@ def _managed_permission_sources() -> list[Any]:
             LOG.warning("LifeOS managed permission policy could not be read: %s", error)
             sources.append(None)
             continue
-        sources.append(settings.get("permissions", {}) if isinstance(settings, dict) else None)
-    return sources
+        if not isinstance(settings, dict):
+            sources.append(None)
+            continue
+        if "allowManagedPermissionRulesOnly" in settings:
+            value = settings["allowManagedPermissionRulesOnly"]
+            if isinstance(value, bool):
+                managed_only = value
+            else:
+                sources.append(None)
+        sources.append(settings.get("permissions", {}))
+    return sources, managed_only
 
 
 def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
@@ -1327,9 +1337,9 @@ class HookBridge:
             self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {})
             for name in ("settings.json", "settings.local.json")
         ] if project is not None else []
-        rule_decision = _bash_permission_rule_decision(
-            command, [self.user_permission_rules, *project_permissions, *_managed_permission_sources()],
-        )
+        managed_permissions, managed_only = _managed_permission_sources()
+        local_permissions = [] if managed_only else [self.user_permission_rules, *project_permissions]
+        rule_decision = _bash_permission_rule_decision(command, [*local_permissions, *managed_permissions])
         if rule_decision == "deny":
             return {"action": "deny"}
         if host_paths and rule_decision == "allow":

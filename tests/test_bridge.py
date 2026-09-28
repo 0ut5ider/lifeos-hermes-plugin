@@ -2097,6 +2097,88 @@ class HookBridgeTests(unittest.TestCase):
             }))
             self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
 
+    def test_managed_only_ignores_user_and_project_bash_rules(self):
+        policy = self.root / "managed-policy"
+        policy.mkdir()
+        command = "curl https://example.com"
+        (policy / "managed-settings.json").write_text(json.dumps({
+            "allowManagedPermissionRulesOnly": True,
+        }))
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {}, "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        project = self.root / "project"
+        (project / ".git").mkdir(parents=True)
+        (project / ".claude").mkdir()
+        (project / ".claude/settings.json").write_text(json.dumps({
+            "permissions": {"deny": [f"Bash({command})"]},
+        }))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy), \
+             patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertIsNone(bridge.command_approval(command, session_key="s1", cwd=str(project)))
+
+    def test_managed_only_keeps_managed_bash_rules(self):
+        policy = self.root / "managed-policy"
+        policy.mkdir()
+        command = "curl https://example.com"
+        (policy / "managed-settings.json").write_text(json.dumps({
+            "allowManagedPermissionRulesOnly": True,
+            "permissions": {"deny": [f"Bash({command})"]},
+        }))
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({"hooks": {}, "permissions": {"allow": [f"Bash({command})"]}}))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+
+    def test_managed_only_does_not_take_user_allow_shortcut(self):
+        policy = self.root / "managed-policy"
+        policy.mkdir()
+        (policy / "managed-settings.json").write_text(json.dumps({
+            "allowManagedPermissionRulesOnly": True,
+        }))
+        hook = self.make_hook("abstain.py", "import sys\nsys.stdin.read()\n")
+        settings = self.root / "settings.json"
+        command = "curl https://example.com"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+
+    def test_managed_only_dropin_scalar_uses_last_value(self):
+        policy = self.root / "managed-policy"
+        dropins = policy / "managed-settings.d"
+        dropins.mkdir(parents=True)
+        (policy / "managed-settings.json").write_text(json.dumps({
+            "allowManagedPermissionRulesOnly": True,
+        }))
+        settings = self.root / "settings.json"
+        command = "curl https://example.com"
+        settings.write_text(json.dumps({"hooks": {}, "permissions": {"deny": [f"Bash({command})"]}}))
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertIsNone(bridge.command_approval(command, session_key="s1"))
+            (dropins / "20-rules.json").write_text(json.dumps({
+                "allowManagedPermissionRulesOnly": False,
+            }))
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+            (dropins / "30-rules.json").write_text(json.dumps({
+                "allowManagedPermissionRulesOnly": True,
+                "permissions": {"deny": [f"Bash({command})"]},
+            }))
+            self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "deny"})
+
     def test_invalid_managed_policy_prevents_user_allow_shortcut(self):
         policy = self.root / "managed-policy"
         policy.mkdir()
