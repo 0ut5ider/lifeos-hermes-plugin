@@ -1455,6 +1455,33 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(payload["source"], "user_settings")
         self.assertEqual(payload["file_path"], str(bridge.settings_path))
 
+    def test_config_change_detects_same_size_rewrite_with_preserved_mtime(self):
+        marker = self.root / "preserved-mtime-change.json"
+        command = self.make_hook(
+            "record-preserved-mtime.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        settings = self.root / "settings.json"
+        original = {"hooks": {"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]},
+                    "env": {"CONFIG_REVISION": "before"}}
+        settings.write_text(json.dumps(original))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        bridge.pre_llm_call("first", session_id="s1")
+        previous_stat = settings.stat()
+        changed = {**original, "env": {"CONFIG_REVISION": "after!"}}
+        self.assertEqual(len(json.dumps(original)), len(json.dumps(changed)))
+        settings.write_text(json.dumps(changed))
+        os.utime(settings, ns=(previous_stat.st_atime_ns, previous_stat.st_mtime_ns))
+        self.assertEqual(settings.stat().st_mtime_ns, previous_stat.st_mtime_ns)
+        self.assertEqual(settings.stat().st_size, previous_stat.st_size)
+
+        bridge.poll_config_changes(force=True)
+
+        self.assertEqual(json.loads(marker.read_text())["source"], "user_settings")
+        self.assertEqual(bridge.environment["CONFIG_REVISION"], "after!")
+
     def test_settings_change_updates_hook_registrations(self):
         first = self.make_hook("first_tool.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'echo first'}}}))\n")
         second = self.make_hook("second_tool.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'updatedInput':{'command':'echo second'}}}))\n")

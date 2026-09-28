@@ -573,12 +573,14 @@ class HookBridge:
             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
         return environment
 
-    def _config_files(self) -> dict[Path, tuple[int, int]]:
+    def _config_files(self) -> dict[Path, tuple[int, int, int, int, int]]:
         result = {}
         for path in self._config_sources():
             try:
                 stat = path.stat()
-                result[path] = (stat.st_mtime_ns, stat.st_size)
+                result[path] = (
+                    stat.st_mtime_ns, stat.st_size, stat.st_ctime_ns, stat.st_dev, stat.st_ino,
+                )
             except OSError:
                 continue
         return result
