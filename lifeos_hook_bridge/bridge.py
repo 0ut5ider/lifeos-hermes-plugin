@@ -131,12 +131,7 @@ def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
         tasks = [args]
     inputs = []
     descriptions = set()
-    try:
-        from agent.delegation_context import is_delegated_child_context
-    except ImportError:
-        background = bool(args.get("background"))
-    else:
-        background = not is_delegated_child_context()
+    background = bool(args.get("background"))
     for index, task in enumerate(tasks):
         if not isinstance(task, dict) or not isinstance(task.get("goal"), str) or not task["goal"].strip():
             continue

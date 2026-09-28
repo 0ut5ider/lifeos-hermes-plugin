@@ -883,6 +883,29 @@ class HookBridgeTests(unittest.TestCase):
         payload = json.loads(marker.read_text())
         self.assertIs(payload["tool_input"]["run_in_background"], True)
 
+    def test_foreground_delegation_reaches_agent_hook(self):
+        marker = self.root / "foreground-agent.json"
+        command = self.make_hook(
+            "record-foreground.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(data))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        package = types.ModuleType("agent")
+        package.__path__ = []
+        delegation = types.ModuleType("agent.delegation_context")
+        delegated = {"active": False}
+        delegation.is_delegated_child_context = lambda: delegated["active"]
+        with patch.dict(sys.modules, {"agent": package, "agent.delegation_context": delegation}):
+            bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": False}, session_id="s1")
+            self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], False)
+            bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report"}, session_id="s1")
+            self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], False)
+            delegated["active"] = True
+            bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": True}, session_id="s1")
+            self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], True)
+
     def test_background_agent_watchdog_instruction_uses_hermes_delivery(self):
         command = self.make_hook(
             "watchdog-context.py",
