@@ -19,6 +19,7 @@ def register(ctx: Any) -> None:
         settings, settings.parent,
         model_tiers_provider=lambda: configured_model_map(ctx.get_config),
     )
+    ctx.on_unload(bridge.close)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
     ctx.register_hook("post_tool_call", bridge.task_result)
     ctx.register_hook("pre_command_approval", bridge.command_approval)

@@ -1,0 +1,7 @@
+# Plugin unload and remote watcher
+
+Date: 2026-09-28. A live Docker permission test on `.212` passed but intermittently logged `Remote project config poll failed: remote skill scan failed or exceeded the size limit` during teardown. I first suspected the scan's Bash syntax would fail in the Docker image's `/bin/sh`. A direct `sh` command failed as expected, but the Hermes Docker backend ran the actual scan and returned the correct SHA-256 digest. The shell hypothesis was wrong.
+
+The plugin registered nine Hermes hooks but did not register its bridge's `close()` method with Hermes `on_unload`. A disposable lifecycle test started the bridge config watcher, invoked every registered unload callback, and found the watcher still alive. After registering `ctx.on_unload(bridge.close)`, the test observed the watcher stop. This matters on plugin reload as well as test teardown: an orphan watcher can continue polling an old backend after its plugin registrations have gone away.
+
+The live Docker fixture showed a trusted project Bash deny blocking a compound command without human approval. The test also verified the backend skill scan in the container and removed the container afterward. A repeated run still needs to confirm that unloading the installed plugin no longer produces the teardown warning.

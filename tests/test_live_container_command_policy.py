@@ -2,6 +2,7 @@
 # ABOUTME: Uses a disposable plugin home and removes the test container after each run.
 
 import json
+import hashlib
 import os
 import shlex
 import shutil
@@ -9,6 +10,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 from uuid import uuid4
 
@@ -109,6 +111,29 @@ class LiveContainerCommandPolicyTests(unittest.TestCase):
                     self.assertEqual(len(prompts), 1, "Project denial must not ask for human approval")
                     observed = container.execute(f"cat {marker}", cwd="/tmp", timeout=20)
                     self.assertEqual(observed["output"], "hit", observed)
+                    project_settings = {"permissions": {"deny": ["Bash(printf world)"]}}
+                    prepared = container.execute(
+                        "cat > .claude/settings.json", cwd="/tmp",
+                        stdin_data=json.dumps(project_settings), timeout=20,
+                    )
+                    self.assertEqual(prepared["returncode"], 0, prepared)
+                    plugins_mod._reset_plugin_managers_for_tests()
+                    compound = json.loads(terminal_module.terminal_tool(
+                        "printf hello; printf world", task_id=task_id, workdir="/tmp", timeout=20,
+                    ))
+                    self.assertEqual(compound["status"], "blocked", compound)
+                    self.assertEqual(len(prompts), 1, "Project deny must not ask for approval")
+                    skill_path = "/tmp/.claude/skills/research/SKILL.md"
+                    prepared = container.execute(
+                        "mkdir -p .claude/skills/research && printf 'remote skill' > .claude/skills/research/SKILL.md",
+                        cwd="/tmp", timeout=20,
+                    )
+                    self.assertEqual(prepared["returncode"], 0, prepared)
+                    from lifeos_hook_bridge.bridge import HookBridge
+                    scan = HookBridge._remote_skill_fingerprints(
+                        SimpleNamespace(root="/tmp", backend=container),
+                    )
+                    self.assertEqual(scan[skill_path], hashlib.sha256(b"remote skill").hexdigest())
                 finally:
                     terminal_module.set_approval_callback(previous_callback)
                     plugins_mod._reset_plugin_managers_for_tests()

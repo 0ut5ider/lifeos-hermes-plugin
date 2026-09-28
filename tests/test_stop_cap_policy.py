@@ -16,12 +16,16 @@ class Context:
     def __init__(self, settings):
         self.settings = settings
         self.hooks = {}
+        self.unload = []
 
     def get_config(self, key, default=None):
         return self.settings.get(key, default)
 
     def register_hook(self, name, callback):
         self.hooks[name] = callback
+
+    def on_unload(self, callback):
+        self.unload.append(callback)
 
 
 class StopCapPolicyTests(unittest.TestCase):
@@ -46,6 +50,8 @@ class StopCapPolicyTests(unittest.TestCase):
                         final_response="candidate", session_id="stop-policy-test", attempt=0,
                     )
                     self.assertEqual(result, expected)
+                    for callback in context.unload:
+                        callback()
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@
 # ABOUTME: Uses real child processes and Claude hook JSON contracts.
 
 import json
+import hashlib
 import importlib.util
 import os
 import subprocess
@@ -38,6 +39,23 @@ class HookBridgeTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
         return bridge
+
+    def test_remote_skill_scan_hashes_regular_file(self):
+        project = self.root / "project"
+        skill = project / ".claude/skills/research/SKILL.md"
+        skill.parent.mkdir(parents=True)
+        skill.write_text("remote skill")
+
+        class ShellBackend:
+            def execute(self, command, cwd, timeout):
+                result = subprocess.run(["/bin/sh", "-c", command], cwd=cwd,
+                                        capture_output=True, text=True, timeout=timeout)
+                return {"returncode": result.returncode, "output": result.stdout + result.stderr}
+
+        remote = types.SimpleNamespace(root=str(project), backend=ShellBackend())
+        self.assertEqual(HookBridge._remote_skill_fingerprints(remote), {
+            str(skill): hashlib.sha256(b"remote skill").hexdigest(),
+        })
 
     def test_remote_isa_input_uses_backend_digest_and_rejects_spoof(self):
         backend = types.SimpleNamespace(env=types.SimpleNamespace(_session_id="ssh-session"))
@@ -2429,10 +2447,14 @@ class HookBridgeTests(unittest.TestCase):
         settings = self.root / "settings.json"
         settings.write_text(json.dumps({"hooks": {"SessionEnd": []}}))
         hooks = {}
+        cleanup = self.addCleanup
 
         class Context:
             def register_hook(self, name, callback):
                 hooks[name] = callback
+
+            def on_unload(self, callback):
+                cleanup(callback)
 
         plugin_root = Path(__file__).resolve().parents[1] / "lifeos_hook_bridge"
         specification = importlib.util.spec_from_file_location(
