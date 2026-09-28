@@ -60,10 +60,10 @@ index 86b17bcd769..c1d40f94935 100644
      @pytest.mark.parametrize("guard,first_value,second_value", [
          (
 diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
-index 26d3b5f92b8..c1d439c084a 100644
+index 26d3b5f92b8..a0387040154 100644
 --- a/tests/tools/test_plugin_command_approval.py
 +++ b/tests/tools/test_plugin_command_approval.py
-@@ -199,3 +199,133 @@ def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
+@@ -199,3 +199,135 @@ def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
      assert result["approved"] is False
      assert result["outcome"] == "plugin_denied"
      guardian.assert_not_called()
@@ -158,13 +158,15 @@ index 26d3b5f92b8..c1d439c084a 100644
 +
 +def test_plugin_review_in_isolated_docker_requires_human():
 +    prompts = []
++    command = "curl -I http://192.168.8.1:9"
 +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
 +        result = check_all_command_guards(
-+            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
-+            approval_callback=lambda *args, **kwargs: prompts.append(True) or "deny",
++            command, "docker", has_host_access=False,
++            approval_callback=lambda *args, **kwargs: prompts.append(args) or "deny",
 +        )
 +    assert result["approved"] is False
-+    assert prompts == [True]
++    assert len(prompts) == 1
++    assert command in " ".join(prompts[0])
 +
 +
 +def test_plugin_deny_in_isolated_docker_blocks():
@@ -198,10 +200,23 @@ index 26d3b5f92b8..c1d439c084a 100644
 +        from tools import approval_context
 +        approval_context._approval_session_key.reset(token)
 diff --git a/tools/approval.py b/tools/approval.py
-index b2cd411aa1c..e2b9e3e6239 100644
+index b2cd411aa1c..fb9b8c1e77f 100644
 --- a/tools/approval.py
 +++ b/tools/approval.py
-@@ -1098,6 +1098,8 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
+@@ -1081,10 +1081,9 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+ 
+ 
+ def _plugin_command_decision(command: str, pattern_key: str, description: str) -> str | None:
+-    """Combine plugin decisions for a recoverable command-pattern warning.
++    """Combine plugin command decisions after the applicable safety floors.
+ 
+-    Callers check hardline and user deny floors first. A grant never overrides
+-    a separate Tirith finding or smart guardian denial.
++    A grant never overrides a separate Tirith finding or smart guardian denial.
+     """
+     try:
+         from hermes_cli.plugins import invoke_hook
+@@ -1098,6 +1097,8 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
      actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
      if "deny" in actions:
          return "deny"
@@ -210,7 +225,7 @@ index b2cd411aa1c..e2b9e3e6239 100644
      return "allow" if "allow" in actions else None
  
  
-@@ -1206,17 +1208,19 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1206,17 +1207,19 @@ def check_all_command_guards(command: str, env_type: str,
      dangerous-command findings are presented as ONE combined approval request, so a gateway
      force=True replay cannot bypass one check when only the other was shown to the user.
      ``has_host_access``: a Docker sandbox with bind-mounted host paths takes the normal flow."""
@@ -238,7 +253,7 @@ index b2cd411aa1c..e2b9e3e6239 100644
  
      approval_mode = approval_context._get_approval_mode()
      if _yolo_active() or approval_mode == "off":
-@@ -1224,7 +1228,36 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1224,7 +1227,36 @@ def check_all_command_guards(command: str, env_type: str,
      if _command_matches_permanent_allowlist(command):
          return _approved()
  
@@ -261,7 +276,7 @@ index b2cd411aa1c..e2b9e3e6239 100644
 +    if isolated_container:
 +        if plugin_decision == "review":
 +            return request_tool_approval(
-+                "Bash", "Plugin command policy requires review",
++                "Bash", f"Plugin command policy requires review: {command}",
 +                rule_key=policy_rule_key, approval_callback=approval_callback,
 +            )
 +        return _approved()
@@ -275,7 +290,7 @@ index b2cd411aa1c..e2b9e3e6239 100644
      # Outside CLI/gateway/ask flows we never block on approvals: each
      # unattended context applies its configured deny/approve mode, else allow.
      if not is_cli and not is_gateway and not is_ask:
-@@ -1237,9 +1270,7 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1237,9 +1269,7 @@ def check_all_command_guards(command: str, env_type: str,
      # Gather findings: warnings = [(pattern_key, description, is_tirith)]. Tirith block AND warn both go through the
      # approval flow (block used to be a hard stop) so users can inspect the findings and approve.
      tirith_result = _tirith_scan(command)
@@ -285,7 +300,7 @@ index b2cd411aa1c..e2b9e3e6239 100644
      if tirith_result["action"] in {"block", "warn"}:
          findings = tirith_result.get("findings") or []
          rule_id = findings[0].get("rule_id", "unknown") if findings else "unknown"
-@@ -1248,19 +1279,12 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1248,19 +1278,12 @@ def check_all_command_guards(command: str, env_type: str,
              warnings.append((tirith_key, _format_tirith_description(tirith_result), True))
      if is_dangerous and not is_approved(session_key, pattern_key):
          warnings.append((pattern_key, description, False))
@@ -308,7 +323,7 @@ index b2cd411aa1c..e2b9e3e6239 100644
      if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
          return _approved()
  
-@@ -1275,7 +1299,8 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1275,7 +1298,8 @@ def check_all_command_guards(command: str, env_type: str,
          _COMMAND_GATE, command=command, description=combined_desc,
          pattern_key=primary_key, pattern_keys=all_keys, warnings=warnings,
          session_key=session_key, approval_callback=approval_callback,
