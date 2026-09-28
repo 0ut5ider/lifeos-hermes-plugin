@@ -47,12 +47,18 @@ class PrepareSourcesTests(unittest.TestCase):
             output = Path(directory) / "prepared"
             result = self.run_prepare(HERMES_REPO, LIFEOS_REPO, output)
             self.assertEqual(result.returncode, 0, result.stderr)
-            manifest = json.loads((output / "manifest.json").read_text())
+            manifest = json.loads((output / "source-manifest.json").read_text())
             self.assertEqual(len(manifest["hermes"]["patches"]), 12)
             self.assertEqual(manifest["hermes"]["patches"][-1]["name"], "hermes-command-rewrite.patch")
             self.assertEqual(len(manifest["lifeos"]["patches"]), 9)
             self.assertTrue((output / "hermes/hermes_cli/plugins.py").is_file())
             self.assertTrue((output / "lifeos/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts").is_file())
+            runtime_check = subprocess.run(
+                [sys.executable, "-c", "from pm.runtime import _resident_runtime; assert _resident_runtime() is None"],
+                cwd=output / "hermes", env={**os.environ, "PYTHONPATH": str(output / "hermes")},
+                text=True, capture_output=True,
+            )
+            self.assertEqual(runtime_check.returncode, 0, runtime_check.stderr)
             for checkout in ("hermes", "lifeos"):
                 check = subprocess.run(
                     ["git", "-C", str(output / checkout), "diff", "--check"],

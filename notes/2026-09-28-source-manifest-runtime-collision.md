@@ -1,0 +1,7 @@
+# Source manifest collided with Hermes package detection
+
+Date: 2026-09-28. The first clean-account rebuild applied all 12 Hermes and 9 LifeOS patches, but `setup-hermes.sh --runtime-only` stopped before dependency installation. Its error was `pm-runtime: packaged PM runtime is missing or invalid`. Patch application and `git diff --check` had passed, so the failure was outside the compatibility patches.
+
+Hermes `pm/runtime.py::_resident_runtime` treats a `manifest.json` in the checkout's parent directory as proof that the source is a packaged payload. Our preparation script had written its own patch record to exactly that path. Hermes then searched for a sibling `pm-runtime/pm-runtime.json` that source preparation never creates. A new test reproduced the exception by importing `_resident_runtime` from the prepared checkout. The test failed at `prepared/pm-runtime/pm-runtime.json`, before any model or LifeOS hook ran.
+
+The preparation record is now named `source-manifest.json`. It still contains the two base revisions and 21 patch hashes. The follow-up clean-account install and PM runtime test must pass before this fix is considered verified.

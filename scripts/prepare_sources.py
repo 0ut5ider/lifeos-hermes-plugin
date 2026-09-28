@@ -102,7 +102,7 @@ def prepare(hermes_repo: Path, lifeos_repo: Path, output: Path) -> None:
             "hermes": prepare_source("hermes", hermes_repo, staging / "hermes"),
             "lifeos": prepare_source("lifeos", lifeos_repo, staging / "lifeos"),
         }
-        (staging / "manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+        (staging / "source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
         os.replace(staging, output)
     finally:
         if staging.exists():
