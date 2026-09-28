@@ -1,0 +1,9 @@
+# Stop hook transcript timing
+
+Date: 2026-09-28. The Claude Code reference account on `.212` ran Claude Code 2.1.272 against the private LAN model with a disposable Stop hook. The hook read its `transcript_path`, counted assistant rows matching `last_assistant_message`, blocked the first candidate, and allowed the second. The reference account's outbound rule denied Internet destinations.
+
+Both Stop invocations found zero transcript rows matching their current candidate. On the second invocation, the transcript's most recent nonempty assistant answer was the first candidate that the hook had blocked. The final CLI answer was `ALLOWED-CC-STOP`. This measured a specific ordering: Claude Code passes the candidate in `last_assistant_message` before adding it to the transcript visible to that Stop hook, then retains the blocked candidate for the continued turn.
+
+The bridge previously appended the candidate before calling native Stop hooks. A changed regression expected the prior prompt instead and failed: the native test hook exited 1 because the last row was already an assistant answer. The bridge now appends the candidate after all native Stop hooks finish, including when a hook blocks. A second Stop therefore sees the prior blocked answer but not its current candidate. The focused regression and all 112 bridge tests passed. Three installed native ISA Stop gate tests also passed on `.212`.
+
+This probe used a synthetic Stop hook and a tools-disabled Claude reference turn. It establishes transcript ordering for the two observed text answers. It does not prove byte-for-byte transcript equivalence for tools, images, compression, or resumed sessions.

@@ -1713,10 +1713,12 @@ class HookBridge:
         if platform:
             with self.session_lock:
                 self.session_platforms[session_id] = platform.lower()
-        self._append_transcript(session_id, "assistant", response, model=model, reasoning_effort=reasoning_effort)
         payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
-        for process, output in self._run("Stop", payload):
-            if (output or {}).get("decision") == "block" or process.returncode == 2:
-                message = (output or {}).get("reason") or process.stderr.strip() or "Complete the LifeOS stop gate"
-                return {"action": "continue", "message": str(message)[:2000]}
-        return None
+        try:
+            for process, output in self._run("Stop", payload):
+                if (output or {}).get("decision") == "block" or process.returncode == 2:
+                    message = (output or {}).get("reason") or process.stderr.strip() or "Complete the LifeOS stop gate"
+                    return {"action": "continue", "message": str(message)[:2000]}
+            return None
+        finally:
+            self._append_transcript(session_id, "assistant", response, model=model, reasoning_effort=reasoning_effort)

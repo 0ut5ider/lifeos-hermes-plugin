@@ -910,15 +910,25 @@ class HookBridgeTests(unittest.TestCase):
             "import json,sys\n"
             "from pathlib import Path\n"
             "data=json.load(sys.stdin)\n"
-            "assert data['last_assistant_message']=='unfinished'\n"
             "rows=[json.loads(line) for line in Path(data['transcript_path']).read_text().splitlines()]\n"
-            "assert rows[-1]['type']=='assistant'\n"
-            "assert rows[-1]['message']['content']=='unfinished'\n"
-            "print(json.dumps({'decision':'block','reason':'Finish the evidence check'}))\n",
+            "if data['stop_hook_active']:\n"
+            " assert data['last_assistant_message']=='revised'\n"
+            " assert rows[-1]['message']['content']=='unfinished'\n"
+            "else:\n"
+            " assert data['last_assistant_message']=='unfinished'\n"
+            " assert rows[-1]['type']=='user'\n"
+            " assert rows[-1]['message']['content']=='question'\n"
+            " print(json.dumps({'decision':'block','reason':'Finish the evidence check'}))\n",
         )
         bridge = self.bridge({"Stop": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call("question", session_id="s1")
         result = bridge.stop("unfinished", session_id="s1")
         self.assertEqual(result, {"action": "continue", "message": "Finish the evidence check"})
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual(rows[-1]["message"]["content"], "unfinished")
+        self.assertIsNone(bridge.stop("revised", session_id="s1", stop_hook_active=True))
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual(rows[-1]["message"]["content"], "revised")
 
     def test_stop_transcript_records_actual_hermes_model(self):
         bridge = self.bridge({})

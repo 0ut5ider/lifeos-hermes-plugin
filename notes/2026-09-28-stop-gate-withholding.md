@@ -12,7 +12,7 @@ The first fix treated the eight-continuation cap as a mandatory denial and faile
 
 The [Hermes Stop gate patch](../patches/hermes-stop-fail-closed.patch) keeps a rejected candidate and its synthetic nudge in the active model context but marks both rows ephemeral. Hermes excludes them from the session database, compression input, and final returned history. Iteration-budget exhaustion returns `stop_gate_blocked` with a safe incomplete-turn message. At the continuation cap, the default allows the last candidate as Claude Code does; a plugin result with `on_limit: fail` instead returns the incomplete-turn message. The hook still gets a decision on the candidate at the cap. Hermes does not stream model text to user callbacks while `pre_turn_stop` is registered, so the gate can decide before delivery. Existing edit-verification interim and fallback behavior remains separate.
 
-The bridge still writes each candidate into its private Claude-shaped hook transcript before executing native Stop hooks. This test did not establish whether that transcript matches Claude Code's retention semantics for a blocked candidate.
+The bridge writes each candidate into its private Claude-shaped hook transcript after executing native Stop hooks. A later [Claude Code reference probe](2026-09-28-stop-transcript-timing.md) confirmed that a Stop hook does not see its current candidate in the transcript, while the next Stop sees the prior blocked candidate.
 
 ## Verification
 
