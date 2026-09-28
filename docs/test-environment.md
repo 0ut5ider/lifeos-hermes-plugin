@@ -5,7 +5,7 @@ As of 2026-09-27, the development fixture is an unprivileged Linux account with 
 ## Installed baseline
 
 - Hermes v0.21.5 with the generic hook-control test branch, a local model, a LAN dashboard, and no messaging channel in this test account.
-- LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout now has a local `feature/hermes-task-hook` branch at `b7f0152`; its TaskGovernance, AgentWatchdog, EventLogger, and CheckpointPerISC files are installed in the test account. All four compatibility patches are shipped in this plugin repository.
+- LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout now has a local `feature/hermes-task-hook` branch at `2f6626f`; its TaskGovernance, AgentWatchdog, EventLogger, CheckpointPerISC, and FailureCapture files are installed in the test account. All five compatibility patches are shipped in this plugin repository.
 - A fresh personal tree from `ScaffoldUser.ts --config-root ~/.hermes --apply`, linked by `LinkUser.ts --config-root ~/.hermes --apply`.
 - LifeOS's shipped Hermes sidecar mount, including its identity renderer and guard plugin.
 - LifeOS's 74 native Claude Code hook registrations installed in the test account, plus the separate `lifeos-hook-bridge` Hermes plugin.
