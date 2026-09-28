@@ -3,6 +3,11 @@ version: 0.1.0
 description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
 author: 0ut5ider
 config_schema:
+  lifeos_source_dir:
+    type: str
+    label: LifeOS source install path
+    description: Absolute path to the LifeOS/install directory used to review VersionDrift baseline files.
+    default: ""
   stop_cap_policy:
     type: str
     label: Stop hook limit

@@ -7,6 +7,7 @@
   const React = SDK.React;
   const h = React.createElement;
   const endpoint = "/api/plugins/lifeos-hook-bridge/settings";
+  const baselineEndpoint = "/api/plugins/lifeos-hook-bridge/version-drift";
   const modelEndpoint = "/api/model/options?explicit_only=1";
   const tiers = ["haiku", "sonnet", "opus", "fable"];
 
@@ -16,6 +17,10 @@
     const [models, setModels] = SDK.hooks.useState([]);
     const [status, setStatus] = SDK.hooks.useState("Loading settings...");
     const [saving, setSaving] = SDK.hooks.useState(false);
+    const [baseline, setBaseline] = SDK.hooks.useState(null);
+    const [candidate, setCandidate] = SDK.hooks.useState(null);
+    const [baselineStatus, setBaselineStatus] = SDK.hooks.useState("");
+    const [baselineBusy, setBaselineBusy] = SDK.hooks.useState(false);
 
     SDK.hooks.useEffect(function () {
       let active = true;
@@ -39,6 +44,11 @@
         setStatus(choices.length ? "" : "No configured Hermes models are available. Add a model on the Models page.");
       }).catch(function (error) {
         if (active) setStatus("Could not load settings or models: " + error.message);
+      });
+      SDK.fetchJSON(baselineEndpoint).then(function (result) {
+        if (active) setBaseline(result);
+      }).catch(function (error) {
+        if (active) setBaselineStatus("Could not read baseline status: " + error.message);
       });
       return function () { active = false; };
     }, []);
@@ -76,6 +86,40 @@
       }).catch(function (error) {
         setStatus("Could not save settings: " + error.message);
       }).finally(function () { setSaving(false); });
+    }
+
+    function previewBaseline() {
+      setBaselineBusy(true);
+      setBaselineStatus("");
+      setCandidate(null);
+      SDK.fetchJSON(baselineEndpoint + "/preview", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ source: values.lifeos_source_dir ?? "" }),
+      }).then(function (result) {
+        setCandidate(result);
+        setBaselineStatus("Review the file list before creating this baseline.");
+      }).catch(function (error) {
+        setBaselineStatus("Could not preview baseline: " + error.message);
+      }).finally(function () { setBaselineBusy(false); });
+    }
+
+    function applyBaseline() {
+      if (!candidate) return;
+      setBaselineBusy(true);
+      setBaselineStatus("");
+      SDK.fetchJSON(baselineEndpoint, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          source: values.lifeos_source_dir ?? "", fingerprint: candidate.fingerprint,
+          renew: baseline?.baseline_exists === true,
+        }),
+      }).then(function (result) {
+        setBaseline(result);
+        setCandidate(null);
+        setBaselineStatus("VersionDrift baseline saved.");
+      }).catch(function (error) {
+        setBaselineStatus("Could not save baseline: " + error.message);
+      }).finally(function () { setBaselineBusy(false); });
     }
 
     function renderTier(tier) {
@@ -155,6 +199,42 @@
           type: "submit", disabled: saving,
           className: "rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50",
         }, saving ? "Saving..." : "Save settings") : null),
+      h("section", { className: "rounded border border-border p-4" },
+        h("h2", { className: "mb-2 text-lg font-semibold" }, "VersionDrift baseline"),
+        h("p", { className: "mb-3 text-sm text-muted-foreground" },
+          "Track installed LifeOS system files without adding a Git repository to Hermes home."),
+        baseline?.state === "ready" ? h("p", null,
+          "Version " + baseline.version + ", " + baseline.file_count + " files, " +
+          baseline.changed_count + " changed since baseline. Source commit " + baseline.source_commit + ".") :
+          h("p", null, baseline?.state === "error" ? "Baseline error: " + baseline.message : "No baseline created."),
+        baseline?.version_mismatch ? h("p", { role: "status" },
+          "Installed LifeOS version " + baseline.installed_version + " differs from the baseline. " +
+          "Review the updated source and renew the baseline after its tests pass.") : null,
+        h("label", { htmlFor: "lifeos_source_dir", className: "mb-1 block font-medium" },
+          "LifeOS source install path"),
+        h("input", {
+          id: "lifeos_source_dir", type: "text", value: values.lifeos_source_dir ?? "",
+          onChange: function (event) { update("lifeos_source_dir", event.target.value); setCandidate(null); },
+          placeholder: "/home/user/workspace/LifeOS/LifeOS/install",
+          className: "mb-3 w-full rounded border border-border bg-background p-2",
+        }),
+        h("button", {
+          type: "button", disabled: baselineBusy || !values.lifeos_source_dir,
+          onClick: previewBaseline,
+          className: "rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50",
+        }, baselineBusy ? "Working..." : "Preview baseline files"),
+        candidate ? h("div", { className: "mt-4" },
+          h("p", null, "Version " + candidate.version + ", " + candidate.file_count +
+            " files from source commit " + candidate.source_commit + "."),
+          h("details", { className: "my-3" },
+            h("summary", { className: "cursor-pointer" }, "Review file list"),
+            h("pre", { className: "max-h-80 overflow-auto whitespace-pre-wrap text-xs" },
+              candidate.files.join("\n"))),
+          h("button", {
+            type: "button", disabled: baselineBusy, onClick: applyBaseline,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, baseline?.baseline_exists === true ? "Renew reviewed baseline" : "Create reviewed baseline")) : null,
+        baselineStatus ? h("p", { role: "status", className: "mt-3" }, baselineStatus) : null),
       status ? h("p", { role: "status" }, status) : null);
   }
 

@@ -1,5 +1,7 @@
 # VersionDrift baseline without a Git repository in Hermes home
 
+Implementation status on 2026-09-28: The plugin-owned baseline, scoped Git adapter, dashboard preview and renewal controls, and native synchronous and asynchronous tests are implemented on the isolated `.212` installation. The baseline contains 1,796 files, is stored under `~/.local/state/lifeos-hook-bridge/`, and reports zero initial changes. See [the setup guide](version-drift-baseline.md) and [the measured false-positive record](../notes/2026-09-28-version-drift-skill-scope.md). The design below records the original proposal and its verification criteria.
+
 ## Observed constraint
 
 The installed `VersionDrift.hook.ts` calls three Git operations from `$HOME/.claude`: list `vX.Y.Z` tags, get a tag commit time, and list changed core paths since that tag. On the isolated `.212` account, `$HOME/.claude` links to the live `$HOME/.hermes` directory. The installed tree has no Git repository. The source checkout also has no semantic-version tags. The hook consequently stays silent.
@@ -23,4 +25,4 @@ A source-to-install audit found all 55 `.hook.ts` files present and byte-identic
 - Check the file list for secrets by path and file type, and test that runtime and dependency directories never enter the baseline.
 - Measure the scan duration against the native hook's ten-second timeout on `.212`.
 
-No baseline, Git repository, adapter, or installed configuration has been created as part of this design note.
+No Git repository was created in the shared Hermes home. The persistent baseline and adapter were installed only on `.212`.

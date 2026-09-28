@@ -141,6 +141,20 @@ def _bash_permission_rule_decision(command: str, sources: list[Any]) -> str:
     return "allow" if matches["allow"] else "none"
 
 
+def _is_native_version_drift(command: str, root: Path) -> bool:
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return False
+    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
+        tokens = tokens[1:]
+    if len(tokens) != 1:
+        return False
+    if tokens[0] in {"$HOME/.claude/hooks/VersionDrift.hook.ts", "${HOME}/.claude/hooks/VersionDrift.hook.ts"}:
+        return True
+    return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
+
+
 def _managed_permission_sources() -> list[Any]:
     paths = [POLICY_DIRECTORY / "managed-settings.json"]
     dropins = POLICY_DIRECTORY / "managed-settings.d"
@@ -1067,6 +1081,19 @@ class HookBridge:
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
                     continue
+                hook_environment = environment
+                if event == "UserPromptSubmit" and remote_project is None and _is_native_version_drift(command, self.root):
+                    from .version_drift import default_baseline_path
+                    hook_environment = dict(environment)
+                    hook_environment["LIFEOS_VERSION_DRIFT_ROOT"] = str(self.root)
+                    hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path()))
+                    system_path = os.pathsep.join(
+                        path for path in environment.get("PATH", "").split(os.pathsep)
+                        if Path(path).resolve() != (Path(__file__).parent / "bin").resolve()
+                    )
+                    system_git = shutil.which("git", path=system_path)
+                    if system_git:
+                        hook_environment["LIFEOS_VERSION_DRIFT_SYSTEM_GIT"] = system_git
                 if remote_project is not None:
                     from .remote_hooks import run_project_hook
                     timeout = max(1, min(int(hook.get("timeout", 60)), 300))
@@ -1081,10 +1108,10 @@ class HookBridge:
                     ), False))
                     continue
                 if hook.get("async"):
-                    jobs.append((self._run_async, (command, group_payload, environment, process_cwd), True))
+                    jobs.append((self._run_async, (command, group_payload, hook_environment, process_cwd), True))
                     continue
                 timeout = max(1, min(int(hook.get("timeout", 60)), 300))
-                jobs.append((self._run_command, (event, command, group_payload, timeout, environment, process_cwd), False))
+                jobs.append((self._run_command, (event, command, group_payload, timeout, hook_environment, process_cwd), False))
         outcomes = []
         if not jobs:
             return outcomes

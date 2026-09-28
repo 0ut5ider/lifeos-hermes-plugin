@@ -2128,6 +2128,30 @@ class HookBridgeTests(unittest.TestCase):
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
 
+    def test_version_drift_git_adapter_is_scoped_to_its_hook(self):
+        version_hook = self.hooks / "VersionDrift.hook.ts"
+        other_hook = self.hooks / "Other.hook.ts"
+        for path in (version_hook, other_hook):
+            path.write_text(
+                "#!/usr/bin/env python3\nimport json,os\n"
+                f"from pathlib import Path\nPath({str(path)!r} + '.env').write_text(json.dumps({{"
+                "'PATH':os.environ.get('PATH',''),"
+                "'BASELINE':os.environ.get('LIFEOS_VERSION_DRIFT_BASELINE'),"
+                "'ROOT':os.environ.get('LIFEOS_VERSION_DRIFT_ROOT')}))\n"
+            )
+            path.chmod(0o755)
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [
+            {"type": "command", "command": str(version_hook)},
+            {"type": "command", "command": str(other_hook)},
+        ]}]})
+        bridge.pre_llm_call("Check version", session_id="s1")
+        version_env = json.loads(Path(str(version_hook) + ".env").read_text())
+        other_env = json.loads(Path(str(other_hook) + ".env").read_text())
+        self.assertEqual(Path(version_env["PATH"].split(os.pathsep)[0]).name, "bin")
+        self.assertIsNotNone(version_env["BASELINE"])
+        self.assertIsNone(other_env["BASELINE"])
+        self.assertEqual(other_env["PATH"], bridge.environment["PATH"])
+
     def test_command_rule_change_applies_before_next_approval(self):
         command = "curl -I --max-time 1 http://192.168.8.1:9"
         settings = self.root / "settings.json"

@@ -1,0 +1,11 @@
+# VersionDrift's shared skills false positives
+
+On 2026-09-28, a candidate plugin-owned VersionDrift baseline captured 1,796 installed files from the tracked LifeOS source manifest on the isolated `.212` account. Creating it took 0.161 seconds. A drift scan immediately afterward took 0.342 seconds and reported 324 changed paths, even though no file changed between the two operations.
+
+All 324 paths were under `skills/`. The deployed `~/.claude` is the shared Hermes home, and Hermes installs many skills there that are not part of the LifeOS source payload. The first new-file scan treated every file under that directory as a new LifeOS system file. Examples included `skills/apple/...` and `skills/autonomous-ai-agents/...`.
+
+The correction is to treat only skill roots present in the baseline manifest as LifeOS-owned when looking for new files. Existing baseline files remain tracked individually. A new file inside a baseline-owned skill remains visible; an unrelated Hermes skill does not count as LifeOS drift. A new top-level LifeOS skill directory will need a source manifest refresh before it can be counted. The before-fix number was 324 false positives. A second `.212` run captured 1,796 files in 0.179 seconds and scanned them in 0.346 seconds, with zero initial changes.
+
+The first persistent write then failed with `PermissionError`. The existing `~/.config/lifeos-hook-bridge` directory on `.212` is owned by root with mode `0755`, while the Hermes account owns `~/.local/state` with mode `0755`. The plugin now defaults its private baseline file to `~/.local/state/lifeos-hook-bridge/version-drift-baseline.json` and creates the child directory with mode `0700`. No baseline was written by the failed attempt.
+
+The first installed adapter probe failed too. The source checkout uses the Python package directory `lifeos_hook_bridge`, but Hermes installs the same runtime files under the plugin ID `lifeos-hook-bridge`. The `bin/git` script imported the source package name and exited before answering the tag query. A copied installed-layout regression now covers both `bin/git` and the baseline command. Both scripts load the sibling `version_drift.py` by file path. The actual installed `.212` adapter then answered tag, diff, log, and ordinary `git --version` calls successfully; the diff query took 0.368 seconds and reported zero changes.

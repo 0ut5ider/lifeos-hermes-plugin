@@ -50,6 +50,15 @@ test("model picker saves the selected provider, model, and effort", async () => 
     fetchJSON(url, init) {
       calls.push({ url, init });
       if (init?.method === "PUT") return Promise.resolve({ saved: ["haiku_model"] });
+      if (url.endsWith("/version-drift/preview")) return Promise.resolve({
+        version: "7.40.4", source_commit: "a".repeat(40), file_count: 1,
+        files: ["hooks/VersionDrift.hook.ts"], fingerprint: "reviewed",
+      });
+      if (url.endsWith("/version-drift") && init?.method === "POST") return Promise.resolve({
+        state: "ready", version: "7.40.4", source_commit: "a".repeat(40),
+        file_count: 1, changed_count: 0, installed_version: "7.40.4", version_mismatch: false,
+      });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing", baseline_exists: false });
       if (url.includes("/api/model/options")) return Promise.resolve(models);
       return Promise.resolve({ fields });
     },
@@ -92,4 +101,22 @@ test("model picker saves the selected provider, model, and effort", async () => 
   const lastSave = calls.filter((call) => call.init?.method === "PUT").at(-1);
   assert.equal(JSON.parse(lastSave.init.body).stop_cap_policy, "fail_closed");
   assert.ok(calls.some((call) => call.url.includes("/api/model/options?explicit_only=1")));
+
+  const source = find(render(), (node) => node.type === "input" && node.props.id === "lifeos_source_dir");
+  source.props.onChange({ target: { value: "/srv/LifeOS/LifeOS/install" } });
+  const preview = find(render(), (node) => node.type === "button" && node.children.includes("Preview baseline files"));
+  preview.props.onClick();
+  await new Promise(setImmediate);
+  const reviewed = find(render(), (node) => node.type === "pre" &&
+    node.children.includes("hooks/VersionDrift.hook.ts"));
+  assert.ok(reviewed);
+  const create = find(render(), (node) => node.type === "button" && node.children.includes("Create reviewed baseline"));
+  create.props.onClick();
+  await new Promise(setImmediate);
+  const apply = calls.find((call) => call.url.endsWith("/version-drift") && call.init?.method === "POST");
+  assert.deepEqual(JSON.parse(apply.init.body), {
+    source: "/srv/LifeOS/LifeOS/install", fingerprint: "reviewed", renew: false,
+  });
+  assert.ok(find(render(), (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("0 changed since baseline"))));
 });
