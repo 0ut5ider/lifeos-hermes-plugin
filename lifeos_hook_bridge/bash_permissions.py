@@ -118,8 +118,23 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
         if any(word is None for word in words):
             certain = False
             return
+        if name == "find":
+            expression_started = False
+            for word in words:
+                if word == "--" and not expression_started:
+                    continue
+                if word.startswith("-") or word in {"!", "("}:
+                    expression_started = True
+                if expression_started:
+                    if word in {"-exec", "-execdir", "-ok", "-okdir", "-delete", "-fprint",
+                                "-fprint0", "-fprintf", "-fls"}:
+                        certain = False
+                else:
+                    targets.append(("read", word))
+            return
         options_done = False
         script_seen = False
+        grep_pattern_seen = False
         writes_files = False
         position = 0
         while position < len(words):
@@ -149,6 +164,97 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                         continue
                     if name == "tail" and word in {"-f", "-F", "--follow", "-r"}:
                         continue
+                if name == "wc":
+                    if word in {"--bytes", "--chars", "--lines", "--max-line-length", "--words"} or re.fullmatch(
+                        r"-[cmlLw]+", word
+                    ):
+                        continue
+                if name == "grep":
+                    if word in {"-e", "--regexp", "-f", "--file"}:
+                        if position >= len(words):
+                            certain = False
+                            return
+                        if word in {"-f", "--file"} and words[position] != "-":
+                            targets.append(("read", words[position]))
+                        position += 1
+                        grep_pattern_seen = True
+                        continue
+                    if word.startswith("--regexp=") or word.startswith("-e") and len(word) > 2:
+                        grep_pattern_seen = True
+                        continue
+                    if word.startswith("--file=") or word.startswith("-f") and len(word) > 2:
+                        name_arg = word.split("=", 1)[1] if "=" in word else word[2:]
+                        if name_arg != "-":
+                            targets.append(("read", name_arg))
+                        grep_pattern_seen = True
+                        continue
+                    if word in {"-n", "--line-number", "-i", "--ignore-case", "-v", "--invert-match",
+                                "-E", "--extended-regexp", "-F", "--fixed-strings", "-G", "--basic-regexp",
+                                "-P", "--perl-regexp", "-q", "--quiet", "-l", "--files-with-matches",
+                                "-L", "--files-without-match", "-c", "--count", "-h", "--no-filename",
+                                "-H", "--with-filename", "-s", "--no-messages"}:
+                        continue
+                    if word in {"-m", "--max-count", "-A", "--after-context", "-B", "--before-context",
+                                "-C", "--context"}:
+                        position += 1
+                        if position > len(words):
+                            certain = False
+                        continue
+                if name == "stat":
+                    if word in {"-c", "--format", "--printf"}:
+                        position += 1
+                        if position > len(words):
+                            certain = False
+                        continue
+                    if word in {"-f", "--file-system", "-L", "--dereference", "-t", "--terse"} or word.startswith(
+                        ("--format=", "--printf=")
+                    ):
+                        continue
+                if name == "diff":
+                    if word in {"-U", "--unified-lines", "--label"}:
+                        position += 1
+                        if position > len(words):
+                            certain = False
+                        continue
+                    if word in {"-u", "--unified", "-r", "--recursive", "-q", "--brief", "-N",
+                                "--new-file", "-a", "--text", "-b", "--ignore-space-change", "-w",
+                                "--ignore-all-space", "-B", "--ignore-blank-lines", "-i",
+                                "--ignore-case", "-s", "--report-identical-files"} or re.fullmatch(
+                        r"-U[0-9]+", word
+                    ) or word.startswith("--label="):
+                        continue
+                if name == "sort":
+                    if word in {"-o", "--output"}:
+                        if position >= len(words):
+                            certain = False
+                            return
+                        targets.append(("write", words[position]))
+                        position += 1
+                        continue
+                    if word.startswith("--output=") or word.startswith("-o") and len(word) > 2:
+                        targets.append(("write", word.split("=", 1)[1] if "=" in word else word[2:]))
+                        continue
+                    if word in {"-k", "--key", "-t", "--field-separator"}:
+                        position += 1
+                        if position > len(words):
+                            certain = False
+                        continue
+                    if word in {"-r", "--reverse", "-n", "--numeric-sort", "-u", "--unique",
+                                "-s", "--stable", "-f", "--ignore-case", "-b", "--ignore-leading-blanks",
+                                "-d", "--dictionary-order", "-i", "--ignore-nonprinting", "-M",
+                                "--month-sort", "-h", "--human-numeric-sort", "-V", "--version-sort",
+                                "-c", "--check", "-m", "--merge"}:
+                        continue
+                if name == "ls" and (re.fullmatch(r"-[lah1dRStF]+", word) or word in {
+                    "--all", "--almost-all", "--long", "--human-readable", "--directory",
+                    "--recursive", "--classify", "--color=auto", "--color=never",
+                }):
+                    continue
+                if name == "file" and word in {
+                    "-b", "--brief", "-i", "--mime", "--mime-type", "-L", "--dereference",
+                    "-z", "--uncompress", "-0", "--print0",
+                }:
+                    continue
                 if name == "sed":
                     if word in {"-n", "--quiet", "--silent", "-E", "-r", "-u", "-z", "-s"}:
                         continue
@@ -175,6 +281,9 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                 return
             if name == "sed" and not script_seen:
                 script_seen = True
+                continue
+            if name == "grep" and not grep_pattern_seen:
+                grep_pattern_seen = True
                 continue
             if word != "-":
                 targets.append(("read", word))
@@ -215,7 +324,8 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                                 certain = False
                         else:
                             targets.append(("write", word))
-                elif name in {"cat", "head", "tail", "sed"}:
+                elif name in {"cat", "head", "tail", "sed", "wc", "grep", "stat", "diff", "sort",
+                              "ls", "file", "find"}:
                     reader_operands(name, children[1:])
                 elif name in _WRAPPERS:
                     inner = _unwrapped(node, source)

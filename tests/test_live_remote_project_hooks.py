@@ -38,6 +38,12 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
         secret = os.path.normpath(f"{project}/../{name}.txt")
         link = f"{project}/{name}.link"
         ordinary = f"{project}/{name}.ordinary"
+        file_commands = (
+            f"cat {name}.link", f"wc -c {name}.link", f"grep parity {name}.link",
+            f"stat {name}.link", f"diff {name}.link {name}.ordinary",
+            f"sort {name}.link", f"ls {name}.link", f"file {name}.link",
+            f"find {name}.link -maxdepth 0",
+        )
         try:
             setup = env.execute(
                 f"printf '%s' parity > {shlex.quote(secret)} && "
@@ -52,7 +58,8 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
                 settings.write_text(json.dumps({
                     "hooks": {},
                     "permissions": {
-                        "allow": [f"Bash(cat {name}.link)", f"Bash(cat {name}.ordinary)"],
+                        "allow": [*(f"Bash({command})" for command in file_commands),
+                                  f"Bash(cat {name}.ordinary)"],
                         "deny": [f"Read(//{secret.lstrip('/')})"],
                     },
                 }))
@@ -64,9 +71,11 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
                     self.assertIsNone(bridge.command_approval(
                         f"cat {name}.ordinary", session_key="ssh-symlink", cwd=project, task_id="default",
                     ))
-                    self.assertEqual(bridge.command_approval(
-                        f"cat {name}.link", session_key="ssh-symlink", cwd=project, task_id="default",
-                    ), {"action": "deny"})
+                    for command in file_commands:
+                        with self.subTest(command=command):
+                            self.assertEqual(bridge.command_approval(
+                                command, session_key="ssh-symlink", cwd=project, task_id="default",
+                            ), {"action": "deny"})
                     verdict = bridge.pre_tool_call(
                         "read_file", {"path": link}, session_id="ssh-symlink", task_id="default",
                     )

@@ -30,6 +30,11 @@ class LiveContainerProjectHookTests(unittest.TestCase):
         project = f"/tmp/{name}"
         secret = f"/tmp/{name}.secret"
         link = f"{project}/link.txt"
+        file_commands = (
+            "cat link.txt", "wc -c link.txt", "grep parity link.txt",
+            "stat link.txt", "diff link.txt ordinary.txt", "sort link.txt",
+            "ls link.txt", "file link.txt", "find link.txt -maxdepth 0",
+        )
         env = DockerEnvironment(image=image, cwd=project, task_id=name,
                                 network=False, persistent_filesystem=False)
         with _env_lock:
@@ -38,7 +43,8 @@ class LiveContainerProjectHookTests(unittest.TestCase):
             setup = env.execute(
                 f"mkdir -p {shlex.quote(project)} && "
                 f"printf '%s' parity > {shlex.quote(secret)} && "
-                f"ln -s {shlex.quote(secret)} {shlex.quote(link)}",
+                f"ln -s {shlex.quote(secret)} {shlex.quote(link)} && "
+                f"printf '%s' ordinary > {shlex.quote(project + '/ordinary.txt')}",
                 cwd="/tmp", timeout=20,
             )
             self.assertEqual(setup["returncode"], 0, setup)
@@ -48,7 +54,7 @@ class LiveContainerProjectHookTests(unittest.TestCase):
                 settings.write_text(json.dumps({
                     "hooks": {},
                     "permissions": {
-                        "allow": ["Bash(cat link.txt)"],
+                        "allow": [f"Bash({command})" for command in file_commands],
                         "deny": [f"Read(//{secret.lstrip('/')})"],
                     },
                 }))
@@ -57,9 +63,11 @@ class LiveContainerProjectHookTests(unittest.TestCase):
                 with patch.dict(os.environ, {"LIFEOS_REMOTE_PROJECT_TRUST": str(trust)}):
                     bridge = HookBridge(settings, root)
                 try:
-                    self.assertEqual(bridge.command_approval(
-                        "cat link.txt", session_key="docker-symlink", cwd=project, task_id="default",
-                    ), {"action": "deny"})
+                    for command in file_commands:
+                        with self.subTest(command=command):
+                            self.assertEqual(bridge.command_approval(
+                                command, session_key="docker-symlink", cwd=project, task_id="default",
+                            ), {"action": "deny"})
                     verdict = bridge.pre_tool_call(
                         "read_file", {"path": link}, session_id="docker-symlink", task_id="default",
                     )

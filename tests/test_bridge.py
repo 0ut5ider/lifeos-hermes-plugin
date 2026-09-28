@@ -2338,6 +2338,12 @@ class HookBridgeTests(unittest.TestCase):
             "head -n 2 parity-file", "tail --lines=2 parity-file",
             "sed -n '1p' parity-file", "sed -e '1p' parity-file",
             "timeout 2 cat parity-file",
+            "wc -c parity-file", "grep PATTERN parity-file",
+            "grep -n PATTERN parity-file", "grep -f parity-file other.txt",
+            "stat parity-file", "stat -c '%s' parity-file",
+            "diff parity-file other.txt", "diff -u parity-file other.txt",
+            "sort parity-file", "sort -r parity-file",
+            "ls parity-file", "file parity-file", "find parity-file -maxdepth 0",
         ):
             with self.subTest(command=command):
                 settings = self.root / "settings.json"
@@ -2361,6 +2367,21 @@ class HookBridgeTests(unittest.TestCase):
             "permissions": {
                 "allow": [f"Bash({command})"],
                 "deny": ["Edit(./parity-file)"],
+            },
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
+                         {"action": "deny"})
+
+    def test_sort_output_checks_edit_rule(self):
+        command = "sort -o output.txt parity-file"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {},
+            "permissions": {
+                "allow": [f"Bash({command})"],
+                "deny": ["Edit(./output.txt)"],
             },
         }))
         bridge = HookBridge(settings, self.root)
@@ -2440,6 +2461,21 @@ class HookBridgeTests(unittest.TestCase):
             "head --unknown parity-file": ([], False),
             "timeout 2 cat parity-file": ([('read', 'parity-file')], True),
             "timeout --unknown cat parity-file": ([], False),
+            "wc -c parity-file": ([('read', 'parity-file')], True),
+            "grep -n PATTERN parity-file": ([('read', 'parity-file')], True),
+            "grep -f parity-file other.txt": ([('read', 'parity-file'), ('read', 'other.txt')], True),
+            "grep PATTERN -": ([], True),
+            "stat -c '%s' parity-file": ([('read', 'parity-file')], True),
+            "diff -u parity-file other.txt": ([('read', 'parity-file'), ('read', 'other.txt')], True),
+            "sort -r parity-file": ([('read', 'parity-file')], True),
+            "sort -o output.txt parity-file": ([('write', 'output.txt'), ('read', 'parity-file')], True),
+            "ls -l parity-file": ([('read', 'parity-file')], True),
+            "file -b parity-file": ([('read', 'parity-file')], True),
+            "find parity-file -maxdepth 0": ([('read', 'parity-file')], True),
+            "find . -name parity-file": ([('read', '.')], True),
+            "find . -exec cat parity-file \\;": ([('read', '.')], False),
+            "file -m magic.db parity-file": ([], False),
+            "du parity-file": ([], True),
         }
         for command, expected in cases.items():
             with self.subTest(command=command):
