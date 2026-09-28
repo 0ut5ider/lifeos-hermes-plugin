@@ -741,6 +741,24 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in transcript.read_text().splitlines()]
         self.assertEqual([row["message"]["content"] for row in rows], ["first", "second"])
 
+    def test_prompt_hook_runs_before_current_prompt_enters_transcript(self):
+        marker = self.root / "prompt-transcript.json"
+        command = self.make_hook(
+            "inspect-prompt-transcript.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            "path=Path(data['transcript_path'])\n"
+            "rows=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []\n"
+            f"Path({str(marker)!r}).write_text(json.dumps([row['message']['content'] for row in rows]))\n",
+        )
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call("first prompt", session_id="s1")
+        self.assertEqual(json.loads(marker.read_text()), [])
+        bridge.pre_llm_call("second prompt", session_id="s1")
+        self.assertEqual(json.loads(marker.read_text()), ["first prompt"])
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual([row["message"]["content"] for row in rows], ["first prompt", "second prompt"])
+
     def test_session_start_uses_resume_source_after_bridge_restart(self):
         command = self.make_hook(
             "session-source.py",

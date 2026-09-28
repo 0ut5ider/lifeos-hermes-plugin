@@ -1128,9 +1128,10 @@ class HookBridge:
             source = "resume" if resumed else "startup"
             start_payload = self._payload("SessionStart", session_id, source=source)
             context.extend(self._context(self._run("SessionStart", start_payload)))
-        self._append_transcript(session_id, "user", user_message)
         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
-        context.extend(self._context(self._run("UserPromptSubmit", payload)))
+        outcomes = self._run("UserPromptSubmit", payload)
+        self._append_transcript(session_id, "user", user_message)
+        context.extend(self._context(outcomes))
         return {"context": "\n\n".join(context)} if context else None
 
     @staticmethod
