@@ -10,7 +10,7 @@ _LANGUAGE = Language(tree_sitter_bash.language())
 _DURATION = re.compile(r"[0-9]+(?:\.[0-9]+)?[smhd]?\Z")
 _WRAPPERS = frozenset({"timeout", "time", "nice", "nohup", "stdbuf", "command", "builtin", "noglob"})
 _ALLOW_REQUIRES_REVIEW = frozenset({
-    "file_redirect", "heredoc_redirect", "process_substitution", "variable_assignment",
+    "process_substitution", "variable_assignment",
     "function_definition", "for_statement", "while_statement", "if_statement", "case_statement",
 })
 
@@ -69,6 +69,12 @@ def bash_command_forms(command: str) -> tuple[list[tuple[str, ...]], bool, bool]
         nonlocal allow_requires_review
         if node.type in _ALLOW_REQUIRES_REVIEW:
             allow_requires_review = True
+        if node.type == "file_redirect":
+            redirect = source[node.start_byte:node.end_byte].decode("utf-8").strip()
+            target = node.named_children[-1] if node.named_children else None
+            target_text = source[target.start_byte:target.end_byte].decode("utf-8") if target else ""
+            if target_text != "/dev/null" and not re.fullmatch(r"[0-9]*[<>]&(?:[0-9]+|-)", redirect):
+                allow_requires_review = True
         if node.type == "command":
             raw = source[node.start_byte:node.end_byte].decode("utf-8").strip()
             if raw:

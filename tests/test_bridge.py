@@ -2191,6 +2191,31 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(bridge.command_approval("printf world > /tmp/guarded", session_key="s1"),
                          {"action": "deny"})
 
+    def test_bash_allow_skips_redirects_without_file_targets(self):
+        marker = self.root / "permission-invoked"
+        hook = self.make_hook(
+            "redirect.py",
+            "import pathlib,sys\n"
+            "sys.stdin.read()\n"
+            f"pathlib.Path({str(marker)!r}).write_text('invoked')\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(printf *)", "Bash(cat *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        for command in ("printf ok > /dev/null", "printf ok 2>&1", "cat <<EOF\nhello\nEOF"):
+            with self.subTest(command=command):
+                self.assertIsNone(bridge.command_approval(command, session_key="s1"))
+                self.assertFalse(marker.exists())
+        self.assertEqual(bridge.command_approval("printf ok > guarded", session_key="s1"),
+                         {"action": "review"})
+        self.assertTrue(marker.exists())
+
     def test_managed_deny_overrides_user_allow(self):
         policy = self.root / "managed-policy"
         policy.mkdir()
