@@ -17,6 +17,8 @@ def main() -> int:
         request = json.loads(spool.read_text())
     finally:
         spool.unlink(missing_ok=True)
+    if request.get("remote"):
+        return _run_remote(request)
     try:
         with tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as output:
             result = subprocess.run(
@@ -32,6 +34,38 @@ def main() -> int:
             _save_context(request, response)
         return result.returncode
     except (OSError, subprocess.TimeoutExpired):
+        return 1
+
+
+def _run_remote(request: dict) -> int:
+    try:
+        for path in reversed([request["plugin_root"], request["source_root"], *request.get("python_paths", [])]):
+            if path and os.path.isabs(path):
+                sys.path.insert(0, path)
+        from remote_hooks import run_project_hook
+        from tools.environments.ssh import SSHEnvironment
+
+        remote = request["remote"]
+        if remote.get("type") != "ssh":
+            return 1
+        backend = SSHEnvironment(
+            host=remote["host"], user=remote["user"], port=remote["port"],
+            key_path=remote["key_path"], cwd=request["cwd"], probe_only=True,
+        )
+        try:
+            result = run_project_hook(
+                backend, request["command"], request["payload"], request["cwd"],
+                request.get("timeout", 60), request.get("environment", {}),
+            )
+        finally:
+            backend.cleanup()
+        if result is None:
+            return 1
+        if result.returncode == 0 and len(result.stdout) <= 65536:
+            _save_context(request, result.stdout)
+        return result.returncode
+    except (OSError, ValueError, KeyError, ImportError, TypeError) as error:
+        print(f"Remote hook runner failed: {error}", file=sys.stderr)
         return 1
 
 

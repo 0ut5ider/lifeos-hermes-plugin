@@ -380,6 +380,8 @@ class HookBridge:
         self.project_dirs = (Path.cwd(),)
         self.session_projects: dict[str, set[Path]] = {}
         self.project_hook_settings: dict[Path, dict[str, Any]] = {}
+        self.remote_project_states: dict[tuple[str, str], dict[str, Any]] = {}
+        self.remote_session_projects: dict[str, set[tuple[str, str]]] = {}
         self.config_files = self._config_files()
         self.last_config_poll = 0.0
         self.watcher_stop = threading.Event()
@@ -391,7 +393,7 @@ class HookBridge:
         self.watchdog_thread: threading.Thread | None = None
 
     def _start_config_watcher(self) -> None:
-        if "ConfigChange" not in self.hooks and not any(
+        if "ConfigChange" not in self.hooks and not self.remote_project_states and not any(
             _trusted_project(path.parent.parent) and "ConfigChange" in settings.get("hooks", {})
             for path, settings in self.project_hook_settings.items()
         ):
@@ -411,6 +413,7 @@ class HookBridge:
         while not stop.wait(1.0):
             try:
                 self.poll_config_changes(force=True)
+                self.poll_remote_config_changes()
             except Exception as error:
                 LOG.error("LifeOS config watcher failed: %s", error)
 
@@ -630,7 +633,155 @@ class HookBridge:
                 project = next(iter(projects))
         return project if project is not None and _trusted_project(project) else None
 
-    def _hook_groups(self, event: str, payload: dict[str, Any], host_paths: bool = True) -> list[dict[str, Any]]:
+    @staticmethod
+    def _read_remote_settings(file_ops: Any, path: str) -> tuple[tuple[str, str | None], dict[str, Any]]:
+        fingerprint = file_ops.file_digest(path)
+        if fingerprint[0] != "file":
+            return fingerprint, {}
+        result = file_ops.read_file_raw(path)
+        if result.error or not isinstance(result.content, str):
+            return fingerprint, {}
+        if result.file_size is not None and result.file_size > 1024 * 1024:
+            LOG.warning("Remote project settings exceed the size limit: %s", path)
+            return fingerprint, {}
+        try:
+            parsed = json.loads(result.content)
+        except ValueError as error:
+            LOG.warning("Remote project settings cannot be parsed at %s: %s", path, error)
+            return fingerprint, {}
+        return fingerprint, parsed if isinstance(parsed, dict) and isinstance(parsed.get("hooks", {}), dict) else {}
+
+    @staticmethod
+    def _remote_skill_fingerprints(project: Any) -> dict[str, str]:
+        skills_root = f"{project.root}/.claude/skills"
+        quoted = shlex.quote(skills_root)
+        command = (
+            f"if [ -d {quoted} ]; then "
+            f"while IFS= read -r -d '' path; do "
+            "printf '%s\\0' \"$path\"; "
+            "if command -v sha256sum >/dev/null 2>&1; then "
+            "sha256sum < \"$path\" 2>/dev/null | cut -c1-64 | tr -d '\\n'; "
+            "elif command -v shasum >/dev/null 2>&1; then "
+            "shasum -a 256 < \"$path\" 2>/dev/null | cut -c1-64 | tr -d '\\n'; "
+            "else printf UNAVAILABLE; fi; "
+            "printf '\\0'; "
+            f"done < <(find {quoted} -type f -print0 2>/dev/null); fi"
+        )
+        result = project.backend.execute(command, cwd=project.root, timeout=30)
+        output = result.get("output", "")
+        if result.get("returncode") != 0 or len(output) > 4 * 1024 * 1024:
+            raise OSError("remote skill scan failed or exceeded the size limit")
+        if not output:
+            return {}
+        parts = output.split("\0")
+        if parts[-1] != "" or len(parts) % 2 != 1:
+            raise ValueError("remote skill scan returned incomplete entries")
+        paths = {}
+        for path, digest in zip(parts[0:-1:2], parts[1:-1:2]):
+            if not path.startswith(f"{skills_root}/") or not re.fullmatch(r"[0-9a-f]{64}|UNAVAILABLE", digest):
+                raise ValueError("remote skill scan returned an invalid entry")
+            paths[path] = digest
+        return paths
+
+    def _remote_project_settings(self, payload: dict[str, Any], task_id: str) -> tuple[Any, list[dict[str, Any]]] | None:
+        from .remote_hooks import trusted_ssh_project
+        try:
+            from tools.file_tools import _get_file_ops
+            file_ops = _get_file_ops(task_id or "default")
+            trust_path = Path(self.base_environment.get(
+                "LIFEOS_REMOTE_PROJECT_TRUST",
+                str(Path.home() / ".config/lifeos-hook-bridge/remote-projects.json"),
+            ))
+            project = trusted_ssh_project(file_ops.env, payload.get("cwd", ""), trust_path)
+            if project is None:
+                return None
+            owner = str(getattr(file_ops.env, "_session_id", id(file_ops.env)))
+            key = (owner, project.root)
+            with self.session_lock:
+                state = self.remote_project_states.get(key)
+            if state is None:
+                files = {}
+                for name in ("settings.json", "settings.local.json"):
+                    path = f"{project.root}/.claude/{name}"
+                    files[path] = self._read_remote_settings(file_ops, path)
+                with self.session_lock:
+                    state = self.remote_project_states.setdefault(key, {
+                        "project": project, "task_id": task_id, "files": files,
+                        "skills": self._remote_skill_fingerprints(project),
+                    })
+            session_id = payload.get("session_id")
+            if isinstance(session_id, str) and session_id:
+                with self.session_lock:
+                    self.remote_session_projects.setdefault(session_id, set()).add(key)
+                self._start_config_watcher()
+            return project, [settings for _, settings in state["files"].values()]
+        except (ImportError, OSError, ValueError) as error:
+            LOG.warning("Remote project settings are unavailable: %s", error)
+            return None
+
+    def poll_remote_config_changes(self) -> None:
+        try:
+            from tools.file_tools import _get_file_ops
+        except ImportError:
+            return
+        with self.session_lock:
+            states = tuple(self.remote_project_states.items())
+        for key, state in states:
+            task_id = state["task_id"]
+            try:
+                file_ops = _get_file_ops(task_id or "default")
+                if file_ops.env is not state["project"].backend:
+                    continue
+                for path, old in tuple(state["files"].items()):
+                    fingerprint = file_ops.file_digest(path)
+                    if fingerprint == old[0]:
+                        continue
+                    new = self._read_remote_settings(file_ops, path)
+                    with self.session_lock:
+                        sessions = tuple(session_id for session_id, projects in self.remote_session_projects.items()
+                                         if key in projects and session_id in self.started_sessions)
+                    blocked = False
+                    for session_id in sessions:
+                        source = "local_settings" if path.endswith("settings.local.json") else "project_settings"
+                        payload = self._payload("ConfigChange", session_id, source=source,
+                                                file_path=path, config_path=path, cwd=state["project"].root)
+                        outcomes = self._run("ConfigChange", payload, source, task_id=task_id)
+                        blocked = blocked or any(
+                            process.returncode == 2 or (output or {}).get("decision") == "block"
+                            for process, output in outcomes
+                        )
+                    if not blocked:
+                        with self.session_lock:
+                            state["files"][path] = new
+                current_skills = self._remote_skill_fingerprints(state["project"])
+                with self.session_lock:
+                    old_skills = dict(state["skills"])
+                    sessions = tuple(session_id for session_id, projects in self.remote_session_projects.items()
+                                     if key in projects and session_id in self.started_sessions)
+                changed_skills = sorted(path for path in old_skills.keys() | current_skills.keys()
+                                        if old_skills.get(path) != current_skills.get(path))
+                for path in changed_skills:
+                    blocked = False
+                    for session_id in sessions:
+                        payload = self._payload("ConfigChange", session_id, source="skills",
+                                                file_path=path, config_path=path, cwd=state["project"].root)
+                        outcomes = self._run("ConfigChange", payload, "skills", task_id=task_id)
+                        blocked = blocked or any(
+                            process.returncode == 2 or (output or {}).get("decision") == "block"
+                            for process, output in outcomes
+                        )
+                    if not blocked:
+                        with self.session_lock:
+                            if path in current_skills:
+                                state["skills"][path] = current_skills[path]
+                            else:
+                                state["skills"].pop(path, None)
+            except (OSError, ValueError) as error:
+                LOG.warning("Remote project config poll failed: %s", error)
+
+    def _hook_groups(
+        self, event: str, payload: dict[str, Any], host_paths: bool = True, task_id: str = "",
+    ) -> list[dict[str, Any]]:
         groups = list(self.hooks.get(event, []))
         project = self._matching_project(payload, host_paths)
         if project is not None:
@@ -638,6 +789,16 @@ class HookBridge:
                 for name in ("settings.json", "settings.local.json"):
                     settings = self.project_hook_settings.get(project / ".claude" / name, {})
                     groups.extend(settings.get("hooks", {}).get(event, []))
+        if not host_paths:
+            remote = self._remote_project_settings(payload, task_id)
+            if remote is not None:
+                remote_project, settings_files = remote
+                for settings in settings_files:
+                    project_env = settings.get("env", {})
+                    for group in settings.get("hooks", {}).get(event, []):
+                        if isinstance(group, dict):
+                            groups.append({**group, "_remote_project": remote_project,
+                                           "_project_env": project_env if isinstance(project_env, dict) else {}})
         return groups
 
     def _event_environment(self, payload: dict[str, Any], host_paths: bool = True) -> dict[str, str]:
@@ -740,7 +901,7 @@ class HookBridge:
         host_paths = _task_uses_host_paths(task_id)
         environment = self._event_environment(payload, host_paths)
         process_cwd = _hook_process_cwd(payload, self.root) if host_paths else str(self.root)
-        for group in self._hook_groups(event, payload, host_paths):
+        for group in self._hook_groups(event, payload, host_paths, task_id):
             matcher = group.get("matcher", "")
             native_match = not matcher or bool(re.fullmatch(matcher, tool_name))
             alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
@@ -750,8 +911,36 @@ class HookBridge:
                 **payload, "tool_name": matcher_alias,
                 **({"tool_input": alias_input} if alias_input is not None else {}),
             }
+            remote_project = group.get("_remote_project")
+            project_env = group.get("_project_env", {})
+            values = {key: value for key, value in project_env.items()
+                      if isinstance(key, str) and isinstance(value, str)}
+            if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
+                values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
             for hook in group.get("hooks", []):
                 if hook.get("type") == "http":
+                    if remote_project is not None:
+                        url = hook.get("url", "")
+                        parsed = urlparse(url)
+                        if parsed.scheme != "http" or parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+                            LOG.warning("LifeOS remote HTTP hook must use backend loopback: %s", url)
+                            continue
+                        from .remote_hooks import run_project_hook
+                        timeout = max(1, min(int(hook.get("timeout", 5)), 30))
+                        command = (
+                            f"curl --noproxy '*' --silent --show-error --fail --max-time {timeout} "
+                            f"--header 'Content-Type: application/json' --data-binary @- {shlex.quote(url)}"
+                        )
+                        if hook.get("async"):
+                            jobs.append((self._run_remote_async, (
+                                remote_project, command, group_payload, timeout, values,
+                            ), True))
+                        else:
+                            jobs.append((run_project_hook, (
+                                remote_project.backend, command, group_payload,
+                                remote_project.cwd, timeout, values,
+                            ), False))
+                        continue
                     jobs.append((self._run_http, (hook, group_payload), False))
                     continue
                 if hook.get("type") != "command":
@@ -759,6 +948,19 @@ class HookBridge:
                     continue
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
+                    continue
+                if remote_project is not None:
+                    from .remote_hooks import run_project_hook
+                    timeout = max(1, min(int(hook.get("timeout", 60)), 300))
+                    if hook.get("async"):
+                        jobs.append((self._run_remote_async, (
+                            remote_project, command, group_payload, timeout, values,
+                        ), True))
+                        continue
+                    jobs.append((run_project_hook, (
+                        remote_project.backend, command, group_payload,
+                        remote_project.cwd, timeout, values,
+                    ), False))
                     continue
                 if hook.get("async"):
                     jobs.append((self._run_async, (command, group_payload, environment, process_cwd), True))
@@ -840,31 +1042,71 @@ class HookBridge:
                 json.dump({"command": command, "payload": payload,
                            "cwd": process_cwd, "environment": environment,
                            "result_path": str(result_path) if result_path else None}, spool)
-            runner = [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)]
-            if shutil.which("systemd-run") and os.environ.get("XDG_RUNTIME_DIR"):
-                unit = f"lifeos-hook-{uuid4().hex}"
-                service = subprocess.run(
-                    ["systemd-run", "--user", "--collect", "--service-type=exec", f"--unit={unit}", *runner],
-                    capture_output=True, text=True, timeout=10, check=False,
-                )
-                if service.returncode == 0:
-                    return
-                LOG.warning("LifeOS async hook service unavailable: %s", service.stderr.strip()[:400])
-            process = subprocess.Popen(
-                runner,
-                stdin=subprocess.DEVNULL,
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                cwd=process_cwd,
-                env=environment,
-                start_new_session=True,
-                close_fds=True,
-            )
-            threading.Thread(target=process.wait, daemon=True, name="lifeos-async-hook-reap").start()
+            self._start_async_runner(spool_path, process_cwd, environment)
         except (OSError, subprocess.TimeoutExpired) as error:
             LOG.error("LifeOS async hook failed to start: %s", error)
             if spool_path is not None:
                 spool_path.unlink(missing_ok=True)
+
+    def _run_remote_async(
+        self, project: Any, command: str, payload: dict[str, Any], timeout: int,
+        environment: dict[str, str],
+    ) -> None:
+        spool_path = None
+        try:
+            import inspect
+
+            session_id = payload.get("session_id", "")
+            result_path = None
+            if session_id:
+                result_dir = self._async_result_dir(session_id)
+                result_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+                result_path = result_dir / f"{uuid4().hex}.json"
+            backend = project.backend
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=self.transcript_dir,
+                prefix="async-remote-hook-", suffix=".json", delete=False,
+            ) as spool:
+                spool_path = Path(spool.name)
+                json.dump({
+                    "command": command, "payload": payload, "cwd": project.cwd,
+                    "environment": environment, "timeout": timeout,
+                    "result_path": str(result_path) if result_path else None,
+                    "remote": {"type": "ssh", "host": backend.host, "user": backend.user,
+                               "port": backend.port, "key_path": backend.key_path},
+                    "source_root": str(Path(inspect.getfile(type(backend))).resolve().parents[2]),
+                    "plugin_root": str(Path(__file__).parent),
+                    "python_paths": [path for path in sys.path if path and os.path.isabs(path)],
+                }, spool)
+            self._start_async_runner(spool_path, str(self.root), self.environment)
+        except (OSError, subprocess.TimeoutExpired, AttributeError, TypeError) as error:
+            LOG.error("LifeOS remote async hook failed to start: %s", error)
+            if spool_path is not None:
+                spool_path.unlink(missing_ok=True)
+
+    @staticmethod
+    def _start_async_runner(spool_path: Path, process_cwd: str, environment: dict[str, str]) -> None:
+        runner = [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)]
+        if shutil.which("systemd-run") and os.environ.get("XDG_RUNTIME_DIR"):
+            unit = f"lifeos-hook-{uuid4().hex}"
+            service = subprocess.run(
+                ["systemd-run", "--user", "--collect", "--service-type=exec", f"--unit={unit}", *runner],
+                capture_output=True, text=True, timeout=10, check=False,
+            )
+            if service.returncode == 0:
+                return
+            LOG.warning("LifeOS async hook service unavailable: %s", service.stderr.strip()[:400])
+        process = subprocess.Popen(
+            runner,
+            stdin=subprocess.DEVNULL,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            cwd=process_cwd,
+            env=environment,
+            start_new_session=True,
+            close_fds=True,
+        )
+        threading.Thread(target=process.wait, daemon=True, name="lifeos-async-hook-reap").start()
 
     def _async_result_dir(self, session_id: str) -> Path:
         name = hashlib.sha256(session_id.encode()).hexdigest()[:24]
@@ -935,7 +1177,7 @@ class HookBridge:
     ) -> dict[str, Any] | None:
         groups = self._hook_groups(
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
-            _task_uses_host_paths(task_id),
+            _task_uses_host_paths(task_id), task_id,
         )
         if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
             return None
@@ -965,7 +1207,7 @@ class HookBridge:
     ) -> dict[str, Any] | None:
         groups = self._hook_groups(
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=native_name),
-            _task_uses_host_paths(task_id),
+            _task_uses_host_paths(task_id), task_id,
         )
         if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
             return None
@@ -1005,14 +1247,14 @@ class HookBridge:
         self._remember_project(cwd, session_id, task_id)
         if tool_name == "todo_list" and self._hook_groups(
             "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
-            _task_uses_host_paths(task_id),
+            _task_uses_host_paths(task_id), task_id,
         ):
             task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name, task_id)
             if task_verdict:
                 return task_verdict
         if tool_name == "kanban_create" and self._hook_groups(
             "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
-            _task_uses_host_paths(task_id),
+            _task_uses_host_paths(task_id), task_id,
         ):
             task_verdict = self._kanban_task_verdict(args, session_id, tool_call_id or tool_name, task_id)
             if task_verdict:
@@ -1359,6 +1601,11 @@ class HookBridge:
             self.started_sessions.discard(session_id)
             self.session_platforms.pop(session_id, None)
             self.session_projects.pop(session_id, None)
+            self.remote_session_projects.pop(session_id, None)
+            used_remote_projects = set().union(*self.remote_session_projects.values()) if self.remote_session_projects else set()
+            self.remote_project_states = {
+                key: state for key, state in self.remote_project_states.items() if key in used_remote_projects
+            }
             active_projects = {project for projects in self.session_projects.values() for project in projects}
             self.project_dirs = tuple(sorted(active_projects)) or (Path.cwd(),)
             self.project_hook_settings = {
