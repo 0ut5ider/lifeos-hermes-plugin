@@ -1,13 +1,24 @@
 # Clean install with separate LifeOS and Hermes roots
 
-This sequence was exercised on a separate `.212` Unix account on 2026-09-28. It installs LifeOS under `~/.claude` and Hermes under `~/.hermes`. It does not copy an existing LifeOS user tree. Use the patch order in [README.md](../README.md) before these commands. The patches target the base commits named there. Check each patch with `git apply --check` on your exact checkout.
+This sequence was exercised on a separate `.212` Unix account on 2026-09-28. It installs LifeOS under `~/.claude` and Hermes under `~/.hermes`. It does not copy an existing LifeOS user tree. The patches target the base commits named in [README.md](../README.md).
+
+Prepare both source trees from repositories that contain the pinned base revisions. Run this from the plugin repository:
+
+```sh
+python scripts/prepare_sources.py \
+  --hermes-repo "$HOME/workspace/hermes-agent" \
+  --lifeos-repo "$HOME/workspace/LifeOS" \
+  --output "$HOME/workspace/lifeos-prepared"
+```
+
+The command checks each patch against the preceding result and publishes both trees only after all 16 patches pass. It refuses an existing output path and leaves the source repositories untouched. `manifest.json` records the base commits and patch hashes. The prepared Git branches contain the applied patches as uncommitted changes for review. A real-source test on `.212` prepared both trees and passed `git diff --check` for each. This step prepares source code; it does not install LifeOS or Hermes into the account.
 
 Run the commands as the new account from its own home directory. Install Bun first and keep it on `PATH`. Set `LIFEOS_SRC` and `HERMES_SRC` to the two patched source checkouts:
 
 ```sh
 cd "$HOME"
-export LIFEOS_SRC="$HOME/workspace/LifeOS"
-export HERMES_SRC="$HOME/workspace/hermes-agent"
+export LIFEOS_SRC="$HOME/workspace/lifeos-prepared/lifeos"
+export HERMES_SRC="$HOME/workspace/lifeos-prepared/hermes"
 export PATH="$HOME/.local/bin:$PATH"
 
 cd "$HERMES_SRC"
