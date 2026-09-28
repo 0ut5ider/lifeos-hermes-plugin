@@ -1,0 +1,45 @@
+[
+  {
+    "case": "matcher_star",
+    "error": "PatternError: nothing to repeat at position 0",
+    "hook_ran": false
+  },
+  {
+    "case": "matcher_comma",
+    "result": null,
+    "hook_ran": false
+  },
+  {
+    "case": "matcher_prefix",
+    "result": null,
+    "hook_ran": false
+  },
+  {
+    "case": "matcher_exact_control",
+    "result": {
+      "action": "block",
+      "message": "Blocked by a LifeOS hook"
+    },
+    "hook_ran": true
+  },
+  {
+    "case": "post_block_reason",
+    "result": null,
+    "hook_ran": true
+  },
+  {
+    "case": "pre_continue_false",
+    "result": null,
+    "hook_ran": true
+  },
+  {
+    "case": "permission_updated_input",
+    "result": null,
+    "hook_ran": true
+  },
+  {
+    "case": "session_end_other",
+    "result": null,
+    "hook_ran": false
+  }
+]

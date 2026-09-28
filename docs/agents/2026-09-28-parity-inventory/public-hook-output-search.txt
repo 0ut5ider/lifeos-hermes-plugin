@@ -1,0 +1,44 @@
+{"command": ["rg", "-n", "permissionDecision|updatedInput|updatedPermissions|updatedMCPToolOutput|stopReason|suppressOutput|continue:|decision.*block", "/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks"], "returncode": 0}
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ContextReduction.hook.sh:111:# The "allow" + updatedInput pattern is the canonical way to rewrite tool input.
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ContextReduction.hook.sh:117:      "permissionDecision": "allow",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ContextReduction.hook.sh:118:      "permissionDecisionReason": "RTK auto-rewrite",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ContextReduction.hook.sh:119:      "updatedInput": $updated
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/DeployRegistrationGate.hook.ts:90:          decision: "block",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/EgressClassGuard.hook.ts:87:    if (decision.block) {
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/FormatGate.hook.ts:19: * enforcement move is decision:block, which forces a FULL re-emit of the whole
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISACloseGate.hook.ts:160:  obs({ decision: "block", slug: active.slug, unit, stale });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISACloseGate.hook.ts:162:    decision: "block",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISAFoldGate.hook.ts:129:    obs({ decision: "block", slug: active.slug, mutations: mutations.length, sample });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISAFoldGate.hook.ts:131:      decision: "block",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISAGate.hook.ts:66:      decision: "block",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISARenderOnStop.hook.ts:56:  console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISARenderOnStop.hook.ts:62:  console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISARenderOnStop.hook.ts:68:  console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISARenderOnStop.hook.ts:124:console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISAStaleWriteGuard.hook.ts:196:  console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISASync.hook.ts:221:    const out: Record<string, unknown> = { continue: true };
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/ISASync.hook.ts:229:    console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/PreToolGuard.hook.ts:42: * the command (updatedInput), a different contract from block/allow; mixing a
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/README.md:197:| `ContextReduction.hook.sh` | `Bash` | rtk rewrite of STATUS-path commands — scope is **git + gh only** (plus an interceptor-screenshot output redirect) as of the 2026-07-13 shrink; the old test/build/lint/container families were cut as dead weight for this stack. `rtk` is an OPTIONAL dependency — absent from PATH, the hook is an inert passthrough (never errors). READ-path commands (rg/grep, cat/head, ls/tree/find, diff, curl/wget, psql/aws) are NEVER rewritten: rtk's parse-fail falls back to a different binary (rg→BSD grep) and silently corrupts results the model reasons over. Invariant in hook header; incident 2026-06-10. Regression gate: `cd hooks && bun test ContextReduction.test.ts` (40 probes). **Stays a separate Bash hook** because it REWRITES the command (`updatedInput`) rather than blocking or allowing. | Yes (updatedInput) | `rtk` binary (optional), `jq` |
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/README.md:529:A hook that returns `decision: "block"` (or a deny permission decision) hands Claude Code a `reason` string, and that string is rendered in the red-outlined box. It is the only thing the model and the principal see when a gate fires.
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:351:  if (input.stop_hook_active === true) { obs({ decision: "skip-recovery" }); return { continue: true }; }
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:373:        obs({ decision: "block", type: "TF", unit: tfUnit });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:375:          decision: "block",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:413:          obs({ decision: "would-block-logonly", type: "T5", unit: pubUnit });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:416:          obs({ decision: "block", type: "T5", unit: pubUnit });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:418:            decision: "block",
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:466:  if (!blockingType) { obs({ decision: "would-block-logonly", type: claim.type, unit: claim.unit }); return null; }
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:469:  obs({ decision: "block", type: claim.type, unit: claim.unit, evSummary });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/VerificationGate.hook.ts:470:  return { decision: "block", reason: BLOCK_MSGS[claim.type]!(claim.unit, evSummary) };
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/StopGates.hook.ts:18: * Decision semantics: the FIRST gate returning a `decision:"block"` wins and
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/StopGates.hook.ts:22: * `{continue:true}` returns (stop_hook_active recovery) are emitted once.
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/StopGates.hook.ts:80:        if ((d as { decision?: string }).decision === "block") break;
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/SystemFileGuard.hook.ts:117:    if (!decision.block) return null; // out-of-tree, USER zone, or clean SYSTEM write
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/WritingGate.hook.ts:27: *   - decision:block RE-EMITS the response (user sees it twice). Reserved for
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/WritingGate.hook.ts:180:    return { continue: true };
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/WritingGate.hook.ts:232:    appendObs({ session_id, decision: "block-strong-no-run" as Decision, strong, words, freshRun, shaMatch });
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/WritingGate.hook.ts:233:    return { decision: "block", reason: BLOCK_REASON };
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/CheckpointPerISC.hook.ts:17: * Fails closed: any error path logs to stderr and emits `{continue:true}` with
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/CheckpointPerISC.hook.ts:231:  console.log(JSON.stringify({ continue: true }));
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/lib/hook-io.ts:28:   * `{"decision":"block"}` response — the hook MUST short-circuit (continue:true)
+/tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/lib/system-file-guard-core.ts:214: * The full decision: classify + (if SYSTEM) scan content + (if hit) block.

@@ -105,6 +105,74 @@ class HookBridgeTests(unittest.TestCase):
         result = bridge.pre_tool_call("terminal", {"command": "echo hi"}, session_id="s1")
         self.assertEqual(result, {"action": "block", "message": "blocked by test"})
 
+    def test_pre_tool_ask_requests_review_and_later_deny_blocks(self):
+        ask = self.make_hook(
+            "ask.py",
+            "import json\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse',"
+            "'permissionDecision':'ask','permissionDecisionReason':'Review this read'}}))\n",
+        )
+        deny = self.make_hook(
+            "deny-after-ask.py",
+            "import json\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse',"
+            "'permissionDecision':'deny','permissionDecisionReason':'Denied later'}}))\n",
+        )
+        group = lambda commands: [{"matcher": "Read", "hooks": [
+            {"type": "command", "command": command} for command in commands
+        ]}]
+        args = {"path": str(self.root / "note.txt")}
+        review_bridge = self.bridge({"PreToolUse": group([ask])})
+        review = review_bridge.pre_tool_call("read_file", args, session_id="s1")
+        self.assertEqual(review["action"], "approve")
+        self.assertIn("Review this read", review["message"])
+        self.assertEqual(review["rule_key"], review_bridge.pre_tool_call("read_file", args, session_id="s1")["rule_key"])
+        denied_bridge = self.bridge({"PreToolUse": group([ask, deny])})
+        self.assertEqual(
+            denied_bridge.pre_tool_call("read_file", args, session_id="s1"),
+            {"action": "block", "message": "Denied later"},
+        )
+
+    def test_tool_matchers_accept_wildcard_comma_and_partial_regex(self):
+        marker = self.root / "matched.jsonl"
+        command = self.make_hook(
+            "record-match.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+        )
+        bridge = self.bridge({"PreToolUse": [
+            {"matcher": matcher, "hooks": [{"type": "command", "command": command}]}
+            for matcher in ("*", "Read, Write", "^Re")
+        ]})
+        bridge.pre_tool_call("read_file", {"path": str(self.root / "note.txt")}, session_id="s1")
+        self.assertEqual(len(marker.read_text().splitlines()), 3)
+
+    def test_session_event_matchers_use_start_source_and_end_reason(self):
+        marker = self.root / "session-events.jsonl"
+        command = self.make_hook(
+            "record-session.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+        )
+        bridge = self.bridge({
+            "SessionStart": [
+                {"matcher": matcher, "hooks": [{"type": "command", "command": command}]}
+                for matcher in ("startup", "*", "resume")
+            ],
+            "SessionEnd": [
+                {"matcher": matcher, "hooks": [{"type": "command", "command": command}]}
+                for matcher in ("other", "*", "clear")
+            ],
+        })
+        bridge.pre_llm_call("Hello", session_id="s1", is_first_turn=True)
+        bridge.session_end("s1")
+        events = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual([(event["hook_event_name"], event.get("source"), event.get("reason"))
+                          for event in events], [
+            ("SessionStart", "startup", None), ("SessionStart", "startup", None),
+            ("SessionEnd", None, "other"), ("SessionEnd", None, "other"),
+        ])
+
     def test_remote_channel_is_preserved_across_native_hook_events(self):
         marker = self.root / "channel.json"
         command = self.make_hook(
@@ -268,16 +336,19 @@ class HookBridgeTests(unittest.TestCase):
         terminal_tool._env_lock = threading.RLock()
         terminal_tool._resolve_container_task_id = lambda task_id: "default"
         terminal_tool._get_env_config = lambda: {"env_type": "ssh"}
-        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True), patch.dict(
-            sys.modules, {"tools.terminal_tool": terminal_tool},
-        ):
-            with patch("lifeos_hook_bridge.bridge._scope_cwd", return_value=str(project)):
-                bridge.pre_llm_call("start", session_id="same-path-session")
-            verdict = bridge.pre_tool_call(
-                "terminal", {"command": "pwd", "workdir": str(project)},
-                session_id="same-path-session", task_id="remote-task",
-            )
+        with self.assertLogs("lifeos_hook_bridge.bridge", level="WARNING") as logs:
+            with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True), patch.dict(
+                sys.modules, {"tools.terminal_tool": terminal_tool},
+            ):
+                with patch("lifeos_hook_bridge.bridge._scope_cwd", return_value=str(project)):
+                    bridge.pre_llm_call("start", session_id="same-path-session")
+                verdict = bridge.pre_tool_call(
+                    "terminal", {"command": "pwd", "workdir": str(project)},
+                    session_id="same-path-session", task_id="remote-task",
+                )
         self.assertIsNone(verdict)
+        self.assertTrue(all("Remote project settings are unavailable:" in line
+                            for line in logs.output), logs.output)
 
     def test_project_hook_reloads_after_settings_change(self):
         project = self.root / "project-a"

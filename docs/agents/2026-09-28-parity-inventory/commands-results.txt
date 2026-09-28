@@ -1,3 +1,11 @@
+{"command": ["git", "rev-parse", "HEAD"], "returncode": 0}
+e87c2e8908949b1de988d04c65c3461a354582bf
+
+{"command": ["git", "status", "--short"], "returncode": 0}
+?? docs/agents/2026-09-28-parity-inventory/
+?? docs/parity-resolution-plan.md
+
+{"command": ["cat", "docs/hook-parity.md"], "returncode": 0}
 # LifeOS hook parity record
 
 This record describes the public LifeOS hook settings installed from commit `5e2f2e8` on 2026-09-27. It distinguishes registered callbacks from verified behavior. The bridge is a Hermes plugin. It does not edit LifeOS source files.
@@ -6,12 +14,12 @@ This record describes the public LifeOS hook settings installed from commit `5e2
 
 | Claude Code event | Registrations | Hermes path | Current result |
 | --- | ---: | --- | --- |
-| `PreToolUse` | 6 | `pre_tool_call` | Command and local HTTP hooks execute for mapped and unmapped Hermes tools. Exit code 2 and deny decisions block. An ask decision requests Hermes approval with its reason; later LifeOS and Hermes denials still block. Updated input maps back to Hermes arguments. An outer `execute_code` also presents its Python source as a Bash command to named Bash guard groups. |
+| `PreToolUse` | 6 | `pre_tool_call` | Command and local HTTP hooks execute for mapped and unmapped Hermes tools. Exit code 2 and deny decisions block. Updated input maps back to Hermes arguments. An outer `execute_code` also presents its Python source as a Bash command to named Bash guard groups. |
 | `PostToolUse` | 32 | `augment_tool_result` | Hooks execute after the existing result transform. Their `additionalContext` and exit-2 stderr are appended to the model-bound result. Plain exit-0 stdout stays out of model context. Content-bearing Hermes browser results also reach `WebFetch` matchers while generic hooks keep the Hermes tool name. |
 | `UserPromptSubmit` | 9 | `pre_llm_call` | Hooks execute before the current prompt enters the bridge transcript. A block prevents model processing and discards the current prompt from bridge and Hermes history. For multimodal content, the hook receives the text portions joined with newlines. Allowed hook context is added to the current user turn. Async hooks start without blocking. |
 | `Stop` | 8 | `pre_turn_stop` | Hooks execute on each text answer. A block withholds the candidate from Hermes user delivery and session history, then continues the same turn up to eight times by default. At the continuation limit, the default allows the answer as Claude Code does; the plugin's `fail_closed` setting instead returns an incomplete result. Iteration-budget exhaustion also returns an incomplete result. `CLAUDE_CODE_STOP_HOOK_BLOCK_CAP` overrides the continuation limit. The native hook sees the prior transcript and the current answer in `last_assistant_message`; the bridge appends the current answer after the hook. A private transcript supplies `transcript_path`. |
-| `SessionStart` | 5 | first `pre_llm_call` | Hooks execute before the first user prompt is sent to the model. Their text output joins that prompt's context. Hermes's first-turn flag supplies `source: startup` or `source: resume`; a persisted transcript supplies the fallback when that flag is absent. Source matchers receive the same value. |
-| `SessionEnd` | 6 | `on_session_finalize` | Handlers run concurrently, matching Claude Code's hook contract. The bridge supplies `reason: other` to reason matchers because Hermes does not provide another reason at this callback. All six installed handlers completed successfully on a synthetic session boundary. A real one-shot Hermes CLI shutdown also reached a temporary native SessionEnd hook. Native SessionCleanup removed a synthetic session-name entry, IntegrityCheck recorded a synthetic hook edit, WorkCompletionLearning created a learning, MemoryHealthGate wrote a health row, and DocIntegrity emitted a memory inventory finding. UpdateCounts exited without writing a cloud usage cache because this local-model account has no Claude OAuth credentials. State probes used disposable roots. |
+| `SessionStart` | 5 | first `pre_llm_call` | Hooks execute before the first user prompt is sent to the model. Their text output joins that prompt's context. Hermes's first-turn flag supplies `source: startup` or `source: resume`; a persisted transcript supplies the fallback when that flag is absent. |
+| `SessionEnd` | 6 | `on_session_finalize` | Handlers run concurrently, matching Claude Code's hook contract. All six installed handlers completed successfully on a synthetic session boundary. A real one-shot Hermes CLI shutdown also reached a temporary native SessionEnd hook. Native SessionCleanup removed a synthetic session-name entry, IntegrityCheck recorded a synthetic hook edit, WorkCompletionLearning created a learning, MemoryHealthGate wrote a health row, and DocIntegrity emitted a memory inventory finding. UpdateCounts exited without writing a cloud usage cache because this local-model account has no Claude OAuth credentials. State probes used disposable roots. |
 | `PostToolUseFailure` | 3 | `augment_tool_result` on tool error | The failure payload is tested with a real child process. The installed EventLogger records a failure row, LoopDetector returns repeated-failure feedback, and AlgorithmNudge returns broken-capability feedback in disposable `.212` roots. |
 | `PermissionRequest` | 2 | `pre_command_approval` for Bash and `pre_tool_call` for files and MCP | Native `Safety.hook.ts` runs for guarded Bash commands that may need permission; simple probed `pwd` and unquoted `echo` forms skip this event unless a matching or unsupported deny or ask rule requires review. Literal Bash rules from local user, trusted project, and file-based managed settings apply in deny, ask, allow order. A native allow cannot bypass a matching ask rule; an unreadable managed file keeps the command on the review path. Its grant can clear a recoverable dangerous-command warning in manual mode or after smart mode guardian escalation. A denial blocks before human approval, and a neutral result requests human review when a Bash permission hook matches. Hermes hardline, user deny, and Tirith warnings remain effective. For Write, Edit, and MCP, a native grant proceeds; a neutral decision requests human review, and a deny blocks. Hermes file guards still apply after a grant. If Hermes itself will prompt for an SSH config write, the bridge defers a neutral LifeOS review to that guard so the user gets one prompt. |
 | `TaskCreated` | 1 | `pre_tool_call` and `post_tool_call` on `todo_list` and `kanban_create` | With the LifeOS compatibility patch, the native hook receives the Hermes session count and decides each new task. The bridge reserves slots before a call and commits them only after success. Without that patch, the bridge keeps an equivalent policy fallback. |
@@ -117,7 +125,7 @@ The stock Hermes plugin API cannot continue a non-coding turn from a Stop hook. 
 
 ## Current limits
 
-- The independent [parity review](agents/2026-09-28-parity-fresh-review/parity-fresh-review.md) found four bridge behaviors, all now addressed in source: compound-directory file rules, malformed managed-policy review, `PreToolUse` ask, and SessionStart source matching. The [reference probe](../notes/2026-09-28-pretool-ask-reference.md) confirms native ask and matcher behavior for tested forms, but shows that ask approval timing depends on the command and surrounding permission state. Exact timing is still open. The [registration inventory](parity/registrations.csv) lists all 74 installed hooks; it does not yet provide paired outcomes for every registration. The [resolution plan](parity-resolution-plan.md) defines the remaining checks. SessionEnd currently supplies only `other`; other shutdown reasons remain unverified.
+- An independent [parity review](agents/2026-09-28-parity-fresh-review/parity-fresh-review.md) reproduced two remaining bridge behaviors. A valid `PreToolUse` ask decision is discarded. A `SessionStart` hook with a `startup` matcher does not run. Neither form is used by the currently installed LifeOS registrations, and their native Claude Code behavior remains unmeasured. The review's compound-directory file-rule defect and malformed managed-policy inconsistency are fixed. See the [directory-change probe](../notes/2026-09-28-compound-cd-file-rules.md) and [invalid-policy regression](../notes/2026-09-28-invalid-managed-policy.md).
 - Full hook parity is not achieved. Native `TaskCreated` execution requires the separate [LifeOS compatibility patch](../patches/lifeos-task-governance.patch), based on LifeOS `5e2f2e8`. The eight earlier LifeOS patches applied in order to public HEAD `5e2f2e8` on 2026-09-28. The ninth carrier probe patch applied to the patched `.212` source checkout. The Hermes core, remote file, and Stop effort patches applied in order to Hermes `758ad514e`. Six native task, watchdog, audit, and checkpoint tests passed against the patched fresh checkout, as did the FailureCapture transcript, remote desktop gate, remote ISA view, and model rung tests. See [the upstream LifeOS patch check](../notes/2026-09-27-lifeos-upstream-patches.md). An unpatched install uses the bridge policy fallback. In smart approval mode, a native grant applies only after the guardian escalates. A guardian denial and Tirith finding still require human review. For SSH config writes, a neutral LifeOS decision defers to Hermes's existing file guard. Other LifeOS review requests still use the plugin approval gate.
 - Config changes are detected within the watcher's one-second polling interval while a session is active, rather than through a filesystem event. Its local fingerprint includes change time and file identity, so a same-size rewrite with preserved modification time reaches the hook and reloads active settings on `.212`. Trusted SSH and Docker project settings and skills are polled through the backend; the remote skill scan uses content digests. The watcher stops when no session remains. Project roots are registered when a session or local tool enters them. Other remote backend types are not watched. File-based managed policy paths are audited but Hermes does not apply Claude Code's managed settings. Server-managed settings, macOS managed preferences, and Windows registry policy have no bridge event. See [the fingerprint regression](../notes/2026-09-28-config-fingerprint.md).
 - Project and local hook registrations require an explicitly trusted Hermes project root. Project `env` values apply to matching hook processes. The bridge applies tested Bash permission rules from user and trusted project settings; other tool-specific rule types are incomplete. It finds a Git repository root or a non-Git ancestor with `.claude/settings.json` or `.claude/settings.local.json`, stopping before the user's home directory. An isolated `.212` process with two temporary trusted repositories sent tool events through one session and selected each repository's matching hook without cross-routing. For non-host backends, the bridge runs user hooks from the local LifeOS root and keeps the remote `cwd` in the payload. It does not select a host project hook merely because a remote tool path matches a trusted local path. SSH project hooks require an owner-controlled trust file bound to the active backend endpoint and physical remote root. Docker project hooks require the same file bound to the immutable image ID and physical project root. Disposable SSH and Docker projects verified command, async parent-exit survival, HTTP, settings, and skill change delivery. Other remote backend types remain unsupported. See [the project routing record](../notes/2026-09-27-project-routing.md) and [the remote hook process record](../notes/2026-09-28-remote-hook-process-cwd.md).
@@ -142,3 +150,908 @@ The stock Hermes plugin API cannot continue a non-coding turn from a Stop hook. 
 The test account has a fresh LifeOS tree and a `~/.claude/settings.json` created by `InstallHooks.ts --apply`. The plugin files live under `~/.hermes/plugins/lifeos-hook-bridge/`, and `hermes plugins enable lifeos-hook-bridge` enables them. The existing LifeOS sidecar guard remains enabled. The private `~/.config/lifeos-hook-bridge/model.env` file supplies the local model gateway and enables direct child inference; it has mode `0600`. Keep that file outside Git.
 
 The Hermes patches apply only to a compatible checkout. Use `scripts/prepare_sources.py` to apply the eleven Hermes and nine LifeOS patches in tested order to pinned source revisions. The script checks each patch and records its hash. Run the included tests and review changed call sites before applying the patches to another Hermes version.
+
+{"command": ["cat", "docs/claude-reference.md", "docs/clean-install.md", "docs/update-policy.md"], "returncode": 0}
+# Claude Code hook reference
+
+As of 2026-09-27, a separate unprivileged account on the test host runs Claude Code 2.1.272 with a fresh LifeOS installation. It uses LifeOS commit `5e2f2e8`, the same public source revision as the Hermes fixture. Its principal is the fictional `Test Operator`. No personal LifeOS data was copied into this account.
+
+The account uses the local `flashnext-w4a16-fp8ple` model through an Anthropic-compatible LAN gateway. Its main launcher supplies `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, and model names from a private file with mode `0600`. It starts Claude Code at medium reasoning effort, which the gateway accepts. The gateway rejected the default high effort with HTTP 400. The CLI prints an unrecognized-model warning but completed the tested prompts using the requested local model.
+
+The reference account can reach the LAN and loopback addresses only. A user-specific firewall rule persists through a systemd service. This blocks an accidental request to Anthropic or another external service, including one from a LifeOS child process. The gateway token and firewall configuration remain on the test host and are not in this repository.
+
+## Native installation and checks
+
+The installation ran LifeOS's `InstallSettings.ts`, `DeployCore.ts`, `ScaffoldUser.ts`, `LinkUser.ts`, `InstallHooks.ts`, and `ActivateImports.ts` against `~/.claude`. Hook installation registered 74 hooks across 11 Claude Code events and installed 97 hook files. `Doctor.ts --hooks` found no unresolved hook interpreters. These are installation checks, not a claim that every hook behavior has passed an end-to-end test.
+
+An interactive Claude Code turn with the synthetic account completed a `UserPromptSubmit` sequence and a `Stop` sequence. It read the principal identity file and replied with `Test Operator`. The prompt processing observability record for that session has `source: inference` and `latency_ms: 9559`. A direct LifeOS inference test returned `READY` using the local model. Earlier one-shot tests also returned the synthetic name. The model gateway and nested call path were exercised; full hook parity remains unverified.
+
+## Local model adapter
+
+LifeOS's `LIFEOS/TOOLS/Inference.ts` removes `ANTHROPIC_API_KEY`, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_BASE_URL` from the environment of its child Claude process. Its stated purpose is to use a Claude subscription. In this setup, that would bypass the local gateway. Before adding the adapter, prompt processing logged `source: inference-failed`; the outbound firewall prevented external contact.
+
+The reference account places a `claude` adapter earlier in `PATH` for LifeOS child processes. The main launcher invokes the real Claude Code binary by absolute path. The adapter reloads the private gateway settings and maps child `--model` arguments to `flashnext-w4a16-fp8ple`. The tested plugin launcher maps Haiku to `low`, Sonnet to `medium`, and Opus/Fable to `xhigh` reasoning effort. This changes neither the LifeOS source nor its registered hooks. The reference account's adapter remains at `medium` until separately updated. Neither adapter reproduces LifeOS's four distinct model tiers with one local model.
+
+For the reference account, run `~/.local/bin/lifeos-reference` over SSH to start an interactive session. The private environment file, adapter, and outbound rule must remain in place for local-only operation. To remove the firewall rule on the test host, stop and disable `lifeos-claude-ref-egress.service`; its stop action removes its nftables table. No production LifeOS installation was changed.
+# Clean install with separate LifeOS and Hermes roots
+
+This sequence was exercised on a separate `.212` Unix account on 2026-09-28. It installs LifeOS under `~/.claude` and Hermes under `~/.hermes`. It does not copy an existing LifeOS user tree. The patches target the base commits named in [README.md](../README.md).
+
+Prepare both source trees from repositories that contain the pinned base revisions. Run this from the plugin repository:
+
+```sh
+python scripts/prepare_sources.py \
+  --hermes-repo "$HOME/workspace/hermes-agent" \
+  --lifeos-repo "$HOME/workspace/LifeOS" \
+  --output "$HOME/workspace/lifeos-prepared"
+```
+
+The command checks each patch against the preceding result and publishes both trees only after all 20 patches pass. It refuses an existing output path and leaves the source repositories untouched. `manifest.json` records the base commits and patch hashes. The prepared Git branches contain the applied patches as uncommitted changes for review. A real-source test on `.212` prepared both trees and passed `git diff --check` for each. This step prepares source code; it does not install LifeOS or Hermes into the account.
+
+Run the commands as the new account from its own home directory. Install Bun first and keep it on `PATH`. Set `LIFEOS_SRC` and `HERMES_SRC` to the two patched source checkouts:
+
+```sh
+cd "$HOME"
+export LIFEOS_SRC="$HOME/workspace/lifeos-prepared/lifeos"
+export HERMES_SRC="$HOME/workspace/lifeos-prepared/hermes"
+export PATH="$HOME/.local/bin:$PATH"
+
+cd "$HERMES_SRC"
+./setup-hermes.sh --runtime-only
+mkdir -p "$HOME/.hermes"
+cat > "$HOME/.hermes/config.yaml" <<'YAML'
+model:
+  default: probe-local
+YAML
+
+cd "$HOME"
+mkdir -p "$HOME/.claude"
+cp "$LIFEOS_SRC/LifeOS/install/CLAUDE.template.md" "$HOME/.claude/CLAUDE.md"
+for tool in InstallSettings DeployCore ScaffoldUser LinkUser InstallHooks ActivateImports; do
+  bun "$LIFEOS_SRC/LifeOS/Tools/$tool.ts" \
+    --config-root "$HOME/.claude" \
+    --skill-root "$LIFEOS_SRC/LifeOS" \
+    --apply
+done
+
+export HERMES_HOME="$HOME/.hermes"
+export HERMES_WORKSPACE="$HOME/workspace"
+bun "$HOME/.claude/LIFEOS/HERMES/Mount.ts"
+bun "$HOME/.claude/LIFEOS/HERMES/Mount.ts" --check
+"$HERMES_SRC/.hermes/bin/hermes" config check
+```
+
+Replace `probe-local` with a model you have configured in Hermes before you run model calls. The runtime-only setup does not create `config.yaml`; `Mount.ts` needs a valid YAML file to patch. `--skill-root` must point to the inner `LifeOS` directory. Without it, `DeployCore` could not find the nested skill payload in the clean probe.
+
+After the plugin branch is published, install a full 40-character commit ID from this repository:
+
+```sh
+"$HERMES_SRC/.hermes/bin/hermes" plugins install \
+  0ut5ider/lifeos-hermes-plugin/lifeos_hook_bridge \
+  --ref <full-commit-id> --no-enable
+"$HERMES_SRC/.hermes/bin/hermes" plugins enable lifeos-hook-bridge
+"$HERMES_SRC/.hermes/bin/hermes" plugins validate \
+  "$HOME/.hermes/plugins/lifeos-hook-bridge"
+```
+
+Start Hermes from a directory that the account can read. The first clean prompt-hook probe inherited `/home/outsider` as its working directory and all 14 native hook starts failed with permission denied. The same probe from the new account's home returned hook context and created a transcript. Run a native hook test before you configure Discord or start a long-running gateway.
+
+The clean probe verified the mount, plugin installation, registration, and prompt hooks. It did not test a model call because the account had no model credentials. The tested `.212` service account uses the local model and verified a selected-provider child inference call separately. See [the probe record](../notes/2026-09-28-clean-install-probe.md).
+
+## Carrier probe after model setup
+
+Set the Hermes main-loop model and effort to the LifeOS top tier. Select the Fable route in the LifeOS Bridge settings page. Run `hermes --run-file ~/.hermes/plugins/lifeos-hook-bridge/carrier_probe.py --run` after configuring the model and again whenever you change the Fable route. The command creates one real delegated child call and stores its evidence under `~/.claude/LIFEOS/MEMORY/STATE/`. IntegrityCheck rejects evidence older than 30 days. The clean account without model credentials cannot run this probe. The configured `.212` account passed it with the local model.
+# Updating the Hermes and LifeOS bridge
+
+The current bridge is a tested combination of three independent code bases. The plugin does not yet update Hermes or LifeOS. Its source preparation command builds the pinned combination from known base commits; it is not an updater for a later release.
+
+| Component | Current test source | Update risk |
+| --- | --- | --- |
+| Hermes | Base `758ad514eb0e800547e015edf05aa18f78b78d82` plus eleven patches | Stock plugin events do not provide every LifeOS control. A normal source update can switch away from the patched feature branch or leave untested patch merges. |
+| LifeOS | Base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c` plus nine patches | Hook files and registrations can change. The current `DeployCore.ts` uses `copyMissing`, which does not replace an already installed system file. Repeating the install commands alone cannot prove deployed hooks match a new source release. |
+| Bridge plugin | Public Git commit pinned during install | A plugin update cannot restore missing Hermes events or port LifeOS source changes. Hermes refuses automatic updates of a pinned plugin. |
+
+## Rule for the current `.212` test installation
+
+Do not use the Hermes dashboard Update button or `hermes update` to advance this patched test install. Do not run a LifeOS update over its deployed hook tree. The test account now sets `updates.auto_switch_parked_branch: false` in `~/.hermes/config.yaml`. Hermes documents that this prevents a clean parked feature branch from being switched to the update target. This guards one failure mode only. The setting can be reverted with `hermes config set --force updates.auto_switch_parked_branch true`; the prior config is backed up at `~/.hermes/config.yaml.before-update-guard-20260928`.
+
+## Required update workflow
+
+1. Choose exact upstream Hermes and LifeOS commits and one exact bridge plugin commit. Record the three revisions as a tested compatibility set.
+2. Prepare new source trees away from the running install. Port each required change to those revisions. Stop if any patch conflicts or if an upstream change makes a patch unnecessary.
+3. Compare the new LifeOS hook registration manifest and deployed system files. Check every registration against the bridge event map. Do not advance the LifeOS version marker while files remain stale.
+4. Run the bridge suite, Hermes core tests, native LifeOS hook tests, and live `.212` checks for the affected events, including the local model routes and Discord watchdog path when those parts change.
+5. Back up the running code, Hermes profile, and LifeOS data separately. Keep user-owned `USER/` and `LIFEOS/MEMORY/` content out of system-file replacement. Hermes's quick update snapshot covers selected state files, not application code.
+6. Install the tested source and plugin revisions, restart the gateway, and verify the running code, hook registrations, and model route. If a gate fails, restore the code and data snapshots before accepting another message.
+
+The staged update and rollback automation in steps 2 through 6 does not exist yet. The current preparation command covers only the pinned source pair in step 2. A future LifeOS Bridge **Check for updates** control should show compatible versions and test results. **Apply update** should be available only for a tested compatibility set with a recoverable snapshot. The button must not blindly call `hermes update` or repeat `DeployCore.ts --apply`.
+
+The long-term way to reduce this maintenance cost is to contribute the generic Hermes hook events upstream and make the LifeOS handlers accept Hermes event data upstream. Until both sides contain those changes, the compatibility set and staged verification remain necessary.
+
+{"command": ["sed", "-n", "1050,1210p", "lifeos_hook_bridge/bridge.py"], "returncode": 0}
+
+    def transcript_path(self, session_id: str) -> Path:
+        name = re.sub(r"[^A-Za-z0-9._-]", "_", session_id or "default")
+        return self.transcript_dir / f"{name}.jsonl"
+
+    def _append_transcript(
+        self, session_id: str, kind: str, content: Any, model: str = "", reasoning_effort: str = "",
+    ) -> None:
+        row = {
+            "type": kind,
+            "sessionId": session_id,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "message": {"role": kind, "content": content},
+        }
+        if kind == "assistant" and model:
+            row["message"]["model"] = model
+        if kind == "assistant" and reasoning_effort:
+            row["message"]["reasoning_effort"] = reasoning_effort
+        path = self.transcript_path(session_id)
+        descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
+        with os.fdopen(descriptor, "w") as stream:
+            stream.write(json.dumps(row, ensure_ascii=False) + "\n")
+
+    def _run(
+        self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
+        alias_input: dict[str, Any] | None = None, task_id: str = "",
+    ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
+        jobs = []
+        host_paths = _task_uses_host_paths(task_id)
+        environment = self._event_environment(payload, host_paths)
+        process_cwd = _hook_process_cwd(payload, self.root) if host_paths else str(self.root)
+        for group in self._hook_groups(event, payload, host_paths, task_id):
+            matcher = group.get("matcher", "")
+            native_match = not matcher or bool(re.fullmatch(matcher, tool_name))
+            alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
+            if not native_match and not alias_match:
+                continue
+            group_payload = payload if native_match else {
+                **payload, "tool_name": matcher_alias,
+                **({"tool_input": alias_input} if alias_input is not None else {}),
+            }
+            remote_project = group.get("_remote_project")
+            project_env = group.get("_project_env", {})
+            values = {key: value for key, value in project_env.items()
+                      if isinstance(key, str) and isinstance(value, str)}
+            if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
+                values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
+            for hook in group.get("hooks", []):
+                if hook.get("type") == "http":
+                    if remote_project is not None:
+                        url = hook.get("url", "")
+                        parsed = urlparse(url)
+                        if parsed.scheme != "http" or parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+                            LOG.warning("LifeOS remote HTTP hook must use backend loopback: %s", url)
+                            continue
+                        from .remote_hooks import run_project_hook
+                        timeout = max(1, min(int(hook.get("timeout", 5)), 30))
+                        command = (
+                            f"curl --noproxy '*' --silent --show-error --fail --max-time {timeout} "
+                            f"--header 'Content-Type: application/json' --data-binary @- {shlex.quote(url)}"
+                        )
+                        if hook.get("async"):
+                            jobs.append((self._run_remote_async, (
+                                remote_project, command, group_payload, timeout, values,
+                            ), True))
+                        else:
+                            jobs.append((run_project_hook, (
+                                remote_project.backend, command, group_payload,
+                                remote_project.cwd, timeout, values,
+                            ), False))
+                        continue
+                    jobs.append((self._run_http, (hook, group_payload), False))
+                    continue
+                if hook.get("type") != "command":
+                    LOG.warning("LifeOS %s hook type %r is not executable by this bridge", event, hook.get("type"))
+                    continue
+                command = hook.get("command")
+                if not isinstance(command, str) or not command.strip():
+                    continue
+                hook_environment = environment
+                if event == "UserPromptSubmit" and remote_project is None and _is_native_version_drift(command, self.root):
+                    from .version_drift import default_baseline_path
+                    hook_environment = dict(environment)
+                    hook_environment["LIFEOS_VERSION_DRIFT_ROOT"] = str(self.root)
+                    hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path()))
+                    system_path = os.pathsep.join(
+                        path for path in environment.get("PATH", "").split(os.pathsep)
+                        if Path(path).resolve() != (Path(__file__).parent / "bin").resolve()
+                    )
+                    system_git = shutil.which("git", path=system_path)
+                    if system_git:
+                        hook_environment["LIFEOS_VERSION_DRIFT_SYSTEM_GIT"] = system_git
+                if remote_project is not None:
+                    from .remote_hooks import run_project_hook
+                    timeout = max(1, min(int(hook.get("timeout", 60)), 300))
+                    if hook.get("async"):
+                        jobs.append((self._run_remote_async, (
+                            remote_project, command, group_payload, timeout, values,
+                        ), True))
+                        continue
+                    jobs.append((run_project_hook, (
+                        remote_project.backend, command, group_payload,
+                        remote_project.cwd, timeout, values,
+                    ), False))
+                    continue
+                if hook.get("async"):
+                    jobs.append((self._run_async, (command, group_payload, hook_environment, process_cwd), True))
+                    continue
+                timeout = max(1, min(int(hook.get("timeout", 60)), 300))
+                jobs.append((self._run_command, (event, command, group_payload, timeout, hook_environment, process_cwd), False))
+        outcomes = []
+        if not jobs:
+            return outcomes
+        sync_hooks = []
+        for callback, arguments, asynchronous in jobs:
+            if asynchronous:
+                callback(*arguments)
+            else:
+                sync_hooks.append((callback, arguments))
+        if not sync_hooks:
+            return outcomes
+        with ThreadPoolExecutor(max_workers=min(len(sync_hooks), 32)) as executor:
+            futures = [executor.submit(callback, *arguments) for callback, arguments in sync_hooks]
+            for future in futures:
+                try:
+                    process = future.result()
+                except Exception as error:
+                    LOG.error("LifeOS %s hook failed: %s", event, error)
+                    continue
+                if process is not None:
+                    outcomes.append((process, _decode_output(process.stdout)))
+        return outcomes
+
+    def _run_command(
+        self, event: str, command: str, payload: dict[str, Any], timeout: int,
+        environment: dict[str, str], process_cwd: str,
+    ) -> subprocess.CompletedProcess[str] | None:
+        try:
+            process = subprocess.run(
+                ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
+                capture_output=True, timeout=timeout, cwd=process_cwd,
+                env=environment, check=False,
+            )
+        except (OSError, subprocess.TimeoutExpired) as error:
+            LOG.error("LifeOS %s hook failed to execute: %s", event, error)
+            return None
+        if process.returncode not in (0, 2):
+            LOG.warning("LifeOS %s hook exited %s: %s", event, process.returncode, process.stderr[:400])
+        return process
+
+    @staticmethod
+    def _run_http(hook: dict[str, Any], payload: dict[str, Any]) -> subprocess.CompletedProcess[str] | None:
+        url = hook.get("url", "")
+        parsed = urlparse(url)
+        if parsed.scheme != "http" or parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+            LOG.warning("LifeOS HTTP hook must use local HTTP: %s", url)
+            return None
+        request = Request(url, data=json.dumps(payload).encode(), headers={"Content-Type": "application/json"}, method="POST")
+        try:
+            with build_opener(ProxyHandler({})).open(request, timeout=max(1, min(int(hook.get("timeout", 5)), 30))) as response:
+                body = response.read(65536).decode("utf-8", errors="replace")
+
+{"command": ["sed", "-n", "1380,1625p", "lifeos_hook_bridge/bridge.py"], "returncode": 0}
+    def command_approval(
+        self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+    ) -> dict[str, str] | None:
+        cwd = cwd or _tool_cwd("terminal", {}, task_id)
+        self._remember_project(cwd, session_key, task_id)
+        self.poll_config_changes(force=True)
+        payload = self._payload(
+            "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
+        )
+        host_paths = _task_uses_host_paths(task_id)
+        permission_sources = self._permission_sources(payload, task_id, host_paths)
+        from .bash_permissions import bash_file_targets
+        from .file_permissions import file_target_decision
+
+        targets, targets_certain = bash_file_targets(command)
+        file_decision = "unknown" if not targets_certain else "allow"
+        for operation, target in targets:
+            resolved = None if host_paths else _backend_file_path(target, cwd, task_id)
+            decision = file_target_decision(
+                target, operation, cwd, permission_sources,
+                host_paths=host_paths, resolved_path=resolved,
+            )
+            if decision == "deny":
+                return {"action": "deny"}
+            if decision in {"ask", "unknown", "invalid_policy"} or (
+                operation == "write" and host_paths and _hermes_write_requires_approval(target, cwd)
+            ):
+                file_decision = "unknown"
+        rule_decision = _bash_permission_rule_decision(
+            command, [settings for settings, _ in permission_sources],
+            checked_file_targets=file_decision == "allow",
+        )
+        if rule_decision == "deny":
+            return {"action": "deny"}
+        if file_decision == "unknown":
+            rule_decision = "unknown"
+        if host_paths and rule_decision == "allow":
+            return None
+        if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):
+            return None
+        groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
+        if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
+                   for group in groups):
+            return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
+        granted = False
+        denied = False
+        for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
+            specific = _specific_output(output, "PermissionRequest")
+            decision = specific.get("decision") or {}
+            if decision.get("behavior") == "deny" or process.returncode == 2:
+                denied = True
+            if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+                granted = True
+        if denied:
+            return {"action": "deny"}
+        if granted:
+            return {"action": "review"} if rule_decision in {"ask", "unknown"} else {"action": "allow"}
+        return {"action": "review"}
+
+    def _mcp_permission_verdict(
+        self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str, task_id: str = "",
+    ) -> dict[str, Any] | None:
+        groups = self._hook_groups(
+            "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
+            _task_uses_host_paths(task_id), task_id,
+        )
+        if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
+            return None
+        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
+        outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
+        granted = False
+        for process, output in outcomes:
+            specific = _specific_output(output, "PermissionRequest")
+            decision = specific.get("decision") or {}
+            if decision.get("behavior") == "deny" or process.returncode == 2:
+                message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the MCP call"
+                return {"action": "block", "message": str(message)[:2000]}
+            if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+                granted = True
+        if granted:
+            return None
+        fingerprint = hashlib.sha256(json.dumps(args, sort_keys=True).encode()).hexdigest()[:16]
+        return {
+            "action": "approve",
+            "message": f"LifeOS requests review of MCP call {tool_name}",
+            "rule_key": f"lifeos-mcp:{tool_name}:{fingerprint}",
+        }
+
+    def _file_permission_verdict(
+        self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str, cwd: str,
+        task_id: str = "",
+    ) -> dict[str, Any] | None:
+        groups = self._hook_groups(
+            "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=native_name),
+            _task_uses_host_paths(task_id), task_id,
+        )
+        if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
+            return None
+        review_paths = []
+        for native_input in native_inputs:
+            payload = self._payload(
+                "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd,
+            )
+            outcomes = self._run("PermissionRequest", payload, native_name, task_id=task_id)
+            granted = False
+            for process, output in outcomes:
+                specific = _specific_output(output, "PermissionRequest")
+                decision = specific.get("decision") or {}
+                if decision.get("behavior") == "deny" or process.returncode == 2:
+                    message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the file change"
+                    return {"action": "block", "message": str(message)[:2000]}
+                if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+                    granted = True
+            if not granted:
+                review_paths.append(str(native_input.get("file_path", "unknown path")))
+        if not review_paths:
+            return None
+        if any(_hermes_write_requires_approval(path, cwd) for path in review_paths):
+            return None
+        fingerprint = hashlib.sha256(json.dumps(native_inputs, sort_keys=True).encode()).hexdigest()[:16]
+        return {
+            "action": "approve",
+            "message": f"LifeOS requests review of {native_name} for {', '.join(review_paths)}",
+            "rule_key": f"lifeos-file:{native_name}:{fingerprint}",
+        }
+
+    def pre_tool_call(
+        self, tool_name: str, args: dict[str, Any], session_id: str = "", tool_call_id: str = "",
+        task_id: str = "", **_: Any,
+    ) -> dict[str, Any] | None:
+        cwd = _tool_cwd(tool_name, args, task_id)
+        self._remember_project(cwd, session_id, task_id)
+        if tool_name == "todo_list" and self._hook_groups(
+            "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
+            _task_uses_host_paths(task_id), task_id,
+        ):
+            task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name, task_id)
+            if task_verdict:
+                return task_verdict
+        if tool_name == "kanban_create" and self._hook_groups(
+            "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
+            _task_uses_host_paths(task_id), task_id,
+        ):
+            task_verdict = self._kanban_task_verdict(args, session_id, tool_call_id or tool_name, task_id)
+            if task_verdict:
+                return task_verdict
+        native_name = _native_tool_name(tool_name)
+        if native_name is None:
+            return None
+        v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
+        native_inputs = (
+            _v4a_edit_inputs(args["patch"], cwd, task_id) if v4a else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd, task_id)]
+        )
+        updated_args = None
+        extra_context = []
+        for native_input in native_inputs:
+            hook_input = _native_file_input(native_name, native_input, task_id)
+            payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=hook_input, cwd=cwd)
+            code = args.get("code") if tool_name == "execute_code" else None
+            for process, output in self._run(
+                "PreToolUse", payload, native_name,
+                matcher_alias="Bash" if isinstance(code, str) and code else "",
+                alias_input={"command": code} if isinstance(code, str) and code else None,
+                task_id=task_id,
+            ):
+                specific = _specific_output(output, "PreToolUse")
+                decision = specific.get("permissionDecision")
+                if process.returncode == 2 or decision in {"deny", "block"}:
+                    message = specific.get("permissionDecisionReason") or process.stderr.strip() or "Blocked by a LifeOS hook"
+                    return {"action": "block", "message": str(message)[:2000]}
+                updated = specific.get("updatedInput")
+                if isinstance(updated, dict) and not v4a and not (
+                    tool_name == "execute_code" and "command" in updated
+                ):
+                    updated_args = _hermes_input(native_name, updated)
+                context = specific.get("additionalContext")
+                if isinstance(context, str) and context.strip():
+                    if native_name == "Agent" and "WATCHDOG:" in context and "Monitor(" in context:
+                        watching = self._ensure_agent_watchdog(session_id)
+                        context = (
+                            "LifeOS watchdog is monitoring this Hermes background agent. "
+                            "Alerts will reach this session through Hermes process notifications."
+                            if watching else
+                            "LifeOS watchdog is unavailable here. Hermes delegation stall monitoring still applies."
+                        )
+                    extra_context.append(context.strip())
+        if extra_context:
+            with self.session_lock:
+                key = (session_id, tool_call_id or tool_name)
+                self.pending_tool_context[key] = extra_context
+                if len(self.pending_tool_context) > 1024:
+                    self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
+        if tool_name.startswith("mcp__"):
+            verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd, task_id)
+            if verdict:
+                if verdict["action"] == "approve" and updated_args is not None:
+                    verdict["args"] = updated_args
+                return verdict
+        file_rule_review_paths = []
+        if native_name in {"Read", "Write", "Edit"}:
+            permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd, task_id)]
+            self.poll_config_changes(force=True)
+            host_paths = _task_uses_host_paths(task_id)
+            permission_payload = self._payload(
+                "PermissionRequest", session_id, cwd=cwd, tool_name=native_name,
+            )
+            permission_sources = self._permission_sources(permission_payload, task_id, host_paths)
+            from .file_permissions import file_target_decision
+
+            for native_input in permission_inputs:
+                path = native_input.get("file_path")
+                if not isinstance(path, str) or not path:
+                    continue
+                operation = "read" if native_name == "Read" else "write"
+                resolved = None if host_paths else _backend_file_path(path, cwd, task_id)
+                decision = file_target_decision(
+                    path, operation, cwd, permission_sources,
+                    host_paths=host_paths, resolved_path=resolved,
+                )
+                if decision == "deny":
+                    return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+                if decision in {"ask", "invalid_policy"} or (decision == "unknown" and not host_paths):
+                    file_rule_review_paths.append(path)
+        if native_name in {"Write", "Edit"}:
+            verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
+            if verdict:
+                if verdict["action"] == "approve" and updated_args is not None:
+                    verdict["args"] = updated_args
+                return verdict
+        if file_rule_review_paths:
+            if native_name in {"Write", "Edit"} and any(
+                _hermes_write_requires_approval(path, cwd) for path in file_rule_review_paths
+            ):
+                return {"action": "modify", "args": updated_args} if updated_args is not None else None
+            fingerprint = hashlib.sha256(json.dumps(permission_inputs, sort_keys=True).encode()).hexdigest()[:16]
+            verdict = {
+                "action": "approve",
+                "message": f"LifeOS file rule requests review of {native_name} for {', '.join(file_rule_review_paths)}",
+                "rule_key": f"lifeos-file-rule:{native_name}:{fingerprint}",
+            }
+            if updated_args is not None:
+                verdict["args"] = updated_args
+            return verdict
+        if tool_name == "delegate_task" and self.model_tiers_provider is not None:
+            from .model_tiers import route_delegate_args
+
+{"command": ["sed", "-n", "1770,1975p", "lifeos_hook_bridge/bridge.py"], "returncode": 0}
+            ids, count = reserved
+            known = self.task_ids.setdefault(session_id, set())
+            new_ids = ids - known
+            known.update(new_ids)
+            self.task_counts[session_id] = self.task_counts.get(session_id, 0) + (len(new_ids) if ids else count)
+            self._save_task_state(session_id)
+
+    def pre_llm_call(
+        self, user_message: Any, session_id: str = "", is_first_turn: bool | None = None,
+        platform: str = "", **_: Any,
+    ) -> dict[str, str] | None:
+        prompt = _prompt_text(user_message)
+        if platform:
+            with self.session_lock:
+                self.session_platforms[session_id] = platform.lower()
+        self._remember_project(_scope_cwd(), session_id)
+        context = self._drain_async_context(session_id)
+        with self.session_lock:
+            first_turn = session_id not in self.started_sessions
+            self.started_sessions.add(session_id)
+        self.poll_config_changes()
+        self._start_config_watcher()
+        if first_turn:
+            transcript = self.transcript_path(session_id)
+            resumed = (not is_first_turn) if is_first_turn is not None else (
+                transcript.exists() and transcript.stat().st_size > 0
+            )
+            source = "resume" if resumed else "startup"
+            start_payload = self._payload("SessionStart", session_id, source=source)
+            context.extend(self._context(self._run("SessionStart", start_payload), "SessionStart", allow_plain=True))
+        payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
+        outcomes = self._run("UserPromptSubmit", payload)
+        for process, output in outcomes:
+            if process.returncode == 2 or (output or {}).get("decision") == "block":
+                reason = (output or {}).get("reason") or process.stderr.strip() or "Prompt blocked by a hook"
+                return {"action": "block", "message": str(reason)}
+        self._append_transcript(session_id, "user", user_message)
+        context.extend(self._context(outcomes, "UserPromptSubmit", allow_plain=True))
+        return {"context": "\n\n".join(context)} if context else None
+
+    @staticmethod
+    def _context(
+        outcomes: list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]],
+        event: str,
+        allow_plain: bool = False,
+    ) -> list[str]:
+        context = []
+        for process, output in outcomes:
+            specific = _specific_output(output, event)
+            value = specific.get("additionalContext")
+            if (
+                allow_plain and not value and not output and process.returncode == 0
+                and isinstance(process.args, list) and process.args[:1] == ["/bin/bash"]
+                and not (process.stdout.strip().startswith("{") and process.stdout.strip().endswith("}"))
+            ):
+                value = process.stdout.strip()
+            if isinstance(value, str) and value.strip():
+                context.append(value.strip())
+        return context
+
+    def post_tool_call(
+        self, tool_name: str, args: dict[str, Any], result: str,
+        session_id: str = "", tool_call_id: str = "", task_id: str = "",
+        status: str = "success", error_message: str = "", **_: Any,
+    ) -> str | None:
+        native_name = _native_tool_name(tool_name)
+        if native_name is None:
+            return
+        cwd = _tool_cwd(tool_name, args, task_id)
+        self._remember_project(cwd, session_id, task_id)
+        event = "PostToolUseFailure" if status in {"error", "blocked"} else "PostToolUse"
+        try:
+            response = json.loads(result)
+        except (json.JSONDecodeError, TypeError):
+            response = result
+        hook_response = response
+        if (
+            native_name == "Agent" and event == "PostToolUse" and isinstance(response, dict)
+            and response.get("status") == "dispatched" and response.get("mode") == "background"
+        ):
+            hook_response = f"Spawned successfully: {json.dumps(response)}"
+        use_id = tool_call_id or uuid4().hex
+        v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
+        native_inputs = (
+            _v4a_edit_inputs(args["patch"], cwd, task_id) if v4a and event == "PostToolUse" else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd, task_id)]
+        )
+        if not native_inputs:
+            return None
+        use_ids = [f"{use_id}:{index}" for index in range(len(native_inputs))] if len(native_inputs) > 1 else [use_id]
+        self._append_transcript(session_id, "assistant", [
+            {"type": "tool_use", "id": item_id, "name": native_name, "input": native_input}
+            for item_id, native_input in zip(use_ids, native_inputs)
+        ])
+        self._append_transcript(
+            session_id, "user", [{
+                "type": "tool_result", "tool_use_id": item_id,
+                "content": result if isinstance(result, str) else json.dumps(result),
+                "is_error": status in {"error", "blocked"},
+            } for item_id in use_ids],
+        )
+        context = []
+        for native_input in native_inputs:
+            hook_input = _native_file_input(native_name, native_input, task_id) if event == "PostToolUse" else native_input
+            payload = self._payload(
+                event, session_id, tool_name=native_name,
+                tool_input=hook_input,
+                cwd=cwd,
+                **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": hook_response}),
+            )
+            external_content = tool_name in WEB_CONTENT_TOOLS or (
+                native_name == "Read" and _web_cache_read(native_input, cwd, task_id)
+            )
+            outcomes = self._run(
+                event, payload, native_name,
+                matcher_alias="WebFetch" if event == "PostToolUse" and external_content else "",
+                task_id=task_id,
+            )
+            context.extend(self._context(outcomes, event))
+            context.extend(
+                process.stderr.strip() for process, _ in outcomes
+                if process.returncode == 2 and process.stderr.strip()
+            )
+        return "\n\n".join(context) if context else None
+
+    def augment_tool_result(
+        self, tool_name: str, args: dict[str, Any], result: str,
+        original_result: str, **kwargs: Any,
+    ) -> str | None:
+        self.poll_config_changes()
+        context = self.post_tool_call(tool_name, args, original_result, **kwargs)
+        key = (kwargs.get("session_id", ""), kwargs.get("tool_call_id") or tool_name)
+        with self.session_lock:
+            pending = self.pending_tool_context.pop(key, [])
+        parts = pending + ([context] if context else [])
+        return "\n\n".join(parts) if parts else None
+
+    def session_end(self, session_id: str = "", **_: Any) -> None:
+        self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
+        shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
+        self._stop_agent_watchdog(session_id)
+        with self.session_lock:
+            self.started_sessions.discard(session_id)
+            self.session_platforms.pop(session_id, None)
+            self.session_projects.pop(session_id, None)
+            self.remote_session_projects.pop(session_id, None)
+            used_remote_projects = set().union(*self.remote_session_projects.values()) if self.remote_session_projects else set()
+            self.remote_project_states = {
+                key: state for key, state in self.remote_project_states.items() if key in used_remote_projects
+            }
+            active_projects = {project for projects in self.session_projects.values() for project in projects}
+            self.project_dirs = tuple(sorted(active_projects)) or (Path.cwd(),)
+            self.project_hook_settings = {
+                path: settings for path, settings in self.project_hook_settings.items()
+                if path.parent.parent in active_projects
+            }
+            for key in tuple(self.native_task_hook_supported):
+                if key[0] == session_id:
+                    self.native_task_hook_supported.pop(key, None)
+            watched = self._config_sources()
+            self.config_files = {path: fingerprint for path, fingerprint in self.config_files.items() if path in watched}
+            self.task_ids.pop(session_id, None)
+            self.task_counts.pop(session_id, None)
+            self.task_state_loaded.discard(session_id)
+            self._task_state_path(session_id).unlink(missing_ok=True)
+            for key in tuple(self.pending_tasks):
+                if key[0] == session_id:
+                    self.pending_tasks.pop(key, None)
+            if not self.started_sessions:
+                self.watcher_stop.set()
+
+    def api_request_error(
+        self, session_id: str = "", turn_id: str = "", reason: str = "", error: Any = None, **_: Any,
+    ) -> None:
+        detail = error.get("message", "") if isinstance(error, dict) else ""
+        with self.session_lock:
+            self.api_errors[(session_id, turn_id)] = (API_ERROR_NAMES.get(reason, "unknown"), str(detail), reason)
+            if len(self.api_errors) > 1024:
+                self.api_errors.pop(next(iter(self.api_errors)))
+
+    def turn_end(
+        self, session_id: str = "", turn_id: str = "", failed: bool = False,
+        turn_exit_reason: str = "", failure_reason: str = "", final_response: str = "",
+        interrupted: bool = False, **_: Any,
+    ) -> None:
+        with self.session_lock:
+            error = self.api_errors.pop((session_id, turn_id), None)
+        if not failed or interrupted or error is None:
+            return
+        error_name, detail, raw_reason = error
+        if turn_exit_reason != "all_retries_exhausted_no_response" and failure_reason != raw_reason:
+            return
+        payload = self._payload(
+            "StopFailure", session_id, error=error_name,
+            **({"error_details": detail} if detail else {}),
+            **({"last_assistant_message": final_response} if final_response else {}),
+        )
+        self._run("StopFailure", payload, error_name)
+
+    def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False,
+             model: str = "", platform: str = "", reasoning_effort: str = "",
+             **_: Any) -> dict[str, str] | None:
+        if platform:
+            with self.session_lock:
+                self.session_platforms[session_id] = platform.lower()
+        payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
+
+{"command": ["rg", "-n", "updatedInput|updatedMCP|suppressOutput|stopReason|asyncRewake|once|statusMessage", "lifeos_hook_bridge"], "returncode": 0}
+lifeos_hook_bridge/bridge.py:1551:                updated = specific.get("updatedInput")
+
+{"command": ["rg", "-n", "def test_", "tests/test_bridge.py"], "returncode": 0}
+43:    def test_file_tool_uses_active_backend_cwd_when_session_has_none(self):
+57:    def test_remote_skill_scan_hashes_regular_file(self):
+74:    def test_remote_isa_input_uses_backend_digest_and_rejects_spoof(self):
+93:    def test_pre_tool_block_uses_claude_payload_and_exit_code(self):
+108:    def test_remote_channel_is_preserved_across_native_hook_events(self):
+139:    def test_terminal_hook_uses_tool_workdir(self):
+154:    def test_remote_workdir_absent_on_host_still_runs_user_hook(self):
+168:    def test_async_user_hook_runs_when_remote_workdir_is_absent_on_host(self):
+186:    def test_relative_file_tool_path_uses_task_workspace_for_hook(self):
+201:    def test_symlinked_workspace_uses_actual_file_path_for_hook(self):
+220:    def test_relative_file_path_stays_relative_for_task_resolver(self):
+238:    def test_project_hook_applies_only_to_its_project(self):
+258:    def test_remote_backend_does_not_run_same_path_host_project_hook(self):
+282:    def test_project_hook_reloads_after_settings_change(self):
+300:    def test_nested_workdir_finds_trusted_repository_hooks(self):
+317:    def test_nested_workdir_finds_trusted_non_git_project_hooks(self):
+337:    def test_one_session_uses_hooks_for_each_repository_workdir(self):
+360:    def test_untrusted_project_hook_does_not_execute(self):
+373:    def test_trusted_project_environment_reaches_its_hook(self):
+399:    def test_blocked_pre_tool_hook_still_runs_later_observer(self):
+410:    def test_matching_hooks_can_progress_concurrently(self):
+434:    def test_session_end_handlers_run_concurrently(self):
+459:    def test_async_hook_receives_complete_input_after_parent_exits(self):
+486:    def test_async_hook_context_reaches_next_turn_in_same_session(self):
+511:    def test_async_hook_context_survives_parent_process_exit(self):
+543:    def test_async_runner_restores_hook_environment_and_workdir(self):
+567:    def test_async_runner_ignores_context_for_wrong_event(self):
+589:    def test_async_runner_treats_quoted_json_as_plain_prompt_text(self):
+607:    def test_pre_tool_updated_input_maps_back_to_hermes(self):
+619:    def test_file_permission_grant_allows_a_write(self):
+635:    def test_file_rule_deny_blocks_direct_read_and_write_despite_hook_grant(self):
+662:    def test_file_rule_ask_requires_review_despite_hook_grant(self):
+689:    def test_invalid_managed_policy_reviews_direct_file_calls(self):
+723:    def test_file_rule_deny_checks_every_patch_target(self):
+743:    def test_file_permission_neutral_requests_review(self):
+750:    def test_file_permission_defers_to_existing_hermes_ssh_guard(self):
+767:    def test_file_permission_deny_still_blocks_hermes_guarded_write(self):
+778:    def test_file_review_keeps_pre_tool_input_change(self):
+798:    def test_file_permission_checks_every_v4a_target_before_review(self):
+812:    def test_file_permission_checks_delete_and_move_targets(self):
+833:    def test_delete_and_move_hooks_keep_symlink_entries(self):
+864:    def test_config_change_reports_project_and_local_settings(self):
+888:    def test_config_change_follows_later_project(self):
+917:    def test_config_change_reaches_only_project_session(self):
+943:    def test_config_change_uses_matching_project_hooks_in_one_session(self):
+976:    def test_config_change_reports_managed_policy_files(self):
+997:    def test_config_change_runs_while_session_is_idle(self):
+1016:    def test_prompt_context_preserves_hook_order(self):
+1023:    def test_http_plain_text_is_not_prompt_context(self):
+1047:    def test_malformed_json_object_is_not_prompt_context(self):
+1053:    def test_stop_block_is_returned_to_control_gate(self):
+1079:    def test_stop_transcript_records_actual_hermes_model(self):
+1085:    def test_stop_transcript_records_effective_reasoning_effort(self):
+1095:    def test_hook_environment_reads_current_tier_settings(self):
+1122:    def test_session_context_is_injected_on_first_prompt(self):
+1138:    def test_prompt_hook_runs_before_current_prompt_enters_transcript(self):
+1156:    def test_prompt_hook_block_drops_current_prompt(self):
+1166:    def test_prompt_hook_exit_two_drops_current_prompt(self):
+1178:    def test_session_start_uses_resume_source_after_bridge_restart(self):
+1192:    def test_session_start_uses_hermes_resume_flag_when_transcript_is_missing(self):
+1204:    def test_multimodal_first_prompt_runs_start_and_prompt_hooks(self):
+1226:    def test_image_only_prompt_reaches_hook_as_empty_text(self):
+1237:    def test_media_and_file_payloads_do_not_enter_hook_prompt(self):
+1259:    def test_post_tool_failure_runs_failure_hook(self):
+1278:    def test_post_tool_plain_stdout_is_not_model_context(self):
+1286:    def test_post_tool_failure_plain_stdout_is_not_model_context(self):
+1296:    def test_wrong_event_specific_output_cannot_block_or_annotate_tool(self):
+1310:    def test_pre_tool_ignores_top_level_fields_that_require_specific_output(self):
+1324:    def test_pre_tool_top_level_block_decision_has_no_effect(self):
+1332:    def test_wrong_event_permission_denial_does_not_block_file(self):
+1346:    def test_missing_event_name_does_not_add_post_tool_context(self):
+1357:    def test_post_tool_exit_two_stderr_reaches_model(self):
+1368:    def test_post_tool_failure_exit_two_stderr_reaches_model(self):
+1381:    def test_unmapped_hermes_tool_reaches_generic_hooks_and_transcript(self):
+1412:    def test_web_extract_uses_webfetch_matcher_for_safety_hook(self):
+1432:    def test_browser_content_reaches_webfetch_safety_without_losing_tool_identity(self):
+1471:    def test_reading_web_cache_runs_webfetch_safety_but_regular_read_does_not(self):
+1512:    def test_web_cache_read_uses_backend_visible_directory(self):
+1529:    def test_execute_code_runs_bash_guard_with_python_source(self):
+1558:    def test_execute_code_ignores_bash_command_rewrite(self):
+1574:    def test_delegated_child_tool_events_carry_agent_identity(self):
+1607:    def test_post_patch_reports_each_changed_file(self):
+1637:    def test_post_tool_context_is_appended_after_guarded_result(self):
+1652:    def test_http_skill_guard_blocks_matching_skill(self):
+1681:    def test_pre_tool_context_reaches_tool_result(self):
+1695:    def test_agent_hooks_receive_each_delegated_task(self):
+1724:    def test_background_dispatch_is_reported_as_spawn_to_agent_hook(self):
+1739:    def test_background_delegation_reaches_agent_hook(self):
+1752:    def test_foreground_delegation_reaches_agent_hook(self):
+1777:    def test_background_agent_watchdog_instruction_uses_hermes_delivery(self):
+1795:    def test_watchdog_mirror_tracks_only_active_children_in_own_session(self):
+1819:    def test_watchdog_mirror_does_not_invent_progress(self):
+1837:    def test_watchdog_mirror_uses_child_tool_results(self):
+1861:    def test_mcp_name_matches_native_safety_hook(self):
+1875:    def test_todo_creation_uses_lifeos_task_governance_rules(self):
+1896:    def test_kanban_task_creation_uses_same_lifeos_limit(self):
+1907:    def test_failed_task_creation_releases_reserved_slot(self):
+1917:    def test_task_count_survives_bridge_restart_until_session_end(self):
+1939:    def test_malformed_task_state_blocks_new_task(self):
+1951:    def test_native_task_hook_receives_session_count_and_controls_creation(self):
+1979:    def test_native_permission_grant_applies_to_command(self):
+1995:    def test_native_permission_without_grant_requests_review(self):
+2001:    def test_command_without_permission_registration_abstains(self):
+2005:    def test_simple_builtin_read_only_commands_skip_permission_request(self):
+2026:    def test_explicit_bash_permission_rule_keeps_read_only_review(self):
+2046:    def test_exact_bash_allow_rule_skips_permission_request(self):
+2067:    def test_exact_bash_deny_rule_blocks_without_permission_request(self):
+2088:    def test_unrelated_exact_ask_rule_keeps_read_only_command_automatic(self):
+2108:    def test_project_deny_beats_user_allow_for_same_bash_command(self):
+2127:    def test_remote_project_bash_deny_applies_to_approval(self):
+2139:    def test_ask_rule_requests_review_without_permission_hook(self):
+2148:    def test_deny_pattern_overrides_exact_allow(self):
+2162:    def test_unsupported_deny_pattern_cannot_be_granted_by_hook(self):
+2180:    def test_unsupported_deny_pattern_requests_review_without_hook(self):
+2190:    def test_bash_deny_pattern_matches_bare_command_with_trailing_space_star(self):
+2200:    def test_bash_ask_pattern_requests_review_for_simple_command(self):
+2210:    def test_compound_command_with_deny_pattern_blocks_matching_subcommand(self):
+2220:    def test_compound_command_denies_matching_second_subcommand(self):
+2230:    def test_nested_command_substitution_applies_deny_rule(self):
+2240:    def test_timeout_wrapper_applies_inner_deny_rule(self):
+2250:    def test_compound_allow_requires_each_subcommand(self):
+2271:    def test_wildcard_allow_matches_one_simple_command(self):
+2284:    def test_deny_does_not_match_quoted_text_or_shell_c_argument(self):
+2294:    def test_deny_wildcard_does_not_span_compound_commands(self):
+2303:    def test_wildcard_allow_does_not_skip_redirect_permission_check(self):
+2317:    def test_bash_allow_skips_redirects_without_file_targets(self):
+2342:    def test_file_deny_overrides_native_bash_grant_for_redirect(self):
+2369:    def test_file_deny_overrides_bash_allow_for_reader_operand(self):
+2398:    def test_file_deny_follows_literal_bash_directory_change(self):
+2426:    def test_in_place_sed_checks_edit_rule(self):
+2441:    def test_sort_output_checks_edit_rule(self):
+2456:    def test_awk_program_does_not_prompt_when_bash_allow_matches(self):
+2471:    def test_remote_symlink_file_deny_applies_to_bash_and_read_tool(self):
+2528:    def test_reader_options_do_not_become_file_targets(self):
+2581:    def test_allowed_bash_redirect_in_working_directory_skips_permission_hook(self):
+2604:    def test_exact_bash_allow_includes_redirect_text(self):
+2624:    def test_managed_deny_overrides_user_allow(self):
+2640:    def test_managed_dropin_deny_applies_after_policy_change(self):
+2656:    def test_managed_only_ignores_user_and_project_bash_rules(self):
+2679:    def test_managed_only_keeps_managed_bash_rules(self):
+2694:    def test_managed_only_does_not_take_user_allow_shortcut(self):
+2714:    def test_managed_only_dropin_scalar_uses_last_value(self):
+2738:    def test_invalid_managed_policy_prevents_user_allow_shortcut(self):
+2752:    def test_native_grant_does_not_override_ask_rule(self):
+2769:    def test_version_drift_git_adapter_is_scoped_to_its_hook(self):
+2793:    def test_command_rule_change_applies_before_next_approval(self):
+2807:    def test_command_permission_uses_target_workspace_context(self):
+2825:    def test_native_command_permission_deny_overrides_grant(self):
+2835:    def test_native_command_permission_block_exit_overrides_grant(self):
+2843:    def test_native_command_permission_ignores_wrong_event_decision(self):
+2850:    def test_mcp_permission_requests_review_for_secret_shaped_input(self):
+2865:    def test_mcp_permission_deny_overrides_another_grant(self):
+2876:    def test_session_end_registers_on_actual_session_boundary(self):
+2904:    def test_stop_failure_logs_only_terminal_api_error(self):
+2932:    def test_stop_failure_logs_direct_terminal_api_error(self):
+2953:    def test_prior_api_error_does_not_turn_local_failure_into_stop_failure(self):
+2963:    def test_config_change_runs_audit_hook_after_settings_edit(self):
+2985:    def test_config_change_detects_same_size_rewrite_with_preserved_mtime(self):
+3012:    def test_settings_change_updates_hook_registrations(self):
+3023:    def test_config_change_block_keeps_active_hook_settings(self):
+3038:    def test_clarify_maps_to_ask_user_question_hooks(self):
+3061:    def test_multi_file_patch_checks_each_changed_file(self):
+3084:    def test_hook_process_uses_agent_working_directory(self):
+

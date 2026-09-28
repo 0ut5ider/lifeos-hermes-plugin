@@ -1,0 +1,92 @@
+{
+  "hermes": {
+    "base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+    "patches": [
+      {
+        "name": "hermes-hook-controls.patch",
+        "sha256": "89abdc865be98e34fb50a166d4d6e0aa0011b0ff3882c777b2480ed7b4ea1357"
+      },
+      {
+        "name": "hermes-command-denial.patch",
+        "sha256": "1a8383110d66690578e3e299693cbf402981d0f1abd754076cd70eca7aeb07c1"
+      },
+      {
+        "name": "hermes-remote-file-staleness.patch",
+        "sha256": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85"
+      },
+      {
+        "name": "hermes-stop-effort.patch",
+        "sha256": "e704b994d4b290a21c6d655b7e42dbde9df11f83f40379c83ca407077ba7f689"
+      },
+      {
+        "name": "hermes-delegate-tier-routing.patch",
+        "sha256": "60ea33de13a8530b74ca63394858d08c177f5c7d6704941ab45f203bafdf6ce9"
+      },
+      {
+        "name": "hermes-cron-worker-bootstrap.patch",
+        "sha256": "7cf6f92aa7458cfef256bc1e94261d1c7ccfb9c66d3a7927c40e0ca54d75cbc0"
+      },
+      {
+        "name": "hermes-delegate-provider-routing.patch",
+        "sha256": "09158974aa68ab8eeeee32063913765a8a09e550a77a2bb6c3259b509ac5cdb6"
+      },
+      {
+        "name": "hermes-direct-provider-inference.patch",
+        "sha256": "6d17ecca868f04db0978e65c3bbca7e3c4d4993593289e9d3cea4d989802b890"
+      },
+      {
+        "name": "hermes-stop-fail-closed.patch",
+        "sha256": "01b678f3a5c3ccdb01652f6feb15c309dadee4886da3e429cddead7df79b9fd6"
+      },
+      {
+        "name": "hermes-command-policy.patch",
+        "sha256": "e036e5eb5109a5f2a6b1471cbf30e55ef5d31f806614d6771023ce4638687e9b"
+      },
+      {
+        "name": "hermes-command-context.patch",
+        "sha256": "0a338e48837d3be8173cff27ef8a93d7bbfc046505fd1f6b4c47d8b140df1096"
+      }
+    ]
+  },
+  "lifeos": {
+    "base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+    "patches": [
+      {
+        "name": "lifeos-task-governance.patch",
+        "sha256": "bc344e0545f693654ffc1005e60bd20b592ee21a9276c6b27de7dc32c98adedf"
+      },
+      {
+        "name": "lifeos-agent-watchdog.patch",
+        "sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808"
+      },
+      {
+        "name": "lifeos-terminal-audit.patch",
+        "sha256": "5ec0b3a734bf1e5a9fbe8fa26d8669436dc297b60e4e8d22a38b8491d0c3c5eb"
+      },
+      {
+        "name": "lifeos-checkpoint-verification.patch",
+        "sha256": "a5db87baa250440526a1322d76165c773b45bfafdb09344af08c69dd7dc92b5b"
+      },
+      {
+        "name": "lifeos-failure-capture.patch",
+        "sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e"
+      },
+      {
+        "name": "lifeos-remote-desktop-gate.patch",
+        "sha256": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038"
+      },
+      {
+        "name": "lifeos-remote-isa-view.patch",
+        "sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b"
+      },
+      {
+        "name": "lifeos-model-rung-effort.patch",
+        "sha256": "6d2df32b325117280cbef5040f472b5f239431b447dddb562eb575d46e50fa04"
+      },
+      {
+        "name": "lifeos-hermes-carrier-probe.patch",
+        "sha256": "2d5e8581ffbda77526c89a2ef601db6c611d7216635a482b9de37c73703b1036"
+      }
+    ]
+  }
+}

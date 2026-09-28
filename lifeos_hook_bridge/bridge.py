@@ -72,6 +72,18 @@ def _native_tool_name(tool_name: str) -> str | None:
     return TOOL_NAMES.get(tool_name, tool_name or None)
 
 
+def _hook_matcher_matches(matcher: str, value: str) -> bool:
+    if not matcher or matcher == "*":
+        return True
+    for expression in matcher.split(", "):
+        try:
+            if re.search(expression, value):
+                return True
+        except re.error:
+            LOG.warning("Invalid LifeOS hook matcher: %r", expression)
+    return False
+
+
 _SIMPLE_READ_ONLY_ECHO = re.compile(r"echo(?: [A-Za-z0-9_./:=+-]+)*\Z")
 
 
@@ -1080,8 +1092,8 @@ class HookBridge:
         process_cwd = _hook_process_cwd(payload, self.root) if host_paths else str(self.root)
         for group in self._hook_groups(event, payload, host_paths, task_id):
             matcher = group.get("matcher", "")
-            native_match = not matcher or bool(re.fullmatch(matcher, tool_name))
-            alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
+            native_match = _hook_matcher_matches(matcher, tool_name)
+            alias_match = bool(matcher and matcher_alias and _hook_matcher_matches(matcher, matcher_alias))
             if not native_match and not alias_match:
                 continue
             group_payload = payload if native_match else {
@@ -1533,6 +1545,7 @@ class HookBridge:
         )
         updated_args = None
         extra_context = []
+        review_requests = []
         for native_input in native_inputs:
             hook_input = _native_file_input(native_name, native_input, task_id)
             payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=hook_input, cwd=cwd)
@@ -1548,6 +1561,9 @@ class HookBridge:
                 if process.returncode == 2 or decision in {"deny", "block"}:
                     message = specific.get("permissionDecisionReason") or process.stderr.strip() or "Blocked by a LifeOS hook"
                     return {"action": "block", "message": str(message)[:2000]}
+                if decision == "ask":
+                    reason = specific.get("permissionDecisionReason") or "LifeOS hook requests review"
+                    review_requests.append(str(reason)[:2000])
                 updated = specific.get("updatedInput")
                 if isinstance(updated, dict) and not v4a and not (
                     tool_name == "execute_code" and "command" in updated
@@ -1570,9 +1586,30 @@ class HookBridge:
                 self.pending_tool_context[key] = extra_context
                 if len(self.pending_tool_context) > 1024:
                     self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
+
+        def pretool_review() -> dict[str, Any] | None:
+            if not review_requests:
+                return None
+            reviewed_args = updated_args or args
+            fingerprint = hashlib.sha256(json.dumps({
+                "tool": tool_name, "args": reviewed_args, "cwd": cwd, "task_id": task_id,
+            }, sort_keys=True).encode()).hexdigest()[:16]
+            verdict = {
+                "action": "approve",
+                "message": "\n".join(dict.fromkeys(review_requests))[:2000],
+                "rule_key": f"lifeos-pretool:{native_name}:{fingerprint}",
+            }
+            if updated_args is not None:
+                verdict["args"] = updated_args
+            return verdict
+
         if tool_name.startswith("mcp__"):
             verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd, task_id)
             if verdict:
+                if verdict["action"] == "block":
+                    return verdict
+                if review_requests:
+                    return pretool_review()
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
@@ -1604,10 +1641,16 @@ class HookBridge:
         if native_name in {"Write", "Edit"}:
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
             if verdict:
+                if verdict["action"] == "block":
+                    return verdict
+                if review_requests:
+                    return pretool_review()
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
         if file_rule_review_paths:
+            if review_requests:
+                return pretool_review()
             if native_name in {"Write", "Edit"} and any(
                 _hermes_write_requires_approval(path, cwd) for path in file_rule_review_paths
             ):
@@ -1630,6 +1673,8 @@ class HookBridge:
                 return {"action": "block", "message": str(error)}
             if routed != current:
                 updated_args = routed
+        if review_requests:
+            return pretool_review()
         return {"action": "modify", "args": updated_args} if updated_args is not None else None
 
     def _reserved_task_count(self, session_id: str) -> int:
@@ -1796,7 +1841,7 @@ class HookBridge:
             )
             source = "resume" if resumed else "startup"
             start_payload = self._payload("SessionStart", session_id, source=source)
-            context.extend(self._context(self._run("SessionStart", start_payload), "SessionStart", allow_plain=True))
+            context.extend(self._context(self._run("SessionStart", start_payload, source), "SessionStart", allow_plain=True))
         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
         outcomes = self._run("UserPromptSubmit", payload)
         for process, output in outcomes:
@@ -1905,7 +1950,7 @@ class HookBridge:
         return "\n\n".join(parts) if parts else None
 
     def session_end(self, session_id: str = "", **_: Any) -> None:
-        self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
+        self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"), "other")
         shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
         self._stop_agent_watchdog(session_id)
         with self.session_lock:
