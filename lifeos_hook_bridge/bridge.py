@@ -221,7 +221,13 @@ def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
         tasks = [args]
     inputs = []
     descriptions = set()
-    background = bool(args.get("background"))
+    background = args.get("background")
+    if not isinstance(background, bool):
+        try:
+            from agent.delegation_context import is_delegated_child_context
+            background = not is_delegated_child_context()
+        except ImportError:
+            background = True
     for index, task in enumerate(tasks):
         if not isinstance(task, dict) or not isinstance(task.get("goal"), str) or not task["goal"].strip():
             continue
@@ -393,6 +399,7 @@ class HookBridge:
         self.watchdog_dir = self.root / "LIFEOS/MEMORY/STATE/hermes-watchdogs"
         self.watchdog_processes: dict[str, str] = {}
         self.watchdog_last_active: dict[str, float] = {}
+        self.watchdog_log_offsets: dict[str, int] = {}
         self.watchdog_stop = threading.Event()
         self.watchdog_thread: threading.Thread | None = None
 
@@ -512,7 +519,7 @@ class HookBridge:
     def _sync_agent_watchdogs(self, delegations: list[dict[str, Any]]) -> None:
         with self.session_lock:
             sessions = tuple(self.watchdog_processes)
-        now = time.time()
+        active_logs: set[str] = set()
         for session_id in sessions:
             active = [
                 item for item in delegations
@@ -530,24 +537,35 @@ class HookBridge:
                 temp.chmod(0o600)
                 os.replace(temp, starts)
                 if active:
-                    progress = []
+                    tool_result = False
                     for item in active:
-                        children = item.get("children_activity") or []
-                        progress.extend(
-                            now - child["seconds_since_activity"] for child in children
-                            if isinstance(child, dict) and isinstance(child.get("seconds_since_activity"), (int, float))
-                        )
-                        if isinstance(item.get("seconds_since_progress"), (int, float)):
-                            progress.append(now - item["seconds_since_progress"])
-                    latest = max(progress, default=activity.stat().st_mtime)
-                    if latest > activity.stat().st_mtime + 0.5:
-                        os.utime(activity, (latest, latest))
+                        transcripts = item.get("task_transcripts") or {}
+                        if isinstance(transcripts, dict):
+                            for path in transcripts.values():
+                                if isinstance(path, str):
+                                    active_logs.add(path)
+                                    tool_result = self._watchdog_new_tool_result(path) or tool_result
+                    if tool_result:
+                        activity.touch()
                     with self.session_lock:
                         self.watchdog_last_active[session_id] = time.monotonic()
                 elif time.monotonic() - self.watchdog_last_active.get(session_id, 0) > 30:
                     self._stop_agent_watchdog(session_id)
             finally:
                 temp.unlink(missing_ok=True)
+        for path in tuple(self.watchdog_log_offsets):
+            if path not in active_logs:
+                self.watchdog_log_offsets.pop(path, None)
+
+    def _watchdog_new_tool_result(self, path: str) -> bool:
+        try:
+            with open(path, "rb") as stream:
+                stream.seek(self.watchdog_log_offsets.get(path, 0))
+                added = stream.read()
+                self.watchdog_log_offsets[path] = stream.tell()
+        except OSError:
+            return False
+        return re.search(rb"(?m)^\d{2}:\d{2}:\d{2} result\s+\|", added) is not None
 
     def _watch_agent_watchdogs(self) -> None:
         while not self.watchdog_stop.wait(2.0):

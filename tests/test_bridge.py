@@ -1604,8 +1604,10 @@ class HookBridgeTests(unittest.TestCase):
             bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": False}, session_id="s1")
             self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], False)
             bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report"}, session_id="s1")
-            self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], False)
+            self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], True)
             delegated["active"] = True
+            bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report"}, session_id="s1")
+            self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], False)
             bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": True}, session_id="s1")
             self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], True)
 
@@ -1635,11 +1637,13 @@ class HookBridgeTests(unittest.TestCase):
         activity.touch()
         old = time.time() - 20
         os.utime(activity, (old, old))
+        log = self.root / "s1-child.log"
+        log.write_text("09:00:00 result   | terminal ok 1s: done\n")
         bridge.watchdog_processes["s1"] = "fake-process"
         bridge.watchdog_last_active["s1"] = time.monotonic()
         bridge._sync_agent_watchdogs([
             {"delegation_id": "child-1", "parent_session_id": "s1", "status": "running",
-             "role": "worker", "seconds_since_progress": 2},
+             "role": "worker", "task_transcripts": {"0": str(log)}},
             {"delegation_id": "child-2", "parent_session_id": "s2", "status": "running",
              "role": "other", "seconds_since_progress": 1},
         ])
@@ -1660,9 +1664,35 @@ class HookBridgeTests(unittest.TestCase):
         bridge.watchdog_processes["s1"] = "fake-process"
         bridge.watchdog_last_active["s1"] = time.monotonic()
         bridge._sync_agent_watchdogs([
-            {"delegation_id": "child-1", "parent_session_id": "s1", "status": "running"},
+            {"delegation_id": "child-1", "parent_session_id": "s1", "status": "running",
+             "seconds_since_progress": 1,
+             "children_activity": [{"seconds_since_activity": 1}]},
         ])
         self.assertLess(activity.stat().st_mtime, time.time() - 10)
+        bridge.watchdog_processes.clear()
+
+    def test_watchdog_mirror_uses_child_tool_results(self):
+        bridge = self.bridge({})
+        bridge.watchdog_dir.mkdir(parents=True)
+        starts, activity = bridge._watchdog_paths("s1")
+        starts.write_text("{}")
+        activity.touch()
+        log = self.root / "child.log"
+        log.write_text("09:00:00 tool     | -> terminal(sleep 120)\n")
+        old = time.time() - 20
+        os.utime(activity, (old, old))
+        bridge.watchdog_processes["s1"] = "fake-process"
+        bridge.watchdog_last_active["s1"] = time.monotonic()
+        record = {"delegation_id": "child-1", "parent_session_id": "s1", "status": "running",
+                  "task_transcripts": {"0": str(log)}, "seconds_since_progress": 1}
+        bridge._sync_agent_watchdogs([record])
+        self.assertLess(activity.stat().st_mtime, time.time() - 10)
+        with log.open("a") as stream:
+            stream.write("09:00:01 result   | terminal ok 1s: done\n")
+        bridge._sync_agent_watchdogs([record])
+        self.assertGreater(activity.stat().st_mtime, old)
+        bridge._sync_agent_watchdogs([record])
+        self.assertEqual(bridge.watchdog_log_offsets[str(log)], log.stat().st_size)
         bridge.watchdog_processes.clear()
 
     def test_mcp_name_matches_native_safety_hook(self):
