@@ -147,6 +147,23 @@ class HookBridgeTests(unittest.TestCase):
         bridge.pre_tool_call("read_file", {"path": str(self.root / "note.txt")}, session_id="s1")
         self.assertEqual(len(marker.read_text().splitlines()), 3)
 
+    def test_permission_request_wildcard_matches_bash_and_direct_write(self):
+        grant = self.make_hook(
+            "grant-any-permission.py",
+            "import json,sys\n"
+            "data=json.load(sys.stdin)\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow'}}}))\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [
+            {"matcher": "*", "hooks": [{"type": "command", "command": grant}]},
+        ]})
+        self.assertEqual(bridge.command_approval("echo first; echo second", session_key="s1"),
+                         {"action": "allow"})
+        self.assertIsNone(bridge.pre_tool_call(
+            "write_file", {"path": str(self.root / "note.txt"), "content": "synthetic"}, session_id="s1",
+        ))
+
     def test_session_event_matchers_use_start_source_and_end_reason(self):
         marker = self.root / "session-events.jsonl"
         command = self.make_hook(

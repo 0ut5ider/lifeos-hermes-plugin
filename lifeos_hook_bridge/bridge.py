@@ -1430,7 +1430,7 @@ class HookBridge:
         if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):
             return None
         groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
-        if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
+        if not any(group.get("hooks") and _hook_matcher_matches(group.get("matcher", ""), "Bash")
                    for group in groups):
             return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
         granted = False
@@ -1455,7 +1455,7 @@ class HookBridge:
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
             _task_uses_host_paths(task_id), task_id,
         )
-        if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
+        if not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups):
             return None
         payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
         outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
@@ -1485,7 +1485,7 @@ class HookBridge:
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=native_name),
             _task_uses_host_paths(task_id), task_id,
         )
-        if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
+        if not any(_hook_matcher_matches(group.get("matcher", ""), native_name) for group in groups):
             return None
         review_paths = []
         for native_input in native_inputs:

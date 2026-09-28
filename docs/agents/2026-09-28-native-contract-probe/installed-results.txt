@@ -1,0 +1,23 @@
+LifeOS managed permission policy could not be read: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+LifeOS managed permission policy could not be read: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)
+{
+  "approval_action": "approve",
+  "approval_message": "Synthetic installed review",
+  "approval_rule_key": "lifeos-pretool:Read:04a9f662ab323519",
+  "start_results": [
+    {
+      "context": "SYNTHETIC-START"
+    }
+  ],
+  "hook_events": [
+    {
+      "event": "PreToolUse",
+      "source": null
+    },
+    {
+      "event": "SessionStart",
+      "source": "startup"
+    }
+  ]
+}
+{"invalid_policy_read": "approve", "invalid_policy_write": "approve"}

@@ -1,0 +1,7 @@
+# ContextReduction allow and rewrite
+
+Date: 2026-09-28. The installed LifeOS ContextReduction hook returns `permissionDecision: allow` with `updatedInput` for supported `git` and `gh` commands when optional `rtk` is on `PATH`. The bridge applies the input change but does not retain the allow decision. This looked like a possible extra approval prompt.
+
+In the isolated Claude Code 2.1.272 reference account, a temporary `rtk` executable handled `git status`. The run recorded zero permission denials, called `rtk` with `git status`, and returned its synthetic output. The [native result](../docs/agents/2026-09-28-native-contract-probe/context-reference.jsonl) includes the observed marker and tool result. In the `.212` Hermes account, the installed bridge changed `git status` to `rtk git status`; Hermes's command guard approved it without a prompt, and executing the transformed command called the same temporary executable with the same arguments and output. The [Hermes probe](../scripts/probe_installed_context.py) used a disposable Hermes home and native LifeOS hook. No permanent `rtk` installation or Git repository was created.
+
+For this tested command, discarding the native allow did not add an approval or change execution. It remains a potential difference for other rewritten forms or policies. The next comparison should include a command that Hermes marks for review and a Claude deny rule against the rewritten input. Hermes safety denials must remain authoritative.
