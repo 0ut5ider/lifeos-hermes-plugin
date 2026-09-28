@@ -1200,11 +1200,19 @@ class HookBridge:
         payload = self._payload(
             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command},
         )
-        for _, output in self._run("PermissionRequest", payload, "Bash"):
+        granted = False
+        denied = False
+        for process, output in self._run("PermissionRequest", payload, "Bash"):
             specific = _specific_output(output, "PermissionRequest")
             decision = specific.get("decision") or {}
+            if decision.get("behavior") == "deny" or process.returncode == 2:
+                denied = True
             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
-                return {"action": "allow"}
+                granted = True
+        if denied:
+            return {"action": "deny"}
+        if granted:
+            return {"action": "allow"}
         return None
 
     def _mcp_permission_verdict(

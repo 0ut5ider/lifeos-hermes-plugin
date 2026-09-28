@@ -1839,6 +1839,31 @@ class HookBridgeTests(unittest.TestCase):
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
         self.assertIsNone(bridge.command_approval("sudo systemctl restart example.service", session_key="s1"))
 
+    def test_native_command_permission_deny_overrides_grant(self):
+        grant = self.make_hook("grant.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n")
+        deny = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny','reason':'Native denial'}}}))\n")
+        for commands in ((grant, deny), (deny, grant)):
+            with self.subTest(commands=commands):
+                bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                    {"type": "command", "command": command} for command in commands
+                ]}]})
+                self.assertEqual(bridge.command_approval("test command", session_key="s1"), {"action": "deny"})
+
+    def test_native_command_permission_block_exit_overrides_grant(self):
+        grant = self.make_hook("grant.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n")
+        block = self.make_hook("block.py", "import sys\nsys.exit(2)\n")
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": grant}, {"type": "command", "command": block},
+        ]}]})
+        self.assertEqual(bridge.command_approval("test command", session_key="s1"), {"action": "deny"})
+
+    def test_native_command_permission_ignores_wrong_event_decision(self):
+        wrong_event = self.make_hook("wrong_event.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PreToolUse','decision':{'behavior':'deny'}}}))\n")
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": wrong_event},
+        ]}]})
+        self.assertIsNone(bridge.command_approval("test command", session_key="s1"))
+
     def test_mcp_permission_requests_review_for_secret_shaped_input(self):
         command = self.make_hook(
             "mcp_permission.py",
