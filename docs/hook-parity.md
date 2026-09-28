@@ -58,7 +58,7 @@ The native bridge executes the installed registration types with partial coverag
 - The installed native ISASync hook updated a temporary work registry after a synthetic ISA write. The native LoopDetector returned an advisory on the third identical Read and recorded three events in session state. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
 - The installed native ConfigEvalFire hook spawned a harmless replacement runner and wrote its debounce state after a synthetic `CLAUDE.md` edit. AtlasEventCapture wrote one `systemd` hint for a synthetic Bash result. Neither the real evaluation nor the Bash command ran. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
 - The installed native PostToolObserver hook recorded a synthetic doctrine file edit in its per-session system-delta ledger and returned `SYSTEM: CLAUDE.md` to the model-bound tool result. See [the write hook record](../notes/2026-09-27-native-write-effects.md).
-- Completed assistant rows in the bridge transcript now include Hermes's actual model name. This gives LifeOS's ModelRungGuard and AgentInvocation readers a real carrier value after the first turn. A local model has no Claude tier alias, so ModelRungGuard cannot infer a Claude rung from that name.
+- Completed assistant rows in the bridge transcript now include Hermes's actual model name. The installed native `ModelRungGuard.liveModel()` read `flashnext-w4a16-fp8ple` from a synthetic bridge transcript on `.212`; AgentInvocation uses the same reader. A local model has no Claude tier alias, so ModelRungGuard cannot infer a Claude rung from that name.
 
 ## Hermes core dependency
 
