@@ -8,4 +8,4 @@ A local regression test first showed that a relative Write path reached a hook u
 
 On `.212`, a temporary LifeOS root held an invalid `MEMORY/KNOWLEDGE/Research/note.md`. A synthetic V4A patch used the relative path `LIFEOS/MEMORY/KNOWLEDGE/Research/note.md`. Before the bridge change, the installed native `KnowledgeWriteGuard` returned no advisory. After the change, it returned an off-schema advisory for `Research/note.md`. The probe invoked PostToolUse with a synthetic result; it did not modify the note.
 
-This verifies local workspace resolution. A remote or container backend can use a different filesystem namespace, and a symlinked workspace can resolve differently from the path Hermes ultimately patches. Those cases need their own probes.
+This verified local workspace resolution at the time. A later [symlinked workspace probe](2026-09-27-symlinked-workspace.md) found and fixed a separate mismatch. Remote and container namespaces still need their own probes.

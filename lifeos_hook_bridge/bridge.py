@@ -82,16 +82,24 @@ def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
         return False
 
 
-def _hook_file_path(path: str, cwd: str) -> str:
-    expanded = os.path.expanduser(path)
-    return os.path.normpath(expanded if os.path.isabs(expanded) else os.path.join(cwd, expanded))
+def _hook_file_path(path: str, cwd: str, task_id: str = "default") -> str:
+    candidate = path if os.path.isabs(path) or path.startswith("~") else os.path.join(cwd, path)
+    try:
+        from tools.file_tools_paths import _resolve_path_for_task
+    except ImportError:
+        return os.path.realpath(os.path.expanduser(candidate))
+    try:
+        return str(_resolve_path_for_task(candidate, task_id or "default"))
+    except Exception as error:
+        LOG.warning("Hermes file path resolver unavailable: %s", error)
+        return os.path.normpath(candidate)
 
 
-def _tool_input(name: str, args: dict[str, Any], cwd: str) -> dict[str, Any]:
+def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "default") -> dict[str, Any]:
     translated = dict(args)
     if name in {"Write", "Edit", "Read"} and "path" in translated:
         path = translated.pop("path")
-        translated["file_path"] = _hook_file_path(path, cwd) if isinstance(path, str) and path else path
+        translated["file_path"] = _hook_file_path(path, cwd, task_id) if isinstance(path, str) and path else path
     if name == "Agent" and isinstance(translated.get("tasks"), list):
         tasks = translated["tasks"]
         if tasks:
@@ -110,7 +118,7 @@ def _tool_input(name: str, args: dict[str, Any], cwd: str) -> dict[str, Any]:
     return translated
 
 
-def _v4a_edit_inputs(patch_text: str, cwd: str) -> list[dict[str, str]]:
+def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> list[dict[str, str]]:
     edits = []
     path = None
     added = []
@@ -119,7 +127,7 @@ def _v4a_edit_inputs(patch_text: str, cwd: str) -> list[dict[str, str]]:
     def finish() -> None:
         if path is not None:
             edits.append({
-                "file_path": _hook_file_path(path, cwd),
+                "file_path": _hook_file_path(path, cwd, task_id),
                 "old_string": "\n".join(removed), "new_string": "\n".join(added),
             })
 
@@ -133,7 +141,7 @@ def _v4a_edit_inputs(patch_text: str, cwd: str) -> list[dict[str, str]]:
             removed = []
         elif move:
             edits.append({
-                "file_path": _hook_file_path(move.group(1).strip(), cwd),
+                "file_path": _hook_file_path(move.group(1).strip(), cwd, task_id),
                 "old_string": "", "new_string": "",
             })
         elif line.startswith("***"):
@@ -896,8 +904,8 @@ class HookBridge:
             return None
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = (
-            _v4a_edit_inputs(args["patch"], cwd) if v4a else
-            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd)]
+            _v4a_edit_inputs(args["patch"], cwd, task_id) if v4a else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd, task_id)]
         )
         updated_args = None
         extra_context = []
@@ -936,7 +944,7 @@ class HookBridge:
                     verdict["args"] = updated_args
                 return verdict
         if native_name in {"Write", "Edit"}:
-            permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd)]
+            permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd, task_id)]
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
@@ -1139,8 +1147,8 @@ class HookBridge:
         use_id = tool_call_id or uuid4().hex
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = (
-            _v4a_edit_inputs(args["patch"], cwd) if v4a and event == "PostToolUse" else
-            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd)]
+            _v4a_edit_inputs(args["patch"], cwd, task_id) if v4a and event == "PostToolUse" else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd, task_id)]
         )
         if not native_inputs:
             return None

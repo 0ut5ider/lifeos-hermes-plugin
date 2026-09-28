@@ -81,6 +81,23 @@ class HookBridgeTests(unittest.TestCase):
         payload = json.loads(marker.read_text())
         self.assertEqual(payload["tool_input"]["file_path"], str(self.root / "notes/example.md"))
 
+    def test_symlinked_workspace_uses_actual_file_path_for_hook(self):
+        workspace = self.root / "workspace"
+        workspace.mkdir()
+        alias = self.root / "alias"
+        alias.symlink_to(workspace, target_is_directory=True)
+        marker = self.root / "symlink-file.json"
+        command = self.make_hook(
+            "record-symlink-file.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(alias)):
+            bridge.pre_tool_call("write_file", {"path": "notes/example.md", "content": "hello"}, session_id="s1")
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["tool_input"]["file_path"], str(workspace / "notes/example.md"))
+
     def test_project_hook_applies_only_to_its_project(self):
         project = self.root / "project-a"
         other = self.root / "project-b"
