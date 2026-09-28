@@ -14,6 +14,57 @@ from lifeos_hook_bridge.bridge import HookBridge
 
 
 class LiveContainerFileHookTests(unittest.TestCase):
+    def test_nested_execute_code_read_uses_container_and_outer_session(self):
+        image = os.environ.get("LIFEOS_DOCKER_PROBE_IMAGE")
+        if not image:
+            self.skipTest("disposable Docker image is required")
+
+        try:
+            from tools.code_execution_tool import execute_code
+            from tools.code_kernel import shutdown_all_kernels
+            from tools.environments.docker import DockerEnvironment
+            from tools.file_tools import clear_file_ops_cache
+            from tools.terminal_scope import reset_terminal_scope, set_terminal_scope
+            from tools.terminal_tool import _active_environments, _env_lock
+        except ImportError:
+            self.skipTest("Hermes source is required")
+
+        project = "/tmp/lifeos-nested-container-probe"
+        session = f"lifeos-nested-container-{uuid4().hex}"
+        env = DockerEnvironment(image=image, cwd=project, task_id=session,
+                                network=False, persistent_filesystem=False)
+        with _env_lock:
+            _active_environments["default"] = env
+        token = set_terminal_scope({"TERMINAL_ENV": "docker"})
+        try:
+            prepared = env.execute("mkdir -p . && printf NESTED_CONTAINER_READY > note.txt",
+                                   cwd=project, timeout=20)
+            self.assertEqual(prepared["returncode"], 0, prepared["output"])
+            source = (
+                "import hermes_tools\n"
+                f"print(hermes_tools.read_file(path={project + '/note.txt'!r}))\n"
+            )
+            result = json.loads(execute_code(source, task_id="default", session_id=session,
+                                             enabled_tools=["read_file"]))
+            self.assertEqual(result["status"], "success", result)
+            self.assertIn("NESTED_CONTAINER_READY", json.dumps(result))
+            transcript = (Path.home() / ".hermes/LIFEOS/MEMORY/STATE/hermes-transcripts"
+                          / f"{session}.jsonl")
+            self.assertTrue(transcript.exists(), session)
+            rows = [json.loads(line) for line in transcript.read_text().splitlines()]
+            names = [item.get("name") for row in rows if row.get("type") == "assistant"
+                     for item in row.get("message", {}).get("content", [])
+                     if isinstance(item, dict) and item.get("type") == "tool_use"]
+            self.assertIn("Read", names)
+        finally:
+            reset_terminal_scope(token)
+            shutdown_all_kernels()
+            clear_file_ops_cache("default")
+            with _env_lock:
+                _active_environments.pop("default", None)
+            env.cleanup(force_remove=True)
+            self.assertTrue(env.wait_for_cleanup(timeout=30))
+
     def test_docker_file_tools_and_hooks_use_the_same_path(self):
         image = os.environ.get("LIFEOS_DOCKER_PROBE_IMAGE")
         if not image:
