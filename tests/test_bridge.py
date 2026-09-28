@@ -14,7 +14,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
-from bridge import HookBridge
+from lifeos_hook_bridge.bridge import HookBridge
 
 
 class HookBridgeTests(unittest.TestCase):
@@ -77,7 +77,7 @@ class HookBridgeTests(unittest.TestCase):
             "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
         }}))
         bridge = self.bridge({})
-        with patch("bridge._trusted_project", side_effect=lambda path: path == project):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", side_effect=lambda path: path == project):
             result = bridge.pre_tool_call(
                 "terminal", {"command": "pwd", "workdir": str(project)}, session_id="project-a-session",
             )
@@ -101,7 +101,7 @@ class HookBridgeTests(unittest.TestCase):
             "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
         }}))
         bridge.poll_config_changes(force=True)
-        with patch("bridge._trusted_project", return_value=True):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
             result = bridge.pre_tool_call("terminal", args, session_id="s1")
         self.assertEqual(result, {"action": "block", "message": "reloaded deny"})
 
@@ -116,7 +116,7 @@ class HookBridgeTests(unittest.TestCase):
             "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
         }}))
         bridge = self.bridge({})
-        with patch("bridge._trusted_project", side_effect=lambda path: path == project):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", side_effect=lambda path: path == project):
             result = bridge.pre_tool_call(
                 "terminal", {"command": "pwd", "workdir": str(nested)}, session_id="s1",
             )
@@ -138,7 +138,7 @@ class HookBridgeTests(unittest.TestCase):
             }}))
             projects.append((project, nested, label))
         bridge = self.bridge({})
-        with patch("bridge._trusted_project", return_value=True):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
             for _, nested, label in projects:
                 result = bridge.pre_tool_call(
                     "terminal", {"command": "pwd", "workdir": str(nested)}, session_id="shared-session",
@@ -154,7 +154,7 @@ class HookBridgeTests(unittest.TestCase):
             "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}],
         }}))
         bridge = self.bridge({})
-        with patch("bridge._trusted_project", return_value=False):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=False):
             bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(project)}, session_id="s1")
         self.assertFalse(marker.exists())
 
@@ -172,7 +172,7 @@ class HookBridgeTests(unittest.TestCase):
             "hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]},
         }))
         bridge = self.bridge({})
-        with patch("bridge._trusted_project", return_value=True):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
             bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(project)}, session_id="s1")
         self.assertEqual(marker.read_text(), "project-value")
         other = self.root / "other-project"
@@ -180,7 +180,7 @@ class HookBridgeTests(unittest.TestCase):
         (other / ".claude/settings.json").write_text(json.dumps({
             "hooks": {"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]},
         }))
-        with patch("bridge._trusted_project", return_value=True):
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
             bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(other)}, session_id="s2")
         self.assertEqual(marker.read_text(), "missing")
 
@@ -252,7 +252,7 @@ class HookBridgeTests(unittest.TestCase):
             {"type": "command", "command": command, "async": True},
         ]}]}}))
         driver = (
-            "import os\nfrom pathlib import Path\nfrom bridge import HookBridge\n"
+            "import os\nfrom pathlib import Path\nfrom lifeos_hook_bridge.bridge import HookBridge\n"
             f"bridge=HookBridge(Path({str(settings)!r}),Path({str(self.root)!r}))\n"
             "bridge.pre_llm_call('X'*1048576,session_id='s1')\n"
             "os._exit(0)\n"
@@ -309,7 +309,7 @@ class HookBridgeTests(unittest.TestCase):
             f"Path({str(marker)!r}).touch()\n",
         )
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
-        with patch("bridge._hermes_write_requires_approval", return_value=True) as guard:
+        with patch("lifeos_hook_bridge.bridge._hermes_write_requires_approval", return_value=True) as guard:
             verdict = bridge.pre_tool_call(
                 "write_file", {"path": str(self.root / ".ssh/config"), "content": "Host example"}, session_id="s1",
             )
@@ -324,7 +324,7 @@ class HookBridgeTests(unittest.TestCase):
             "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny','reason':'LifeOS denial'}}}))\n",
         )
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
-        with patch("bridge._hermes_write_requires_approval", return_value=True):
+        with patch("lifeos_hook_bridge.bridge._hermes_write_requires_approval", return_value=True):
             verdict = bridge.pre_tool_call("write_file", {"path": str(self.root / ".ssh/config")}, session_id="s1")
         self.assertEqual(verdict, {"action": "block", "message": "LifeOS denial"})
 
@@ -475,7 +475,7 @@ class HookBridgeTests(unittest.TestCase):
             "data=json.load(sys.stdin)\n"
             f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
         )
-        with patch("bridge.POLICY_DIRECTORY", policy):
+        with patch("lifeos_hook_bridge.bridge.POLICY_DIRECTORY", policy):
             bridge = self.bridge({"ConfigChange": [{"hooks": [{"type": "command", "command": command}]}]})
             bridge.pre_llm_call("start", session_id="s1")
             (policy / "managed-settings.json").write_text("{}")
@@ -903,7 +903,7 @@ class HookBridgeTests(unittest.TestCase):
             def register_hook(self, name, callback):
                 hooks[name] = callback
 
-        plugin_root = Path(__file__).resolve().parents[1]
+        plugin_root = Path(__file__).resolve().parents[1] / "lifeos_hook_bridge"
         specification = importlib.util.spec_from_file_location(
             "lifeos_fixture_plugin", plugin_root / "__init__.py",
             submodule_search_locations=[str(plugin_root)],

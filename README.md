@@ -32,11 +32,11 @@ git rev-parse origin/feature/initial-scaffold
 Use that 40-character ID in Hermes's Git installer:
 
 ```sh
-hermes plugins install 0ut5ider/lifeos-hermes-plugin --ref <full-commit-id> --force --no-enable
+hermes plugins install 0ut5ider/lifeos-hermes-plugin/lifeos_hook_bridge --ref <full-commit-id> --no-enable
 hermes plugins enable lifeos-hook-bridge
 ```
 
-Hermes reports a caution scan verdict because the bridge executes installed hook commands. Review the scan findings before using `--force`. Hermes blocks a dangerous verdict even with that option. The plugin reads native hook registrations from `~/.claude/settings.json`; set `LIFEOS_HOOK_SETTINGS` in the Hermes process environment if the file is elsewhere. Restart the Hermes gateway after enabling the plugin.
+The install source is the `lifeos_hook_bridge/` directory, which contains only runtime files. The full repository includes tests and notes that cause Hermes's installer to report a caution scan verdict. The runtime directory passed the Hermes scan in the isolated test profile without `--force`. The plugin reads native hook registrations from `~/.claude/settings.json`; set `LIFEOS_HOOK_SETTINGS` in the Hermes process environment if the file is elsewhere. Restart the Hermes gateway after enabling the plugin.
 
 The Git installer was verified on the isolated `.212` account with a temporary local Git source and a disabled probe name. The probe plugin was removed afterward. The account blocks outbound downloads, so a direct GitHub install was not tested there. The core patch and 116 focused tests also passed against public Hermes HEAD `bac0c45d8` on 2026-09-27. Discord delivery remains unverified in the test account.
 
