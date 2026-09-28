@@ -42,4 +42,7 @@ for (( i=0; i<${#args[@]}; i++ )); do
     --effort=*) args[i]="--effort=$local_effort" ;;
   esac
 done
+if [[ "${LIFEOS_CHILD_INFERENCE_DIRECT:-0}" == 1 ]]; then
+  exec python3 "$(dirname "$0")/claude_direct.py" "${args[@]}"
+fi
 exec "$HOME/.local/bin/claude" "${args[@]}"

@@ -10,6 +10,7 @@ As of 2026-09-27, the development fixture is an unprivileged Linux account with 
 - LifeOS's shipped Hermes sidecar mount, including its identity renderer and guard plugin.
 - LifeOS's 74 native Claude Code hook registrations installed in the test account, plus the separate `lifeos-hook-bridge` Hermes plugin.
 - Bun 1.4.2 and ripgrep 15.2.0.
+- The private child-model configuration enables the plugin's direct Anthropic Messages adapter. Native LifeOS inference no longer starts Claude Code for ordinary text or image requests. Claude Code remains installed for reference tests.
 - LifeOS Pulse runs as the `com.lifeos.pulse` user service on loopback port 31337. Its five enabled template jobs are overridden to disabled in `LIFEOS/USER/CONFIG/PULSE.user.toml` for this test account. The service provides the local Skill and Agent HTTP hook routes.
 
 The installer detects Hermes, but its deployment tools default to `~/.claude`. Pass `--config-root ~/.hermes` explicitly. One runtime generator still writes to `~/.claude`, and many shipped files refer to that path. The fixture uses `~/.claude` as a link to `~/.hermes` until the path behavior has been mapped and addressed. This link is a test workaround, not a portable plugin installation method.
