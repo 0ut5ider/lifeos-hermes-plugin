@@ -24,7 +24,7 @@ The native bridge executes the installed registration types with partial coverag
 
 - The plugin validates and loads in the isolated Hermes account.
 - A real Hermes turn reads the synthetic principal as `Test Operator` and includes LifeOS memory context.
-- A native LifeOS child inference call returns `READY` through the local model. The model tier is translated, so tier selection is not verified.
+- Native LifeOS child inference returned `READY` at all four requested levels through the one local model after the launcher mapped them to supported efforts. LifeOS reported `modelDowngraded: true` for all four because its tier check compares model names. The local gateway's actual effort per request was not independently logged. See [the inference probe](../notes/2026-09-27-local-model-effort.md).
 - A temporary Stop hook blocked the first answer. Hermes continued and produced a second answer. The hook saw `stop_hook_active: false` followed by `true`.
 - Native LifeOS Format, Verification, and Writing gates wrote observability records from a Hermes turn after the bridge supplied a transcript.
 - A temporary PostToolUse hook appended its marker after the LifeOS sidecar transformed a tool result.
