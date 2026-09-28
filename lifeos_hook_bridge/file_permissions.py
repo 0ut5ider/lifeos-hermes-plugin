@@ -1,4 +1,4 @@
-# ABOUTME: Applies Claude Code file rules to paths used by Bash commands.
+# ABOUTME: Applies Claude Code file rules to Bash and direct file-tool paths.
 # ABOUTME: Keeps each rule anchored to the settings source that supplied it.
 
 from __future__ import annotations

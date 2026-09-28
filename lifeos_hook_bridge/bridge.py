@@ -1332,16 +1332,9 @@ class HookBridge:
             **fields,
         }
 
-    def command_approval(
-        self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
-    ) -> dict[str, str] | None:
-        cwd = cwd or _tool_cwd("terminal", {}, task_id)
-        self._remember_project(cwd, session_key, task_id)
-        self.poll_config_changes(force=True)
-        payload = self._payload(
-            "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
-        )
-        host_paths = _task_uses_host_paths(task_id)
+    def _permission_sources(
+        self, payload: dict[str, Any], task_id: str, host_paths: bool,
+    ) -> list[tuple[Any, str]]:
         project = self._matching_project(payload, host_paths)
         project_permissions = [
             (self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {}), str(project))
@@ -1357,7 +1350,19 @@ class HookBridge:
         local_permissions = [] if managed_only else [
             (self.user_permission_rules, str(self.settings_path.parent)), *project_permissions,
         ]
-        permission_sources = [*local_permissions, *managed_permissions]
+        return [*local_permissions, *managed_permissions]
+
+    def command_approval(
+        self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+    ) -> dict[str, str] | None:
+        cwd = cwd or _tool_cwd("terminal", {}, task_id)
+        self._remember_project(cwd, session_key, task_id)
+        self.poll_config_changes(force=True)
+        payload = self._payload(
+            "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
+        )
+        host_paths = _task_uses_host_paths(task_id)
+        permission_sources = self._permission_sources(payload, task_id, host_paths)
         from .bash_permissions import bash_file_targets
         from .file_permissions import file_target_decision
 
@@ -1542,13 +1547,47 @@ class HookBridge:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
-        if native_name in {"Write", "Edit"}:
+        file_rule_review_paths = []
+        if native_name in {"Read", "Write", "Edit"}:
             permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd, task_id)]
+            self.poll_config_changes(force=True)
+            host_paths = _task_uses_host_paths(task_id)
+            permission_payload = self._payload(
+                "PermissionRequest", session_id, cwd=cwd, tool_name=native_name,
+            )
+            permission_sources = self._permission_sources(permission_payload, task_id, host_paths)
+            from .file_permissions import file_target_decision
+
+            for native_input in permission_inputs:
+                path = native_input.get("file_path")
+                if not isinstance(path, str) or not path:
+                    continue
+                operation = "read" if native_name == "Read" else "write"
+                decision = file_target_decision(path, operation, cwd, permission_sources, host_paths=host_paths)
+                if decision == "deny":
+                    return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+                if decision == "ask":
+                    file_rule_review_paths.append(path)
+        if native_name in {"Write", "Edit"}:
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
+        if file_rule_review_paths:
+            if native_name in {"Write", "Edit"} and any(
+                _hermes_write_requires_approval(path, cwd) for path in file_rule_review_paths
+            ):
+                return {"action": "modify", "args": updated_args} if updated_args is not None else None
+            fingerprint = hashlib.sha256(json.dumps(permission_inputs, sort_keys=True).encode()).hexdigest()[:16]
+            verdict = {
+                "action": "approve",
+                "message": f"LifeOS file rule requests review of {native_name} for {', '.join(file_rule_review_paths)}",
+                "rule_key": f"lifeos-file-rule:{native_name}:{fingerprint}",
+            }
+            if updated_args is not None:
+                verdict["args"] = updated_args
+            return verdict
         if tool_name == "delegate_task" and self.model_tiers_provider is not None:
             from .model_tiers import route_delegate_args
             current = updated_args or args

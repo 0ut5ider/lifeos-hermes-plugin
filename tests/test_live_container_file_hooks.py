@@ -151,6 +151,22 @@ class LiveContainerFileHookTests(unittest.TestCase):
                         paths = [event["tool_input"]["file_path"] for event in file_events[6:]
                                  if event["hook_event_name"] == phase and event["tool_name"] == "Edit"]
                         self.assertCountEqual(paths, (delete_path, path, moved_path))
+                    settings.write_text(json.dumps({
+                        "hooks": {}, "permissions": {"deny": [
+                            f"Read(//{moved_path.lstrip('/')})",
+                            f"Edit(//{moved_path.lstrip('/')})",
+                        ]},
+                    }))
+                    denied_read = bridge.pre_tool_call(
+                        "read_file", {"path": moved_path}, session_id=session, task_id="default",
+                    )
+                    denied_write = bridge.pre_tool_call(
+                        "write_file", {"path": moved_path, "content": "changed"},
+                        session_id=session, task_id="default",
+                    )
+                    self.assertEqual(denied_read["action"], "block")
+                    self.assertEqual(denied_write["action"], "block")
+                    self.assertEqual(env.execute("cat moved.txt", cwd=project, timeout=20)["output"], "second\n")
                 finally:
                     bridge.close()
         finally:

@@ -618,6 +618,80 @@ class HookBridgeTests(unittest.TestCase):
         self.assertIsNone(bridge.pre_tool_call("write_file", {"path": "/tmp/example.txt", "content": "safe"}, session_id="s1"))
         self.assertTrue(marker.exists())
 
+    def test_file_rule_deny_blocks_direct_read_and_write_despite_hook_grant(self):
+        grant = self.make_hook(
+            "grant-file.py",
+            "import json,sys\njson.load(sys.stdin)\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow'}}}))\n",
+        )
+        target = self.root / "guarded.txt"
+        settings = self.root / "settings.json"
+        cases = (
+            ("write_file", {"path": str(target), "content": "body"}, f"Edit(//{str(target).lstrip('/')})"),
+            ("read_file", {"path": str(target)}, f"Read(//{str(target).lstrip('/')})"),
+        )
+        for tool, args, rule in cases:
+            with self.subTest(tool=tool):
+                settings.write_text(json.dumps({
+                    "hooks": {"PermissionRequest": [{"matcher": "Write|Read", "hooks": [
+                        {"type": "command", "command": grant},
+                    ]}]},
+                    "permissions": {"deny": [rule]},
+                }))
+                bridge = HookBridge(settings, self.root)
+                self.addCleanup(bridge.close)
+                decision = bridge.pre_tool_call(tool, args, session_id="s1")
+                self.assertIsNotNone(decision)
+                self.assertEqual(decision["action"], "block")
+
+    def test_file_rule_ask_requires_review_despite_hook_grant(self):
+        grant = self.make_hook(
+            "grant-file-ask.py",
+            "import json,sys\njson.load(sys.stdin)\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow'}}}))\n",
+        )
+        target = self.root / "reviewed.txt"
+        settings = self.root / "settings.json"
+        cases = (
+            ("write_file", {"path": str(target), "content": "body"}, f"Edit(//{str(target).lstrip('/')})"),
+            ("read_file", {"path": str(target)}, f"Read(//{str(target).lstrip('/')})"),
+        )
+        for tool, args, rule in cases:
+            with self.subTest(tool=tool):
+                settings.write_text(json.dumps({
+                    "hooks": {"PermissionRequest": [{"matcher": "Write|Read", "hooks": [
+                        {"type": "command", "command": grant},
+                    ]}]},
+                    "permissions": {"ask": [rule]},
+                }))
+                bridge = HookBridge(settings, self.root)
+                self.addCleanup(bridge.close)
+                decision = bridge.pre_tool_call(tool, args, session_id="s1")
+                self.assertIsNotNone(decision)
+                self.assertEqual(decision["action"], "approve")
+
+    def test_file_rule_deny_checks_every_patch_target(self):
+        first = self.root / "first.txt"
+        second = self.root / "second.txt"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {},
+            "permissions": {"deny": [f"Edit(//{str(second).lstrip('/')})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        patch_text = (
+            "*** Begin Patch\n"
+            f"*** Update File: {first}\n+one\n"
+            f"*** Update File: {second}\n+two\n"
+            "*** End Patch"
+        )
+        verdict = bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
+        self.assertEqual(verdict["action"], "block")
+        self.assertIn(str(second), verdict["message"])
+
     def test_file_permission_neutral_requests_review(self):
         command = self.make_hook("neutral.py", "import json,sys\nassert json.load(sys.stdin)['tool_name']=='Edit'\n")
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
