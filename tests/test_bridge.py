@@ -542,6 +542,39 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual([row["session_id"] for row in rows], ["s1"])
 
+    def test_config_change_uses_matching_project_hooks_in_one_session(self):
+        projects = []
+        for label in ("alpha", "beta"):
+            project = self.root / label
+            (project / ".git").mkdir(parents=True)
+            (project / ".claude").mkdir()
+            marker = self.root / f"{label}-config.json"
+            command = self.make_hook(
+                f"{label}-config.py",
+                "import json,sys\nfrom pathlib import Path\n"
+                f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+            )
+            settings = project / ".claude/settings.json"
+            settings.write_text(json.dumps({"hooks": {
+                "ConfigChange": [{"hooks": [{"type": "command", "command": command}]}],
+            }}))
+            projects.append((project, settings, marker, command))
+        bridge = self.bridge({})
+        bridge.pre_llm_call("start", session_id="shared-session")
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True):
+            for project, _, _, _ in projects:
+                bridge.pre_tool_call(
+                    "terminal", {"command": "pwd", "workdir": str(project)}, session_id="shared-session",
+                )
+            changed_project, changed_settings, changed_marker, command = projects[0]
+            changed_settings.write_text(json.dumps({"version": 1, "hooks": {
+                "ConfigChange": [{"hooks": [{"type": "command", "command": command}]}],
+            }}))
+            bridge.poll_config_changes(force=True)
+        self.assertTrue(changed_marker.exists())
+        self.assertEqual(json.loads(changed_marker.read_text())["cwd"], str(changed_project))
+        self.assertFalse(projects[1][2].exists())
+
     def test_config_change_reports_managed_policy_files(self):
         policy = self.root / "managed-policy"
         dropins = policy / "managed-settings.d"

@@ -554,13 +554,20 @@ class HookBridge:
             source = self._config_sources().get(path, "skills")
             blocked = False
             for session_id in sessions:
+                project = next(
+                    (candidate for candidate in sorted(
+                        session_projects.get(session_id, ()), key=lambda value: len(value.parts), reverse=True,
+                    ) if path.is_relative_to(candidate / ".claude")),
+                    None,
+                )
                 if source in {"project_settings", "local_settings"} or (
                     source == "skills" and not path.is_relative_to(self.settings_path.parent / "skills")
                 ):
-                    if not any(path.is_relative_to(project / ".claude") for project in session_projects.get(session_id, ())):
+                    if project is None:
                         continue
                 outcomes = self._run("ConfigChange", self._payload(
                     "ConfigChange", session_id, source=source, file_path=str(path), config_path=str(path),
+                    **({"cwd": str(project)} if project is not None else {}),
                 ), source)
                 blocked = blocked or any(
                     process.returncode == 2 or (output or {}).get("decision") == "block"
