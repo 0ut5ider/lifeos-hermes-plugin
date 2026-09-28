@@ -43,6 +43,8 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
             f"stat {name}.link", f"diff {name}.link {name}.ordinary",
             f"sort {name}.link", f"ls {name}.link", f"file {name}.link",
             f"find {name}.link -maxdepth 0",
+            f"rg parity {name}.link", f"cut -c 1-6 {name}.link",
+            f"awk '{{print $1}}' {name}.link",
         )
         try:
             setup = env.execute(

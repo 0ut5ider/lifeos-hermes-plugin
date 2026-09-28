@@ -114,6 +114,42 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
 
     def reader_operands(name, children):
         nonlocal certain
+        if name == "awk":
+            program_seen = False
+            position = 0
+            while position < len(children):
+                word = literal(children[position])
+                position += 1
+                if word in {"-f", "--file"}:
+                    if position >= len(children):
+                        certain = False
+                        return
+                    program_file = literal(children[position])
+                    if program_file is None:
+                        certain = False
+                    elif program_file != "-":
+                        targets.append(("read", program_file))
+                    position += 1
+                    program_seen = True
+                    continue
+                if word is not None and word.startswith("-f") and len(word) > 2:
+                    targets.append(("read", word[2:]))
+                    program_seen = True
+                    continue
+                if word is not None and word.startswith("--file="):
+                    targets.append(("read", word.split("=", 1)[1]))
+                    program_seen = True
+                    continue
+                if word is not None and word.startswith("-") and not program_seen:
+                    certain = False
+                    return
+                if not program_seen:
+                    program_seen = True
+                elif word is None:
+                    certain = False
+                elif word != "-":
+                    targets.append(("read", word))
+            return
         words = [literal(child) for child in children]
         if any(word is None for word in words):
             certain = False
@@ -169,7 +205,7 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                         r"-[cmlLw]+", word
                     ):
                         continue
-                if name == "grep":
+                if name in {"grep", "rg"}:
                     if word in {"-e", "--regexp", "-f", "--file"}:
                         if position >= len(words):
                             certain = False
@@ -250,6 +286,19 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                     "--recursive", "--classify", "--color=auto", "--color=never",
                 }):
                     continue
+                if name == "cut":
+                    if word in {"-b", "--bytes", "-c", "--characters", "-f", "--fields", "-d",
+                                "--delimiter", "--output-delimiter"}:
+                        position += 1
+                        if position > len(words):
+                            certain = False
+                        continue
+                    if word in {"-s", "--only-delimited", "-n", "--complement", "-z", "--zero-terminated"}:
+                        continue
+                    if re.fullmatch(r"-[bcf].+", word) or word.startswith((
+                        "--bytes=", "--characters=", "--fields=", "--delimiter=", "--output-delimiter=",
+                    )):
+                        continue
                 if name == "file" and word in {
                     "-b", "--brief", "-i", "--mime", "--mime-type", "-L", "--dereference",
                     "-z", "--uncompress", "-0", "--print0",
@@ -282,7 +331,7 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
             if name == "sed" and not script_seen:
                 script_seen = True
                 continue
-            if name == "grep" and not grep_pattern_seen:
+            if name in {"grep", "rg"} and not grep_pattern_seen:
                 grep_pattern_seen = True
                 continue
             if word != "-":
@@ -324,8 +373,8 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                                 certain = False
                         else:
                             targets.append(("write", word))
-                elif name in {"cat", "head", "tail", "sed", "wc", "grep", "stat", "diff", "sort",
-                              "ls", "file", "find"}:
+                elif name in {"cat", "head", "tail", "sed", "wc", "grep", "rg", "cut", "awk",
+                              "stat", "diff", "sort", "ls", "file", "find"}:
                     reader_operands(name, children[1:])
                 elif name in _WRAPPERS:
                     inner = _unwrapped(node, source)

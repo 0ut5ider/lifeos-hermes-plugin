@@ -2344,6 +2344,8 @@ class HookBridgeTests(unittest.TestCase):
             "diff parity-file other.txt", "diff -u parity-file other.txt",
             "sort parity-file", "sort -r parity-file",
             "ls parity-file", "file parity-file", "find parity-file -maxdepth 0",
+            "rg parity parity-file", "cut -c 1-6 parity-file",
+            "awk '{print $1}' parity-file",
         ):
             with self.subTest(command=command):
                 settings = self.root / "settings.json"
@@ -2388,6 +2390,21 @@ class HookBridgeTests(unittest.TestCase):
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
                          {"action": "deny"})
+
+    def test_awk_program_does_not_prompt_when_bash_allow_matches(self):
+        for command in (
+            "awk '{print $1}' parity-file",
+            "awk 'BEGIN { getline line < \"secret.txt\"; print line }'",
+        ):
+            with self.subTest(command=command):
+                settings = self.root / "settings.json"
+                settings.write_text(json.dumps({
+                    "hooks": {},
+                    "permissions": {"allow": [f"Bash({command})"]},
+                }))
+                bridge = HookBridge(settings, self.root)
+                self.addCleanup(bridge.close)
+                self.assertIsNone(bridge.command_approval(command, session_key="s1", cwd=str(self.root)))
 
     def test_remote_symlink_file_deny_applies_to_bash_and_read_tool(self):
         project = self.root / "remote-project"
@@ -2476,6 +2493,12 @@ class HookBridgeTests(unittest.TestCase):
             "find . -exec cat parity-file \\;": ([('read', '.')], False),
             "file -m magic.db parity-file": ([], False),
             "du parity-file": ([], True),
+            "rg parity parity-file": ([('read', 'parity-file')], True),
+            "rg -f parity-file other.txt": ([('read', 'parity-file'), ('read', 'other.txt')], True),
+            "cut -c 1-6 parity-file": ([('read', 'parity-file')], True),
+            "awk '{print $1}' parity-file": ([('read', 'parity-file')], True),
+            "awk -f parity-file other.txt": ([('read', 'parity-file'), ('read', 'other.txt')], True),
+            "awk 'BEGIN { getline line < \"secret.txt\"; print line }'": ([], True),
         }
         for command, expected in cases.items():
             with self.subTest(command=command):

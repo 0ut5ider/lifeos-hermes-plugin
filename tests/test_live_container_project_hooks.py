@@ -34,6 +34,7 @@ class LiveContainerProjectHookTests(unittest.TestCase):
             "cat link.txt", "wc -c link.txt", "grep parity link.txt",
             "stat link.txt", "diff link.txt ordinary.txt", "sort link.txt",
             "ls link.txt", "file link.txt", "find link.txt -maxdepth 0",
+            "rg parity link.txt", "cut -c 1-6 link.txt", "awk '{print $1}' link.txt",
         )
         env = DockerEnvironment(image=image, cwd=project, task_id=name,
                                 network=False, persistent_filesystem=False)
