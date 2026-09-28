@@ -122,6 +122,26 @@ class HookBridgeTests(unittest.TestCase):
             )
         self.assertEqual(result, {"action": "block", "message": "root hook"})
 
+    def test_nested_workdir_finds_trusted_non_git_project_hooks(self):
+        project = self.root / "plain-project"
+        nested = project / "src" / "nested"
+        (project / ".claude").mkdir(parents=True)
+        nested.mkdir(parents=True)
+        deny = self.make_hook("plain-deny.py", "import sys\nprint('plain project hook', file=sys.stderr)\nsys.exit(2)\n")
+        (project / ".claude/settings.json").write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
+        }}))
+        bridge = self.bridge({})
+        with patch("lifeos_hook_bridge.bridge._trusted_project", side_effect=lambda path: path == project):
+            result = bridge.pre_tool_call(
+                "terminal", {"command": "pwd", "workdir": str(nested)}, session_id="plain-session",
+            )
+        self.assertEqual(result, {"action": "block", "message": "plain project hook"})
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=False):
+            self.assertIsNone(bridge.pre_tool_call(
+                "terminal", {"command": "pwd", "workdir": str(nested)}, session_id="untrusted-session",
+            ))
+
     def test_one_session_uses_hooks_for_each_repository_workdir(self):
         projects = []
         for label in ("alpha", "beta"):

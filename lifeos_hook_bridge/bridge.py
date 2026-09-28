@@ -221,11 +221,22 @@ def _project_root_for_cwd(cwd: str) -> Path:
     try:
         from agent.skill_utils import find_project_root
     except ImportError:
-        for path in (directory, *directory.parents):
-            if (path / ".git").exists() and path != Path.home():
-                return path
-        return directory
-    return find_project_root(directory) or directory
+        repository = next(
+            (path for path in (directory, *directory.parents)
+             if (path / ".git").exists() and path != Path.home()),
+            None,
+        )
+    else:
+        repository = find_project_root(directory)
+    if repository is not None:
+        return repository
+    home = Path.home().resolve()
+    for path in (directory, *directory.parents):
+        if path == home or path.parent == path:
+            break
+        if (path / ".claude/settings.json").is_file() or (path / ".claude/settings.local.json").is_file():
+            return path
+    return directory
 
 
 class HookBridge:
