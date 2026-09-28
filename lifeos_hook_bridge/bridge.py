@@ -106,11 +106,11 @@ def _bash_permission_rule_matches(rule: Any, command: str) -> bool | None:
     return specifier == command
 
 
-def _bash_permission_rule_decision(command: str, sources: list[Any]) -> str:
+def _bash_permission_rule_decision(command: str, sources: list[Any], *, checked_file_targets: bool = False) -> str:
     """Apply deny, ask, allow order without granting through unsupported patterns."""
     from .bash_permissions import bash_command_forms
 
-    forms, parsed, allow_safe = bash_command_forms(command)
+    forms, parsed, allow_safe = bash_command_forms(command, checked_file_targets=checked_file_targets)
     candidates = [(command,)] if not forms else forms
     matches: dict[str, bool] = {"deny": False, "ask": False}
     uncertain: dict[str, bool] = {"deny": False, "ask": False}
@@ -179,18 +179,18 @@ def _managed_permission_sources() -> tuple[list[Any], bool]:
             settings = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, UnicodeError, ValueError) as error:
             LOG.warning("LifeOS managed permission policy could not be read: %s", error)
-            sources.append(None)
+            sources.append((None, str(path.parent)))
             continue
         if not isinstance(settings, dict):
-            sources.append(None)
+            sources.append((None, str(path.parent)))
             continue
         if "allowManagedPermissionRulesOnly" in settings:
             value = settings["allowManagedPermissionRulesOnly"]
             if isinstance(value, bool):
                 managed_only = value
             else:
-                sources.append(None)
-        sources.append(settings.get("permissions", {}))
+                sources.append((None, str(path.parent)))
+        sources.append((settings.get("permissions", {}), str(path.parent)))
     return sources, managed_only
 
 
@@ -1344,18 +1344,41 @@ class HookBridge:
         host_paths = _task_uses_host_paths(task_id)
         project = self._matching_project(payload, host_paths)
         project_permissions = [
-            self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {})
+            (self.project_hook_settings.get(project / ".claude" / name, {}).get("permissions", {}), str(project))
             for name in ("settings.json", "settings.local.json")
         ] if project is not None else []
         if not host_paths:
             remote = self._remote_project_settings(payload, task_id)
             if remote is not None:
-                project_permissions.extend(settings.get("permissions", {}) for settings in remote[1])
+                project_permissions.extend(
+                    (settings.get("permissions", {}), str(remote[0].root)) for settings in remote[1]
+                )
         managed_permissions, managed_only = _managed_permission_sources()
-        local_permissions = [] if managed_only else [self.user_permission_rules, *project_permissions]
-        rule_decision = _bash_permission_rule_decision(command, [*local_permissions, *managed_permissions])
+        local_permissions = [] if managed_only else [
+            (self.user_permission_rules, str(self.settings_path.parent)), *project_permissions,
+        ]
+        permission_sources = [*local_permissions, *managed_permissions]
+        from .bash_permissions import bash_file_targets
+        from .file_permissions import file_target_decision
+
+        targets, targets_certain = bash_file_targets(command)
+        file_decision = "unknown" if not targets_certain else "allow"
+        for operation, target in targets:
+            decision = file_target_decision(target, operation, cwd, permission_sources, host_paths=host_paths)
+            if decision == "deny":
+                return {"action": "deny"}
+            if decision in {"ask", "unknown"} or (
+                operation == "write" and host_paths and _hermes_write_requires_approval(target, cwd)
+            ):
+                file_decision = "unknown"
+        rule_decision = _bash_permission_rule_decision(
+            command, [settings for settings, _ in permission_sources],
+            checked_file_targets=file_decision == "allow",
+        )
         if rule_decision == "deny":
             return {"action": "deny"}
+        if file_decision == "unknown":
+            rule_decision = "unknown"
         if host_paths and rule_decision == "allow":
             return None
         if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):

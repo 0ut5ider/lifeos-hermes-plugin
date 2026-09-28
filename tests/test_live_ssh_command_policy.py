@@ -105,6 +105,24 @@ class LiveSshCommandPolicyTests(unittest.TestCase):
                     self.assertEqual(len(prompts), 1, "Project denial must not ask for human approval")
                     observed = remote.execute(f"cat {shlex.quote(marker)}", cwd=SSH_PROJECT, timeout=20)
                     self.assertEqual(observed["output"], "hit", observed)
+                    remote.execute(f"rm -f {shlex.quote(marker)}", cwd=SSH_PROJECT, timeout=20)
+                    project_settings = {"permissions": {"deny": [f"Edit(./{Path(marker).name})"]}}
+                    written = remote.execute(
+                        f"cat > {shlex.quote(project_settings_path)}", cwd=SSH_PROJECT,
+                        stdin_data=json.dumps(project_settings), timeout=20,
+                    )
+                    self.assertEqual(written["returncode"], 0, written)
+                    settings.write_text(json.dumps({
+                        "hooks": {}, "permissions": {"allow": [f"Bash(printf hit > {marker})"]},
+                    }))
+                    plugins_mod._reset_plugin_managers_for_tests()
+                    redirect = json.loads(terminal_module.terminal_tool(
+                        f"printf hit > {marker}", task_id=task_id, workdir=SSH_PROJECT, timeout=20,
+                    ))
+                    self.assertEqual(redirect["status"], "blocked", redirect)
+                    self.assertEqual(len(prompts), 1, "Remote file denial must not ask for human approval")
+                    absent = remote.execute(f"test ! -e {shlex.quote(marker)}", cwd=SSH_PROJECT, timeout=20)
+                    self.assertEqual(absent["returncode"], 0, absent)
                 finally:
                     terminal_module.set_approval_callback(previous_callback)
                     plugins_mod._reset_plugin_managers_for_tests()

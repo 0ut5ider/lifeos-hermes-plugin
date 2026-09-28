@@ -2006,7 +2006,8 @@ class HookBridgeTests(unittest.TestCase):
         command = "curl https://example.com"
         bridge = self.bridge({})
         with patch("lifeos_hook_bridge.bridge._task_uses_host_paths", return_value=False), \
-             patch.object(bridge, "_remote_project_settings", return_value=(object(), [{
+             patch.object(bridge, "_remote_project_settings", return_value=(
+                 types.SimpleNamespace(root="/remote/project"), [{
                  "permissions": {"deny": [f"Bash({command})"]},
              }])):
             self.assertEqual(bridge.command_approval(
@@ -2212,9 +2213,79 @@ class HookBridgeTests(unittest.TestCase):
             with self.subTest(command=command):
                 self.assertIsNone(bridge.command_approval(command, session_key="s1"))
                 self.assertFalse(marker.exists())
-        self.assertEqual(bridge.command_approval("printf ok > guarded", session_key="s1"),
+        self.assertEqual(bridge.command_approval("printf ok > ../guarded", session_key="s1", cwd=str(self.root)),
                          {"action": "review"})
         self.assertTrue(marker.exists())
+
+    def test_file_deny_overrides_native_bash_grant_for_redirect(self):
+        grant = self.make_hook(
+            "grant-redirect.py",
+            "import json,sys\njson.load(sys.stdin)\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'allow'}}}))\n",
+        )
+        cases = (
+            ("printf PARITY > parity-probe.txt", "Edit(./parity-probe.txt)"),
+            ("cat < parity-probe.txt", "Read(./parity-probe.txt)"),
+            ("printf PARITY > parity-probe.txt", "Read(./parity-probe.txt)"),
+            ("printf PARITY | tee parity-probe.txt", "Edit(./parity-probe.txt)"),
+        )
+        for command, deny_rule in cases:
+            with self.subTest(command=command, rule=deny_rule):
+                settings = self.root / "settings.json"
+                settings.write_text(json.dumps({
+                    "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                        {"type": "command", "command": grant},
+                    ]}]},
+                    "permissions": {"allow": [f"Bash({command})"], "deny": [deny_rule]},
+                }))
+                bridge = HookBridge(settings, self.root)
+                self.addCleanup(bridge.close)
+                self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
+                                 {"action": "deny"})
+
+    def test_allowed_bash_redirect_in_working_directory_skips_permission_hook(self):
+        marker = self.root / "permission-invoked"
+        hook = self.make_hook(
+            "deny-redirect.py",
+            "import json, pathlib, sys\njson.load(sys.stdin)\n"
+            f"pathlib.Path({str(marker)!r}).write_text('invoked')\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'deny'}}}))\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(printf *)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval(
+            "printf PARITY > parity-probe.txt", session_key="s1", cwd=str(self.root),
+        ))
+        self.assertFalse(marker.exists())
+
+    def test_exact_bash_allow_includes_redirect_text(self):
+        marker = self.root / "permission-invoked"
+        hook = self.make_hook(
+            "exact-redirect.py",
+            "import pathlib,sys\nsys.stdin.read()\n"
+            f"pathlib.Path({str(marker)!r}).write_text('invoked')\n",
+        )
+        command = "printf PARITY > parity-probe.txt"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": [f"Bash({command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertIsNone(bridge.command_approval(command, session_key="s1", cwd=str(self.root)))
+        self.assertFalse(marker.exists())
 
     def test_managed_deny_overrides_user_allow(self):
         policy = self.root / "managed-policy"
