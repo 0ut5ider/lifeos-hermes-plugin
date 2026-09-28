@@ -19,6 +19,27 @@ The bridge needs the [Hermes core extension](patches/hermes-hook-controls.patch)
 
 Project hook registrations run only when the project root appears in Hermes's `skills.trusted_project_dirs`. A project settings file can contain shell commands, so the bridge does not execute it from an untrusted checkout.
 
+## Install the plugin
+
+Install Hermes with the [core hook extension](patches/hermes-hook-controls.patch), and install LifeOS with its native Claude Code hooks. Apply the [task patch](patches/lifeos-task-governance.patch) to the compatible LifeOS checkout, then apply the [watchdog patch](patches/lifeos-agent-watchdog.patch). The [test environment record](docs/test-environment.md) gives the revisions used for verification. Check each patch with `git apply --check` before applying it to a different revision.
+
+Clone this repository and get the full commit ID for the tested branch:
+
+```sh
+git rev-parse origin/feature/initial-scaffold
+```
+
+Use that 40-character ID in Hermes's Git installer:
+
+```sh
+hermes plugins install 0ut5ider/lifeos-hermes-plugin --ref <full-commit-id> --force --no-enable
+hermes plugins enable lifeos-hook-bridge
+```
+
+Hermes reports a caution scan verdict because the bridge executes installed hook commands. Review the scan findings before using `--force`. Hermes blocks a dangerous verdict even with that option. The plugin reads native hook registrations from `~/.claude/settings.json`; set `LIFEOS_HOOK_SETTINGS` in the Hermes process environment if the file is elsewhere. Restart the Hermes gateway after enabling the plugin.
+
+The Git installer was verified on the isolated `.212` account with a temporary local Git source and a disabled probe name. The probe plugin was removed afterward. The account blocks outbound downloads, so a direct GitHub install was not tested there. Discord delivery also remains unverified in that test account.
+
 ## License
 
 MIT. See [LICENSE](LICENSE).
