@@ -50,6 +50,8 @@ Confirm that the message appears as the intended test bot. This checks outbound 
 
 On `.212`, an outbound message appeared in `#general`. An unmentioned `READY-212` was ignored. A message mentioning Shiny Hermes Bot created a thread and received a `READY-212` response. This verified inbound gateway events and outbound replies with the separate test bot.
 
+Discord can show the bot account and its same-named role as identical `@Shiny Hermes Bot` labels. The raw form `<@bot-user-id>` mentions the bot account. The form `<@&role-id>` mentions a role, and Hermes's channel mention rule ignores it. On `.212`, two 10:42 and 10:54 test requests used the role form and produced no Hermes session or watchdog. Select the bot account in Discord's member list, or send the request inside a thread that the bot already joined. Check the raw message through Discord's API if the visual label is ambiguous.
+
 To make one channel mention-free, set `DISCORD_FREE_RESPONSE_CHANNELS` to its channel ID. Keep `DISCORD_REQUIRE_MENTION=true` for other channels. If you also want a thread for each top-level message in that free-response channel, set `DISCORD_FREE_RESPONSE_AUTO_THREAD=true`; the default is inline replies. Restart the gateway after configuration changes.
 
 ## 5. Verify scheduled delivery separately

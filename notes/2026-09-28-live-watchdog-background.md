@@ -11,3 +11,9 @@ Adrian sent a second request at 09:12 Eastern. This time the native watchdog sta
 ## Discord mention diagnostic, 10:42 EDT
 
 Adrian's screenshot showed a 10:42 message in `#general` with a visible `@Shiny Hermes Bot` label and a 127-second background request. A read-only Discord API lookup of that message, ID `1554141195452682373`, returned `<@&1554102743944134667>` in its content. The `&` identifies a role mention. The earlier 09:03 and 09:12 requests that reached Hermes contained `<@1554102173535703140>`, the bot account ID. The 10:42 message was therefore not directed to the bot under Hermes's mention rule. Hermes had no new session or watchdog state after 09:12. The missing alert for this attempt says nothing about watchdog delivery. A new request using the bot account mention is pending.
+
+## Live Discord watchdog delivery, 10:55 to 10:59 EDT
+
+Adrian posted the 127-second request inside the bot's existing Discord thread at 10:55:55. The gateway admitted it at 10:55:56 and created a background delegation at 10:56:11. The parent stopped that first child after checking its model-selection rule. It launched `deleg_af440515` at 10:57:04 on the Sonnet execution tier. The native watchdog process ran as a child of the gateway, and its starts file tracked the active delegation. Its last activity timestamp was 10:57:28.
+
+At 10:59:11, Hermes logged a watch-pattern notification for `WATCHDOG:` and injected it into the same Discord session. The bot posted a watchdog alert at 10:59:33. The bot described the alert as a false positive because the child was waiting on a tracked `sleep 127` process. At 10:59:44, the bot posted `WATCHDOG-212-DONE`. A read-only Discord API lookup confirmed both posts in the thread. This verifies the live native watchdog signal, Hermes notification routing, and Discord delivery for one `.212` background delegation. It does not show that the watchdog can distinguish an intentional long wait from an actual stall.
