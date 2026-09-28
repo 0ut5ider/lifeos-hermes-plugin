@@ -53,6 +53,37 @@ class HookBridgeTests(unittest.TestCase):
         result = bridge.pre_tool_call("terminal", {"command": "echo hi"}, session_id="s1")
         self.assertEqual(result, {"action": "block", "message": "blocked by test"})
 
+    def test_remote_channel_is_preserved_across_native_hook_events(self):
+        marker = self.root / "channel.json"
+        command = self.make_hook(
+            "record-channel.py",
+            "import json,os,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps({{'event':data['hook_event_name'],'channel':os.environ.get('LIFEOS_NOTIFICATION_CHANNEL')}}))\n",
+        )
+        group = [{"hooks": [{"type": "command", "command": command}]}]
+        bridge = self.bridge({
+            "SessionStart": group,
+            "UserPromptSubmit": group,
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}],
+            "Stop": group,
+        })
+        bridge.environment["TERM"] = "xterm"
+        bridge.environment["LIFEOS_NOTIFICATION_CHANNEL"] = "desktop"
+
+        bridge.pre_llm_call("Hello", session_id="discord-session", platform="discord")
+        self.assertEqual(json.loads(marker.read_text()), {"event": "UserPromptSubmit", "channel": "discord"})
+        bridge.pre_tool_call("terminal", {"command": "true"}, session_id="discord-session")
+        self.assertEqual(json.loads(marker.read_text()), {"event": "PreToolUse", "channel": "discord"})
+        bridge.stop("Done", session_id="discord-session", platform="discord")
+        self.assertEqual(json.loads(marker.read_text()), {"event": "Stop", "channel": "discord"})
+        bridge.session_end(session_id="discord-session")
+        self.assertNotIn("discord-session", bridge.session_platforms)
+
+        bridge.environment.pop("LIFEOS_NOTIFICATION_CHANNEL")
+        bridge.pre_llm_call("Hello", session_id="cli-session", platform="cli")
+        self.assertEqual(json.loads(marker.read_text()), {"event": "UserPromptSubmit", "channel": None})
+
     def test_terminal_hook_uses_tool_workdir(self):
         workdir = self.root / "tool-workspace"
         workdir.mkdir()

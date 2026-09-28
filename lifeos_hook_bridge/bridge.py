@@ -287,6 +287,7 @@ class HookBridge:
         self._apply_settings(json.loads(self.settings_path.read_text()))
         self.started_sessions: set[str] = set()
         self.session_lock = threading.RLock()
+        self.session_platforms: dict[str, str] = {}
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
@@ -558,6 +559,8 @@ class HookBridge:
 
     def _event_environment(self, payload: dict[str, Any]) -> dict[str, str]:
         environment = dict(self.environment)
+        with self.session_lock:
+            platform = self.session_platforms.get(payload.get("session_id", ""), "")
         project = self._matching_project(payload)
         if project is not None:
             with self.session_lock:
@@ -566,6 +569,8 @@ class HookBridge:
                     for key, value in settings.get("env", {}).items():
                         if isinstance(value, str):
                             environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+        if platform and platform not in {"cli", "tui", "desktop"}:
+            environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
         return environment
 
     def _config_files(self) -> dict[Path, tuple[int, int]]:
@@ -1110,9 +1115,13 @@ class HookBridge:
             self._save_task_state(session_id)
 
     def pre_llm_call(
-        self, user_message: Any, session_id: str = "", is_first_turn: bool | None = None, **_: Any,
+        self, user_message: Any, session_id: str = "", is_first_turn: bool | None = None,
+        platform: str = "", **_: Any,
     ) -> dict[str, str] | None:
         prompt = _prompt_text(user_message)
+        if platform:
+            with self.session_lock:
+                self.session_platforms[session_id] = platform.lower()
         self._remember_project(_scope_cwd(), session_id)
         context = self._drain_async_context(session_id)
         with self.session_lock:
@@ -1220,6 +1229,7 @@ class HookBridge:
         self._stop_agent_watchdog(session_id)
         with self.session_lock:
             self.started_sessions.discard(session_id)
+            self.session_platforms.pop(session_id, None)
             self.session_projects.pop(session_id, None)
             active_projects = {project for projects in self.session_projects.values() for project in projects}
             self.project_dirs = tuple(sorted(active_projects)) or (Path.cwd(),)
@@ -1270,7 +1280,11 @@ class HookBridge:
         )
         self._run("StopFailure", payload, error_name)
 
-    def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False, model: str = "", **_: Any) -> dict[str, str] | None:
+    def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False,
+             model: str = "", platform: str = "", **_: Any) -> dict[str, str] | None:
+        if platform:
+            with self.session_lock:
+                self.session_platforms[session_id] = platform.lower()
         self._append_transcript(session_id, "assistant", response, model=model)
         payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
         for process, output in self._run("Stop", payload):
