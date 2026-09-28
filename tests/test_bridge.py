@@ -482,15 +482,42 @@ class HookBridgeTests(unittest.TestCase):
         patch_text = (
             "*** Begin Patch\n"
             "*** Delete File: /tmp/deleted.txt\n"
-            "*** Update File: /tmp/old.txt\n"
-            "*** Move to: /tmp/new.txt\n"
-            "+changed\n"
+            "*** Move File: /tmp/old.txt -> /tmp/new.txt\n"
             "*** End Patch"
         )
         verdict = bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
         self.assertEqual(verdict["action"], "approve")
         self.assertEqual(set(marker.read_text().splitlines()), {
             "/tmp/deleted.txt", "/tmp/old.txt", "/tmp/new.txt",
+        })
+
+    def test_delete_and_move_hooks_keep_symlink_entries(self):
+        workspace = self.root / "workspace"
+        workspace.mkdir()
+        target = workspace / "target.txt"
+        target.write_text("content")
+        source = workspace / "source.txt"
+        source.symlink_to(target)
+        deleted = workspace / "deleted.txt"
+        deleted.symlink_to(target)
+        marker = self.root / "symlink-patch-paths"
+        command = self.make_hook(
+            "record-symlink-target.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(data['tool_input']['file_path']+'\\n')\n",
+        )
+        bridge = self.bridge({"PermissionRequest": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
+        patch_text = (
+            "*** Begin Patch\n"
+            "*** Delete File: deleted.txt\n"
+            "*** Move File: source.txt -> destination.txt\n"
+            "*** End Patch"
+        )
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(workspace)):
+            bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
+        self.assertEqual(set(marker.read_text().splitlines()), {
+            str(deleted), str(source), str(workspace / "destination.txt"),
         })
 
     def test_config_change_reports_project_and_local_settings(self):

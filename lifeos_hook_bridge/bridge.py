@@ -39,8 +39,8 @@ TOOL_NAMES = {
     "tool_search": "ToolSearch",
     "clarify": "AskUserQuestion",
 }
-V4A_WRITE_HEADER = re.compile(r"^\*\*\*\s*(?:Update|Add|Delete)\s+File:\s*(.+)$")
-V4A_MOVE_HEADER = re.compile(r"^\*\*\*\s*Move\s+to:\s*(.+)$")
+V4A_WRITE_HEADER = re.compile(r"^\*\*\*\s*(Update|Add|Delete)\s+File:\s*(.+)$")
+V4A_MOVE_HEADER = re.compile(r"^\*\*\*\s*Move\s+File:\s*(.+?)\s*->\s*(.+)$")
 API_ERROR_NAMES = {
     "rate_limit": "rate_limit",
     "upstream_rate_limit": "rate_limit",
@@ -82,14 +82,16 @@ def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
         return False
 
 
-def _hook_file_path(path: str, cwd: str, task_id: str = "default") -> str:
+def _hook_file_path(path: str, cwd: str, task_id: str = "default", *, entry: bool = False) -> str:
     candidate = path if os.path.isabs(path) or path.startswith("~") else os.path.join(cwd, path)
     try:
-        from tools.file_tools_paths import _resolve_path_for_task
+        from tools.file_tools_paths import _resolve_entry_for_task, _resolve_path_for_task
     except ImportError:
-        return os.path.realpath(os.path.expanduser(candidate))
+        expanded = os.path.expanduser(candidate)
+        return os.path.join(os.path.realpath(os.path.dirname(expanded)), os.path.basename(expanded)) if entry else os.path.realpath(expanded)
     try:
-        return str(_resolve_path_for_task(candidate, task_id or "default"))
+        resolver = _resolve_entry_for_task if entry else _resolve_path_for_task
+        return str(resolver(candidate, task_id or "default"))
     except Exception as error:
         LOG.warning("Hermes file path resolver unavailable: %s", error)
         return os.path.normpath(candidate)
@@ -121,13 +123,14 @@ def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "defau
 def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> list[dict[str, str]]:
     edits = []
     path = None
+    path_entry = False
     added = []
     removed = []
 
     def finish() -> None:
         if path is not None:
             edits.append({
-                "file_path": _hook_file_path(path, cwd, task_id),
+                "file_path": _hook_file_path(path, cwd, task_id, entry=path_entry),
                 "old_string": "\n".join(removed), "new_string": "\n".join(added),
             })
 
@@ -136,17 +139,25 @@ def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> lis
         move = V4A_MOVE_HEADER.match(line)
         if header:
             finish()
-            path = header.group(1).strip()
+            path = header.group(2).strip()
+            path_entry = header.group(1) == "Delete"
             added = []
             removed = []
         elif move:
+            finish()
+            path = None
             edits.append({
-                "file_path": _hook_file_path(move.group(1).strip(), cwd, task_id),
+                "file_path": _hook_file_path(move.group(1).strip(), cwd, task_id, entry=True),
+                "old_string": "", "new_string": "",
+            })
+            edits.append({
+                "file_path": _hook_file_path(move.group(2).strip(), cwd, task_id, entry=True),
                 "old_string": "", "new_string": "",
             })
         elif line.startswith("***"):
             finish()
             path = None
+            path_entry = False
             added = []
             removed = []
         elif path is not None and line.startswith("+"):
