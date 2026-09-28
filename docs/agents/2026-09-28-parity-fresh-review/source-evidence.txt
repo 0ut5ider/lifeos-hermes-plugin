@@ -1,0 +1,386 @@
+
+lifeos_hook_bridge/bridge.py:168-195
+168: def _managed_permission_sources() -> tuple[list[Any], bool]:
+169:     paths = [POLICY_DIRECTORY / "managed-settings.json"]
+170:     dropins = POLICY_DIRECTORY / "managed-settings.d"
+171:     if dropins.is_dir():
+172:         paths.extend(sorted(dropins.glob("*.json")))
+173:     sources = []
+174:     managed_only = False
+175:     for path in paths:
+176:         if not path.exists():
+177:             continue
+178:         try:
+179:             settings = json.loads(path.read_text(encoding="utf-8"))
+180:         except (OSError, UnicodeError, ValueError) as error:
+181:             LOG.warning("LifeOS managed permission policy could not be read: %s", error)
+182:             sources.append((None, str(path.parent)))
+183:             continue
+184:         if not isinstance(settings, dict):
+185:             sources.append((None, str(path.parent)))
+186:             continue
+187:         if "allowManagedPermissionRulesOnly" in settings:
+188:             value = settings["allowManagedPermissionRulesOnly"]
+189:             if isinstance(value, bool):
+190:                 managed_only = value
+191:             else:
+192:                 sources.append((None, str(path.parent)))
+193:         sources.append((settings.get("permissions", {}), str(path.parent)))
+194:     return sources, managed_only
+195:
+
+lifeos_hook_bridge/bridge.py:1380-1437
+1380:     def command_approval(
+1381:         self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+1382:     ) -> dict[str, str] | None:
+1383:         cwd = cwd or _tool_cwd("terminal", {}, task_id)
+1384:         self._remember_project(cwd, session_key, task_id)
+1385:         self.poll_config_changes(force=True)
+1386:         payload = self._payload(
+1387:             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
+1388:         )
+1389:         host_paths = _task_uses_host_paths(task_id)
+1390:         permission_sources = self._permission_sources(payload, task_id, host_paths)
+1391:         from .bash_permissions import bash_file_targets
+1392:         from .file_permissions import file_target_decision
+1393:
+1394:         targets, targets_certain = bash_file_targets(command)
+1395:         file_decision = "unknown" if not targets_certain else "allow"
+1396:         for operation, target in targets:
+1397:             resolved = None if host_paths else _backend_file_path(target, cwd, task_id)
+1398:             decision = file_target_decision(
+1399:                 target, operation, cwd, permission_sources,
+1400:                 host_paths=host_paths, resolved_path=resolved,
+1401:             )
+1402:             if decision == "deny":
+1403:                 return {"action": "deny"}
+1404:             if decision in {"ask", "unknown"} or (
+1405:                 operation == "write" and host_paths and _hermes_write_requires_approval(target, cwd)
+1406:             ):
+1407:                 file_decision = "unknown"
+1408:         rule_decision = _bash_permission_rule_decision(
+1409:             command, [settings for settings, _ in permission_sources],
+1410:             checked_file_targets=file_decision == "allow",
+1411:         )
+1412:         if rule_decision == "deny":
+1413:             return {"action": "deny"}
+1414:         if file_decision == "unknown":
+1415:             rule_decision = "unknown"
+1416:         if host_paths and rule_decision == "allow":
+1417:             return None
+1418:         if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):
+1419:             return None
+1420:         groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
+1421:         if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
+1422:                    for group in groups):
+1423:             return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
+1424:         granted = False
+1425:         denied = False
+1426:         for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
+1427:             specific = _specific_output(output, "PermissionRequest")
+1428:             decision = specific.get("decision") or {}
+1429:             if decision.get("behavior") == "deny" or process.returncode == 2:
+1430:                 denied = True
+1431:             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+1432:                 granted = True
+1433:         if denied:
+1434:             return {"action": "deny"}
+1435:         if granted:
+1436:             return {"action": "review"} if rule_decision in {"ask", "unknown"} else {"action": "allow"}
+1437:         return {"action": "review"}
+
+lifeos_hook_bridge/bridge.py:1540-1609
+1540:             for process, output in self._run(
+1541:                 "PreToolUse", payload, native_name,
+1542:                 matcher_alias="Bash" if isinstance(code, str) and code else "",
+1543:                 alias_input={"command": code} if isinstance(code, str) and code else None,
+1544:                 task_id=task_id,
+1545:             ):
+1546:                 specific = _specific_output(output, "PreToolUse")
+1547:                 decision = specific.get("permissionDecision")
+1548:                 if process.returncode == 2 or decision in {"deny", "block"}:
+1549:                     message = specific.get("permissionDecisionReason") or process.stderr.strip() or "Blocked by a LifeOS hook"
+1550:                     return {"action": "block", "message": str(message)[:2000]}
+1551:                 updated = specific.get("updatedInput")
+1552:                 if isinstance(updated, dict) and not v4a and not (
+1553:                     tool_name == "execute_code" and "command" in updated
+1554:                 ):
+1555:                     updated_args = _hermes_input(native_name, updated)
+1556:                 context = specific.get("additionalContext")
+1557:                 if isinstance(context, str) and context.strip():
+1558:                     if native_name == "Agent" and "WATCHDOG:" in context and "Monitor(" in context:
+1559:                         watching = self._ensure_agent_watchdog(session_id)
+1560:                         context = (
+1561:                             "LifeOS watchdog is monitoring this Hermes background agent. "
+1562:                             "Alerts will reach this session through Hermes process notifications."
+1563:                             if watching else
+1564:                             "LifeOS watchdog is unavailable here. Hermes delegation stall monitoring still applies."
+1565:                         )
+1566:                     extra_context.append(context.strip())
+1567:         if extra_context:
+1568:             with self.session_lock:
+1569:                 key = (session_id, tool_call_id or tool_name)
+1570:                 self.pending_tool_context[key] = extra_context
+1571:                 if len(self.pending_tool_context) > 1024:
+1572:                     self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
+1573:         if tool_name.startswith("mcp__"):
+1574:             verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd, task_id)
+1575:             if verdict:
+1576:                 if verdict["action"] == "approve" and updated_args is not None:
+1577:                     verdict["args"] = updated_args
+1578:                 return verdict
+1579:         file_rule_review_paths = []
+1580:         if native_name in {"Read", "Write", "Edit"}:
+1581:             permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd, task_id)]
+1582:             self.poll_config_changes(force=True)
+1583:             host_paths = _task_uses_host_paths(task_id)
+1584:             permission_payload = self._payload(
+1585:                 "PermissionRequest", session_id, cwd=cwd, tool_name=native_name,
+1586:             )
+1587:             permission_sources = self._permission_sources(permission_payload, task_id, host_paths)
+1588:             from .file_permissions import file_target_decision
+1589:
+1590:             for native_input in permission_inputs:
+1591:                 path = native_input.get("file_path")
+1592:                 if not isinstance(path, str) or not path:
+1593:                     continue
+1594:                 operation = "read" if native_name == "Read" else "write"
+1595:                 resolved = None if host_paths else _backend_file_path(path, cwd, task_id)
+1596:                 decision = file_target_decision(
+1597:                     path, operation, cwd, permission_sources,
+1598:                     host_paths=host_paths, resolved_path=resolved,
+1599:                 )
+1600:                 if decision == "deny":
+1601:                     return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+1602:                 if decision == "ask" or (decision == "unknown" and not host_paths):
+1603:                     file_rule_review_paths.append(path)
+1604:         if native_name in {"Write", "Edit"}:
+1605:             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
+1606:             if verdict:
+1607:                 if verdict["action"] == "approve" and updated_args is not None:
+1608:                     verdict["args"] = updated_args
+1609:                 return verdict
+
+lifeos_hook_bridge/bridge.py:1073-1086
+1073:     def _run(
+1074:         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
+1075:         alias_input: dict[str, Any] | None = None, task_id: str = "",
+1076:     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
+1077:         jobs = []
+1078:         host_paths = _task_uses_host_paths(task_id)
+1079:         environment = self._event_environment(payload, host_paths)
+1080:         process_cwd = _hook_process_cwd(payload, self.root) if host_paths else str(self.root)
+1081:         for group in self._hook_groups(event, payload, host_paths, task_id):
+1082:             matcher = group.get("matcher", "")
+1083:             native_match = not matcher or bool(re.fullmatch(matcher, tool_name))
+1084:             alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
+1085:             if not native_match and not alias_match:
+1086:                 continue
+
+lifeos_hook_bridge/bridge.py:1792-1800
+1792:         if first_turn:
+1793:             transcript = self.transcript_path(session_id)
+1794:             resumed = (not is_first_turn) if is_first_turn is not None else (
+1795:                 transcript.exists() and transcript.stat().st_size > 0
+1796:             )
+1797:             source = "resume" if resumed else "startup"
+1798:             start_payload = self._payload("SessionStart", session_id, source=source)
+1799:             context.extend(self._context(self._run("SessionStart", start_payload), "SessionStart", allow_plain=True))
+1800:         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
+
+lifeos_hook_bridge/bridge.py:1907-1910
+1907:     def session_end(self, session_id: str = "", **_: Any) -> None:
+1908:         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
+1909:         shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
+1910:         self._stop_agent_watchdog(session_id)
+
+lifeos_hook_bridge/file_permissions.py:120-155
+120:         return "unknown"
+121:     requested = os.path.normpath(target if os.path.isabs(target) else os.path.join(cwd, target))
+122:     if not host_paths and resolved_path is not None and not os.path.isabs(resolved_path):
+123:         return "unknown"
+124:     resolved = os.path.realpath(requested) if host_paths else os.path.normpath(resolved_path or requested)
+125:     paths = (requested,) if resolved == requested else (requested, resolved)
+126:     tools = ("Read", "Edit") if operation == "write" else ("Read",)
+127:     for action in ("deny", "ask"):
+128:         uncertain = False
+129:         for settings, source in sources:
+130:             for tool in tools:
+131:                 match = _source_matches(settings, action, tool, paths, cwd, source)
+132:                 if match is True:
+133:                     return action
+134:                 if match is None:
+135:                     uncertain = True
+136:         if uncertain:
+137:             return "unknown"
+138:     if not host_paths and resolved_path is None:
+139:         return "unknown"
+140:     allow_tool = "Edit" if operation == "write" else "Read"
+141:     explicitly_allowed = False
+142:     for settings, source in sources:
+143:         match = _source_matches(settings, "allow", allow_tool, paths, cwd, source)
+144:         if match is True:
+145:             explicitly_allowed = True
+146:         elif match is None:
+147:             return "unknown"
+148:     inside_cwd = requested == cwd or requested.startswith(cwd.rstrip("/") + "/")
+149:     if resolved != requested:
+150:         inside_cwd = inside_cwd and (resolved == cwd or resolved.startswith(cwd.rstrip("/") + "/"))
+151:     return "allow" if explicitly_allowed or inside_cwd else "unknown"
+
+lifeos_hook_bridge/bash_permissions.py:105-121
+105:         if node.type not in {"word", "number", "string", "raw_string"} or node.named_children:
+106:             return None
+107:         try:
+108:             parts = shlex.split(raw)
+109:         except ValueError:
+110:             return None
+111:         if len(parts) != 1 or any(char in parts[0] for char in "$`*?[]") or parts[0].startswith("~"):
+112:             return None
+113:         return parts[0]
+114:
+115:     def reader_operands(name, children):
+116:         nonlocal certain
+117:         if name == "awk":
+118:             program_seen = False
+119:             position = 0
+120:             while position < len(children):
+121:                 word = literal(children[position])
+
+lifeos_hook_bridge/bash_permissions.py:342-391
+342:             # A sed script can open additional files with r, w, or e commands.
+343:             certain = False
+344:
+345:     def visit(node):
+346:         nonlocal certain
+347:         if node.type == "file_redirect":
+348:             raw = source[node.start_byte:node.end_byte].decode("utf-8").strip()
+349:             children = node.named_children
+350:             target = children[-1] if children else None
+351:             target_text = source[target.start_byte:target.end_byte].decode("utf-8") if target else ""
+352:             if target_text != "/dev/null" and not re.fullmatch(r"[0-9]*[<>]&(?:[0-9]+|-)", raw):
+353:                 name = literal(target) if target is not None else None
+354:                 if name is None:
+355:                     certain = False
+356:                 else:
+357:                     operator = raw[:target.start_byte - node.start_byte].strip()
+358:                     targets.append(("read" if operator.endswith("<") else "write", name))
+359:         elif node.type == "command":
+360:             children = node.named_children
+361:             if children and children[0].type == "command_name":
+362:                 name = source[children[0].start_byte:children[0].end_byte].decode("utf-8")
+363:                 if name == "tee":
+364:                     options_done = False
+365:                     for child in children[1:]:
+366:                         word = literal(child)
+367:                         if word is None:
+368:                             certain = False
+369:                         elif not options_done and word == "--":
+370:                             options_done = True
+371:                         elif not options_done and word.startswith("-"):
+372:                             if word not in {"-a", "--append", "-i", "--ignore-interrupts", "-p"}:
+373:                                 certain = False
+374:                         else:
+375:                             targets.append(("write", word))
+376:                 elif name in {"cat", "head", "tail", "sed", "wc", "grep", "rg", "cut", "awk",
+377:                               "stat", "diff", "sort", "ls", "file", "find"}:
+378:                     reader_operands(name, children[1:])
+379:                 elif name in _WRAPPERS:
+380:                     inner = _unwrapped(node, source)
+381:                     if inner is None:
+382:                         certain = False
+383:                     else:
+384:                         inner_targets, inner_certain = bash_file_targets(inner)
+385:                         targets.extend(inner_targets)
+386:                         certain = certain and inner_certain
+387:         for child in node.named_children:
+388:             visit(child)
+389:
+390:     visit(root)
+391:     return targets, certain
+
+Local public source snapshot registrations: /tmp/lifeos-upstream-parity-20260927/LifeOS/install/hooks/hooks.json
+{
+  "PreToolUse": [
+    {
+      "matcher": "Bash",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "$HOME/.claude/hooks/ContextReduction.hook.sh"
+        }
+      ]
+    },
+    {
+      "matcher": "Skill",
+      "hooks": [
+        {
+          "type": "http",
+          "url": "http://localhost:31337/hooks/skill-guard"
+        }
+      ]
+    },
+    {
+      "matcher": "Agent",
+      "hooks": [
+        {
+          "type": "http",
+          "url": "http://localhost:31337/hooks/agent-guard"
+        },
+        {
+          "type": "command",
+          "command": "$HOME/.claude/hooks/AgentInvocation.hook.ts"
+        }
+      ]
+    },
+    {
+      "matcher": "AskUserQuestion",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "$HOME/.claude/hooks/TabState.hook.ts"
+        }
+      ]
+    },
+    {
+      "matcher": "Bash|Write|Edit|MultiEdit",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "$HOME/.claude/hooks/PreToolGuard.hook.ts"
+        }
+      ]
+    }
+  ],
+  "SessionStart": [
+    {
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bun $HOME/.claude/hooks/HookHealer.hook.ts",
+          "timeout": 10
+        },
+        {
+          "type": "command",
+          "command": "$HOME/.claude/hooks/KittyEnvPersist.hook.ts"
+        },
+        {
+          "type": "command",
+          "command": "$HOME/.claude/hooks/LoadContext.hook.ts"
+        },
+        {
+          "type": "command",
+          "command": "bun $HOME/.claude/LIFEOS/TOOLS/FreshnessCache.ts --quiet",
+          "timeout": 5,
+          "async": true
+        },
+        {
+          "type": "command",
+          "command": "bun $HOME/.claude/LIFEOS/TOOLS/SettingsBackport.ts; bun $HOME/.claude/LIFEOS/TOOLS/MergeSettings.ts --system $HOME/.claude/settings.system.json --user $HOME/.claude/LIFEOS/USER/CONFIG/settings.user.json --output $HOME/.claude/settings.json",
+          "timeout": 15,
+          "async": true
+        }
+      ]
+    }
+  ]
+}

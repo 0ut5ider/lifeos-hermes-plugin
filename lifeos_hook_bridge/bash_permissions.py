@@ -1,6 +1,7 @@
 # ABOUTME: Finds executable Bash subcommands for LifeOS permission rule checks.
 # ABOUTME: Keeps quoted text separate and exposes only documented wrapper commands.
 
+import os
 import re
 import shlex
 from tree_sitter import Language, Parser
@@ -342,8 +343,42 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
             # A sed script can open additional files with r, w, or e commands.
             certain = False
 
-    def visit(node):
+    def changes_directory(node, data=source) -> bool:
+        if node.type == "command":
+            children = node.named_children
+            if children and children[0].type == "command_name":
+                name = data[children[0].start_byte:children[0].end_byte].decode("utf-8")
+                if name in {"cd", "pushd", "popd"}:
+                    return True
+        return any(changes_directory(child, data) for child in node.named_children)
+
+    def with_directory(target: str, directory: str) -> str:
+        if directory == "." or os.path.isabs(target):
+            return target
+        return os.path.normpath(os.path.join(directory, target))
+
+    def visit(node, directory="."):
         nonlocal certain
+        if node.type in {"subshell", "command_substitution", "process_substitution", "pipeline"}:
+            for child in node.named_children:
+                visit(child, directory)
+            return directory
+        if node.type in {"if_statement", "while_statement", "for_statement", "case_statement",
+                         "function_definition"} and changes_directory(node):
+            certain = False
+        if node.type in {"program", "list"}:
+            current = directory
+            previous = None
+            for child in node.named_children:
+                if previous is not None:
+                    gap = source[previous.end_byte:child.start_byte]
+                    if current != directory and (b";" in gap or b"&" in gap and b"&&" not in gap):
+                        certain = False
+                    if b"||" in gap and changes_directory(node):
+                        certain = False
+                current = visit(child, current)
+                previous = child
+            return current
         if node.type == "file_redirect":
             raw = source[node.start_byte:node.end_byte].decode("utf-8").strip()
             children = node.named_children
@@ -355,11 +390,25 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                     certain = False
                 else:
                     operator = raw[:target.start_byte - node.start_byte].strip()
-                    targets.append(("read" if operator.endswith("<") else "write", name))
+                    targets.append(("read" if operator.endswith("<") else "write",
+                                    with_directory(name, directory)))
         elif node.type == "command":
             children = node.named_children
             if children and children[0].type == "command_name":
                 name = source[children[0].start_byte:children[0].end_byte].decode("utf-8")
+                if name == "cd":
+                    if len(children) != 2:
+                        certain = False
+                        return directory
+                    destination = literal(children[1])
+                    if destination is None or destination == "-":
+                        certain = False
+                        return directory
+                    return os.path.normpath(os.path.join(directory, destination))
+                if name in {"pushd", "popd"}:
+                    certain = False
+                    return directory
+                first_target = len(targets)
                 if name == "tee":
                     options_done = False
                     for child in children[1:]:
@@ -384,8 +433,15 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                         inner_targets, inner_certain = bash_file_targets(inner)
                         targets.extend(inner_targets)
                         certain = certain and inner_certain
+                        inner_source = inner.encode("utf-8")
+                        if changes_directory(Parser(_LANGUAGE).parse(inner_source).root_node, inner_source):
+                            certain = False
+                for index in range(first_target, len(targets)):
+                    operation, target = targets[index]
+                    targets[index] = (operation, with_directory(target, directory))
         for child in node.named_children:
-            visit(child)
+            directory = visit(child, directory)
+        return directory
 
     visit(root)
     return targets, certain

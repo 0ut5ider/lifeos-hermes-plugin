@@ -1,0 +1,32 @@
+{
+  "date": "2026-09-28",
+  "runner": "Claude Code 2.1.272 in the isolated lifeos-claude-ref account on 192.168.8.212",
+  "model_route": "private LAN model through lifeos-reference",
+  "working_directory": "/home/lifeos-claude-ref/.claude",
+  "disposable_directory": "parity-cd-a9z314ib",
+  "file_content": "COMPOUND-CWD-PARITY",
+  "command": "cd parity-cd-a9z314ib && cat secret",
+  "control": {
+    "permission_allow": ["Bash(cd parity-cd-a9z314ib && cat secret)"],
+    "permission_deny": [],
+    "permission_denials": [],
+    "result_reported_file_content": true,
+    "returncode": 0
+  },
+  "deny_probe": {
+    "permission_allow": ["Bash(cd parity-cd-a9z314ib && cat secret)"],
+    "permission_deny": ["Read(//home/lifeos-claude-ref/.claude/parity-cd-a9z314ib/secret)"],
+    "permission_denials": [
+      {
+        "tool_name": "Bash",
+        "tool_use_id": "chatcmpl-tool-a1e81a72781b38ba",
+        "tool_input": {
+          "command": "cd parity-cd-a9z314ib && cat secret",
+          "description": "Read secret file in parity test directory"
+        }
+      }
+    ],
+    "returncode": 0
+  },
+  "cleanup": "The temporary directory, file, and settings files were removed after both runs."
+}

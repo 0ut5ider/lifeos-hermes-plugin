@@ -2361,6 +2361,34 @@ class HookBridgeTests(unittest.TestCase):
                 self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
                                  {"action": "deny"})
 
+    def test_file_deny_follows_literal_bash_directory_change(self):
+        project = self.root / "sub"
+        project.mkdir()
+        (project / "secret").write_text("synthetic")
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {},
+            "permissions": {
+                "allow": ["Bash(*)"],
+                "deny": [f"Read(//{str(project / 'secret').lstrip('/')})"],
+            },
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval("cat sub/secret", session_key="s1", cwd=str(self.root)),
+                         {"action": "deny"})
+        for command in (
+            "cd sub && cat secret",
+            "(cd sub && cat secret)",
+            "cd sub; cat secret",
+        ):
+            with self.subTest(command=command):
+                self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
+                                 {"action": "deny"})
+        self.assertIsNone(bridge.command_approval(
+            "cd sub && cat ordinary", session_key="s1", cwd=str(self.root),
+        ))
+
     def test_in_place_sed_checks_edit_rule(self):
         command = "sed -i '1p' parity-file"
         settings = self.root / "settings.json"
@@ -2499,6 +2527,18 @@ class HookBridgeTests(unittest.TestCase):
             "awk '{print $1}' parity-file": ([('read', 'parity-file')], True),
             "awk -f parity-file other.txt": ([('read', 'parity-file'), ('read', 'other.txt')], True),
             "awk 'BEGIN { getline line < \"secret.txt\"; print line }'": ([], True),
+            "cd sub && cat secret": ([('read', 'sub/secret')], True),
+            "(cd sub && cat secret); cat outside": (
+                [('read', 'sub/secret'), ('read', 'outside')], True,
+            ),
+            "cd sub; cat secret": ([('read', 'sub/secret')], False),
+            "cd $project && cat secret": ([('read', 'secret')], False),
+            "cd sub && cat < secret": ([('read', 'sub/secret')], True),
+            "cd sub && printf x > secret": ([('write', 'sub/secret')], True),
+            "cd sub | cat secret": ([('read', 'secret')], True),
+            "cd sub || cat secret": ([('read', 'sub/secret')], False),
+            "cd sub; cd nested && cat secret": ([('read', 'sub/nested/secret')], False),
+            "builtin cd sub && cat secret": ([('read', 'secret')], False),
         }
         for command, expected in cases.items():
             with self.subTest(command=command):

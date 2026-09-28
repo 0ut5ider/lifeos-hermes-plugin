@@ -37,6 +37,7 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
         name = f"symlink-permission-{uuid4().hex}"
         secret = os.path.normpath(f"{project}/../{name}.txt")
         link = f"{project}/{name}.link"
+        nested_link = f"{project}/sub/{name}.link"
         ordinary = f"{project}/{name}.ordinary"
         file_commands = (
             f"cat {name}.link", f"wc -c {name}.link", f"grep parity {name}.link",
@@ -45,11 +46,14 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
             f"find {name}.link -maxdepth 0",
             f"rg parity {name}.link", f"cut -c 1-6 {name}.link",
             f"awk '{{print $1}}' {name}.link",
+            f"cd sub && cat {name}.link",
         )
         try:
             setup = env.execute(
                 f"printf '%s' parity > {shlex.quote(secret)} && "
                 f"ln -s {shlex.quote(secret)} {shlex.quote(link)} && "
+                f"mkdir -p {shlex.quote(project + '/sub')} && "
+                f"ln -s {shlex.quote(secret)} {shlex.quote(nested_link)} && "
                 f"printf '%s' ordinary > {shlex.quote(ordinary)}",
                 cwd=project, timeout=20,
             )
@@ -86,7 +90,8 @@ class LiveRemoteProjectHookTests(unittest.TestCase):
                     bridge.close()
         finally:
             env.execute(
-                f"rm -f {shlex.quote(secret)} {shlex.quote(link)} {shlex.quote(ordinary)}",
+                f"rm -f {shlex.quote(secret)} {shlex.quote(link)} {shlex.quote(nested_link)} "
+                f"{shlex.quote(ordinary)} && rmdir {shlex.quote(project + '/sub')}",
                 cwd=project, timeout=20,
             )
             clear_file_ops_cache("default")

@@ -1,0 +1,85 @@
+[
+  {
+    "case": "cwd_target",
+    "command": "cat sub/secret",
+    "targets": [
+      [
+        [
+          "read",
+          "sub/secret"
+        ]
+      ],
+      true
+    ],
+    "decision": {
+      "action": "deny"
+    }
+  },
+  {
+    "case": "cwd_target",
+    "command": "cd sub && cat secret",
+    "targets": [
+      [
+        [
+          "read",
+          "secret"
+        ]
+      ],
+      true
+    ],
+    "decision": null
+  },
+  {
+    "case": "cwd_target",
+    "command": "(cd sub && cat secret)",
+    "targets": [
+      [
+        [
+          "read",
+          "secret"
+        ]
+      ],
+      true
+    ],
+    "decision": null
+  },
+  {
+    "case": "cwd_target",
+    "command": "cd sub; cat secret",
+    "targets": [
+      [
+        [
+          "read",
+          "secret"
+        ]
+      ],
+      true
+    ],
+    "decision": null
+  },
+  {
+    "case": "malformed_managed",
+    "tool": "read_file",
+    "decision": null
+  },
+  {
+    "case": "malformed_managed",
+    "tool": "write_file",
+    "decision": null
+  },
+  {
+    "case": "malformed_managed",
+    "tool": "Bash",
+    "decision": {
+      "action": "review"
+    }
+  },
+  {
+    "case": "pretool_ask",
+    "decision": null
+  },
+  {
+    "case": "session_start_matcher",
+    "marker_exists": false
+  }
+]
