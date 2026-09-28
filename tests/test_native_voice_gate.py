@@ -43,3 +43,32 @@ class NativeVoiceGateTests(unittest.TestCase):
             self.assertEqual(len(events), 1)
             self.assertEqual(events[0]["hook"], "VoiceCompletion")
             self.assertEqual(events[0]["reason"], "remote_channel:discord")
+
+    def test_discord_turn_blocks_speaker_command_before_execution(self):
+        guard = Path(VOICE_HOOK_PATH).with_name("PreToolGuard.hook.ts")
+        if not guard.exists():
+            self.skipTest("LifeOS PreToolGuard is required")
+
+        with tempfile.TemporaryDirectory(prefix="voice-egress-parity-") as directory:
+            root = Path(directory)
+            home = root / "home"
+            home.mkdir()
+            settings = root / "settings.json"
+            settings.write_text(json.dumps({"hooks": {"PreToolUse": [{
+                "matcher": "Bash", "hooks": [{"type": "command", "command": f"bun {guard}"}],
+            }]}}))
+            bridge = HookBridge(settings, root)
+            bridge.environment["HOME"] = str(home)
+            bridge.environment["TERM"] = "xterm"
+            try:
+                bridge.pre_llm_call("Announce done", session_id="discord-speaker-probe", platform="discord")
+                result = bridge.pre_tool_call(
+                    "terminal", {"command": "curl http://127.0.0.1:31337/notify"},
+                    session_id="discord-speaker-probe",
+                )
+            finally:
+                bridge.close()
+
+            self.assertIsNotNone(result)
+            self.assertEqual(result["action"], "block")
+            self.assertIn("VoiceEgressGuard", result["message"])
