@@ -596,10 +596,10 @@ class HookBridge:
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
                     continue
-                timeout = max(1, min(int(hook.get("timeout", 60)), 300))
                 if hook.get("async"):
-                    jobs.append((self._run_async, (command, payload, timeout, environment), True))
+                    jobs.append((self._run_async, (command, payload, environment), True))
                     continue
+                timeout = max(1, min(int(hook.get("timeout", 60)), 300))
                 jobs.append((self._run_command, (event, command, payload, timeout, environment), False))
         outcomes = []
         if not jobs:
@@ -668,17 +668,24 @@ class HookBridge:
             return None
 
     def _run_async(
-        self, command: str, payload: dict[str, Any], timeout: int, environment: dict[str, str],
+        self, command: str, payload: dict[str, Any], environment: dict[str, str],
     ) -> None:
         spool_path = None
         try:
+            session_id = payload.get("session_id", "")
+            result_path = None
+            if session_id:
+                result_dir = self._async_result_dir(session_id)
+                result_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+                result_path = result_dir / f"{uuid4().hex}.json"
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", dir=self.transcript_dir,
                 prefix="async-hook-", suffix=".json", delete=False,
             ) as spool:
                 spool_path = Path(spool.name)
-                json.dump({"command": command, "payload": payload, "timeout": timeout}, spool)
-            subprocess.Popen(
+                json.dump({"command": command, "payload": payload,
+                           "result_path": str(result_path) if result_path else None}, spool)
+            process = subprocess.Popen(
                 [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)],
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
@@ -688,10 +695,45 @@ class HookBridge:
                 start_new_session=True,
                 close_fds=True,
             )
+            threading.Thread(target=process.wait, daemon=True, name="lifeos-async-hook-reap").start()
         except OSError as error:
             LOG.error("LifeOS async hook failed to start: %s", error)
             if spool_path is not None:
                 spool_path.unlink(missing_ok=True)
+
+    def _async_result_dir(self, session_id: str) -> Path:
+        name = hashlib.sha256(session_id.encode()).hexdigest()[:24]
+        return self.transcript_dir / "async-results" / name
+
+    def _drain_async_context(self, session_id: str) -> list[str]:
+        result_dir = self._async_result_dir(session_id)
+        if not result_dir.is_dir():
+            return []
+        context = []
+        def modified(path: Path) -> int:
+            try:
+                return path.stat().st_mtime_ns
+            except OSError:
+                return 0
+
+        for path in sorted(result_dir.glob("*.json"), key=modified):
+            claimed = path.with_suffix(f".{uuid4().hex}.claim")
+            try:
+                os.replace(path, claimed)
+                result = json.loads(claimed.read_text())
+                if not isinstance(result, dict):
+                    continue
+                if result.get("session_id") != session_id:
+                    continue
+                for key in ("additionalContext", "systemMessage"):
+                    value = result.get(key)
+                    if isinstance(value, str) and value.strip():
+                        context.append(value.strip())
+            except (OSError, ValueError, TypeError) as error:
+                LOG.warning("LifeOS async hook result could not be read: %s", error)
+            finally:
+                claimed.unlink(missing_ok=True)
+        return context
 
     def _payload(self, event: str, session_id: str, **fields: Any) -> dict[str, Any]:
         return {
@@ -947,7 +989,7 @@ class HookBridge:
     def pre_llm_call(self, user_message: Any, session_id: str = "", **_: Any) -> dict[str, str] | None:
         prompt = _prompt_text(user_message)
         self._remember_project(_scope_cwd(), session_id)
-        context = []
+        context = self._drain_async_context(session_id)
         with self.session_lock:
             first_turn = session_id not in self.started_sessions
             self.started_sessions.add(session_id)
@@ -1033,6 +1075,7 @@ class HookBridge:
 
     def session_end(self, session_id: str = "", **_: Any) -> None:
         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"))
+        shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
         self._stop_agent_watchdog(session_id)
         with self.session_lock:
             self.started_sessions.discard(session_id)

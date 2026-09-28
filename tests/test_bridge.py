@@ -265,6 +265,63 @@ class HookBridgeTests(unittest.TestCase):
             time.sleep(0.05)
         self.assertEqual(marker.read_text(), "1048576")
 
+    def test_async_hook_context_reaches_next_turn_in_same_session(self):
+        marker = self.root / "async-finished"
+        command = self.make_hook(
+            "async-context.py",
+            "import json\nfrom pathlib import Path\n"
+            "print(json.dumps({'hookSpecificOutput': {'hookEventName': 'UserPromptSubmit',"
+            " 'additionalContext': 'ASYNC_CONTEXT_READY'}, 'systemMessage': 'ASYNC_SYSTEM_READY'}), flush=True)\n"
+            f"Path({str(marker)!r}).touch()\n",
+        )
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [
+            {"type": "command", "command": command, "async": True},
+        ]}]})
+        first = bridge.pre_llm_call("first", session_id="s1")
+        self.assertFalse(first and "ASYNC_CONTEXT_READY" in first.get("context", ""))
+        deadline = time.monotonic() + 4
+        while not marker.exists() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        self.assertTrue(marker.exists())
+        time.sleep(0.15)
+        other = bridge.pre_llm_call("other", session_id="s2")
+        self.assertFalse(other and "ASYNC_CONTEXT_READY" in other.get("context", ""))
+        second = bridge.pre_llm_call("second", session_id="s1")
+        self.assertIn("ASYNC_CONTEXT_READY", second["context"])
+        self.assertIn("ASYNC_SYSTEM_READY", second["context"])
+
+    def test_async_hook_context_survives_parent_process_exit(self):
+        command = self.make_hook(
+            "async-persist.py",
+            "import json\nprint(json.dumps({'hookSpecificOutput': "
+            "{'hookEventName': 'UserPromptSubmit', 'additionalContext': 'PERSISTED_CONTEXT'}}))\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
+            {"type": "command", "command": command, "async": True},
+        ]}]}}))
+        driver = (
+            "import os\nfrom pathlib import Path\n"
+            "from lifeos_hook_bridge.bridge import HookBridge\n"
+            f"bridge=HookBridge(Path({str(settings)!r}),Path({str(self.root)!r}))\n"
+            "bridge.pre_llm_call('first',session_id='persistent-session')\n"
+            "os._exit(0)\n"
+        )
+        process = subprocess.run(
+            [sys.executable, "-c", driver], cwd=Path(__file__).resolve().parents[1], timeout=10,
+        )
+        self.assertEqual(process.returncode, 0)
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        result_dir = bridge._async_result_dir("persistent-session")
+        deadline = time.monotonic() + 5
+        while not list(result_dir.glob("*.json")) and time.monotonic() < deadline:
+            time.sleep(0.05)
+        self.assertTrue(list(result_dir.glob("*.json")))
+        bridge.hooks = {}
+        next_turn = bridge.pre_llm_call("second", session_id="persistent-session")
+        self.assertIn("PERSISTED_CONTEXT", next_turn["context"])
+
     def test_pre_tool_updated_input_maps_back_to_hermes(self):
         command = self.make_hook(
             "modify.py",
