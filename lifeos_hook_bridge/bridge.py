@@ -674,16 +674,6 @@ class HookBridge:
         outcomes = []
         if not jobs:
             return outcomes
-        if event == "SessionEnd":
-            for callback, arguments, asynchronous in jobs:
-                try:
-                    process = callback(*arguments)
-                except Exception as error:
-                    LOG.error("LifeOS %s hook failed: %s", event, error)
-                    continue
-                if not asynchronous and process is not None:
-                    outcomes.append((process, _decode_output(process.stdout)))
-            return outcomes
         sync_hooks = []
         for callback, arguments, asynchronous in jobs:
             if asynchronous:

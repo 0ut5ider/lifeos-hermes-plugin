@@ -319,24 +319,30 @@ class HookBridgeTests(unittest.TestCase):
         self.assertTrue(second_marker.exists())
         self.assertTrue(completed.exists())
 
-    def test_session_end_handlers_run_in_registration_order(self):
-        marker = self.root / "learning-ready"
+    def test_session_end_handlers_run_concurrently(self):
+        first_marker = self.root / "first-started"
+        second_marker = self.root / "second-started"
+        completed = self.root / "first-complete"
         first = self.make_hook(
-            "capture-learning.py",
+            "first-finalizer.py",
             "import time\nfrom pathlib import Path\n"
-            "time.sleep(0.2)\n"
-            f"Path({str(marker)!r}).touch()\n",
+            f"Path({str(first_marker)!r}).touch()\n"
+            f"other=Path({str(second_marker)!r})\n"
+            "for _ in range(100):\n"
+            " if other.exists(): break\n"
+            " time.sleep(0.01)\n"
+            "else: raise RuntimeError('second finalizer did not run concurrently')\n"
+            f"Path({str(completed)!r}).touch()\n",
         )
-        second = self.make_hook(
-            "cleanup-work.py",
-            "import sys\nfrom pathlib import Path\n"
-            f"sys.exit(0 if Path({str(marker)!r}).exists() else 2)\n",
-        )
+        second = self.make_hook("second-finalizer.py", f"from pathlib import Path\nPath({str(second_marker)!r}).touch()\n")
         bridge = self.bridge({"SessionEnd": [{"hooks": [
             {"type": "command", "command": first}, {"type": "command", "command": second},
         ]}]})
         outcomes = bridge._run("SessionEnd", bridge._payload("SessionEnd", "s1"))
         self.assertEqual([process.returncode for process, _ in outcomes], [0, 0])
+        self.assertTrue(first_marker.exists())
+        self.assertTrue(second_marker.exists())
+        self.assertTrue(completed.exists())
 
     def test_async_hook_receives_complete_input_after_parent_exits(self):
         marker = self.root / "async-complete"

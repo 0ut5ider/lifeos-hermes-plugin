@@ -1,0 +1,7 @@
+# SessionEnd parallel dispatch
+
+On 2026-09-28, the [Claude Code hook reference](https://code.claude.com/docs/en/hooks#hook-handler-fields) stated that all matching hook handlers run in parallel. The bridge made a special exception for SessionEnd and ran its handlers in registration order. A synthetic concurrency regression failed with exit codes `[1, 0]` under the serial path, then passed with `[0, 0]` after the exception was removed.
+
+The earlier serial rule aimed to keep WorkCompletionLearning ahead of SessionCleanup. That rationale no longer matches the installed LifeOS source: `findActiveSessionByUUID()` includes `complete` work rows, and the source comment explicitly calls out SessionEnd completion hooks. A native `.212` probe used a disposable LifeOS root, ran SessionCleanup to completion first, confirmed its work row and ISA became complete, then ran WorkCompletionLearning with the same session ID. The learning was created with the expected session ID and one closed claim.
+
+All six installed SessionEnd handlers also returned exit code zero when launched together in a disposable home and LifeOS root through the parallel bridge. All 106 plugin tests passed on `.212` with native hook paths configured and no skips. The installed bridge file matched the tested source by SHA-256. This establishes the tested order and concurrent dispatch behavior. It does not rule out every filesystem race between native hooks that write the same artifact during a live parallel SessionEnd event.
