@@ -1,0 +1,152 @@
+diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+index fb2921482..26d3b5f92 100644
+--- a/tests/tools/test_plugin_command_approval.py
++++ b/tests/tools/test_plugin_command_approval.py
+@@ -134,3 +134,68 @@ def test_smart_plugin_grant_does_not_override_tirith(monkeypatch):
+         result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
+     assert result["approved"] is False
+     assert decisions == [True]
++
++
++def test_native_plugin_denial_blocks_recoverable_pattern():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]):
++        result = check_dangerous_command(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++    assert result["approved"] is False
++    assert "plugin" in result["message"].lower()
++
++
++def test_native_plugin_denial_blocks_combined_guard():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++    assert result["approved"] is False
++    assert "plugin" in result["message"].lower()
++
++
++def test_installed_command_policy_denial_blocks_without_human_prompt(tmp_path, monkeypatch):
++    from hermes_cli import plugins as plugins_mod
++
++    home = tmp_path / "hermes-home"
++    plugin = home / "plugins" / "command_policy"
++    plugin.mkdir(parents=True)
++    (plugin / "plugin.yaml").write_text(
++        "name: command_policy\nversion: 0.1.0\nprovides_hooks:\n  - pre_command_approval\n"
++    )
++    (plugin / "__init__.py").write_text(
++        "def register(ctx):\n"
++        "    ctx.register_hook(\"pre_command_approval\", lambda **kwargs: {\"action\": \"deny\"})\n"
++    )
++    (home / "config.yaml").write_text("plugins:\n  enabled:\n    - command_policy\n")
++    monkeypatch.setenv("HERMES_HOME", str(home))
++    plugins_mod._reset_plugin_managers_for_tests()
++    try:
++        result = check_dangerous_command(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++        assert result["approved"] is False
++        assert result["outcome"] == "plugin_denied"
++    finally:
++        plugins_mod._reset_plugin_managers_for_tests()
++
++
++def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}, {"action": "deny"}]), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ), patch("tools.approval._smart_verdict", return_value="approve") as guardian:
++        result = check_all_command_guards(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++    guardian.assert_not_called()
+diff --git a/tools/approval.py b/tools/approval.py
+index 109b72cc6..b2cd411aa 100644
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -1080,11 +1080,11 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+     return _user_deny_block(command)
+ 
+ 
+-def _plugin_allows_command(command: str, pattern_key: str, description: str) -> bool:
+-    """Accept an explicit plugin grant for the recoverable command-pattern warning.
++def _plugin_command_decision(command: str, pattern_key: str, description: str) -> str | None:
++    """Combine plugin decisions for a recoverable command-pattern warning.
+ 
+-    Callers must check the hardline and user deny floors first. This grant never
+-    overrides a separate Tirith finding.
++    Callers check hardline and user deny floors first. A grant never overrides
++    a separate Tirith finding or smart guardian denial.
+     """
+     try:
+         from hermes_cli.plugins import invoke_hook
+@@ -1094,9 +1094,11 @@ def _plugin_allows_command(command: str, pattern_key: str, description: str) ->
+         )
+     except Exception:
+         logger.exception("pre_command_approval hook failed")
+-        return False
++        return None
+     actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
+-    return "allow" in actions and "deny" not in actions
++    if "deny" in actions:
++        return "deny"
++    return "allow" if "allow" in actions else None
+ 
+ 
+ def check_dangerous_command(command: str, env_type: str,
+@@ -1117,7 +1119,13 @@ def check_dangerous_command(command: str, env_type: str,
+     is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     if not is_dangerous:
+         return _approved()
+-    if approval_context._get_approval_mode() == "manual" and _plugin_allows_command(command, pattern_key, description):
++    plugin_decision = _plugin_command_decision(command, pattern_key, description)
++    if plugin_decision == "deny":
++        return _denied(
++            "BLOCKED: a plugin command policy denied this command.",
++            pattern_key=pattern_key, description=description, outcome="plugin_denied",
++        )
++    if approval_context._get_approval_mode() == "manual" and plugin_decision == "allow":
+         return _approved()
+     return _run_approval_gate(
+         pattern_key=pattern_key, description=description, display_target=command, approval_callback=approval_callback,
+@@ -1244,10 +1252,16 @@ def check_all_command_guards(command: str, env_type: str,
+         return _approved()
+ 
+     # Plugin grants cover only the recoverable pattern layer. A Tirith finding
+-    # still reaches the human approval path.
+-    if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and _plugin_allows_command(
+-        command, warnings[0][0], warnings[0][1],
+-    ):
++    # still reaches the human approval path. An explicit plugin denial blocks.
++    plugin_decision = None
++    if is_dangerous and any(not is_tirith for _, _, is_tirith in warnings):
++        plugin_decision = _plugin_command_decision(command, pattern_key, description)
++        if plugin_decision == "deny":
++            return _denied(
++                "BLOCKED: a plugin command policy denied this command.",
++                pattern_key=pattern_key, description=description, outcome="plugin_denied",
++            )
++    if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
+         return _approved()
+ 
+     combined_desc = "; ".join(desc for _, desc, _ in warnings)
+@@ -1263,7 +1277,7 @@ def check_all_command_guards(command: str, env_type: str,
+         session_key=session_key, approval_callback=approval_callback,
+         is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask, smart=approval_mode == "smart",
+         permanent_capable=any(not is_t for _, _, is_t in warnings),
+-        plugin_grant=(lambda: _plugin_allows_command(command, pattern_key, description))
++        plugin_grant=(lambda: plugin_decision == "allow")
+         if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
+     )
+ 

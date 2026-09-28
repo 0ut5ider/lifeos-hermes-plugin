@@ -20,6 +20,7 @@ SOURCES = {
         "base": "758ad514eb0e800547e015edf05aa18f78b78d82",
         "patches": (
             "hermes-hook-controls.patch",
+            "hermes-command-denial.patch",
             "hermes-remote-file-staleness.patch",
             "hermes-stop-effort.patch",
             "hermes-delegate-tier-routing.patch",

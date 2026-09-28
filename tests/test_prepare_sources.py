@@ -48,7 +48,7 @@ class PrepareSourcesTests(unittest.TestCase):
             result = self.run_prepare(HERMES_REPO, LIFEOS_REPO, output)
             self.assertEqual(result.returncode, 0, result.stderr)
             manifest = json.loads((output / "manifest.json").read_text())
-            self.assertEqual(len(manifest["hermes"]["patches"]), 7)
+            self.assertEqual(len(manifest["hermes"]["patches"]), 8)
             self.assertEqual(len(manifest["lifeos"]["patches"]), 9)
             self.assertTrue((output / "hermes/hermes_cli/plugins.py").is_file())
             self.assertTrue((output / "lifeos/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts").is_file())

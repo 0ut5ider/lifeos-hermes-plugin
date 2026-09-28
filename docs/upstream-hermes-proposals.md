@@ -1,11 +1,12 @@
 # Generic Hermes changes proposed by the LifeOS bridge
 
-Reviewed on 2026-09-28 against the seven patches in `patches/hermes-*.patch`, the current plugin boundary review, and open Hermes issues and pull requests. This is a proposal, not a claim that current Hermes `main` includes these behaviors. Recheck upstream code and issue state before opening each pull request.
+Reviewed on 2026-09-28 against the eight patches in `patches/hermes-*.patch`, the current plugin boundary review, and open Hermes issues and pull requests. This is a proposal, not a claim that current Hermes `main` includes these behaviors. Recheck upstream code and issue state before opening each pull request.
 
 Hermes's [contribution guide](https://github.com/NousResearch/hermes-agent/blob/main/CONTRIBUTING.md) asks for focused pull requests with tests and manual verification. Its [plugin guide](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/) says integrations with other products belong in standalone plugin repositories. The LifeOS hook runner, payload translation, model tier names, and dashboard therefore stay here. The upstream changes below expose general host capabilities or fix host bugs.
 
 | Existing patch | Generic use beyond LifeOS | Proposed upstream destination |
 | --- | --- | --- |
+| `hermes-command-denial.patch` | Let a policy plugin refuse a recoverable dangerous command without presenting an approval that could override the refusal. | Separate command-policy contract in Hermes. Keep hardline and user-deny floors ahead of plugins; grants cannot bypass Tirith or smart guardian findings. |
 | `hermes-remote-file-staleness.patch` | Prevent a whole-file write from silently replacing a change made after the agent's read on SSH or container backends. | Standalone file-safety fix in Hermes. Preserve backend identity, full-read coverage, and the refusal of an unverifiable write. A pre-write digest is not an atomic compare-and-write guarantee. |
 | `hermes-cron-worker-bootstrap.patch` | Start scheduled workers with the dependencies of the Hermes installation that launched them. | Standalone runtime fix in Hermes. Test source and managed environment installs without a plugin. |
 | `hermes-hook-controls.patch`, nested `execute_code` changes | Keep session and turn identity on tool calls made inside code execution, including remote RPC paths. | Standalone dispatch-context fix. Test local, SSH, and container children with the same parent session. |
