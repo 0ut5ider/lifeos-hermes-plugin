@@ -5,6 +5,7 @@ import json
 import os
 import shutil
 import tempfile
+import time
 import unittest
 from pathlib import Path
 
@@ -16,6 +17,34 @@ HOOK_PATH = os.environ.get("LIFEOS_ALGORITHM_NUDGE_PATH")
 
 @unittest.skipUnless(HOOK_PATH and shutil.which("bun"), "LifeOS AlgorithmNudge and Bun are required")
 class NativeAlgorithmNudgeTests(unittest.TestCase):
+    def test_indexed_skill_phrase_returns_route_nudge(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            root = home / ".claude"
+            root.mkdir()
+            state_dir = root / "LIFEOS/MEMORY/STATE"
+            state_dir.mkdir(parents=True)
+            (state_dir / "skill-usewhen-index.json").write_text(json.dumps({
+                "builtAt": int(time.time() * 1000),
+                "entries": [{"skill": "memory-debugging", "phrases": ["investigate memory leak"]}],
+            }))
+            settings = root / "settings.json"
+            settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
+                {"type": "command", "command": f"bun {HOOK_PATH}"},
+            ]}]}}))
+            bridge = HookBridge(settings, root)
+            bridge.environment["HOME"] = str(home)
+            try:
+                result = bridge.pre_llm_call(
+                    "Please investigate memory leak in the process", session_id="skill-route-probe",
+                )
+            finally:
+                bridge.close()
+
+            self.assertIn("USE WHEN of: memory-debugging", result["context"])
+            state = json.loads((state_dir / "isa-nudge/skill-route-probe.json").read_text())
+            self.assertIn("route:memory-debugging", state["lastNudgeAt"])
+
     def test_depth_directive_returns_one_prompt_nudge(self):
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory)
