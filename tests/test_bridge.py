@@ -68,6 +68,19 @@ class HookBridgeTests(unittest.TestCase):
         bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(workdir)}, session_id="s1")
         self.assertEqual(marker.read_text(), str(workdir))
 
+    def test_relative_file_tool_path_uses_task_workspace_for_hook(self):
+        marker = self.root / "relative-file.json"
+        command = self.make_hook(
+            "record-relative-file.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)):
+            bridge.pre_tool_call("write_file", {"path": "notes/example.md", "content": "hello"}, session_id="s1")
+        payload = json.loads(marker.read_text())
+        self.assertEqual(payload["tool_input"]["file_path"], str(self.root / "notes/example.md"))
+
     def test_project_hook_applies_only_to_its_project(self):
         project = self.root / "project-a"
         other = self.root / "project-b"
@@ -769,15 +782,18 @@ class HookBridgeTests(unittest.TestCase):
         )
         bridge = self.bridge({"PostToolUse": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
         patch_text = "*** Begin Patch\n*** Update File: first.txt\n@@\n-old\n+new\n*** Add File: second.txt\n+hello\n*** End Patch"
-        bridge.post_tool_call("patch", {"mode": "patch", "patch": patch_text}, "Done", session_id="s1")
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)):
+            bridge.post_tool_call("patch", {"mode": "patch", "patch": patch_text}, "Done", session_id="s1")
         payloads = [json.loads(line) for line in marker.read_text().splitlines()]
-        self.assertEqual([payload["tool_input"]["file_path"] for payload in payloads], ["first.txt", "second.txt"])
+        self.assertEqual([payload["tool_input"]["file_path"] for payload in payloads], [
+            str(self.root / "first.txt"), str(self.root / "second.txt"),
+        ])
         self.assertEqual([payload["tool_input"]["new_string"] for payload in payloads], ["new", "hello"])
         self.assertEqual([payload["tool_input"]["old_string"] for payload in payloads], ["old", ""])
         rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
         self.assertEqual(
             [item["input"]["file_path"] for item in rows[0]["message"]["content"]],
-            ["first.txt", "second.txt"],
+            [str(self.root / "first.txt"), str(self.root / "second.txt")],
         )
         self.assertEqual(
             [item["tool_use_id"] for item in rows[1]["message"]["content"]],

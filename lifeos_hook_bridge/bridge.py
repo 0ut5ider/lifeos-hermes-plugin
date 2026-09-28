@@ -82,10 +82,16 @@ def _hermes_write_requires_approval(path: str, cwd: str) -> bool:
         return False
 
 
-def _tool_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
+def _hook_file_path(path: str, cwd: str) -> str:
+    expanded = os.path.expanduser(path)
+    return os.path.normpath(expanded if os.path.isabs(expanded) else os.path.join(cwd, expanded))
+
+
+def _tool_input(name: str, args: dict[str, Any], cwd: str) -> dict[str, Any]:
     translated = dict(args)
     if name in {"Write", "Edit", "Read"} and "path" in translated:
-        translated["file_path"] = translated.pop("path")
+        path = translated.pop("path")
+        translated["file_path"] = _hook_file_path(path, cwd) if isinstance(path, str) and path else path
     if name == "Agent" and isinstance(translated.get("tasks"), list):
         tasks = translated["tasks"]
         if tasks:
@@ -104,7 +110,7 @@ def _tool_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
     return translated
 
 
-def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
+def _v4a_edit_inputs(patch_text: str, cwd: str) -> list[dict[str, str]]:
     edits = []
     path = None
     added = []
@@ -113,7 +119,8 @@ def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
     def finish() -> None:
         if path is not None:
             edits.append({
-                "file_path": path, "old_string": "\n".join(removed), "new_string": "\n".join(added),
+                "file_path": _hook_file_path(path, cwd),
+                "old_string": "\n".join(removed), "new_string": "\n".join(added),
             })
 
     for line in patch_text.splitlines():
@@ -125,7 +132,10 @@ def _v4a_edit_inputs(patch_text: str) -> list[dict[str, str]]:
             added = []
             removed = []
         elif move:
-            edits.append({"file_path": move.group(1).strip(), "old_string": "", "new_string": ""})
+            edits.append({
+                "file_path": _hook_file_path(move.group(1).strip(), cwd),
+                "old_string": "", "new_string": "",
+            })
         elif line.startswith("***"):
             finish()
             path = None
@@ -886,8 +896,8 @@ class HookBridge:
             return None
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = (
-            _v4a_edit_inputs(args["patch"]) if v4a else
-            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args)]
+            _v4a_edit_inputs(args["patch"], cwd) if v4a else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd)]
         )
         updated_args = None
         extra_context = []
@@ -926,7 +936,7 @@ class HookBridge:
                     verdict["args"] = updated_args
                 return verdict
         if native_name in {"Write", "Edit"}:
-            permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args)]
+            permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd)]
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
@@ -1129,8 +1139,8 @@ class HookBridge:
         use_id = tool_call_id or uuid4().hex
         v4a = tool_name == "patch" and args.get("mode") == "patch" and isinstance(args.get("patch"), str)
         native_inputs = (
-            _v4a_edit_inputs(args["patch"]) if v4a and event == "PostToolUse" else
-            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args)]
+            _v4a_edit_inputs(args["patch"], cwd) if v4a and event == "PostToolUse" else
+            _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd)]
         )
         if not native_inputs:
             return None
