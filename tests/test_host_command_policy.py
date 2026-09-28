@@ -109,6 +109,19 @@ class HostCommandPolicyTests(unittest.TestCase):
                         self.assertFalse(denied["approved"])
                         self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
                                          ["neutral", "neutral"])
+                        settings.write_text(json.dumps({
+                            "hooks": {"PermissionRequest": [{
+                                "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                            }]},
+                            "permissions": {"deny": ["Bash(printf world)"]},
+                        }))
+                        compound = check_all_command_guards(
+                            "printf hello; printf world", "local",
+                            approval_callback=lambda *args, **kwargs: self.fail("Compound deny asked for approval"),
+                        )
+                        self.assertFalse(compound["approved"])
+                        self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
+                                         ["neutral", "neutral"])
                     finally:
                         plugins_mod._reset_plugin_managers_for_tests()
         finally:
