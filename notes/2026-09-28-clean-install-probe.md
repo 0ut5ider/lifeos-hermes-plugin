@@ -8,4 +8,4 @@ Hermes `setup-hermes.sh --runtime-only` installed the managed runtime but left `
 
 The first native prompt-hook test ran under the probe UID but inherited `/home/outsider` as its working directory. It emitted 14 permission-denied hook errors. Running from `/home/lifeos-install-probe` made the same test return a `context` result, create a transcript, and load all 11 event groups. The installation procedure must set an accessible working directory before starting Hermes. This is a command invocation issue, not a LifeOS hook failure.
 
-The probe has no model credentials and did not test a model response or messaging. It still uses the earlier public plugin commit; reinstall it from the new pinned commit after publishing the picker update.
+The probe has no model credentials and did not test a model response or messaging. After publication, it installed the picker update from pinned public commit `ad5e7befb94bbfc60aef9aa7104dbd7c4b4fa79f`. Plugin validation passed. The installed package registered nine Hermes hook callbacks; its native prompt hook returned `context` and created a transcript from the separate `~/.claude` tree.
