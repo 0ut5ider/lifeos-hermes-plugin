@@ -1283,13 +1283,16 @@ class HookBridgeTests(unittest.TestCase):
             "PreToolUse": [{"matcher": "AskUserQuestion", "hooks": [{"type": "command", "command": command}]}],
             "PostToolUse": [{"matcher": "AskUserQuestion", "hooks": [{"type": "command", "command": command}]}],
         })
-        args = {"questions": [{"question": "Which option works?", "choices": ["A", "B"]}]}
+        args = {"question": "Which option works?", "choices": ["A", "B"], "multi_select": False}
         bridge.pre_tool_call("clarify", args, session_id="s1")
         bridge.post_tool_call("clarify", args, "A", session_id="s1")
         events = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual([event["hook_event_name"] for event in events], ["PreToolUse", "PostToolUse"])
         self.assertTrue(all(event["tool_name"] == "AskUserQuestion" for event in events))
         self.assertEqual(events[0]["tool_input"]["questions"][0]["question"], "Which option works?")
+        self.assertEqual(events[0]["tool_input"]["questions"][0]["options"], [
+            {"label": "A", "description": ""}, {"label": "B", "description": ""},
+        ])
 
     def test_multi_file_patch_checks_each_changed_file(self):
         command = self.make_hook(

@@ -92,6 +92,15 @@ def _tool_input(name: str, args: dict[str, Any]) -> dict[str, Any]:
             translated["prompt"] = tasks[0].get("goal", "")
     if name == "Skill" and "name" in translated:
         translated["skill"] = translated.pop("name")
+    if name == "AskUserQuestion" and isinstance(translated.get("question"), str):
+        question = {"question": translated["question"]}
+        choices = translated.get("choices")
+        if isinstance(choices, list):
+            question["options"] = [
+                {"label": choice, "description": ""} for choice in choices if isinstance(choice, str)
+            ]
+        question["multiSelect"] = bool(translated.get("multi_select"))
+        return {"questions": [question]}
     return translated
 
 
