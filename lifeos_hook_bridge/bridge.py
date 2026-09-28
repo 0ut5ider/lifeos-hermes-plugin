@@ -684,7 +684,7 @@ class HookBridge:
         return paths
 
     def _remote_project_settings(self, payload: dict[str, Any], task_id: str) -> tuple[Any, list[dict[str, Any]]] | None:
-        from .remote_hooks import trusted_ssh_project
+        from .remote_hooks import trusted_backend_project
         try:
             from tools.file_tools import _get_file_ops
             file_ops = _get_file_ops(task_id or "default")
@@ -692,7 +692,7 @@ class HookBridge:
                 "LIFEOS_REMOTE_PROJECT_TRUST",
                 str(Path.home() / ".config/lifeos-hook-bridge/remote-projects.json"),
             ))
-            project = trusted_ssh_project(file_ops.env, payload.get("cwd", ""), trust_path)
+            project = trusted_backend_project(file_ops.env, payload.get("cwd", ""), trust_path)
             if project is None:
                 return None
             owner = str(getattr(file_ops.env, "_session_id", id(file_ops.env)))
@@ -1063,6 +1063,13 @@ class HookBridge:
                 result_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
                 result_path = result_dir / f"{uuid4().hex}.json"
             backend = project.backend
+            from tools.environments.ssh import SSHEnvironment
+            if isinstance(backend, SSHEnvironment):
+                remote = {"type": "ssh", "host": backend.host, "user": backend.user,
+                          "port": backend.port, "key_path": backend.key_path}
+            else:
+                remote = {"type": "docker", "executable": backend._docker_exe,
+                          "container_id": backend._container_id}
             with tempfile.NamedTemporaryFile(
                 mode="w", encoding="utf-8", dir=self.transcript_dir,
                 prefix="async-remote-hook-", suffix=".json", delete=False,
@@ -1072,8 +1079,7 @@ class HookBridge:
                     "command": command, "payload": payload, "cwd": project.cwd,
                     "environment": environment, "timeout": timeout,
                     "result_path": str(result_path) if result_path else None,
-                    "remote": {"type": "ssh", "host": backend.host, "user": backend.user,
-                               "port": backend.port, "key_path": backend.key_path},
+                    "remote": remote,
                     "source_root": str(Path(inspect.getfile(type(backend))).resolve().parents[2]),
                     "plugin_root": str(Path(__file__).parent),
                     "python_paths": [path for path in sys.path if path and os.path.isabs(path)],

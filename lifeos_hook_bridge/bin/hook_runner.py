@@ -42,23 +42,28 @@ def _run_remote(request: dict) -> int:
         for path in reversed([request["plugin_root"], request["source_root"], *request.get("python_paths", [])]):
             if path and os.path.isabs(path):
                 sys.path.insert(0, path)
-        from remote_hooks import run_project_hook
-        from tools.environments.ssh import SSHEnvironment
+        from remote_hooks import DockerExecBackend, run_project_hook
 
         remote = request["remote"]
-        if remote.get("type") != "ssh":
+        if remote.get("type") == "ssh":
+            from tools.environments.ssh import SSHEnvironment
+            backend = SSHEnvironment(
+                host=remote["host"], user=remote["user"], port=remote["port"],
+                key_path=remote["key_path"], cwd=request["cwd"], probe_only=True,
+            )
+            cleanup = backend.cleanup
+        elif remote.get("type") == "docker":
+            backend = DockerExecBackend(remote["executable"], remote["container_id"])
+            cleanup = lambda: None
+        else:
             return 1
-        backend = SSHEnvironment(
-            host=remote["host"], user=remote["user"], port=remote["port"],
-            key_path=remote["key_path"], cwd=request["cwd"], probe_only=True,
-        )
         try:
             result = run_project_hook(
                 backend, request["command"], request["payload"], request["cwd"],
                 request.get("timeout", 60), request.get("environment", {}),
             )
         finally:
-            backend.cleanup()
+            cleanup()
         if result is None:
             return 1
         if result.returncode == 0 and len(result.stdout) <= 65536:

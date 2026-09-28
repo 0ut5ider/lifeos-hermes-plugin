@@ -27,12 +27,54 @@ class RemoteProject:
     cwd: str
 
 
-def trusted_ssh_project(backend: Any, cwd: str, trust_path: Path) -> RemoteProject | None:
-    """Find an SSH project bound to this endpoint and verify its remote path."""
+@dataclass(frozen=True)
+class DockerExecBackend:
+    executable: str
+    container_id: str
+
+    def execute(self, command: str, cwd: str = "", *, stdin_data: str | None = None,
+                timeout: int = 60) -> dict[str, Any]:
+        try:
+            process = subprocess.run(
+                [self.executable, "exec", "-i", "--workdir", cwd, self.container_id,
+                 "/bin/bash", "-c", command],
+                input=stdin_data, capture_output=True, text=True, check=False, timeout=timeout,
+            )
+            return {"returncode": process.returncode, "output": process.stdout + process.stderr}
+        except subprocess.TimeoutExpired as error:
+            return {"returncode": 124, "output": str(error)}
+
+
+def _docker_image_id(executable: str, container_id: str) -> str | None:
+    try:
+        result = subprocess.run(
+            [executable, "inspect", "--format", "{{.Image}}", container_id],
+            capture_output=True, text=True, check=False, timeout=10,
+        )
+    except (OSError, subprocess.TimeoutExpired):
+        return None
+    image_id = result.stdout.strip()
+    return image_id if result.returncode == 0 and re.fullmatch(r"sha256:[0-9a-f]{64}", image_id) else None
+
+
+def trusted_backend_project(backend: Any, cwd: str, trust_path: Path) -> RemoteProject | None:
+    """Find a project bound to this SSH or Docker backend and verify its physical path."""
     try:
         from tools.environments.ssh import SSHEnvironment
-        if not isinstance(backend, SSHEnvironment):
+        from tools.environments.docker import DockerEnvironment
+        if not isinstance(backend, (SSHEnvironment, DockerEnvironment)):
             return None
+        if isinstance(backend, SSHEnvironment):
+            identity = {"type": "ssh", "host": backend.host, "user": backend.user, "port": backend.port}
+        else:
+            container_id = getattr(backend, "_container_id", None)
+            executable = getattr(backend, "_docker_exe", None)
+            if not isinstance(container_id, str) or not isinstance(executable, str):
+                return None
+            image_id = _docker_image_id(executable, container_id)
+            if image_id is None:
+                return None
+            identity = {"type": "docker", "image_id": image_id}
         trust_stat = trust_path.stat()
         if trust_stat.st_uid != os.getuid() or trust_stat.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
             LOG.warning("Remote project trust file has unsafe ownership or permissions")
@@ -42,9 +84,7 @@ def trusted_ssh_project(backend: Any, cwd: str, trust_path: Path) -> RemoteProje
         if not isinstance(projects, list):
             return None
         for item in projects:
-            if not isinstance(item, dict) or any(item.get(key) != value for key, value in {
-                "type": "ssh", "host": backend.host, "user": backend.user, "port": backend.port,
-            }.items()):
+            if not isinstance(item, dict) or any(item.get(key) != value for key, value in identity.items()):
                 continue
             root = item.get("root")
             if not isinstance(root, str) or not root.startswith("/") or ".." in PurePosixPath(root).parts:
