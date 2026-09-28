@@ -564,6 +564,200 @@ index 810fd962a..45fc7e658 100644
      )
      assert out == "first"
  
+diff --git a/tests/test_lifeos_execute_code_session.py b/tests/test_lifeos_execute_code_session.py
+new file mode 100644
+index 000000000..55df42aed
+--- /dev/null
++++ b/tests/test_lifeos_execute_code_session.py
+@@ -0,0 +1,68 @@
++"""Keep nested execute_code tool hooks in the outer Hermes session."""
++
++import json
++import os
++import unittest
++from unittest.mock import patch
++
++os.environ["TERMINAL_ENV"] = "local"
++
++from tools.code_execution_tool import _execute_code_handler, _execute_remote, execute_code
++from tools.code_execution_rpc import _default_dispatch
++from tools.code_kernel import shutdown_all_kernels
++
++
++class ExecuteCodeHookSessionTests(unittest.TestCase):
++    def tearDown(self):
++        shutdown_all_kernels()
++
++    def test_handler_passes_outer_session_to_execute_code(self):
++        with patch("tools.code_execution_tool.execute_code", return_value="ok") as call:
++            self.assertEqual(_execute_code_handler({"code": "print(1)"}, task_id="task", session_id="session"), "ok")
++        self.assertEqual(call.call_args.kwargs["session_id"], "session")
++
++    def test_rpc_dispatch_passes_outer_session_to_inner_tool(self):
++        calls = []
++        with patch("model_tools.handle_function_call", side_effect=lambda *args, **kwargs: calls.append(kwargs)):
++            _default_dispatch("task", session_id="session")("read_file", {"path": "note"})
++        self.assertEqual(calls, [{"task_id": "task", "session_id": "session"}])
++
++    def test_remote_fallback_passes_outer_session_to_per_call_rpc(self):
++        class RemoteEnv:
++            def execute(self, *args, **kwargs):
++                return {"output": "OK\n", "returncode": 0}
++
++        with patch("tools.code_execution_tool._load_config", return_value={"timeout": 30, "max_tool_calls": 5}), patch(
++            "tools.code_execution_tool._sandbox_tools_for", return_value={"read_file"}
++        ), patch(
++            "tools.code_execution_tool._get_or_create_env", return_value=(RemoteEnv(), "ssh")
++        ), patch(
++            "tools.code_kernel_remote.execute_in_remote_kernel", return_value=None
++        ) as kernel, patch(
++            "tools.code_execution_tool._run_remote_per_call", return_value="fallback-ok"
++        ) as fallback:
++            result = _execute_remote("print(1)", "task", ["read_file"], session_id="remote-session")
++        self.assertEqual(result, "fallback-ok")
++        self.assertEqual(kernel.call_args.kwargs["session_id"], "remote-session")
++        self.assertEqual(fallback.call_args.kwargs["session_id"], "remote-session")
++
++    def test_local_kernel_uses_each_cells_session_for_inner_tools(self):
++        calls = []
++
++        def record(name, args, **kwargs):
++            calls.append(kwargs)
++            return json.dumps({"ok": True})
++
++        code = "import hermes_tools\nhermes_tools.web_search(query='fixture')\n"
++        with patch("tools.code_execution_tool._load_config", return_value={"mode": "strict", "timeout": 30}), patch(
++            "model_tools.handle_function_call", side_effect=record
++        ):
++            first = json.loads(execute_code(code, task_id="task", session_id="session-one"))
++            second = json.loads(execute_code(code, task_id="task", session_id="session-two"))
++        self.assertEqual(first["status"], "success", first)
++        self.assertEqual(second["status"], "success", second)
++        self.assertEqual([call["session_id"] for call in calls], ["session-one", "session-two"])
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/tools/test_code_execution.py b/tests/tools/test_code_execution.py
+index 53fcadc35..b64ffde8a 100644
+--- a/tests/tools/test_code_execution.py
++++ b/tests/tools/test_code_execution.py
+@@ -62,7 +62,7 @@ from tools.code_execution_tool import (
+ from tools.registry import registry
+ 
+ 
+-def _mock_handle_function_call(function_name, function_args, task_id=None, user_task=None):
++def _mock_handle_function_call(function_name, function_args, task_id=None, user_task=None, session_id=None):
+     """Mock dispatcher that returns canned responses for each tool."""
+     if function_name == "terminal":
+         cmd = function_args.get("command", "")
+@@ -384,7 +384,7 @@ else:
+     print(f"OK {N}/{N}")
+ '''
+ 
+-        def slow_mock(function_name, function_args, task_id=None, user_task=None):
++        def slow_mock(function_name, function_args, task_id=None, user_task=None, session_id=None):
+             import time as _t
+             if function_name == "terminal":
+                 _t.sleep(0.05)  # ensure requests overlap on the socket
+diff --git a/tests/tools/test_code_execution_file_rpc.py b/tests/tools/test_code_execution_file_rpc.py
+index 88bc65eea..bf6739439 100644
+--- a/tests/tools/test_code_execution_file_rpc.py
++++ b/tests/tools/test_code_execution_file_rpc.py
+@@ -47,10 +47,11 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
+     monkeypatch.setenv("HERMES_RPC_DIR", str(rpc))
+     monkeypatch.setenv("HERMES_RPC_TOKEN", "right-token")
+     exec(generate_hermes_tools_module(list(CALLS), transport="file"), namespace)
+-    seen, log, counter = [], [], [0]
++    seen, hook_ids, log, counter = [], [], [], [0]
+ 
+     def dispatch(name, args, **kwargs):
+         seen.append((name, args.copy()))
++        hook_ids.append(kwargs)
+         return json.dumps({"name": name, "args": args})
+ 
+     monkeypatch.setattr("model_tools.handle_function_call", dispatch)
+@@ -65,7 +66,7 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
+     stop = threading.Event()
+     budget = len(CALLS) + 8
+     poller = threading.Thread(target=_rpc_poll_loop, args=(Shell(), str(rpc), "owner", log, counter,
+-                               budget, frozenset(CALLS), stop, "right-token"), daemon=True)
++                               budget, frozenset(CALLS), stop, "right-token", "outer-session"), daemon=True)
+     poller.start()
+     try:
+         # Raw clients bypass stub visibility; neither missing nor wrong token may dispatch.
+@@ -87,6 +88,7 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
+             assert schema_keys <= set(args), (name, schema_keys - set(args))
+             assert namespace[name](**args) == {"name": name, "args": args}
+         assert seen == list(CALLS.items())
++        assert all(ids == {"task_id": "owner", "session_id": "outer-session"} for ids in hook_ids)
+         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+             results = list(pool.map(lambda i: namespace["terminal"](f"tag-{i}", 3, "/tmp"), range(8)))
+         assert [r["args"]["command"] for r in results] == [f"tag-{i}" for i in range(8)]
+diff --git a/tests/tools/test_code_kernel.py b/tests/tools/test_code_kernel.py
+index 1eb892f1f..17ab0764a 100644
+--- a/tests/tools/test_code_kernel.py
++++ b/tests/tools/test_code_kernel.py
+@@ -432,7 +432,7 @@ class TestPerCellRpcAuthority(unittest.TestCase):
+     """Interpreter state persists across cells; RPC authority must not."""
+ 
+     def _recorder(self, seen):
+-        def _handle(tool_name, tool_args, task_id=None):
++        def _handle(tool_name, tool_args, task_id=None, session_id=None):
+             from tools.thread_context import _callback_api
+ 
+             (get_approval, _set_a), *_rest = _callback_api()
+@@ -440,6 +440,7 @@ class TestPerCellRpcAuthority(unittest.TestCase):
+                 {
+                     "tool": tool_name,
+                     "task_id": task_id,
++                    "session_id": session_id,
+                     "approval_cb": get_approval(),
+                 }
+             )
+@@ -447,6 +448,18 @@ class TestPerCellRpcAuthority(unittest.TestCase):
+ 
+         return _handle
+ 
++    def test_nested_tool_inherits_each_outer_session_id(self):
++        seen = []
++        cell = "import hermes_tools\nhermes_tools.web_search(query='q')\n"
++        with _kernel_config(), patch(
++            "model_tools.handle_function_call", new=self._recorder(seen)
++        ):
++            first = _run(cell, session_id="session-one")
++            second = _run(cell, session_id="session-two")
++        self.assertEqual(first["status"], "success", first)
++        self.assertEqual(second["status"], "success", second)
++        self.assertEqual([call["session_id"] for call in seen], ["session-one", "session-two"])
++
+     def test_a_later_cells_rpc_runs_under_that_cells_authority(self):
+         from tools.terminal_tool import set_approval_callback
+ 
+diff --git a/tests/tools/test_code_kernel_remote.py b/tests/tools/test_code_kernel_remote.py
+index 6b1b2f14b..eb5ef1c6c 100644
+--- a/tests/tools/test_code_kernel_remote.py
++++ b/tests/tools/test_code_kernel_remote.py
+@@ -107,6 +107,19 @@ class RemoteKernelBase(unittest.TestCase):
+ 
+ 
+ class TestSpawnAndReuse(RemoteKernelBase):
++    def test_rpc_poller_receives_current_outer_session(self):
++        env = ScriptedEnv(_spawn_ok_handlers([_cell()]))
++        seen = []
++        with patch("tools.code_execution_tool._rpc_poll_loop", side_effect=lambda *args: seen.append(args)):
++            result = execute_in_remote_kernel(
++                "print(1)", env=env, env_type="ssh", task_env_id="task",
++                sandbox_tools=frozenset({"read_file"}), timeout=10,
++                max_tool_calls=5, reset=False, session_id="outer-session",
++            )
++        self.assertEqual(result["status"], "success", result)
++        self.assertEqual(len(seen), 1)
++        self.assertEqual(seen[0][-1], "outer-session")
++
+     def test_first_call_spawns_second_reuses(self):
+         healthy = _spawn_ok_handlers(
+             [_cell(stdout="one\n"), _cell(stdout="two\n", execution_count=2)],
 diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
 new file mode 100644
 index 000000000..fb2921482
@@ -789,3 +983,236 @@ index cff8d0d8d..109b72cc6 100644
      )
  
  
+diff --git a/tools/code_execution_rpc.py b/tools/code_execution_rpc.py
+index e1a540014..58366fece 100644
+--- a/tools/code_execution_rpc.py
++++ b/tools/code_execution_rpc.py
+@@ -25,9 +25,11 @@ logger = logging.getLogger("tools.code_execution_tool")
+ _TERMINAL_BLOCKED_PARAMS = {"background", "pty", "notify", "notify_on_complete", "watch_patterns", "heartbeat", "persist_on_release"}
+ 
+ 
+-def _default_dispatch(task_id):
++def _default_dispatch(task_id, session_id=""):
+     from model_tools import handle_function_call
+-    return lambda tool_name, tool_args: handle_function_call(tool_name, tool_args, task_id=task_id)
++    return lambda tool_name, tool_args: handle_function_call(
++        tool_name, tool_args, task_id=task_id, session_id=session_id,
++    )
+ 
+ 
+ def _private_dirs_cmd(root: str, *subdirs: str) -> str:
+@@ -115,14 +117,14 @@ def _handle_rpc_request(request: dict, *, allowed_tools: frozenset, tool_call_co
+ 
+ def _rpc_server_loop(server_sock: socket.socket, task_id: str, tool_call_log: list,
+                      tool_call_counter: list, max_tool_calls: int, allowed_tools: frozenset,
+-                     stop_event: threading.Event, rpc_token: str, dispatch=None):
++                     stop_event: threading.Event, rpc_token: str, dispatch=None, session_id: str = ""):
+     """Accept one client and serve newline-delimited JSON requests until it disconnects, idles
+     300s, or the call limit is reached. ``tool_call_counter`` is a mutable ``[int]``. ``dispatch``
+     overrides how an allowed, budgeted call runs: per-call sandboxes use the default (the thread
+     carries the cell's context); session kernels rebind each call to the CURRENT cell's authority.
+     """
+     if dispatch is None:
+-        dispatch = _default_dispatch(task_id)
++        dispatch = _default_dispatch(task_id, session_id)
+     conn = None
+     try:
+         server_sock.settimeout(0.05)
+@@ -175,11 +177,11 @@ def _rpc_server_loop(server_sock: socket.socket, task_id: str, tool_call_log: li
+ 
+ def _rpc_poll_loop(env, rpc_dir: str, task_id: str, tool_call_log: list, tool_call_counter: list,
+                    max_tool_calls: int, allowed_tools: frozenset, stop_event: threading.Event,
+-                   rpc_token: str):
++                   rpc_token: str, session_id: str = ""):
+     """Poll the remote filesystem for request files and answer them. Background thread; each
+     ``env.execute()`` is an independent process, so this is safe alongside the script-execution
+     thread. Malformed or unauthorized requests are removed without a response."""
+-    dispatch = _default_dispatch(task_id)
++    dispatch = _default_dispatch(task_id, session_id)
+     poll_interval = 0.1
+     quoted_rpc_dir = shlex.quote(rpc_dir)
+     while not stop_event.is_set():
+diff --git a/tools/code_execution_tool.py b/tools/code_execution_tool.py
+index eeb8a475d..783ee615d 100644
+--- a/tools/code_execution_tool.py
++++ b/tools/code_execution_tool.py
+@@ -591,7 +591,7 @@ def _sandbox_tools_for(enabled_tools: Optional[List[str]]) -> frozenset:
+ 
+ def _run_remote_per_call(env, env_type: str, code: str, effective_task_id: str,
+                          sandbox_tools: frozenset, *, timeout: int, max_tool_calls: int,
+-                         exec_start: float) -> str:
++                         exec_start: float, session_id: str = "") -> str:
+     """Per-call script ship: stage hermes_tools.py + script.py in a fresh remote sandbox dir,
+     serve file-RPC from a polling thread, run, clean up."""
+     sandbox_dir = f"{_env_temp_dir(env)}/hermes_exec_{uuid.uuid4().hex[:12]}"
+@@ -613,7 +613,7 @@ def _run_remote_per_call(env, env_type: str, code: str, effective_task_id: str,
+         rpc_thread = threading.Thread(
+             target=propagate_context_to_thread(_rpc_poll_loop), daemon=True,
+             args=(env, f"{sandbox_dir}/rpc", effective_task_id, [], tool_call_counter,
+-                  max_tool_calls, sandbox_tools, stop_event, rpc_token))
++                  max_tool_calls, sandbox_tools, stop_event, rpc_token, session_id))
+         rpc_thread.start()
+         # The token travels in a sourced env file, never in argv. No umask on
+         # the launch command: the 700 dirs + explicit 0600 writes cover Hermes'
+@@ -652,7 +652,7 @@ def _run_remote_per_call(env, env_type: str, code: str, effective_task_id: str,
+ 
+ 
+ def _execute_remote(code: str, task_id: Optional[str], enabled_tools: Optional[List[str]],
+-                    reset: bool = False) -> str:
++                    reset: bool = False, session_id: str = "") -> str:
+     """Run code on the remote terminal backend: the owner's persistent remote session kernel
+     (tools/code_kernel_remote.py) first, else the per-call script ship — the fail-open route when
+     a kernel cannot be spawned and the only route for hosts that cannot sustain a background process."""
+@@ -679,6 +679,7 @@ def _execute_remote(code: str, task_id: Optional[str], enabled_tools: Optional[L
+                 sandbox_tools=frozenset(sandbox_tools), timeout=timeout,
+                 max_tool_calls=max_tool_calls, reset=bool(reset),
+                 idle_exit=int(_cfg.get("kernel_idle_timeout", 1800)),
++                session_id=session_id,
+             )
+         except Exception:
+             logger.warning("remote session-kernel path failed; falling back to per-call", exc_info=True)
+@@ -689,7 +690,8 @@ def _execute_remote(code: str, task_id: Optional[str], enabled_tools: Optional[L
+     except Exception as exc:
+         return _remote_failure(exc, exec_start, 0)
+     return _run_remote_per_call(env, env_type, code, effective_task_id, sandbox_tools,
+-                                timeout=timeout, max_tool_calls=max_tool_calls, exec_start=exec_start)
++                                timeout=timeout, max_tool_calls=max_tool_calls, exec_start=exec_start,
++                                session_id=session_id)
+ 
+ 
+ # ---- Main entry point ----
+@@ -700,6 +702,7 @@ def execute_code(
+     task_id: Optional[str] = None,
+     enabled_tools: Optional[List[str]] = None,
+     reset: bool = False,
++    session_id: str = "",
+ ) -> str:
+     """Run Python in the session's persistent kernel (local) or on the remote terminal backend,
+     with RPC access to a subset of Hermes tools; returns the JSON result string. "Sandbox" means
+@@ -775,7 +778,7 @@ def execute_code(
+         from tools.interrupt import clear_current_thread_interrupt
+         clear_current_thread_interrupt()
+     if env_type != "local":
+-        return _execute_remote(code, task_id, enabled_tools, reset=bool(reset))
++        return _execute_remote(code, task_id, enabled_tools, reset=bool(reset), session_id=session_id)
+     from tools.interrupt import is_interrupted as _is_interrupted
+     # Session kernels are always on locally (one interpreter per conversation); the guards above
+     # already ran for this cell, and the kernel path shares env builder, RPC server and redaction.
+@@ -788,7 +791,7 @@ def execute_code(
+         sandbox_tools=frozenset(_sandbox_tools_for(enabled_tools)),
+         timeout=_cfg.get("timeout", DEFAULT_TIMEOUT),
+         max_tool_calls=_cfg.get("max_tool_calls", DEFAULT_MAX_TOOL_CALLS),
+-        reset=bool(reset), is_interrupted=_is_interrupted,
++        reset=bool(reset), is_interrupted=_is_interrupted, session_id=session_id,
+     )
+ 
+ 
+@@ -951,7 +954,7 @@ def _execute_code_handler(args: dict, **kwargs) -> str:
+     if code is not None and not isinstance(code, str):
+         return tool_error(f"execute_code received a {type(code).__name__} in 'code', but it "
+                           "requires Python source as a string. Retry as execute_code(code=\"...\").")
+-    return execute_code(code=code or "", task_id=kwargs.get("task_id"),
++    return execute_code(code=code or "", task_id=kwargs.get("task_id"), session_id=kwargs.get("session_id") or "",
+                         enabled_tools=kwargs.get("enabled_tools"), reset=bool(args.get("reset", False)))
+ 
+ 
+diff --git a/tools/code_kernel.py b/tools/code_kernel.py
+index 8da862929..e88c25381 100644
+--- a/tools/code_kernel.py
++++ b/tools/code_kernel.py
+@@ -238,9 +238,10 @@ class CellAuthority:
+     refused instead of running under a stale approval/session/turn identity.
+     """
+ 
+-    def __init__(self, task_id: str):
++    def __init__(self, task_id: str, session_id: str = ""):
+         import contextvars
+         self.task_id = task_id
++        self.session_id = session_id
+         self.ctx = contextvars.copy_context()
+         self.active = True
+         # ((getter, setter), captured value) per thread-local prompt callback (approval, sudo, vault unlock…)
+@@ -274,7 +275,9 @@ class CellAuthority:
+             except Exception:
+                 previous = None
+         try:
+-            return handle_function_call(tool_name, tool_args, task_id=self.task_id)
++            return handle_function_call(
++                tool_name, tool_args, task_id=self.task_id, session_id=self.session_id,
++            )
+         finally:
+             if previous is not None:
+                 try:
+@@ -845,6 +848,7 @@ def _cell_result(kernel: SessionKernel, key: Tuple, status: str, payload: Dict[s
+ def execute_in_session_kernel(
+     code: str, *, task_id: str, mode: str, child_python: str, child_cwd: str,
+     sandbox_tools: frozenset, timeout: int, max_tool_calls: int, reset: bool, is_interrupted,
++    session_id: str = "",
+ ) -> str:
+     """Run one cell in the (owner, mode, python, cwd, tools) session kernel. The owner is the
+     session key (``_resolve_owner``), not the per-turn task id, so state survives across turns."""
+@@ -855,7 +859,8 @@ def execute_in_session_kernel(
+     try:
+         return _run_cell(kernel, key, code, task_id=task_id, child_python=child_python, child_cwd=child_cwd,
+                          sandbox_tools=sandbox_tools, timeout=timeout, max_tool_calls=max_tool_calls,
+-                         is_interrupted=is_interrupted, exec_start=exec_start, state_reset=state_reset)
++                         is_interrupted=is_interrupted, exec_start=exec_start, state_reset=state_reset,
++                         session_id=session_id)
+     finally:
+         with _REGISTRY.lock:
+             kernel.attached -= 1
+@@ -869,11 +874,11 @@ def execute_in_session_kernel(
+ 
+ def _run_cell(kernel: SessionKernel, key: Tuple, code: str, *, task_id: str, child_python: str,
+               child_cwd: str, sandbox_tools: frozenset, timeout: int, max_tool_calls: int,
+-              is_interrupted, exec_start: float, state_reset: bool) -> str:
++              is_interrupted, exec_start: float, state_reset: bool, session_id: str = "") -> str:
+     reused = kernel.proc is not None
+     # Captured on the calling thread BEFORE the cell runs (the snapshot a per-call RPC thread
+     # would get) and installed on the kernel so RPC dispatches under THIS cell's identity.
+-    authority = CellAuthority(task_id)
++    authority = CellAuthority(task_id, session_id)
+     with kernel.lock:
+         try:
+             if kernel.proc is None:
+diff --git a/tools/code_kernel_remote.py b/tools/code_kernel_remote.py
+index e8065e3a6..e92714fcb 100644
+--- a/tools/code_kernel_remote.py
++++ b/tools/code_kernel_remote.py
+@@ -336,6 +336,7 @@ def _run_remote_cell(kernel: RemoteKernel, code: str, timeout: int) -> Tuple[str
+ def execute_in_remote_kernel(
+     code: str, *, env, env_type: str, task_env_id: str, sandbox_tools: frozenset,
+     timeout: int, max_tool_calls: int, reset: bool, idle_exit: int = 1800,
++    session_id: str = "",
+ ) -> Optional[Dict[str, Any]]:
+     """Run one cell in the owner's remote kernel. Returns the raw cell result dict (caller
+     post-processes output), or ``None`` when no kernel could be spawned (caller falls open to
+@@ -356,7 +357,8 @@ def execute_in_remote_kernel(
+     try:
+         return _run_attached_cell(kernel, key, code, env=env, task_env_id=task_env_id,
+                                   sandbox_tools=sandbox_tools, timeout=timeout, max_tool_calls=max_tool_calls,
+-                                  reused=reused, state_reset=state_reset, state_lost=state_lost)
++                                  reused=reused, state_reset=state_reset, state_lost=state_lost,
++                                  session_id=session_id)
+     finally:
+         with _REGISTRY.lock:
+             kernel.attached -= 1
+@@ -365,7 +367,8 @@ def execute_in_remote_kernel(
+ 
+ def _run_attached_cell(kernel: RemoteKernel, key: Tuple, code: str, *, env, task_env_id: str,
+                        sandbox_tools: frozenset, timeout: int, max_tool_calls: int,
+-                       reused: bool, state_reset: bool, state_lost: bool) -> Dict[str, Any]:
++                       reused: bool, state_reset: bool, state_lost: bool,
++                       session_id: str = "") -> Dict[str, Any]:
+     from tools.code_execution_tool import _rpc_poll_loop
+     from tools.thread_context import propagate_context_to_thread
+     # Clean stale tool-RPC requests from a previous cell before arming this cell's poll loop, so
+@@ -381,7 +384,7 @@ def _run_attached_cell(kernel: RemoteKernel, key: Tuple, code: str, *, env, task
+     rpc_thread = threading.Thread(
+         target=propagate_context_to_thread(_rpc_poll_loop), daemon=True,
+         args=(env, f"{kernel.kernel_dir}/rpc", task_env_id, [], tool_call_counter,
+-              max_tool_calls, sandbox_tools, stop_event, kernel.rpc_token))
++              max_tool_calls, sandbox_tools, stop_event, kernel.rpc_token, session_id))
+     rpc_thread.start()
+     cell_status, cell_payload = "no-result", {}
+     try:
