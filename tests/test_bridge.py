@@ -889,6 +889,28 @@ class HookBridgeTests(unittest.TestCase):
         bridge.pre_llm_call([{"type": "image_url", "image_url": {"url": "data:image/png;base64,AAAA"}}], session_id="s1")
         self.assertEqual(json.loads(marker.read_text())["prompt"], "")
 
+    def test_media_and_file_payloads_do_not_enter_hook_prompt(self):
+        marker = self.root / "mixed-prompt.json"
+        command = self.make_hook(
+            "record-mixed-prompt.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}]})
+        message = [
+            {"type": "text", "text": "Summarize these attachments."},
+            {"type": "input_image", "content": "base64-image-bytes"},
+            {"type": "input_file", "content": "private-file-bytes"},
+            {"type": "text", "text": "Keep the answer brief."},
+        ]
+
+        bridge.pre_llm_call(message, session_id="s1")
+
+        self.assertEqual(
+            json.loads(marker.read_text())["prompt"],
+            "Summarize these attachments.\nKeep the answer brief.",
+        )
+
     def test_post_tool_failure_runs_failure_hook(self):
         marker = self.root / "failure.json"
         command = self.make_hook(

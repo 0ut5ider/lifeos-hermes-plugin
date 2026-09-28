@@ -241,7 +241,7 @@ def _prompt_text(message: Any) -> str:
     if isinstance(message, list):
         return "\n".join(part for item in message if (part := _prompt_text(item)))
     if isinstance(message, dict):
-        if message.get("type") == "image_url":
+        if message.get("type") not in (None, "text", "input_text"):
             return ""
         content = message.get("text", message.get("content", ""))
         return _prompt_text(content)
