@@ -15,16 +15,31 @@ if [[ -z "${ANTHROPIC_MODEL:-}" ]]; then
   exit 1
 fi
 args=("$@")
+requested_model=""
+for (( i=0; i<${#args[@]}; i++ )); do
+  case "${args[i]}" in
+    --model)
+      if (( i + 1 < ${#args[@]} )); then requested_model="${args[i+1]}"; fi
+      ;;
+    --model=*) requested_model="${args[i]#--model=}" ;;
+  esac
+done
+case "$requested_model" in
+  haiku|claude-haiku-*) local_effort=low ;;
+  sonnet|claude-sonnet-*) local_effort=medium ;;
+  opus|claude-opus-*|fable|claude-fable-*) local_effort=xhigh ;;
+  *) local_effort=medium ;;
+esac
 for (( i=0; i<${#args[@]}; i++ )); do
   case "${args[i]}" in
     --model|--effort)
       if (( i + 1 < ${#args[@]} )); then
-        if [[ "${args[i]}" == --model ]]; then args[i+1]="$ANTHROPIC_MODEL"; else args[i+1]=medium; fi
+        if [[ "${args[i]}" == --model ]]; then args[i+1]="$ANTHROPIC_MODEL"; else args[i+1]="$local_effort"; fi
       fi
       (( i+=1 ))
       ;;
     --model=*) args[i]="--model=$ANTHROPIC_MODEL" ;;
-    --effort=*) args[i]="--effort=medium" ;;
+    --effort=*) args[i]="--effort=$local_effort" ;;
   esac
 done
 exec "$HOME/.local/bin/claude" "${args[@]}"
