@@ -2318,6 +2318,62 @@ class HookBridgeTests(unittest.TestCase):
                 self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
                                  {"action": "deny"})
 
+    def test_file_deny_overrides_bash_allow_for_reader_operand(self):
+        for command in (
+            "cat parity-file", "cat -n parity-file", "cat other.txt parity-file",
+            "head -n 2 parity-file", "tail --lines=2 parity-file",
+            "sed -n '1p' parity-file", "sed -e '1p' parity-file",
+            "timeout 2 cat parity-file",
+        ):
+            with self.subTest(command=command):
+                settings = self.root / "settings.json"
+                settings.write_text(json.dumps({
+                    "hooks": {},
+                    "permissions": {
+                        "allow": [f"Bash({command})"],
+                        "deny": ["Read(./parity-file)"],
+                    },
+                }))
+                bridge = HookBridge(settings, self.root)
+                self.addCleanup(bridge.close)
+                self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
+                                 {"action": "deny"})
+
+    def test_in_place_sed_checks_edit_rule(self):
+        command = "sed -i '1p' parity-file"
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {},
+            "permissions": {
+                "allow": [f"Bash({command})"],
+                "deny": ["Edit(./parity-file)"],
+            },
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
+                         {"action": "deny"})
+
+    def test_reader_options_do_not_become_file_targets(self):
+        from lifeos_hook_bridge.bash_permissions import bash_file_targets
+
+        cases = {
+            "cat -n -- parity-file": ([('read', 'parity-file')], True),
+            "head -n 2 parity-file": ([('read', 'parity-file')], True),
+            "tail --lines=2 parity-file": ([('read', 'parity-file')], True),
+            "sed -n '1p' parity-file": ([('read', 'parity-file')], False),
+            "sed -f script.sed parity-file": ([('read', 'script.sed'), ('read', 'parity-file')], False),
+            "cat -- -n": ([('read', '-n')], True),
+            "cat -": ([], True),
+            "cat $file": ([], False),
+            "head --unknown parity-file": ([], False),
+            "timeout 2 cat parity-file": ([('read', 'parity-file')], True),
+            "timeout --unknown cat parity-file": ([], False),
+        }
+        for command, expected in cases.items():
+            with self.subTest(command=command):
+                self.assertEqual(bash_file_targets(command), expected)
+
     def test_allowed_bash_redirect_in_working_directory_skips_permission_hook(self):
         marker = self.root / "permission-invoked"
         hook = self.make_hook(

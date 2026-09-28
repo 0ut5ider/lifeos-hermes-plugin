@@ -94,7 +94,7 @@ def bash_command_forms(command: str, *, checked_file_targets: bool = False) -> t
 
 
 def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
-    """Find literal files read or written by Bash redirections and tee."""
+    """Find literal files opened by recognized Bash commands and redirects."""
     source = command.encode("utf-8")
     root = Parser(_LANGUAGE).parse(source).root_node
     targets: list[tuple[str, str]] = []
@@ -102,7 +102,7 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
 
     def literal(node) -> str | None:
         raw = source[node.start_byte:node.end_byte].decode("utf-8")
-        if node.type not in {"word", "string", "raw_string"} or node.named_children:
+        if node.type not in {"word", "number", "string", "raw_string"} or node.named_children:
             return None
         try:
             parts = shlex.split(raw)
@@ -111,6 +111,78 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
         if len(parts) != 1 or any(char in parts[0] for char in "$`*?[]") or parts[0].startswith("~"):
             return None
         return parts[0]
+
+    def reader_operands(name, children):
+        nonlocal certain
+        words = [literal(child) for child in children]
+        if any(word is None for word in words):
+            certain = False
+            return
+        options_done = False
+        script_seen = False
+        writes_files = False
+        position = 0
+        while position < len(words):
+            word = words[position]
+            position += 1
+            if not options_done and word == "--":
+                options_done = True
+                continue
+            if not options_done and word.startswith("-") and word != "-":
+                if name == "cat" and word in {
+                    "-A", "-b", "-e", "-E", "-n", "-s", "-t", "-T", "-u", "-v",
+                    "--show-all", "--number-nonblank", "--show-ends", "--number",
+                    "--squeeze-blank", "--show-tabs", "--show-nonprinting",
+                }:
+                    continue
+                if name in {"head", "tail"}:
+                    if word in {"-n", "--lines", "-c", "--bytes"}:
+                        position += 1
+                        if position > len(words):
+                            certain = False
+                        continue
+                    if word in {"-q", "--quiet", "--silent", "-v", "--verbose"}:
+                        continue
+                    if re.fullmatch(r"-(?:n|c)[0-9]+", word) or re.fullmatch(
+                        r"--(?:lines|bytes)=[0-9]+", word
+                    ):
+                        continue
+                    if name == "tail" and word in {"-f", "-F", "--follow", "-r"}:
+                        continue
+                if name == "sed":
+                    if word in {"-n", "--quiet", "--silent", "-E", "-r", "-u", "-z", "-s"}:
+                        continue
+                    if word in {"-e", "--expression", "-f", "--file"}:
+                        if position >= len(words):
+                            certain = False
+                            return
+                        if word in {"-f", "--file"}:
+                            targets.append(("read", words[position]))
+                        position += 1
+                        script_seen = True
+                        continue
+                    if word.startswith("--expression=") or word.startswith("-e") and len(word) > 2:
+                        script_seen = True
+                        continue
+                    if word.startswith("--file=") or word.startswith("-f") and len(word) > 2:
+                        targets.append(("read", word.split("=", 1)[1] if "=" in word else word[2:]))
+                        script_seen = True
+                        continue
+                    if word == "-i" or word.startswith("--in-place") or word.startswith("-i"):
+                        writes_files = True
+                        continue
+                certain = False
+                return
+            if name == "sed" and not script_seen:
+                script_seen = True
+                continue
+            if word != "-":
+                targets.append(("read", word))
+                if writes_files:
+                    targets.append(("write", word))
+        if name == "sed":
+            # A sed script can open additional files with r, w, or e commands.
+            certain = False
 
     def visit(node):
         nonlocal certain
@@ -143,6 +215,16 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                                 certain = False
                         else:
                             targets.append(("write", word))
+                elif name in {"cat", "head", "tail", "sed"}:
+                    reader_operands(name, children[1:])
+                elif name in _WRAPPERS:
+                    inner = _unwrapped(node, source)
+                    if inner is None:
+                        certain = False
+                    else:
+                        inner_targets, inner_certain = bash_file_targets(inner)
+                        targets.extend(inner_targets)
+                        certain = certain and inner_certain
         for child in node.named_children:
             visit(child)
 
