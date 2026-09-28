@@ -4,7 +4,7 @@ As of 2026-09-27, the development fixture is an unprivileged Linux account with 
 
 ## Installed baseline
 
-- Hermes v0.21.5 with the generic hook-control test branch, a local model, a LAN dashboard, and no messaging channel in this test account.
+- Hermes v0.21.5 with the generic hook-control test branch at `aa0b6e5c8`, a local model, a LAN dashboard, and no messaging channel in this test account. The branch also has the remote whole-file write guard; both core changes are published as patches in this repository.
 - LifeOS at base commit `5e2f2e8`, deployed into `~/.hermes` with `DeployCore.ts --config-root ~/.hermes --apply`. The isolated checkout now has a local `feature/hermes-task-hook` branch at `621456a`; its TaskGovernance, AgentWatchdog, EventLogger, CheckpointPerISC, FailureCapture, KittyEnvPersist, and tab-setter files are installed in the test account. All six compatibility patches are shipped in this plugin repository.
 - A fresh personal tree from `ScaffoldUser.ts --config-root ~/.hermes --apply`, linked by `LinkUser.ts --config-root ~/.hermes --apply`.
 - LifeOS's shipped Hermes sidecar mount, including its identity renderer and guard plugin.
@@ -27,5 +27,6 @@ Identity substitution also replaces placeholder literals in LifeOS's installed `
 - The dashboard remains active and rejects an unauthenticated API request with HTTP 401.
 - LifeOS Doctor reports identity rendering and filesystem search live.
 - The Pulse Skill guard blocks its known false trigger through the bridge. The Pulse Agent guard returns foreground advice through the bridge. The background flag maps from Hermes's top-level delegation context, and a child delegation maps to foreground.
+- A disposable SSH target demonstrated that Hermes now refuses a whole-file write when a remote ISA changes after it was read. A fresh read permits a merged write. The target account and key were removed after testing.
 
 LifeOS Doctor now reports that every registered hook interpreter resolves. The bridge executes mapped events through the Hermes plugin API and generic core extensions in the test fork. The [hook parity record](hook-parity.md) identifies unverified effects and missing events. Full hook parity has not been verified. Pulse reports a missing Bunker module from the public LifeOS fixture, but its hook routes remain active. Optional external services such as voice, Cloudflare, browser verification, and a GitHub login are not configured in the fixture.
