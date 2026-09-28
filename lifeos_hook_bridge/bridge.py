@@ -747,9 +747,20 @@ class HookBridge:
             ) as spool:
                 spool_path = Path(spool.name)
                 json.dump({"command": command, "payload": payload,
+                           "cwd": payload.get("cwd") or str(self.root), "environment": environment,
                            "result_path": str(result_path) if result_path else None}, spool)
+            runner = [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)]
+            if shutil.which("systemd-run") and os.environ.get("XDG_RUNTIME_DIR"):
+                unit = f"lifeos-hook-{uuid4().hex}"
+                service = subprocess.run(
+                    ["systemd-run", "--user", "--collect", "--service-type=exec", f"--unit={unit}", *runner],
+                    capture_output=True, text=True, timeout=10, check=False,
+                )
+                if service.returncode == 0:
+                    return
+                LOG.warning("LifeOS async hook service unavailable: %s", service.stderr.strip()[:400])
             process = subprocess.Popen(
-                [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)],
+                runner,
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
@@ -759,7 +770,7 @@ class HookBridge:
                 close_fds=True,
             )
             threading.Thread(target=process.wait, daemon=True, name="lifeos-async-hook-reap").start()
-        except OSError as error:
+        except (OSError, subprocess.TimeoutExpired) as error:
             LOG.error("LifeOS async hook failed to start: %s", error)
             if spool_path is not None:
                 spool_path.unlink(missing_ok=True)

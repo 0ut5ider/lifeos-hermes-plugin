@@ -373,6 +373,30 @@ class HookBridgeTests(unittest.TestCase):
         next_turn = bridge.pre_llm_call("second", session_id="persistent-session")
         self.assertIn("PERSISTED_CONTEXT", next_turn["context"])
 
+    def test_async_runner_restores_hook_environment_and_workdir(self):
+        workdir = self.root / "hook-workdir"
+        workdir.mkdir()
+        marker = self.root / "runner-environment"
+        command = self.make_hook(
+            "async-environment.py",
+            "import os\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(os.getcwd()+'|'+os.environ['LIFEOS_ASYNC_PROBE'])\n",
+        )
+        spool = self.root / "async-request.json"
+        spool.write_text(json.dumps({
+            "command": command,
+            "payload": {"session_id": "s1"},
+            "environment": {**os.environ, "LIFEOS_ASYNC_PROBE": "private-value"},
+            "cwd": str(workdir),
+            "result_path": None,
+        }))
+        runner = Path(__file__).resolve().parents[1] / "lifeos_hook_bridge/bin/hook_runner.py"
+        environment = dict(os.environ)
+        environment.pop("LIFEOS_ASYNC_PROBE", None)
+        process = subprocess.run([sys.executable, str(runner), str(spool)], cwd=self.root, env=environment)
+        self.assertEqual(process.returncode, 0)
+        self.assertEqual(marker.read_text(), f"{workdir}|private-value")
+
     def test_pre_tool_updated_input_maps_back_to_hermes(self):
         command = self.make_hook(
             "modify.py",

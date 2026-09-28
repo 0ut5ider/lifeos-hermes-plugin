@@ -24,6 +24,7 @@ def main() -> int:
                 input=json.dumps(request["payload"]), text=True,
                 stdout=output, stderr=subprocess.DEVNULL,
                 timeout=request.get("timeout"), check=False,
+                cwd=request.get("cwd"), env=request.get("environment"),
             )
             output.seek(0)
             response = output.read(65537)
