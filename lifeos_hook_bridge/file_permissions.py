@@ -4,10 +4,33 @@
 from __future__ import annotations
 
 import os
+import shlex
 from pathlib import Path
 from typing import Any
 
 from pathspec import GitIgnoreSpec
+
+
+def resolve_backend_path(target: str, cwd: str, backend: Any) -> str | None:
+    """Resolve a file target in the backend that owns a remote workspace."""
+    if not os.path.isabs(cwd):
+        return None
+    requested = os.path.normpath(target if os.path.isabs(target) else os.path.join(cwd, target))
+    quoted = shlex.quote(requested)
+    command = f"realpath -m -- {quoted} 2>/dev/null || readlink -f -- {quoted} 2>/dev/null"
+    try:
+        result = backend.execute(command, cwd=cwd, timeout=10)
+    except (AttributeError, OSError, TypeError, ValueError):
+        return None
+    if not isinstance(result, dict) or result.get("returncode") != 0:
+        return None
+    output = result.get("output", "")
+    if not isinstance(output, str):
+        return None
+    path = output.strip()
+    if not path.startswith("/") or "\n" in path or "\x00" in path:
+        return None
+    return os.path.normpath(path)
 
 
 def _rule_matches(rule: Any, tool: str, path: str, cwd: str, source: str, action: str) -> bool | None:
@@ -90,12 +113,15 @@ def _source_matches(
 
 def file_target_decision(
     target: str, operation: str, cwd: str, sources: list[tuple[Any, str]], *, host_paths: bool,
+    resolved_path: str | None = None,
 ) -> str:
     """Return deny, ask, allow, or unknown for one literal Bash file target."""
     if not os.path.isabs(cwd):
         return "unknown"
     requested = os.path.normpath(target if os.path.isabs(target) else os.path.join(cwd, target))
-    resolved = os.path.realpath(requested) if host_paths else requested
+    if not host_paths and resolved_path is not None and not os.path.isabs(resolved_path):
+        return "unknown"
+    resolved = os.path.realpath(requested) if host_paths else os.path.normpath(resolved_path or requested)
     paths = (requested,) if resolved == requested else (requested, resolved)
     tools = ("Read", "Edit") if operation == "write" else ("Read",)
     for action in ("deny", "ask"):
@@ -109,6 +135,8 @@ def file_target_decision(
                     uncertain = True
         if uncertain:
             return "unknown"
+    if not host_paths and resolved_path is None:
+        return "unknown"
     allow_tool = "Edit" if operation == "write" else "Read"
     explicitly_allowed = False
     for settings, source in sources:
@@ -118,6 +146,6 @@ def file_target_decision(
         elif match is None:
             return "unknown"
     inside_cwd = requested == cwd or requested.startswith(cwd.rstrip("/") + "/")
-    if host_paths and resolved != requested:
+    if resolved != requested:
         inside_cwd = inside_cwd and (resolved == cwd or resolved.startswith(cwd.rstrip("/") + "/"))
     return "allow" if explicitly_allowed or inside_cwd else "unknown"

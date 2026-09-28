@@ -3,9 +3,10 @@
 
 import tempfile
 import unittest
+import subprocess
 from pathlib import Path
 
-from lifeos_hook_bridge.file_permissions import file_target_decision
+from lifeos_hook_bridge.file_permissions import file_target_decision, resolve_backend_path
 
 
 class FilePermissionTests(unittest.TestCase):
@@ -55,6 +56,35 @@ class FilePermissionTests(unittest.TestCase):
         self.assertEqual(self.decide("link.txt", deny), "deny")
         allow = {"allow": ["Edit(./link.txt)"]}
         self.assertEqual(self.decide("link.txt", allow), "unknown")
+
+    def test_remote_symlink_uses_resolved_destination(self):
+        secret = self.root / "secret.txt"
+        secret.write_text("secret")
+        link = self.project / "link.txt"
+        link.symlink_to(secret)
+        rules = [({"deny": [f"Read(//{str(secret).lstrip('/')})"]}, str(self.project))]
+        self.assertEqual(file_target_decision(
+            "link.txt", "read", str(self.project), rules, host_paths=False,
+            resolved_path=str(secret),
+        ), "deny")
+        self.assertEqual(file_target_decision(
+            "link.txt", "read", str(self.project), rules, host_paths=False,
+        ), "unknown")
+
+    def test_backend_resolves_remote_symlink_without_interpreting_filename(self):
+        secret = self.root / "secret's.txt"
+        secret.write_text("secret")
+        (self.project / "link.txt").symlink_to(secret)
+
+        class ShellBackend:
+            def execute(self, command, cwd, timeout):
+                process = subprocess.run(
+                    ["bash", "-c", command], cwd=cwd, capture_output=True,
+                    text=True, timeout=timeout,
+                )
+                return {"returncode": process.returncode, "output": process.stdout + process.stderr}
+
+        self.assertEqual(resolve_backend_path("link.txt", str(self.project), ShellBackend()), str(secret))
 
     def test_read_deny_applies_to_output_target(self):
         self.assertEqual(self.decide("blocked.txt", {"deny": ["Read(./blocked.txt)"]}), "deny")

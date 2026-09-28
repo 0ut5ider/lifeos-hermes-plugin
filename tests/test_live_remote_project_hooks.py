@@ -9,6 +9,7 @@ import sys
 import time
 import unittest
 import threading
+from uuid import uuid4
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -18,6 +19,70 @@ from lifeos_hook_bridge.bridge import HookBridge
 
 
 class LiveRemoteProjectHookTests(unittest.TestCase):
+    def test_ssh_symlink_destination_file_rule(self):
+        host = os.environ.get("LIFEOS_SSH_PROBE_HOST")
+        user = os.environ.get("LIFEOS_SSH_PROBE_USER")
+        key = os.environ.get("LIFEOS_SSH_PROBE_KEY")
+        project = os.environ.get("LIFEOS_SSH_PROBE_PROJECT")
+        if not all((host, user, key, project)):
+            self.skipTest("disposable SSH project is required")
+
+        from tools.environments.ssh import SSHEnvironment
+        from tools.file_tools import clear_file_ops_cache
+        from tools.terminal_tool import _active_environments, _env_lock
+
+        env = SSHEnvironment(host=host, user=user, cwd=project, key_path=key, probe_only=True)
+        with _env_lock:
+            _active_environments["default"] = env
+        name = f"symlink-permission-{uuid4().hex}"
+        secret = os.path.normpath(f"{project}/../{name}.txt")
+        link = f"{project}/{name}.link"
+        ordinary = f"{project}/{name}.ordinary"
+        try:
+            setup = env.execute(
+                f"printf '%s' parity > {shlex.quote(secret)} && "
+                f"ln -s {shlex.quote(secret)} {shlex.quote(link)} && "
+                f"printf '%s' ordinary > {shlex.quote(ordinary)}",
+                cwd=project, timeout=20,
+            )
+            self.assertEqual(setup["returncode"], 0, setup)
+            with TemporaryDirectory(prefix="remote-symlink-rule-") as directory:
+                root = Path(directory)
+                settings = root / "settings.json"
+                settings.write_text(json.dumps({
+                    "hooks": {},
+                    "permissions": {
+                        "allow": [f"Bash(cat {name}.link)", f"Bash(cat {name}.ordinary)"],
+                        "deny": [f"Read(//{secret.lstrip('/')})"],
+                    },
+                }))
+                trust = root / "remote-projects.json"
+                trust.write_text('{"projects":[]}')
+                with patch.dict(os.environ, {"LIFEOS_REMOTE_PROJECT_TRUST": str(trust)}):
+                    bridge = HookBridge(settings, root)
+                try:
+                    self.assertIsNone(bridge.command_approval(
+                        f"cat {name}.ordinary", session_key="ssh-symlink", cwd=project, task_id="default",
+                    ))
+                    self.assertEqual(bridge.command_approval(
+                        f"cat {name}.link", session_key="ssh-symlink", cwd=project, task_id="default",
+                    ), {"action": "deny"})
+                    verdict = bridge.pre_tool_call(
+                        "read_file", {"path": link}, session_id="ssh-symlink", task_id="default",
+                    )
+                    self.assertEqual(verdict["action"], "block")
+                finally:
+                    bridge.close()
+        finally:
+            env.execute(
+                f"rm -f {shlex.quote(secret)} {shlex.quote(link)} {shlex.quote(ordinary)}",
+                cwd=project, timeout=20,
+            )
+            clear_file_ops_cache("default")
+            with _env_lock:
+                _active_environments.pop("default", None)
+            env.cleanup()
+
     def test_ssh_project_bash_deny_requires_backend_bound_trust(self):
         host = os.environ.get("LIFEOS_SSH_PROBE_HOST")
         user = os.environ.get("LIFEOS_SSH_PROBE_USER")

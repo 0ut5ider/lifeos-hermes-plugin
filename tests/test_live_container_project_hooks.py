@@ -8,6 +8,7 @@ import subprocess
 import sys
 import time
 import unittest
+from uuid import uuid4
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -16,6 +17,61 @@ from lifeos_hook_bridge.bridge import HookBridge
 
 
 class LiveContainerProjectHookTests(unittest.TestCase):
+    def test_container_symlink_destination_file_rule(self):
+        image = os.environ.get("LIFEOS_DOCKER_PROBE_IMAGE")
+        if not image:
+            self.skipTest("disposable Docker project is required")
+
+        from tools.environments.docker import DockerEnvironment
+        from tools.file_tools import clear_file_ops_cache
+        from tools.terminal_tool import _active_environments, _env_lock
+
+        name = f"lifeos-symlink-{uuid4().hex}"
+        project = f"/tmp/{name}"
+        secret = f"/tmp/{name}.secret"
+        link = f"{project}/link.txt"
+        env = DockerEnvironment(image=image, cwd=project, task_id=name,
+                                network=False, persistent_filesystem=False)
+        with _env_lock:
+            _active_environments["default"] = env
+        try:
+            setup = env.execute(
+                f"mkdir -p {shlex.quote(project)} && "
+                f"printf '%s' parity > {shlex.quote(secret)} && "
+                f"ln -s {shlex.quote(secret)} {shlex.quote(link)}",
+                cwd="/tmp", timeout=20,
+            )
+            self.assertEqual(setup["returncode"], 0, setup)
+            with TemporaryDirectory(prefix="container-symlink-rule-") as directory:
+                root = Path(directory)
+                settings = root / "settings.json"
+                settings.write_text(json.dumps({
+                    "hooks": {},
+                    "permissions": {
+                        "allow": ["Bash(cat link.txt)"],
+                        "deny": [f"Read(//{secret.lstrip('/')})"],
+                    },
+                }))
+                trust = root / "remote-projects.json"
+                trust.write_text('{"projects":[]}')
+                with patch.dict(os.environ, {"LIFEOS_REMOTE_PROJECT_TRUST": str(trust)}):
+                    bridge = HookBridge(settings, root)
+                try:
+                    self.assertEqual(bridge.command_approval(
+                        "cat link.txt", session_key="docker-symlink", cwd=project, task_id="default",
+                    ), {"action": "deny"})
+                    verdict = bridge.pre_tool_call(
+                        "read_file", {"path": link}, session_id="docker-symlink", task_id="default",
+                    )
+                    self.assertEqual(verdict["action"], "block")
+                finally:
+                    bridge.close()
+        finally:
+            clear_file_ops_cache("default")
+            with _env_lock:
+                _active_environments.pop("default", None)
+            env.cleanup()
+
     def test_async_container_hook_survives_parent_exit(self):
         image = os.environ.get("LIFEOS_DOCKER_PROBE_IMAGE")
         if not image:

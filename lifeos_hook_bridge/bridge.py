@@ -411,8 +411,21 @@ def _tool_cwd(tool_name: str, args: dict[str, Any], task_id: str) -> str:
     try:
         from tools.file_tools_paths import _authoritative_workspace_root
     except ImportError:
-        return _scope_cwd()
-    return _authoritative_workspace_root(task_id or "default") or _scope_cwd()
+        workspace = None
+    else:
+        workspace = _authoritative_workspace_root(task_id or "default")
+    if workspace:
+        return workspace
+    try:
+        from tools.terminal_tool import _active_environments, _env_lock, _resolve_container_task_id
+        with _env_lock:
+            backend = _active_environments.get(_resolve_container_task_id(task_id or "default"))
+        backend_cwd = getattr(backend, "cwd", None)
+        if isinstance(backend_cwd, str) and os.path.isabs(backend_cwd):
+            return backend_cwd
+    except (ImportError, AttributeError, OSError, ValueError):
+        pass
+    return _scope_cwd()
 
 
 def _hook_process_cwd(payload: dict[str, Any], root: Path) -> str:
@@ -440,6 +453,18 @@ def _task_uses_host_paths(task_id: str = "") -> bool:
     except (ImportError, OSError, ValueError) as error:
         LOG.debug("Hermes backend type unavailable: %s", error)
         return True
+
+
+def _backend_file_path(target: str, cwd: str, task_id: str) -> str | None:
+    from .file_permissions import resolve_backend_path
+
+    try:
+        from tools.file_tools import _get_file_ops
+        file_ops = _get_file_ops(task_id or "default")
+        return resolve_backend_path(target, cwd, file_ops.env)
+    except Exception as error:
+        LOG.warning("Remote file path could not be resolved: %s", error)
+        return None
 
 
 def _prompt_text(message: Any) -> str:
@@ -1369,7 +1394,11 @@ class HookBridge:
         targets, targets_certain = bash_file_targets(command)
         file_decision = "unknown" if not targets_certain else "allow"
         for operation, target in targets:
-            decision = file_target_decision(target, operation, cwd, permission_sources, host_paths=host_paths)
+            resolved = None if host_paths else _backend_file_path(target, cwd, task_id)
+            decision = file_target_decision(
+                target, operation, cwd, permission_sources,
+                host_paths=host_paths, resolved_path=resolved,
+            )
             if decision == "deny":
                 return {"action": "deny"}
             if decision in {"ask", "unknown"} or (
@@ -1563,10 +1592,14 @@ class HookBridge:
                 if not isinstance(path, str) or not path:
                     continue
                 operation = "read" if native_name == "Read" else "write"
-                decision = file_target_decision(path, operation, cwd, permission_sources, host_paths=host_paths)
+                resolved = None if host_paths else _backend_file_path(path, cwd, task_id)
+                decision = file_target_decision(
+                    path, operation, cwd, permission_sources,
+                    host_paths=host_paths, resolved_path=resolved,
+                )
                 if decision == "deny":
                     return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
-                if decision == "ask":
+                if decision == "ask" or (decision == "unknown" and not host_paths):
                     file_rule_review_paths.append(path)
         if native_name in {"Write", "Edit"}:
             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)

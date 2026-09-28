@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
-from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _native_file_input, _tool_input, _web_cache_read
+from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _native_file_input, _tool_cwd, _tool_input, _web_cache_read
 from lifeos_hook_bridge.model_tiers import configured_tiers
 
 
@@ -39,6 +39,20 @@ class HookBridgeTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root)
         self.addCleanup(bridge.close)
         return bridge
+
+    def test_file_tool_uses_active_backend_cwd_when_session_has_none(self):
+        project = "/remote/workspace"
+        file_paths = types.ModuleType("tools.file_tools_paths")
+        file_paths._authoritative_workspace_root = lambda task_id: None
+        terminal = types.ModuleType("tools.terminal_tool")
+        terminal._active_environments = {"remote": types.SimpleNamespace(cwd=project)}
+        terminal._env_lock = threading.RLock()
+        terminal._resolve_container_task_id = lambda task_id: task_id
+        package = types.ModuleType("tools")
+        package.__path__ = []
+        with patch.dict(sys.modules, {"tools": package, "tools.file_tools_paths": file_paths,
+                                      "tools.terminal_tool": terminal}):
+            self.assertEqual(_tool_cwd("read_file", {"path": f"{project}/file.txt"}, "remote"), project)
 
     def test_remote_skill_scan_hashes_regular_file(self):
         project = self.root / "project"
@@ -2353,6 +2367,63 @@ class HookBridgeTests(unittest.TestCase):
         self.addCleanup(bridge.close)
         self.assertEqual(bridge.command_approval(command, session_key="s1", cwd=str(self.root)),
                          {"action": "deny"})
+
+    def test_remote_symlink_file_deny_applies_to_bash_and_read_tool(self):
+        project = self.root / "remote-project"
+        project.mkdir()
+        secret = self.root / "secret.txt"
+        secret.write_text("secret")
+        (project / "link.txt").symlink_to(secret)
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {},
+            "permissions": {
+                "allow": ["Bash(cat link.txt)"],
+                "deny": [f"Read(//{str(secret).lstrip('/')})"],
+            },
+        }))
+
+        class ShellBackend:
+            fail = False
+
+            def execute(self, command, cwd, timeout):
+                if self.fail:
+                    return {"returncode": 1, "output": ""}
+                process = subprocess.run(
+                    ["bash", "-c", command], cwd=cwd, capture_output=True,
+                    text=True, timeout=timeout,
+                )
+                return {"returncode": process.returncode, "output": process.stdout + process.stderr}
+
+        backend = ShellBackend()
+        file_tools = types.ModuleType("tools.file_tools")
+        file_tools._get_file_ops = lambda task_id: types.SimpleNamespace(env=backend)
+        file_paths = types.ModuleType("tools.file_tools_paths")
+        file_paths._resolve_path_for_task = lambda path, task_id: path
+        file_paths._resolve_entry_for_task = lambda path, task_id: path
+        tools_package = types.ModuleType("tools")
+        tools_package.__path__ = []
+        with patch.dict(sys.modules, {"tools": tools_package, "tools.file_tools": file_tools,
+                                      "tools.file_tools_paths": file_paths}), patch(
+            "lifeos_hook_bridge.bridge._task_uses_host_paths", return_value=False,
+        ), patch.object(HookBridge, "_remote_project_settings", return_value=None):
+            bridge = HookBridge(settings, self.root)
+            self.addCleanup(bridge.close)
+            self.assertEqual(bridge.command_approval(
+                "cat link.txt", session_key="s1", cwd=str(project), task_id="remote",
+            ), {"action": "deny"})
+            self.assertEqual(bridge.pre_tool_call(
+                "read_file", {"path": str(project / "link.txt")},
+                session_id="s1", cwd=str(project), task_id="remote",
+            ), {"action": "block", "message": f"LifeOS file permission rule denied Read: {project / 'link.txt'}"})
+            backend.fail = True
+            self.assertEqual(bridge.command_approval(
+                "cat link.txt", session_key="s1", cwd=str(project), task_id="remote",
+            ), {"action": "review"})
+            self.assertEqual(bridge.pre_tool_call(
+                "read_file", {"path": str(project / "link.txt")},
+                session_id="s1", cwd=str(project), task_id="remote",
+            )["action"], "approve")
 
     def test_reader_options_do_not_become_file_targets(self):
         from lifeos_hook_bridge.bash_permissions import bash_file_targets
