@@ -1130,6 +1130,10 @@ class HookBridge:
             context.extend(self._context(self._run("SessionStart", start_payload)))
         payload = self._payload("UserPromptSubmit", session_id, prompt=prompt)
         outcomes = self._run("UserPromptSubmit", payload)
+        for process, output in outcomes:
+            if process.returncode == 2 or (output or {}).get("decision") == "block":
+                reason = (output or {}).get("reason") or process.stderr.strip() or "Prompt blocked by a hook"
+                return {"action": "block", "message": str(reason)}
         self._append_transcript(session_id, "user", user_message)
         context.extend(self._context(outcomes))
         return {"context": "\n\n".join(context)} if context else None

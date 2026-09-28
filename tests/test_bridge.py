@@ -759,6 +759,28 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
         self.assertEqual([row["message"]["content"] for row in rows], ["first prompt", "second prompt"])
 
+    def test_prompt_hook_block_drops_current_prompt(self):
+        command = self.make_hook(
+            "block-prompt.py",
+            "import json\nprint(json.dumps({'decision':'block','reason':'Prompt denied by test'}))\n",
+        )
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}]})
+        result = bridge.pre_llm_call("secret prompt", session_id="s1")
+        self.assertEqual(result, {"action": "block", "message": "Prompt denied by test"})
+        self.assertFalse(bridge.transcript_path("s1").exists())
+
+    def test_prompt_hook_exit_two_drops_current_prompt(self):
+        command = self.make_hook(
+            "reject-prompt.py",
+            "import sys\nprint('Rejected on stderr', file=sys.stderr)\nsys.exit(2)\n",
+        )
+        bridge = self.bridge({"UserPromptSubmit": [{"hooks": [{"type": "command", "command": command}]}]})
+        self.assertEqual(
+            bridge.pre_llm_call("secret prompt", session_id="s1"),
+            {"action": "block", "message": "Rejected on stderr"},
+        )
+        self.assertFalse(bridge.transcript_path("s1").exists())
+
     def test_session_start_uses_resume_source_after_bridge_restart(self):
         command = self.make_hook(
             "session-source.py",
