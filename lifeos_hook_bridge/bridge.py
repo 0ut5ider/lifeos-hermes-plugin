@@ -287,6 +287,33 @@ def _tool_cwd(tool_name: str, args: dict[str, Any], task_id: str) -> str:
     return _authoritative_workspace_root(task_id or "default") or _scope_cwd()
 
 
+def _hook_process_cwd(payload: dict[str, Any], root: Path) -> str:
+    """Run local hook commands from an existing directory while preserving payload cwd."""
+    cwd = payload.get("cwd")
+    return cwd if isinstance(cwd, str) and Path(cwd).is_dir() else str(root)
+
+
+def _task_uses_host_paths(task_id: str = "") -> bool:
+    """Use the active Hermes backend, or its configured type before it starts."""
+    try:
+        from tools.terminal_tool import (
+            _active_environments, _env_lock, _get_env_config, _resolve_container_task_id,
+        )
+        with _env_lock:
+            environment = _active_environments.get(_resolve_container_task_id(task_id or "default"))
+        if environment is not None:
+            try:
+                from tools.environments.local import LocalEnvironment
+            except ImportError:
+                pass
+            else:
+                return isinstance(environment, LocalEnvironment)
+        return _get_env_config().get("env_type") == "local"
+    except (ImportError, OSError, ValueError) as error:
+        LOG.debug("Hermes backend type unavailable: %s", error)
+        return True
+
+
 def _prompt_text(message: Any) -> str:
     if isinstance(message, str):
         return message
@@ -563,7 +590,9 @@ class HookBridge:
             sources.update((path, "skills") for path in user_skills.rglob("*") if path.is_file())
         return sources
 
-    def _remember_project(self, cwd: str, session_id: str) -> None:
+    def _remember_project(self, cwd: str, session_id: str, task_id: str = "") -> None:
+        if not _task_uses_host_paths(task_id):
+            return
         project_dir = _project_root_for_cwd(cwd)
         with self.session_lock:
             projects = self.session_projects.setdefault(session_id, set())
@@ -588,7 +617,9 @@ class HookBridge:
             return {}
         return settings if isinstance(settings, dict) and isinstance(settings.get("hooks", {}), dict) else {}
 
-    def _matching_project(self, payload: dict[str, Any]) -> Path | None:
+    def _matching_project(self, payload: dict[str, Any], host_paths: bool = True) -> Path | None:
+        if not host_paths:
+            return None
         cwd = Path(payload.get("cwd") or _scope_cwd()).resolve()
         session_id = payload.get("session_id", "")
         with self.session_lock:
@@ -599,9 +630,9 @@ class HookBridge:
                 project = next(iter(projects))
         return project if project is not None and _trusted_project(project) else None
 
-    def _hook_groups(self, event: str, payload: dict[str, Any]) -> list[dict[str, Any]]:
+    def _hook_groups(self, event: str, payload: dict[str, Any], host_paths: bool = True) -> list[dict[str, Any]]:
         groups = list(self.hooks.get(event, []))
-        project = self._matching_project(payload)
+        project = self._matching_project(payload, host_paths)
         if project is not None:
             with self.session_lock:
                 for name in ("settings.json", "settings.local.json"):
@@ -609,11 +640,11 @@ class HookBridge:
                     groups.extend(settings.get("hooks", {}).get(event, []))
         return groups
 
-    def _event_environment(self, payload: dict[str, Any]) -> dict[str, str]:
+    def _event_environment(self, payload: dict[str, Any], host_paths: bool = True) -> dict[str, str]:
         environment = dict(self.environment)
         with self.session_lock:
             platform = self.session_platforms.get(payload.get("session_id", ""), "")
-        project = self._matching_project(payload)
+        project = self._matching_project(payload, host_paths)
         if project is not None:
             with self.session_lock:
                 for name in ("settings.json", "settings.local.json"):
@@ -703,11 +734,13 @@ class HookBridge:
 
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
-        alias_input: dict[str, Any] | None = None,
+        alias_input: dict[str, Any] | None = None, task_id: str = "",
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
-        environment = self._event_environment(payload)
-        for group in self._hook_groups(event, payload):
+        host_paths = _task_uses_host_paths(task_id)
+        environment = self._event_environment(payload, host_paths)
+        process_cwd = _hook_process_cwd(payload, self.root) if host_paths else str(self.root)
+        for group in self._hook_groups(event, payload, host_paths):
             matcher = group.get("matcher", "")
             native_match = not matcher or bool(re.fullmatch(matcher, tool_name))
             alias_match = bool(matcher and matcher_alias and re.fullmatch(matcher, matcher_alias))
@@ -728,10 +761,10 @@ class HookBridge:
                 if not isinstance(command, str) or not command.strip():
                     continue
                 if hook.get("async"):
-                    jobs.append((self._run_async, (command, group_payload, environment), True))
+                    jobs.append((self._run_async, (command, group_payload, environment, process_cwd), True))
                     continue
                 timeout = max(1, min(int(hook.get("timeout", 60)), 300))
-                jobs.append((self._run_command, (event, command, group_payload, timeout, environment), False))
+                jobs.append((self._run_command, (event, command, group_payload, timeout, environment, process_cwd), False))
         outcomes = []
         if not jobs:
             return outcomes
@@ -757,12 +790,12 @@ class HookBridge:
 
     def _run_command(
         self, event: str, command: str, payload: dict[str, Any], timeout: int,
-        environment: dict[str, str],
+        environment: dict[str, str], process_cwd: str,
     ) -> subprocess.CompletedProcess[str] | None:
         try:
             process = subprocess.run(
                 ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
-                capture_output=True, timeout=timeout, cwd=payload.get("cwd") or self.root,
+                capture_output=True, timeout=timeout, cwd=process_cwd,
                 env=environment, check=False,
             )
         except (OSError, subprocess.TimeoutExpired) as error:
@@ -789,7 +822,7 @@ class HookBridge:
             return None
 
     def _run_async(
-        self, command: str, payload: dict[str, Any], environment: dict[str, str],
+        self, command: str, payload: dict[str, Any], environment: dict[str, str], process_cwd: str,
     ) -> None:
         spool_path = None
         try:
@@ -805,7 +838,7 @@ class HookBridge:
             ) as spool:
                 spool_path = Path(spool.name)
                 json.dump({"command": command, "payload": payload,
-                           "cwd": payload.get("cwd") or str(self.root), "environment": environment,
+                           "cwd": process_cwd, "environment": environment,
                            "result_path": str(result_path) if result_path else None}, spool)
             runner = [sys.executable, str(Path(__file__).parent / "bin/hook_runner.py"), str(spool_path)]
             if shutil.which("systemd-run") and os.environ.get("XDG_RUNTIME_DIR"):
@@ -822,7 +855,7 @@ class HookBridge:
                 stdin=subprocess.DEVNULL,
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL,
-                cwd=payload.get("cwd") or self.root,
+                cwd=process_cwd,
                 env=environment,
                 start_new_session=True,
                 close_fds=True,
@@ -898,15 +931,16 @@ class HookBridge:
         return None
 
     def _mcp_permission_verdict(
-        self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str,
+        self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str, task_id: str = "",
     ) -> dict[str, Any] | None:
         groups = self._hook_groups(
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
+            _task_uses_host_paths(task_id),
         )
         if not any(re.fullmatch(group.get("matcher", "") or ".*", tool_name) for group in groups):
             return None
         payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
-        outcomes = self._run("PermissionRequest", payload, tool_name)
+        outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
         granted = False
         for process, output in outcomes:
             specific = _specific_output(output, "PermissionRequest")
@@ -927,9 +961,11 @@ class HookBridge:
 
     def _file_permission_verdict(
         self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str, cwd: str,
+        task_id: str = "",
     ) -> dict[str, Any] | None:
         groups = self._hook_groups(
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=native_name),
+            _task_uses_host_paths(task_id),
         )
         if not any(re.fullmatch(group.get("matcher", "") or ".*", native_name) for group in groups):
             return None
@@ -938,7 +974,7 @@ class HookBridge:
             payload = self._payload(
                 "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd,
             )
-            outcomes = self._run("PermissionRequest", payload, native_name)
+            outcomes = self._run("PermissionRequest", payload, native_name, task_id=task_id)
             granted = False
             for process, output in outcomes:
                 specific = _specific_output(output, "PermissionRequest")
@@ -966,17 +1002,19 @@ class HookBridge:
         task_id: str = "", **_: Any,
     ) -> dict[str, Any] | None:
         cwd = _tool_cwd(tool_name, args, task_id)
-        self._remember_project(cwd, session_id)
+        self._remember_project(cwd, session_id, task_id)
         if tool_name == "todo_list" and self._hook_groups(
             "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
+            _task_uses_host_paths(task_id),
         ):
-            task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name)
+            task_verdict = self._task_created_verdict(args, session_id, tool_call_id or tool_name, task_id)
             if task_verdict:
                 return task_verdict
         if tool_name == "kanban_create" and self._hook_groups(
             "TaskCreated", self._payload("TaskCreated", session_id, cwd=cwd, tool_name=tool_name),
+            _task_uses_host_paths(task_id),
         ):
-            task_verdict = self._kanban_task_verdict(args, session_id, tool_call_id or tool_name)
+            task_verdict = self._kanban_task_verdict(args, session_id, tool_call_id or tool_name, task_id)
             if task_verdict:
                 return task_verdict
         native_name = _native_tool_name(tool_name)
@@ -997,6 +1035,7 @@ class HookBridge:
                 "PreToolUse", payload, native_name,
                 matcher_alias="Bash" if isinstance(code, str) and code else "",
                 alias_input={"command": code} if isinstance(code, str) and code else None,
+                task_id=task_id,
             ):
                 specific = _specific_output(output, "PreToolUse")
                 decision = specific.get("permissionDecision")
@@ -1026,14 +1065,14 @@ class HookBridge:
                 if len(self.pending_tool_context) > 1024:
                     self.pending_tool_context.pop(next(iter(self.pending_tool_context)))
         if tool_name.startswith("mcp__"):
-            verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd)
+            verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd, task_id)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
                 return verdict
         if native_name in {"Write", "Edit"}:
             permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd, task_id)]
-            verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd)
+            verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
             if verdict:
                 if verdict["action"] == "approve" and updated_args is not None:
                     verdict["args"] = updated_args
@@ -1079,34 +1118,37 @@ class HookBridge:
             if temporary is not None:
                 temporary.unlink(missing_ok=True)
 
-    def _supports_native_task_hook(self, session_id: str, cwd: str) -> bool:
+    def _supports_native_task_hook(self, session_id: str, cwd: str, backend_task_id: str = "") -> bool:
         key = (session_id, cwd)
         if key not in self.native_task_hook_supported:
             payload = self._payload("TaskCreated", session_id, cwd=cwd, hermes_bridge_probe=True)
             self.native_task_hook_supported[key] = any(
                 process.returncode == 0 and (output or {}).get("hermes_bridge_task_governance") == 1
-                for process, output in self._run("TaskCreated", payload)
+                for process, output in self._run("TaskCreated", payload, task_id=backend_task_id)
             )
         return self.native_task_hook_supported[key]
 
     def _native_task_verdict(
         self, session_id: str, task_id: str, subject: str, description: str, count: int,
+        backend_task_id: str = "",
     ) -> dict[str, str] | None:
         payload = self._payload(
             "TaskCreated", session_id, task_id=task_id, task_subject=subject,
             task_description=description, hermes_task_count=count,
         )
-        for process, output in self._run("TaskCreated", payload):
+        for process, output in self._run("TaskCreated", payload, task_id=backend_task_id):
             if process.returncode == 2 or (output or {}).get("decision") == "block":
                 message = (output or {}).get("reason") or process.stderr.strip() or "LifeOS blocked task creation"
                 return {"action": "block", "message": str(message)[:2000]}
         return None
 
-    def _task_created_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
+    def _task_created_verdict(
+        self, args: dict[str, Any], session_id: str, call_id: str, backend_task_id: str = "",
+    ) -> dict[str, str] | None:
         todos = args.get("todos")
         if not isinstance(todos, list):
             return None
-        native = self._supports_native_task_hook(session_id, _scope_cwd())
+        native = self._supports_native_task_hook(session_id, _scope_cwd(), backend_task_id)
         with self.session_lock:
             self._load_task_state(session_id)
             key = (session_id, call_id)
@@ -1121,6 +1163,7 @@ class HookBridge:
                     verdict = self._native_task_verdict(
                         session_id, str(item.get("id", "")), str(description),
                         description if isinstance(description, str) else "", count + reserved + index,
+                        backend_task_id,
                     )
                     if verdict:
                         return verdict
@@ -1134,9 +1177,11 @@ class HookBridge:
                 self.pending_tasks[key] = (new_ids, len(new_ids))
         return None
 
-    def _kanban_task_verdict(self, args: dict[str, Any], session_id: str, call_id: str) -> dict[str, str] | None:
+    def _kanban_task_verdict(
+        self, args: dict[str, Any], session_id: str, call_id: str, backend_task_id: str = "",
+    ) -> dict[str, str] | None:
         description = args.get("body") or args.get("title", "")
-        native = self._supports_native_task_hook(session_id, _scope_cwd())
+        native = self._supports_native_task_hook(session_id, _scope_cwd(), backend_task_id)
         with self.session_lock:
             self._load_task_state(session_id)
             key = (session_id, call_id)
@@ -1147,6 +1192,7 @@ class HookBridge:
                 verdict = self._native_task_verdict(
                     session_id, call_id, str(args.get("title", "")),
                     description if isinstance(description, str) else "", count + reserved,
+                    backend_task_id,
                 )
                 if verdict:
                     return verdict
@@ -1237,7 +1283,7 @@ class HookBridge:
         if native_name is None:
             return
         cwd = _tool_cwd(tool_name, args, task_id)
-        self._remember_project(cwd, session_id)
+        self._remember_project(cwd, session_id, task_id)
         event = "PostToolUseFailure" if status in {"error", "blocked"} else "PostToolUse"
         try:
             response = json.loads(result)
@@ -1284,6 +1330,7 @@ class HookBridge:
             outcomes = self._run(
                 event, payload, native_name,
                 matcher_alias="WebFetch" if event == "PostToolUse" and external_content else "",
+                task_id=task_id,
             )
             context.extend(self._context(outcomes, event))
             context.extend(

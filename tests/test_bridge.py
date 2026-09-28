@@ -118,6 +118,38 @@ class HookBridgeTests(unittest.TestCase):
         bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": str(workdir)}, session_id="s1")
         self.assertEqual(marker.read_text(), str(workdir))
 
+    def test_remote_workdir_absent_on_host_still_runs_user_hook(self):
+        remote = f"/remote-project-{self.root.name}/work"
+        self.assertFalse(Path(remote).exists())
+        marker = self.root / "remote-cwd.json"
+        command = self.make_hook(
+            "record-remote-cwd.py",
+            "import json,os,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps({{'cwd':data['cwd'],'process_cwd':os.getcwd()}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": remote}, session_id="remote-session")
+        self.assertEqual(json.loads(marker.read_text()), {"cwd": remote, "process_cwd": str(self.root)})
+
+    def test_async_user_hook_runs_when_remote_workdir_is_absent_on_host(self):
+        remote = f"/remote-project-{self.root.name}/work"
+        marker = self.root / "async-remote-cwd.json"
+        command = self.make_hook(
+            "record-async-remote-cwd.py",
+            "import json,os,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text(json.dumps({{'cwd':data['cwd'],'process_cwd':os.getcwd()}}))\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Bash", "hooks": [
+            {"type": "command", "command": command, "async": True},
+        ]}]})
+        bridge.pre_tool_call("terminal", {"command": "pwd", "workdir": remote}, session_id="remote-session")
+        deadline = time.monotonic() + 4
+        while not marker.exists() and time.monotonic() < deadline:
+            time.sleep(0.05)
+        self.assertEqual(json.loads(marker.read_text()), {"cwd": remote, "process_cwd": str(self.root)})
+
     def test_relative_file_tool_path_uses_task_workspace_for_hook(self):
         marker = self.root / "relative-file.json"
         command = self.make_hook(
@@ -185,6 +217,30 @@ class HookBridgeTests(unittest.TestCase):
             "terminal", {"command": "pwd", "workdir": str(other)}, session_id="project-b-session",
         )
         self.assertIsNone(result)
+
+    def test_remote_backend_does_not_run_same_path_host_project_hook(self):
+        project = self.root / "same-path-project"
+        (project / ".claude").mkdir(parents=True)
+        deny = self.make_hook("host-project-deny.py", "import sys\nprint('host project ran',file=sys.stderr)\nsys.exit(2)\n")
+        (project / ".claude/settings.json").write_text(json.dumps({"hooks": {
+            "PreToolUse": [{"matcher": "Bash", "hooks": [{"type": "command", "command": deny}]}],
+        }}))
+        bridge = self.bridge({})
+        terminal_tool = types.ModuleType("tools.terminal_tool")
+        terminal_tool._active_environments = {"default": types.SimpleNamespace()}
+        terminal_tool._env_lock = threading.RLock()
+        terminal_tool._resolve_container_task_id = lambda task_id: "default"
+        terminal_tool._get_env_config = lambda: {"env_type": "ssh"}
+        with patch("lifeos_hook_bridge.bridge._trusted_project", return_value=True), patch.dict(
+            sys.modules, {"tools.terminal_tool": terminal_tool},
+        ):
+            with patch("lifeos_hook_bridge.bridge._scope_cwd", return_value=str(project)):
+                bridge.pre_llm_call("start", session_id="same-path-session")
+            verdict = bridge.pre_tool_call(
+                "terminal", {"command": "pwd", "workdir": str(project)},
+                session_id="same-path-session", task_id="remote-task",
+            )
+        self.assertIsNone(verdict)
 
     def test_project_hook_reloads_after_settings_change(self):
         project = self.root / "project-a"

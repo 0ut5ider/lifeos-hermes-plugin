@@ -1,0 +1,7 @@
+# Remote tool workdirs and local hook processes
+
+On 2026-09-28, a regression passed a remote tool workdir absent from the Hermes host into the LifeOS bridge. The native hook never started. The bridge used the remote `cwd` as the working directory for a local subprocess, and `subprocess.run` raised `FileNotFoundError`. The test failed because its marker file was absent. An asynchronous hook had the same process launch problem.
+
+The bridge now keeps the remote path in the hook payload and starts local user hooks from the installed LifeOS root. Both synchronous and asynchronous regressions pass. A separate test found another boundary: when a remote path happened to match a trusted local project path, the bridge ran that host project's blocking hook. The test returned `host project ran` before the fix. The bridge now consults Hermes's active backend and excludes host project settings for non-host tool events. On the installed Hermes source, a real `SSHEnvironment` class under the resolved `default` task key was classified as non-host. The `.212` plugin suite passed 146 tests with 33 fixture skips; the dashboard returned HTTP 200 after restart.
+
+This restores user hook event delivery for remote tools and prevents host project hook confusion. It does not load a remote project's `.claude/settings.json`. Running project supplied hooks from a remote filesystem requires an explicit trust model and an execution path that can access that filesystem. The current bridge has neither. Container project hooks have the same open requirement.
