@@ -752,11 +752,21 @@ class HookBridge:
         return context
 
     def _payload(self, event: str, session_id: str, **fields: Any) -> dict[str, Any]:
+        child_fields = {}
+        if event in {"PreToolUse", "PostToolUse", "PostToolUseFailure", "PermissionRequest", "TaskCreated"}:
+            try:
+                from agent.delegation_context import is_delegated_child_process_context
+            except ImportError:
+                pass
+            else:
+                if is_delegated_child_process_context():
+                    child_fields = {"agent_id": session_id or "hermes-child", "agent_type": "general-purpose"}
         return {
             "hook_event_name": event,
             "session_id": session_id,
             "transcript_path": str(self.transcript_path(session_id)),
             "cwd": _scope_cwd(),
+            **child_fields,
             **fields,
         }
 

@@ -9,6 +9,7 @@ import sys
 import tempfile
 import threading
 import time
+import types
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -691,6 +692,39 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(rows[0]["message"]["content"][0]["id"], "tc1")
         self.assertEqual(rows[1]["message"]["content"][0]["tool_use_id"], "tc1")
         self.assertTrue(rows[1]["message"]["content"][0]["is_error"])
+
+    def test_delegated_child_tool_events_carry_agent_identity(self):
+        marker = self.root / "child-hook-input.json"
+        command = self.make_hook(
+            "child-identity.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({
+            "PostToolUse": [{"matcher": "Read", "hooks": [{"type": "command", "command": command}]}],
+            "PostToolUseFailure": [{"matcher": "Read", "hooks": [{"type": "command", "command": command}]}],
+        })
+        package = types.ModuleType("agent")
+        package.__path__ = []
+        delegation = types.ModuleType("agent.delegation_context")
+        delegated = {"active": False}
+        delegation.is_delegated_child_process_context = lambda: delegated["active"]
+        with patch.dict(sys.modules, {"agent": package, "agent.delegation_context": delegation}):
+            bridge.post_tool_call("read_file", {"path": str(self.root / "note.txt")}, "ok", session_id="primary")
+            primary = json.loads(marker.read_text())
+            delegated["active"] = True
+            bridge.post_tool_call("read_file", {"path": str(self.root / "note.txt")}, "ok", session_id="child-session")
+            child = json.loads(marker.read_text())
+            bridge.post_tool_call(
+                "read_file", {"path": str(self.root / "note.txt")}, "failed", session_id="child-session",
+                status="error", error_message="failed",
+            )
+            failed_child = json.loads(marker.read_text())
+        self.assertNotIn("agent_id", primary)
+        self.assertEqual(child["agent_id"], "child-session")
+        self.assertEqual(child["agent_type"], "general-purpose")
+        self.assertEqual(failed_child["hook_event_name"], "PostToolUseFailure")
+        self.assertEqual(failed_child["agent_id"], "child-session")
 
     def test_post_patch_reports_each_changed_file(self):
         marker = self.root / "post-edit.jsonl"
