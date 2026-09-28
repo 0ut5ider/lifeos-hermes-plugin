@@ -67,3 +67,10 @@ class FilePermissionTests(unittest.TestCase):
                     ({"deny": ["Edit(!sample.env)"]}, str(self.project))]
         self.assertEqual(file_target_decision("sample.env", "write", str(self.project),
                                                separate, host_paths=True), "deny")
+
+    def test_negation_does_not_reopen_anchored_or_blocked_directory(self):
+        path = self.project / "sample.env"
+        anchored = {"deny": [f"Edit(//{str(path).lstrip('/')})", "Edit(!sample.env)"]}
+        self.assertEqual(self.decide("sample.env", anchored), "deny")
+        directory = {"deny": ["Edit(secrets/**)", "Edit(!secrets/public/**)"]}
+        self.assertEqual(self.decide("secrets/public/sample.env", directory), "deny")

@@ -122,6 +122,25 @@ class HostCommandPolicyTests(unittest.TestCase):
                         self.assertFalse(compound["approved"])
                         self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
                                          ["neutral", "neutral"])
+                        guarded_path = Path(directory) / "guarded.txt"
+                        redirect_command = f"printf PARITY > {guarded_path}"
+                        settings.write_text(json.dumps({
+                            "hooks": {"PermissionRequest": [{
+                                "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                            }]},
+                            "permissions": {
+                                "allow": [f"Bash({redirect_command})"],
+                                "deny": [f"Edit(//{str(guarded_path).lstrip('/')})"],
+                            },
+                        }))
+                        redirected = check_all_command_guards(
+                            redirect_command, "local",
+                            approval_callback=lambda *args, **kwargs: self.fail("File deny asked for approval"),
+                        )
+                        self.assertFalse(redirected["approved"])
+                        self.assertFalse(guarded_path.exists())
+                        self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
+                                         ["neutral", "neutral"])
                     finally:
                         plugins_mod._reset_plugin_managers_for_tests()
         finally:

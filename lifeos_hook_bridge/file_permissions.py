@@ -65,20 +65,27 @@ def _source_matches(
     rules = settings.get(action, [])
     if not isinstance(rules, list):
         return None
-    matched = False
+    matched_rules: list[str] = []
     uncertain = False
     for rule in rules:
         if not isinstance(rule, str):
             uncertain = True
             continue
         negate = rule.startswith(f"{tool}(!")
+        if negate and rule.startswith((f"{tool}(!/", f"{tool}(!~/")):
+            continue
         candidate = rule.replace(f"{tool}(!", f"{tool}(", 1) if negate else rule
         results = [_rule_matches(candidate, tool, path, cwd, source, action) for path in paths]
         if None in results:
             uncertain = True
         elif (all(results) if action == "allow" else any(results)):
-            matched = False if negate else True
-    return True if matched else None if uncertain else False
+            if negate:
+                matched_rules = [prior for prior in matched_rules if prior.startswith(
+                    (f"{tool}(/", f"{tool}(~/")
+                ) or prior.endswith("/**)")]
+            else:
+                matched_rules.append(rule)
+    return True if matched_rules else None if uncertain else False
 
 
 def file_target_decision(
