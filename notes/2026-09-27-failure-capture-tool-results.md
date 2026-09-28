@@ -9,3 +9,5 @@ The regression creates two distinct calls, Bash and Read, with separate outputs.
 The five LifeOS patches applied in order to a fresh worktree at `5e2f2e8`. Each passed `git apply --check`; the final diff passed `git diff --check`. The plugin suite passed 90 tests, with 10 native tests skipped when their optional fixture paths were absent. The dedicated FailureCapture test passed when pointed to the patched source and on `.212`. This probe did not run a real model or use a real user transcript.
 
 The `.212` LifeOS source fix is commit `2f6626f` on `feature/hermes-task-hook`. The installed file has the same SHA-256 as the source file. Production `.211` and `.213` were not changed.
+
+After transferring the current public plugin branch over SSH, the `.212` account ran the full plugin suite with Bun and all native hook paths configured. All 90 tests passed without skips. Its LAN-only outbound rule prevented `git pull` from GitHub, so the test used a transferred source tree under `/tmp`.
