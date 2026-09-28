@@ -15,7 +15,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
-from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path
+from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _web_cache_read
 
 
 class HookBridgeTests(unittest.TestCase):
@@ -1025,6 +1025,64 @@ class HookBridgeTests(unittest.TestCase):
         self.assertTrue(all(payload["tool_response"] == "Page supplied text" for payload in safety_payloads))
         rows = [json.loads(line) for line in bridge.transcript_path("browser").read_text().splitlines()]
         self.assertEqual([row["message"]["content"][0]["name"] for row in rows[::2]], list(names))
+
+    def test_reading_web_cache_runs_webfetch_safety_but_regular_read_does_not(self):
+        marker = self.root / "web-cache-safety.jsonl"
+        command = self.make_hook(
+            "web-cache-safety.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n"
+            "print(json.dumps({'hookSpecificOutput':{'additionalContext':'External page warning'}}))\n",
+        )
+        cache = self.root / "cache" / "web"
+        cache.mkdir(parents=True)
+        external = cache / "page.md"
+        ordinary = self.root / "notes.md"
+        bridge = self.bridge({
+            "PostToolUse": [{"matcher": "WebFetch", "hooks": [{"type": "command", "command": command}]}],
+        })
+        constants = types.ModuleType("hermes_constants")
+        constants.get_hermes_dir = lambda *args: cache
+        credentials = types.ModuleType("tools.credential_files")
+        credentials.to_agent_visible_cache_path = lambda path: path
+        tools_package = types.ModuleType("tools")
+        tools_package.__path__ = []
+
+        with patch.dict(sys.modules, {
+            "hermes_constants": constants, "tools": tools_package, "tools.credential_files": credentials,
+        }):
+            external_context = bridge.post_tool_call(
+                "read_file", {"path": str(external)}, "Page body", session_id="cache",
+            )
+            ordinary_context = bridge.post_tool_call(
+                "read_file", {"path": str(ordinary)}, "Private note", session_id="cache",
+            )
+
+        self.assertEqual(external_context, "External page warning")
+        self.assertIsNone(ordinary_context)
+        payloads = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual(len(payloads), 1)
+        self.assertEqual(payloads[0]["tool_name"], "WebFetch")
+        self.assertEqual(payloads[0]["tool_response"], "Page body")
+        rows = [json.loads(line) for line in bridge.transcript_path("cache").read_text().splitlines()]
+        self.assertEqual([row["message"]["content"][0]["name"] for row in rows[::2]], ["Read", "Read"])
+
+    def test_web_cache_read_uses_backend_visible_directory(self):
+        constants = types.ModuleType("hermes_constants")
+        constants.get_hermes_dir = lambda *args: Path("/host/.hermes/cache/web")
+        credentials = types.ModuleType("tools.credential_files")
+        credentials.to_agent_visible_cache_path = lambda path: path.replace("/host", "/root")
+        tools_package = types.ModuleType("tools")
+        tools_package.__path__ = []
+        with patch.dict(sys.modules, {
+            "hermes_constants": constants, "tools": tools_package, "tools.credential_files": credentials,
+        }):
+            self.assertTrue(_web_cache_read(
+                {"file_path": "/root/.hermes/cache/web/page.md"}, str(self.root), "remote-task",
+            ))
+            self.assertFalse(_web_cache_read(
+                {"file_path": "/root/.hermes/cache/documents/private.md"}, str(self.root), "remote-task",
+            ))
 
     def test_delegated_child_tool_events_carry_agent_identity(self):
         marker = self.root / "child-hook-input.json"

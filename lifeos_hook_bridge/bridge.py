@@ -125,6 +125,23 @@ def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "defau
     return translated
 
 
+def _web_cache_read(tool_input: dict[str, Any], cwd: str, task_id: str) -> bool:
+    path = tool_input.get("file_path")
+    if not isinstance(path, str) or not path:
+        return False
+    try:
+        from hermes_constants import get_hermes_dir
+        from tools.credential_files import to_agent_visible_cache_path
+
+        host_cache = get_hermes_dir("cache/web", "web_cache")
+        visible_cache = to_agent_visible_cache_path(str(host_cache))
+        cache_root = _hook_file_path(visible_cache, cwd, task_id)
+        return Path(path).is_relative_to(Path(cache_root))
+    except (ImportError, OSError, ValueError) as error:
+        LOG.debug("Hermes web cache path is unavailable: %s", error)
+        return False
+
+
 def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> list[dict[str, str]]:
     edits = []
     path = None
@@ -1210,9 +1227,12 @@ class HookBridge:
                 cwd=cwd,
                 **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": hook_response}),
             )
+            external_content = tool_name in WEB_CONTENT_TOOLS or (
+                native_name == "Read" and _web_cache_read(native_input, cwd, task_id)
+            )
             context.extend(self._context(self._run(
                 event, payload, native_name,
-                matcher_alias="WebFetch" if event == "PostToolUse" and tool_name in WEB_CONTENT_TOOLS else "",
+                matcher_alias="WebFetch" if event == "PostToolUse" and external_content else "",
             )))
         return "\n\n".join(context) if context else None
 
