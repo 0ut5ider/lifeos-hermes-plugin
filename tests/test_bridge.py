@@ -159,7 +159,9 @@ class HookBridgeTests(unittest.TestCase):
             f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
         )
         bridge = self.bridge({"PreToolUse": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
-        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)):
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)), patch.dict(
+            os.environ, {"TERMINAL_CWD": str(self.root)},
+        ):
             bridge.pre_tool_call("write_file", {"path": "notes/example.md", "content": "hello"}, session_id="s1")
         payload = json.loads(marker.read_text())
         self.assertEqual(payload["tool_input"]["file_path"], str(self.root / "notes/example.md"))
@@ -176,7 +178,9 @@ class HookBridgeTests(unittest.TestCase):
             f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
         )
         bridge = self.bridge({"PreToolUse": [{"matcher": "Write", "hooks": [{"type": "command", "command": command}]}]})
-        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(alias)):
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(alias)), patch.dict(
+            os.environ, {"TERMINAL_CWD": str(alias)},
+        ):
             bridge.pre_tool_call("write_file", {"path": "notes/example.md", "content": "hello"}, session_id="s1")
         payload = json.loads(marker.read_text())
         self.assertEqual(payload["tool_input"]["file_path"], str(workspace / "notes/example.md"))
@@ -709,7 +713,9 @@ class HookBridgeTests(unittest.TestCase):
             "*** Move File: source.txt -> destination.txt\n"
             "*** End Patch"
         )
-        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(workspace)):
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(workspace)), patch.dict(
+            os.environ, {"TERMINAL_CWD": str(workspace)},
+        ):
             bridge.pre_tool_call("patch", {"mode": "patch", "patch": patch_text}, session_id="s1")
         self.assertEqual(set(marker.read_text().splitlines()), {
             str(deleted), str(source), str(workspace / "destination.txt"),
@@ -1468,7 +1474,9 @@ class HookBridgeTests(unittest.TestCase):
         )
         bridge = self.bridge({"PostToolUse": [{"matcher": "Edit", "hooks": [{"type": "command", "command": command}]}]})
         patch_text = "*** Begin Patch\n*** Update File: first.txt\n@@\n-old\n+new\n*** Add File: second.txt\n+hello\n*** End Patch"
-        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)):
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)), patch.dict(
+            os.environ, {"TERMINAL_CWD": str(self.root)},
+        ):
             bridge.post_tool_call("patch", {"mode": "patch", "patch": patch_text}, "Done", session_id="s1")
         payloads = [json.loads(line) for line in marker.read_text().splitlines()]
         self.assertEqual([payload["tool_input"]["file_path"] for payload in payloads], [
@@ -1844,10 +1852,15 @@ class HookBridgeTests(unittest.TestCase):
             {"action": "allow"},
         )
 
-    def test_native_permission_without_grant_defers_to_hermes(self):
+    def test_native_permission_without_grant_requests_review(self):
         command = self.make_hook("abstain.py", "import sys\nsys.stdin.read()\n")
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [{"type": "command", "command": command}]}]})
-        self.assertIsNone(bridge.command_approval("sudo systemctl restart example.service", session_key="s1"))
+        self.assertEqual(bridge.command_approval("curl -I http://192.168.8.1:9", session_key="s1"),
+                         {"action": "review"})
+
+    def test_command_without_permission_registration_abstains(self):
+        bridge = self.bridge({})
+        self.assertIsNone(bridge.command_approval("echo 12345", session_key="s1"))
 
     def test_native_command_permission_deny_overrides_grant(self):
         grant = self.make_hook("grant.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n")
@@ -1872,7 +1885,7 @@ class HookBridgeTests(unittest.TestCase):
         bridge = self.bridge({"PermissionRequest": [{"matcher": "Bash", "hooks": [
             {"type": "command", "command": wrong_event},
         ]}]})
-        self.assertIsNone(bridge.command_approval("test command", session_key="s1"))
+        self.assertEqual(bridge.command_approval("test command", session_key="s1"), {"action": "review"})
 
     def test_mcp_permission_requests_review_for_secret_shaped_input(self):
         command = self.make_hook(

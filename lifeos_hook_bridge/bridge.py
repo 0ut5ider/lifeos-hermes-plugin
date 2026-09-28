@@ -1200,6 +1200,10 @@ class HookBridge:
         payload = self._payload(
             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command},
         )
+        groups = self._hook_groups("PermissionRequest", payload, _task_uses_host_paths(""), "")
+        if not any(group.get("hooks") and re.fullmatch(group.get("matcher", "") or ".*", "Bash")
+                   for group in groups):
+            return None
         granted = False
         denied = False
         for process, output in self._run("PermissionRequest", payload, "Bash"):
@@ -1213,7 +1217,7 @@ class HookBridge:
             return {"action": "deny"}
         if granted:
             return {"action": "allow"}
-        return None
+        return {"action": "review"}
 
     def _mcp_permission_verdict(
         self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str, task_id: str = "",

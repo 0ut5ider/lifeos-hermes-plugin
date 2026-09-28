@@ -28,6 +28,7 @@ SOURCES = {
             "hermes-delegate-provider-routing.patch",
             "hermes-direct-provider-inference.patch",
             "hermes-stop-fail-closed.patch",
+            "hermes-command-policy.patch",
         ),
     },
     "lifeos": {

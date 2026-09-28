@@ -1,0 +1,87 @@
+# ABOUTME: Checks LifeOS Bash permission decisions through a patched Hermes command guard.
+# ABOUTME: Runs the installed native Safety hook in a disposable LifeOS state directory.
+
+import json
+import os
+import shutil
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import patch
+
+
+ROOT = Path(__file__).resolve().parents[1]
+HERMES_SOURCE = os.environ.get("HERMES_POLICY_SOURCE")
+LIFEOS_SAFETY_HOOK = os.environ.get("LIFEOS_PERMISSION_HOOK")
+
+
+@unittest.skipUnless(HERMES_SOURCE and LIFEOS_SAFETY_HOOK, "patched Hermes and native Safety hook are required")
+class HostCommandPolicyTests(unittest.TestCase):
+    def test_native_safety_neutral_command_requests_review(self):
+        sys.path.insert(0, HERMES_SOURCE)
+        try:
+            from hermes_cli import plugins as plugins_mod
+            from tools.approval import check_all_command_guards
+
+            with tempfile.TemporaryDirectory(prefix="lifeos-command-policy-") as directory:
+                home = Path(directory) / "hermes"
+                plugin = home / "plugins/lifeos-hook-bridge"
+                plugin.parent.mkdir(parents=True)
+                shutil.copytree(ROOT / "lifeos_hook_bridge", plugin)
+                (home / "config.yaml").write_text(
+                    "plugins:\n  enabled:\n    - lifeos-hook-bridge\napprovals:\n  mode: manual\n"
+                )
+                settings = Path(directory) / "settings.json"
+                settings.write_text(json.dumps({"hooks": {"PermissionRequest": [{
+                    "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                }]}}))
+                environment = {
+                    "HERMES_HOME": str(home),
+                    "LIFEOS_HOOK_SETTINGS": str(settings),
+                    "LIFEOS_DIR": str(Path(directory) / "LIFEOS"),
+                    "HERMES_INTERACTIVE": "1",
+                    "PATH": str(Path.home() / ".bun/bin") + os.pathsep + os.environ.get("PATH", ""),
+                }
+                with patch.dict(os.environ, environment):
+                    plugins_mod._reset_plugin_managers_for_tests()
+                    try:
+                        prompts = []
+                        safe = check_all_command_guards(
+                            "echo 67890", "local",
+                            approval_callback=lambda *args, **kwargs: prompts.append("safe") or "deny",
+                        )
+                        self.assertTrue(safe["approved"])
+                        self.assertEqual(prompts, [])
+
+                        reviewed = check_all_command_guards(
+                            "curl -I http://192.168.8.1:9", "local",
+                            approval_callback=lambda *args, **kwargs: prompts.append("review") or "deny",
+                        )
+                        self.assertFalse(reviewed["approved"])
+                        self.assertEqual(prompts, ["review"])
+
+                        docker = check_all_command_guards(
+                            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
+                            approval_callback=lambda *args, **kwargs: prompts.append("docker") or "deny",
+                        )
+                        self.assertFalse(docker["approved"])
+                        self.assertEqual(prompts, ["review", "docker"])
+
+                        hardline = check_all_command_guards(
+                            "rm -rf /", "local",
+                            approval_callback=lambda *args, **kwargs: self.fail("Hardline asked for approval"),
+                        )
+                        self.assertFalse(hardline["approved"])
+
+                        log = Path(directory) / "LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl"
+                        decisions = [json.loads(line) for line in log.read_text().splitlines()]
+                        self.assertEqual([item["decision"] for item in decisions], ["allow", "neutral", "neutral"])
+                    finally:
+                        plugins_mod._reset_plugin_managers_for_tests()
+        finally:
+            sys.path.remove(HERMES_SOURCE)
+
+
+if __name__ == "__main__":
+    unittest.main()

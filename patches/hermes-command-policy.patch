@@ -1,0 +1,320 @@
+diff --git a/tests/hermes_cli/test_approval_transport.py b/tests/hermes_cli/test_approval_transport.py
+index db7a423c806..73f38bb2b3a 100644
+--- a/tests/hermes_cli/test_approval_transport.py
++++ b/tests/hermes_cli/test_approval_transport.py
+@@ -409,8 +409,8 @@ def test_redaction_failure_denies_before_transport_callback(monkeypatch):
+     _configure_manual_guard(monkeypatch, approval, manager)
+ 
+     def redaction_failed(text, *, force=False):
+-        assert force is True
+         if text in {"rm -rf /tmp/example", "dangerous"}:
++            assert force is True
+             raise RuntimeError("redactor unavailable")
+         return text
+ 
+diff --git a/tests/tools/test_approval_plugin_hooks.py b/tests/tools/test_approval_plugin_hooks.py
+index 86b17bcd769..c1d40f94935 100644
+--- a/tests/tools/test_approval_plugin_hooks.py
++++ b/tests/tools/test_approval_plugin_hooks.py
+@@ -182,11 +182,13 @@ class TestSmartModeFiresHooks:
+ 
+         assert result["approved"] is approved
+         assert result[f"smart_{'approved' if approved else 'denied'}"] is True
+-        assert [name for name, _ in captured] == [
++        observers = [(name, kwargs) for name, kwargs in captured
++                     if name in {"pre_approval_request", "post_approval_response"}]
++        assert [name for name, _ in observers] == [
+             "pre_approval_request",
+             "post_approval_response",
+         ]
+-        pre, post = (kwargs for _, kwargs in captured)
++        pre, post = (kwargs for _, kwargs in observers)
+         assert pre["surface"] == post["surface"] == "smart"
+         assert post["choice"] == choice
+         assert post["decided_by"] == "aux_llm"
+@@ -221,7 +223,7 @@ class TestSmartModeFiresHooks:
+             result = guard(value, "local")
+ 
+         assert result["approved"] is True
+-        assert events == [
++        assert [event for event in events if event != "pre_command_approval"] == [
+             "pre_approval_request",
+             "smart_approve",
+             "post_approval_response",
+@@ -284,6 +286,7 @@ class TestSmartModeFiresHooks:
+ 
+         with (
+             patch("agent.redact.redact_sensitive_text", side_effect=fail_observer_redaction),
++            patch("tools.approval_prompt.logger.warning"),
+             patch(
+                 "hermes_cli.plugins.invoke_hook",
+                 side_effect=lambda name, **kwargs: captured.append((name, kwargs)),
+@@ -291,7 +294,8 @@ class TestSmartModeFiresHooks:
+         ):
+             result = guard(value, "local")
+         assert result["approved"] is approved
+-        assert captured == []
++        assert not [name for name, _ in captured
++                    if name in {"pre_approval_request", "post_approval_response"}]
+ 
+     @pytest.mark.parametrize("guard,first_value,second_value", [
+         (
+diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+index 26d3b5f92b8..c1d439c084a 100644
+--- a/tests/tools/test_plugin_command_approval.py
++++ b/tests/tools/test_plugin_command_approval.py
+@@ -199,3 +199,133 @@ def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
+     assert result["approved"] is False
+     assert result["outcome"] == "plugin_denied"
+     guardian.assert_not_called()
++
++
++def test_plugin_review_prompts_when_pattern_detector_is_quiet():
++    command = "curl -I http://192.168.8.1:9"
++    requests = []
++
++    def decline(*args, **kwargs):
++        requests.append(True)
++        return "deny"
++
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]) as hooks, patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(command, "local", approval_callback=decline)
++
++    assert result["approved"] is False
++    assert requests == [True]
++    assert any(call.args[0] == "pre_command_approval" for call in hooks.call_args_list)
++
++
++def test_plugin_denial_blocks_when_pattern_detector_is_quiet():
++    command = "curl -I http://192.168.8.1:9"
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            command, "local", approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++
++
++def test_plugin_review_requires_human_even_in_smart_mode(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    requests = []
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ), patch("tools.approval._smart_verdict", side_effect=pytest.fail):
++        result = check_all_command_guards(
++            "curl -I http://192.168.8.1:9", "local",
++            approval_callback=lambda *args, **kwargs: requests.append(True) or "deny",
++        )
++    assert result["approved"] is False
++    assert requests == [True]
++
++
++def test_plugin_review_fails_closed_without_a_human(monkeypatch):
++    monkeypatch.delenv("HERMES_INTERACTIVE", raising=False)
++    monkeypatch.delenv("HERMES_GATEWAY_SESSION", raising=False)
++    monkeypatch.delenv("HERMES_EXEC_ASK", raising=False)
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
++        result = check_all_command_guards("curl -I http://192.168.8.1:9", "local")
++    assert result["approved"] is False
++
++
++def test_hardline_block_precedes_plugin_review():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]) as hooks:
++        result = check_all_command_guards("rm -rf /", "local")
++    assert result["approved"] is False
++    assert not [call for call in hooks.call_args_list if call.args[0] == "pre_command_approval"]
++
++
++def test_plugin_review_honors_session_approval():
++    from tools.approval import clear_session
++    from tools.approval_context import set_current_session_key
++
++    token = set_current_session_key("test:plugin-policy-review")
++    prompts = []
++    try:
++        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]), patch(
++            "tools.tirith_security.check_command_security",
++            return_value={"action": "allow", "findings": [], "summary": ""},
++        ):
++            for _ in range(2):
++                result = check_all_command_guards(
++                    "curl -I http://192.168.8.1:9", "local",
++                    approval_callback=lambda *args, **kwargs: prompts.append(True) or "session",
++                )
++                assert result["approved"] is True
++        assert prompts == [True]
++    finally:
++        clear_session("test:plugin-policy-review")
++        from tools import approval_context
++        approval_context._approval_session_key.reset(token)
++
++
++def test_plugin_review_in_isolated_docker_requires_human():
++    prompts = []
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
++        result = check_all_command_guards(
++            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
++            approval_callback=lambda *args, **kwargs: prompts.append(True) or "deny",
++        )
++    assert result["approved"] is False
++    assert prompts == [True]
++
++
++def test_plugin_deny_in_isolated_docker_blocks():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]):
++        result = check_all_command_guards(
++            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
++        )
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++
++
++def test_plugin_deny_after_session_review_still_blocks():
++    from tools.approval import clear_session
++    from tools.approval_context import set_current_session_key
++
++    command = "curl -I http://192.168.8.1:9"
++    session_key = "test:plugin-policy-dynamic-deny"
++    token = set_current_session_key(session_key)
++    try:
++        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
++            first = check_all_command_guards(
++                command, "local", approval_callback=lambda *args, **kwargs: "session",
++            )
++        assert first["approved"] is True
++        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]):
++            second = check_all_command_guards(command, "local")
++        assert second["approved"] is False
++        assert second["outcome"] == "plugin_denied"
++    finally:
++        clear_session(session_key)
++        from tools import approval_context
++        approval_context._approval_session_key.reset(token)
+diff --git a/tools/approval.py b/tools/approval.py
+index b2cd411aa1c..e2b9e3e6239 100644
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -1098,6 +1098,8 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
+     actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
+     if "deny" in actions:
+         return "deny"
++    if "review" in actions:
++        return "review"
+     return "allow" if "allow" in actions else None
+ 
+ 
+@@ -1206,17 +1208,19 @@ def check_all_command_guards(command: str, env_type: str,
+     dangerous-command findings are presented as ONE combined approval request, so a gateway
+     force=True replay cannot bypass one check when only the other was shown to the user.
+     ``has_host_access``: a Docker sandbox with bind-mounted host paths takes the normal flow."""
+-    if _should_skip_container_guards(env_type, has_host_access=has_host_access):
+-        return _user_deny_block(command) or _approved()
+-
+-    blocked = _floor_block(command, sudo_guard=True)
++    isolated_container = _should_skip_container_guards(env_type, has_host_access=has_host_access)
++    if isolated_container:
++        blocked = _user_deny_block(command)
++    else:
++        blocked = _floor_block(command, sudo_guard=True)
+     if blocked is not None:
+         return blocked
+ 
+-    from agent.terminal_approval_batch import consume_prepared_guard
+-    prepared = consume_prepared_guard(command, env_type, has_host_access)
+-    if prepared is not None:
+-        return prepared
++    if not isolated_container:
++        from agent.terminal_approval_batch import consume_prepared_guard
++        prepared = consume_prepared_guard(command, env_type, has_host_access)
++        if prepared is not None:
++            return prepared
+ 
+     approval_mode = approval_context._get_approval_mode()
+     if _yolo_active() or approval_mode == "off":
+@@ -1224,7 +1228,36 @@ def check_all_command_guards(command: str, env_type: str,
+     if _command_matches_permanent_allowlist(command):
+         return _approved()
+ 
++    is_dangerous, pattern_key, description = detect_dangerous_command(command)
++    session_key = get_current_session_key()
++    policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
++    policy_key = f"plugin_rule:{policy_rule_key}"
++    plugin_decision = _plugin_command_decision(command, pattern_key or "", description or "")
++    # An earlier review approval never suppresses a later policy denial.
++    if plugin_decision == "review" and is_approved(session_key, policy_key):
++        plugin_decision = None
++    if plugin_decision == "deny":
++        return _denied(
++            "BLOCKED: a plugin command policy denied this command.",
++            pattern_key=pattern_key or policy_key,
++            description=description or "Plugin command policy denied the command",
++            outcome="plugin_denied",
++        )
++
++    if isolated_container:
++        if plugin_decision == "review":
++            return request_tool_approval(
++                "Bash", "Plugin command policy requires review",
++                rule_key=policy_rule_key, approval_callback=approval_callback,
++            )
++        return _approved()
++
+     approval_callback, is_cli, is_gateway, is_ask = _presence(approval_callback)
++    if plugin_decision == "review" and not (is_cli or is_gateway or is_ask):
++        return request_tool_approval(
++            "Bash", "Plugin command policy requires review",
++            rule_key=policy_rule_key, approval_callback=approval_callback,
++        )
+     # Outside CLI/gateway/ask flows we never block on approvals: each
+     # unattended context applies its configured deny/approve mode, else allow.
+     if not is_cli and not is_gateway and not is_ask:
+@@ -1237,9 +1270,7 @@ def check_all_command_guards(command: str, env_type: str,
+     # Gather findings: warnings = [(pattern_key, description, is_tirith)]. Tirith block AND warn both go through the
+     # approval flow (block used to be a hard stop) so users can inspect the findings and approve.
+     tirith_result = _tirith_scan(command)
+-    is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     warnings = []
+-    session_key = get_current_session_key()
+     if tirith_result["action"] in {"block", "warn"}:
+         findings = tirith_result.get("findings") or []
+         rule_id = findings[0].get("rule_id", "unknown") if findings else "unknown"
+@@ -1248,19 +1279,12 @@ def check_all_command_guards(command: str, env_type: str,
+             warnings.append((tirith_key, _format_tirith_description(tirith_result), True))
+     if is_dangerous and not is_approved(session_key, pattern_key):
+         warnings.append((pattern_key, description, False))
++    if plugin_decision == "review" and not warnings:
++        warnings.append((policy_key, "Plugin command policy requires review", False))
+     if not warnings:
+         return _approved()
+ 
+-    # Plugin grants cover only the recoverable pattern layer. A Tirith finding
+-    # still reaches the human approval path. An explicit plugin denial blocks.
+-    plugin_decision = None
+-    if is_dangerous and any(not is_tirith for _, _, is_tirith in warnings):
+-        plugin_decision = _plugin_command_decision(command, pattern_key, description)
+-        if plugin_decision == "deny":
+-            return _denied(
+-                "BLOCKED: a plugin command policy denied this command.",
+-                pattern_key=pattern_key, description=description, outcome="plugin_denied",
+-            )
++    # A plugin grant cannot override a Tirith warning or a smart guardian denial.
+     if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
+         return _approved()
+ 
+@@ -1275,7 +1299,8 @@ def check_all_command_guards(command: str, env_type: str,
+         _COMMAND_GATE, command=command, description=combined_desc,
+         pattern_key=primary_key, pattern_keys=all_keys, warnings=warnings,
+         session_key=session_key, approval_callback=approval_callback,
+-        is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask, smart=approval_mode == "smart",
++        is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask,
++        smart=approval_mode == "smart" and plugin_decision != "review",
+         permanent_capable=any(not is_t for _, _, is_t in warnings),
+         plugin_grant=(lambda: plugin_decision == "allow")
+         if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
