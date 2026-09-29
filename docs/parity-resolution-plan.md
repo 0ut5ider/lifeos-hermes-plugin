@@ -24,7 +24,11 @@ The current registration inventory is 74 hooks across 11 Claude Code events. A r
 
 The completion gate is a status for every item in the agreed contract, no unresolved mismatch or unverified item within the claimed local, SSH, and Docker scope, and a tested clean installation and update path. Generic Hermes changes can be proposed upstream in parallel. Acceptance upstream is not a substitute for the installed behavioral checks.
 
-## Progress on the pinned `.212` fixture
+## Latest gate result
+
+The [2026-09-29 release gate](../notes/2026-09-29-release-gate.md) is blocked by unobserved native events and remaining behavior cases. The complete LifeOS update transaction passed apply, restore, and forced rollback against the pinned revision, with gateway restart and unchanged synthetic USER and MEMORY files. A newer upstream revision was unavailable. The [paired ledger](parity/paired-live-coverage.json) records 62 matching registration dispatch and output shapes; 12 registrations have no native event control. It does not establish side-effect parity. The plugin suite ran 373 tests with 65 skips, the patched Hermes selection passed 378 tests with 10 skips, and the live SSH and Docker gate passed 19 tests without selected skips. The sections below record earlier checkpoints and should be read with this newer result.
+
+## Earlier progress on the pinned `.212` fixture
 
 - Phase 1 has a 74-row [registration inventory](parity/registrations.csv) and a check that fails when a registration is added, changed, or removed. The rows currently retain `unverified_paired` status until a paired outcome is attached.
 - Phase 2 has pinned Claude Code probes for ask, startup and end matchers, wildcard, comma alternatives, and partial regular expressions. The ask probe found different results for a redirecting write and a later read, so exact approval timing remains open. The reference child adapter now uses the accepted tier effort mapping; the main reference turn remains at medium. A [machine-checked comparison](parity/paired-permission-rewrites.json) matches three synthetic PermissionRequest outcome cases. It does not yet compare complete approval traces or the 74 installed registrations.
