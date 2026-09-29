@@ -1,0 +1,38 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+____________ test_stop_gate_forwards_route_through_real_dispatcher _____________
+
+monkeypatch = <_pytest.monkeypatch.MonkeyPatch object at 0x7ff7b0820b00>
+
+    def test_stop_gate_forwards_route_through_real_dispatcher(monkeypatch):
+        observed = []
+        monkeypatch.setattr("hermes_cli.lifecycle.has_hook", lambda name: name == "pre_turn_stop")
+    
+        def invoke(name, **kwargs):
+            observed.append((name, kwargs))
+            return [{"action": "continue", "message": "finish native check"}]
+    
+        monkeypatch.setattr("hermes_cli.plugins.invoke_hook", invoke)
+        agent = SimpleNamespace(
+            session_id="stop-dispatch", platform="cli", provider="custom",
+            requested_provider="custom", model="local/model",
+            _wire_reasoning_config={"effort": "xhigh"},
+        )
+>       assert _pre_turn_stop_nudge(agent, "draft", 0) == "finish native check"
+E       AssertionError: assert {'action': 'fail', 'message': 'Required final check unavailable'} == 'finish native check'
+E        +  where {'action': 'fail', 'message': 'Required final check unavailable'} = _pre_turn_stop_nudge(namespace(session_id='stop-dispatch', platform='cli', provider='custom', requested_provider='custom', model='local/model', _wire_reasoning_config={'effort': 'xhigh'}), 'draft', 0)
+
+../../../.cache/lifeos-footprint-20260929/prepared-final/hermes/tests/hermes_cli/test_stop_policy_dispatch.py:23: AssertionError
+------------------------------ Captured log call -------------------------------
+WARNING  agent.conversation_loop:turn_stop_gates.py:104 pre_turn_stop hook check failed
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/hermes/agent/turn_stop_gates.py", line 94, in _pre_turn_stop_nudge
+    return get_pre_turn_stop_continue_message(
+        session_id=getattr(agent, "session_id", None) or "",
+    ...<5 lines>...
+        final_response=final_response,
+    )
+TypeError: get_pre_turn_stop_continue_message() got an unexpected keyword argument 'provider'
+=========================== short test summary info ============================
+FAILED ../../../.cache/lifeos-footprint-20260929/prepared-final/hermes/tests/hermes_cli/test_stop_policy_dispatch.py::test_stop_gate_forwards_route_through_real_dispatcher
+1 failed in 0.56s

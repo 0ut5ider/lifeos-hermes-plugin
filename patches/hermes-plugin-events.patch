@@ -1,5 +1,5 @@
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
-index bba82a3b..0f0b8bbc 100644
+index bba82a3b..332f80ff 100644
 --- a/hermes_cli/plugins.py
 +++ b/hermes_cli/plugins.py
 @@ -107,15 +107,21 @@ _install_plugin_debug_handler()
@@ -61,12 +61,12 @@ index bba82a3b..0f0b8bbc 100644
  
 +def get_pre_turn_stop_continue_message(
 +    *, session_id: str = "", platform: str = "", model: str = "", reasoning_effort: str = "",
-+    attempt: int = 0, final_response: str = "",
++    provider: str = "", attempt: int = 0, final_response: str = "",
 +) -> Optional[str | Dict[str, str]]:
 +    """Ask plugins whether a candidate answer needs another agent turn."""
 +    results = invoke_hook(
 +        "pre_turn_stop", session_id=session_id, platform=platform, model=model,
-+        reasoning_effort=reasoning_effort, attempt=attempt, final_response=final_response,
++        reasoning_effort=reasoning_effort, provider=provider, attempt=attempt, final_response=final_response,
 +    )
 +    message = None
 +    fail_at_limit = False
@@ -513,6 +513,38 @@ index 6b0ce767..d64c61d9 100644
  @patch("hermes_cli.lifecycle.invoke_hook")
  def test_interrupted_session_end_helper_emits_observer_shape(mock_invoke_hook):
      """Verify quiet single-query interruption emits a correlated session end."""
+diff --git a/tests/hermes_cli/test_stop_policy_dispatch.py b/tests/hermes_cli/test_stop_policy_dispatch.py
+new file mode 100644
+index 00000000..e0e9db05
+--- /dev/null
++++ b/tests/hermes_cli/test_stop_policy_dispatch.py
+@@ -0,0 +1,26 @@
++# ABOUTME: Checks provider and effort forwarding through the real Stop dispatcher.
++# ABOUTME: Exercises the turn gate and plugin policy API together without a model call.
++
++from types import SimpleNamespace
++
++from agent.turn_stop_gates import _pre_turn_stop_nudge
++
++
++def test_stop_gate_forwards_route_through_real_dispatcher(monkeypatch):
++    observed = []
++    monkeypatch.setattr("hermes_cli.lifecycle.has_hook", lambda name: name == "pre_turn_stop")
++
++    def invoke(name, **kwargs):
++        observed.append((name, kwargs))
++        return [{"action": "continue", "message": "finish native check"}]
++
++    monkeypatch.setattr("hermes_cli.plugins.invoke_hook", invoke)
++    agent = SimpleNamespace(
++        session_id="stop-dispatch", platform="cli", provider="custom",
++        requested_provider="custom", model="local/model",
++        _wire_reasoning_config={"effort": "xhigh"},
++    )
++    assert _pre_turn_stop_nudge(agent, "draft", 0) == "finish native check"
++    assert observed[0][0] == "pre_turn_stop"
++    assert observed[0][1]["provider"] == "custom"
++    assert observed[0][1]["reasoning_effort"] == "xhigh"
 diff --git a/tests/plugins/test_transform_tool_result_hook.py b/tests/plugins/test_transform_tool_result_hook.py
 index 810fd962..45fc7e65 100644
 --- a/tests/plugins/test_transform_tool_result_hook.py
