@@ -25,6 +25,8 @@ install_spec.loader.exec_module(install_module)
 prepare_latest_lifeos = install_module.prepare_latest_lifeos
 validate_prepared_lifeos = install_module.validate_prepared_lifeos
 install_prepared_lifeos = install_module.install_prepared_lifeos
+prepare_supported_hermes = install_module.prepare_supported_hermes
+validate_supported_hermes = install_module.validate_supported_hermes
 IncompatibleLifeOS = install_module.IncompatibleLifeOS
 baseline_fingerprint = version_module.baseline_fingerprint
 adapter_error_path = version_module.adapter_error_path
@@ -36,8 +38,20 @@ save_baseline = version_module.save_baseline
 INSTALLED_ROOT = Path.home() / ".claude"
 BASELINE_PATH = default_baseline_path()
 INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
+HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
+HOST_SOURCE = None
 PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 router = APIRouter()
+
+
+def _host_source():
+    if HOST_SOURCE is not None:
+        return HOST_SOURCE
+    from hermes_cli import plugins
+    module_path = getattr(plugins, "__file__", None)
+    if not module_path:
+        raise IncompatibleLifeOS("The running Hermes source path is unavailable")
+    return Path(module_path).resolve().parents[1]
 
 
 @router.get("/installation")
@@ -64,6 +78,13 @@ def get_installation():
             candidate = validate_prepared_lifeos(INSTALL_CANDIDATE)
         except (IncompatibleLifeOS, OSError) as error:
             candidate_error = str(error)
+    host_candidate = None
+    host_candidate_error = None
+    if HERMES_CANDIDATE.exists() or HERMES_CANDIDATE.is_symlink():
+        try:
+            host_candidate = validate_supported_hermes(HERMES_CANDIDATE)
+        except (IncompatibleLifeOS, OSError) as error:
+            host_candidate_error = str(error)
     return {
         "lifeos": lifeos,
         "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
@@ -73,6 +94,10 @@ def get_installation():
         "candidate_commit": candidate["upstream_commit"] if candidate else None,
         "candidate_patch_count": len(candidate["patches"]) if candidate else None,
         "candidate_error": candidate_error,
+        "hermes_candidate_ready": host_candidate is not None,
+        "hermes_candidate_commit": host_candidate["base_commit"] if host_candidate else None,
+        "hermes_candidate_patch_count": len(host_candidate["patches"]) if host_candidate else None,
+        "hermes_candidate_error": host_candidate_error,
     }
 
 
@@ -96,6 +121,18 @@ def apply_installation():
         validate_prepared_lifeos(INSTALL_CANDIDATE)
         failed = INSTALL_CANDIDATE.parent / f"failed-install-{uuid4().hex}"
         return install_prepared_lifeos(INSTALL_CANDIDATE, INSTALLED_ROOT, failed)
+    except (IncompatibleLifeOS, OSError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+@router.post("/installation/prepare-hermes")
+def prepare_hermes_installation():
+    if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
+        raise HTTPException(status_code=409, detail="Install LifeOS before preparing the Hermes extension")
+    if HERMES_CANDIDATE.exists() or HERMES_CANDIDATE.is_symlink():
+        raise HTTPException(status_code=409, detail="A Hermes candidate already exists. Review it before preparing another.")
+    try:
+        return prepare_supported_hermes(_host_source(), HERMES_CANDIDATE)
     except (IncompatibleLifeOS, OSError) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 

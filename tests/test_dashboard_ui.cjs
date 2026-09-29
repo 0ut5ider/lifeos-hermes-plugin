@@ -203,10 +203,12 @@ test("missing LifeOS shows preparation without active model settings", async () 
 });
 
 test("installed LifeOS on stock Hermes shows the reduced safety limits", async () => {
+  const calls = [];
   const state = [];
   let index = 0;
   let effectRan = false;
   let component;
+  let candidateReady = false;
   const sdk = {
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
     hooks: {
@@ -217,9 +219,17 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
       },
       useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
     },
-    fetchJSON(url) {
+    fetchJSON(url, init) {
+      calls.push({ url, init });
+      if (url.endsWith("/installation/prepare-hermes")) {
+        candidateReady = true;
+        return Promise.resolve({ base_commit: "b".repeat(40), patches: Array(19).fill({ name: "patch" }) });
+      }
       if (url.endsWith("/installation")) return Promise.resolve({
         lifeos: "installed", version: "7.40.4", hermes: "stock", candidate_ready: false,
+        hermes_candidate_ready: candidateReady,
+        hermes_candidate_commit: candidateReady ? "b".repeat(40) : null,
+        hermes_candidate_patch_count: candidateReady ? 19 : null,
       });
       if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
       if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
@@ -241,4 +251,12 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
     node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce LifeOS Bash permission decisions"))));
   assert.equal(find(view, (node) => node.type === "button" &&
     node.children.includes("Prepare latest LifeOS")), null);
+  const prepareHost = find(view, (node) => node.type === "button" &&
+    node.children.includes("Prepare tested Hermes extension"));
+  assert.ok(prepareHost);
+  prepareHost.props.onClick();
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/prepare-hermes") && call.init?.method === "POST"));
+  assert.ok(find(render(), (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("19 Hermes patches"))));
 });

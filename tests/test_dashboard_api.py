@@ -123,6 +123,35 @@ class DashboardApiTests(unittest.TestCase):
                                           "hermes_cli.plugins": host}):
                 self.assertEqual(api.get_installation()["lifeos"], "partial")
 
+    def test_prepares_host_patch_only_for_supported_stock_source(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+            (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+            (api.INSTALLED_ROOT / "settings.json").write_text("{}")
+            api.HERMES_CANDIDATE = root / "hermes-candidate"
+            api.HOST_SOURCE = root / "stock-hermes"
+            api.HOST_SOURCE.mkdir()
+            prepared = []
+            def prepare(source, target):
+                prepared.append((source, target))
+                target.mkdir()
+                return {"base_commit": "a" * 40, "patches": [1]}
+            api.prepare_supported_hermes = prepare
+            self.assertEqual(api.prepare_hermes_installation()["base_commit"], "a" * 40)
+            self.assertEqual(prepared, [(api.HOST_SOURCE, api.HERMES_CANDIDATE)])
+            with self.assertRaises(api.HTTPException) as duplicate:
+                api.prepare_hermes_installation()
+            self.assertEqual(duplicate.exception.status_code, 409)
+            api.HERMES_CANDIDATE.rename(root / "archived")
+            api.prepare_supported_hermes = lambda *_: (_ for _ in ()).throw(
+                api.IncompatibleLifeOS("Hermes source is not the tested commit"))
+            with self.assertRaises(api.HTTPException) as unsupported:
+                api.prepare_hermes_installation()
+            self.assertEqual(unsupported.exception.status_code, 409)
+
     def load_api(self, fields, save):
         fastapi = types.ModuleType("fastapi")
         fastapi.APIRouter = lambda: types.SimpleNamespace(

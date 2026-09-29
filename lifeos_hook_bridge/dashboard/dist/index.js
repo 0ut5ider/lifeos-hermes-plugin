@@ -158,6 +158,20 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function prepareHermes() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/prepare-hermes", { method: "POST" }).then(function (result) {
+        setInstallation(function (current) { return Object.assign({}, current, {
+          hermes_candidate_ready: true, hermes_candidate_commit: result.base_commit,
+          hermes_candidate_patch_count: result.patches.length, hermes_candidate_error: null,
+        }); });
+        setInstallationStatus("Hermes candidate prepared. The running Hermes installation has not changed.");
+      }).catch(function (error) {
+        setInstallationStatus("Could not prepare Hermes: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function renderTier(tier) {
       const label = tier.charAt(0).toUpperCase() + tier.slice(1);
       const modelKey = tier + "_model";
@@ -218,7 +232,30 @@
           "LifeOS " + installation.version + " is installed.") : null,
         installation?.lifeos === "installed" && installation.hermes === "stock" ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, "Current Hermes runs LifeOS pre-tool, post-tool, prompt-context, and session-end callbacks."),
-          h("p", null, "Reduced mode cannot enforce LifeOS Bash permission decisions, block a user prompt, gate a final answer, or reliably add post-tool warnings after another result transformer. It also lacks the patched child model routes and remote file guards.")) : null,
+          h("p", null, "Reduced mode cannot enforce LifeOS Bash permission decisions, block a user prompt, gate a final answer, or reliably add post-tool warnings after another result transformer. It also lacks the patched child model routes and remote file guards."),
+          h("details", null,
+            h("summary", { className: "cursor-pointer font-medium" }, "Read all reduced-mode limits"),
+            h("ul", { className: "ml-5 mt-2 list-disc space-y-1" }, [
+              "Bash allow, ask, deny, replacement, and recheck decisions cannot be enforced for every command.",
+              "A LifeOS denial may be bypassed by a Hermes allowlist, prepared approval, or bypass mode.",
+              "LifeOS cannot block a user prompt or withhold a rejected final answer before delivery.",
+              "Post-tool advice may not reach the model after another result transformer.",
+              "Child calls do not have the tested per-tier provider and effort route.",
+              "SSH and Docker whole-file writes lack the patched stale-write guard.",
+              "Nested tool identity, session reasons, and final-turn watchdog activity lack tested host signals.",
+              "Scheduled workers may start outside the managed plugin dependency environment.",
+            ].map(function (item) { return h("li", { key: item }, item); }))),
+          h("p", null, "You can keep Hermes unchanged and use these limited callbacks."),
+          h("button", {
+            type: "button", disabled: installationBusy || installation.hermes_candidate_ready,
+            onClick: prepareHermes,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, installationBusy ? "Preparing..." : "Prepare tested Hermes extension"),
+          installation.hermes_candidate_ready ? h("p", null,
+            "Candidate base " + installation.hermes_candidate_commit + " contains " +
+            installation.hermes_candidate_patch_count + " Hermes patches. Applying it to the running host is not available yet.") : null,
+          installation.hermes_candidate_error ? h("p", { role: "status" },
+            "Hermes candidate cannot be used: " + installation.hermes_candidate_error) : null) : null,
         installation?.lifeos === "installed" && installation.hermes === "patched_hooks_present" ? h("p", { className: "text-sm" },
           "The required Hermes hook names are present. The complete patch set still needs a release verification before full parity can be claimed.") : null,
         installation?.hermes === "partial" ? h("p", { role: "status" },
