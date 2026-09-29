@@ -2016,8 +2016,15 @@ class HookBridge:
         parts = pending + ([context] if context else [])
         return "\n\n".join(parts) if parts else None
 
-    def session_end(self, session_id: str = "", **_: Any) -> None:
-        self._run("SessionEnd", self._payload("SessionEnd", session_id, reason="other"), "other")
+    def session_end(self, session_id: str = "", reason: str = "", **_: Any) -> None:
+        native_reason = {
+            "new_session": "clear",
+            "clear": "clear",
+            "resume": "resume",
+            "logout": "logout",
+            "prompt_input_exit": "prompt_input_exit",
+        }.get(reason, "other")
+        self._run("SessionEnd", self._payload("SessionEnd", session_id, reason=native_reason), native_reason)
         shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
         self._stop_agent_watchdog(session_id)
         with self.session_lock:

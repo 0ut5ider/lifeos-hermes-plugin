@@ -31,6 +31,7 @@ SOURCES = {
             "hermes-command-policy.patch",
             "hermes-command-context.patch",
             "hermes-command-rewrite.patch",
+            "hermes-session-reasons.patch",
         ),
     },
     "lifeos": {

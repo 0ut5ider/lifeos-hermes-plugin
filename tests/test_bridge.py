@@ -190,6 +190,25 @@ class HookBridgeTests(unittest.TestCase):
             ("SessionEnd", None, "other"), ("SessionEnd", None, "other"),
         ])
 
+    def test_session_end_maps_known_hermes_reasons(self):
+        marker = self.root / "session-end-reasons.jsonl"
+        command = self.make_hook(
+            "record-end-reason.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+        )
+        bridge = self.bridge({"SessionEnd": [
+            {"matcher": reason, "hooks": [{"type": "command", "command": command}]}
+            for reason in ("clear", "resume", "other")
+        ]})
+        for reason in ("new_session", "resume", "shutdown"):
+            bridge.session_end(session_id=reason, reason=reason)
+        events = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual(
+            [(event["session_id"], event["reason"]) for event in events],
+            [("new_session", "clear"), ("resume", "resume"), ("shutdown", "other")],
+        )
+
     def test_remote_channel_is_preserved_across_native_hook_events(self):
         marker = self.root / "channel.json"
         command = self.make_hook(
