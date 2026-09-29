@@ -1,0 +1,9 @@
+# LifeOS system overlay rollback rehearsal
+
+Date: 2026-09-28. The separate `lifeos-install-probe` account on `.212` used Hermes base `758ad514e`, LifeOS base `5e2f2e8`, 12 Hermes patches, 9 LifeOS patches, and plugin commit `6159bdb8d55a4b07e9824cea39e6fb2ccb88cb93`. The prepared Hermes runtime installed successfully. A private LAN model call returned the requested test marker with the updated plugin enabled. The plugin doctor found nine hook registrations, and `Mount.ts --check` reported current config and soul digests.
+
+LifeOS `OverlaySystem.ts` first reported four updated files and eight new files. The bridge's `system_overlay_snapshot.py` saved 13 paths, including the `VERSION` file that LifeOS rewrites without its source newline. After the overlay, a second dry run reported zero updates and zero additions. Synthetic markers in `~/.config/LIFEOS/USER` and `~/.claude/LIFEOS/MEMORY/STATE` retained SHA-256 hashes `544590e73d4d2de952c3609d87977c355b50ceff7becb20d86df0e0d360158d3` and `4180709e4823d23241fb108dd011e43b2e029a8c485b474475f08017e07fb40c`.
+
+The first rollback refused one file. During a model call, a LifeOS generator had changed only `last_updated` in `LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md`. The snapshot expected the deployed release bytes and correctly refused to overwrite the later change. The revised restore command uses `--preserve-divergent`, which archived that file in the snapshot before restoring the prior bytes. All 13 paths then matched their pre-update hashes or absence. The two synthetic user markers were unchanged. A second overlay restored the prepared version, and snapshot verification passed.
+
+This rehearsal covers LifeOS system files in one clean account. It does not establish transactional rollback of Hermes code, plugin code, model settings, or a running gateway. Those remain separate gates in the parity plan.

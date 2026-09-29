@@ -53,15 +53,17 @@ After the plugin branch is published, install a full 40-character commit ID from
 ```sh
 "$HERMES_SRC/.hermes/bin/hermes" plugins install \
   0ut5ider/lifeos-hermes-plugin/lifeos_hook_bridge \
-  --ref <full-commit-id> --no-enable
+  --ref <full-commit-id> --no-deps --no-enable
 "$HERMES_SRC/.hermes/bin/hermes" plugins enable lifeos-hook-bridge
 "$HERMES_SRC/.hermes/bin/hermes" plugins validate \
   "$HOME/.hermes/plugins/lifeos-hook-bridge"
 ```
 
+For a noninteractive install, `--no-deps --no-enable` first records the plugin without requesting dependency consent. `plugins enable` then installs the pinned dependencies and activates the plugin. A forced install of an existing active plugin without these steps was refused because dependency consent was unavailable; the installed plugin stayed unchanged. Back up and disable an existing plugin before replacing it, then use `--force --no-deps --no-enable` and enable the new version.
+
 Start Hermes from a directory that the account can read. The first clean prompt-hook probe inherited `/home/outsider` as its working directory and all 14 native hook starts failed with permission denied. The same probe from the new account's home returned hook context and created a transcript. Run a native hook test before you configure Discord or start a long-running gateway.
 
-The clean probe verified the mount, plugin installation, registration, and prompt hooks. It did not test a model call because the account had no model credentials. The tested `.212` service account uses the local model and verified a selected-provider child inference call separately. See [the probe record](../notes/2026-09-28-clean-install-probe.md).
+The clean probe now also has a private LAN model configuration. Its prepared Hermes source accepted a real model call and returned `PATCHED-MODEL-212`. The account received only the model section of the `.212` test service configuration and the bridge's local model environment file; it received no LifeOS user data or Discord credentials. The prior configuration is at `~/.hermes/config.yaml.before-local-model-20260928`. The tested `.212` service account verified a selected-provider child inference call separately. See [the probe record](../notes/2026-09-28-clean-install-probe.md) and [the source manifest collision](../notes/2026-09-28-source-manifest-runtime-collision.md).
 
 ## Carrier probe after model setup
 
