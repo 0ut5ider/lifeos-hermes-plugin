@@ -288,3 +288,93 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
 def install_prepared_lifeos(candidate: Path, installed: Path, failed: Path) -> dict:
     return install_lifeos(candidate, installed, failed, "bun", SUPPORTED_LIFEOS_COMMIT,
                           Path(__file__).parent / "patches", LIFEOS_PATCHES)
+
+
+def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baseline_path: Path,
+                    bun: str, hermes: str, supported_revision: str, patches: Path,
+                    patch_names: tuple[str, ...], create_baseline, save_baseline) -> dict:
+    manifest = validate_candidate(candidate, supported_revision, patches, patch_names)
+    installed = installed.absolute()
+    hermes_home = hermes_home.absolute()
+    baseline_path = baseline_path.absolute()
+    if installed.is_symlink() or hermes_home.is_symlink():
+        raise IncompatibleLifeOS("LifeOS and Hermes install roots must be regular directories")
+    if baseline_path.exists() or baseline_path.is_symlink():
+        raise IncompatibleLifeOS("A VersionDrift baseline already exists")
+    if not (installed / "LIFEOS/HERMES/Mount.ts").is_file():
+        raise IncompatibleLifeOS("Installed LifeOS lacks Mount.ts")
+    if not (installed / "settings.json").is_file() or not (hermes_home / "config.yaml").is_file():
+        raise IncompatibleLifeOS("LifeOS settings and Hermes config must exist before mounting")
+    source_version = (candidate / "LifeOS/install/LIFEOS/VERSION").read_text().strip()
+    if (installed / "LIFEOS/VERSION").read_text().strip() != source_version:
+        raise IncompatibleLifeOS("Installed LifeOS version differs from the prepared source")
+    bun_executable = shutil.which(bun)
+    hermes_executable = shutil.which(hermes)
+    if not bun_executable or not hermes_executable:
+        raise IncompatibleLifeOS("Bun and the Hermes command are required to finish setup")
+
+    targets = ("config.yaml", "SOUL.md", ".env", "plugins/lifeos")
+    for relative in targets:
+        if (hermes_home / relative).is_symlink():
+            raise IncompatibleLifeOS(f"Hermes mount target is a symbolic link: {relative}")
+    baseline_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    snapshot = Path(tempfile.mkdtemp(prefix="mount-snapshot-", dir=baseline_path.parent))
+    snapshot.chmod(0o700)
+    existing = []
+    for relative in targets:
+        path = hermes_home / relative
+        if path.exists():
+            existing.append(relative)
+            backup = snapshot / relative
+            backup.parent.mkdir(parents=True, exist_ok=True)
+            if path.is_dir():
+                shutil.copytree(path, backup, symlinks=True)
+            else:
+                shutil.copy2(path, backup)
+
+    environment = dict(os.environ, HERMES_HOME=str(hermes_home))
+    mount = installed / "LIFEOS/HERMES/Mount.ts"
+    try:
+        for command, label in (
+            ([bun_executable, str(mount)], "Mount"),
+            ([bun_executable, str(mount), "--check"], "Mount check"),
+            ([hermes_executable, "config", "check"], "Hermes config check"),
+        ):
+            result = subprocess.run(command, cwd=installed.parent, env=environment,
+                                    text=True, capture_output=True, timeout=120)
+            if result.returncode:
+                raise IncompatibleLifeOS(f"LifeOS {label} exited with code {result.returncode}")
+        baseline = create_baseline(candidate / "LifeOS/install", installed)
+        save_baseline(baseline, baseline_path)
+    except BaseException as error:
+        try:
+            for relative in targets:
+                path = hermes_home / relative
+                if path.is_dir() and not path.is_symlink():
+                    shutil.rmtree(path)
+                elif path.exists() or path.is_symlink():
+                    path.unlink()
+                if relative in existing:
+                    backup = snapshot / relative
+                    path.parent.mkdir(parents=True, exist_ok=True)
+                    if backup.is_dir():
+                        shutil.copytree(backup, path, symlinks=True)
+                    else:
+                        shutil.copy2(backup, path)
+            baseline_path.unlink(missing_ok=True)
+        except OSError as rollback_error:
+            raise IncompatibleLifeOS(
+                f"LifeOS setup failed and Hermes files could not be restored. Snapshot: {snapshot}"
+            ) from rollback_error
+        if isinstance(error, KeyboardInterrupt):
+            raise
+        raise IncompatibleLifeOS(f"{error}. Hermes files were restored from {snapshot}") from error
+    return {"mounted": True, "baseline_created": True, "upstream_commit": manifest["upstream_commit"],
+            "snapshot": str(snapshot), "restart_required": True}
+
+
+def finalize_prepared_lifeos(candidate: Path, installed: Path, hermes_home: Path,
+                             baseline_path: Path, create_baseline, save_baseline) -> dict:
+    return finalize_lifeos(candidate, installed, hermes_home, baseline_path, "bun", "hermes",
+                           SUPPORTED_LIFEOS_COMMIT, Path(__file__).parent / "patches", LIFEOS_PATCHES,
+                           create_baseline, save_baseline)

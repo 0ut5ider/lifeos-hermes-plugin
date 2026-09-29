@@ -8,8 +8,9 @@ import unittest
 from pathlib import Path
 
 from lifeos_hook_bridge.install_source import (
-    INSTALL_STEPS, IncompatibleLifeOS, install_lifeos, prepare_lifeos, validate_candidate,
+    INSTALL_STEPS, IncompatibleLifeOS, finalize_lifeos, install_lifeos, prepare_lifeos, validate_candidate,
 )
+from lifeos_hook_bridge.version_drift import create_baseline, save_baseline
 
 
 def git(*args, cwd):
@@ -26,6 +27,9 @@ class InstallSourceTests(unittest.TestCase):
         version.parent.mkdir(parents=True)
         version.write_text("7.40.4\n")
         (upstream / "LifeOS/install/CLAUDE.template.md").write_text("# LifeOS test\n")
+        checked = upstream / "LifeOS/install/LIFEOS/TOOLS/Check.ts"
+        checked.parent.mkdir(parents=True)
+        checked.write_text("export const checked = true;\n")
         tools = upstream / "LifeOS/Tools"
         tools.mkdir(parents=True)
         (tools / "InstallSettings.ts").write_text(
@@ -38,7 +42,7 @@ class InstallSourceTests(unittest.TestCase):
         git("-c", "user.name=Test", "-c", "user.email=test@example.invalid",
             "commit", "-qm", "fixture", cwd=upstream)
         revision = git("rev-parse", "HEAD", cwd=upstream)
-        version.write_text("7.40.4-patched\n")
+        version.write_text("7.40.5\n")
         patches = root / "patches"
         patches.mkdir()
         (patches / "lifeos-test.patch").write_text(git("diff", "--", "LifeOS", cwd=upstream) + "\n")
@@ -52,7 +56,7 @@ class InstallSourceTests(unittest.TestCase):
             target = root / "candidate"
             manifest = prepare_lifeos(str(upstream), target, revision, patches,
                                       ("lifeos-test.patch",))
-            self.assertEqual((target / "LifeOS/install/LIFEOS/VERSION").read_text(), "7.40.4-patched\n")
+            self.assertEqual((target / "LifeOS/install/LIFEOS/VERSION").read_text(), "7.40.5\n")
             self.assertEqual(manifest["upstream_commit"], revision)
             self.assertEqual(manifest["patches"][0]["name"], "lifeos-test.patch")
             self.assertEqual(json.loads((target / "lifeos-source-manifest.json").read_text()), manifest)
@@ -126,6 +130,70 @@ class InstallSourceTests(unittest.TestCase):
                 install_lifeos(candidate, installed, root / "failed", "bun", revision, patches,
                                ("lifeos-test.patch",))
             self.assertEqual((installed / "keep.txt").read_text(), "private")
+
+    def test_finalization_mounts_and_records_installed_system_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            candidate = root / "candidate"
+            prepare_lifeos(str(upstream), candidate, revision, patches,
+                           ("lifeos-test.patch",))
+            installed = root / "home/.claude"
+            hermes_home = root / "home/.hermes"
+            (installed / "LIFEOS/HERMES").mkdir(parents=True)
+            (installed / "LIFEOS/VERSION").write_text("7.40.5\n")
+            (installed / "LIFEOS/TOOLS").mkdir()
+            (installed / "LIFEOS/TOOLS/Check.ts").write_text("export const checked = true;\n")
+            (installed / "settings.json").write_text('{"hooks": {"Stop": [{}]}}')
+            (installed / "LIFEOS/HERMES/Mount.ts").write_text("fixture")
+            hermes_home.mkdir()
+            (hermes_home / "config.yaml").write_text("model:\n  default: local\n")
+            bun = root / "bun"
+            bun.write_text("#!/bin/sh\nif [ \"$2\" = '--check' ]; then exit 0; fi\n"
+                           "printf 'mounted\\n' > \"$HERMES_HOME/SOUL.md\"\n")
+            bun.chmod(0o755)
+            hermes = root / "hermes"
+            hermes.write_text("#!/bin/sh\ntest \"$1 $2\" = 'config check'\n")
+            hermes.chmod(0o755)
+            baseline = root / "home/.local/state/lifeos-bridge/baseline.json"
+            result = finalize_lifeos(candidate, installed, hermes_home, baseline,
+                                     str(bun), str(hermes), revision, patches,
+                                     ("lifeos-test.patch",), create_baseline, save_baseline)
+            self.assertTrue(result["restart_required"])
+            self.assertEqual((hermes_home / "SOUL.md").read_text(), "mounted\n")
+            self.assertEqual(json.loads(baseline.read_text())["version"], "7.40.5")
+
+    def test_failed_mount_restores_hermes_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            candidate = root / "candidate"
+            prepare_lifeos(str(upstream), candidate, revision, patches,
+                           ("lifeos-test.patch",))
+            installed = root / "home/.claude"
+            (installed / "LIFEOS/HERMES").mkdir(parents=True)
+            (installed / "LIFEOS/VERSION").write_text("7.40.5\n")
+            (installed / "settings.json").write_text('{"hooks": {"Stop": [{}]}}')
+            (installed / "LIFEOS/HERMES/Mount.ts").write_text("fixture")
+            hermes_home = root / "home/.hermes"
+            hermes_home.mkdir()
+            (hermes_home / "config.yaml").write_text("model:\n  default: local\n")
+            (hermes_home / "SOUL.md").write_text("previous soul\n")
+            bun = root / "bun"
+            bun.write_text("#!/bin/sh\nprintf 'partial\\n' > \"$HERMES_HOME/SOUL.md\"\n"
+                           "printf 'changed\\n' > \"$HERMES_HOME/config.yaml\"\nexit 17\n")
+            bun.chmod(0o755)
+            hermes = root / "hermes"
+            hermes.write_text("#!/bin/sh\nexit 0\n")
+            hermes.chmod(0o755)
+            baseline = root / "home/.local/state/lifeos-bridge/baseline.json"
+            with self.assertRaisesRegex(IncompatibleLifeOS, "Mount"):
+                finalize_lifeos(candidate, installed, hermes_home, baseline,
+                                str(bun), str(hermes), revision, patches,
+                                ("lifeos-test.patch",), create_baseline, save_baseline)
+            self.assertEqual((hermes_home / "SOUL.md").read_text(), "previous soul\n")
+            self.assertEqual((hermes_home / "config.yaml").read_text(), "model:\n  default: local\n")
+            self.assertFalse(baseline.exists())
 
 
 if __name__ == "__main__":

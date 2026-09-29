@@ -137,6 +137,7 @@ test("missing LifeOS shows preparation without active model settings", async () 
   let component;
   let lifeos = "missing";
   let candidateReady = false;
+  let setupComplete = false;
   const sdk = {
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
     hooks: {
@@ -157,8 +158,13 @@ test("missing LifeOS shows preparation without active model settings", async () 
         lifeos = "installed";
         return Promise.resolve({ installed_version: "7.40.4", restart_required: true });
       }
+      if (url.endsWith("/installation/finalize")) {
+        setupComplete = true;
+        return Promise.resolve({ mounted: true, baseline_created: true, restart_required: true });
+      }
       if (url.endsWith("/installation")) return Promise.resolve({
         lifeos, version: lifeos === "installed" ? "7.40.4" : null,
+        setup_baseline_exists: setupComplete,
         hermes: "stock", candidate_ready: candidateReady,
         candidate_commit: candidateReady ? "a".repeat(40) : null,
         candidate_patch_count: candidateReady ? 1 : null,
@@ -200,6 +206,15 @@ test("missing LifeOS shows preparation without active model settings", async () 
   assert.ok(calls.some((call) => call.url.endsWith("/installation/apply") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("LifeOS 7.40.4 is installed"))));
+  const finish = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Finish LifeOS setup"));
+  assert.ok(finish);
+  finish.props.onClick();
+  await new Promise(setImmediate);
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/finalize") && call.init?.method === "POST"));
+  assert.equal(find(render(), (node) => node.type === "button" &&
+    node.children.includes("Finish LifeOS setup")), null);
 });
 
 test("installed LifeOS on stock Hermes shows the reduced safety limits", async () => {

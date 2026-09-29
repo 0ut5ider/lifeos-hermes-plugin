@@ -2,6 +2,7 @@
 # ABOUTME: Delegates validation and storage to Hermes's plugin settings service.
 
 import importlib.util
+import os
 from pathlib import Path
 import subprocess
 from uuid import uuid4
@@ -25,6 +26,7 @@ install_spec.loader.exec_module(install_module)
 prepare_latest_lifeos = install_module.prepare_latest_lifeos
 validate_prepared_lifeos = install_module.validate_prepared_lifeos
 install_prepared_lifeos = install_module.install_prepared_lifeos
+finalize_prepared_lifeos = install_module.finalize_prepared_lifeos
 prepare_supported_hermes = install_module.prepare_supported_hermes
 validate_supported_hermes = install_module.validate_supported_hermes
 IncompatibleLifeOS = install_module.IncompatibleLifeOS
@@ -36,6 +38,7 @@ default_baseline_path = version_module.default_baseline_path
 load_baseline = version_module.load_baseline
 save_baseline = version_module.save_baseline
 INSTALLED_ROOT = Path.home() / ".claude"
+HERMES_HOME = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
 BASELINE_PATH = default_baseline_path()
 INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
 HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
@@ -98,6 +101,7 @@ def get_installation():
         "hermes_candidate_commit": host_candidate["base_commit"] if host_candidate else None,
         "hermes_candidate_patch_count": len(host_candidate["patches"]) if host_candidate else None,
         "hermes_candidate_error": host_candidate_error,
+        "setup_baseline_exists": BASELINE_PATH.is_file(),
     }
 
 
@@ -122,6 +126,19 @@ def apply_installation():
         failed = INSTALL_CANDIDATE.parent / f"failed-install-{uuid4().hex}"
         return install_prepared_lifeos(INSTALL_CANDIDATE, INSTALLED_ROOT, failed)
     except (IncompatibleLifeOS, OSError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+@router.post("/installation/finalize")
+def finalize_installation():
+    if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
+        raise HTTPException(status_code=409, detail="Install LifeOS before finishing setup")
+    if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
+        raise HTTPException(status_code=409, detail="A VersionDrift baseline already exists")
+    try:
+        return finalize_prepared_lifeos(INSTALL_CANDIDATE, INSTALLED_ROOT, HERMES_HOME,
+                                        BASELINE_PATH, create_baseline, save_baseline)
+    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 

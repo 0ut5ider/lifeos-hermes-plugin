@@ -151,10 +151,24 @@
       SDK.fetchJSON(installationEndpoint + "/apply", { method: "POST" }).then(function (result) {
         return SDK.fetchJSON(installationEndpoint).then(function (status) {
           setInstallation(status);
-          setInstallationStatus("LifeOS " + result.installed_version + " installed. Restart the Hermes gateway to load its hooks.");
+          setInstallationStatus("LifeOS " + result.installed_version + " installed. Finish setup to mount it into Hermes and record the VersionDrift baseline.");
         });
       }).catch(function (error) {
         setInstallationStatus("Could not install LifeOS: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
+    function finalizeLifeOS() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/finalize", { method: "POST" }).then(function () {
+        return Promise.all([SDK.fetchJSON(installationEndpoint), SDK.fetchJSON(baselineEndpoint)]).then(function (results) {
+          setInstallation(results[0]);
+          setBaseline(results[1]);
+          setInstallationStatus("LifeOS is mounted and the baseline is recorded. Restart the Hermes gateway to load the new configuration.");
+        });
+      }).catch(function (error) {
+        setInstallationStatus("Could not finish LifeOS setup: " + error.message);
       }).finally(function () { setInstallationBusy(false); });
     }
 
@@ -230,6 +244,14 @@
           "A .claude directory already exists. The fresh installer will not overwrite it. Review that directory before installing LifeOS.") : null,
         installation?.lifeos === "installed" ? h("p", null,
           "LifeOS " + installation.version + " is installed.") : null,
+        installation?.lifeos === "installed" && !installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
+          h("p", null, installation.candidate_ready ?
+            "Finish setup to mount LifeOS into Hermes and record the installed system files." :
+            "A prepared LifeOS source is required to finish setup. Review the VersionDrift controls below if this is an existing installation."),
+          installation.candidate_ready ? h("button", {
+            type: "button", disabled: installationBusy, onClick: finalizeLifeOS,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, installationBusy ? "Finishing..." : "Finish LifeOS setup") : null) : null,
         installation?.lifeos === "installed" && installation.hermes === "stock" ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, "Current Hermes runs LifeOS pre-tool, post-tool, prompt-context, and session-end callbacks."),
           h("p", null, "Reduced mode cannot enforce LifeOS Bash permission decisions, block a user prompt, gate a final answer, or reliably add post-tool warnings after another result transformer. It also lacks the patched child model routes and remote file guards."),

@@ -152,6 +152,33 @@ class DashboardApiTests(unittest.TestCase):
                 api.prepare_hermes_installation()
             self.assertEqual(unsupported.exception.status_code, 409)
 
+    def test_finalizes_installed_lifeos_from_prepared_candidate(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+            (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+            (api.INSTALLED_ROOT / "settings.json").write_text("{}")
+            api.INSTALL_CANDIDATE = root / "candidate"
+            api.INSTALL_CANDIDATE.mkdir()
+            api.HERMES_HOME = root / ".hermes"
+            api.BASELINE_PATH = root / "baseline.json"
+            calls = []
+
+            def finalize(*args):
+                calls.append(args)
+                api.BASELINE_PATH.write_text("{}")
+                return {"mounted": True, "baseline_created": True, "restart_required": True}
+
+            api.finalize_prepared_lifeos = finalize
+            self.assertTrue(api.finalize_installation()["mounted"])
+            self.assertEqual(calls[0][:4], (api.INSTALL_CANDIDATE, api.INSTALLED_ROOT,
+                                            api.HERMES_HOME, api.BASELINE_PATH))
+            with self.assertRaises(api.HTTPException) as duplicate:
+                api.finalize_installation()
+            self.assertEqual(duplicate.exception.status_code, 409)
+
     def load_api(self, fields, save):
         fastapi = types.ModuleType("fastapi")
         fastapi.APIRouter = lambda: types.SimpleNamespace(
