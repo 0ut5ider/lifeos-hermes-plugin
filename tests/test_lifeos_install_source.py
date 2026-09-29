@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from lifeos_hook_bridge.install_source import (
     INSTALL_STEPS, IncompatibleLifeOS, finalize_lifeos, install_lifeos, prepare_lifeos, validate_candidate,
@@ -115,6 +116,24 @@ class InstallSourceTests(unittest.TestCase):
             self.assertFalse(installed.exists())
             self.assertEqual((failed / "CLAUDE.md").read_text(), "# LifeOS test\n")
             self.assertEqual((failed / "started").read_text(), "ran")
+
+    def test_fresh_install_places_selected_bun_on_child_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            candidate = root / "candidate"
+            prepare_lifeos(str(upstream), candidate, revision, patches,
+                           ("lifeos-test.patch",))
+            binary = root / "private-bin/bun"
+            binary.parent.mkdir()
+            binary.write_text('#!/bin/sh\ncommand -v bun >/dev/null && printf yes > "$BUN_PROBE_FILE" || printf no > "$BUN_PROBE_FILE"\nexit 23\n')
+            binary.chmod(0o755)
+            marker = root / "path-marker"
+            with patch.dict("os.environ", {"PATH": "/usr/bin:/bin", "BUN_PROBE_FILE": str(marker)}):
+                with self.assertRaisesRegex(IncompatibleLifeOS, "InstallSettings"):
+                    install_lifeos(candidate, root / "home/.claude", root / "failed", str(binary),
+                                   revision, patches, ("lifeos-test.patch",))
+            self.assertEqual(marker.read_text(), "yes")
 
     def test_fresh_install_refuses_existing_claude_root(self):
         with tempfile.TemporaryDirectory() as directory:

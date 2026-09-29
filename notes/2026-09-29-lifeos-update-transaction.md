@@ -1,0 +1,11 @@
+# LifeOS update transaction rehearsal
+
+Date: 2026-09-29. Target: `lifeos-plugin-install-probe` on `192.168.8.212`. This Unix account is separate from the connected Hermes account.
+
+The staged updater copied the installed `.claude` tree, reconciled 1,825 source-backed system files, installed dependencies for 13 package roots from a fresh LifeOS reference, and matched all 74 registered hooks. The pinned candidate produced zero system-file adds, replacements, or removals against the current installation. The candidate and installed source were the same LifeOS revision, so this test proves the transaction path and rollback, not an upgrade across upstream versions.
+
+The first direct rehearsal applied the staged tree, ran native Doctor, Mount, Hermes config, and VersionDrift checks, then restored the prior tree. The two synthetic USER and MEMORY file hashes were unchanged. A service-backed rehearsal repeated apply and restore with an active test gateway. A forced verifier failure then rolled back the directory, Hermes config, VersionDrift baseline, and gateway; the gateway was active and both user data hashes still matched. The API launched a detached worker through `systemd-run`; its job and transaction manifests reached `applied`. The worker's restore action returned that job to `rolled_back`.
+
+The detached worker initially failed before stopping the gateway. `DeployCore.ts` spawned `bun` by name, but the worker had only an absolute Bun path and no Bun directory on `PATH`. The captured native error was `Executable not found in $PATH: "bun"`. The installer now adds the selected Bun directory to child `PATH`. Its regression test fails with the old behavior and passes with the fix. The next detached run applied and restored successfully.
+
+The updater refuses changed `CLAUDE.template.md` or `settings.system.json` until a reviewed migration is added for those generated files. It also refuses an edited prior hook source, modified managed files, collisions, changed user data before manual restore, and untested LifeOS revisions. No newer upstream revision or authenticated browser click was tested. The UI bundle and API route have automated tests. The test gateway remains active for the paired hook runs and must be uninstalled with user linger disabled when those runs finish.

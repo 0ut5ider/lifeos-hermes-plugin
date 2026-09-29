@@ -49,6 +49,7 @@ BASELINE_PATH = default_baseline_path()
 INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
 HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
 HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"
+LIFEOS_UPDATE_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/updates"
 HOST_SOURCE = None
 PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 router = APIRouter()
@@ -62,6 +63,19 @@ def _host_source():
     if not module_path:
         raise IncompatibleLifeOS("The running Hermes source path is unavailable")
     return Path(module_path).resolve().parents[1]
+
+
+def _candidate_path():
+    marker = INSTALL_CANDIDATE.with_name(INSTALL_CANDIDATE.name + ".selected.json")
+    if not marker.exists():
+        return INSTALL_CANDIDATE
+    if marker.is_symlink() or not marker.is_file():
+        raise IncompatibleLifeOS("LifeOS candidate selection file is invalid")
+    selected = json.loads(marker.read_text(encoding="utf-8"))["name"]
+    if (not isinstance(selected, str) or not selected.startswith(INSTALL_CANDIDATE.name + "-")
+            or Path(selected).name != selected):
+        raise IncompatibleLifeOS("LifeOS candidate selection is invalid")
+    return INSTALL_CANDIDATE.with_name(selected)
 
 
 @router.get("/installation")
@@ -83,9 +97,10 @@ def get_installation():
         hermes = "partial"
     candidate = None
     candidate_error = None
-    if INSTALL_CANDIDATE.exists() or INSTALL_CANDIDATE.is_symlink():
+    selected_candidate = _candidate_path()
+    if selected_candidate.exists() or selected_candidate.is_symlink():
         try:
-            candidate = validate_prepared_lifeos(INSTALL_CANDIDATE)
+            candidate = validate_prepared_lifeos(selected_candidate)
         except (IncompatibleLifeOS, OSError) as error:
             candidate_error = str(error)
     host_candidate = None
@@ -103,6 +118,8 @@ def get_installation():
         "candidate_ready": candidate is not None,
         "candidate_commit": candidate["upstream_commit"] if candidate else None,
         "candidate_patch_count": len(candidate["patches"]) if candidate else None,
+        "candidate_newer": bool(candidate and BASELINE_PATH.is_file() and
+                                candidate["upstream_commit"] != json.loads(BASELINE_PATH.read_text()).get("source_commit")),
         "candidate_error": candidate_error,
         "hermes_candidate_ready": host_candidate is not None,
         "hermes_candidate_commit": host_candidate["base_commit"] if host_candidate else None,
@@ -115,11 +132,34 @@ def get_installation():
 @router.post("/installation/prepare")
 def prepare_installation():
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
-        raise HTTPException(status_code=409, detail="A .claude directory exists. Use the update path after reviewing it.")
-    if INSTALL_CANDIDATE.exists() or INSTALL_CANDIDATE.is_symlink():
-        raise HTTPException(status_code=409, detail="A LifeOS candidate already exists. Review it before preparing another.")
+        if (INSTALLED_ROOT.is_symlink() or not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file()
+                or not BASELINE_PATH.is_file()):
+            raise HTTPException(status_code=409, detail="An existing LifeOS installation needs a VersionDrift baseline before update preparation")
+    selected_candidate = _candidate_path()
+    target = selected_candidate
+    if selected_candidate.exists() or selected_candidate.is_symlink():
+        baseline_source = None
+        if BASELINE_PATH.is_file():
+            try:
+                baseline_source = json.loads(BASELINE_PATH.read_text(encoding="utf-8")).get("source_root")
+            except (OSError, ValueError):
+                pass
+        current_candidate = baseline_source == str((selected_candidate / "LifeOS/install").resolve())
+        if (not INSTALLED_ROOT.is_dir() or not BASELINE_PATH.is_file()
+                or (get_lifeos_update_status()["state"] != "applied" and not current_candidate)):
+            raise HTTPException(status_code=409, detail="A LifeOS candidate already exists. Review it before preparing another.")
+        target = INSTALL_CANDIDATE.with_name(f"{INSTALL_CANDIDATE.name}-{uuid4().hex}")
     try:
-        return prepare_latest_lifeos(INSTALL_CANDIDATE)
+        result = prepare_latest_lifeos(target)
+        if target != selected_candidate:
+            marker = INSTALL_CANDIDATE.with_name(INSTALL_CANDIDATE.name + ".selected.json")
+            temporary = marker.with_suffix(".tmp")
+            with temporary.open("w", encoding="utf-8") as stream:
+                os.fchmod(stream.fileno(), 0o600)
+                json.dump({"name": target.name}, stream)
+                stream.write("\n")
+            os.replace(temporary, marker)
+        return result
     except IncompatibleLifeOS as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 
@@ -129,9 +169,10 @@ def apply_installation():
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         raise HTTPException(status_code=409, detail="A .claude directory exists. The fresh installer will not overwrite it.")
     try:
-        validate_prepared_lifeos(INSTALL_CANDIDATE)
-        failed = INSTALL_CANDIDATE.parent / f"failed-install-{uuid4().hex}"
-        return install_prepared_lifeos(INSTALL_CANDIDATE, INSTALLED_ROOT, failed)
+        candidate = _candidate_path()
+        validate_prepared_lifeos(candidate)
+        failed = candidate.parent / f"failed-install-{uuid4().hex}"
+        return install_prepared_lifeos(candidate, INSTALLED_ROOT, failed)
     except (IncompatibleLifeOS, OSError) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 
@@ -143,7 +184,7 @@ def finalize_installation():
     if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
         raise HTTPException(status_code=409, detail="A VersionDrift baseline already exists")
     try:
-        return finalize_prepared_lifeos(INSTALL_CANDIDATE, INSTALLED_ROOT, HERMES_HOME,
+        return finalize_prepared_lifeos(_candidate_path(), INSTALLED_ROOT, HERMES_HOME,
                                         BASELINE_PATH, create_baseline, save_baseline)
     except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
@@ -167,6 +208,115 @@ def _latest_host_patch():
     snapshots = [path for path in HOST_PATCH_ROOT.iterdir()
                  if path.is_dir() and not path.is_symlink() and (path / "manifest.json").is_file()]
     return max(snapshots, key=lambda path: path.stat().st_mtime_ns) if snapshots else None
+
+
+def _latest_lifeos_update():
+    if not LIFEOS_UPDATE_ROOT.is_dir() or LIFEOS_UPDATE_ROOT.is_symlink():
+        return None
+    jobs = [path for path in LIFEOS_UPDATE_ROOT.iterdir()
+            if path.is_dir() and not path.is_symlink() and (path / "request.json").is_file()]
+    return max(jobs, key=lambda path: path.stat().st_mtime_ns) if jobs else None
+
+
+@router.get("/installation/update")
+def get_lifeos_update_status():
+    job = _latest_lifeos_update()
+    if job is None:
+        return {"state": "none"}
+    try:
+        status = json.loads((job / "status.json").read_text(encoding="utf-8"))
+        snapshot = job / "snapshot/manifest.json"
+        if snapshot.is_file():
+            transaction = json.loads(snapshot.read_text(encoding="utf-8"))
+            status["transaction_state"] = transaction.get("state")
+            if transaction.get("state") in {"applied", "rolled_back"} and status.get("state") in {"queued", "preparing", "applying"}:
+                status["state"] = transaction["state"]
+        if status.get("state") in {"preparing", "applying", "restoring", "recovering"} and status.get("unit"):
+            active = subprocess.run(["systemctl", "--user", "is-active", status["unit"]],
+                                    text=True, capture_output=True, timeout=15)
+            if active.returncode or active.stdout.strip() != "active":
+                status["state"] = "interrupted"
+        return {**status, "job": str(job)}
+    except (OSError, ValueError, TypeError):
+        return {"state": "error", "job": str(job), "error": "Update status could not be read"}
+
+
+def _launch_lifeos_update(job: Path, action: str = "apply"):
+    if action != "recover":
+        service = subprocess.run(["systemctl", "--user", "is-active", "hermes-gateway.service"],
+                                 text=True, capture_output=True, timeout=15)
+        if service.returncode or service.stdout.strip() != "active":
+            raise IncompatibleLifeOS("A running Hermes gateway user service is required")
+    unit = f"lifeos-bridge-update-{uuid4().hex}"
+    status = json.loads((job / "status.json").read_text(encoding="utf-8"))
+    status["unit"] = unit
+    with (job / "status.json").open("w", encoding="utf-8") as stream:
+        os.fchmod(stream.fileno(), 0o600)
+        json.dump(status, stream)
+        stream.write("\n")
+    command = ["systemd-run", "--user", "--collect",
+               f"--unit={unit}",
+               f"--setenv=HERMES_HOME={HERMES_HOME}", sys.executable,
+               str(PLUGIN_DIR / "update_worker.py"), str(job)]
+    if action != "apply":
+        command.extend(["--action", action])
+    launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
+    if launched.returncode:
+        raise IncompatibleLifeOS(f"Could not start the LifeOS update worker: {launched.returncode}")
+
+
+@router.post("/installation/update")
+def apply_lifeos_update():
+    if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not BASELINE_PATH.is_file():
+        raise HTTPException(status_code=409, detail="An installed LifeOS and VersionDrift baseline are required")
+    previous = get_lifeos_update_status()
+    if previous["state"] in {"queued", "preparing", "applying", "rollback_failed", "interrupted"}:
+        raise HTTPException(status_code=409, detail="A LifeOS update job already owns this installation")
+    try:
+        selected_candidate = _candidate_path()
+        candidate = validate_prepared_lifeos(selected_candidate)
+        baseline = load_baseline(BASELINE_PATH, INSTALLED_ROOT)
+        if previous["state"] == "applied" and candidate["upstream_commit"] == baseline["source_commit"]:
+            raise IncompatibleLifeOS("The prepared LifeOS commit is already installed")
+        prior_source = Path(baseline["source_root"])
+        if prior_source.is_symlink() or not prior_source.is_dir():
+            raise IncompatibleLifeOS("The prior LifeOS source is unavailable")
+        if LIFEOS_UPDATE_ROOT.is_symlink():
+            raise IncompatibleLifeOS("LifeOS update state directory cannot be a symbolic link")
+        LIFEOS_UPDATE_ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
+        job = LIFEOS_UPDATE_ROOT / f"update-{uuid4().hex}"
+        job.mkdir(mode=0o700)
+        request = {"installed": str(INSTALLED_ROOT), "hermes_home": str(HERMES_HOME),
+                   "baseline": str(BASELINE_PATH), "candidate": str(selected_candidate),
+                   "prior_source": str(prior_source), "candidate_commit": candidate["upstream_commit"],
+                   "hermes_command": str(_host_source() / ".hermes/bin/hermes")}
+        for name, data in (("request.json", request), ("status.json", {"state": "queued"})):
+            with (job / name).open("w", encoding="utf-8") as stream:
+                os.fchmod(stream.fileno(), 0o600)
+                json.dump(data, stream)
+                stream.write("\n")
+        _launch_lifeos_update(job)
+    except (IncompatibleLifeOS, OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
+        if "job" in locals() and job.is_dir():
+            shutil.rmtree(job)
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "queued", "job": str(job)}
+
+
+@router.post("/installation/update/recover")
+def recover_lifeos_update():
+    previous = get_lifeos_update_status()
+    if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
+        "stopped", "swapped", "restoring", "rollback_failed"
+    }:
+        raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
+    job = Path(previous["job"])
+    try:
+        (job / "status.json").write_text(json.dumps({"state": "recovering"}) + "\n", encoding="utf-8")
+        _launch_lifeos_update(job, "recover")
+    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "recovering", "job": str(job)}
 
 
 @router.get("/installation/host-patch")

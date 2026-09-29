@@ -224,6 +224,8 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
   let effectRan = false;
   let component;
   let candidateReady = false;
+  let lifeosCandidateReady = false;
+  let lifeosUpdateApplied = false;
   let hostPatched = false;
   let hostRestored = false;
   const sdk = {
@@ -238,6 +240,15 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
     },
     fetchJSON(url, init) {
       calls.push({ url, init });
+      if (url.endsWith("/installation/prepare")) {
+        lifeosCandidateReady = true;
+        return Promise.resolve({ upstream_commit: "a".repeat(40), patches: Array(9).fill({ name: "patch" }) });
+      }
+      if (url.endsWith("/installation/update") && init?.method === "POST") {
+        lifeosUpdateApplied = true;
+        return Promise.resolve({ state: "queued" });
+      }
+      if (url.endsWith("/installation/update")) return Promise.resolve({ state: lifeosUpdateApplied ? "applied" : "none" });
       if (url.endsWith("/installation/prepare-hermes")) {
         candidateReady = true;
         return Promise.resolve({ base_commit: "b".repeat(40), patches: Array(19).fill({ name: "patch" }) });
@@ -257,7 +268,7 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
       });
       if (url.endsWith("/installation")) return Promise.resolve({
         lifeos: "installed", version: "7.40.4", hermes: hostPatched ? "patched_hooks_present" : "stock",
-        candidate_ready: false, setup_baseline_exists: true,
+        candidate_ready: lifeosCandidateReady, setup_baseline_exists: true,
         hermes_candidate_ready: candidateReady,
         hermes_candidate_commit: candidateReady ? "b".repeat(40) : null,
         hermes_candidate_patch_count: candidateReady ? 19 : null,
@@ -282,6 +293,18 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
     node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce LifeOS Bash permission decisions"))));
   assert.equal(find(view, (node) => node.type === "button" &&
     node.children.includes("Prepare latest LifeOS")), null);
+  const prepareUpdate = find(view, (node) => node.type === "button" &&
+    node.children.includes("Prepare latest LifeOS update"));
+  assert.ok(prepareUpdate);
+  prepareUpdate.props.onClick();
+  await new Promise(setImmediate);
+  const applyUpdate = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Apply prepared LifeOS update"));
+  assert.ok(applyUpdate);
+  applyUpdate.props.onClick();
+  await new Promise(setImmediate);
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/update") && call.init?.method === "POST"));
   const prepareHost = find(view, (node) => node.type === "button" &&
     node.children.includes("Prepare tested Hermes extension"));
   assert.ok(prepareHost);

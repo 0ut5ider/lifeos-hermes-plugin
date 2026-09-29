@@ -64,6 +64,35 @@ class DashboardApiTests(unittest.TestCase):
                 api.prepare_installation()
             self.assertEqual(partial.exception.status_code, 409)
 
+    def test_prepares_next_candidate_without_moving_baseline_source(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+            (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+            api.BASELINE_PATH = root / "baseline.json"
+            api.BASELINE_PATH.write_text("{}")
+            api.INSTALL_CANDIDATE = root / "lifeos-candidate"
+            api.INSTALL_CANDIDATE.mkdir()
+            api.LIFEOS_UPDATE_ROOT = root / "updates"
+            job = api.LIFEOS_UPDATE_ROOT / "update-one"
+            job.mkdir(parents=True)
+            (job / "request.json").write_text("{}")
+            (job / "status.json").write_text('{"state":"applied"}')
+            prepared = []
+            def prepare(path):
+                path.mkdir()
+                prepared.append(path)
+                return {"upstream_commit": "b" * 40, "patches": []}
+            api.prepare_latest_lifeos = prepare
+            result = api.prepare_installation()
+            self.assertEqual(result["upstream_commit"], "b" * 40)
+            self.assertEqual(len(prepared), 1)
+            self.assertNotEqual(prepared[0], api.INSTALL_CANDIDATE)
+            self.assertTrue(api.INSTALL_CANDIDATE.is_dir())
+            self.assertEqual(api._candidate_path(), prepared[0])
+
     def test_installs_validated_candidate_into_empty_home(self):
         api = self.load_api(lambda *_: [], lambda *_: [])
         with tempfile.TemporaryDirectory() as directory:
@@ -178,6 +207,62 @@ class DashboardApiTests(unittest.TestCase):
             with self.assertRaises(api.HTTPException) as duplicate:
                 api.finalize_installation()
             self.assertEqual(duplicate.exception.status_code, 409)
+
+    def test_stages_lifeos_update_from_validated_candidate_and_baseline(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            api.INSTALLED_ROOT.mkdir()
+            (api.INSTALLED_ROOT / "LIFEOS").mkdir()
+            (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+            (api.INSTALLED_ROOT / "settings.json").write_text("{}")
+            api.HERMES_HOME = root / ".hermes"
+            api.HERMES_HOME.mkdir()
+            api.HOST_SOURCE = root / "stock-hermes"
+            api.BASELINE_PATH = root / "baseline.json"
+            (root / "prior/LifeOS/install").mkdir(parents=True)
+            api.BASELINE_PATH.write_text(json.dumps({
+                "source_root": str(root / "prior/LifeOS/install"),
+                "installed_root": str(api.INSTALLED_ROOT.resolve()), "source_commit": "a" * 40,
+            }))
+            api.INSTALL_CANDIDATE = root / "candidate"
+            api.INSTALL_CANDIDATE.mkdir()
+            api.LIFEOS_UPDATE_ROOT = root / "jobs"
+            api.validate_prepared_lifeos = lambda _: {"upstream_commit": "b" * 40}
+            api.load_baseline = lambda path, installed: json.loads(path.read_text())
+            launched = []
+            api._launch_lifeos_update = lambda job: launched.append(job)
+
+            self.assertEqual(api.get_lifeos_update_status()["state"], "none")
+            result = api.apply_lifeos_update()
+            self.assertEqual(result["state"], "queued")
+            self.assertEqual(launched, [Path(result["job"])])
+            request = json.loads((launched[0] / "request.json").read_text())
+            self.assertEqual(request["candidate"], str(api.INSTALL_CANDIDATE))
+            self.assertEqual(request["prior_source"], str(root / "prior/LifeOS/install"))
+            self.assertEqual(api.get_lifeos_update_status()["state"], "queued")
+            with self.assertRaises(api.HTTPException) as duplicate:
+                api.apply_lifeos_update()
+            self.assertEqual(duplicate.exception.status_code, 409)
+
+    def test_reports_interrupted_update_and_launches_recovery(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            api.LIFEOS_UPDATE_ROOT = Path(directory)
+            job = api.LIFEOS_UPDATE_ROOT / "update-one"
+            (job / "snapshot").mkdir(parents=True)
+            (job / "request.json").write_text("{}")
+            (job / "status.json").write_text(json.dumps({
+                "state": "applying", "unit": "lifeos-bridge-update-test"}))
+            (job / "snapshot/manifest.json").write_text(json.dumps({"state": "swapped"}))
+            launched = []
+            api._launch_lifeos_update = lambda path, action="apply": launched.append((path, action))
+            with patch.object(api.subprocess, "run", return_value=types.SimpleNamespace(returncode=3, stdout="inactive")):
+                self.assertEqual(api.get_lifeos_update_status()["state"], "interrupted")
+                result = api.recover_lifeos_update()
+            self.assertEqual(result["state"], "recovering")
+            self.assertEqual(launched, [(job, "recover")])
 
     def test_stages_host_patch_and_launches_detached_worker(self):
         api = self.load_api(lambda *_: [], lambda *_: [])

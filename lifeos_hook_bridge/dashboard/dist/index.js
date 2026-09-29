@@ -9,6 +9,7 @@
   const endpoint = "/api/plugins/lifeos-hook-bridge/settings";
   const installationEndpoint = "/api/plugins/lifeos-hook-bridge/installation";
   const hostPatchEndpoint = installationEndpoint + "/host-patch";
+  const lifeosUpdateEndpoint = installationEndpoint + "/update";
   const baselineEndpoint = "/api/plugins/lifeos-hook-bridge/version-drift";
   const modelEndpoint = "/api/model/options?explicit_only=1";
   const tiers = ["haiku", "sonnet", "opus", "fable"];
@@ -27,6 +28,7 @@
     const [installationStatus, setInstallationStatus] = SDK.hooks.useState("");
     const [installationBusy, setInstallationBusy] = SDK.hooks.useState(false);
     const [hostPatch, setHostPatch] = SDK.hooks.useState(null);
+    const [lifeosUpdate, setLifeosUpdate] = SDK.hooks.useState(null);
 
     SDK.hooks.useEffect(function () {
       let active = true;
@@ -62,6 +64,7 @@
         if (active) setInstallationStatus("Could not read installation status: " + error.message);
       });
       refreshHostPatch(0);
+      refreshLifeOSUpdate(0);
       return function () { active = false; };
     }, []);
 
@@ -142,7 +145,7 @@
           candidate_ready: true, candidate_commit: result.upstream_commit,
           candidate_patch_count: result.patches.length, candidate_error: null,
         }); });
-        setInstallationStatus("Candidate prepared from LifeOS commit " + result.upstream_commit + ". Installation has not changed yet.");
+        setInstallationStatus("Candidate prepared from LifeOS commit " + result.upstream_commit + ". The running installation has not changed.");
       }).catch(function (error) {
         setInstallationStatus("Could not prepare LifeOS: " + error.message);
       }).finally(function () { setInstallationBusy(false); });
@@ -228,6 +231,44 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function refreshLifeOSUpdate(attempt) {
+      SDK.fetchJSON(lifeosUpdateEndpoint).then(function (result) {
+        setLifeosUpdate(result);
+        if (["queued", "preparing", "applying", "restoring", "recovering"].includes(result.state) && attempt < 120) {
+          window.setTimeout(function () { refreshLifeOSUpdate(attempt + 1); }, 3000);
+        } else if (["applied", "rolled_back"].includes(result.state)) {
+          return Promise.all([SDK.fetchJSON(installationEndpoint), SDK.fetchJSON(baselineEndpoint)]).then(function (results) {
+            setInstallation(results[0]);
+            setBaseline(results[1]);
+          });
+        }
+      }).catch(function (error) {
+        setInstallationStatus("Could not read LifeOS update status: " + error.message);
+      });
+    }
+
+    function applyLifeOSUpdate() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(lifeosUpdateEndpoint, { method: "POST" }).then(function () {
+        setInstallationStatus("LifeOS update started. The gateway will restart after native checks pass.");
+        refreshLifeOSUpdate(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not start LifeOS update: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
+    function recoverLifeOSUpdate() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(lifeosUpdateEndpoint + "/recover", { method: "POST" }).then(function () {
+        setInstallationStatus("LifeOS recovery started. The worker will restore the prior installation and restart Hermes.");
+        refreshLifeOSUpdate(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not start LifeOS recovery: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function renderTier(tier) {
       const label = tier.charAt(0).toUpperCase() + tier.slice(1);
       const modelKey = tier + "_model";
@@ -286,6 +327,29 @@
           "A .claude directory already exists. The fresh installer will not overwrite it. Review that directory before installing LifeOS.") : null,
         installation?.lifeos === "installed" ? h("p", null,
           "LifeOS " + installation.version + " is installed.") : null,
+        installation?.lifeos === "installed" && installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
+          h("p", null, "Updates use a tested LifeOS commit and compatibility patch set. The worker stages dependencies and hook registrations, restarts Hermes, then verifies the installed result."),
+          (!installation.candidate_ready || lifeosUpdate?.state === "applied") ? h("button", {
+            type: "button", disabled: installationBusy || ["queued", "preparing", "applying"].includes(lifeosUpdate?.state),
+            onClick: prepareLifeOS,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, installationBusy ? "Preparing..." : lifeosUpdate?.state === "applied" ? "Check for newer supported LifeOS" : "Prepare latest LifeOS update") : null,
+          installation.candidate_ready ? h("p", null,
+            "Prepared commit " + installation.candidate_commit + " with " + installation.candidate_patch_count + " compatibility patches.") : null,
+          installation.candidate_ready && (["none", "failed", "rolled_back"].includes(lifeosUpdate?.state)
+            || (lifeosUpdate?.state === "applied" && installation.candidate_newer)) ? h("button", {
+            type: "button", disabled: installationBusy, onClick: applyLifeOSUpdate,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, installationBusy ? "Starting..." : "Apply prepared LifeOS update") : null,
+          lifeosUpdate?.state === "applied" ? h("p", { role: "status" }, "LifeOS update applied and verified.") : null,
+          ["queued", "preparing", "applying", "restoring", "recovering"].includes(lifeosUpdate?.state) ? h("p", { role: "status" },
+            "LifeOS update: " + lifeosUpdate.state + ". The gateway may be unavailable during restart.") : null,
+          ["failed", "rollback_failed", "rolled_back", "interrupted"].includes(lifeosUpdate?.state) ? h("p", { role: "status" },
+            "LifeOS update: " + lifeosUpdate.state + (lifeosUpdate.error ? ". " + lifeosUpdate.error : "")) : null,
+          lifeosUpdate?.state === "interrupted" && ["stopped", "swapped", "restoring", "rollback_failed"].includes(lifeosUpdate.transaction_state) ? h("button", {
+            type: "button", disabled: installationBusy, onClick: recoverLifeOSUpdate,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, "Restore interrupted update") : null) : null,
         installation?.lifeos === "installed" && !installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, installation.candidate_ready ?
             "Finish setup to mount LifeOS into Hermes and record the installed system files." :
