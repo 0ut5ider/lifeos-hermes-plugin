@@ -121,6 +121,14 @@
       "hermes_session": "20260929_105538_62563f",
       "native_trace_sha256": "0aa8a3936e6243393a34e0c5beb0b1f8148470bda1666c4738925b176c632eca",
       "hermes_trace_sha256": "07ed701a58645f185612bc240fcf5dbc8a32d1f6ad5dfcccfd64790d685a013e"
+    },
+    {
+      "label": "task-created-haiku",
+      "native_session": "544c8f91-b0ea-49eb-b8a6-58db536ff3c7",
+      "hermes_session": "20260929_122837_b2055e",
+      "event_filter": "TaskCreated.1.1",
+      "native_trace_sha256": "7eb9fd308f26ea4a577efaa5becfe06da790dfab89f7623385d7702ac13603a0",
+      "hermes_trace_sha256": "4ada7637af3fee61724c8e0c95ddda1b9f59bd8ec421065414ba99e711b94f46"
     }
   ],
   "registrations": [
@@ -2089,8 +2097,31 @@
       "id": "TaskCreated.1.1",
       "event": "TaskCreated",
       "handler": "$HOME/.claude/hooks/TaskGovernance.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "task-created-haiku",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null,
+          "hermes_setup_probe_count": 1
+        }
+      ]
     },
     {
       "id": "ConfigChange.1.1",
@@ -2838,9 +2869,9 @@
     }
   ],
   "counts": {
-    "matched_dispatch_and_output_shape": 62,
+    "matched_dispatch_and_output_shape": 63,
     "mismatch": 0,
     "observed_with_different_input": 0,
-    "not_observed": 12
+    "not_observed": 11
   }
 }
