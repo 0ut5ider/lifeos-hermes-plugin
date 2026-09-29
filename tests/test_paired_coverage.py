@@ -74,6 +74,22 @@ class PairedCoverageTests(unittest.TestCase):
             self.assertEqual(report["counts"]["matched_dispatch_and_output_shape"], 1)
             self.assertEqual(report["counts"]["not_observed"], 1)
 
+    def test_http_pair_uses_registered_path_and_status(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = root / "registrations.csv"
+            manifest.write_text("id,event,handler\nPreToolUse.2.1,PreToolUse,skill-guard\n")
+            native = root / "native-http.jsonl"
+            hermes = root / "hermes-http.jsonl"
+            for path, session in ((native, "n"), (hermes, "h")):
+                path.write_text(json.dumps({"session_id": session,
+                                            "path": "/hooks/skill-guard",
+                                            "tool_name": "Skill", "status": 200,
+                                            "response_size": 0}))
+            report = build_coverage(manifest, [], [("skill", native, "n", hermes, "h")])
+            self.assertEqual(report["counts"]["matched_dispatch_and_output_shape"], 1)
+            self.assertEqual(report["registrations"][0]["cases"][0]["native"][0]["http_status"], 200)
+
 
 if __name__ == "__main__":
     unittest.main()

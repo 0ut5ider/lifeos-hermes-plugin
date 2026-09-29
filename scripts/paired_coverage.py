@@ -29,7 +29,28 @@ def _outcome(row: dict) -> dict:
     }
 
 
-def build_coverage(registrations: Path, pairs: list[tuple]) -> dict:
+HTTP_REGISTRATIONS = {
+    "/hooks/skill-guard": "PreToolUse.2.1",
+    "/hooks/agent-guard": "PreToolUse.3.1",
+}
+
+
+def _http_rows(path: Path, session_id: str) -> dict[str, list[dict]]:
+    found: dict[str, list[dict]] = defaultdict(list)
+    for line in path.read_text(encoding="utf-8").splitlines():
+        row = json.loads(line)
+        if row.get("session_id") != session_id:
+            continue
+        identifier = HTTP_REGISTRATIONS.get(row["path"])
+        if not identifier:
+            raise ValueError(f"Unknown LifeOS HTTP hook path: {row['path']}")
+        found[identifier].append({"http_status": row["status"],
+                                  "response_present": row["response_size"] > 0,
+                                  "tool_name": row.get("tool_name")})
+    return found
+
+
+def build_coverage(registrations: Path, pairs: list[tuple], http_pairs: list[tuple] = ()) -> dict:
     manifest = registrations.read_bytes()
     items = list(csv.DictReader(manifest.decode("utf-8").splitlines()))
     identifiers = [row["id"] for row in items]
@@ -51,7 +72,7 @@ def build_coverage(registrations: Path, pairs: list[tuple]) -> dict:
                           "native_trace_sha256": hashlib.sha256(native_path.read_bytes()).hexdigest(),
                           "hermes_trace_sha256": hashlib.sha256(hermes_path.read_bytes()).hexdigest()})
         for identifier in identifiers:
-            if event_filter and identifier.split(".", 1)[0] != event_filter:
+            if event_filter and identifier != event_filter and identifier.split(".", 1)[0] != event_filter:
                 continue
             native_rows = native.get(identifier, ())
             hermes_rows = hermes.get(identifier, ())
@@ -65,6 +86,19 @@ def build_coverage(registrations: Path, pairs: list[tuple]) -> dict:
             evidence[identifier].append({"scenario": label, "native": left, "hermes": right,
                                          "transport_match": None if same_final_text else left == right,
                                          "incomparable_reason": "different_final_text" if same_final_text else None})
+    for label, native_path, native_session, hermes_path, hermes_session in http_pairs:
+        native = _http_rows(native_path, native_session)
+        hermes = _http_rows(hermes_path, hermes_session)
+        scenarios.append({"label": label, "kind": "http", "native_session": native_session,
+                          "hermes_session": hermes_session,
+                          "native_trace_sha256": hashlib.sha256(native_path.read_bytes()).hexdigest(),
+                          "hermes_trace_sha256": hashlib.sha256(hermes_path.read_bytes()).hexdigest()})
+        for identifier in HTTP_REGISTRATIONS.values():
+            left, right = native.get(identifier, []), hermes.get(identifier, [])
+            if left or right:
+                evidence[identifier].append({"scenario": label, "native": left,
+                                             "hermes": right, "transport_match": left == right,
+                                             "incomparable_reason": None})
     results = []
     for row in items:
         matches = evidence[row["id"]]
@@ -74,7 +108,7 @@ def build_coverage(registrations: Path, pairs: list[tuple]) -> dict:
                   else "observed_with_different_input")
         results.append({"id": row["id"], "event": row["event"], "handler": row["handler"],
                         "status": status, "cases": matches})
-    return {"scope": "registration dispatch, exit code, and output presence only; handler side effects require separate evidence",
+    return {"scope": "registration dispatch, exit code or HTTP status, and output presence only; handler side effects require separate evidence",
             "registrations_sha256": hashlib.sha256(manifest).hexdigest(),
             "scenarios": scenarios, "registrations": results,
             "counts": {status: sum(row["status"] == status for row in results) for status in
@@ -90,16 +124,21 @@ def main() -> None:
                         metavar=("LABEL", "NATIVE_TRACE", "NATIVE_SESSION", "HERMES_TRACE", "HERMES_SESSION"),
                         help="Compare every event in a matched session")
     parser.add_argument("--pair-event", action="append", nargs=6, default=[],
-                        metavar=("EVENT", "LABEL", "NATIVE_TRACE", "NATIVE_SESSION", "HERMES_TRACE", "HERMES_SESSION"),
-                        help="Compare only one event when another event had different inputs")
+                        metavar=("EVENT_OR_ID", "LABEL", "NATIVE_TRACE", "NATIVE_SESSION", "HERMES_TRACE", "HERMES_SESSION"),
+                        help="Compare one event or registration when other inputs differ")
+    parser.add_argument("--http-pair", action="append", nargs=5, default=[],
+                        metavar=("LABEL", "NATIVE_TRACE", "NATIVE_SESSION", "HERMES_TRACE", "HERMES_SESSION"),
+                        help="Compare Pulse HTTP hook status and response presence")
     args = parser.parse_args()
-    if not args.pair and not args.pair_event:
-        parser.error("At least one --pair or --pair-event is required")
+    if not args.pair and not args.pair_event and not args.http_pair:
+        parser.error("At least one paired scenario is required")
     pairs = [(label, Path(native), native_session, Path(hermes), hermes_session)
              for label, native, native_session, hermes, hermes_session in args.pair]
     pairs.extend((label, Path(native), native_session, Path(hermes), hermes_session, event)
                  for event, label, native, native_session, hermes, hermes_session in args.pair_event)
-    report = build_coverage(args.registrations, pairs)
+    http_pairs = [(label, Path(native), native_session, Path(hermes), hermes_session)
+                  for label, native, native_session, hermes, hermes_session in args.http_pair]
+    report = build_coverage(args.registrations, pairs, http_pairs)
     args.output.write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report["counts"]))
 

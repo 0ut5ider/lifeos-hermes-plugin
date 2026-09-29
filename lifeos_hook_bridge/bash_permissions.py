@@ -12,7 +12,7 @@ _LANGUAGE = Language(tree_sitter_bash.language())
 _DURATION = re.compile(r"[0-9]+(?:\.[0-9]+)?[smhd]?\Z")
 _WRAPPERS = frozenset({"timeout", "time", "nice", "nohup", "stdbuf", "command", "builtin", "noglob"})
 _ALLOW_REQUIRES_REVIEW = frozenset({
-    "process_substitution", "variable_assignment",
+    "process_substitution", "variable_assignment", "simple_expansion",
     "function_definition", "for_statement", "while_statement", "if_statement", "case_statement",
 })
 

@@ -1,5 +1,5 @@
 {
-  "scope": "registration dispatch, exit code, and output presence only; handler side effects require separate evidence",
+  "scope": "registration dispatch, exit code or HTTP status, and output presence only; handler side effects require separate evidence",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "scenarios": [
     {
@@ -7,32 +7,120 @@
       "native_session": "ed82e312-bcc4-485d-8943-55ac697e62be",
       "hermes_session": "20260929_094959_1a4714",
       "event_filter": null,
-      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
-      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
     },
     {
       "label": "read",
       "native_session": "0b9148e4-f34d-461b-a5e2-6a4cec22bad8",
       "hermes_session": "20260929_095303_c9f2f5",
       "event_filter": null,
-      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
-      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
     },
     {
       "label": "write",
       "native_session": "28279f6e-7f17-405e-bf3b-9c408ce66e1c",
       "hermes_session": "20260929_101116_25f3ec",
       "event_filter": "PostToolUse",
-      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
-      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
     },
     {
       "label": "edit",
       "native_session": "b2232b66-ccae-4c26-a0fd-9f9da8bff4e1",
       "hermes_session": "20260929_101832_ee34e3",
       "event_filter": "PostToolUse",
-      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
-      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "failed-read",
+      "native_session": "9f81bfd3-a48d-4a5e-89df-660282b7a1a6",
+      "hermes_session": "20260929_103911_b2471a",
+      "event_filter": "PostToolUseFailure",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "agent-start",
+      "native_session": "2a431b53-a67d-46b8-aeae-0e79e3ebc7b2",
+      "hermes_session": "20260929_105538_62563f",
+      "event_filter": "PreToolUse.3.2",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "agent-end",
+      "native_session": "2a431b53-a67d-46b8-aeae-0e79e3ebc7b2",
+      "hermes_session": "20260929_105538_62563f",
+      "event_filter": "PostToolUse.1.1",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "bash-permission",
+      "native_session": "42ad6c41-86ad-46e6-a972-ec9c577dbdaa",
+      "hermes_session": "20260929_111543_719c98",
+      "event_filter": "PermissionRequest.1.1",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "config-change",
+      "native_session": "f7db75b6-9d3a-45f6-b7d1-06e59cf4cf84",
+      "hermes_session": "20260929_112147_98a77d",
+      "event_filter": "ConfigChange",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "mcp-result",
+      "native_session": "b1bb942f-df55-47fd-b7ad-2cf45beb6332",
+      "hermes_session": "20260929_112659_850704",
+      "event_filter": "PostToolUse.4.1",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "mcp-permission",
+      "native_session": "b1bb942f-df55-47fd-b7ad-2cf45beb6332",
+      "hermes_session": "20260929_112659_850704",
+      "event_filter": "PermissionRequest.2.1",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "ask-start",
+      "native_session": "9cf46de9-0f04-4e0e-bf8a-5edfa6e334d6",
+      "hermes_session": "20260929_113132_f8f532",
+      "event_filter": "PreToolUse.4.1",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "ask-end",
+      "native_session": "9cf46de9-0f04-4e0e-bf8a-5edfa6e334d6",
+      "hermes_session": "20260929_113132_f8f532",
+      "event_filter": "PostToolUse.6.1",
+      "native_trace_sha256": "364d36294793f90402945b9fe83c227e70a98600937929169217b156d2fc189b",
+      "hermes_trace_sha256": "55fa315b3ccd2810b79e9fc72015edca1447823cfd3c5d57efc64046aed2af34"
+    },
+    {
+      "label": "skill",
+      "kind": "http",
+      "native_session": "d49d2338-9a10-42d1-b759-4bff82d14936",
+      "hermes_session": "20260929_105330_f6a1fe",
+      "native_trace_sha256": "0aa8a3936e6243393a34e0c5beb0b1f8148470bda1666c4738925b176c632eca",
+      "hermes_trace_sha256": "07ed701a58645f185612bc240fcf5dbc8a32d1f6ad5dfcccfd64790d685a013e"
+    },
+    {
+      "label": "agent",
+      "kind": "http",
+      "native_session": "2a431b53-a67d-46b8-aeae-0e79e3ebc7b2",
+      "hermes_session": "20260929_105538_62563f",
+      "native_trace_sha256": "0aa8a3936e6243393a34e0c5beb0b1f8148470bda1666c4738925b176c632eca",
+      "hermes_trace_sha256": "07ed701a58645f185612bc240fcf5dbc8a32d1f6ad5dfcccfd64790d685a013e"
     }
   ],
   "registrations": [
@@ -69,29 +157,113 @@
       "id": "PreToolUse.2.1",
       "event": "PreToolUse",
       "handler": "http://localhost:31337/hooks/skill-guard",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "skill",
+          "native": [
+            {
+              "http_status": 200,
+              "response_present": false,
+              "tool_name": "Skill"
+            }
+          ],
+          "hermes": [
+            {
+              "http_status": 200,
+              "response_present": false,
+              "tool_name": "Skill"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PreToolUse.3.1",
       "event": "PreToolUse",
       "handler": "http://localhost:31337/hooks/agent-guard",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "agent",
+          "native": [
+            {
+              "http_status": 200,
+              "response_present": true,
+              "tool_name": "Agent"
+            }
+          ],
+          "hermes": [
+            {
+              "http_status": 200,
+              "response_present": true,
+              "tool_name": "Agent"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PreToolUse.3.2",
       "event": "PreToolUse",
       "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "agent-start",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "Agent"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "Agent"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PreToolUse.4.1",
       "event": "PreToolUse",
       "handler": "$HOME/.claude/hooks/TabState.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "ask-start",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "AskUserQuestion"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "AskUserQuestion"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PreToolUse.5.1",
@@ -126,8 +298,30 @@
       "id": "PostToolUse.1.1",
       "event": "PostToolUse",
       "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "agent-end",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "Agent"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "Agent"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PostToolUse.2.1",
@@ -147,8 +341,30 @@
       "id": "PostToolUse.4.1",
       "event": "PostToolUse",
       "handler": "$HOME/.claude/hooks/Safety.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "mcp-result",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "mcp__paired_probe__ping"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "mcp__paired_probe__ping"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PostToolUse.5.1",
@@ -161,8 +377,30 @@
       "id": "PostToolUse.6.1",
       "event": "PostToolUse",
       "handler": "$HOME/.claude/hooks/TabState.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "ask-end",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "AskUserQuestion"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "AskUserQuestion"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PostToolUse.7.1",
@@ -1764,22 +2002,88 @@
       "id": "PostToolUseFailure.1.1",
       "event": "PostToolUseFailure",
       "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "failed-read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PostToolUseFailure.2.1",
       "event": "PostToolUseFailure",
       "handler": "$HOME/.claude/hooks/AlgorithmNudge.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "failed-read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PostToolUseFailure.3.1",
       "event": "PostToolUseFailure",
       "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "failed-read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "TaskCreated.1.1",
@@ -1792,8 +2096,30 @@
       "id": "ConfigChange.1.1",
       "event": "ConfigChange",
       "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "config-change",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "SessionStart.1.1",
@@ -2456,21 +2782,65 @@
       "id": "PermissionRequest.1.1",
       "event": "PermissionRequest",
       "handler": "$HOME/.claude/hooks/Safety.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash-permission",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PermissionRequest.2.1",
       "event": "PermissionRequest",
       "handler": "$HOME/.claude/hooks/Safety.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "mcp-permission",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "mcp__paired_probe__ping"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "mcp__paired_probe__ping"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     }
   ],
   "counts": {
-    "matched_dispatch_and_output_shape": 49,
+    "matched_dispatch_and_output_shape": 62,
     "mismatch": 0,
     "observed_with_different_input": 0,
-    "not_observed": 25
+    "not_observed": 12
   }
 }

@@ -2465,6 +2465,26 @@ class HookBridgeTests(unittest.TestCase):
         }))
         self.assertIsNone(bridge.command_approval("printf hello && printf world", session_key="s1"))
 
+    def test_expanded_echo_still_runs_permission_hook(self):
+        hook = self.make_hook(
+            "deny-expanded-echo.py",
+            "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'deny'}}}))\n",
+        )
+        settings = self.root / "settings.json"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"allow": ["Bash(echo:*)"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(
+            bridge.command_approval("echo PAIR_PERMISSION_212; echo exit=$?", session_key="s1"),
+            {"action": "deny"},
+        )
+
     def test_wildcard_allow_matches_one_simple_command(self):
         hook = self.make_hook("deny.py", "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'deny'}}}))\n")
         settings = self.root / "settings.json"
