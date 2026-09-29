@@ -123,6 +123,23 @@ class ReleaseTransactionTests(unittest.TestCase):
             self.assertEqual((target / "hooks/check.ts").read_text(), "old-hook")
             self.assertEqual(config.read_text(), "private-config")
 
+    def test_lifeos_payload_change_refuses_release_before_stopping_gateway(self):
+        with tempfile.TemporaryDirectory() as directory:
+            snapshot, hermes, plugin, target, payload, config = self.fixture(Path(directory))
+            (payload / "hooks/check.ts").write_text("changed-after-stage")
+            calls = []
+
+            with self.assertRaisesRegex(ReleaseError, "lifeos_payload"):
+                apply_release(snapshot, overlay=lambda: calls.append("overlay"),
+                              verify=lambda: calls.append("verify"),
+                              stop=lambda: calls.append("stopped"),
+                              start=lambda: calls.append("started"))
+            self.assertEqual(calls, [])
+            self.assertEqual((hermes / "agent.py").read_text(), "old-agent")
+            self.assertEqual((plugin / "bridge.py").read_text(), "old-bridge")
+            self.assertEqual((target / "hooks/check.ts").read_text(), "old-hook")
+            self.assertEqual(config.read_text(), "private-config")
+
 
 if __name__ == "__main__":
     unittest.main()

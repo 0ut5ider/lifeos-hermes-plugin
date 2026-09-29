@@ -143,6 +143,7 @@ def stage_release(snapshot: Path, hermes_current: Path, hermes_next: Path,
             "hermes_after": _digest_tree(paths["hermes_next"]),
             "plugin_before": _digest_tree(paths["plugin_current"]),
             "plugin_after": _digest_tree(paths["plugin_next"]),
+            "lifeos_payload": _digest_tree(paths["lifeos_payload"]),
             "config_before": _digest_file(config),
         }
         _copy_tree(paths["hermes_current"], stage / "hermes")
@@ -193,7 +194,8 @@ def apply_release(snapshot: Path, *, overlay: Callable[[], None], verify: Callab
     for label, tree in (("hermes_before", paths["hermes_current"]),
                         ("hermes_after", paths["hermes_next"]),
                         ("plugin_before", paths["plugin_current"]),
-                        ("plugin_after", paths["plugin_next"])):
+                        ("plugin_after", paths["plugin_next"]),
+                        ("lifeos_payload", paths["lifeos_payload"])):
         if _digest_tree(tree) != hashes[label]:
             raise ReleaseError(f"release tree changed since staging: {label}")
     if _digest_file(Path(manifest["config"])) != hashes["config_before"]:
