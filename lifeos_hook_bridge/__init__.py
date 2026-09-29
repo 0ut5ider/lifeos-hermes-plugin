@@ -18,9 +18,19 @@ def register(ctx: Any) -> None:
     settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(Path.home() / ".claude/settings.json"))).expanduser()
     if not settings.is_file():
         return
+    def model_tiers() -> dict[str, Any]:
+        try:
+            from hermes_cli.inventory import load_picker_context
+        except ModuleNotFoundError as error:
+            if error.name not in {"hermes_cli", "hermes_cli.inventory"}:
+                raise
+            return configured_model_map(ctx.get_config)
+        current = load_picker_context()
+        return configured_model_map(ctx.get_config, current.current_provider, current.current_model)
+
     bridge = HookBridge(
         settings, settings.parent,
-        model_tiers_provider=lambda: configured_model_map(ctx.get_config),
+        model_tiers_provider=model_tiers,
     )
     try:
         from hermes_cli.plugins import VALID_HOOKS

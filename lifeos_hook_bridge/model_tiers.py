@@ -15,27 +15,40 @@ VALID_EFFORTS = frozenset({"minimal", "low", "medium", "high", "xhigh", "max", "
 VALID_PINS = frozenset({"none", *DEFAULT_EFFORTS})
 
 
-def configured_tiers(read_setting: Callable[[str, Any], Any]) -> dict[str, dict[str, str]]:
+def configured_tiers(
+    read_setting: Callable[[str, Any], Any], default_provider: str = "", default_model: str = "",
+) -> dict[str, dict[str, str]]:
     tiers = {}
     for tier, default_effort in DEFAULT_EFFORTS.items():
         provider = read_setting(f"{tier}_provider", "")
         model = read_setting(f"{tier}_model", "")
         effort = read_setting(f"{tier}_effort", default_effort)
+        inherit_child = read_setting(f"{tier}_inherit_child_default", False)
         if not isinstance(provider, str) or "\n" in provider or "\r" in provider:
             raise ValueError(f"{tier}_provider must be one provider name on one line")
         if not isinstance(model, str) or "\n" in model or "\r" in model:
             raise ValueError(f"{tier}_model must be one model name on one line")
         if not isinstance(effort, str) or effort not in VALID_EFFORTS:
             raise ValueError(f"{tier}_effort is not a supported Hermes effort")
+        if not isinstance(inherit_child, bool):
+            raise ValueError(f"{tier}_inherit_child_default must be true or false")
+        if inherit_child:
+            provider, model = "", ""
+        elif provider.strip() and not model.strip():
+            raise ValueError(f"{tier}_provider requires a configured model")
+        elif not model.strip() and default_model:
+            provider, model = default_provider, default_model
         tiers[tier] = {"provider": provider.strip(), "model": model.strip(), "effort": effort}
     return tiers
 
 
-def configured_model_map(read_setting: Callable[[str, Any], Any]) -> dict[str, Any]:
+def configured_model_map(
+    read_setting: Callable[[str, Any], Any], default_provider: str = "", default_model: str = "",
+) -> dict[str, Any]:
     pin = read_setting("pinned_tier", "fable")
     if not isinstance(pin, str) or pin not in VALID_PINS:
         raise ValueError("pinned_tier is not a supported LifeOS tier")
-    return {"pin": pin, **configured_tiers(read_setting)}
+    return {"pin": pin, **configured_tiers(read_setting, default_provider, default_model)}
 
 
 def _tier_name(requested_model: str) -> str:

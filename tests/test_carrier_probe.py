@@ -88,6 +88,16 @@ class CarrierProbeTests(unittest.TestCase):
                 {"provider": "custom", "model": "alternate-local", "effort": "ultra"},
             )
 
+    def test_unsaved_tiers_use_hermes_current_model(self):
+        config = {"model": {"provider": "custom", "default": "flashnext"},
+                  "plugins": {"entries": {"lifeos-hook-bridge": {"settings": {
+                      "sonnet_inherit_child_default": True,
+                  }}}}}
+        with patch.dict("os.environ", {}, clear=True):
+            mapping = carrier_probe._mapping(config)
+        self.assertEqual(mapping["haiku"], {"provider": "custom", "model": "flashnext", "effort": "low"})
+        self.assertEqual(mapping["sonnet"], {"provider": "", "model": "", "effort": "medium"})
+
 
 if __name__ == "__main__":
     unittest.main()

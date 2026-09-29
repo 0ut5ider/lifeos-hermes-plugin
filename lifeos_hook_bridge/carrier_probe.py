@@ -77,7 +77,14 @@ def _mapping(config: dict[str, Any]) -> dict[str, Any]:
     settings = entry.get("settings") or entry.get("config") or {}
     if not isinstance(settings, dict):
         raise ValueError("LifeOS plugin settings must be an object")
-    return configured_model_map(lambda key, default: settings.get(key, default))
+    model_config = config.get("model") or {}
+    if not isinstance(model_config, dict):
+        raise ValueError("Hermes model config must be a mapping")
+    return configured_model_map(
+        lambda key, default: settings.get(key, default),
+        default_provider=str(model_config.get("provider") or ""),
+        default_model=str(model_config.get("default") or model_config.get("name") or ""),
+    )
 
 
 def _route(tier: str = "fable") -> tuple[str, str, str, dict[str, Any]]:

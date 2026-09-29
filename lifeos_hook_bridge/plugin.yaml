@@ -27,8 +27,13 @@ config_schema:
   haiku_model:
     type: str
     label: Haiku model
-    description: Leave blank to use the existing LifeOS child default.
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
     default: ""
+  haiku_inherit_child_default:
+    type: bool
+    label: Haiku uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
   haiku_provider:
     type: str
     label: Haiku Hermes provider
@@ -42,8 +47,13 @@ config_schema:
   sonnet_model:
     type: str
     label: Sonnet model
-    description: Leave blank to use the existing LifeOS child default.
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
     default: ""
+  sonnet_inherit_child_default:
+    type: bool
+    label: Sonnet uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
   sonnet_provider:
     type: str
     label: Sonnet Hermes provider
@@ -57,8 +67,13 @@ config_schema:
   opus_model:
     type: str
     label: Opus model
-    description: Leave blank to use the existing LifeOS child default.
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
     default: ""
+  opus_inherit_child_default:
+    type: bool
+    label: Opus uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
   opus_provider:
     type: str
     label: Opus Hermes provider
@@ -72,8 +87,13 @@ config_schema:
   fable_model:
     type: str
     label: Fable model
-    description: Leave blank to use the existing LifeOS child default.
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
     default: ""
+  fable_inherit_child_default:
+    type: bool
+    label: Fable uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
   fable_provider:
     type: str
     label: Fable Hermes provider
@@ -87,6 +107,10 @@ config_schema:
 provides_hooks:
   - pre_tool_call
   - post_tool_call
+  - pre_command_approval
+  - augment_tool_result
   - pre_llm_call
+  - pre_turn_stop
   - on_session_finalize
   - api_request_error
+  - on_turn_result

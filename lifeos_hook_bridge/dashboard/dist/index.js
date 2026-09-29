@@ -18,6 +18,7 @@
     const [fields, setFields] = SDK.hooks.useState([]);
     const [values, setValues] = SDK.hooks.useState({});
     const [models, setModels] = SDK.hooks.useState([]);
+    const [suggestedDefaults, setSuggestedDefaults] = SDK.hooks.useState(false);
     const [status, setStatus] = SDK.hooks.useState("Loading settings...");
     const [saving, setSaving] = SDK.hooks.useState(false);
     const [baseline, setBaseline] = SDK.hooks.useState(null);
@@ -37,19 +38,38 @@
         const data = results[0];
         const catalog = results[1];
         setFields(data.fields);
-        setValues(Object.fromEntries(data.fields.map(function (field) {
+        const nextValues = Object.fromEntries(data.fields.map(function (field) {
           return [field.key, field.value ?? ""];
-        })));
+        }));
         const choices = [];
         for (const provider of catalog.providers ?? []) {
           if (provider.authenticated === false) continue;
           for (const model of provider.models ?? []) {
             if (typeof model !== "string" || !model) continue;
-            choices.push({ provider: provider.slug, model: model, label: provider.name + " / " + model });
+            choices.push({ provider: provider.slug, model: model,
+              label: provider.name + " / " + model, isCurrent: provider.is_current === true });
           }
         }
+        const current = choices.find(function (choice) {
+          return choice.provider === catalog.provider && choice.model === catalog.model;
+        }) ?? choices.find(function (choice) {
+          return choice.isCurrent && choice.model === catalog.model;
+        });
+        if (current) {
+          for (const tier of tiers) {
+            if (!nextValues[tier + "_model"] && nextValues[tier + "_inherit_child_default"] !== true) {
+              nextValues[tier + "_provider"] = current.provider;
+              nextValues[tier + "_model"] = current.model;
+              setSuggestedDefaults(true);
+            }
+          }
+        }
+        setValues(nextValues);
         setModels(choices);
-        setStatus(choices.length ? "" : "No configured Hermes models are available. Add a model on the Models page.");
+        setStatus(!choices.length ? "No configured Hermes models are available. Add a model on the Models page." :
+          !current && tiers.some(function (tier) {
+            return !nextValues[tier + "_model"] && nextValues[tier + "_inherit_child_default"] !== true;
+          }) ? "Hermes's current model is not available in this list. Choose a model for each tier." : "");
       }).catch(function (error) {
         if (active) setStatus("Could not load settings or models: " + error.message);
       });
@@ -75,7 +95,9 @@
     function selectModel(tier, selected) {
       if (!selected) {
         setValues(function (current) {
-          return Object.assign({}, current, { [tier + "_provider"]: "", [tier + "_model"]: "" });
+          return Object.assign({}, current, {
+            [tier + "_provider"]: "", [tier + "_model"]: "", [tier + "_inherit_child_default"]: true,
+          });
         });
         return;
       }
@@ -84,7 +106,10 @@
       if (!Array.isArray(pair) || pair.length !== 2 ||
           typeof pair[0] !== "string" || typeof pair[1] !== "string") return;
       setValues(function (current) {
-        return Object.assign({}, current, { [tier + "_provider"]: pair[0], [tier + "_model"]: pair[1] });
+        return Object.assign({}, current, {
+          [tier + "_provider"]: pair[0], [tier + "_model"]: pair[1],
+          [tier + "_inherit_child_default"]: false,
+        });
       });
     }
 
@@ -97,6 +122,7 @@
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(values),
       }).then(function () {
+        setSuggestedDefaults(false);
         setStatus("Saved. Restart the Hermes gateway to apply these settings.");
       }).catch(function (error) {
         setStatus("Could not save settings: " + error.message);
@@ -275,11 +301,14 @@
       const providerKey = tier + "_provider";
       const effortKey = tier + "_effort";
       const effortField = fields.find(function (field) { return field.key === effortKey; });
-      const selected = values[modelKey] ? JSON.stringify([values[providerKey] ?? "", values[modelKey]]) : "";
+      const selected = values[tier + "_inherit_child_default"] === true || !values[modelKey] ? "" :
+        JSON.stringify([values[providerKey] ?? "", values[modelKey]]);
       const listed = models.some(function (choice) {
         return choice.provider === values[providerKey] && choice.model === values[modelKey];
       });
-      const options = [h("option", { key: "default", value: "" }, "Use existing LifeOS child default")];
+      const options = [h("option", { key: "default", value: "" },
+        values[tier + "_inherit_child_default"] === true || selected ?
+          "Keep existing child routing (advanced)" : "Choose a Hermes model")];
       if (selected && !listed) {
         options.push(h("option", { key: "saved", value: selected },
           "Saved: " + (values[providerKey] || "current provider") + " / " + values[modelKey]));
@@ -299,7 +328,9 @@
               id: modelKey, value: selected,
               onChange: function (event) { selectModel(tier, event.target.value); },
               className: "w-full rounded border border-border bg-background p-2",
-            }, options)),
+            }, options),
+            !values[modelKey] ? h("p", { className: "mt-2 text-sm text-muted-foreground" },
+              "Delegated tasks use this Hermes conversation's model. Other LifeOS child calls use a separate connection set up outside this page. Check where that connection sends data.") : null),
           h("div", null,
             h("label", { htmlFor: effortKey, className: "mb-1 block font-medium" }, "Effort"),
             h("select", {
@@ -317,7 +348,9 @@
       h("div", null,
         h("h1", { className: "text-2xl font-semibold" }, "LifeOS Bridge"),
         h("p", { className: "text-muted-foreground" },
-          "Choose a configured Hermes model and effort for each LifeOS tier. Select a model in every row to use Hermes provider routing for LifeOS child calls."),
+          "LifeOS asks for four levels of work. Choose a Hermes model and effort for each one. Using one model in every row is fine. The model currently selected in Hermes fills empty rows by default. Effort controls the amount of reasoning requested."),
+        suggestedDefaults ? h("p", { role: "status", className: "mt-2 text-sm" },
+          "Hermes's current model is selected for the empty rows. Save settings to keep these choices when you change Hermes's main model.") : null,
         h("a", { href: "/models", className: "text-sm underline" }, "Manage Hermes models")),
       h("section", { className: "rounded border border-border p-4" },
         h("h2", { className: "mb-2 text-lg font-semibold" }, "LifeOS installation"),

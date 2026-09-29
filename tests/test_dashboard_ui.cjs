@@ -19,14 +19,15 @@ function find(node, match) {
   return null;
 }
 
-test("model picker saves the selected provider, model, and effort", async () => {
+test("model picker starts with the current Hermes model and saves every tier", async () => {
   const fields = ["haiku", "sonnet", "opus", "fable"].flatMap((tier) => [
     { key: tier + "_provider", type: "string", value: "" },
     { key: tier + "_model", type: "string", value: "" },
-    { key: tier + "_effort", type: "enum", value: "low", choices: ["low", "high"] },
+    { key: tier + "_inherit_child_default", type: "boolean", value: false },
+    { key: tier + "_effort", type: "enum", value: { haiku: "low", sonnet: "medium", opus: "xhigh", fable: "xhigh" }[tier], choices: ["low", "medium", "high", "xhigh"] },
   ]);
   fields.push({ key: "stop_cap_policy", type: "enum", value: "claude", choices: ["claude", "fail_closed"] });
-  const models = { providers: [
+  const models = { model: "flashnext", provider: "custom", providers: [
     { slug: "custom", name: "Local endpoint", models: ["flashnext"] },
     { slug: "remote", name: "Remote endpoint", models: ["other"] },
   ] };
@@ -80,7 +81,8 @@ test("model picker saves the selected provider, model, and effort", async () => 
   await new Promise(setImmediate);
   const view = render();
   for (const tier of ["haiku", "sonnet", "opus", "fable"]) {
-    assert.ok(find(view, (node) => node.type === "select" && node.props.id === tier + "_model"));
+    const selectedModel = find(view, (node) => node.type === "select" && node.props.id === tier + "_model");
+    assert.equal(selectedModel.props.value, JSON.stringify(["custom", "flashnext"]));
     assert.ok(find(view, (node) => node.type === "select" && node.props.id === tier + "_effort"));
   }
   const modelSelect = find(view, (node) => node.type === "select" && node.props.id === "haiku_model");
@@ -96,9 +98,25 @@ test("model picker saves the selected provider, model, and effort", async () => 
   const saved = calls.find((call) => call.init?.method === "PUT");
   assert.ok(saved);
   const values = JSON.parse(saved.init.body);
-  assert.equal(values.haiku_provider, "custom");
-  assert.equal(values.haiku_model, "flashnext");
+  for (const tier of ["haiku", "sonnet", "opus", "fable"]) {
+    assert.equal(values[tier + "_provider"], "custom");
+    assert.equal(values[tier + "_model"], "flashnext");
+  }
   assert.equal(values.haiku_effort, "high");
+  assert.equal(values.sonnet_effort, "medium");
+  assert.equal(values.opus_effort, "xhigh");
+  assert.equal(values.fable_effort, "xhigh");
+  assert.equal(values.haiku_inherit_child_default, false);
+  const inherited = find(render(), (node) => node.type === "select" && node.props.id === "haiku_model");
+  inherited.props.onChange({ target: { value: "" } });
+  const inheritForm = find(render(), (node) => node.type === "form");
+  inheritForm.props.onSubmit({ preventDefault() {} });
+  await new Promise(setImmediate);
+  const inheritSave = calls.filter((call) => call.init?.method === "PUT").at(-1);
+  assert.equal(JSON.parse(inheritSave.init.body).haiku_model, "");
+  assert.equal(JSON.parse(inheritSave.init.body).haiku_inherit_child_default, true);
+  assert.ok(find(render(), (node) => node.type === "p" && node.children.some((child) =>
+    typeof child === "string" && child.includes("this Hermes conversation's model"))));
   const stopPolicy = find(render(), (node) => node.type === "select" && node.props.id === "stop_cap_policy");
   assert.ok(stopPolicy);
   stopPolicy.props.onChange({ target: { value: "fail_closed" } });
@@ -127,6 +145,54 @@ test("model picker saves the selected provider, model, and effort", async () => 
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("0 changed since baseline"))));
 
+});
+
+test("an explicit existing child route stays selected after reloading", async () => {
+  const fields = ["haiku", "sonnet", "opus", "fable"].flatMap((tier) => [
+    { key: tier + "_provider", value: tier === "sonnet" ? "second" : "" },
+    { key: tier + "_model", value: tier === "sonnet" ? "other-model" : "" },
+    { key: tier + "_inherit_child_default", value: tier === "haiku" },
+    { key: tier + "_effort", value: "low", choices: ["low", "medium", "xhigh"] },
+  ]);
+  const state = [];
+  let index = 0;
+  let effectRan = false;
+  let component;
+  const sdk = {
+    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
+    hooks: {
+      useState(initial) {
+        const slot = index++;
+        if (!(slot in state)) state[slot] = initial;
+        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
+      },
+      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
+    },
+    fetchJSON(url) {
+      if (url.endsWith("/settings")) return Promise.resolve({ fields });
+      if (url.includes("/api/model/options")) return Promise.resolve({
+        model: "flashnext", provider: "custom", providers: [
+          { slug: "custom", name: "Local", models: ["flashnext"] },
+          { slug: "second", name: "Other", models: ["other-model"] },
+        ],
+      });
+      if (url.endsWith("/installation")) return Promise.resolve({ lifeos: "installed", hermes: "stock" });
+      return Promise.resolve({ state: "missing" });
+    },
+  };
+  vm.runInNewContext(bundle, { window: {
+    __HERMES_PLUGIN_SDK__: sdk,
+    __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
+  }, console });
+  const render = () => { index = 0; return component(); };
+  render();
+  await new Promise(setImmediate);
+  const view = render();
+  const selected = (tier) => find(view, (node) => node.type === "select" && node.props.id === tier + "_model").props.value;
+  assert.equal(selected("haiku"), "");
+  assert.equal(selected("sonnet"), JSON.stringify(["second", "other-model"]));
+  assert.equal(selected("opus"), JSON.stringify(["custom", "flashnext"]));
+  assert.equal(selected("fable"), JSON.stringify(["custom", "flashnext"]));
 });
 
 test("missing LifeOS shows preparation without active model settings", async () => {

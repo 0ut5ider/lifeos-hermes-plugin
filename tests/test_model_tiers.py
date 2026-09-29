@@ -7,6 +7,32 @@ from lifeos_hook_bridge.model_tiers import configured_model_map, resolve_route, 
 
 
 class ModelTierTests(unittest.TestCase):
+    def test_hermes_current_model_is_the_default_for_all_tiers(self):
+        mapping = configured_model_map(
+            {}.get, default_provider="custom", default_model="flashnext",
+        )
+        self.assertEqual({tier: (mapping[tier]["provider"], mapping[tier]["model"], mapping[tier]["effort"])
+                          for tier in ("haiku", "sonnet", "opus", "fable")}, {
+            "haiku": ("custom", "flashnext", "low"),
+            "sonnet": ("custom", "flashnext", "medium"),
+            "opus": ("custom", "flashnext", "xhigh"),
+            "fable": ("custom", "flashnext", "xhigh"),
+        })
+
+    def test_explicit_child_default_and_selected_model_override_hermes_default(self):
+        mapping = configured_model_map({
+            "haiku_inherit_child_default": True,
+            "sonnet_provider": "second", "sonnet_model": "another-model",
+        }.get, default_provider="custom", default_model="flashnext")
+        self.assertEqual(mapping["haiku"]["model"], "")
+        self.assertEqual(mapping["haiku"]["provider"], "")
+        self.assertEqual(resolve_route("haiku", "model-env-default", mapping),
+                         ("", "model-env-default", "low"))
+        self.assertEqual(resolve_route("sonnet", "", mapping),
+                         ("second", "another-model", "medium"))
+        self.assertEqual(resolve_route("fable", "", mapping),
+                         ("custom", "flashnext", "xhigh"))
+
     def test_defaults_use_one_model_with_three_efforts(self):
         mapping = configured_model_map(lambda key, default: default)
         self.assertEqual(mapping["pin"], "fable")
@@ -53,6 +79,8 @@ class ModelTierTests(unittest.TestCase):
             resolve_route("sonnet", "", configured_model_map(lambda key, default: default))
         with self.assertRaisesRegex(ValueError, "haiku_provider"):
             configured_model_map({"haiku_provider": "bad\nprovider"}.get)
+        with self.assertRaisesRegex(ValueError, "haiku_provider requires"):
+            configured_model_map({"haiku_provider": "custom"}.get, default_model="flashnext")
 
     def test_delegated_tier_carries_selected_provider(self):
         mapping = configured_model_map({
