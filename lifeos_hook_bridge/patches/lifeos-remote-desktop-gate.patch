@@ -1,0 +1,38 @@
+diff --git a/LifeOS/install/hooks/KittyEnvPersist.hook.ts b/LifeOS/install/hooks/KittyEnvPersist.hook.ts
+index 1564e1e..a872159 100755
+--- a/LifeOS/install/hooks/KittyEnvPersist.hook.ts
++++ b/LifeOS/install/hooks/KittyEnvPersist.hook.ts
+@@ -17,11 +17,12 @@ import { getLifeosDir } from './lib/paths';
+ import { setTabState, readTabState, persistKittySession } from './lib/tab-setter';
+ import { getDAName } from './lib/identity';
+ import { isSubagentContext } from './lib/subagent';
++import { isDesktopChannel } from './lib/notification-channel';
+ 
+ const paiDir = getLifeosDir();
+ 
+ // Skip for subagents
+-if (isSubagentContext()) process.exit(0);
++if (isSubagentContext() || !isDesktopChannel()) process.exit(0);
+ 
+ // Read session_id + source from stdin (SessionStart hook input)
+ // source ∈ {"startup", "resume", "compact", "clear"}; absent on older CC versions.
+diff --git a/LifeOS/install/hooks/lib/tab-setter.ts b/LifeOS/install/hooks/lib/tab-setter.ts
+index 9c290aa..20a780c 100755
+--- a/LifeOS/install/hooks/lib/tab-setter.ts
++++ b/LifeOS/install/hooks/lib/tab-setter.ts
+@@ -92,6 +92,7 @@ const GENERIC_PHASE_GERUNDS = new Set([
+   'Recording the session learnings.',
+ ]);
+ import { paiPath } from './paths';
++import { isDesktopChannel } from './notification-channel';
+ 
+ const TAB_TITLES_DIR = paiPath('MEMORY', 'STATE', 'tab-titles');
+ const KITTY_SESSIONS_DIR = paiPath('MEMORY', 'STATE', 'kitty-sessions');
+@@ -250,6 +251,7 @@ function cleanupStaleStateFiles(): void {
+ }
+ 
+ export function setTabState(opts: SetTabOptions): void {
++  if (!isDesktopChannel()) return;
+   const { state, previousTitle, previousAscent, sessionId } = opts;
+   const title = opts.title;
+   const colors = TAB_COLORS[state];

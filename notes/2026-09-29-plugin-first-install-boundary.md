@@ -1,0 +1,9 @@
+# Plugin-first installation boundary
+
+Date: 2026-09-29. The proposed user order is Hermes, plugin, LifeOS. The first test of that order failed before any installer work: `register()` raised `FileNotFoundError` when `~/.claude/settings.json` did not exist. The full `plugin.yaml` also declared four hook names absent from the pinned stock Hermes `VALID_HOOKS` set. A settings page alone could not make this order work.
+
+The missing-settings regression failed with the exact `FileNotFoundError`. The stock-hook regression initially registered `pre_command_approval`, `augment_tool_result`, `pre_turn_stop`, and `on_turn_result` despite the supplied stock hook set. After the change, the plugin loads with no hooks before LifeOS installation. With LifeOS present, it registers only stock callbacks when the extended names are unavailable. A native PostToolUse command ran through that reduced path in the local test.
+
+The untouched Hermes source at commit `758ad514e` validated the revised plugin manifest on `.212` with zero findings and six callback registrations across five hook names. With a deliberately missing settings file, its doctor reported five declaration warnings but no errors and registered no callbacks. The patched Hermes source registered nine callbacks across nine hook names, with four warnings because the common manifest does not declare its optional extended hooks. These are validation results, not a live stock Hermes model turn. The reduced path must still be tested through an actual tool call before its behavior is described as release-ready.
+
+The same day, `git ls-remote` showed LifeOS `main` at `5e2f2e8`, the tested base. A real fetch on `.212` prepared that commit with all nine bundled patches in 12.4 seconds and `git diff --check` passed. If upstream advances, the installer refuses that commit until the patch and behavior checks are ported. The preparation changed no active LifeOS files.

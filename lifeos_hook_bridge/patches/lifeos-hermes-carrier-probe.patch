@@ -1,0 +1,38 @@
+diff --git a/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts b/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
+index 62dd6ff..c8fca46 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
+@@ -1104,7 +1104,12 @@ function checkWorkflows(): void {
+ function checkCarrierProbe(): void {
+   const findings: Finding[] = [];
+   try {
+-    execFileSync('bun', [join(CLAUDE_DIR, 'LIFEOS', 'TOOLS', 'CarrierProbe.ts'), '--check'], { encoding: 'utf8' });
++    const hermesProbe = process.env.LIFEOS_HERMES_CARRIER_PROBE;
++    if (hermesProbe) {
++      execFileSync('hermes', ['--run-file', hermesProbe, '--check'], { encoding: 'utf8' });
++    } else {
++      execFileSync('bun', [join(CLAUDE_DIR, 'LIFEOS', 'TOOLS', 'CarrierProbe.ts'), '--check'], { encoding: 'utf8' });
++    }
+   } catch (e: any) {
+     const msg = (e.stderr || e.stdout || e.message || '').toString().trim().split('\n')[0];
+     findings.push({ detail: msg || 'CarrierProbe --check failed', blocking: true });
+@@ -1662,6 +1667,19 @@ function checkModelRungPin(): void {
+     topRung = decl.split('}')[0]?.match(/\bmax:\s*"([a-z0-9-]+)"/)?.[1] ?? '';
+   } catch { /* handled below */ }
+ 
++  const hermesProbe = process.env.LIFEOS_HERMES_CARRIER_PROBE;
++  if (hermesProbe && topRung) {
++    try {
++      execFileSync('hermes', ['--run-file', hermesProbe, '--check-main-rung', topRung], { encoding: 'utf8' });
++    } catch (e: any) {
++      const msg = (e.stderr || e.stdout || e.message || '').toString().trim().split('\n')[0];
++      findings.push({ detail: msg || 'Hermes main rung check failed', blocking: true });
++    }
++    record('model-rung-pin', findings,
++      findings.length === 0 ? `Hermes main loop matches the configured ${topRung} route` : 'Hermes main loop and LifeOS top rung disagree');
++    return;
++  }
++
+   if (!topRung) {
+     findings.push({ detail: 'could not resolve EFFORT_MODEL.max from LIFEOS/TOOLS/models.ts', blocking: true });
+   } else if (settings.model === undefined) {

@@ -16,6 +16,54 @@ API_PATH = Path(__file__).resolve().parents[1] / "lifeos_hook_bridge/dashboard/p
 
 
 class DashboardApiTests(unittest.TestCase):
+    def test_installation_status_distinguishes_missing_partial_and_installed(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory) / ".claude"
+            api.INSTALLED_ROOT = root
+            host = types.ModuleType("hermes_cli.plugins")
+            host.VALID_HOOKS = {"pre_tool_call", "post_tool_call", "pre_llm_call",
+                                "on_session_finalize", "api_request_error"}
+            with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"),
+                                          "hermes_cli.plugins": host}):
+                self.assertEqual(api.get_installation()["lifeos"], "missing")
+                self.assertEqual(api.get_installation()["hermes"], "stock")
+                (root / "LIFEOS").mkdir(parents=True)
+                self.assertEqual(api.get_installation()["lifeos"], "partial")
+                (root / "LIFEOS/VERSION").write_text("7.40.4\n")
+                (root / "settings.json").write_text("{}")
+                installed = api.get_installation()
+                self.assertEqual(installed["lifeos"], "installed")
+                self.assertEqual(installed["version"], "7.40.4")
+                host.VALID_HOOKS.update({"pre_command_approval", "augment_tool_result",
+                                         "pre_turn_stop", "on_turn_result"})
+                self.assertEqual(api.get_installation()["hermes"], "patched_hooks_present")
+
+    def test_prepares_candidate_only_when_lifeos_is_missing(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            api.INSTALL_CANDIDATE = root / "candidate"
+            prepared = []
+
+            def prepare(target):
+                prepared.append(target)
+                target.mkdir()
+                return {"upstream_commit": "a" * 40, "patches": []}
+
+            api.prepare_latest_lifeos = prepare
+            self.assertEqual(api.prepare_installation()["upstream_commit"], "a" * 40)
+            self.assertEqual(prepared, [api.INSTALL_CANDIDATE])
+            with self.assertRaises(api.HTTPException) as duplicate:
+                api.prepare_installation()
+            self.assertEqual(duplicate.exception.status_code, 409)
+            api.INSTALL_CANDIDATE.rename(root / "archived-candidate")
+            (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+            with self.assertRaises(api.HTTPException) as partial:
+                api.prepare_installation()
+            self.assertEqual(partial.exception.status_code, 409)
+
     def load_api(self, fields, save):
         fastapi = types.ModuleType("fastapi")
         fastapi.APIRouter = lambda: types.SimpleNamespace(

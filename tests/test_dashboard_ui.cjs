@@ -59,6 +59,13 @@ test("model picker saves the selected provider, model, and effort", async () => 
         file_count: 1, changed_count: 0, installed_version: "7.40.4", version_mismatch: false,
       });
       if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing", baseline_exists: false });
+      if (url.endsWith("/installation/prepare")) return Promise.resolve({
+        upstream_commit: "a".repeat(40), patches: [{ name: "lifeos-test.patch" }],
+      });
+      if (url.endsWith("/installation")) return Promise.resolve({
+        lifeos: "installed", version: "7.40.4", hermes: "stock",
+        missing_hooks: ["pre_turn_stop"], candidate_ready: false,
+      });
       if (url.includes("/api/model/options")) return Promise.resolve(models);
       return Promise.resolve({ fields });
     },
@@ -119,4 +126,94 @@ test("model picker saves the selected provider, model, and effort", async () => 
   });
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("0 changed since baseline"))));
+
+});
+
+test("missing LifeOS shows preparation without active model settings", async () => {
+  const calls = [];
+  const state = [];
+  let index = 0;
+  let effectRan = false;
+  let component;
+  const sdk = {
+    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
+    hooks: {
+      useState(initial) {
+        const slot = index++;
+        if (!(slot in state)) state[slot] = initial;
+        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
+      },
+      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
+    },
+    fetchJSON(url, init) {
+      calls.push({ url, init });
+      if (url.endsWith("/installation/prepare")) return Promise.resolve({ upstream_commit: "a".repeat(40), patches: [] });
+      if (url.endsWith("/installation")) return Promise.resolve({ lifeos: "missing", hermes: "stock", candidate_ready: false });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
+      if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
+      return Promise.resolve({ fields: [] });
+    },
+  };
+  vm.runInNewContext(bundle, {
+    window: {
+      __HERMES_PLUGIN_SDK__: sdk,
+      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
+    },
+    console,
+  });
+  const render = () => { index = 0; return component(); };
+  render();
+  await new Promise(setImmediate);
+  const view = render();
+  assert.equal(find(view, (node) => node.type === "form"), null);
+  assert.equal(find(view, (node) => node.type === "h2" && node.children.includes("VersionDrift baseline")), null);
+  const prepareLifeOS = find(view, (node) => node.type === "button" &&
+    node.children.includes("Prepare latest LifeOS"));
+  assert.ok(prepareLifeOS);
+  prepareLifeOS.props.onClick();
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/prepare") && call.init?.method === "POST"));
+  assert.ok(find(render(), (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("Candidate prepared"))));
+});
+
+test("installed LifeOS on stock Hermes shows the reduced safety limits", async () => {
+  const state = [];
+  let index = 0;
+  let effectRan = false;
+  let component;
+  const sdk = {
+    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
+    hooks: {
+      useState(initial) {
+        const slot = index++;
+        if (!(slot in state)) state[slot] = initial;
+        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
+      },
+      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
+    },
+    fetchJSON(url) {
+      if (url.endsWith("/installation")) return Promise.resolve({
+        lifeos: "installed", version: "7.40.4", hermes: "stock", candidate_ready: false,
+      });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
+      if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
+      return Promise.resolve({ fields: [] });
+    },
+  };
+  vm.runInNewContext(bundle, {
+    window: {
+      __HERMES_PLUGIN_SDK__: sdk,
+      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
+    },
+    console,
+  });
+  const render = () => { index = 0; return component(); };
+  render();
+  await new Promise(setImmediate);
+  const view = render();
+  assert.ok(find(view, (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce LifeOS Bash permission decisions"))));
+  assert.equal(find(view, (node) => node.type === "button" &&
+    node.children.includes("Prepare latest LifeOS")), null);
 });

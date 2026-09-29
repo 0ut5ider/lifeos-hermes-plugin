@@ -1,6 +1,6 @@
 # LifeOS hook parity record
 
-This record describes the public LifeOS hook settings installed from commit `5e2f2e8` on 2026-09-27. It distinguishes registered callbacks from verified behavior. The bridge is a Hermes plugin. It does not edit LifeOS source files.
+This record describes the public LifeOS hook settings installed from commit `5e2f2e8` on 2026-09-27. It distinguishes registered callbacks from verified behavior. The runtime bridge is a Hermes plugin and does not edit the active LifeOS source. The plugin's install preparation now applies the compatibility patches to a separate candidate tree.
 
 ## Event coverage
 

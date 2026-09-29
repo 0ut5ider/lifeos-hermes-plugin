@@ -1,0 +1,60 @@
+diff --git a/LifeOS/install/hooks/CheckpointPerISC.hook.ts b/LifeOS/install/hooks/CheckpointPerISC.hook.ts
+index 99ac352..1bc1872 100755
+--- a/LifeOS/install/hooks/CheckpointPerISC.hook.ts
++++ b/LifeOS/install/hooks/CheckpointPerISC.hook.ts
+@@ -8,8 +8,8 @@
+  *
+  * For each newly-checked ISC, iterates through the allowlist of opted-in repos
+  * (~/.claude/checkpoint-repos.txt per spec) and creates one git commit per
+- * repo that has uncommitted changes. Commit subject:
+- *   "<ISC-id> (<slug>): <sanitized description>"
++ * repo that has uncommitted changes. The conventional commit subject is short;
++ * the commit body carries the full ISC ID, slug, and description for lookup.
+  *
+  * Idempotent via sidecar state file: MEMORY/WORK/<slug>/.checkpoint-state.json.
+  * Allowlist is empty by default; repos must be opted in explicitly by {{PRINCIPAL_NAME}}.
+@@ -197,10 +197,14 @@ function commitInRepo(repo: string, iscId: string, slug: string, description: st
+     gitRun(repo, ['add', '--', ...paths]);
+     // iscId already has the canonical "ISC-<N>" form (or "ISC-<N>-A-<M>" for
+     // anti-criteria) per parseCriteriaList — use it verbatim, do not re-prefix.
+-    const subject = `${iscId} (${slug}): ${sanitizeMessage(description)}`;
+-    // --no-verify skips husky/pre-commit hooks; --no-gpg-sign avoids GPG
+-    // passphrase prompts that would hang the session blocking on stdin.
+-    gitRun(repo, ['commit', '-m', subject, '--quiet', '--no-verify', '--no-gpg-sign']);
++    const checkpoint = `${iscId} (${slug}): ${sanitizeMessage(description)}`;
++    const prefix = `chore(checkpoint): ${iscId} (${slug}): `;
++    let subjectPrefix = prefix;
++    if (subjectPrefix.length >= 50) subjectPrefix = `chore(checkpoint): ${iscId}: `;
++    if (subjectPrefix.length >= 50) subjectPrefix = 'chore(checkpoint): criterion ';
++    const subject = (subjectPrefix + sanitizeMessage(description)).slice(0, 49).trimEnd();
++    // Run repository hooks. --no-gpg-sign avoids an interactive signing prompt.
++    gitRun(repo, ['commit', '-m', subject, '-m', checkpoint, '--quiet', '--no-gpg-sign']);
+     const sha = gitRun(repo, ['rev-parse', 'HEAD']).trim();
+     return sha;
+   } catch (err: unknown) {
+@@ -279,20 +283,24 @@ async function main() {
+   }
+ 
+   for (const isc of newlyChecked) {
++    let failed = false;
+     for (const repo of allowlist) {
+       if (!existsSync(repo)) {
+         console.error(`[CheckpointPerISC] repo not found: ${repo}`);
++        failed = true;
+         continue;
+       }
+       if (!isGitRepo(repo)) {
+         console.error(`[CheckpointPerISC] not a git repo: ${repo}`);
++        failed = true;
+         continue;
+       }
+       if (!hasChanges(repo)) continue;
+       const sha = commitInRepo(repo, isc.id, slug, isc.description, startedMs);
+       if (sha) state.last_commit_sha[repo] = sha;
++      else failed = true;
+     }
+-    state.committed_iscs.push(isc.id);
++    if (!failed) state.committed_iscs.push(isc.id);
+   }
+ 
+   saveState(stateFile, state);

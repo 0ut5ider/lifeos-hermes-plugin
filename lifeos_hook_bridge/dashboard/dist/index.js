@@ -7,6 +7,7 @@
   const React = SDK.React;
   const h = React.createElement;
   const endpoint = "/api/plugins/lifeos-hook-bridge/settings";
+  const installationEndpoint = "/api/plugins/lifeos-hook-bridge/installation";
   const baselineEndpoint = "/api/plugins/lifeos-hook-bridge/version-drift";
   const modelEndpoint = "/api/model/options?explicit_only=1";
   const tiers = ["haiku", "sonnet", "opus", "fable"];
@@ -21,6 +22,9 @@
     const [candidate, setCandidate] = SDK.hooks.useState(null);
     const [baselineStatus, setBaselineStatus] = SDK.hooks.useState("");
     const [baselineBusy, setBaselineBusy] = SDK.hooks.useState(false);
+    const [installation, setInstallation] = SDK.hooks.useState(null);
+    const [installationStatus, setInstallationStatus] = SDK.hooks.useState("");
+    const [installationBusy, setInstallationBusy] = SDK.hooks.useState(false);
 
     SDK.hooks.useEffect(function () {
       let active = true;
@@ -49,6 +53,11 @@
         if (active) setBaseline(result);
       }).catch(function (error) {
         if (active) setBaselineStatus("Could not read baseline status: " + error.message);
+      });
+      SDK.fetchJSON(installationEndpoint).then(function (result) {
+        if (active) setInstallation(result);
+      }).catch(function (error) {
+        if (active) setInstallationStatus("Could not read installation status: " + error.message);
       });
       return function () { active = false; };
     }, []);
@@ -122,6 +131,17 @@
       }).finally(function () { setBaselineBusy(false); });
     }
 
+    function prepareLifeOS() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/prepare", { method: "POST" }).then(function (result) {
+        setInstallation(function (current) { return Object.assign({}, current, { candidate_ready: true }); });
+        setInstallationStatus("Candidate prepared from LifeOS commit " + result.upstream_commit + ". Installation has not changed yet.");
+      }).catch(function (error) {
+        setInstallationStatus("Could not prepare LifeOS: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function renderTier(tier) {
       const label = tier.charAt(0).toUpperCase() + tier.slice(1);
       const modelKey = tier + "_model";
@@ -172,7 +192,30 @@
         h("p", { className: "text-muted-foreground" },
           "Choose a configured Hermes model and effort for each LifeOS tier. Select a model in every row to use Hermes provider routing for LifeOS child calls."),
         h("a", { href: "/models", className: "text-sm underline" }, "Manage Hermes models")),
-      h("form", { onSubmit: save, className: "space-y-4" },
+      h("section", { className: "rounded border border-border p-4" },
+        h("h2", { className: "mb-2 text-lg font-semibold" }, "LifeOS installation"),
+        installation?.lifeos === "missing" ? h("p", { className: "mb-3 text-sm" },
+          "LifeOS is not installed. Prepare the latest supported revision from Daniel Miessler's GitHub repository. This step checks and applies the LifeOS compatibility patches in a private candidate directory. It does not change the running installation.") : null,
+        installation?.lifeos === "partial" ? h("p", { role: "status" },
+          "A partial LifeOS directory exists. Review it before using the installer.") : null,
+        installation?.lifeos === "installed" ? h("p", null,
+          "LifeOS " + installation.version + " is installed.") : null,
+        installation?.lifeos === "installed" && installation.hermes === "stock" ? h("div", { className: "space-y-2 text-sm" },
+          h("p", null, "Current Hermes runs LifeOS pre-tool, post-tool, prompt-context, and session-end callbacks."),
+          h("p", null, "Reduced mode cannot enforce LifeOS Bash permission decisions, block a user prompt, gate a final answer, or reliably add post-tool warnings after another result transformer. It also lacks the patched child model routes and remote file guards.")) : null,
+        installation?.lifeos === "installed" && installation.hermes === "patched_hooks_present" ? h("p", { className: "text-sm" },
+          "The required Hermes hook names are present. The complete patch set still needs a release verification before full parity can be claimed.") : null,
+        installation?.hermes === "partial" ? h("p", { role: "status" },
+          "Hermes exposes only part of the required hook contract. Use a tested compatible release before enabling the full bridge.") : null,
+        installation?.lifeos === "missing" ? h("button", {
+          type: "button", disabled: installationBusy || installation.candidate_ready,
+          onClick: prepareLifeOS,
+          className: "rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50",
+        }, installationBusy ? "Preparing..." : "Prepare latest LifeOS") : null,
+        installation?.candidate_ready ? h("p", { className: "mt-2 text-sm" },
+          "A patched LifeOS candidate is ready. Review it before installation.") : null,
+        installationStatus ? h("p", { role: "status", className: "mt-3" }, installationStatus) : null),
+      installation?.lifeos === "installed" ? h("form", { onSubmit: save, className: "space-y-4" },
         fields.length ? tiers.map(renderTier) : null,
         stopField ? h("section", { className: "rounded border border-border p-4" },
           h("h2", { className: "mb-2 text-lg font-semibold" }, "Stop hook limit"),
@@ -198,8 +241,8 @@
         fields.length ? h("button", {
           type: "submit", disabled: saving,
           className: "rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50",
-        }, saving ? "Saving..." : "Save settings") : null),
-      h("section", { className: "rounded border border-border p-4" },
+        }, saving ? "Saving..." : "Save settings") : null) : null,
+      installation?.lifeos === "installed" ? h("section", { className: "rounded border border-border p-4" },
         h("h2", { className: "mb-2 text-lg font-semibold" }, "VersionDrift baseline"),
         h("p", { className: "mb-3 text-sm text-muted-foreground" },
           "Track installed LifeOS system files without adding a Git repository to Hermes home."),
@@ -234,7 +277,7 @@
             type: "button", disabled: baselineBusy, onClick: applyBaseline,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, baseline?.baseline_exists === true ? "Renew reviewed baseline" : "Create reviewed baseline")) : null,
-        baselineStatus ? h("p", { role: "status", className: "mt-3" }, baselineStatus) : null),
+        baselineStatus ? h("p", { role: "status", className: "mt-3" }, baselineStatus) : null) : null,
       status ? h("p", { role: "status" }, status) : null);
   }
 

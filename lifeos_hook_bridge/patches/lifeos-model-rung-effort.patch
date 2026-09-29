@@ -1,0 +1,111 @@
+diff --git a/LifeOS/install/hooks/ModelRungGuard.hook.ts b/LifeOS/install/hooks/ModelRungGuard.hook.ts
+index 2997fc0..06c328b 100755
+--- a/LifeOS/install/hooks/ModelRungGuard.hook.ts
++++ b/LifeOS/install/hooks/ModelRungGuard.hook.ts
+@@ -98,2 +98,8 @@ export function rungOf(model: string | null | undefined): Rung | null {
+ 
++function claudeRungOf(model: string | null | undefined): Rung | null {
++  if (!model) return null;
++  const name = model.toLowerCase();
++  return RUNGS.some((rung) => name === rung) || name.startsWith("claude-") ? rungOf(name) : null;
++}
++
+ /** The rung `settings.json` pins. Null when unpinned or unrecognizable. */
+@@ -103,3 +109,3 @@ export function pinnedRung(settingsPath: string = SETTINGS_PATH): Rung | null {
+     const parsed = JSON.parse(readFileSync(settingsPath, "utf8")) as Record<string, unknown>;
+-    return rungOf(typeof parsed.model === "string" ? parsed.model : null);
++    return claudeRungOf(typeof parsed.model === "string" ? parsed.model : null);
+   } catch {
+@@ -119,6 +125,11 @@ export function pinnedRung(settingsPath: string = SETTINGS_PATH): Rung | null {
+  */
+-export function liveModel(transcriptPath: string | undefined): string | null {
++interface LiveCarrier {
++  model: string | null;
++  reasoningEffort: string | null;
++}
++
++function liveCarrier(transcriptPath: string | undefined): LiveCarrier {
+   let fd: number | null = null;
+   try {
+-    if (!transcriptPath || !existsSync(transcriptPath)) return null;
++    if (!transcriptPath || !existsSync(transcriptPath)) return { model: null, reasoningEffort: null };
+     const size = statSync(transcriptPath).size;
+@@ -127,3 +138,3 @@ export function liveModel(transcriptPath: string | undefined): string | null {
+     const len = size - start;
+-    if (len <= 0) return null;
++    if (len <= 0) return { model: null, reasoningEffort: null };
+     const buf = Buffer.allocUnsafe(len);
+@@ -138,8 +149,13 @@ export function liveModel(transcriptPath: string | undefined): string | null {
+         const msg = row.message as Record<string, unknown> | undefined;
+-        if (msg && typeof msg.model === "string" && msg.model.trim()) return msg.model;
++        if (msg && typeof msg.model === "string" && msg.model.trim()) {
++          return {
++            model: msg.model,
++            reasoningEffort: typeof msg.reasoning_effort === "string" ? msg.reasoning_effort : null,
++          };
++        }
+       } catch { /* partial line at the tail boundary */ }
+     }
+-    return null;
++    return { model: null, reasoningEffort: null };
+   } catch {
+-    return null;
++    return { model: null, reasoningEffort: null };
+   } finally {
+@@ -149,2 +165,30 @@ export function liveModel(transcriptPath: string | undefined): string | null {
+ 
++export function liveModel(transcriptPath: string | undefined): string | null {
++  return liveCarrier(transcriptPath).model;
++}
++
++function configuredRung(model: string | null, effort: string | null): Rung | null {
++  if (!model || !effort || !process.env.LIFEOS_MODEL_TIER_MAP) return null;
++  try {
++    const parsed = JSON.parse(process.env.LIFEOS_MODEL_TIER_MAP) as Record<string, unknown>;
++    for (const requireModel of [true, false]) {
++      for (const rung of RUNGS) {
++        const route = parsed[rung] as Record<string, unknown> | undefined;
++        if (!route || route.effort !== effort || typeof route.model !== "string") continue;
++        if (requireModel ? route.model === model : route.model === "") return rung;
++      }
++    }
++  } catch { /* malformed plugin settings leave the carrier unclassified */ }
++  return null;
++}
++
++function configuredPin(): Rung | null {
++  try {
++    const parsed = JSON.parse(process.env.LIFEOS_MODEL_TIER_MAP ?? "{}");
++    return RUNGS.find((rung) => rung === parsed.pin) ?? null;
++  } catch {
++    return null;
++  }
++}
++
+ /** Positive when `live` sits below `pin`. Zero when equal or either is unknown. */
+@@ -171,5 +215,6 @@ async function main(): Promise<void> {
+     const input = parseHookInput(await readStdinWithTimeout());
+-    const pin = pinnedRung();
+-    const model = liveModel(input.transcript_path);
+-    const live = rungOf(model);
++    const pin = pinnedRung() ?? configuredPin();
++    const carrier = liveCarrier(input.transcript_path);
++    const model = carrier.model;
++    const live = claudeRungOf(model) ?? configuredRung(model, carrier.reasoningEffort);
+     const gap = rungGap(pin, live);
+@@ -177,3 +222,4 @@ async function main(): Promise<void> {
+     if (gap > 0) {
+-      log({ event: "off-pin", pin, live, model, gap });
++      log({ event: "off-pin", pin, live, model, reasoning_effort: carrier.reasoningEffort, gap });
++      const liveLabel = claudeRungOf(model) ? live : `${live} equivalent at ${carrier.reasoningEffort} effort`;
+       // Name-free by construction: the release sanitizer rewrites the principal's
+@@ -185,3 +231,3 @@ async function main(): Promise<void> {
+       emit(
+-        `⚠️ MODEL RUNG: this session is running '${model}' (${live}), ${gap} rung below the ` +
++        `⚠️ MODEL RUNG: this session is running '${model}' (${liveLabel}), ${gap} rung below the ` +
+           `'${pin}' pin in settings.json. Per OPERATIONAL_RULES § Model selection, MAX-class work ` +
+@@ -192,3 +238,3 @@ async function main(): Promise<void> {
+     } else {
+-      log({ event: "on-pin", pin, live, model });
++      log({ event: "on-pin", pin, live, model, reasoning_effort: carrier.reasoningEffort });
+     }

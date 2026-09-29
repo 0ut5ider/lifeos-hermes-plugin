@@ -1,0 +1,54 @@
+diff --git a/LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts b/LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts
+index 38fec9e..4049cc0 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts
+@@ -129,6 +129,7 @@ function parseTranscript(transcriptPath: string): {
+ } {
+   const entries: TranscriptEntry[] = [];
+   const toolCalls: ToolCall[] = [];
++  const toolCallsById = new Map<string, ToolCall>();
+   const conversations: { role: string; content: string; timestamp?: string }[] = [];
+ 
+   try {
+@@ -143,7 +144,10 @@ function parseTranscript(transcriptPath: string): {
+ 
+         // Extract conversations
+         if (entry.type === 'user' && entry.message?.content) {
+-          const text = contentToText(entry.message.content);
++          const blocks = entry.message.content;
++          const text = contentToText(Array.isArray(blocks)
++            ? blocks.filter((block: any) => block?.type === 'text')
++            : blocks);
+           if (text) {
+             conversations.push({
+               role: 'user',
+@@ -151,6 +155,13 @@ function parseTranscript(transcriptPath: string): {
+               timestamp: entry.timestamp,
+             });
+           }
++          if (Array.isArray(blocks)) {
++            for (const block of blocks as any[]) {
++              if (block?.type !== 'tool_result' || !block.tool_use_id) continue;
++              const call = toolCallsById.get(block.tool_use_id);
++              if (call) call.output = contentToText(block.content);
++            }
++          }
+         }
+ 
+         if (entry.type === 'assistant' && entry.message?.content) {
+@@ -167,11 +178,13 @@ function parseTranscript(transcriptPath: string): {
+           if (Array.isArray(entry.message.content)) {
+             for (const block of entry.message.content as any[]) {
+               if (block.type === 'tool_use') {
+-                toolCalls.push({
++                const call = {
+                   name: block.name,
+                   input: block.input,
+                   timestamp: entry.timestamp,
+-                });
++                };
++                toolCalls.push(call);
++                if (block.id) toolCallsById.set(block.id, call);
+               }
+             }
+           }

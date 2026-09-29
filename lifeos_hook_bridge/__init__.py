@@ -11,20 +11,33 @@ from .bridge import HookBridge
 from .model_tiers import configured_model_map
 
 
+PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
+
+
 def register(ctx: Any) -> None:
     settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(Path.home() / ".claude/settings.json"))).expanduser()
     if not settings.is_file():
-        raise FileNotFoundError(f"LifeOS Claude hook settings not found: {settings}")
+        return
     bridge = HookBridge(
         settings, settings.parent,
         model_tiers_provider=lambda: configured_model_map(ctx.get_config),
     )
+    try:
+        from hermes_cli.plugins import VALID_HOOKS
+    except ImportError:
+        VALID_HOOKS = PATCHED_HOOKS
+    patched_host = PATCHED_HOOKS <= VALID_HOOKS
     ctx.on_unload(bridge.close)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
     ctx.register_hook("post_tool_call", bridge.task_result)
+    ctx.register_hook("pre_llm_call", bridge.pre_llm_call)
+    if not patched_host:
+        ctx.register_hook("post_tool_call", bridge.post_tool_call)
+        ctx.register_hook("on_session_finalize", bridge.session_end)
+        ctx.register_hook("api_request_error", bridge.api_request_error)
+        return
     ctx.register_hook("pre_command_approval", bridge.command_approval)
     ctx.register_hook("augment_tool_result", bridge.augment_tool_result)
-    ctx.register_hook("pre_llm_call", bridge.pre_llm_call)
     def stop(final_response="", session_id="", attempt=0, **kwargs):
         result = bridge.stop(final_response, session_id, stop_hook_active=attempt > 0, **kwargs)
         if result and ctx.get_config("stop_cap_policy", "claude") == "fail_closed":

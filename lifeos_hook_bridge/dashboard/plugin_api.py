@@ -16,6 +16,13 @@ if version_spec is None or version_spec.loader is None:
     raise ImportError("LifeOS VersionDrift module is unavailable")
 version_module = importlib.util.module_from_spec(version_spec)
 version_spec.loader.exec_module(version_module)
+install_spec = importlib.util.spec_from_file_location("lifeos_install_source", PLUGIN_DIR / "install_source.py")
+if install_spec is None or install_spec.loader is None:
+    raise ImportError("LifeOS source installer is unavailable")
+install_module = importlib.util.module_from_spec(install_spec)
+install_spec.loader.exec_module(install_module)
+prepare_latest_lifeos = install_module.prepare_latest_lifeos
+IncompatibleLifeOS = install_module.IncompatibleLifeOS
 baseline_fingerprint = version_module.baseline_fingerprint
 adapter_error_path = version_module.adapter_error_path
 changed_paths = version_module.changed_paths
@@ -25,7 +32,47 @@ load_baseline = version_module.load_baseline
 save_baseline = version_module.save_baseline
 INSTALLED_ROOT = Path.home() / ".claude"
 BASELINE_PATH = default_baseline_path()
+INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
+PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 router = APIRouter()
+
+
+@router.get("/installation")
+def get_installation():
+    from hermes_cli.plugins import VALID_HOOKS
+
+    version_file = INSTALLED_ROOT / "LIFEOS/VERSION"
+    if not (INSTALLED_ROOT / "LIFEOS").exists():
+        lifeos = "missing"
+    elif version_file.is_file() and (INSTALLED_ROOT / "settings.json").is_file():
+        lifeos = "installed"
+    else:
+        lifeos = "partial"
+    if PATCHED_HOOKS <= VALID_HOOKS:
+        hermes = "patched_hooks_present"
+    elif PATCHED_HOOKS.isdisjoint(VALID_HOOKS):
+        hermes = "stock"
+    else:
+        hermes = "partial"
+    return {
+        "lifeos": lifeos,
+        "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
+        "hermes": hermes,
+        "missing_hooks": sorted(PATCHED_HOOKS - VALID_HOOKS),
+        "candidate_ready": (INSTALL_CANDIDATE / "lifeos-source-manifest.json").is_file(),
+    }
+
+
+@router.post("/installation/prepare")
+def prepare_installation():
+    if (INSTALLED_ROOT / "LIFEOS").exists():
+        raise HTTPException(status_code=409, detail="LifeOS is present. Use the update path after reviewing it.")
+    if INSTALL_CANDIDATE.exists() or INSTALL_CANDIDATE.is_symlink():
+        raise HTTPException(status_code=409, detail="A LifeOS candidate already exists. Review it before preparing another.")
+    try:
+        return prepare_latest_lifeos(INSTALL_CANDIDATE)
+    except IncompatibleLifeOS as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
 
 
 @router.get("/settings")
