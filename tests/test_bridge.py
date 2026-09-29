@@ -2169,6 +2169,32 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(bridge.command_approval("curl -I http://192.168.8.1:9", session_key="s1"),
                          {"action": "review"})
 
+    def test_approval_bypass_keeps_rules_without_permission_hooks(self):
+        marker = self.root / "permission-hook-ran"
+        hook = self.make_hook(
+            "bypass-permission.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "json.load(sys.stdin)\n"
+            f"Path({str(marker)!r}).write_text('ran')\n"
+            "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
+            "'decision':{'behavior':'deny'}}}))\n",
+        )
+        settings = self.root / "settings.json"
+        denied_command = "curl https://example.com/blocked"
+        settings.write_text(json.dumps({
+            "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+                {"type": "command", "command": hook},
+            ]}]},
+            "permissions": {"deny": [f"Bash({denied_command})"]},
+        }))
+        bridge = HookBridge(settings, self.root)
+        self.addCleanup(bridge.close)
+        self.assertEqual(bridge.command_approval(denied_command, session_key="s1", approval_bypass=True),
+                         {"action": "deny"})
+        self.assertIsNone(bridge.command_approval("curl https://example.com/allowed", session_key="s1",
+                                                 approval_bypass=True))
+        self.assertFalse(marker.exists())
+
     def test_command_without_permission_registration_abstains(self):
         bridge = self.bridge({})
         self.assertIsNone(bridge.command_approval("echo 12345", session_key="s1"))

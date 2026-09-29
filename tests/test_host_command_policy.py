@@ -169,6 +169,25 @@ class HostCommandPolicyTests(unittest.TestCase):
                         finally:
                             _approval_tool_call_id.reset(call_token)
                             terminal_approval_batch._slot.reset(slot_token)
+                        with patch("tools.approval_context._get_approval_mode", return_value="off"):
+                            bypass_denial = check_all_command_guards(permanent_command, "local")
+                        self.assertFalse(bypass_denial["approved"])
+                        self.assertEqual(bypass_denial["outcome"], "plugin_denied")
+                        with patch("tools.approval._yolo_active", return_value=True):
+                            yolo_denial = check_all_command_guards(permanent_command, "local")
+                        self.assertFalse(yolo_denial["approved"])
+                        self.assertEqual(yolo_denial["outcome"], "plugin_denied")
+                        prior_hook_log = log.read_text()
+                        settings.write_text(json.dumps({"hooks": {"PermissionRequest": [{
+                            "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                        }]}}))
+                        with patch("tools.approval_context._get_approval_mode", return_value="off"):
+                            bypass_allowed = check_all_command_guards(permanent_command, "local")
+                        self.assertTrue(bypass_allowed["approved"])
+                        with patch("tools.approval._yolo_active", return_value=True):
+                            yolo_allowed = check_all_command_guards(permanent_command, "local")
+                        self.assertTrue(yolo_allowed["approved"])
+                        self.assertEqual(log.read_text(), prior_hook_log)
                         guarded_path = Path(directory) / "guarded.txt"
                         redirect_command = f"printf PARITY > {guarded_path}"
                         settings.write_text(json.dumps({

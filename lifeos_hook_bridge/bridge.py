@@ -1390,7 +1390,8 @@ class HookBridge:
         return [*local_permissions, *managed_permissions]
 
     def command_approval(
-        self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+        self, command: str, session_key: str = "", cwd: str = "", task_id: str = "",
+        approval_bypass: bool = False, **_: Any,
     ) -> dict[str, str] | None:
         cwd = cwd or _tool_cwd("terminal", {}, task_id)
         self._remember_project(cwd, session_key, task_id)
@@ -1423,6 +1424,8 @@ class HookBridge:
         )
         if rule_decision == "deny":
             return {"action": "deny"}
+        if approval_bypass:
+            return None
         if file_decision == "unknown":
             rule_decision = "unknown"
         if host_paths and rule_decision == "allow":
