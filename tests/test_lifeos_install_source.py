@@ -1,6 +1,7 @@
 # ABOUTME: Checks LifeOS source preparation against an actual disposable Git repository.
 # ABOUTME: Keeps failed or unsupported revisions out of the install candidate directory.
 
+import importlib.util
 import json
 import subprocess
 import tempfile
@@ -62,6 +63,20 @@ class InstallSourceTests(unittest.TestCase):
             self.assertEqual(manifest["patches"][0]["name"], "lifeos-test.patch")
             self.assertEqual(json.loads((target / "lifeos-source-manifest.json").read_text()), manifest)
             self.assertEqual(git("rev-parse", "HEAD", cwd=target), revision)
+
+    def test_dashboard_standalone_module_prepares_source(self):
+        module_path = Path(__file__).resolve().parents[1] / "lifeos_hook_bridge/install_source.py"
+        spec = importlib.util.spec_from_file_location("lifeos_install_source", module_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        self.assertFalse(module.__package__)
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            target = root / "candidate"
+            manifest = module.prepare_lifeos(str(upstream), target, revision, patches, ("lifeos-test.patch",))
+            self.assertEqual(manifest["upstream_commit"], revision)
+            self.assertEqual(module.validate_candidate(target, revision, patches, ("lifeos-test.patch",)), manifest)
 
     def test_new_upstream_revision_is_not_silently_installed(self):
         with tempfile.TemporaryDirectory() as directory:

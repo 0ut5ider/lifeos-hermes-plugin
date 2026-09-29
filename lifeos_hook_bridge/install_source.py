@@ -8,6 +8,7 @@ import hashlib
 import json
 import os
 import re
+import runpy
 import shutil
 import subprocess
 import sys
@@ -136,9 +137,8 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
             _git("apply", str(patch), cwd=stage)
             applied.append({"name": name, "sha256": hashlib.sha256(patch.read_bytes()).hexdigest()})
         _git("diff", "--check", cwd=stage)
-        from .native_capabilities import install_capability_record
-
-        install_capability_record(stage / "LifeOS/install")
+        capabilities = runpy.run_path(str(Path(__file__).with_name("native_capabilities.py")))
+        capabilities["install_capability_record"](stage / "LifeOS/install")
         manifest = {"upstream": source, "upstream_commit": revision, "patches": applied,
                     "tree_sha256": _tree_digest(stage)}
         (stage / "lifeos-source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
