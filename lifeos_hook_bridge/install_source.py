@@ -36,7 +36,7 @@ class IncompatibleLifeOS(Exception):
 
 def _git(*args: str, cwd: Path | None = None, timeout: int = 300) -> str:
     try:
-        result = subprocess.run(["git", *args], cwd=cwd, text=True, capture_output=True,
+        result = subprocess.run(["git", *args], cwd=cwd or Path.home(), text=True, capture_output=True,
                                 check=True, timeout=timeout)
     except (OSError, subprocess.CalledProcessError, subprocess.TimeoutExpired) as error:
         detail = getattr(error, "stderr", "") or str(error)
@@ -134,6 +134,11 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
 def prepare_latest_lifeos(target: Path) -> dict:
     return prepare_lifeos(UPSTREAM_LIFEOS, target, SUPPORTED_LIFEOS_COMMIT,
                           Path(__file__).parent / "patches", LIFEOS_PATCHES)
+
+
+def validate_prepared_lifeos(candidate: Path) -> dict:
+    return validate_candidate(candidate, SUPPORTED_LIFEOS_COMMIT,
+                              Path(__file__).parent / "patches", LIFEOS_PATCHES)
 
 
 def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,

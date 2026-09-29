@@ -6,11 +6,13 @@ The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. The plugin must
 
 1. The page checks whether LifeOS is missing, partial, or installed.
 2. **Prepare latest LifeOS** reads the current commit of [Daniel Miessler's public repository](https://github.com/danielmiessler/LifeOS), clones that exact revision, applies the bundled LifeOS patches, and publishes a private candidate. It changes no running files.
-3. An install action must review that candidate, run the LifeOS installation tools, preserve existing Hermes configuration and user files, verify the deployed hooks, and recover from failure. This action is not implemented yet.
-4. After installation, the page explains the stock Hermes limits. Leaving Hermes stock selects reduced mode. A separate action will prepare and apply the tested Hermes patch set for the extended mode. That action is not implemented yet.
+3. **Install prepared LifeOS** shows the exact commit and patch count before use. It validates the candidate again, creates a new private `~/.claude` directory, runs six LifeOS installation tools, and checks the version and hook settings. It refuses any existing `~/.claude` directory. If a tool fails, it moves the partial directory to a private `failed-install-*` directory for inspection. A separate `.212` account completed this path for LifeOS 7.40.4, with 11 hook event groups and 27 hook entries. The dashboard route and button have automated tests, but the click has not yet been exercised in a live browser.
+4. After installation, the page explains the stock Hermes limits. Leaving Hermes stock selects reduced mode. A separate action must prepare and apply the tested Hermes patch set for the extended mode. That action is not implemented yet. Neither mode has the complete paired evidence required to claim full parity.
 5. Updates must repeat the revision, patch, test, and rollback checks. The existing release transaction covers code and LifeOS system files but does not yet update dependencies or hook registrations.
 
 The latest upstream LifeOS commit was `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c` when checked on 2026-09-29. That is the current tested base. If upstream moves, preparation refuses the new commit until its patch set and behavior tests are ported. A clean patch application alone is not a parity result. The page must not label an untested future commit as compatible.
+
+The fresh installer does not run LifeOS `Mount.ts`, configure a Hermes model, create a VersionDrift baseline, or restart the gateway. Those steps still need a coordinated install path. The current button is limited to an account with no `.claude` directory. Existing Claude Code users need an update or migration path that preserves their files.
 
 ## Reduced mode with stock Hermes
 

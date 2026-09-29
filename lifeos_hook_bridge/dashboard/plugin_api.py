@@ -4,6 +4,7 @@
 import importlib.util
 from pathlib import Path
 import subprocess
+from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
@@ -22,6 +23,8 @@ if install_spec is None or install_spec.loader is None:
 install_module = importlib.util.module_from_spec(install_spec)
 install_spec.loader.exec_module(install_module)
 prepare_latest_lifeos = install_module.prepare_latest_lifeos
+validate_prepared_lifeos = install_module.validate_prepared_lifeos
+install_prepared_lifeos = install_module.install_prepared_lifeos
 IncompatibleLifeOS = install_module.IncompatibleLifeOS
 baseline_fingerprint = version_module.baseline_fingerprint
 adapter_error_path = version_module.adapter_error_path
@@ -42,7 +45,7 @@ def get_installation():
     from hermes_cli.plugins import VALID_HOOKS
 
     version_file = INSTALLED_ROOT / "LIFEOS/VERSION"
-    if not (INSTALLED_ROOT / "LIFEOS").exists():
+    if not INSTALLED_ROOT.exists() and not INSTALLED_ROOT.is_symlink():
         lifeos = "missing"
     elif version_file.is_file() and (INSTALLED_ROOT / "settings.json").is_file():
         lifeos = "installed"
@@ -54,24 +57,46 @@ def get_installation():
         hermes = "stock"
     else:
         hermes = "partial"
+    candidate = None
+    candidate_error = None
+    if INSTALL_CANDIDATE.exists() or INSTALL_CANDIDATE.is_symlink():
+        try:
+            candidate = validate_prepared_lifeos(INSTALL_CANDIDATE)
+        except (IncompatibleLifeOS, OSError) as error:
+            candidate_error = str(error)
     return {
         "lifeos": lifeos,
         "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
         "hermes": hermes,
         "missing_hooks": sorted(PATCHED_HOOKS - VALID_HOOKS),
-        "candidate_ready": (INSTALL_CANDIDATE / "lifeos-source-manifest.json").is_file(),
+        "candidate_ready": candidate is not None,
+        "candidate_commit": candidate["upstream_commit"] if candidate else None,
+        "candidate_patch_count": len(candidate["patches"]) if candidate else None,
+        "candidate_error": candidate_error,
     }
 
 
 @router.post("/installation/prepare")
 def prepare_installation():
-    if (INSTALLED_ROOT / "LIFEOS").exists():
-        raise HTTPException(status_code=409, detail="LifeOS is present. Use the update path after reviewing it.")
+    if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
+        raise HTTPException(status_code=409, detail="A .claude directory exists. Use the update path after reviewing it.")
     if INSTALL_CANDIDATE.exists() or INSTALL_CANDIDATE.is_symlink():
         raise HTTPException(status_code=409, detail="A LifeOS candidate already exists. Review it before preparing another.")
     try:
         return prepare_latest_lifeos(INSTALL_CANDIDATE)
     except IncompatibleLifeOS as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+@router.post("/installation/apply")
+def apply_installation():
+    if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
+        raise HTTPException(status_code=409, detail="A .claude directory exists. The fresh installer will not overwrite it.")
+    try:
+        validate_prepared_lifeos(INSTALL_CANDIDATE)
+        failed = INSTALL_CANDIDATE.parent / f"failed-install-{uuid4().hex}"
+        return install_prepared_lifeos(INSTALL_CANDIDATE, INSTALLED_ROOT, failed)
+    except (IncompatibleLifeOS, OSError) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 

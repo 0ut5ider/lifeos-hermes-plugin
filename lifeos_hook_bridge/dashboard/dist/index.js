@@ -135,10 +135,26 @@
       setInstallationBusy(true);
       setInstallationStatus("");
       SDK.fetchJSON(installationEndpoint + "/prepare", { method: "POST" }).then(function (result) {
-        setInstallation(function (current) { return Object.assign({}, current, { candidate_ready: true }); });
+        setInstallation(function (current) { return Object.assign({}, current, {
+          candidate_ready: true, candidate_commit: result.upstream_commit,
+          candidate_patch_count: result.patches.length, candidate_error: null,
+        }); });
         setInstallationStatus("Candidate prepared from LifeOS commit " + result.upstream_commit + ". Installation has not changed yet.");
       }).catch(function (error) {
         setInstallationStatus("Could not prepare LifeOS: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
+    function installLifeOS() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/apply", { method: "POST" }).then(function (result) {
+        return SDK.fetchJSON(installationEndpoint).then(function (status) {
+          setInstallation(status);
+          setInstallationStatus("LifeOS " + result.installed_version + " installed. Restart the Hermes gateway to load its hooks.");
+        });
+      }).catch(function (error) {
+        setInstallationStatus("Could not install LifeOS: " + error.message);
       }).finally(function () { setInstallationBusy(false); });
     }
 
@@ -197,7 +213,7 @@
         installation?.lifeos === "missing" ? h("p", { className: "mb-3 text-sm" },
           "LifeOS is not installed. Prepare the latest supported revision from Daniel Miessler's GitHub repository. This step checks and applies the LifeOS compatibility patches in a private candidate directory. It does not change the running installation.") : null,
         installation?.lifeos === "partial" ? h("p", { role: "status" },
-          "A partial LifeOS directory exists. Review it before using the installer.") : null,
+          "A .claude directory already exists. The fresh installer will not overwrite it. Review that directory before installing LifeOS.") : null,
         installation?.lifeos === "installed" ? h("p", null,
           "LifeOS " + installation.version + " is installed.") : null,
         installation?.lifeos === "installed" && installation.hermes === "stock" ? h("div", { className: "space-y-2 text-sm" },
@@ -212,8 +228,15 @@
           onClick: prepareLifeOS,
           className: "rounded bg-primary px-4 py-2 text-primary-foreground disabled:opacity-50",
         }, installationBusy ? "Preparing..." : "Prepare latest LifeOS") : null,
-        installation?.candidate_ready ? h("p", { className: "mt-2 text-sm" },
-          "A patched LifeOS candidate is ready. Review it before installation.") : null,
+        installation?.candidate_ready && installation?.lifeos === "missing" ? h("div", { className: "mt-3 space-y-2 text-sm" },
+          h("p", null, "Prepared commit " + installation.candidate_commit + " with " +
+            installation.candidate_patch_count + " compatibility patches. The fresh installer will create ~/.claude and run six LifeOS setup steps."),
+          h("button", {
+            type: "button", disabled: installationBusy, onClick: installLifeOS,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, installationBusy ? "Installing..." : "Install prepared LifeOS")) : null,
+        installation?.candidate_error ? h("p", { role: "status", className: "mt-2 text-sm" },
+          "Candidate cannot be installed: " + installation.candidate_error) : null,
         installationStatus ? h("p", { role: "status", className: "mt-3" }, installationStatus) : null),
       installation?.lifeos === "installed" ? h("form", { onSubmit: save, className: "space-y-4" },
         fields.length ? tiers.map(renderTier) : null,

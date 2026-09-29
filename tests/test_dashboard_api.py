@@ -64,6 +64,65 @@ class DashboardApiTests(unittest.TestCase):
                 api.prepare_installation()
             self.assertEqual(partial.exception.status_code, 409)
 
+    def test_installs_validated_candidate_into_empty_home(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            api.INSTALL_CANDIDATE = root / "candidate"
+            api.INSTALL_CANDIDATE.mkdir()
+            api.validate_prepared_lifeos = lambda candidate: {
+                "upstream_commit": "a" * 40, "patches": [{"name": "one.patch"}],
+            }
+            host = types.ModuleType("hermes_cli.plugins")
+            host.VALID_HOOKS = set()
+            with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"),
+                                          "hermes_cli.plugins": host}):
+                status = api.get_installation()
+                self.assertTrue(status["candidate_ready"])
+                self.assertEqual(status["candidate_commit"], "a" * 40)
+                self.assertEqual(status["candidate_patch_count"], 1)
+            calls = []
+            def install(candidate, installed, failed):
+                calls.append((candidate, installed, failed))
+                (installed / "LIFEOS").mkdir(parents=True)
+                (installed / "LIFEOS/VERSION").write_text("7.40.4\n")
+                (installed / "settings.json").write_text("{}")
+                return {"installed_version": "7.40.4", "restart_required": True}
+            api.install_prepared_lifeos = install
+            result = api.apply_installation()
+            self.assertEqual(result["installed_version"], "7.40.4")
+            self.assertEqual(calls[0][:2], (api.INSTALL_CANDIDATE, api.INSTALLED_ROOT))
+            self.assertEqual(calls[0][2].parent, api.INSTALL_CANDIDATE.parent)
+            with self.assertRaises(api.HTTPException) as duplicate:
+                api.apply_installation()
+            self.assertEqual(duplicate.exception.status_code, 409)
+
+    def test_rejects_changed_candidate_and_existing_claude_home(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            api.INSTALL_CANDIDATE = root / "candidate"
+            api.INSTALL_CANDIDATE.mkdir()
+            api.validate_prepared_lifeos = lambda candidate: (_ for _ in ()).throw(
+                api.IncompatibleLifeOS("candidate changed"))
+            host = types.ModuleType("hermes_cli.plugins")
+            host.VALID_HOOKS = set()
+            with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"),
+                                          "hermes_cli.plugins": host}):
+                status = api.get_installation()
+                self.assertFalse(status["candidate_ready"])
+                self.assertIn("candidate changed", status["candidate_error"])
+            with self.assertRaises(api.HTTPException) as changed:
+                api.apply_installation()
+            self.assertEqual(changed.exception.status_code, 409)
+            self.assertIn("candidate changed", changed.exception.detail)
+            api.INSTALLED_ROOT.mkdir()
+            with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"),
+                                          "hermes_cli.plugins": host}):
+                self.assertEqual(api.get_installation()["lifeos"], "partial")
+
     def load_api(self, fields, save):
         fastapi = types.ModuleType("fastapi")
         fastapi.APIRouter = lambda: types.SimpleNamespace(

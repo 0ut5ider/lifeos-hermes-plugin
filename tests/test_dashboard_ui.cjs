@@ -135,6 +135,8 @@ test("missing LifeOS shows preparation without active model settings", async () 
   let index = 0;
   let effectRan = false;
   let component;
+  let lifeos = "missing";
+  let candidateReady = false;
   const sdk = {
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
     hooks: {
@@ -147,8 +149,20 @@ test("missing LifeOS shows preparation without active model settings", async () 
     },
     fetchJSON(url, init) {
       calls.push({ url, init });
-      if (url.endsWith("/installation/prepare")) return Promise.resolve({ upstream_commit: "a".repeat(40), patches: [] });
-      if (url.endsWith("/installation")) return Promise.resolve({ lifeos: "missing", hermes: "stock", candidate_ready: false });
+      if (url.endsWith("/installation/prepare")) {
+        candidateReady = true;
+        return Promise.resolve({ upstream_commit: "a".repeat(40), patches: [{ name: "one.patch" }] });
+      }
+      if (url.endsWith("/installation/apply")) {
+        lifeos = "installed";
+        return Promise.resolve({ installed_version: "7.40.4", restart_required: true });
+      }
+      if (url.endsWith("/installation")) return Promise.resolve({
+        lifeos, version: lifeos === "installed" ? "7.40.4" : null,
+        hermes: "stock", candidate_ready: candidateReady,
+        candidate_commit: candidateReady ? "a".repeat(40) : null,
+        candidate_patch_count: candidateReady ? 1 : null,
+      });
       if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
       if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
       return Promise.resolve({ fields: [] });
@@ -175,6 +189,17 @@ test("missing LifeOS shows preparation without active model settings", async () 
   assert.ok(calls.some((call) => call.url.endsWith("/installation/prepare") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("Candidate prepared"))));
+  const installLifeOS = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Install prepared LifeOS"));
+  assert.ok(installLifeOS);
+  assert.ok(find(render(), (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("1 compatibility patch"))));
+  installLifeOS.props.onClick();
+  await new Promise(setImmediate);
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/apply") && call.init?.method === "POST"));
+  assert.ok(find(render(), (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("LifeOS 7.40.4 is installed"))));
 });
 
 test("installed LifeOS on stock Hermes shows the reduced safety limits", async () => {
