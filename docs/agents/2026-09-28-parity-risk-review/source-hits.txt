@@ -1,0 +1,1855 @@
+Reviewed HEAD: 43bb0f238c5718b68e4549db483c2a6a20c20798
+
+SOURCE docs/parity-resolution-plan.md
+    1: # LifeOS hook parity resolution plan
+    2: 
+    3: Date: 2026-09-28. Target: the pinned public LifeOS installation and Claude Code 2.1.272, compared with the isolated Hermes installation on `.212`. Hermes hardline, user-deny, guardian, and Tirith denials remain authoritative. Haiku, Sonnet, Opus, and Fable may share one private model with configurable effort levels. SSH and Docker project hooks remain opt-in. These decisions define intentional differences; they do not exempt a behavior from testing.
+    4: 
+    5: The current registration inventory is 74 hooks across 11 Claude Code events. A registered callback, a passing unit test, or a plausible translation is not proof that its observable effect matches Claude Code. Every claim below needs a control run in Claude Code and a Hermes run under matching settings, or a documented reason why the control is unavailable. Keep the model prompt and fixture deterministic where possible; judge hook events and side effects rather than the model's prose.
+    6: 
+    7: | Phase | Work | Evidence required to close it |
+    8: | --- | --- | --- |
+    9: | 1. Inventory | Extract the installed hook groups, matchers, types, and settings sources from the pinned LifeOS tree. Join them to the Hermes event map and the existing effect records. Track each case as verified, mismatch, unverified, or accepted difference. Include the hook contract features even if the current LifeOS registration does not use them. | A machine-readable inventory tied to exact source revisions, a human-readable status matrix, and a failing check when a future registration has no mapping or status. |
+   10: | 2. Reference comparisons | Run disposable, paired Claude Code and Hermes scenarios through the private local model. Capture event payloads, decisions, approval prompts, execution, transcript rows, user-visible output, and file effects. Normalize only incidental fields such as timestamps and random session IDs. Verify that the reference child-model adapter uses the accepted tier-to-effort mapping. | Saved raw outputs with commands, revisions, settings, and a comparison result for every claimed behavior. A confirmed mismatch becomes a regression before its fix. |
+   11: | 3. Event contract | Resolve `PreToolUse` ask decisions, `SessionStart` source matchers, and the related `SessionEnd` matcher and reason question. Verify the installed malformed-managed-policy review path. Test denial precedence, changed inputs, async hooks, restart/resume, and project matcher scope. | Native reference probes, real hook-child regressions, installed `.212` behavior, and clean test output. No approval grant can override a later LifeOS deny or Hermes safety denial. |
+   12: | 4. Permission rules | Compare Bash, direct files, patches, and MCP actions across user, trusted project, and file-managed settings. Cover allow, ask, deny, prior approvals, policy changes, manual and unattended modes, compound commands, wrappers, redirects, file paths, and SSH/Docker namespaces. Characterize when Claude Code emits `PermissionRequest`. | For every supported class, a paired control and denial or ask case, plus a Hermes integration test proving the action and actual target. Record remaining unsupported syntax and rule sources as gaps. |
+   13: | 5. Data and lifecycle | Compare ConfigChange, edits and failures, Stop and session history, nested tools, external content, browser result forms, multimodal prompts, and child inference. Exercise the real installed LifeOS handlers on disposable roots. Test the relevant cases on local, SSH, and Docker workspaces. | Side-effect evidence for each affected handler, including before/after state and user/model delivery. Document any information Hermes cannot provide, such as separate terminal streams, as a host requirement. |
+   14: | 6. Install and update | Rebuild pinned Hermes, LifeOS, and plugin source in a fresh isolated account. Install with a private local model, run the full comparison suite, then stage and roll back an update while preserving synthetic user files. Replace each local patch with an upstream contract only after the patch-free version passes the same cases. | Reproducible revision and patch manifest, clean install result with model calls, update/rollback record, and verification that deployed hook files match the selected LifeOS source. |
+   15: 
+   16: ## Immediate work order
+   17: 
+   18: 1. Capture the current registration inventory and make missing or changed registrations fail a check.
+   19: 2. Run native probes for `PreToolUse` ask and SessionStart and SessionEnd matchers. Reproduce the current Hermes outcomes with real child hooks.
+   20: 3. Implement the smallest bridge changes that satisfy those probes. Keep Hermes denial precedence and approval identity stable.
+   21: 4. Run the malformed-policy decision through the installed gateway. Add a regression if source and gateway behavior differ.
+   22: 5. Expand the paired permission and lifecycle matrix from observed differences. Fix confirmed gaps in the test fork, then run the complete suite and live SSH/Docker cases before one staged release.
+   23: 6. Perform the clean install and update rehearsal. Record the tested compatibility set and ask for independent review of the evidence before claiming parity.
+   24: 
+   25: The completion gate is a status for every item in the agreed contract, no unresolved mismatch or unverified item within the claimed local, SSH, and Docker scope, and a tested clean installation and update path. Generic Hermes changes can be proposed upstream in parallel. Acceptance upstream is not a substitute for the installed behavioral checks.
+   26: 
+   27: ## Progress on the pinned `.212` fixture
+   28: 
+   29: - Phase 1 has a 74-row [registration inventory](parity/registrations.csv) and a check that fails when a registration is added, changed, or removed. The rows currently retain `unverified_paired` status until a paired outcome is attached.
+   30: - Phase 2 has pinned Claude Code probes for ask, startup and end matchers, wildcard, comma alternatives, and partial regular expressions. The ask probe found different results for a redirecting write and a later read, so exact approval timing remains open. The reference child adapter now uses the accepted tier effort mapping; the main reference turn remains at medium. A [machine-checked comparison](parity/paired-permission-rewrites.json) matches three synthetic PermissionRequest outcome cases. It does not yet compare complete approval traces or the 74 installed registrations.
+   31: - Phase 3 source changes pass the `.212` suite of 302 tests, with 55 optional skips. The shared matcher rule now covers PermissionRequest. A disposable `.212` Hermes plugin-manager probe confirms installed ask, startup matcher, and malformed-policy review directives. A pinned native probe proved that PermissionRequest can replace a Bash command. The bridge and test fork now replace and recheck the command, and a disposable installed-plugin execution confirmed that only the replacement runs. Pinned native interactive controls confirm `clear`, `resume`, and `prompt_input_exit` SessionEnd reasons, including empty-session clear and resume. The bridge maps these reasons. Generic Hermes patches emit finalization on gateway and CLI `/resume`, report `prompt_input_exit` on interactive CLI exit, and finalize empty CLI sessions on `/new` and `/resume`. A real `.212` CLI emitted each reason in separate probes. A live Discord gateway `/resume` and a live gateway approval prompt remain open. The broader hook output contract remains open.
+   32: - Phase 4 has machine-checked Bash, Write, and MCP `PermissionRequest.updatedInput` outcomes with disposable native and installed probes. The three observed replacements reached the final tool input; final-target LifeOS deny still blocked a Write. The Write control was rerun after an earlier fixture changed fewer fields than Hermes. One installed ContextReduction rewrite also has a separate native comparison: both sides executed a temporary `rtk git status` without an extra approval. Other commands and permission states remain open. Phase 5 paired one asynchronous UserPromptSubmit timeout case: Claude Code and Hermes both let a three-second child finish with `timeout: 1`. Other async cases remain open. Phase 6 now has a clean-account Hermes runtime with one private local model call, a pinned plugin install, nine registered hooks, and a LifeOS system overlay, rollback, and reapply rehearsal. Its separate snapshot archived a hook-generated timestamp change before rollback. Coordinated Hermes and plugin rollback, registration updates, and the full comparison suite remain open. The [independent inventory](agents/2026-09-28-parity-inventory/parity-inventory.md) tracks the remaining scenarios without labeling unverified registrations as failures.
+
+SOURCE docs/agents/2026-09-28-parity-inventory/parity-inventory.md
+    1: Date: 2026-09-28
+    2: Agent role: Read-only hook parity inventory reviewer
+    3: Question: What observable gaps remain against the pinned LifeOS registrations and the agreed six-point parity plan?
+    4: Model: GPT-6-Sol, high reasoning effort (runtime descriptor)
+    5: 
+    6: The reviewed plugin revision is `e87c2e8908949b1de988d04c65c3461a354582bf`. The public LifeOS manifest has exactly 74 registrations across 11 events. This audit read local source, existing evidence records, and official hook documentation. It ran eight disposable bridge probes with real child processes. It did not connect to `.212`, modify product code, change a host, or run the whole test suite. The matrix records the state at the start of this implementation task; concurrent fixes require fresh results before closing rows.
+    7: 
+    8: The installed LifeOS contract comes first. The manifest copy is `public-hooks.json`; `registrations.csv` gives all 74 entries individual IDs. Each entry currently says `unverified_paired` because no complete paired outcome dataset exists for these registrations. That does not erase the many native effect checks already documented in `docs/hook-parity.md`. Registration counts, source tests, real native hook effects, and a Claude/Hermes comparison are different evidence levels.
+    9: 
+   10: ## Status definitions and acceptance
+   11: 
+   12: - **Confirmed bridge gap** means source inspection or a disposable probe establishes bridge behavior. A native Claude comparison can still be missing.
+   13: - **Unverified** means no sufficient paired installed-system result was found. It does not mean the behavior is broken.
+   14: - **Accepted difference** is limited to decisions already attributed to Adrian in the master guide and parity record.
+   15: - **Dependency** means the behavior relies on a named Hermes or LifeOS patch, service, or host capability.
+   16: 
+   17: Close an item only after the same synthetic action runs on pinned Claude Code 2.1.272 and Hermes with equivalent policy and model settings, and its event inputs, decisions, user/model delivery, and filesystem effects match after incidental IDs and timestamps are normalized. Record stronger Hermes denial as the accepted override. An extra approval prompt is a difference unless that override causes it. Do not use newer Claude documentation to silently expand the target beyond the 11 pinned events.
+   18: 
+   19: ## A. Installed LifeOS registrations and the six workstreams
+   20: 
+   21: | ID | Workstream | Remaining observable question | Status and existing evidence | Resolution and gate |
+   22: | --- | --- | --- | --- | --- |
+   23: | A01 | 1. Checklist | Do all 74 registrations have an expected effect and paired evidence? | Unverified. Full manifest inventory exists now; existing evidence is narrative and selective. | Attach paired scenario and result paths to each CSV row. Include nested handlers invoked by PreToolGuard, PostToolObserver, and StopGates. |
+   24: | A02 | 2. Reference | Are reference settings and child effort mappings equivalent? | Unverified. `claude-reference.md` says child adapter still uses medium; Hermes uses low/medium/xhigh. | Read installed adapters and selected tier settings without credentials. Record emitted request model/effort and align the reference before inference-dependent comparisons. |
+   25: | A03 | 2. Reference | Can identical actions produce machine-comparable traces? | Missing aggregate comparison runner. Several individual native probes already exist. | Reuse synthetic workspaces; capture both traces and outcome side effects; normalize only incidental differences. Fail on missing events and extra approvals. |
+   26: | A04 | 3. Bounded fixes | Does malformed managed policy force direct-file review through the gateway? | Source fixed and regression exists. `notes/2026-09-28-invalid-managed-policy.md` explicitly lacks installed gateway probe. | Isolated installed Read and Write, with allow hook and malformed managed JSON; verify prompt and zero unapproved write. Compare native behavior separately. |
+   27: | A05 | 4. Permissions | Does Bash PermissionRequest fire at the same point? | Unverified beyond tested commands. Only narrow simple pwd/echo forms skip it. | Paired plain commands, wrappers, compound forms, session/permanent grants, policy edits, and unattended modes. Measure hook sequence and approval count. |
+   28: | A06 | 4. Permissions | Do Bash/file rules cover shell targets equivalently? | Partial. Literal readers, redirects, tee, sort output, recognized wrappers, and cd targets tested. Dynamic targets, other file openers, uncommon forms incomplete. | Table of explicit tested forms plus uncertain forms, native decision per form, and regression for each mismatch. Do not label conservative review equal to allow. |
+   29: | A07 | 4. Permissions | Are MCP rules and server trust equivalent? | Unverified; MCP PermissionRequest works but Hermes trusted-server policy differs. | Disposable MCP server and specific tool rules; compare allow/ask/deny, server wildcard, trusted/untrusted state, and later policy change. |
+   30: | A08 | 4. Permissions | Do direct Read/Write/Edit rule scopes and grants match? | Partial. Literal deny/ask, multi-target patch, remote path checks tested. Hermes guard and approval scope differ. | Paired relative/absolute, source anchors, symlink, outside workspace, new file, multi-file, and changed-policy cases. Preserve Hermes denial. |
+   31: | A09 | 4. Permissions | Does ContextReduction's native allow plus rewritten Bash input have the expected result? | Installed producer found at ContextReduction.hook.sh:111-119. Bridge rewrites arguments but does not retain PreToolUse allow. Installed effect not paired here. | Exercise an actual RTK rewrite with synthetic git/gh data; verify rewritten command is rechecked under correct policy, event timing, and approval count. |
+   32: | A10 | 4. Permissions | Are source precedence and managed-only locks equivalent? | File-based managed policy tested; other managed sources absent. Other tool rule types incomplete. | User/project/local/managed deny-ask-allow matrix; distinguish applicable Linux policy from unsupported OS/server sources. |
+   33: | A11 | 5. Lifecycle | Do ConfigChange detection, rejection, and application agree? | One-second polling, active-session lifetime, project routing, same-size rewrite, remote digest checks exist. Hermes does not apply general Claude managed settings. | Paired valid/rejected edits, multiple active projects, settings replacement, skill change, and shutdown. Record timing tolerance explicitly instead of assuming exact equality. |
+   34: | A12 | 5. Files | Are patch paths, deletion, movement, failure, and transcript readers equivalent? | Multiple real local and Docker effects verified. Successful patch expands per path; failed patch keeps original Hermes shape. Full content and unchanged context unavailable from patch input. | Paired native consumer assertions for update/add/delete/move and failed multi-file patch, including side effects and error path. |
+   35: | A13 | 5. Sessions | Are resumed history, rejected drafts, attachments, and nested events sufficient for every native reader? | Text Stop and prompt timing paired; native readers selectively checked; other transcript fields and attachment shapes unverified. | Paired reader results across resume, rejection/retry, tool failure, image-only, attachment text, and nested tool history. |
+   36: | A14 | 5. Browser | Do remaining page-content carriers reach Safety? | Navigation/snapshot/console/image metadata live tested. Vision, CDP, Browser Use scripts, dialogs unverified installed. | Real disposable loopback page triggers each available carrier, retain raw result and native Safety output. Mark unavailable carriers unverified. |
+   37: | A15 | 5. Remote | Do SSH/Docker hooks, permissions, files, and nested calls cover the target? | Opt-in trust, project command/HTTP/async, ISA, cache, and inner Read have live evidence. Distinct remote hosts, other nested tools, and several file forms unverified. | Complete target backend matrix with synthetic workspace effects; inspect trust binding and clean up resources. Other backends remain outside verified set. |
+   38: | A16 | 5. Native effects | Do every registered handler's effects work beyond selected probes? | Many native effects verified; 45 or more optional fixtures skipped in earlier suite depending environment. No complete per-registration outcome matrix. | Use registration CSV and linked notes to identify missing effects, then run real dependencies. Count fixture skips explicitly. |
+   39: | A17 | 5. Async | Are timeout, delivery, and session-finalization outcomes equivalent? | systemd and detached async survival tested; 64 KiB output cap and next-prompt delivery. Other service managers unverified. Local async path does not pass configured timeout into spool. | Paired timeout and output boundary probes; parent exit, same-session exactly-once delivery, closed-session cleanup, and async configuration update. |
+   40: | A18 | 6. Install | Does a clean distinct-root account pass real model and child calls? | Clean install mounted/loaded/prompt-hook tested; account had no model credentials. | Run pinned complete package with same model mapping, real main/child calls, native effects, and registration/installed-file hash checks. |
+   41: | A19 | 6. Updates | Can installation/update/rollback preserve synthetic user data? | `update-policy.md` says staged update and rollback automation does not yet exist. prepare_sources only prepares pinned sources. | Stage compatible triple and manifest, snapshot code/config/data separately, install as one release, induce verification failure, rollback, compare user-data hashes. |
+   42: | A20 | 6. UI | Do setup/update controls enforce the tested workflow? | Future workflow described, no demonstrated implementation in this audit. | Expose only concrete staged compatibility result and recoverable apply operation; verify API/UI failure and rollback states. |
+   43: | A21 | 6. Review | Has the completed package received independent review? | Prior Astra review found gaps; no final full-package review exists. | Review final checklist, raw paired evidence, patches, install and rollback results. Convert confirmed findings into regressions before release. |
+   44: 
+   45: ## B. User/project extension contract within the same 11 events
+   46: 
+   47: These rows matter because the master guide explicitly includes user and trusted project hooks. They must not be described as failures of current installed LifeOS registrations without an actual producer or effect trace.
+   48: 
+   49: | ID | Behavior | Evidence and current result | Next gate |
+   50: | --- | --- | --- | --- |
+   51: | B01 | PreToolUse ask and reason | Prior independent real-child review confirms ask discarded; source still handles deny only at audit start. No ask producer found in installed public hook search. | Native paired ask, conflicting deny/allow, argument rewrite, prior approval, and installed gateway prompt. |
+   52: | B02 | SessionStart source matcher | Prior review confirms startup matcher skipped; source dispatch supplies payload source but no matcher argument. Five installed handlers have no source matcher. | Native startup/resume fixtures plus unmatched groups; preserve first prompt timing. |
+   53: | B03 | SessionEnd reason/matcher | New probe: matcher `other` does not execute. Source hardcodes `reason: other` and passes no matcher argument. Six installed handlers have no matcher. | Native paired shutdown reasons; inspect actual host reason availability before mapping. |
+   54: | B04 | Match-all and regex semantics | New probes: `*` raises `PatternError: nothing to repeat at position 0`; `Read, Write` skips Read; `^Re` skips Read; exact Read control executes and denies. Pinned manifest uses none of these forms. | Establish pinned native behavior for all examples, invalid patterns, aliases, and events without matcher support. |
+   55: | B05 | PreToolUse allow | Source processes rewrite/context but ignores allow. ContextReduction is an installed allow producer, see A09. | Define allow under accepted Hermes denial floor; compare remaining native permission evaluation. |
+   56: | B06 | PermissionRequest updated input/permissions | New real-child allow+updatedInput returns None without modification. No updatedPermissions consumer found. | Native paired argument update, persistence scope, deny reason/interruption. No installed producer established. |
+   57: | B07 | PostToolUse block reason | New probe runs hook returning block and reason; post_tool_call returns None. | Compare native model feedback; preserve already-executed tool effect. No installed producer established. |
+   58: | B08 | PostToolUse MCP output replacement | No updatedMCPToolOutput consumer found. | Real MCP result replacement pair, with generic context composition. No installed producer established. |
+   59: | B09 | Common output controls | New PreToolUse continue:false/stopReason child runs and returns None. No suppressOutput consumer found. | Native control semantics per applicable event, including user delivery and stop behavior. Installed search found continue:true, not continue:false. |
+   60: | B10 | Hook handler types | _run executes command and HTTP only; other types log and skip. Installed 74 contain those two types only. | Pin supported prompt/agent handler schema before implementation or explicit scope decision. Do not invent support from registration acceptance. |
+   61: | B11 | HTTP configuration | Local and remote URLs restricted to loopback HTTP; local request uses only Content-Type header; custom headers/env allowlists absent. | Paired supported URL/header/timeout/error forms. Installed Pulse routes fit current restricted shape. Broader trusted hooks are not verified. |
+   62: | B12 | Hook environment/input/config fields | No CLAUDE_ENV_FILE or permission_mode handling found; _payload includes event/session/transcript/cwd and limited child IDs. Managed hook registrations are not equivalent to managed permission rules. | Inventory fields actually required by pinned contract; native env persistence/input captures and managed hook inheritance. |
+   63: | B13 | Handler lifecycle fields | Timeout clamps, duplicates, once, disabled hooks, async delivery, stderr on failure need explicit paired coverage. New local async timeout observation in A17. | Verify supported pinned fields first; avoid treating newer documented features as automatic scope. |
+   64: 
+   65: The official documentation currently describes wildcard, comma alternatives, and regex search for matching, plus input/output control fields. Its content is not a frozen 2.1.272 specification. These observations support the need for pinned native probes; they do not replace them. Source: [Claude Code hooks reference](https://code.claude.com/docs/en/hooks), accessed 2026-09-28. No native reference process was run in this audit.
+   66: 
+   67: ## Native reference evidence received during the audit
+   68: 
+   69: The parent ran pinned Claude Code reference probes and supplied `../2026-09-28-native-contract-probe/results.jsonl` and `pretool-effects.jsonl`. I read those artifacts but did not rerun the native processes. The records establish that SessionStart `startup` and `*` each ran once on startup, while the `resume` matcher did not run on startup. SessionEnd `other` and `*` each ran once with reason `other`. Thus B02, B03, and the wildcard portion of B04 now have native reference evidence. Comma and regex examples remain native-unmeasured.
+   70: 
+   71: The first native ask probe records one Bash permission denial, while its allow control records none. Both initial runs exited 1, so they are incomplete execution checks. A second effects probe exited 0: the allow case wrote its marker; the ask case also wrote its marker with `printf ... > effect.txt` and then denied a later `cat`. The actual file content was the requested marker even though model prose claimed otherwise. This makes observed filesystem state essential. It also means B01 cannot be reduced to an assumption that native ask always denies every action in this execution context. The parent is investigating approval timing and interactions with other hooks. These records narrow uncertainty without constituting a complete paired parity result.
+   72: 
+   73: ## C. Accepted differences and limits that require precise wording
+   74: 
+   75: | Item | Classification | Required treatment |
+   76: | --- | --- | --- |
+   77: | Hermes hardline/user denial and guard floors | Accepted difference | Preserve them. Record the denial causing any otherwise different approval outcome. |
+   78: | One local model mapped by configured effort | Accepted difference | Match actual requested routes and retain real model identity. Distinct model supply and private server reasoning depth are not parity gates. |
+   79: | SSH/Docker project hooks require opt-in trust | Accepted difference | Complete live checks on those two backends; do not expand access automatically. |
+   80: | Python/Bash source hooks cannot predict computed later effects | Shared contract limit, not a bypass fix specification | Compare like actions. Current source text guard catches literal patterns; arbitrary subprocess interception would be a separate host design. |
+   81: | Terminal stdout/stderr merged by host | Current installed adaptation | EventLogger patch preserves combined output. Future hooks requiring separate streams need host support and must stay unresolved if in scope. |
+   82: | MultiEdit has no exact Hermes tool | Mapping limit | Verify native effects from per-file Edit expansion. Do not count a MultiEdit registration as literally executed in Hermes. |
+   83: | Other OS policy providers, remote backends, service managers | Unverified or unsupported platform boundary | Do not turn absent platform evidence into a universal parity claim. |
+   84: | Voice, Cloudflare, GitHub login and other external services absent from fixture | Unconfigured dependency | Keep affected effects unverified unless configured by existing authorization. |
+   85: | UpdateCounts with no Claude OAuth credentials | Verified native no-op for fixture | Do not manufacture a usage cache as a parity requirement. |
+   86: 
+   87: ## D. Patch and installation dependencies
+   88: 
+   89: `patch-dependencies.json` records exact ordered patch names and SHA-256 hashes from `scripts/prepare_sources.py`. Pinned Hermes base is `758ad514eb0e800547e015edf05aa18f78b78d82`; pinned LifeOS base is `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`.
+   90: 
+   91: | Component | Patches | Behavior depending on them |
+   92: | --- | --- | --- |
+   93: | Hermes | hook-controls, stop-effort, stop-fail-closed | Prompt rejection, final-answer continuation/withholding, result augmentation, nested session identity, effective effort. |
+   94: | Hermes | command-denial, command-policy, command-context | Native permission verdicts, review/deny precedence, every guarded Bash command, correct workspace/backend. |
+   95: | Hermes | remote-file-staleness | Backend digest and complete-read checks before remote overwrite. |
+   96: | Hermes | delegate-tier-routing, delegate-provider-routing, direct-provider-inference | Selected child provider/model/effort and no silent route fallback. |
+   97: | Hermes | cron-worker-bootstrap | Scheduled worker dependency/runtime bootstrap used by notifications. |
+   98: | LifeOS | task-governance | Native task event and session counts. |
+   99: | LifeOS | agent-watchdog | Hermes notification route and watchdog effects. |
+  100: | LifeOS | terminal-audit, checkpoint-verification, failure-capture | Combined terminal audit, checkpoint verification, Hermes transcript failure evidence. |
+  101: | LifeOS | remote-desktop-gate, remote-isa-view | Avoid remote desktop effects; read backend digest for ISA protection. |
+  102: | LifeOS | model-rung-effort, hermes-carrier-probe | Local route classification and child carrier evidence. |
+  103: 
+  104: A passing patch application only proves textual applicability. Removing any patch requires installing the chosen upstream revision without it and rerunning the relevant host, native hook, and live transport checks. Pulse and Bun are real runtime dependencies. The existing `.212` symlink layout is a fixture workaround; the separate-root clean installation is the distributable layout under test. Preserve USER and MEMORY during system replacement. Current test fixture notes also identify the Research skill collision and installer placeholder substitution behavior as installer considerations.
+  105: 
+  106: ## Artifacts and reproduction
+  107: 
+  108: - `commands-results.txt`: raw local source/document search commands, results, and reviewed Git identity.
+  109: - `public-hooks.json`: copied public manifest, SHA-256 `27a8578d5aec7e17a1e1584a3e1d371483913ef1bf37f618ba4de6459946180f`.
+  110: - `registrations.csv`: 74 unique registration rows, 11 events, no blanket passing status.
+  111: - `patch-dependencies.json`: pinned revisions, ordered patch files, hashes.
+  112: - `public-hook-output-search.txt`: raw producer search in the public LifeOS hook tree. This includes unregistered nested hooks, so a hit alone is not an installed event mapping.
+  113: - `probe_contract.py`, `probe-results.json`, `probe-stderr.txt`: eight disposable contract probes. Stderr is empty. Reproduce from repository root with `PYTHONPATH=. /tmp/lifeos-shell-ast/bin/python docs/agents/2026-09-28-parity-inventory/probe_contract.py`.
+  114: 
+  115: The probe script creates temporary roots and invokes hook processes but does not execute file tool writes. It reports observations, not expected assertions. No full suite pass, native paired match, or installed-system equivalence is claimed by this audit.
+
+SOURCE docs/parity/paired-permission-rewrites.json
+    1: {
+    2:   "version": 1,
+    3:   "scope": "Synthetic PermissionRequest hooks on the pinned local model. These cases compare effective input and action effects, not every approval timing rule or installed LifeOS handler.",
+    4:   "claude_code": "2.1.272",
+    5:   "hermes_commit": "95d46d4e49c6",
+    6:   "bridge_sha256": "c236cbf865c9a804126e654b64a1c509219396c5a4063792cc09256293f48645",
+    7:   "cases": [
+    8:     {
+    9:       "id": "bash-command-replacement",
+   10:       "native": "../agents/2026-09-28-native-contract-probe/permission-rewrite-pwd-post.jsonl",
+   11:       "hermes": "../agents/2026-09-28-native-contract-probe/command-rewrite-hermes.json",
+   12:       "fields": {
+   13:         "effective_command": {"native": "post_tool_input.command", "hermes": "effective_command", "expected": "pwd"},
+   14:         "original_exists": {"native": "original_exists", "hermes": "original_exists", "expected": false}
+   15:       }
+   16:     },
+   17:     {
+   18:       "id": "write-path-and-content-replacement",
+   19:       "native": "../agents/2026-09-28-native-contract-probe/file-rewrite-both.jsonl",
+   20:       "hermes": "../agents/2026-09-28-native-contract-probe/file-rewrite-hermes.json",
+   21:       "fields": {
+   22:         "effective_target": {"native": "post_tool_input.file_path", "hermes": "effective_args.path", "normalize": "basename", "expected": "rewritten.txt"},
+   23:         "effective_content": {"native": "post_tool_input.content", "hermes": "effective_args.content", "expected": "MODIFIED"},
+   24:         "original_exists": {"native": "original_exists", "hermes": "original_exists", "expected": false},
+   25:         "written_content": {"native": "rewritten_content", "hermes": "rewritten_content", "expected": "MODIFIED"}
+   26:       }
+   27:     },
+   28:     {
+   29:       "id": "mcp-argument-replacement",
+   30:       "native": "../agents/2026-09-28-native-contract-probe/mcp-rewrite.jsonl",
+   31:       "hermes": "../agents/2026-09-28-native-contract-probe/mcp-rewrite-hermes.json",
+   32:       "fields": {
+   33:         "effective_value": {"native": "post_tool_input.value", "hermes": "effective_args.value", "expected": "MODIFIED"},
+   34:         "server_calls": {"native": "server_calls", "hermes": "server_calls", "expected": [{"value": "MODIFIED"}]}
+   35:       }
+   36:     }
+   37:   ]
+   38: }
+
+SOURCE scripts/prepare_sources.py
+    1: # ABOUTME: Prepares tested Hermes and LifeOS source revisions with ordered compatibility patches.
+    2: # ABOUTME: Publishes both patched trees together only after every patch and whitespace check passes.
+    3: 
+    4: from __future__ import annotations
+    5: 
+    6: import argparse
+    7: import hashlib
+    8: import json
+    9: import os
+   10: import shutil
+   11: import subprocess
+   12: import sys
+   13: import tempfile
+   14: from pathlib import Path
+   15: 
+   16: 
+   17: ROOT = Path(__file__).resolve().parents[1]
+   18: SOURCES = {
+   19:     "hermes": {
+   20:         "base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+   21:         "patches": (
+   22:             "hermes-hook-controls.patch",
+   23:             "hermes-command-denial.patch",
+   24:             "hermes-remote-file-staleness.patch",
+   25:             "hermes-stop-effort.patch",
+   26:             "hermes-delegate-tier-routing.patch",
+   27:             "hermes-cron-worker-bootstrap.patch",
+   28:             "hermes-delegate-provider-routing.patch",
+   29:             "hermes-direct-provider-inference.patch",
+   30:             "hermes-stop-fail-closed.patch",
+   31:             "hermes-command-policy.patch",
+   32:             "hermes-command-context.patch",
+   33:             "hermes-command-rewrite.patch",
+   34:             "hermes-session-reasons.patch",
+   35:             "hermes-prompt-exit-reason.patch",
+   36:             "hermes-empty-session-clear.patch",
+   37:             "hermes-empty-session-resume.patch",
+   38:         ),
+   39:     },
+   40:     "lifeos": {
+   41:         "base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+   42:         "patches": (
+   43:             "lifeos-task-governance.patch",
+   44:             "lifeos-agent-watchdog.patch",
+   45:             "lifeos-terminal-audit.patch",
+   46:             "lifeos-checkpoint-verification.patch",
+   47:             "lifeos-failure-capture.patch",
+   48:             "lifeos-remote-desktop-gate.patch",
+   49:             "lifeos-remote-isa-view.patch",
+   50:             "lifeos-model-rung-effort.patch",
+   51:             "lifeos-hermes-carrier-probe.patch",
+   52:         ),
+   53:     },
+   54: }
+   55: 
+   56: 
+   57: class PreparationError(Exception):
+   58:     pass
+   59: 
+   60: 
+   61: def run(*args: str, cwd: Path | None = None) -> str:
+   62:     result = subprocess.run(args, cwd=cwd, text=True, capture_output=True)
+   63:     if result.returncode:
+   64:         detail = result.stderr.strip() or result.stdout.strip()
+   65:         raise PreparationError(f"{' '.join(args[:2])} failed: {detail}")
+   66:     return result.stdout.strip()
+   67: 
+   68: 
+   69: def check_source(name: str, repo: Path, base: str) -> None:
+   70:     if not repo.is_dir() or run("git", "-C", str(repo), "rev-parse", "--is-inside-work-tree") != "true":
+   71:         raise PreparationError(f"{name} source is not a Git working tree: {repo}")
+   72:     result = subprocess.run(
+   73:         ["git", "-C", str(repo), "cat-file", "-e", f"{base}^{{commit}}"],
+   74:         text=True, capture_output=True,
+   75:     )
+   76:     if result.returncode:
+   77:         raise PreparationError(f"{name} source lacks required base revision {base}: {repo}")
+   78: 
+   79: 
+   80: def prepare_source(name: str, repo: Path, output: Path) -> dict[str, object]:
+   81:     source = SOURCES[name]
+   82:     base = str(source["base"])
+   83:     run("git", "clone", "--quiet", "--no-checkout", "--", str(repo), str(output))
+   84:     run("git", "checkout", "--quiet", "-b", "feature/lifeos-hook-parity", base, cwd=output)
+   85:     applied = []
+   86:     for filename in source["patches"]:
+   87:         patch = ROOT / "patches" / filename
+   88:         if not patch.is_file():
+   89:             raise PreparationError(f"missing patch: {patch}")
+   90:         run("git", "apply", "--check", str(patch), cwd=output)
+   91:         run("git", "apply", str(patch), cwd=output)
+   92:         applied.append({"name": filename, "sha256": hashlib.sha256(patch.read_bytes()).hexdigest()})
+   93:     run("git", "diff", "--check", cwd=output)
+   94:     return {"base": base, "patches": applied}
+   95: 
+   96: 
+   97: def prepare(hermes_repo: Path, lifeos_repo: Path, output: Path) -> None:
+   98:     if output.exists() or output.is_symlink():
+   99:         raise PreparationError(f"output already exists: {output}")
+  100:     for name, repo in (("hermes", hermes_repo), ("lifeos", lifeos_repo)):
+  101:         check_source(name, repo, str(SOURCES[name]["base"]))
+  102:     output.parent.mkdir(parents=True, exist_ok=True)
+  103:     staging = Path(tempfile.mkdtemp(prefix=f".{output.name}.", dir=output.parent))
+  104:     try:
+  105:         manifest = {
+  106:             "hermes": prepare_source("hermes", hermes_repo, staging / "hermes"),
+  107:             "lifeos": prepare_source("lifeos", lifeos_repo, staging / "lifeos"),
+  108:         }
+  109:         (staging / "source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+  110:         os.replace(staging, output)
+  111:     finally:
+  112:         if staging.exists():
+  113:             shutil.rmtree(staging)
+  114: 
+  115: 
+  116: def main() -> int:
+  117:     parser = argparse.ArgumentParser(description="Prepare pinned Hermes and LifeOS source trees")
+  118:     parser.add_argument("--hermes-repo", required=True, type=Path)
+  119:     parser.add_argument("--lifeos-repo", required=True, type=Path)
+  120:     parser.add_argument("--output", required=True, type=Path)
+  121:     args = parser.parse_args()
+  122:     try:
+  123:         prepare(args.hermes_repo.expanduser().resolve(), args.lifeos_repo.expanduser().resolve(),
+  124:                 args.output.expanduser().absolute())
+  125:     except PreparationError as error:
+  126:         print(f"Source preparation failed: {error}", file=sys.stderr)
+  127:         return 1
+  128:     print(f"Prepared patched sources at {args.output}")
+  129:     return 0
+  130: 
+  131: 
+  132: if __name__ == "__main__":
+  133:     raise SystemExit(main())
+
+SOURCE tests/test_prepare_sources.py
+    1: # ABOUTME: Exercises repeatable preparation of patched Hermes and LifeOS source trees.
+    2: # ABOUTME: Checks that incompatible inputs do not leave an installable output.
+    3: 
+    4: import json
+    5: import os
+    6: import subprocess
+    7: import sys
+    8: import tempfile
+    9: import unittest
+   10: from pathlib import Path
+   11: 
+   12: 
+   13: ROOT = Path(__file__).resolve().parents[1]
+   14: SCRIPT = ROOT / "scripts/prepare_sources.py"
+   15: HERMES_REPO = os.environ.get("LIFEOS_PREPARE_HERMES_REPO")
+   16: LIFEOS_REPO = os.environ.get("LIFEOS_PREPARE_LIFEOS_REPO")
+   17: 
+   18: 
+   19: class PrepareSourcesTests(unittest.TestCase):
+   20:     def run_prepare(self, hermes: str, lifeos: str, output: Path) -> subprocess.CompletedProcess[str]:
+   21:         return subprocess.run(
+   22:             [sys.executable, str(SCRIPT), "--hermes-repo", hermes,
+   23:              "--lifeos-repo", lifeos, "--output", str(output)],
+   24:             cwd=ROOT, text=True, capture_output=True,
+   25:         )
+   26: 
+   27:     def test_incompatible_input_leaves_no_output(self):
+   28:         with tempfile.TemporaryDirectory() as directory:
+   29:             output = Path(directory) / "prepared"
+   30:             result = self.run_prepare(str(ROOT), str(ROOT), output)
+   31:             self.assertNotEqual(result.returncode, 0)
+   32:             self.assertIn("required base revision", result.stderr)
+   33:             self.assertFalse(output.exists())
+   34: 
+   35:     def test_existing_symlink_is_not_replaced(self):
+   36:         with tempfile.TemporaryDirectory() as directory:
+   37:             output = Path(directory) / "prepared"
+   38:             output.symlink_to(Path(directory) / "absent")
+   39:             result = self.run_prepare(str(ROOT), str(ROOT), output)
+   40:             self.assertNotEqual(result.returncode, 0)
+   41:             self.assertIn("output already exists", result.stderr)
+   42:             self.assertTrue(output.is_symlink())
+   43: 
+   44:     @unittest.skipUnless(HERMES_REPO and LIFEOS_REPO, "real Hermes and LifeOS source repositories are required")
+   45:     def test_real_sources_receive_every_patch_in_order(self):
+   46:         with tempfile.TemporaryDirectory() as directory:
+   47:             output = Path(directory) / "prepared"
+   48:             result = self.run_prepare(HERMES_REPO, LIFEOS_REPO, output)
+   49:             self.assertEqual(result.returncode, 0, result.stderr)
+   50:             manifest = json.loads((output / "source-manifest.json").read_text())
+   51:             self.assertEqual(len(manifest["hermes"]["patches"]), 16)
+   52:             self.assertEqual(manifest["hermes"]["patches"][-1]["name"], "hermes-empty-session-resume.patch")
+   53:             self.assertEqual(len(manifest["lifeos"]["patches"]), 9)
+   54:             self.assertTrue((output / "hermes/hermes_cli/plugins.py").is_file())
+   55:             self.assertTrue((output / "lifeos/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts").is_file())
+   56:             runtime_check = subprocess.run(
+   57:                 [sys.executable, "-c", "from pm.runtime import _resident_runtime; assert _resident_runtime() is None"],
+   58:                 cwd=output / "hermes", env={**os.environ, "PYTHONPATH": str(output / "hermes")},
+   59:                 text=True, capture_output=True,
+   60:             )
+   61:             self.assertEqual(runtime_check.returncode, 0, runtime_check.stderr)
+   62:             for checkout in ("hermes", "lifeos"):
+   63:                 check = subprocess.run(
+   64:                     ["git", "-C", str(output / checkout), "diff", "--check"],
+   65:                     text=True, capture_output=True,
+   66:                 )
+   67:                 self.assertEqual(check.returncode, 0, check.stderr)
+   68: 
+   69: 
+   70: if __name__ == "__main__":
+   71:     unittest.main()
+
+SOURCE patches/hermes-command-policy.patch
+    1: diff --git a/tests/hermes_cli/test_approval_transport.py b/tests/hermes_cli/test_approval_transport.py
+    2: index db7a423c806..73f38bb2b3a 100644
+    3: --- a/tests/hermes_cli/test_approval_transport.py
+    4: +++ b/tests/hermes_cli/test_approval_transport.py
+    5: @@ -409,8 +409,8 @@ def test_redaction_failure_denies_before_transport_callback(monkeypatch):
+    6:      _configure_manual_guard(monkeypatch, approval, manager)
+    7:  
+    8:      def redaction_failed(text, *, force=False):
+    9: -        assert force is True
+   10:          if text in {"rm -rf /tmp/example", "dangerous"}:
+   11: +            assert force is True
+   12:              raise RuntimeError("redactor unavailable")
+   13:          return text
+   14:  
+   15: diff --git a/tests/tools/test_approval_plugin_hooks.py b/tests/tools/test_approval_plugin_hooks.py
+   16: index 86b17bcd769..c1d40f94935 100644
+   17: --- a/tests/tools/test_approval_plugin_hooks.py
+   18: +++ b/tests/tools/test_approval_plugin_hooks.py
+   19: @@ -182,11 +182,13 @@ class TestSmartModeFiresHooks:
+   20:  
+   21:          assert result["approved"] is approved
+   22:          assert result[f"smart_{'approved' if approved else 'denied'}"] is True
+   23: -        assert [name for name, _ in captured] == [
+   24: +        observers = [(name, kwargs) for name, kwargs in captured
+   25: +                     if name in {"pre_approval_request", "post_approval_response"}]
+   26: +        assert [name for name, _ in observers] == [
+   27:              "pre_approval_request",
+   28:              "post_approval_response",
+   29:          ]
+   30: -        pre, post = (kwargs for _, kwargs in captured)
+   31: +        pre, post = (kwargs for _, kwargs in observers)
+   32:          assert pre["surface"] == post["surface"] == "smart"
+   33:          assert post["choice"] == choice
+   34:          assert post["decided_by"] == "aux_llm"
+   35: @@ -221,7 +223,7 @@ class TestSmartModeFiresHooks:
+   36:              result = guard(value, "local")
+   37:  
+   38:          assert result["approved"] is True
+   39: -        assert events == [
+   40: +        assert [event for event in events if event != "pre_command_approval"] == [
+   41:              "pre_approval_request",
+   42:              "smart_approve",
+   43:              "post_approval_response",
+   44: @@ -284,6 +286,7 @@ class TestSmartModeFiresHooks:
+   45:  
+   46:          with (
+   47:              patch("agent.redact.redact_sensitive_text", side_effect=fail_observer_redaction),
+   48: +            patch("tools.approval_prompt.logger.warning"),
+   49:              patch(
+   50:                  "hermes_cli.plugins.invoke_hook",
+   51:                  side_effect=lambda name, **kwargs: captured.append((name, kwargs)),
+   52: @@ -291,7 +294,8 @@ class TestSmartModeFiresHooks:
+   53:          ):
+   54:              result = guard(value, "local")
+   55:          assert result["approved"] is approved
+   56: -        assert captured == []
+   57: +        assert not [name for name, _ in captured
+   58: +                    if name in {"pre_approval_request", "post_approval_response"}]
+   59:  
+   60:      @pytest.mark.parametrize("guard,first_value,second_value", [
+   61:          (
+   62: diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+   63: index 26d3b5f92b8..a0387040154 100644
+   64: --- a/tests/tools/test_plugin_command_approval.py
+   65: +++ b/tests/tools/test_plugin_command_approval.py
+   66: @@ -199,3 +199,135 @@ def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
+   67:      assert result["approved"] is False
+   68:      assert result["outcome"] == "plugin_denied"
+   69:      guardian.assert_not_called()
+   70: +
+   71: +
+   72: +def test_plugin_review_prompts_when_pattern_detector_is_quiet():
+   73: +    command = "curl -I http://192.168.8.1:9"
+   74: +    requests = []
+   75: +
+   76: +    def decline(*args, **kwargs):
+   77: +        requests.append(True)
+   78: +        return "deny"
+   79: +
+   80: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]) as hooks, patch(
+   81: +        "tools.tirith_security.check_command_security",
+   82: +        return_value={"action": "allow", "findings": [], "summary": ""},
+   83: +    ):
+   84: +        result = check_all_command_guards(command, "local", approval_callback=decline)
+   85: +
+   86: +    assert result["approved"] is False
+   87: +    assert requests == [True]
+   88: +    assert any(call.args[0] == "pre_command_approval" for call in hooks.call_args_list)
+   89: +
+   90: +
+   91: +def test_plugin_denial_blocks_when_pattern_detector_is_quiet():
+   92: +    command = "curl -I http://192.168.8.1:9"
+   93: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]), patch(
+   94: +        "tools.tirith_security.check_command_security",
+   95: +        return_value={"action": "allow", "findings": [], "summary": ""},
+   96: +    ):
+   97: +        result = check_all_command_guards(
+   98: +            command, "local", approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
+   99: +        )
+  100: +    assert result["approved"] is False
+  101: +    assert result["outcome"] == "plugin_denied"
+  102: +
+  103: +
+  104: +def test_plugin_review_requires_human_even_in_smart_mode(monkeypatch):
+  105: +    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
+  106: +    requests = []
+  107: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]), patch(
+  108: +        "tools.tirith_security.check_command_security",
+  109: +        return_value={"action": "allow", "findings": [], "summary": ""},
+  110: +    ), patch("tools.approval._smart_verdict", side_effect=pytest.fail):
+  111: +        result = check_all_command_guards(
+  112: +            "curl -I http://192.168.8.1:9", "local",
+  113: +            approval_callback=lambda *args, **kwargs: requests.append(True) or "deny",
+  114: +        )
+  115: +    assert result["approved"] is False
+  116: +    assert requests == [True]
+  117: +
+  118: +
+  119: +def test_plugin_review_fails_closed_without_a_human(monkeypatch):
+  120: +    monkeypatch.delenv("HERMES_INTERACTIVE", raising=False)
+  121: +    monkeypatch.delenv("HERMES_GATEWAY_SESSION", raising=False)
+  122: +    monkeypatch.delenv("HERMES_EXEC_ASK", raising=False)
+  123: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
+  124: +        result = check_all_command_guards("curl -I http://192.168.8.1:9", "local")
+  125: +    assert result["approved"] is False
+  126: +
+  127: +
+  128: +def test_hardline_block_precedes_plugin_review():
+  129: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]) as hooks:
+  130: +        result = check_all_command_guards("rm -rf /", "local")
+  131: +    assert result["approved"] is False
+  132: +    assert not [call for call in hooks.call_args_list if call.args[0] == "pre_command_approval"]
+  133: +
+  134: +
+  135: +def test_plugin_review_honors_session_approval():
+  136: +    from tools.approval import clear_session
+  137: +    from tools.approval_context import set_current_session_key
+  138: +
+  139: +    token = set_current_session_key("test:plugin-policy-review")
+  140: +    prompts = []
+  141: +    try:
+  142: +        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]), patch(
+  143: +            "tools.tirith_security.check_command_security",
+  144: +            return_value={"action": "allow", "findings": [], "summary": ""},
+  145: +        ):
+  146: +            for _ in range(2):
+  147: +                result = check_all_command_guards(
+  148: +                    "curl -I http://192.168.8.1:9", "local",
+  149: +                    approval_callback=lambda *args, **kwargs: prompts.append(True) or "session",
+  150: +                )
+  151: +                assert result["approved"] is True
+  152: +        assert prompts == [True]
+  153: +    finally:
+  154: +        clear_session("test:plugin-policy-review")
+  155: +        from tools import approval_context
+  156: +        approval_context._approval_session_key.reset(token)
+  157: +
+  158: +
+  159: +def test_plugin_review_in_isolated_docker_requires_human():
+  160: +    prompts = []
+  161: +    command = "curl -I http://192.168.8.1:9"
+  162: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
+  163: +        result = check_all_command_guards(
+  164: +            command, "docker", has_host_access=False,
+  165: +            approval_callback=lambda *args, **kwargs: prompts.append(args) or "deny",
+  166: +        )
+  167: +    assert result["approved"] is False
+  168: +    assert len(prompts) == 1
+  169: +    assert command in " ".join(prompts[0])
+  170: +
+  171: +
+  172: +def test_plugin_deny_in_isolated_docker_blocks():
+  173: +    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]):
+  174: +        result = check_all_command_guards(
+  175: +            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
+  176: +        )
+  177: +    assert result["approved"] is False
+  178: +    assert result["outcome"] == "plugin_denied"
+  179: +
+  180: +
+  181: +def test_plugin_deny_after_session_review_still_blocks():
+  182: +    from tools.approval import clear_session
+  183: +    from tools.approval_context import set_current_session_key
+  184: +
+  185: +    command = "curl -I http://192.168.8.1:9"
+  186: +    session_key = "test:plugin-policy-dynamic-deny"
+  187: +    token = set_current_session_key(session_key)
+  188: +    try:
+  189: +        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]):
+  190: +            first = check_all_command_guards(
+  191: +                command, "local", approval_callback=lambda *args, **kwargs: "session",
+  192: +            )
+  193: +        assert first["approved"] is True
+  194: +        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]):
+  195: +            second = check_all_command_guards(command, "local")
+  196: +        assert second["approved"] is False
+  197: +        assert second["outcome"] == "plugin_denied"
+  198: +    finally:
+  199: +        clear_session(session_key)
+  200: +        from tools import approval_context
+  201: +        approval_context._approval_session_key.reset(token)
+  202: diff --git a/tools/approval.py b/tools/approval.py
+  203: index b2cd411aa1c..fb9b8c1e77f 100644
+  204: --- a/tools/approval.py
+  205: +++ b/tools/approval.py
+  206: @@ -1081,10 +1081,9 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+  207:  
+  208:  
+  209:  def _plugin_command_decision(command: str, pattern_key: str, description: str) -> str | None:
+  210: -    """Combine plugin decisions for a recoverable command-pattern warning.
+  211: +    """Combine plugin command decisions after the applicable safety floors.
+  212:  
+  213: -    Callers check hardline and user deny floors first. A grant never overrides
+  214: -    a separate Tirith finding or smart guardian denial.
+  215: +    A grant never overrides a separate Tirith finding or smart guardian denial.
+  216:      """
+  217:      try:
+  218:          from hermes_cli.plugins import invoke_hook
+  219: @@ -1098,6 +1097,8 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
+  220:      actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
+  221:      if "deny" in actions:
+  222:          return "deny"
+  223: +    if "review" in actions:
+  224: +        return "review"
+  225:      return "allow" if "allow" in actions else None
+  226:  
+  227:  
+  228: @@ -1206,17 +1207,19 @@ def check_all_command_guards(command: str, env_type: str,
+  229:      dangerous-command findings are presented as ONE combined approval request, so a gateway
+  230:      force=True replay cannot bypass one check when only the other was shown to the user.
+  231:      ``has_host_access``: a Docker sandbox with bind-mounted host paths takes the normal flow."""
+  232: -    if _should_skip_container_guards(env_type, has_host_access=has_host_access):
+  233: -        return _user_deny_block(command) or _approved()
+  234: -
+  235: -    blocked = _floor_block(command, sudo_guard=True)
+  236: +    isolated_container = _should_skip_container_guards(env_type, has_host_access=has_host_access)
+  237: +    if isolated_container:
+  238: +        blocked = _user_deny_block(command)
+  239: +    else:
+  240: +        blocked = _floor_block(command, sudo_guard=True)
+  241:      if blocked is not None:
+  242:          return blocked
+  243:  
+  244: -    from agent.terminal_approval_batch import consume_prepared_guard
+  245: -    prepared = consume_prepared_guard(command, env_type, has_host_access)
+  246: -    if prepared is not None:
+  247: -        return prepared
+  248: +    if not isolated_container:
+  249: +        from agent.terminal_approval_batch import consume_prepared_guard
+  250: +        prepared = consume_prepared_guard(command, env_type, has_host_access)
+  251: +        if prepared is not None:
+  252: +            return prepared
+  253:  
+  254:      approval_mode = approval_context._get_approval_mode()
+  255:      if _yolo_active() or approval_mode == "off":
+  256: @@ -1224,7 +1227,36 @@ def check_all_command_guards(command: str, env_type: str,
+  257:      if _command_matches_permanent_allowlist(command):
+  258:          return _approved()
+  259:  
+  260: +    is_dangerous, pattern_key, description = detect_dangerous_command(command)
+  261: +    session_key = get_current_session_key()
+  262: +    policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
+  263: +    policy_key = f"plugin_rule:{policy_rule_key}"
+  264: +    plugin_decision = _plugin_command_decision(command, pattern_key or "", description or "")
+  265: +    # An earlier review approval never suppresses a later policy denial.
+  266: +    if plugin_decision == "review" and is_approved(session_key, policy_key):
+  267: +        plugin_decision = None
+  268: +    if plugin_decision == "deny":
+  269: +        return _denied(
+  270: +            "BLOCKED: a plugin command policy denied this command.",
+  271: +            pattern_key=pattern_key or policy_key,
+  272: +            description=description or "Plugin command policy denied the command",
+  273: +            outcome="plugin_denied",
+  274: +        )
+  275: +
+  276: +    if isolated_container:
+  277: +        if plugin_decision == "review":
+  278: +            return request_tool_approval(
+  279: +                "Bash", f"Plugin command policy requires review: {command}",
+  280: +                rule_key=policy_rule_key, approval_callback=approval_callback,
+  281: +            )
+  282: +        return _approved()
+  283: +
+  284:      approval_callback, is_cli, is_gateway, is_ask = _presence(approval_callback)
+  285: +    if plugin_decision == "review" and not (is_cli or is_gateway or is_ask):
+  286: +        return request_tool_approval(
+  287: +            "Bash", "Plugin command policy requires review",
+  288: +            rule_key=policy_rule_key, approval_callback=approval_callback,
+  289: +        )
+  290:      # Outside CLI/gateway/ask flows we never block on approvals: each
+  291:      # unattended context applies its configured deny/approve mode, else allow.
+  292:      if not is_cli and not is_gateway and not is_ask:
+  293: @@ -1237,9 +1269,7 @@ def check_all_command_guards(command: str, env_type: str,
+  294:      # Gather findings: warnings = [(pattern_key, description, is_tirith)]. Tirith block AND warn both go through the
+  295:      # approval flow (block used to be a hard stop) so users can inspect the findings and approve.
+  296:      tirith_result = _tirith_scan(command)
+  297: -    is_dangerous, pattern_key, description = detect_dangerous_command(command)
+  298:      warnings = []
+  299: -    session_key = get_current_session_key()
+  300:      if tirith_result["action"] in {"block", "warn"}:
+  301:          findings = tirith_result.get("findings") or []
+  302:          rule_id = findings[0].get("rule_id", "unknown") if findings else "unknown"
+  303: @@ -1248,19 +1278,12 @@ def check_all_command_guards(command: str, env_type: str,
+  304:              warnings.append((tirith_key, _format_tirith_description(tirith_result), True))
+  305:      if is_dangerous and not is_approved(session_key, pattern_key):
+  306:          warnings.append((pattern_key, description, False))
+  307: +    if plugin_decision == "review" and not warnings:
+  308: +        warnings.append((policy_key, "Plugin command policy requires review", False))
+  309:      if not warnings:
+  310:          return _approved()
+  311:  
+  312: -    # Plugin grants cover only the recoverable pattern layer. A Tirith finding
+  313: -    # still reaches the human approval path. An explicit plugin denial blocks.
+  314: -    plugin_decision = None
+  315: -    if is_dangerous and any(not is_tirith for _, _, is_tirith in warnings):
+  316: -        plugin_decision = _plugin_command_decision(command, pattern_key, description)
+  317: -        if plugin_decision == "deny":
+  318: -            return _denied(
+  319: -                "BLOCKED: a plugin command policy denied this command.",
+  320: -                pattern_key=pattern_key, description=description, outcome="plugin_denied",
+  321: -            )
+  322: +    # A plugin grant cannot override a Tirith warning or a smart guardian denial.
+  323:      if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
+  324:          return _approved()
+  325:  
+  326: @@ -1275,7 +1298,8 @@ def check_all_command_guards(command: str, env_type: str,
+  327:          _COMMAND_GATE, command=command, description=combined_desc,
+  328:          pattern_key=primary_key, pattern_keys=all_keys, warnings=warnings,
+  329:          session_key=session_key, approval_callback=approval_callback,
+  330: -        is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask, smart=approval_mode == "smart",
+  331: +        is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask,
+  332: +        smart=approval_mode == "smart" and plugin_decision != "review",
+  333:          permanent_capable=any(not is_t for _, _, is_t in warnings),
+  334:          plugin_grant=(lambda: plugin_decision == "allow")
+  335:          if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
+
+SOURCE patches/hermes-command-context.patch
+    1: diff --git a/agent/terminal_approval_batch.py b/agent/terminal_approval_batch.py
+    2: index 00ef84abb1b..318370c71cf 100644
+    3: --- a/agent/terminal_approval_batch.py
+    4: +++ b/agent/terminal_approval_batch.py
+    5: @@ -57,7 +57,16 @@ class _TerminalSlot:
+    6:                      turn_id=getattr(self.batch.agent, "_current_turn_id", "") or "",
+    7:                  )
+    8:                  try:
+    9: -                    self.guard_key = (ref.args["command"], config["env_type"], tt._docker_has_host_access(config))
+   10: +                    overrides = tt.resolve_task_overrides(self.batch.task_id)
+   11: +                    base_cwd = tt.coerce_ssh_remote_cwd(
+   12: +                        overrides.get("cwd") or tt.get_session_cwd(self.batch.task_id) or config["cwd"],
+   13: +                        config["env_type"],
+   14: +                    )
+   15: +                    target_cwd = ref.args.get("workdir") or base_cwd
+   16: +                    self.guard_key = (
+   17: +                        ref.args["command"], config["env_type"], tt._docker_has_host_access(config),
+   18: +                        target_cwd, self.batch.task_id or "",
+   19: +                    )
+   20:                      self.decision = tt._check_all_guards(*self.guard_key)
+   21:                  finally:
+   22:                      reset_current_observability_context(tokens)
+   23: @@ -212,7 +221,7 @@ def register_prepared_approval(session_key, entry):
+   24:          slot.batch.pending_approvals.append((session_key, entry))
+   25:  
+   26:  
+   27: -def consume_prepared_guard(command, env_type, has_host_access):
+   28: +def consume_prepared_guard(command, env_type, has_host_access, cwd="", task_id=""):
+   29:      slot = _slot.get()
+   30:      if slot is None or slot.preparing:
+   31:          return None
+   32: @@ -229,7 +238,7 @@ def consume_prepared_guard(command, env_type, has_host_access):
+   33:          return None
+   34:      from tools.approval_context import _approval_tool_call_id
+   35:      if (_approval_tool_call_id.get() != slot.parsed.ref(slot.batch.task_id).call_id
+   36: -            or slot.guard_key != (command, env_type, has_host_access)):
+   37: +            or slot.guard_key != (command, env_type, has_host_access, cwd, task_id)):
+   38:          return None
+   39:      decision, slot.decision = slot.decision, None  # single-use, even for identical calls
+   40:      return decision
+   41: diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+   42: index a0387040154..3aae7213eae 100644
+   43: --- a/tests/tools/test_plugin_command_approval.py
+   44: +++ b/tests/tools/test_plugin_command_approval.py
+   45: @@ -331,3 +331,74 @@ def test_plugin_deny_after_session_review_still_blocks():
+   46:          clear_session(session_key)
+   47:          from tools import approval_context
+   48:          approval_context._approval_session_key.reset(token)
+   49: +
+   50: +
+   51: +def test_plugin_command_policy_receives_target_workspace():
+   52: +    calls = []
+   53: +
+   54: +    def capture(name, **kwargs):
+   55: +        if name == "pre_command_approval":
+   56: +            calls.append(kwargs)
+   57: +        return [{"action": "review"}] if name == "pre_command_approval" else []
+   58: +
+   59: +    with patch("hermes_cli.plugins.invoke_hook", side_effect=capture):
+   60: +        result = check_all_command_guards(
+   61: +            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
+   62: +            cwd="/workspace/project-a", task_id="docker-session-a",
+   63: +            approval_callback=lambda *args, **kwargs: "deny",
+   64: +        )
+   65: +    assert result["approved"] is False
+   66: +    assert len(calls) == 1
+   67: +    assert calls[0]["cwd"] == "/workspace/project-a"
+   68: +    assert calls[0]["task_id"] == "docker-session-a"
+   69: +    assert calls[0]["env_type"] == "docker"
+   70: +
+   71: +
+   72: +def test_terminal_approval_forwards_target_workspace():
+   73: +    from tools import terminal_tool as terminal_module
+   74: +
+   75: +    with patch.object(terminal_module, "_check_all_guards_impl", return_value={"approved": True}) as guard:
+   76: +        terminal_module._check_all_guards(
+   77: +            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
+   78: +            cwd="/workspace/project-a", task_id="docker-session-a",
+   79: +        )
+   80: +    assert guard.call_args.kwargs["cwd"] == "/workspace/project-a"
+   81: +    assert guard.call_args.kwargs["task_id"] == "docker-session-a"
+   82: +
+   83: +    with patch.object(terminal_module, "_check_all_guards", return_value={"approved": True}) as guard:
+   84: +        terminal_module._run_approval_guards(
+   85: +            "curl -I http://192.168.8.1:9", "docker", {"env_type": "docker"}, force=False,
+   86: +            cwd="/workspace/project-a", task_id="docker-session-a",
+   87: +        )
+   88: +    assert guard.call_args.kwargs["cwd"] == "/workspace/project-a"
+   89: +    assert guard.call_args.kwargs["task_id"] == "docker-session-a"
+   90: +
+   91: +
+   92: +def test_prepared_command_policy_is_bound_to_workspace():
+   93: +    from types import SimpleNamespace
+   94: +    from agent import terminal_approval_batch as batch_module
+   95: +    from tools.approval_context import _approval_tool_call_id
+   96: +
+   97: +    command = "curl -I http://192.168.8.1:9"
+   98: +    decision = {"approved": True}
+   99: +    slot = SimpleNamespace(
+  100: +        preparing=False, check_cancelled=lambda: None,
+  101: +        batch=SimpleNamespace(failure_seen=False, task_id="docker-session-a"),
+  102: +        parsed=SimpleNamespace(ref=lambda task_id: SimpleNamespace(call_id="call-a")),
+  103: +        guard_key=(command, "docker", False, "/workspace/project-a", "docker-session-a"),
+  104: +        decision=decision,
+  105: +    )
+  106: +    slot_token = batch_module._slot.set(slot)
+  107: +    call_token = _approval_tool_call_id.set("call-a")
+  108: +    try:
+  109: +        assert batch_module.consume_prepared_guard(
+  110: +            command, "docker", False, "/workspace/project-b", "docker-session-a",
+  111: +        ) is None
+  112: +        assert slot.decision is decision
+  113: +        assert batch_module.consume_prepared_guard(
+  114: +            command, "docker", False, "/workspace/project-a", "docker-session-a",
+  115: +        ) is decision
+  116: +        assert slot.decision is None
+  117: +    finally:
+  118: +        _approval_tool_call_id.reset(call_token)
+  119: +        batch_module._slot.reset(slot_token)
+  120: diff --git a/tools/approval.py b/tools/approval.py
+  121: index fb9b8c1e77f..06883affddb 100644
+  122: --- a/tools/approval.py
+  123: +++ b/tools/approval.py
+  124: @@ -1080,7 +1080,10 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+  125:      return _user_deny_block(command)
+  126:  
+  127:  
+  128: -def _plugin_command_decision(command: str, pattern_key: str, description: str) -> str | None:
+  129: +def _plugin_command_decision(
+  130: +    command: str, pattern_key: str, description: str, *,
+  131: +    env_type: str = "", cwd: str = "", task_id: str = "",
+  132: +) -> str | None:
+  133:      """Combine plugin command decisions after the applicable safety floors.
+  134:  
+  135:      A grant never overrides a separate Tirith finding or smart guardian denial.
+  136: @@ -1090,6 +1093,7 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
+  137:          decisions = invoke_hook(
+  138:              "pre_command_approval", command=command, pattern_key=pattern_key,
+  139:              description=description, session_key=get_current_session_key(),
+  140: +            env_type=env_type, cwd=cwd, task_id=task_id,
+  141:          )
+  142:      except Exception:
+  143:          logger.exception("pre_command_approval hook failed")
+  144: @@ -1202,7 +1206,8 @@ def _tirith_scan(command: str) -> dict:
+  145:  
+  146:  def check_all_command_guards(command: str, env_type: str,
+  147:                               approval_callback=None,
+  148: -                             has_host_access: bool = False) -> dict:
+  149: +                             has_host_access: bool = False,
+  150: +                             cwd: str = "", task_id: str = "") -> dict:
+  151:      """Run all pre-exec security checks and return a single approval decision. Tirith and
+  152:      dangerous-command findings are presented as ONE combined approval request, so a gateway
+  153:      force=True replay cannot bypass one check when only the other was shown to the user.
+  154: @@ -1217,7 +1222,7 @@ def check_all_command_guards(command: str, env_type: str,
+  155:  
+  156:      if not isolated_container:
+  157:          from agent.terminal_approval_batch import consume_prepared_guard
+  158: -        prepared = consume_prepared_guard(command, env_type, has_host_access)
+  159: +        prepared = consume_prepared_guard(command, env_type, has_host_access, cwd, task_id)
+  160:          if prepared is not None:
+  161:              return prepared
+  162:  
+  163: @@ -1231,7 +1236,10 @@ def check_all_command_guards(command: str, env_type: str,
+  164:      session_key = get_current_session_key()
+  165:      policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
+  166:      policy_key = f"plugin_rule:{policy_rule_key}"
+  167: -    plugin_decision = _plugin_command_decision(command, pattern_key or "", description or "")
+  168: +    plugin_decision = _plugin_command_decision(
+  169: +        command, pattern_key or "", description or "",
+  170: +        env_type=env_type, cwd=cwd, task_id=task_id,
+  171: +    )
+  172:      # An earlier review approval never suppresses a later policy denial.
+  173:      if plugin_decision == "review" and is_approved(session_key, policy_key):
+  174:          plugin_decision = None
+  175: diff --git a/tools/terminal_tool.py b/tools/terminal_tool.py
+  176: index be1496847b6..db603efbf8e 100644
+  177: --- a/tools/terminal_tool.py
+  178: +++ b/tools/terminal_tool.py
+  179: @@ -146,11 +146,12 @@ def _docker_has_host_access(config: Dict[str, Any]) -> bool:
+  180:  
+  181:  
+  182:  def _check_all_guards(command: str, env_type: str,
+  183: -                      has_host_access: bool = False) -> dict:
+  184: +                      has_host_access: bool = False,
+  185: +                      cwd: str = "", task_id: str = "") -> dict:
+  186:      """Delegate to consolidated guard (tirith + dangerous cmd) with CLI callback."""
+  187:      return _check_all_guards_impl(command, env_type,
+  188:                                    approval_callback=_get_approval_callback(),
+  189: -                                  has_host_access=has_host_access)
+  190: +                                  has_host_access=has_host_access, cwd=cwd, task_id=task_id)
+  191:  
+  192:  
+  193:  from tools.environments.base import EnvironmentConnectionError
+  194: @@ -993,13 +994,16 @@ class _ApprovalVerdict:
+  195:      approved_run: bool = False
+  196:  
+  197:  
+  198: -def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *, force: bool) -> _ApprovalVerdict:
+  199: +def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
+  200: +                         force: bool, cwd: str = "", task_id: str = "") -> _ApprovalVerdict:
+  201:      """Run tirith + dangerous-command guards; ``force`` skips them entirely.
+  202:      Raises :class:`_Rejected` when the command may not run (denied, or pending
+  203:      gateway approval)."""
+  204:      if force:
+  205:          return _ApprovalVerdict(approved_run=True)
+  206: -    approval = _check_all_guards(command, env_type, has_host_access=_docker_has_host_access(config))
+  207: +    approval = _check_all_guards(
+  208: +        command, env_type, has_host_access=_docker_has_host_access(config), cwd=cwd, task_id=task_id,
+  209: +    )
+  210:      if not approval["approved"]:
+  211:          if approval.get("status") == "pending_approval":  # gateway ask mode
+  212:              raise _Rejected(_error_json(
+  213: @@ -1421,7 +1425,10 @@ def terminal_tool(
+  214:              ))
+  215:          # Pre-exec security checks (tirith + dangerous command detection);
+  216:          # force=True means the user already confirmed.
+  217: -        verdict = _run_approval_guards(command, env_type, plan.config, force=force)
+  218: +        verdict = _run_approval_guards(
+  219: +            command, env_type, plan.config, force=force,
+  220: +            cwd=workdir or cwd, task_id=task_id or "",
+  221: +        )
+  222:  
+  223:          pty_disabled = pty and _command_requires_pipe_stdin(command)
+  224:          if plan.promoted_from_foreground_timeout is not None:
+
+SOURCE patches/hermes-command-rewrite.patch
+    1: diff --git a/model_tools.py b/model_tools.py
+    2: index 6a29ac9384b8..553a96609f21 100644
+    3: --- a/model_tools.py
+    4: +++ b/model_tools.py
+    5: @@ -1,3 +1,5 @@
+    6: +# ABOUTME: Dispatches model tool calls through the registry and hooks.
+    7: +# ABOUTME: Reports the arguments that each tool actually executes.
+    8:  """Thin orchestration layer over the tool registry.
+    9:  
+   10:  Importing runs tool discovery (each tools/*.py self-registers via
+   11: @@ -900,6 +902,7 @@ def handle_function_call(
+   12:      it (single-fire contract). enabled/disabled_toolsets scope the Tool Search
+   13:      bridge catalog to this session's grant (None = unrestricted).
+   14:      """
+   15: +    supplied_args = function_args
+   16:      function_args = coerce_tool_args(function_name, function_args)
+   17:      if not isinstance(function_args, dict):
+   18:          function_args = {}
+   19: @@ -969,6 +972,12 @@ def handle_function_call(
+   20:          start = time.monotonic()
+   21:          result = _execute_tool(function_name, function_args, original_args, ids, user_task=user_task,
+   22:                                 enabled_tools=enabled_tools, skip_tool_execution_middleware=skip_tool_execution_middleware)
+   23: +        # The outer executor owns PostToolUse and holds the supplied args. Return the
+   24: +        # command that terminal actually ran after a command-policy replacement.
+   25: +        if function_name == "terminal" and isinstance(supplied_args, dict):
+   26: +            effective_command = function_args.get("command")
+   27: +            if isinstance(effective_command, str):
+   28: +                supplied_args["command"] = effective_command
+   29:          duration_ms = _elapsed_ms(start)
+   30:          _emit(result, duration_ms=duration_ms)
+   31:          return _apply_transform_tool_result_hook(function_name, function_args, result, duration_ms, ids)
+   32: diff --git a/tools/approval.py b/tools/approval.py
+   33: index 06883affddb7..fec61915204a 100644
+   34: --- a/tools/approval.py
+   35: +++ b/tools/approval.py
+   36: @@ -1,3 +1,5 @@
+   37: +# ABOUTME: Applies command policy, safety checks, and approval decisions.
+   38: +# ABOUTME: Combines plugin decisions before terminal execution.
+   39:  """Dangerous command approval -- the gate flow and per-session state.
+   40:  
+   41:  Owns the session state (approvals, yolo, gateway queues, denial breaker), the three guard
+   42: @@ -1083,7 +1085,7 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+   43:  def _plugin_command_decision(
+   44:      command: str, pattern_key: str, description: str, *,
+   45:      env_type: str = "", cwd: str = "", task_id: str = "",
+   46: -) -> str | None:
+   47: +) -> str | dict | None:
+   48:      """Combine plugin command decisions after the applicable safety floors.
+   49:  
+   50:      A grant never overrides a separate Tirith finding or smart guardian denial.
+   51: @@ -1101,6 +1103,19 @@ def _plugin_command_decision(
+   52:      actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
+   53:      if "deny" in actions:
+   54:          return "deny"
+   55: +    replacements = [decision.get("command") for decision in (decisions or [])
+   56: +                    if isinstance(decision, dict) and decision.get("action") == "rewrite"]
+   57: +    if replacements:
+   58: +        if any(not isinstance(value, str) or not value.strip() for value in replacements):
+   59: +            return "deny"
+   60: +        if len(set(replacements)) != 1:
+   61: +            return "deny"
+   62: +        # A review of the original command does not authorize its replacement.
+   63: +        if "review" in actions:
+   64: +            return "deny"
+   65: +        if replacements[0] != command:
+   66: +            return {"action": "rewrite", "command": replacements[0]}
+   67: +        return "allow"
+   68:      if "review" in actions:
+   69:          return "review"
+   70:      return "allow" if "allow" in actions else None
+   71: @@ -1130,6 +1145,11 @@ def check_dangerous_command(command: str, env_type: str,
+   72:              "BLOCKED: a plugin command policy denied this command.",
+   73:              pattern_key=pattern_key, description=description, outcome="plugin_denied",
+   74:          )
+   75: +    if isinstance(plugin_decision, dict):
+   76: +        return _denied(
+   77: +            "BLOCKED: a plugin command replacement requires the full terminal guard.",
+   78: +            pattern_key=pattern_key, description=description, outcome="plugin_denied",
+   79: +        )
+   80:      if approval_context._get_approval_mode() == "manual" and plugin_decision == "allow":
+   81:          return _approved()
+   82:      return _run_approval_gate(
+   83: @@ -1250,6 +1270,8 @@ def check_all_command_guards(command: str, env_type: str,
+   84:              description=description or "Plugin command policy denied the command",
+   85:              outcome="plugin_denied",
+   86:          )
+   87: +    if isinstance(plugin_decision, dict):
+   88: +        return {**_approved(), "replacement_command": plugin_decision["command"]}
+   89:  
+   90:      if isolated_container:
+   91:          if plugin_decision == "review":
+   92: diff --git a/tools/terminal_tool.py b/tools/terminal_tool.py
+   93: index db603efbf8e4..344f88a5e9e0 100644
+   94: --- a/tools/terminal_tool.py
+   95: +++ b/tools/terminal_tool.py
+   96: @@ -1,4 +1,6 @@
+   97:  #!/usr/bin/env python3
+   98: +# ABOUTME: Executes terminal commands in the selected environment.
+   99: +# ABOUTME: Rechecks command policy before execution and background dispatch.
+  100:  """Terminal tool: run shell commands in the configured backend.
+  101:  
+  102:  Backends (``TERMINAL_ENV``): local (default), docker, singularity, modal
+  103: @@ -992,6 +994,7 @@ class _ApprovalVerdict:
+  104:      """
+  105:      note: Optional[str] = None
+  106:      approved_run: bool = False
+  107: +    command: Optional[str] = None
+  108:  
+  109:  
+  110:  def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
+  111: @@ -1022,6 +1025,8 @@ def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
+  112:          )
+  113:          raise _Rejected(_error_json(approval.get("message", fallback_msg), status="blocked",
+  114:                                      **({"user_summary": approval["user_summary"]} if approval.get("user_summary") else {})))
+  115: +    if approval.get("replacement_command") is not None:
+  116: +        return _ApprovalVerdict(command=approval["replacement_command"])
+  117:      desc = approval.get("description", "flagged as dangerous")
+  118:      if approval.get("user_approved"):
+  119:          return _ApprovalVerdict(
+  120: @@ -1356,6 +1361,7 @@ def terminal_tool(
+  121:      _completion_output_chars: int = 0,
+  122:      heartbeat: int = 0,
+  123:      persist_on_release: bool = False,
+  124: +    _effective_args: Optional[Dict[str, Any]] = None,
+  125:  ) -> str:
+  126:      """Execute *command* in the configured terminal environment; returns a JSON string.
+  127:  
+  128: @@ -1406,29 +1412,45 @@ def terminal_tool(
+  129:          # The guard chain runs on the deadline worker; keep it answerable to /stop
+  130:          # aimed at this tool thread (a remote-backend script read polls is_interrupted()).
+  131:          guard_timeout = max(plan.effective_timeout, _PRE_EXEC_GUARD_MIN_TIMEOUT_S)
+  132: -        _acting_token = acting_for_tid.set(threading.current_thread().ident)
+  133: -        try:
+  134: -            bounded_guard = run_bounded_sync(
+  135: -                lambda: _pre_exec_block(
+  136: -                    command, env=env, env_type=env_type, cwd=cwd, workdir=workdir, session_key=session_key,
+  137: -                ),
+  138: -                guard_timeout,
+  139: -                label="terminal.pre-exec-guard",
+  140: +        seen_commands = {command}
+  141: +        for _ in range(4):
+  142: +            _acting_token = acting_for_tid.set(threading.current_thread().ident)
+  143: +            try:
+  144: +                bounded_guard = run_bounded_sync(
+  145: +                    lambda: _pre_exec_block(
+  146: +                        command, env=env, env_type=env_type, cwd=cwd, workdir=workdir, session_key=session_key,
+  147: +                    ),
+  148: +                    guard_timeout,
+  149: +                    label="terminal.pre-exec-guard",
+  150: +                )
+  151: +            finally:
+  152: +                acting_for_tid.reset(_acting_token)
+  153: +            if bounded_guard.timed_out:
+  154: +                raise _Rejected(_error_json(
+  155: +                    f"Terminal pre-execution guard did not finish within {guard_timeout}s "
+  156: +                    "(process-identity probe wedged); the command was not run. Retry the call.",
+  157: +                    status="error",
+  158: +                ))
+  159: +            verdict = _run_approval_guards(
+  160: +                command, env_type, plan.config, force=force,
+  161: +                cwd=workdir or cwd, task_id=task_id or "",
+  162:              )
+  163: -        finally:
+  164: -            acting_for_tid.reset(_acting_token)
+  165: -        if bounded_guard.timed_out:
+  166: -            raise _Rejected(_error_json(
+  167: -                f"Terminal pre-execution guard did not finish within {guard_timeout}s "
+  168: -                "(process-identity probe wedged); the command was not run. Retry the call.",
+  169: -                status="error",
+  170: -            ))
+  171: -        # Pre-exec security checks (tirith + dangerous command detection);
+  172: -        # force=True means the user already confirmed.
+  173: -        verdict = _run_approval_guards(
+  174: -            command, env_type, plan.config, force=force,
+  175: -            cwd=workdir or cwd, task_id=task_id or "",
+  176: -        )
+  177: +            if verdict.command is None:
+  178: +                break
+  179: +            replacement = verdict.command
+  180: +            if replacement in seen_commands:
+  181: +                raise _Rejected(_error_json("Command replacement cycle blocked.", status="blocked"))
+  182: +            if not background:
+  183: +                guidance = _foreground_background_guidance(replacement)
+  184: +                if guidance:
+  185: +                    raise _Rejected(_error_json(guidance, status="error"))
+  186: +            seen_commands.add(replacement)
+  187: +            command = replacement
+  188: +        else:
+  189: +            raise _Rejected(_error_json("Command replacement limit exceeded.", status="blocked"))
+  190: +
+  191: +        if _effective_args is not None:
+  192: +            _effective_args["command"] = command
+  193:  
+  194:          pty_disabled = pty and _command_requires_pipe_stdin(command)
+  195:          if plan.promoted_from_foreground_timeout is not None:
+  196: @@ -1592,6 +1614,7 @@ def _handle_terminal(args, **kw):
+  197:          notify_on_complete = True  # the heartbeat rides the completion delivery path
+  198:      return terminal_tool(
+  199:          command=args.get("command"),
+  200: +        _effective_args=args,
+  201:          background=args.get("background", False),
+  202:          timeout=args.get("timeout"),
+  203:          task_id=kw.get("task_id"),
+
+SOURCE patches/hermes-session-reasons.patch
+    1: diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
+    2: index 23c856091fd1..ab8e0aa33e58 100644
+    3: --- a/gateway/slash_commands_session.py
+    4: +++ b/gateway/slash_commands_session.py
+    5: @@ -896,6 +896,12 @@ class GatewaySessionCommandsMixin:
+    6:          new_entry = await self.async_session_store.switch_session(session_key, target_id)
+    7:          if not new_entry:
+    8:              return t("gateway.resume.switch_failed")
+    9: +        # A successful switch ends the previous session. Notify lifecycle observers
+   10: +        # before clearing the old conversation scope.
+   11: +        with contextlib.suppress(Exception):
+   12: +            await self._finalize_session_off_loop(
+   13: +                session_id=current_entry.session_id, platform=source.platform.value,
+   14: +                reason="resume")
+   15:          # Conversation boundary: all conversation-scoped state + security state in one funnel call.
+   16:          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
+   17:          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
+   18: diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
+   19: index eaba807d2280..cc14c1ea17d5 100644
+   20: --- a/hermes_cli/cli_commands_mixin.py
+   21: +++ b/hermes_cli/cli_commands_mixin.py
+   22: @@ -1306,6 +1306,8 @@ class CLICommandsMixin:
+   23:              return _cp("  Already on that session.")
+   24:          old_session_id = self.session_id
+   25:          _end_current_session(self, "resumed_other")
+   26: +        if self.agent:
+   27: +            self._notify_session_boundary("on_session_finalize", reason="resume")
+   28:          self.session_id, self._resumed, self._pending_title = target_id, True, None
+   29:          _sync_process_session_id(target_id)
+   30:          # One lineage SELECT, two projections: model_history is alternation-repaired for live
+   31: diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
+   32: index f785283881b2..82956b70ed2e 100644
+   33: --- a/hermes_cli/cli_session_mixin.py
+   34: +++ b/hermes_cli/cli_session_mixin.py
+   35: @@ -425,7 +425,7 @@ class CLISessionMixin:
+   36:          flush_tool_summary()
+   37:          _cli_visible_print()
+   38:  
+   39: -    def _notify_session_boundary(self, event_type: str) -> None:
+   40: +    def _notify_session_boundary(self, event_type: str, reason: str = "") -> None:
+   41:          """Fire a session-boundary plugin hook (on_session_finalize / on_session_reset).
+   42:          Non-blocking; errors swallowed. Safe from shutdown, /new, /reset."""
+   43:          with contextlib.suppress(Exception):
+   44: @@ -434,7 +434,7 @@ class CLISessionMixin:
+   45:              context = {
+   46:                  "session_id": self.agent.session_id if self.agent else None,
+   47:                  "platform": getattr(self, "platform", None) or "cli",
+   48: -                "reason": "new_session" if event_type == "on_session_reset" else "session_boundary"}
+   49: +                "reason": reason or ("new_session" if event_type == "on_session_reset" else "session_boundary")}
+   50:              if event_type == "on_session_finalize":
+   51:                  finalize_session(**context)
+   52:              else:
+   53: diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
+   54: index a114eae376a0..ee2a0c2f1bdf 100644
+   55: --- a/tests/gateway/test_resume_command.py
+   56: +++ b/tests/gateway/test_resume_command.py
+   57: @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
+   58:  
+   59:  
+   60:  
+   61: +    @pytest.mark.asyncio
+   62: +    async def test_resume_finalizes_previous_session_with_reason(self, tmp_path):
+   63: +        from hermes_state import SessionDB
+   64: +
+   65: +        db = SessionDB(db_path=tmp_path / "state.db")
+   66: +        db.create_session("old_session_abc", "telegram", user_id="12345", chat_id="67890")
+   67: +        db.set_session_title("old_session_abc", "My Project")
+   68: +        db.create_session("current_session_001", "telegram", user_id="12345", chat_id="67890")
+   69: +        event = _make_event(text="/resume My Project")
+   70: +        runner = _make_runner(session_db=db, current_session_id="current_session_001", event=event)
+   71: +        runner._finalize_session_off_loop = AsyncMock()
+   72: +
+   73: +        await runner._handle_resume_command(event)
+   74: +
+   75: +        runner._finalize_session_off_loop.assert_awaited_once_with(
+   76: +            session_id="current_session_001", platform="telegram", reason="resume")
+   77: +        db.close()
+   78: +
+   79:      @pytest.mark.asyncio
+   80:      async def test_resume_clears_session_model_overrides(self, tmp_path):
+   81:          """Resume must not carry a previous session's /model override into the
+   82: diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
+   83: index 3654996697d3..9b35ad2249b5 100644
+   84: --- a/tests/hermes_cli/test_cli_resume_command.py
+   85: +++ b/tests/hermes_cli/test_cli_resume_command.py
+   86: @@ -210,6 +210,27 @@ class TestPendingResumeNumberedSelection:
+   87:  
+   88:  
+   89:  
+   90: +class TestResumeFinalizesPreviousSession:
+   91: +    def test_resume_notifies_old_session_with_resume_reason(self):
+   92: +        cli_obj = _make_cli()
+   93: +        cli_obj.agent = MagicMock()
+   94: +        cli_obj.agent.session_id = "current_session"
+   95: +        cli_obj._session_db.get_session.return_value = {"id": "target", "title": "T"}
+   96: +        cli_obj._session_db.get_resume_conversations.return_value = ([], [])
+   97: +        cli_obj._session_db.resolve_resume_session_id.return_value = "target"
+   98: +        observed = []
+   99: +        cli_obj._notify_session_boundary = lambda event, **kwargs: observed.append(
+  100: +            (event, kwargs.get("reason"), cli_obj.session_id))
+  101: +
+  102: +        with (
+  103: +            patch("hermes_cli.main._resolve_session_by_name_or_id", return_value="target"),
+  104: +            patch("cli._cprint"),
+  105: +        ):
+  106: +            cli_obj._handle_resume_command("/resume target")
+  107: +
+  108: +        assert observed == [("on_session_finalize", "resume", "current_session")]
+  109: +
+  110: +
+  111:  class TestResumeFlushesBeforeEndSession:
+  112:      """Regression for #47202: /resume must flush un-persisted messages to
+  113:      the session DB before ending the old session, just like /new and
+
+SOURCE patches/hermes-prompt-exit-reason.patch
+    1: diff --git a/cli.py b/cli.py
+    2: index 5d3055be6729..e56f3ff3452b 100644
+    3: --- a/cli.py
+    4: +++ b/cli.py
+    5: @@ -495,7 +495,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
+    6:          _arm_exit_watchdog(timeout_s=base * 2, from_signal=True)
+    7:  
+    8:  
+    9: -def _run_cleanup(*, notify_session_finalize: bool = True):
+   10: +def _run_cleanup(*, notify_session_finalize: bool = True, reason: str = "shutdown", session_id: str | None = None):
+   11:      """Run resource cleanup exactly once."""
+   12:      global _cleanup_done, _cleanup_in_progress
+   13:      if _cleanup_done:
+   14: @@ -514,9 +514,9 @@ def _run_cleanup(*, notify_session_finalize: bool = True):
+   15:              with suppress(swallow):
+   16:                  globals()[step]()
+   17:          if notify_session_finalize:
+   18: -            cleanup_session_id = _active_agent_ref.session_id if _active_agent_ref else None
+   19: +            cleanup_session_id = _active_agent_ref.session_id if _active_agent_ref else session_id
+   20:              if _should_emit_cleanup_session_finalize(cleanup_session_id):
+   21: -                _notify_session_finalize(session_id=cleanup_session_id, platform="cli", reason="shutdown")
+   22: +                _notify_session_finalize(session_id=cleanup_session_id, platform="cli", reason=reason)
+   23:          try:
+   24:              _shutdown_agent_memory_provider(_active_agent_ref)
+   25:          except Exception as e:
+   26: diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
+   27: index 9eeb62a6310a..439d5e04bed8 100644
+   28: --- a/hermes_cli/cli_tui_runtime_mixin.py
+   29: +++ b/hermes_cli/cli_tui_runtime_mixin.py
+   30: @@ -494,8 +494,9 @@ class CLITuiRuntimeMixin:
+   31:                  except (Exception, KeyboardInterrupt) as e:
+   32:                      logger.debug("Could not delete session on exit: %s", e)
+   33:          # run_conversation() fires on_session_end on normal completion; only fire here mid-turn.
+   34: +        at_prompt = not self._agent_running
+   35:          if self.agent and self._agent_running:
+   36:              _invoke_interrupted_session_end(self.agent, self.agent.session_id, "shutdown")
+   37: -        _run_cleanup()
+   38: +        _run_cleanup(reason="prompt_input_exit" if at_prompt else "shutdown", session_id=self.session_id)
+   39:          self._print_exit_summary()
+   40:          self._release_active_session()
+   41: diff --git a/tests/hermes_cli/test_session_boundary_hooks.py b/tests/hermes_cli/test_session_boundary_hooks.py
+   42: index 6b0ce767de63..60f5f244fb20 100644
+   43: --- a/tests/hermes_cli/test_session_boundary_hooks.py
+   44: +++ b/tests/hermes_cli/test_session_boundary_hooks.py
+   45: @@ -57,6 +57,32 @@ def test_session_finalize_on_cleanup(mock_finalize_session):
+   46:      )
+   47:  
+   48:  
+   49: +@patch("hermes_cli.lifecycle.finalize_session")
+   50: +def test_prompt_exit_reports_session_end_reason(mock_finalize_session):
+   51: +    import cli as cli_mod
+   52: +
+   53: +    mock_agent = MagicMock()
+   54: +    mock_agent.session_id = "prompt-exit-session"
+   55: +    cli_mod._active_agent_ref = mock_agent
+   56: +    cli_mod._cleanup_done = False
+   57: +
+   58: +    cli_mod._run_cleanup(reason="prompt_input_exit")
+   59: +
+   60: +    assert mock_finalize_session.call_args.kwargs["reason"] == "prompt_input_exit"
+   61: +
+   62: +
+   63: +@patch("hermes_cli.lifecycle.finalize_session")
+   64: +def test_prompt_exit_without_agent_keeps_session_id(mock_finalize_session):
+   65: +    import cli as cli_mod
+   66: +
+   67: +    cli_mod._active_agent_ref = None
+   68: +    cli_mod._cleanup_done = False
+   69: +
+   70: +    cli_mod._run_cleanup(reason="prompt_input_exit", session_id="unstarted-session")
+   71: +
+   72: +    assert mock_finalize_session.call_args.kwargs["session_id"] == "unstarted-session"
+   73: +
+   74: +
+   75:  @patch("hermes_cli.lifecycle.invoke_hook")
+   76:  def test_interrupted_session_end_helper_emits_observer_shape(mock_invoke_hook):
+   77:      """Verify quiet single-query interruption emits a correlated session end."""
+
+SOURCE patches/hermes-empty-session-clear.patch
+    1: diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
+    2: index 82956b70ed2e..28e1463d52de 100644
+    3: --- a/hermes_cli/cli_session_mixin.py
+    4: +++ b/hermes_cli/cli_session_mixin.py
+    5: @@ -432,7 +432,7 @@ class CLISessionMixin:
+    6:              from hermes_cli.lifecycle import finalize_session, invoke_hook
+    7:  
+    8:              context = {
+    9: -                "session_id": self.agent.session_id if self.agent else None,
+   10: +                "session_id": self.agent.session_id if self.agent else self.session_id,
+   11:                  "platform": getattr(self, "platform", None) or "cli",
+   12:                  "reason": reason or ("new_session" if event_type == "on_session_reset" else "session_boundary")}
+   13:              if event_type == "on_session_finalize":
+   14: @@ -501,7 +501,8 @@ class CLISessionMixin:
+   15:                  # rotation) so /new never blocks on the LLM-bound call.
+   16:                  _boundary_snapshot = self._launch_session_boundary_memory_flush(
+   17:                      list(self.conversation_history), session_id=old_session_id)
+   18: -            self._notify_session_boundary("on_session_finalize")
+   19: +        if old_session_id:
+   20: +            self._notify_session_boundary("on_session_finalize", reason="new_session")
+   21:  
+   22:          if self._session_db and old_session_id:
+   23:              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
+   24: diff --git a/tests/hermes_cli/test_session_boundary_hooks.py b/tests/hermes_cli/test_session_boundary_hooks.py
+   25: index 60f5f244fb20..d64c61d9477c 100644
+   26: --- a/tests/hermes_cli/test_session_boundary_hooks.py
+   27: +++ b/tests/hermes_cli/test_session_boundary_hooks.py
+   28: @@ -25,6 +25,7 @@ def test_session_finalize_on_reset(mock_finalize_session, mock_invoke_hook):
+   29:          not c.args
+   30:          and c.kwargs["session_id"] == "test-session-id"
+   31:          and c.kwargs["platform"] == "cli"
+   32: +        and c.kwargs["reason"] == "new_session"
+   33:          for c in mock_finalize_session.call_args_list
+   34:      )
+   35:      # Check if on_session_reset was called for the new session
+   36: @@ -36,6 +37,21 @@ def test_session_finalize_on_reset(mock_finalize_session, mock_invoke_hook):
+   37:      )
+   38:  
+   39:  
+   40: +@patch("hermes_cli.lifecycle.finalize_session")
+   41: +def test_new_session_without_agent_finalizes_old_session(mock_finalize_session):
+   42: +    cli = HermesCLI()
+   43: +    cli.agent = None
+   44: +    old_session_id = cli.session_id
+   45: +
+   46: +    cli.new_session(silent=True)
+   47: +
+   48: +    assert any(
+   49: +        call.kwargs["session_id"] == old_session_id
+   50: +        and call.kwargs["reason"] == "new_session"
+   51: +        for call in mock_finalize_session.call_args_list
+   52: +    )
+   53: +
+   54: +
+   55:  @patch("hermes_cli.lifecycle.finalize_session")
+   56:  def test_session_finalize_on_cleanup(mock_finalize_session):
+   57:      """Verify on_session_finalize fires during CLI exit cleanup."""
+
+SOURCE patches/hermes-empty-session-resume.patch
+    1: diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
+    2: index cc14c1ea17d5..739c28f0a6c4 100644
+    3: --- a/hermes_cli/cli_commands_mixin.py
+    4: +++ b/hermes_cli/cli_commands_mixin.py
+    5: @@ -1306,7 +1306,7 @@ class CLICommandsMixin:
+    6:              return _cp("  Already on that session.")
+    7:          old_session_id = self.session_id
+    8:          _end_current_session(self, "resumed_other")
+    9: -        if self.agent:
+   10: +        if old_session_id:
+   11:              self._notify_session_boundary("on_session_finalize", reason="resume")
+   12:          self.session_id, self._resumed, self._pending_title = target_id, True, None
+   13:          _sync_process_session_id(target_id)
+   14: diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
+   15: index 9b35ad2249b5..a1548102d554 100644
+   16: --- a/tests/hermes_cli/test_cli_resume_command.py
+   17: +++ b/tests/hermes_cli/test_cli_resume_command.py
+   18: @@ -231,6 +231,26 @@ class TestResumeFinalizesPreviousSession:
+   19:          assert observed == [("on_session_finalize", "resume", "current_session")]
+   20:  
+   21:  
+   22: +class TestResumeWithoutAgentFinalizesPreviousSession:
+   23: +    def test_resume_notifies_empty_session_with_resume_reason(self):
+   24: +        cli_obj = _make_cli()
+   25: +        cli_obj.agent = None
+   26: +        cli_obj._session_db.get_session.return_value = {"id": "target", "title": "T"}
+   27: +        cli_obj._session_db.get_resume_conversations.return_value = ([], [])
+   28: +        cli_obj._session_db.resolve_resume_session_id.return_value = "target"
+   29: +        observed = []
+   30: +        cli_obj._notify_session_boundary = lambda event, **kwargs: observed.append(
+   31: +            (event, kwargs.get("reason"), cli_obj.session_id))
+   32: +
+   33: +        with (
+   34: +            patch("hermes_cli.main._resolve_session_by_name_or_id", return_value="target"),
+   35: +            patch("cli._cprint"),
+   36: +        ):
+   37: +            cli_obj._handle_resume_command("/resume target")
+   38: +
+   39: +        assert observed == [("on_session_finalize", "resume", "current_session")]
+   40: +
+   41: +
+   42:  class TestResumeFlushesBeforeEndSession:
+   43:      """Regression for #47202: /resume must flush un-persisted messages to
+   44:      the session DB before ending the old session, just like /new and
+
+SOURCE notes/2026-09-28-session-end-reasons.md
+    1: # SessionEnd reason mapping and resume boundaries
+    2: 
+    3: Date: 2026-09-28. Target: the pinned Claude Code 2.1.272 reference and the `.212` Hermes test install.
+    4: 
+    5: [Claude's SessionEnd reference](https://code.claude.com/docs/en/hooks#sessionend) defines `clear`, `resume`, `logout`, `prompt_input_exit`, and `other`. It says an interactive `/resume` ends the previous session with reason `resume`. The bridge was registered on Hermes `on_session_finalize`, so it already ran at a true session boundary. It discarded the supplied Hermes reason and always passed `other` to LifeOS. The `.212` gateway and CLI also switched sessions on `/resume` without emitting `on_session_finalize`. These observations narrowed the issue from a suspected event-cadence problem to missing reason propagation and missing resume finalization.
+    6: 
+    7: The bridge now maps Hermes `new_session` to Claude `clear`, passes `resume`, `logout`, and `prompt_input_exit`, and maps unrecognized reasons to `other`. The new generic Hermes patch emits `on_session_finalize` after a successful gateway `/resume` switch and before clearing conversation state. The CLI emits it before replacing the current session ID. It passes `resume` through its existing lifecycle helper.
+    8: 
+    9: The regression failed before each code change. The bridge test observed three `other` reasons instead of `clear`, `resume`, and `other`. The gateway test observed zero finalization calls. The CLI test observed zero finalization calls. After the changes, the bridge reason tests passed, the focused Hermes gateway and CLI suite passed 54 tests, and all 13 Hermes patches applied to the pinned base in a fresh prepared source tree. The full `.212` plugin suite passed 302 tests, with 55 optional skips. The installed `.212` plugin file was backed up as `bridge.py.before-session-reasons-20260928`, replaced with the tested bridge source, and the gateway service restarted.
+   10: 
+   11: The gateway patch deliberately finalizes only after the session switch succeeds. A failed switch leaves the current session intact. The `.212` test virtual environment needed `pytest-asyncio` to run existing async gateway tests; it was installed there, not in the Hermes runtime.
+   12: 
+   13: A pinned Claude Code interactive probe then produced `clear`, `resume`, and `prompt_input_exit` for `/clear`, `/resume`, and exit at the prompt. The raw event sequence is in `docs/agents/2026-09-28-session-end-control/results.json`. The first Hermes PTY probe appeared idle because its input handler treats Enter within 50 ms of a text change as a pasted newline. Delaying Enter by 250 ms submitted `/exit` and exposed a real mismatch: the installed plugin received `other` with a null session ID. A generic Hermes CLI patch now passes `prompt_input_exit` for a normal prompt exit and retains the CLI session ID even if no agent turn ran. Two regressions failed before the change. Afterward, 35 focused Hermes cleanup tests passed and a real `.212` interactive CLI `/exit` delivered `prompt_input_exit` with session ID `20260928_203614_557d2e`. A prompt exit after a completed model turn and native-equivalent Hermes `/clear` and `/resume` sequences still require paired live runs.
+   14: 
+   15: Claude Code also emitted `clear` when `/clear` was the first interactive command in a fresh session. Hermes's matching empty-session `/new` emitted no SessionEnd event. The CLI only finalized when an agent object existed and used `session_boundary` as the reason. The generic patch now finalizes the old session ID regardless of agent creation and sends `new_session`, which the bridge maps to `clear`. Both new source regressions failed before the change; 51 focused host tests passed afterward. A real `.212` CLI `/new` emitted `clear` for the old session. The probe's following `/exit` stayed in the prompt without dispatching, so that two-command sequence is not yet a complete paired outcome. The separate `/exit` probe above did complete.
+   16: 
+   17: The native CLI emitted `resume` when `/resume` was its first interactive command. Hermes's CLI used the same agent-object guard as its `/new` path, so the old session received no finalization. A new test failed before changing that guard. Afterward, 46 focused host tests passed and a real Hermes CLI `/resume` delivered `resume` for its previous session ID. The live probe used a synthetic session record as its target and deleted that record afterward. The first live attempt recorded no event. The second logged a visible target, confirmed slash-command dispatch and successful resume, and captured the event. This closes the event-field comparison for the tested CLI transition; LifeOS handler side effects and Discord gateway switching remain unverified.
+
+SOURCE lifeos_hook_bridge/bridge.py:1392-1554
+ 1392:     def command_approval(
+ 1393:         self, command: str, session_key: str = "", cwd: str = "", task_id: str = "", **_: Any,
+ 1394:     ) -> dict[str, str] | None:
+ 1395:         cwd = cwd or _tool_cwd("terminal", {}, task_id)
+ 1396:         self._remember_project(cwd, session_key, task_id)
+ 1397:         self.poll_config_changes(force=True)
+ 1398:         payload = self._payload(
+ 1399:             "PermissionRequest", session_key, tool_name="Bash", tool_input={"command": command}, cwd=cwd,
+ 1400:         )
+ 1401:         host_paths = _task_uses_host_paths(task_id)
+ 1402:         permission_sources = self._permission_sources(payload, task_id, host_paths)
+ 1403:         from .bash_permissions import bash_file_targets
+ 1404:         from .file_permissions import file_target_decision
+ 1405: 
+ 1406:         targets, targets_certain = bash_file_targets(command)
+ 1407:         file_decision = "unknown" if not targets_certain else "allow"
+ 1408:         for operation, target in targets:
+ 1409:             resolved = None if host_paths else _backend_file_path(target, cwd, task_id)
+ 1410:             decision = file_target_decision(
+ 1411:                 target, operation, cwd, permission_sources,
+ 1412:                 host_paths=host_paths, resolved_path=resolved,
+ 1413:             )
+ 1414:             if decision == "deny":
+ 1415:                 return {"action": "deny"}
+ 1416:             if decision in {"ask", "unknown", "invalid_policy"} or (
+ 1417:                 operation == "write" and host_paths and _hermes_write_requires_approval(target, cwd)
+ 1418:             ):
+ 1419:                 file_decision = "unknown"
+ 1420:         rule_decision = _bash_permission_rule_decision(
+ 1421:             command, [settings for settings, _ in permission_sources],
+ 1422:             checked_file_targets=file_decision == "allow",
+ 1423:         )
+ 1424:         if rule_decision == "deny":
+ 1425:             return {"action": "deny"}
+ 1426:         if file_decision == "unknown":
+ 1427:             rule_decision = "unknown"
+ 1428:         if host_paths and rule_decision == "allow":
+ 1429:             return None
+ 1430:         if host_paths and rule_decision == "none" and _claude_simple_read_only_bash(command):
+ 1431:             return None
+ 1432:         groups = self._hook_groups("PermissionRequest", payload, host_paths, task_id)
+ 1433:         if not any(group.get("hooks") and _hook_matcher_matches(group.get("matcher", ""), "Bash")
+ 1434:                    for group in groups):
+ 1435:             return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
+ 1436:         granted = False
+ 1437:         denied = False
+ 1438:         invalid_replacement = False
+ 1439:         replacement = None
+ 1440:         for process, output in self._run("PermissionRequest", payload, "Bash", task_id=task_id):
+ 1441:             specific = _specific_output(output, "PermissionRequest")
+ 1442:             decision = specific.get("decision") or {}
+ 1443:             if decision.get("behavior") == "deny" or process.returncode == 2:
+ 1444:                 denied = True
+ 1445:             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+ 1446:                 granted = True
+ 1447:                 updated = decision.get("updatedInput")
+ 1448:                 if updated is not None:
+ 1449:                     if not isinstance(updated, dict) or not isinstance(updated.get("command"), str):
+ 1450:                         invalid_replacement = True
+ 1451:                     elif replacement is not None and replacement != updated["command"]:
+ 1452:                         invalid_replacement = True
+ 1453:                     else:
+ 1454:                         replacement = updated["command"]
+ 1455:         if denied:
+ 1456:             return {"action": "deny"}
+ 1457:         if granted:
+ 1458:             if invalid_replacement:
+ 1459:                 return {"action": "review"}
+ 1460:             if replacement is not None and replacement != command:
+ 1461:                 return {"action": "rewrite", "command": replacement}
+ 1462:             return {"action": "review"} if rule_decision in {"ask", "unknown"} else {"action": "allow"}
+ 1463:         return {"action": "review"}
+ 1464: 
+ 1465:     def _mcp_permission_verdict(
+ 1466:         self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str, task_id: str = "",
+ 1467:     ) -> dict[str, Any] | None:
+ 1468:         groups = self._hook_groups(
+ 1469:             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
+ 1470:             _task_uses_host_paths(task_id), task_id,
+ 1471:         )
+ 1472:         if not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups):
+ 1473:             return None
+ 1474:         payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
+ 1475:         outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
+ 1476:         granted = False
+ 1477:         replacement = None
+ 1478:         for process, output in outcomes:
+ 1479:             specific = _specific_output(output, "PermissionRequest")
+ 1480:             decision = specific.get("decision") or {}
+ 1481:             if decision.get("behavior") == "deny" or process.returncode == 2:
+ 1482:                 message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the MCP call"
+ 1483:                 return {"action": "block", "message": str(message)[:2000]}
+ 1484:             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+ 1485:                 granted = True
+ 1486:                 updated = decision.get("updatedInput")
+ 1487:                 if updated is not None:
+ 1488:                     if not isinstance(updated, dict):
+ 1489:                         return {"action": "block", "message": "LifeOS supplied an invalid MCP replacement"}
+ 1490:                     if replacement is not None and replacement != updated:
+ 1491:                         return {"action": "block", "message": "LifeOS supplied conflicting MCP replacements"}
+ 1492:                     replacement = updated
+ 1493:         if granted:
+ 1494:             if replacement is not None and replacement != args:
+ 1495:                 return {"action": "modify", "args": replacement}
+ 1496:             return None
+ 1497:         fingerprint = hashlib.sha256(json.dumps(args, sort_keys=True).encode()).hexdigest()[:16]
+ 1498:         return {
+ 1499:             "action": "approve",
+ 1500:             "message": f"LifeOS requests review of MCP call {tool_name}",
+ 1501:             "rule_key": f"lifeos-mcp:{tool_name}:{fingerprint}",
+ 1502:         }
+ 1503: 
+ 1504:     def _file_permission_verdict(
+ 1505:         self, native_name: str, native_inputs: list[dict[str, Any]], session_id: str, cwd: str,
+ 1506:         task_id: str = "",
+ 1507:     ) -> dict[str, Any] | None:
+ 1508:         groups = self._hook_groups(
+ 1509:             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=native_name),
+ 1510:             _task_uses_host_paths(task_id), task_id,
+ 1511:         )
+ 1512:         if not any(_hook_matcher_matches(group.get("matcher", ""), native_name) for group in groups):
+ 1513:             return None
+ 1514:         review_paths = []
+ 1515:         replacement = None
+ 1516:         for native_input in native_inputs:
+ 1517:             payload = self._payload(
+ 1518:                 "PermissionRequest", session_id, tool_name=native_name, tool_input=native_input, cwd=cwd,
+ 1519:             )
+ 1520:             outcomes = self._run("PermissionRequest", payload, native_name, task_id=task_id)
+ 1521:             granted = False
+ 1522:             for process, output in outcomes:
+ 1523:                 specific = _specific_output(output, "PermissionRequest")
+ 1524:                 decision = specific.get("decision") or {}
+ 1525:                 if decision.get("behavior") == "deny" or process.returncode == 2:
+ 1526:                     message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the file change"
+ 1527:                     return {"action": "block", "message": str(message)[:2000]}
+ 1528:                 if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
+ 1529:                     granted = True
+ 1530:                     updated = decision.get("updatedInput")
+ 1531:                     if updated is not None:
+ 1532:                         if not isinstance(updated, dict) or not isinstance(updated.get("file_path"), str) or not updated["file_path"]:
+ 1533:                             return {"action": "block", "message": "LifeOS supplied an invalid file replacement"}
+ 1534:                         if native_name == "Write" and not isinstance(updated.get("content"), str):
+ 1535:                             return {"action": "block", "message": "LifeOS supplied an invalid Write replacement"}
+ 1536:                         if replacement is not None and replacement != updated:
+ 1537:                             return {"action": "block", "message": "LifeOS supplied conflicting file replacements"}
+ 1538:                         replacement = updated
+ 1539:             if not granted:
+ 1540:                 review_paths.append(str(native_input.get("file_path", "unknown path")))
+ 1541:         if replacement is not None:
+ 1542:             if len(native_inputs) != 1:
+ 1543:                 return {"action": "block", "message": "LifeOS cannot replace a multi-file patch input"}
+ 1544:             return {"action": "modify", "args": _hermes_input(native_name, replacement)}
+ 1545:         if not review_paths:
+ 1546:             return None
+ 1547:         if any(_hermes_write_requires_approval(path, cwd) for path in review_paths):
+ 1548:             return None
+ 1549:         fingerprint = hashlib.sha256(json.dumps(native_inputs, sort_keys=True).encode()).hexdigest()[:16]
+ 1550:         return {
+ 1551:             "action": "approve",
+ 1552:             "message": f"LifeOS requests review of {native_name} for {', '.join(review_paths)}",
+ 1553:             "rule_key": f"lifeos-file:{native_name}:{fingerprint}",
+ 1554:         }
+
+SOURCE lifeos_hook_bridge/bridge.py:1628-1733
+ 1628:         def pretool_review() -> dict[str, Any] | None:
+ 1629:             if not review_requests:
+ 1630:                 return None
+ 1631:             reviewed_args = updated_args or args
+ 1632:             fingerprint = hashlib.sha256(json.dumps({
+ 1633:                 "tool": tool_name, "args": reviewed_args, "cwd": cwd, "task_id": task_id,
+ 1634:             }, sort_keys=True).encode()).hexdigest()[:16]
+ 1635:             verdict = {
+ 1636:                 "action": "approve",
+ 1637:                 "message": "\n".join(dict.fromkeys(review_requests))[:2000],
+ 1638:                 "rule_key": f"lifeos-pretool:{native_name}:{fingerprint}",
+ 1639:             }
+ 1640:             if updated_args is not None:
+ 1641:                 verdict["args"] = updated_args
+ 1642:             return verdict
+ 1643: 
+ 1644:         if tool_name.startswith("mcp__"):
+ 1645:             verdict = self._mcp_permission_verdict(tool_name, updated_args or args, session_id, cwd, task_id)
+ 1646:             if verdict:
+ 1647:                 if verdict["action"] == "block":
+ 1648:                     return verdict
+ 1649:                 if verdict["action"] == "modify":
+ 1650:                     updated_args = verdict["args"]
+ 1651:                     return pretool_review() if review_requests else verdict
+ 1652:                 if review_requests:
+ 1653:                     return pretool_review()
+ 1654:                 if verdict["action"] == "approve" and updated_args is not None:
+ 1655:                     verdict["args"] = updated_args
+ 1656:                 return verdict
+ 1657:         file_rule_review_paths = []
+ 1658:         if native_name in {"Read", "Write", "Edit"}:
+ 1659:             permission_inputs = native_inputs if v4a else [_tool_input(native_name, updated_args or args, cwd, task_id)]
+ 1660:             self.poll_config_changes(force=True)
+ 1661:             host_paths = _task_uses_host_paths(task_id)
+ 1662:             permission_payload = self._payload(
+ 1663:                 "PermissionRequest", session_id, cwd=cwd, tool_name=native_name,
+ 1664:             )
+ 1665:             permission_sources = self._permission_sources(permission_payload, task_id, host_paths)
+ 1666:             from .file_permissions import file_target_decision
+ 1667: 
+ 1668:             for native_input in permission_inputs:
+ 1669:                 path = native_input.get("file_path")
+ 1670:                 if not isinstance(path, str) or not path:
+ 1671:                     continue
+ 1672:                 operation = "read" if native_name == "Read" else "write"
+ 1673:                 resolved = None if host_paths else _backend_file_path(path, cwd, task_id)
+ 1674:                 decision = file_target_decision(
+ 1675:                     path, operation, cwd, permission_sources,
+ 1676:                     host_paths=host_paths, resolved_path=resolved,
+ 1677:                 )
+ 1678:                 if decision == "deny":
+ 1679:                     return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+ 1680:                 if decision in {"ask", "invalid_policy"} or (decision == "unknown" and not host_paths):
+ 1681:                     file_rule_review_paths.append(path)
+ 1682:         if native_name in {"Write", "Edit"}:
+ 1683:             verdict = self._file_permission_verdict(native_name, permission_inputs, session_id, cwd, task_id)
+ 1684:             if verdict:
+ 1685:                 if verdict["action"] == "block":
+ 1686:                     return verdict
+ 1687:                 if verdict["action"] == "modify":
+ 1688:                     updated_args = verdict["args"]
+ 1689:                     file_rule_review_paths = []
+ 1690:                     final_input = _tool_input(native_name, updated_args, cwd, task_id)
+ 1691:                     path = final_input.get("file_path")
+ 1692:                     if not isinstance(path, str) or not path:
+ 1693:                         return {"action": "block", "message": "LifeOS supplied an invalid file path"}
+ 1694:                     resolved = None if host_paths else _backend_file_path(path, cwd, task_id)
+ 1695:                     decision = file_target_decision(
+ 1696:                         path, "write", cwd, permission_sources,
+ 1697:                         host_paths=host_paths, resolved_path=resolved,
+ 1698:                     )
+ 1699:                     if decision == "deny":
+ 1700:                         return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+ 1701:                     if decision in {"ask", "unknown", "invalid_policy"}:
+ 1702:                         file_rule_review_paths.append(path)
+ 1703:                     if review_requests:
+ 1704:                         return pretool_review()
+ 1705:                     if file_rule_review_paths:
+ 1706:                         fingerprint = hashlib.sha256(json.dumps(updated_args, sort_keys=True).encode()).hexdigest()[:16]
+ 1707:                         return {
+ 1708:                             "action": "approve", "args": updated_args,
+ 1709:                             "message": f"LifeOS file rule requests review of {native_name} for {path}",
+ 1710:                             "rule_key": f"lifeos-file-rule:{native_name}:{fingerprint}",
+ 1711:                         }
+ 1712:                     return verdict
+ 1713:                 if review_requests:
+ 1714:                     return pretool_review()
+ 1715:                 if verdict["action"] == "approve" and updated_args is not None:
+ 1716:                     verdict["args"] = updated_args
+ 1717:                 return verdict
+ 1718:         if file_rule_review_paths:
+ 1719:             if review_requests:
+ 1720:                 return pretool_review()
+ 1721:             if native_name in {"Write", "Edit"} and any(
+ 1722:                 _hermes_write_requires_approval(path, cwd) for path in file_rule_review_paths
+ 1723:             ):
+ 1724:                 return {"action": "modify", "args": updated_args} if updated_args is not None else None
+ 1725:             fingerprint = hashlib.sha256(json.dumps(permission_inputs, sort_keys=True).encode()).hexdigest()[:16]
+ 1726:             verdict = {
+ 1727:                 "action": "approve",
+ 1728:                 "message": f"LifeOS file rule requests review of {native_name} for {', '.join(file_rule_review_paths)}",
+ 1729:                 "rule_key": f"lifeos-file-rule:{native_name}:{fingerprint}",
+ 1730:             }
+ 1731:             if updated_args is not None:
+ 1732:                 verdict["args"] = updated_args
+ 1733:             return verdict
+
+SOURCE lifeos_hook_bridge/bridge.py:2019-2044
+ 2019:     def session_end(self, session_id: str = "", reason: str = "", **_: Any) -> None:
+ 2020:         native_reason = {
+ 2021:             "new_session": "clear",
+ 2022:             "clear": "clear",
+ 2023:             "resume": "resume",
+ 2024:             "logout": "logout",
+ 2025:             "prompt_input_exit": "prompt_input_exit",
+ 2026:         }.get(reason, "other")
+ 2027:         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason=native_reason), native_reason)
+ 2028:         shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
+ 2029:         self._stop_agent_watchdog(session_id)
+ 2030:         with self.session_lock:
+ 2031:             self.started_sessions.discard(session_id)
+ 2032:             self.session_platforms.pop(session_id, None)
+ 2033:             self.session_projects.pop(session_id, None)
+ 2034:             self.remote_session_projects.pop(session_id, None)
+ 2035:             used_remote_projects = set().union(*self.remote_session_projects.values()) if self.remote_session_projects else set()
+ 2036:             self.remote_project_states = {
+ 2037:                 key: state for key, state in self.remote_project_states.items() if key in used_remote_projects
+ 2038:             }
+ 2039:             active_projects = {project for projects in self.session_projects.values() for project in projects}
+ 2040:             self.project_dirs = tuple(sorted(active_projects)) or (Path.cwd(),)
+ 2041:             self.project_hook_settings = {
+ 2042:                 path: settings for path, settings in self.project_hook_settings.items()
+ 2043:                 if path.parent.parent in active_projects
+ 2044:             }
+
+SOURCE tests/test_bridge.py:167-210
+  167:     def test_session_event_matchers_use_start_source_and_end_reason(self):
+  168:         marker = self.root / "session-events.jsonl"
+  169:         command = self.make_hook(
+  170:             "record-session.py",
+  171:             "import json,sys\nfrom pathlib import Path\n"
+  172:             f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+  173:         )
+  174:         bridge = self.bridge({
+  175:             "SessionStart": [
+  176:                 {"matcher": matcher, "hooks": [{"type": "command", "command": command}]}
+  177:                 for matcher in ("startup", "*", "resume")
+  178:             ],
+  179:             "SessionEnd": [
+  180:                 {"matcher": matcher, "hooks": [{"type": "command", "command": command}]}
+  181:                 for matcher in ("other", "*", "clear")
+  182:             ],
+  183:         })
+  184:         bridge.pre_llm_call("Hello", session_id="s1", is_first_turn=True)
+  185:         bridge.session_end("s1")
+  186:         events = [json.loads(line) for line in marker.read_text().splitlines()]
+  187:         self.assertEqual([(event["hook_event_name"], event.get("source"), event.get("reason"))
+  188:                           for event in events], [
+  189:             ("SessionStart", "startup", None), ("SessionStart", "startup", None),
+  190:             ("SessionEnd", None, "other"), ("SessionEnd", None, "other"),
+  191:         ])
+  192: 
+  193:     def test_session_end_maps_known_hermes_reasons(self):
+  194:         marker = self.root / "session-end-reasons.jsonl"
+  195:         command = self.make_hook(
+  196:             "record-end-reason.py",
+  197:             "import json,sys\nfrom pathlib import Path\n"
+  198:             f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+  199:         )
+  200:         bridge = self.bridge({"SessionEnd": [
+  201:             {"matcher": reason, "hooks": [{"type": "command", "command": command}]}
+  202:             for reason in ("clear", "resume", "other")
+  203:         ]})
+  204:         for reason in ("new_session", "resume", "shutdown"):
+  205:             bridge.session_end(session_id=reason, reason=reason)
+  206:         events = [json.loads(line) for line in marker.read_text().splitlines()]
+  207:         self.assertEqual(
+  208:             [(event["session_id"], event["reason"]) for event in events],
+  209:             [("new_session", "clear"), ("resume", "resume"), ("shutdown", "other")],
+  210:         )
+
+SOURCE tests/test_bridge.py:2923-2942
+ 2923:     def test_native_grant_does_not_override_ask_rule(self):
+ 2924:         grant = self.make_hook(
+ 2925:             "grant.py",
+ 2926:             "import json\nprint(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest','decision':{'behavior':'allow'}}}))\n",
+ 2927:         )
+ 2928:         settings = self.root / "settings.json"
+ 2929:         command = "curl https://example.com"
+ 2930:         settings.write_text(json.dumps({
+ 2931:             "hooks": {"PermissionRequest": [{"matcher": "Bash", "hooks": [
+ 2932:                 {"type": "command", "command": grant},
+ 2933:             ]}]},
+ 2934:             "permissions": {"ask": [f"Bash({command})"]},
+ 2935:         }))
+ 2936:         bridge = HookBridge(settings, self.root)
+ 2937:         self.addCleanup(bridge.close)
+ 2938:         self.assertEqual(bridge.command_approval(command, session_key="s1"), {"action": "review"})
+ 2939: 
+ 2940:     def test_version_drift_git_adapter_is_scoped_to_its_hook(self):
+ 2941:         version_hook = self.hooks / "VersionDrift.hook.ts"
+ 2942:         other_hook = self.hooks / "Other.hook.ts"

@@ -122,6 +122,30 @@ class HostCommandPolicyTests(unittest.TestCase):
                         self.assertFalse(compound["approved"])
                         self.assertEqual([json.loads(line)["decision"] for line in log.read_text().splitlines()],
                                          ["neutral", "neutral"])
+                        permanent_command = "curl -I http://192.168.8.1:9"
+                        (home / "config.yaml").write_text(
+                            "plugins:\n  enabled:\n    - lifeos-hook-bridge\n"
+                            "approvals:\n  mode: manual\n"
+                            f"command_allowlist:\n  - {json.dumps(permanent_command)}\n"
+                        )
+                        from tools.approval import load_permanent_allowlist
+                        load_permanent_allowlist()
+                        settings.write_text(json.dumps({
+                            "hooks": {"PermissionRequest": [{
+                                "matcher": "Bash", "hooks": [{"type": "command", "command": LIFEOS_SAFETY_HOOK}],
+                            }]},
+                            "permissions": {"deny": [f"Bash({permanent_command})"]},
+                        }))
+                        permanent_denial = check_all_command_guards(
+                            permanent_command, "local",
+                            approval_callback=lambda *args, **kwargs: self.fail("Denied rule asked for approval"),
+                        )
+                        self.assertFalse(permanent_denial["approved"])
+                        self.assertEqual(permanent_denial["outcome"], "plugin_denied")
+                        (home / "config.yaml").write_text(
+                            "plugins:\n  enabled:\n    - lifeos-hook-bridge\napprovals:\n  mode: manual\n"
+                        )
+                        load_permanent_allowlist()
                         guarded_path = Path(directory) / "guarded.txt"
                         redirect_command = f"printf PARITY > {guarded_path}"
                         settings.write_text(json.dumps({

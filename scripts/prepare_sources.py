@@ -35,6 +35,7 @@ SOURCES = {
             "hermes-prompt-exit-reason.patch",
             "hermes-empty-session-clear.patch",
             "hermes-empty-session-resume.patch",
+            "hermes-permanent-policy-precedence.patch",
         ),
     },
     "lifeos": {
