@@ -1,0 +1,13 @@
+# Native SessionEnd control
+
+Date: 2026-09-28. Agent role: primary parity investigator. Question: what SessionEnd reasons does the pinned Claude Code CLI emit for interactive clear, resume, and prompt exit? Model: GPT-6-Sol for investigation; the private local model served the Claude Code probe.
+
+The probe ran Claude Code 2.1.272 through `/home/lifeos-claude-ref/.local/bin/lifeos-reference` on `.212`. It used a temporary working directory under that account's `~/.claude`, `--ax-screen-reader`, an added `SessionEnd` command hook, and the private local model. The hook recorded only event name, reason, and session ID. The user prompts were synthetic: `Reply READY.`. No LifeOS data from `.211` or `.213` was copied.
+
+The first PTY attempt sent line feeds and did not submit the commands. It recorded no events. Repeating with carriage returns submitted `/clear` and `/exit`. The clear run emitted `clear` for the first session and `prompt_input_exit` for the next. A separate headless call seeded a session ID. The interactive run then submitted `/resume <seed ID>` and `/exit`. It emitted `resume` for the previous interactive session and `prompt_input_exit` for the resumed session. The raw results are in [results.json](results.json).
+
+This confirms the native reason values for three interactive paths. The bridge and generic Hermes patch have source regressions for `clear` and `resume`. A live Hermes interactive `/new` and `/resume` comparison remains open.
+
+The installed Hermes CLI was then run with a synthetic SessionEnd hook in a temporary workspace. Its input handler requires a pause after typed text before Enter, so the probe used 250 ms. Before the prompt-exit patch, `/exit` delivered `other` with no session ID. After the patch, the same interactive action delivered `prompt_input_exit` with a session ID. [hermes-results.json](hermes-results.json) records the two events. This is a paired prompt-exit result for the event fields. It does not compare all LifeOS handler side effects.
+
+The temporary probe directories remain in the isolated reference account under `~/.claude/session-end-pty-*` and `~/.claude/session-resume-pty-*`. They contain the synthetic hook and event log. They can be removed after the evidence is no longer needed.

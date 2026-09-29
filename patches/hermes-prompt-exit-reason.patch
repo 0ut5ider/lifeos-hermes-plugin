@@ -1,0 +1,77 @@
+diff --git a/cli.py b/cli.py
+index 5d3055be6729..e56f3ff3452b 100644
+--- a/cli.py
++++ b/cli.py
+@@ -495,7 +495,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
+         _arm_exit_watchdog(timeout_s=base * 2, from_signal=True)
+ 
+ 
+-def _run_cleanup(*, notify_session_finalize: bool = True):
++def _run_cleanup(*, notify_session_finalize: bool = True, reason: str = "shutdown", session_id: str | None = None):
+     """Run resource cleanup exactly once."""
+     global _cleanup_done, _cleanup_in_progress
+     if _cleanup_done:
+@@ -514,9 +514,9 @@ def _run_cleanup(*, notify_session_finalize: bool = True):
+             with suppress(swallow):
+                 globals()[step]()
+         if notify_session_finalize:
+-            cleanup_session_id = _active_agent_ref.session_id if _active_agent_ref else None
++            cleanup_session_id = _active_agent_ref.session_id if _active_agent_ref else session_id
+             if _should_emit_cleanup_session_finalize(cleanup_session_id):
+-                _notify_session_finalize(session_id=cleanup_session_id, platform="cli", reason="shutdown")
++                _notify_session_finalize(session_id=cleanup_session_id, platform="cli", reason=reason)
+         try:
+             _shutdown_agent_memory_provider(_active_agent_ref)
+         except Exception as e:
+diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
+index 9eeb62a6310a..439d5e04bed8 100644
+--- a/hermes_cli/cli_tui_runtime_mixin.py
++++ b/hermes_cli/cli_tui_runtime_mixin.py
+@@ -494,8 +494,9 @@ class CLITuiRuntimeMixin:
+                 except (Exception, KeyboardInterrupt) as e:
+                     logger.debug("Could not delete session on exit: %s", e)
+         # run_conversation() fires on_session_end on normal completion; only fire here mid-turn.
++        at_prompt = not self._agent_running
+         if self.agent and self._agent_running:
+             _invoke_interrupted_session_end(self.agent, self.agent.session_id, "shutdown")
+-        _run_cleanup()
++        _run_cleanup(reason="prompt_input_exit" if at_prompt else "shutdown", session_id=self.session_id)
+         self._print_exit_summary()
+         self._release_active_session()
+diff --git a/tests/hermes_cli/test_session_boundary_hooks.py b/tests/hermes_cli/test_session_boundary_hooks.py
+index 6b0ce767de63..60f5f244fb20 100644
+--- a/tests/hermes_cli/test_session_boundary_hooks.py
++++ b/tests/hermes_cli/test_session_boundary_hooks.py
+@@ -57,6 +57,32 @@ def test_session_finalize_on_cleanup(mock_finalize_session):
+     )
+ 
+ 
++@patch("hermes_cli.lifecycle.finalize_session")
++def test_prompt_exit_reports_session_end_reason(mock_finalize_session):
++    import cli as cli_mod
++
++    mock_agent = MagicMock()
++    mock_agent.session_id = "prompt-exit-session"
++    cli_mod._active_agent_ref = mock_agent
++    cli_mod._cleanup_done = False
++
++    cli_mod._run_cleanup(reason="prompt_input_exit")
++
++    assert mock_finalize_session.call_args.kwargs["reason"] == "prompt_input_exit"
++
++
++@patch("hermes_cli.lifecycle.finalize_session")
++def test_prompt_exit_without_agent_keeps_session_id(mock_finalize_session):
++    import cli as cli_mod
++
++    cli_mod._active_agent_ref = None
++    cli_mod._cleanup_done = False
++
++    cli_mod._run_cleanup(reason="prompt_input_exit", session_id="unstarted-session")
++
++    assert mock_finalize_session.call_args.kwargs["session_id"] == "unstarted-session"
++
++
+ @patch("hermes_cli.lifecycle.invoke_hook")
+ def test_interrupted_session_end_helper_emits_observer_shape(mock_invoke_hook):
+     """Verify quiet single-query interruption emits a correlated session end."""

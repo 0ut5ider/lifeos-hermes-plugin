@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-28",
+  "host": "192.168.8.212",
+  "account": "lifeos-hermes",
+  "command": "hermes chat --cli --in <temporary workspace>",
+  "hook_settings": "LIFEOS_HOOK_SETTINGS=<temporary settings.json>",
+  "terminal_input": ["/exit"],
+  "input_gap_before_enter_ms": 250,
+  "before": {
+    "working_directory": "/home/lifeos-hermes/workspace/hermes-session-end-r2sc9_yv",
+    "event": {"event": "SessionEnd", "reason": "other", "session_id": null}
+  },
+  "after": {
+    "working_directory": "/home/lifeos-hermes/workspace/hermes-session-end-jx0f6cod",
+    "event": {"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "20260928_203614_557d2e"}
+  }
+}
