@@ -108,7 +108,7 @@ def take_snapshot(payload: Path, target_root: Path, snapshot: Path) -> dict:
             shutil.rmtree(stage)
 
 
-def inspect_snapshot(snapshot: Path, target_root: Path) -> tuple[dict, list[str]]:
+def inspect_snapshot(snapshot: Path, target_root: Path, *, allow_before: bool = False) -> tuple[dict, list[str]]:
     manifest = json.loads((snapshot / "manifest.json").read_text())
     target_root = target_root.resolve(strict=True)
     if str(target_root) != manifest.get("target"):
@@ -121,9 +121,12 @@ def inspect_snapshot(snapshot: Path, target_root: Path) -> tuple[dict, list[str]
         if item["path"] in names:
             raise SnapshotError(f"duplicate manifest path: {relative}")
         names.add(item["path"])
+        if allow_before and item["before"] is None and not target.exists():
+            continue
         if not target.is_file():
             raise SnapshotError(f"installed file is missing or not regular: {target}")
-        if digest(target) != item["after"]:
+        current = digest(target)
+        if current != item["after"] and not (allow_before and current == item["before"]):
             divergent.append(item["path"])
         if item["before"] is not None:
             backup = snapshot / "files" / relative
@@ -140,7 +143,7 @@ def verify_overlay(snapshot: Path, target_root: Path) -> dict:
 
 
 def restore_snapshot(snapshot: Path, target_root: Path, *, preserve_divergent: bool = False) -> dict:
-    manifest, divergent = inspect_snapshot(snapshot, target_root)
+    manifest, divergent = inspect_snapshot(snapshot, target_root, allow_before=True)
     if divergent and not preserve_divergent:
         raise SnapshotError(f"installed file differs from staged update: {target_root / divergent[0]}")
     target_root = target_root.resolve(strict=True)
@@ -163,7 +166,7 @@ def restore_snapshot(snapshot: Path, target_root: Path, *, preserve_divergent: b
         relative = Path(item["path"])
         target = checked_target(target_root, relative)
         if item["before"] is None:
-            target.unlink()
+            target.unlink(missing_ok=True)
         else:
             backup = snapshot / "files" / relative
             with tempfile.NamedTemporaryFile(dir=target.parent, prefix=f".{target.name}.", delete=False) as staged:

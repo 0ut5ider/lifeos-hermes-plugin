@@ -54,6 +54,32 @@ class SystemOverlaySnapshotTests(unittest.TestCase):
             self.assertEqual((target / "hooks/first.ts").read_text(), "new-first")
             self.assertEqual((target / "hooks/second.ts").read_text(), "operator-edit")
 
+    def test_restores_partially_applied_overlay(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            payload = root / "payload"
+            target = root / "target"
+            (payload / "hooks").mkdir(parents=True)
+            (target / "hooks").mkdir(parents=True)
+            (target / "LIFEOS/MEMORY").mkdir(parents=True)
+            (target / "LIFEOS/MEMORY/user.txt").write_text("private")
+            (payload / "hooks/first.ts").write_text("new-first")
+            (payload / "hooks/second.ts").write_text("new-second")
+            (payload / "hooks/added.ts").write_text("added")
+            (target / "hooks/first.ts").write_text("old-first")
+            (target / "hooks/second.ts").write_text("old-second")
+            snapshot = root / "snapshot"
+            take_snapshot(payload, target, snapshot)
+            (target / "hooks/first.ts").write_text("new-first")
+
+            with self.assertRaises(SnapshotError):
+                verify_overlay(snapshot, target)
+            restore_snapshot(snapshot, target)
+            self.assertEqual((target / "hooks/first.ts").read_text(), "old-first")
+            self.assertEqual((target / "hooks/second.ts").read_text(), "old-second")
+            self.assertFalse((target / "hooks/added.ts").exists())
+            self.assertEqual((target / "LIFEOS/MEMORY/user.txt").read_text(), "private")
+
     def test_version_matches_lifeos_trimmed_marker(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
