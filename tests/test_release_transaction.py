@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from scripts.release_transaction import apply_release, restore_release, stage_release
+from scripts.release_transaction import ReleaseError, apply_release, restore_release, stage_release
 from scripts.system_overlay_snapshot import SnapshotError
 
 
@@ -100,6 +100,24 @@ class ReleaseTransactionTests(unittest.TestCase):
                               stop=lambda: calls.append("stopped"),
                               start=lambda: calls.append("started"))
             self.assertEqual(calls, ["stopped", "started", "stopped", "started"])
+            self.assertEqual((hermes / "agent.py").read_text(), "old-agent")
+            self.assertEqual((plugin / "bridge.py").read_text(), "old-bridge")
+            self.assertEqual((target / "hooks/check.ts").read_text(), "old-hook")
+            self.assertEqual(config.read_text(), "private-config")
+
+    def test_candidate_change_refuses_release_before_stopping_gateway(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            snapshot, hermes, plugin, target, payload, config = self.fixture(root)
+            (root / "next-hermes/agent.py").write_text("changed-after-stage")
+            calls = []
+
+            with self.assertRaisesRegex(ReleaseError, "hermes_after"):
+                apply_release(snapshot, overlay=lambda: calls.append("overlay"),
+                              verify=lambda: calls.append("verify"),
+                              stop=lambda: calls.append("stopped"),
+                              start=lambda: calls.append("started"))
+            self.assertEqual(calls, [])
             self.assertEqual((hermes / "agent.py").read_text(), "old-agent")
             self.assertEqual((plugin / "bridge.py").read_text(), "old-bridge")
             self.assertEqual((target / "hooks/check.ts").read_text(), "old-hook")
