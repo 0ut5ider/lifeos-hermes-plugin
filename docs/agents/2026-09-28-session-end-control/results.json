@@ -12,6 +12,15 @@
       {"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "bd5cf34e-dc2a-49b1-ba74-4e5c4136b192"}
     ]
   },
+  "empty_clear_probe": {
+    "working_directory": "/home/lifeos-claude-ref/.claude/session-clear-empty-q0yq3yz7",
+    "terminal_input": ["/clear", "/exit"],
+    "input_terminator": "carriage_return",
+    "events": [
+      {"event": "SessionEnd", "reason": "clear", "session_id": "9252ac4d-9d96-4c18-b16b-659a8b51cbba"},
+      {"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "f252dfbe-91b6-47c9-84c9-8b34c921cd64"}
+    ]
+  },
   "resume_probe": {
     "working_directory": "/home/lifeos-claude-ref/.claude/session-resume-pty-jzv8jj1f",
     "seed_session_id": "d9833157-1087-4998-84cd-20d852fe10ff",

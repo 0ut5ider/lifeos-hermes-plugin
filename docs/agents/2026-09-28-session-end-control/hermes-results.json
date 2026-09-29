@@ -13,5 +13,18 @@
   "after": {
     "working_directory": "/home/lifeos-hermes/workspace/hermes-session-end-jx0f6cod",
     "event": {"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "20260928_203614_557d2e"}
+  },
+  "empty_clear": {
+    "before": {
+      "working_directory": "/home/lifeos-hermes/workspace/hermes-clear-probe-fsenz6k0",
+      "terminal_input": ["/new", "/exit"],
+      "events": [{"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "20260928_204147_7d7fe0"}]
+    },
+    "after": {
+      "working_directory": "/home/lifeos-hermes/workspace/hermes-clear-probe-5k1blrhk",
+      "terminal_input": ["/new", "/exit"],
+      "events": [{"event": "SessionEnd", "reason": "clear", "session_id": "20260928_204333_27fa2c"}],
+      "exit_dispatched": false
+    }
   }
 }

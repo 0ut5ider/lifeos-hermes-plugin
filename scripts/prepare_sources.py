@@ -33,6 +33,7 @@ SOURCES = {
             "hermes-command-rewrite.patch",
             "hermes-session-reasons.patch",
             "hermes-prompt-exit-reason.patch",
+            "hermes-empty-session-clear.patch",
         ),
     },
     "lifeos": {
