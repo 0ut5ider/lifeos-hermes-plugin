@@ -1,0 +1,224 @@
+diff --git a/agent/terminal_approval_batch.py b/agent/terminal_approval_batch.py
+index 00ef84abb1b..318370c71cf 100644
+--- a/agent/terminal_approval_batch.py
++++ b/agent/terminal_approval_batch.py
+@@ -57,7 +57,16 @@ class _TerminalSlot:
+                     turn_id=getattr(self.batch.agent, "_current_turn_id", "") or "",
+                 )
+                 try:
+-                    self.guard_key = (ref.args["command"], config["env_type"], tt._docker_has_host_access(config))
++                    overrides = tt.resolve_task_overrides(self.batch.task_id)
++                    base_cwd = tt.coerce_ssh_remote_cwd(
++                        overrides.get("cwd") or tt.get_session_cwd(self.batch.task_id) or config["cwd"],
++                        config["env_type"],
++                    )
++                    target_cwd = ref.args.get("workdir") or base_cwd
++                    self.guard_key = (
++                        ref.args["command"], config["env_type"], tt._docker_has_host_access(config),
++                        target_cwd, self.batch.task_id or "",
++                    )
+                     self.decision = tt._check_all_guards(*self.guard_key)
+                 finally:
+                     reset_current_observability_context(tokens)
+@@ -212,7 +221,7 @@ def register_prepared_approval(session_key, entry):
+         slot.batch.pending_approvals.append((session_key, entry))
+ 
+ 
+-def consume_prepared_guard(command, env_type, has_host_access):
++def consume_prepared_guard(command, env_type, has_host_access, cwd="", task_id=""):
+     slot = _slot.get()
+     if slot is None or slot.preparing:
+         return None
+@@ -229,7 +238,7 @@ def consume_prepared_guard(command, env_type, has_host_access):
+         return None
+     from tools.approval_context import _approval_tool_call_id
+     if (_approval_tool_call_id.get() != slot.parsed.ref(slot.batch.task_id).call_id
+-            or slot.guard_key != (command, env_type, has_host_access)):
++            or slot.guard_key != (command, env_type, has_host_access, cwd, task_id)):
+         return None
+     decision, slot.decision = slot.decision, None  # single-use, even for identical calls
+     return decision
+diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+index a0387040154..3aae7213eae 100644
+--- a/tests/tools/test_plugin_command_approval.py
++++ b/tests/tools/test_plugin_command_approval.py
+@@ -331,3 +331,74 @@ def test_plugin_deny_after_session_review_still_blocks():
+         clear_session(session_key)
+         from tools import approval_context
+         approval_context._approval_session_key.reset(token)
++
++
++def test_plugin_command_policy_receives_target_workspace():
++    calls = []
++
++    def capture(name, **kwargs):
++        if name == "pre_command_approval":
++            calls.append(kwargs)
++        return [{"action": "review"}] if name == "pre_command_approval" else []
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=capture):
++        result = check_all_command_guards(
++            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
++            cwd="/workspace/project-a", task_id="docker-session-a",
++            approval_callback=lambda *args, **kwargs: "deny",
++        )
++    assert result["approved"] is False
++    assert len(calls) == 1
++    assert calls[0]["cwd"] == "/workspace/project-a"
++    assert calls[0]["task_id"] == "docker-session-a"
++    assert calls[0]["env_type"] == "docker"
++
++
++def test_terminal_approval_forwards_target_workspace():
++    from tools import terminal_tool as terminal_module
++
++    with patch.object(terminal_module, "_check_all_guards_impl", return_value={"approved": True}) as guard:
++        terminal_module._check_all_guards(
++            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
++            cwd="/workspace/project-a", task_id="docker-session-a",
++        )
++    assert guard.call_args.kwargs["cwd"] == "/workspace/project-a"
++    assert guard.call_args.kwargs["task_id"] == "docker-session-a"
++
++    with patch.object(terminal_module, "_check_all_guards", return_value={"approved": True}) as guard:
++        terminal_module._run_approval_guards(
++            "curl -I http://192.168.8.1:9", "docker", {"env_type": "docker"}, force=False,
++            cwd="/workspace/project-a", task_id="docker-session-a",
++        )
++    assert guard.call_args.kwargs["cwd"] == "/workspace/project-a"
++    assert guard.call_args.kwargs["task_id"] == "docker-session-a"
++
++
++def test_prepared_command_policy_is_bound_to_workspace():
++    from types import SimpleNamespace
++    from agent import terminal_approval_batch as batch_module
++    from tools.approval_context import _approval_tool_call_id
++
++    command = "curl -I http://192.168.8.1:9"
++    decision = {"approved": True}
++    slot = SimpleNamespace(
++        preparing=False, check_cancelled=lambda: None,
++        batch=SimpleNamespace(failure_seen=False, task_id="docker-session-a"),
++        parsed=SimpleNamespace(ref=lambda task_id: SimpleNamespace(call_id="call-a")),
++        guard_key=(command, "docker", False, "/workspace/project-a", "docker-session-a"),
++        decision=decision,
++    )
++    slot_token = batch_module._slot.set(slot)
++    call_token = _approval_tool_call_id.set("call-a")
++    try:
++        assert batch_module.consume_prepared_guard(
++            command, "docker", False, "/workspace/project-b", "docker-session-a",
++        ) is None
++        assert slot.decision is decision
++        assert batch_module.consume_prepared_guard(
++            command, "docker", False, "/workspace/project-a", "docker-session-a",
++        ) is decision
++        assert slot.decision is None
++    finally:
++        _approval_tool_call_id.reset(call_token)
++        batch_module._slot.reset(slot_token)
+diff --git a/tools/approval.py b/tools/approval.py
+index fb9b8c1e77f..06883affddb 100644
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -1080,7 +1080,10 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+     return _user_deny_block(command)
+ 
+ 
+-def _plugin_command_decision(command: str, pattern_key: str, description: str) -> str | None:
++def _plugin_command_decision(
++    command: str, pattern_key: str, description: str, *,
++    env_type: str = "", cwd: str = "", task_id: str = "",
++) -> str | None:
+     """Combine plugin command decisions after the applicable safety floors.
+ 
+     A grant never overrides a separate Tirith finding or smart guardian denial.
+@@ -1090,6 +1093,7 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
+         decisions = invoke_hook(
+             "pre_command_approval", command=command, pattern_key=pattern_key,
+             description=description, session_key=get_current_session_key(),
++            env_type=env_type, cwd=cwd, task_id=task_id,
+         )
+     except Exception:
+         logger.exception("pre_command_approval hook failed")
+@@ -1202,7 +1206,8 @@ def _tirith_scan(command: str) -> dict:
+ 
+ def check_all_command_guards(command: str, env_type: str,
+                              approval_callback=None,
+-                             has_host_access: bool = False) -> dict:
++                             has_host_access: bool = False,
++                             cwd: str = "", task_id: str = "") -> dict:
+     """Run all pre-exec security checks and return a single approval decision. Tirith and
+     dangerous-command findings are presented as ONE combined approval request, so a gateway
+     force=True replay cannot bypass one check when only the other was shown to the user.
+@@ -1217,7 +1222,7 @@ def check_all_command_guards(command: str, env_type: str,
+ 
+     if not isolated_container:
+         from agent.terminal_approval_batch import consume_prepared_guard
+-        prepared = consume_prepared_guard(command, env_type, has_host_access)
++        prepared = consume_prepared_guard(command, env_type, has_host_access, cwd, task_id)
+         if prepared is not None:
+             return prepared
+ 
+@@ -1231,7 +1236,10 @@ def check_all_command_guards(command: str, env_type: str,
+     session_key = get_current_session_key()
+     policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
+     policy_key = f"plugin_rule:{policy_rule_key}"
+-    plugin_decision = _plugin_command_decision(command, pattern_key or "", description or "")
++    plugin_decision = _plugin_command_decision(
++        command, pattern_key or "", description or "",
++        env_type=env_type, cwd=cwd, task_id=task_id,
++    )
+     # An earlier review approval never suppresses a later policy denial.
+     if plugin_decision == "review" and is_approved(session_key, policy_key):
+         plugin_decision = None
+diff --git a/tools/terminal_tool.py b/tools/terminal_tool.py
+index be1496847b6..db603efbf8e 100644
+--- a/tools/terminal_tool.py
++++ b/tools/terminal_tool.py
+@@ -146,11 +146,12 @@ def _docker_has_host_access(config: Dict[str, Any]) -> bool:
+ 
+ 
+ def _check_all_guards(command: str, env_type: str,
+-                      has_host_access: bool = False) -> dict:
++                      has_host_access: bool = False,
++                      cwd: str = "", task_id: str = "") -> dict:
+     """Delegate to consolidated guard (tirith + dangerous cmd) with CLI callback."""
+     return _check_all_guards_impl(command, env_type,
+                                   approval_callback=_get_approval_callback(),
+-                                  has_host_access=has_host_access)
++                                  has_host_access=has_host_access, cwd=cwd, task_id=task_id)
+ 
+ 
+ from tools.environments.base import EnvironmentConnectionError
+@@ -993,13 +994,16 @@ class _ApprovalVerdict:
+     approved_run: bool = False
+ 
+ 
+-def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *, force: bool) -> _ApprovalVerdict:
++def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
++                         force: bool, cwd: str = "", task_id: str = "") -> _ApprovalVerdict:
+     """Run tirith + dangerous-command guards; ``force`` skips them entirely.
+     Raises :class:`_Rejected` when the command may not run (denied, or pending
+     gateway approval)."""
+     if force:
+         return _ApprovalVerdict(approved_run=True)
+-    approval = _check_all_guards(command, env_type, has_host_access=_docker_has_host_access(config))
++    approval = _check_all_guards(
++        command, env_type, has_host_access=_docker_has_host_access(config), cwd=cwd, task_id=task_id,
++    )
+     if not approval["approved"]:
+         if approval.get("status") == "pending_approval":  # gateway ask mode
+             raise _Rejected(_error_json(
+@@ -1421,7 +1425,10 @@ def terminal_tool(
+             ))
+         # Pre-exec security checks (tirith + dangerous command detection);
+         # force=True means the user already confirmed.
+-        verdict = _run_approval_guards(command, env_type, plan.config, force=force)
++        verdict = _run_approval_guards(
++            command, env_type, plan.config, force=force,
++            cwd=workdir or cwd, task_id=task_id or "",
++        )
+ 
+         pty_disabled = pty and _command_requires_pipe_stdin(command)
+         if plan.promoted_from_foreground_timeout is not None:

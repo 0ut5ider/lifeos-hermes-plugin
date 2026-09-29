@@ -1,0 +1,57 @@
+diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
+index 82956b70ed2e..28e1463d52de 100644
+--- a/hermes_cli/cli_session_mixin.py
++++ b/hermes_cli/cli_session_mixin.py
+@@ -432,7 +432,7 @@ class CLISessionMixin:
+             from hermes_cli.lifecycle import finalize_session, invoke_hook
+ 
+             context = {
+-                "session_id": self.agent.session_id if self.agent else None,
++                "session_id": self.agent.session_id if self.agent else self.session_id,
+                 "platform": getattr(self, "platform", None) or "cli",
+                 "reason": reason or ("new_session" if event_type == "on_session_reset" else "session_boundary")}
+             if event_type == "on_session_finalize":
+@@ -501,7 +501,8 @@ class CLISessionMixin:
+                 # rotation) so /new never blocks on the LLM-bound call.
+                 _boundary_snapshot = self._launch_session_boundary_memory_flush(
+                     list(self.conversation_history), session_id=old_session_id)
+-            self._notify_session_boundary("on_session_finalize")
++        if old_session_id:
++            self._notify_session_boundary("on_session_finalize", reason="new_session")
+ 
+         if self._session_db and old_session_id:
+             # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
+diff --git a/tests/hermes_cli/test_session_boundary_hooks.py b/tests/hermes_cli/test_session_boundary_hooks.py
+index 60f5f244fb20..d64c61d9477c 100644
+--- a/tests/hermes_cli/test_session_boundary_hooks.py
++++ b/tests/hermes_cli/test_session_boundary_hooks.py
+@@ -25,6 +25,7 @@ def test_session_finalize_on_reset(mock_finalize_session, mock_invoke_hook):
+         not c.args
+         and c.kwargs["session_id"] == "test-session-id"
+         and c.kwargs["platform"] == "cli"
++        and c.kwargs["reason"] == "new_session"
+         for c in mock_finalize_session.call_args_list
+     )
+     # Check if on_session_reset was called for the new session
+@@ -36,6 +37,21 @@ def test_session_finalize_on_reset(mock_finalize_session, mock_invoke_hook):
+     )
+ 
+ 
++@patch("hermes_cli.lifecycle.finalize_session")
++def test_new_session_without_agent_finalizes_old_session(mock_finalize_session):
++    cli = HermesCLI()
++    cli.agent = None
++    old_session_id = cli.session_id
++
++    cli.new_session(silent=True)
++
++    assert any(
++        call.kwargs["session_id"] == old_session_id
++        and call.kwargs["reason"] == "new_session"
++        for call in mock_finalize_session.call_args_list
++    )
++
++
+ @patch("hermes_cli.lifecycle.finalize_session")
+ def test_session_finalize_on_cleanup(mock_finalize_session):
+     """Verify on_session_finalize fires during CLI exit cleanup."""

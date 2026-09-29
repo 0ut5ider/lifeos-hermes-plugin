@@ -1,0 +1,42 @@
+diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+--- a/tests/tools/test_plugin_command_approval.py
++++ b/tests/tools/test_plugin_command_approval.py
+@@ -402,3 +402,15 @@
+     finally:
+         _approval_tool_call_id.reset(call_token)
+         batch_module._slot.reset(slot_token)
++
++
++
++def test_plugin_deny_precedes_permanent_command_allowlist():
++    command = "curl -I http://192.168.8.1:9"
++    with patch("tools.approval._command_matches_permanent_allowlist", return_value=True), patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}],
++    ) as hooks:
++        result = check_all_command_guards(command, "local")
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++    assert any(call.args[0] == "pre_command_approval" for call in hooks.call_args_list)
+diff --git a/tools/approval.py b/tools/approval.py
+index fec61915204a..21039a35e9fa 100644
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -1249,9 +1249,6 @@ def check_all_command_guards(command: str, env_type: str,
+     approval_mode = approval_context._get_approval_mode()
+     if _yolo_active() or approval_mode == "off":
+         return _approved()
+-    if _command_matches_permanent_allowlist(command):
+-        return _approved()
+-
+     is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     session_key = get_current_session_key()
+     policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
+@@ -1272,6 +1269,8 @@ def check_all_command_guards(command: str, env_type: str,
+         )
+     if isinstance(plugin_decision, dict):
+         return {**_approved(), "replacement_command": plugin_decision["command"]}
++    if _command_matches_permanent_allowlist(command):
++        return _approved()
+ 
+     if isolated_container:
+         if plugin_decision == "review":

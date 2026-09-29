@@ -1,0 +1,63 @@
+diff --git a/agent/terminal_approval_batch.py b/agent/terminal_approval_batch.py
+index 318370c71cfe..a45877086bda 100644
+--- a/agent/terminal_approval_batch.py
++++ b/agent/terminal_approval_batch.py
+@@ -240,6 +240,10 @@ def consume_prepared_guard(command, env_type, has_host_access, cwd="", task_id="
+     if (_approval_tool_call_id.get() != slot.parsed.ref(slot.batch.task_id).call_id
+             or slot.guard_key != (command, env_type, has_host_access, cwd, task_id)):
+         return None
++    from hermes_cli.plugins import has_hook
++    if has_hook("pre_command_approval"):
++        slot.decision = None
++        return None
+     decision, slot.decision = slot.decision, None  # single-use, even for identical calls
+     return decision
+ 
+@@ -296,6 +300,10 @@ def terminal_approval_batch(agent, calls, messages, task_id):
+             or approval._gateway_notify_cb(approval.get_current_session_key()) is None):
+         yield
+         return
++    from hermes_cli.plugins import has_hook
++    if has_hook("pre_command_approval"):
++        yield
++        return
+     parsed = [_parse_tool_call(agent, call, flatten_probe=True) for call in calls]
+     # Never prepare across a nonterminal barrier; leave mixed segments and
+     # malformed calls with the established sequential path.
+diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
+index 02df95e9d9ef..691132a4688d 100644
+--- a/hermes_cli/plugins.py
++++ b/hermes_cli/plugins.py
+@@ -1840,6 +1840,11 @@ def _delivery_manager() -> PluginManager:
+     return manager
+ 
+ 
++def has_hook(hook_name: str) -> bool:
++    """Return whether the active profile has a callback for this lifecycle hook."""
++    return bool(_delivery_manager()._hooks.get(hook_name))
++
++
+ def invoke_hook(hook_name: str, **kwargs: Any) -> List[Any]:
+     """Invoke a lifecycle hook (lazy-discovers first); return non-``None`` callback results.
+ 
+diff --git a/tests/agent/test_terminal_approval_batch.py b/tests/agent/test_terminal_approval_batch.py
+index 9aa2e8aaaef9..abb35728a7b5 100644
+--- a/tests/agent/test_terminal_approval_batch.py
++++ b/tests/agent/test_terminal_approval_batch.py
+@@ -323,3 +323,16 @@ def test_failed_command_re_gates_later_prepared_approvals(tmp_path, monkeypatch)
+             worker.join(timeout=5)
+             cleanup_vm(key)
+             clear_session_vars(tokens)
++
++
++def test_command_policy_hook_defers_desktop_approvals_until_execution():
++    from agent.terminal_approval_batch import terminal_approval_batch
++
++    calls = [_call("first", "echo first"), _call("second", "echo second")]
++    with patch("gateway.session_context.get_session_env", return_value="desktop"), patch(
++        "tools.approval._gateway_notify_cb", return_value=object(),
++    ), patch("hermes_cli.plugins.has_hook", return_value=True), patch(
++        "agent.terminal_approval_batch._TerminalBatch", side_effect=AssertionError("batch prepared"),
++    ):
++        with terminal_approval_batch(SimpleNamespace(), calls, [], "policy-session"):
++            pass

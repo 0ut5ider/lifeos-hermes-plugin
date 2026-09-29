@@ -1,0 +1,176 @@
+diff --git a/agent/auxiliary_client.py b/agent/auxiliary_client.py
+index 53802e837..f63b0c31d 100644
+--- a/agent/auxiliary_client.py
++++ b/agent/auxiliary_client.py
+@@ -7766,6 +7766,7 @@ def _aux_recovery_ladder(
+     resolved_base_url: Optional[str], resolved_api_key: Optional[str],
+     resolved_api_mode: Optional[str], final_model: Optional[str], max_tokens: Optional[int],
+     main_runtime: Optional[Dict[str, Any]], route_info: Optional[Dict[str, str]],
++    allow_provider_fallback: bool = True,
+ ):
+     """Ordered recovery rungs after the primary request failed (generator): parameter
+     strips → Nous heal/refresh → credential refresh/pool rotation → provider fallback.
+@@ -7787,9 +7788,10 @@ def _aux_recovery_ladder(
+     resp, first_err = yield from _ladder_credential_rungs(first_err, route, kwargs, client_is_nous)
+     if first_err is None:
+         return resp
+-    resp = yield from _ladder_provider_fallback(first_err, route)
+-    if resp is not None:
+-        return resp
++    if allow_provider_fallback:
++        resp = yield from _ladder_provider_fallback(first_err, route)
++        if resp is not None:
++            return resp
+     # Connection/timeout errors poison the cached client (closed transport, half-read
+     # stream); evict so the next aux call rebuilds a fresh one.
+     # Reached only when no fallback answered, so the next auxiliary call rebuilds a fresh
+@@ -7857,6 +7859,7 @@ def call_llm(
+     timeout: float = None, extra_body: dict = None, reasoning_config: Optional[dict] = None,
+     extra_headers: Optional[Dict[str, str]] = None, api_mode: str = None, stream: bool = False,
+     stream_options: dict = None, route_info: Optional[Dict[str, str]] = None,
++    allow_provider_fallback: bool = True,
+     latency_info: Optional[Dict[str, int]] = None,
+ ) -> Any:
+     """Run an auxiliary LLM request, applying the configured task limit."""
+@@ -7887,6 +7890,7 @@ def call_llm(
+                 max_tokens=max_tokens, tools=tools, timeout=timeout, extra_body=extra_body,
+                 reasoning_config=reasoning_config, extra_headers=extra_headers, api_mode=api_mode,
+                 stream=stream, stream_options=stream_options, route_info=route_info,
++                allow_provider_fallback=allow_provider_fallback,
+             )
+         if stream and semaphore is not None:
+             stream_semaphore = semaphore
+@@ -7974,6 +7978,7 @@ def _ladder_step_call(
+ def _start_recovery_ladder(
+     first_err: Exception, req: _PreparedAuxRequest, retry_kwargs: Dict[str, Any], *,
+     task: Optional[str], async_mode: bool, route_info: Optional[Dict[str, str]],
++    allow_provider_fallback: bool = True,
+ ):
+     """Build the recovery-ladder generator for a failed primary request."""
+     return _aux_recovery_ladder(
+@@ -7982,7 +7987,8 @@ def _start_recovery_ladder(
+         resolved_model=req.resolved_model, resolved_base_url=req.resolved_base_url,
+         resolved_api_key=req.resolved_api_key, resolved_api_mode=req.resolved_api_mode,
+         final_model=req.final_model, max_tokens=retry_kwargs["max_tokens"],
+-        main_runtime=retry_kwargs["main_runtime"], route_info=route_info)
++        main_runtime=retry_kwargs["main_runtime"], route_info=route_info,
++        allow_provider_fallback=allow_provider_fallback)
+ 
+ 
+ def _call_llm_impl(
+@@ -7992,6 +7998,7 @@ def _call_llm_impl(
+     timeout: float = None, extra_body: dict = None, reasoning_config: Optional[dict] = None,
+     extra_headers: Optional[Dict[str, str]] = None, api_mode: str = None, stream: bool = False,
+     stream_options: dict = None, route_info: Optional[Dict[str, str]] = None,
++    allow_provider_fallback: bool = True,
+ ) -> Any:
+     """Centralized synchronous LLM call: resolve provider/model, auth, kwargs, fallbacks.
+     task: aux task whose provider:model comes from config (ignored if provider set); api_mode
+@@ -8074,7 +8081,8 @@ def _call_llm_impl(
+                 return _retry_same_provider_sync(**kw)
+             return _call_fallback_candidate_sync(*args, **kw)
+         return _drive_ladder(
+-            _start_recovery_ladder(first_err, req, retry_kwargs, task=task, async_mode=False, route_info=route_info),
++            _start_recovery_ladder(first_err, req, retry_kwargs, task=task, async_mode=False,
++                                   route_info=route_info, allow_provider_fallback=allow_provider_fallback),
+             _perform)
+ 
+ 
+diff --git a/hermes_cli/_launchers.py b/hermes_cli/_launchers.py
+index 8c6464c9a..a79352d8b 100644
+--- a/hermes_cli/_launchers.py
++++ b/hermes_cli/_launchers.py
+@@ -291,6 +291,13 @@ def _launcher_script(name: str, repo_root: Path, dependencies: Path | None) -> s
+         "    del sys.argv[1]\n"
+         "    runpy.run_module(module, run_name='__main__', alter_sys=True)\n"
+         "    sys.exit(0)\n"
++        "if sys.argv[1:2] == ['--run-file']:\n"
++        "    import runpy\n"
++        "    if len(sys.argv) < 3: sys.exit('hermes: --run-file needs a path')\n"
++        "    script = sys.argv.pop(2)\n"
++        "    del sys.argv[1]\n"
++        "    runpy.run_path(script, run_name='__main__')\n"
++        "    sys.exit(0)\n"
+         f"from {module} import {func}\n"
+         "sys.argv[0] = re.sub(r'(-script\\.pyw|\\.exe)?$', '', sys.argv[0])\n"
+         f"sys.exit({func}())\n"
+diff --git a/tests/hermes_cli/test_source_launcher_publication.py b/tests/hermes_cli/test_source_launcher_publication.py
+index 43a959863..3334dfaf3 100644
+--- a/tests/hermes_cli/test_source_launcher_publication.py
++++ b/tests/hermes_cli/test_source_launcher_publication.py
+@@ -540,3 +540,29 @@ def test_update_import_probe_uses_selected_dependencies(tmp_path, monkeypatch):
+     (repo / "hermes_integrity_probe.py").write_text("import selected_probe\n", encoding="utf-8")
+     monkeypatch.setattr(update_cmd, "_UPDATE_CRITICAL_MODULES", ("hermes_integrity_probe",))
+     assert update_cmd_validation._critical_module_import_failures(repo, report_runtime_errors=True) == {}
++
++
++def test_plugin_script_runs_with_selected_hermes_runtime(tmp_path, monkeypatch):
++    repo, home, interpreter = fixture_tree(tmp_path, monkeypatch)
++    select_generation(repo, "plugin", "selected")
++    out = tmp_path / "commands"
++    out.mkdir()
++    _launchers.ensure_install_launchers(repo, out)
++    plugin_script = tmp_path / "plugin script.py"
++    plugin_script.write_text(
++        "import json, os, sys\n"
++        "from selected_probe import VALUE\n"
++        "print(json.dumps({'value': VALUE, 'args': sys.argv[1:], "
++        "'home': os.environ.get('HERMES_HOME'), 'exe': sys.executable}))\n",
++        encoding="utf-8",
++    )
++    result = subprocess.run(
++        [str(out / "hermes"), "--run-file", str(plugin_script), "model", "high"],
++        capture_output=True, text=True, encoding="utf-8", timeout=30,
++    )
++    assert result.returncode == 0, result.stdout + result.stderr
++    payload = json.loads(result.stdout)
++    assert payload["value"] == "selected"
++    assert payload["args"] == ["model", "high"]
++    assert Path(payload["home"]) == home
++    assert Path(payload["exe"]).samefile(interpreter)
+diff --git a/tests/test_lifeos_aux_no_fallback.py b/tests/test_lifeos_aux_no_fallback.py
+new file mode 100644
+index 000000000..836728ed8
+--- /dev/null
++++ b/tests/test_lifeos_aux_no_fallback.py
+@@ -0,0 +1,40 @@
++# ABOUTME: Verifies a selected LifeOS provider cannot fall back to another provider.
++# ABOUTME: Uses a failing local HTTP endpoint and checks the recovery boundary.
++
++import threading
++import unittest
++from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
++from unittest.mock import patch
++
++from agent.auxiliary_client import call_llm
++
++
++class LifeOSAuxNoFallbackTests(unittest.TestCase):
++    def test_explicit_route_stops_before_provider_fallback(self):
++        class Endpoint(BaseHTTPRequestHandler):
++            def do_POST(self):
++                self.send_response(503)
++                self.send_header("Content-Type", "application/json")
++                self.end_headers()
++                self.wfile.write(b'{"error":{"message":"unavailable"}}')
++
++            def log_message(self, *_args):
++                pass
++
++        server = ThreadingHTTPServer(("127.0.0.1", 0), Endpoint)
++        thread = threading.Thread(target=server.serve_forever, daemon=True)
++        thread.start()
++        self.addCleanup(server.server_close)
++        self.addCleanup(server.shutdown)
++        with patch("agent.auxiliary_client._ladder_provider_fallback") as fallback:
++            with self.assertRaises(Exception) as caught:
++                call_llm(provider="custom", model="test-model",
++                         base_url=f"http://127.0.0.1:{server.server_port}/v1",
++                         api_key="test-only", messages=[{"role": "user", "content": "hi"}],
++                         max_tokens=8, timeout=2, allow_provider_fallback=False)
++            self.assertNotIsInstance(caught.exception, TypeError)
++            fallback.assert_not_called()
++
++
++if __name__ == "__main__":
++    unittest.main()

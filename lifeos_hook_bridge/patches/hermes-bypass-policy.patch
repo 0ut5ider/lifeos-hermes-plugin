@@ -1,0 +1,47 @@
+diff --git a/tools/approval.py b/tools/approval.py
+index 21039a35e9fa..f9420ee84520 100644
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -1085,6 +1085,7 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+ def _plugin_command_decision(
+     command: str, pattern_key: str, description: str, *,
+     env_type: str = "", cwd: str = "", task_id: str = "",
++    approval_bypass: bool = False,
+ ) -> str | dict | None:
+     """Combine plugin command decisions after the applicable safety floors.
+ 
+@@ -1096,6 +1097,7 @@ def _plugin_command_decision(
+             "pre_command_approval", command=command, pattern_key=pattern_key,
+             description=description, session_key=get_current_session_key(),
+             env_type=env_type, cwd=cwd, task_id=task_id,
++            approval_bypass=approval_bypass,
+         )
+     except Exception:
+         logger.exception("pre_command_approval hook failed")
+@@ -1247,8 +1249,7 @@ def check_all_command_guards(command: str, env_type: str,
+             return prepared
+ 
+     approval_mode = approval_context._get_approval_mode()
+-    if _yolo_active() or approval_mode == "off":
+-        return _approved()
++    approval_bypass = _yolo_active() or approval_mode == "off"
+     is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     session_key = get_current_session_key()
+     policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
+@@ -1256,6 +1257,7 @@ def check_all_command_guards(command: str, env_type: str,
+     plugin_decision = _plugin_command_decision(
+         command, pattern_key or "", description or "",
+         env_type=env_type, cwd=cwd, task_id=task_id,
++        approval_bypass=approval_bypass,
+     )
+     # An earlier review approval never suppresses a later policy denial.
+     if plugin_decision == "review" and is_approved(session_key, policy_key):
+@@ -1267,6 +1269,8 @@ def check_all_command_guards(command: str, env_type: str,
+             description=description or "Plugin command policy denied the command",
+             outcome="plugin_denied",
+         )
++    if approval_bypass:
++        return _approved()
+     if isinstance(plugin_decision, dict):
+         return {**_approved(), "replacement_command": plugin_decision["command"]}
+     if _command_matches_permanent_allowlist(command):

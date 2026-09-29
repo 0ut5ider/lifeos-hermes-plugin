@@ -15,6 +15,28 @@ from pathlib import Path
 
 UPSTREAM_LIFEOS = "https://github.com/danielmiessler/LifeOS.git"
 SUPPORTED_LIFEOS_COMMIT = "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c"
+SUPPORTED_HERMES_COMMIT = "758ad514eb0e800547e015edf05aa18f78b78d82"
+HERMES_PATCHES = (
+    "hermes-hook-controls.patch",
+    "hermes-command-denial.patch",
+    "hermes-remote-file-staleness.patch",
+    "hermes-stop-effort.patch",
+    "hermes-delegate-tier-routing.patch",
+    "hermes-cron-worker-bootstrap.patch",
+    "hermes-delegate-provider-routing.patch",
+    "hermes-direct-provider-inference.patch",
+    "hermes-stop-fail-closed.patch",
+    "hermes-command-policy.patch",
+    "hermes-command-context.patch",
+    "hermes-command-rewrite.patch",
+    "hermes-session-reasons.patch",
+    "hermes-prompt-exit-reason.patch",
+    "hermes-empty-session-clear.patch",
+    "hermes-empty-session-resume.patch",
+    "hermes-permanent-policy-precedence.patch",
+    "hermes-policy-batch-order.patch",
+    "hermes-bypass-policy.patch",
+)
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",
     "lifeos-agent-watchdog.patch",
@@ -52,7 +74,7 @@ def latest_revision(source: str = UPSTREAM_LIFEOS) -> str:
     return revision
 
 
-def _tree_digest(root: Path) -> str:
+def _tree_digest(root: Path, manifest_name: str = "lifeos-source-manifest.json") -> str:
     digest = hashlib.sha256()
     for directory, names, files in os.walk(root, followlinks=False):
         parent = Path(directory)
@@ -61,7 +83,7 @@ def _tree_digest(root: Path) -> str:
             if (parent / name).is_symlink():
                 raise IncompatibleLifeOS(f"LifeOS candidate contains a symbolic link: {parent / name}")
         for name in sorted(files):
-            if name == "lifeos-source-manifest.json":
+            if name == manifest_name:
                 continue
             path = parent / name
             if path.is_symlink() or not path.is_file():
@@ -139,6 +161,74 @@ def prepare_latest_lifeos(target: Path) -> dict:
 def validate_prepared_lifeos(candidate: Path) -> dict:
     return validate_candidate(candidate, SUPPORTED_LIFEOS_COMMIT,
                               Path(__file__).parent / "patches", LIFEOS_PATCHES)
+
+
+def validate_hermes_candidate(target: Path, supported_revision: str, patches: Path,
+                              patch_names: tuple[str, ...]) -> dict:
+    try:
+        manifest = json.loads((target / "hermes-source-manifest.json").read_text())
+    except (OSError, ValueError) as error:
+        raise IncompatibleLifeOS("Hermes candidate manifest is missing or invalid") from error
+    expected = []
+    for name in patch_names:
+        patch = patches / name
+        if not patch.is_file() or patch.is_symlink():
+            raise IncompatibleLifeOS(f"Hermes compatibility patch is missing: {name}")
+        expected.append({"name": name, "sha256": hashlib.sha256(patch.read_bytes()).hexdigest()})
+    if manifest.get("base_commit") != supported_revision or manifest.get("patches") != expected:
+        raise IncompatibleLifeOS("Hermes candidate does not match the tested patch set")
+    if _git("rev-parse", "HEAD", cwd=target) != supported_revision:
+        raise IncompatibleLifeOS("Hermes candidate Git revision changed")
+    if manifest.get("tree_sha256") != _tree_digest(target, "hermes-source-manifest.json"):
+        raise IncompatibleLifeOS("Hermes candidate files changed after preparation")
+    return manifest
+
+
+def prepare_hermes(source: Path, target: Path, supported_revision: str,
+                   patches: Path, patch_names: tuple[str, ...]) -> dict:
+    source = source.absolute()
+    target = target.absolute()
+    if source.is_symlink() or not source.is_dir():
+        raise IncompatibleLifeOS("Hermes source must be a regular directory")
+    if _git("rev-parse", "HEAD", cwd=source) != supported_revision:
+        raise IncompatibleLifeOS(f"Hermes source is not the tested commit {supported_revision}")
+    if _git("status", "--porcelain", "--untracked-files=all", cwd=source):
+        raise IncompatibleLifeOS("Hermes source must be clean before preparing a patch candidate")
+    if target.exists() or target.is_symlink():
+        raise IncompatibleLifeOS(f"Hermes candidate already exists: {target}")
+    target.parent.mkdir(parents=True, exist_ok=True)
+    stage = Path(tempfile.mkdtemp(prefix=f".{target.name}.", dir=target.parent))
+    stage.chmod(0o700)
+    try:
+        _git("clone", "--quiet", "--no-checkout", "--", str(source), str(stage))
+        _git("checkout", "--quiet", "--detach", supported_revision, cwd=stage)
+        applied = []
+        for name in patch_names:
+            patch = patches / name
+            if not patch.is_file() or patch.is_symlink():
+                raise IncompatibleLifeOS(f"Hermes compatibility patch is missing: {name}")
+            _git("apply", "--check", str(patch), cwd=stage)
+            _git("apply", str(patch), cwd=stage)
+            applied.append({"name": name, "sha256": hashlib.sha256(patch.read_bytes()).hexdigest()})
+        _git("diff", "--check", cwd=stage)
+        manifest = {"base_commit": supported_revision, "patches": applied,
+                    "tree_sha256": _tree_digest(stage, "hermes-source-manifest.json")}
+        (stage / "hermes-source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+        os.replace(stage, target)
+        return manifest
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
+
+
+def prepare_supported_hermes(source: Path, target: Path) -> dict:
+    return prepare_hermes(source, target, SUPPORTED_HERMES_COMMIT,
+                          Path(__file__).parent / "patches", HERMES_PATCHES)
+
+
+def validate_supported_hermes(candidate: Path) -> dict:
+    return validate_hermes_candidate(candidate, SUPPORTED_HERMES_COMMIT,
+                                     Path(__file__).parent / "patches", HERMES_PATCHES)
 
 
 def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
