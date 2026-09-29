@@ -1,0 +1,11 @@
+# LifeOS update tool ownership check
+
+Date: 2026-09-29. Target: the pinned public LifeOS candidate in the disposable `.212` account.
+
+The six fresh-install tools are not an update transaction. `DeployCore.ts` uses `copyMissing` and does not replace populated runtime files. `InstallHooks.ts` merges registrations by normalized command and copies hook scripts without replacing existing files. `InstallSettings.ts` adds missing settings keys. Repeating those tools after a source revision changes could leave new registrations beside old ones and keep old hook code. `OverlaySystem.ts` replaces many system files and the version, but explicitly leaves `settings.json`, user data, memory, and dependencies outside that operation.
+
+The plugin update path therefore needs an ownership-aware staged tree. It must replace LifeOS-owned system files and registrations, preserve foreign entries and user files, update dependencies, verify the installed hooks against the selected source, and roll back the tree plus Hermes mount files and VersionDrift baseline together if verification fails. A clean `OverlaySystem.ts` exit by itself is insufficient evidence of an update.
+
+An initial exact-match check against the disposable install failed. `InstallHooks.ts` coalesces several source groups without a matcher into one installed group with `matcher: ""`. The hook objects themselves were unchanged. The plugin's registration replacement now treats an absent and empty matcher as the same installed form while still rejecting edited hook commands and options. The read-only `.212` check accounted for all 74 source hooks, found zero foreign hooks, and returned identical settings for a same-source replacement.
+
+The VersionDrift baseline contains 1,796 installed system files, and every one has a direct file at the same relative path in the candidate payload. The candidate also contains 21 files under those broad system prefixes that the fresh installer did not put in the installed tree. This means a future updater cannot equate every source file with an installed file. It needs an installation ownership manifest or a fresh reference installation for the selected candidate before it decides which new files to add.
