@@ -117,6 +117,23 @@ index a0387040154..3aae7213eae 100644
 +    finally:
 +        _approval_tool_call_id.reset(call_token)
 +        batch_module._slot.reset(slot_token)
+diff --git a/tests/agent/test_terminal_approval_batch.py b/tests/agent/test_terminal_approval_batch.py
+--- a/tests/agent/test_terminal_approval_batch.py
++++ b/tests/agent/test_terminal_approval_batch.py
+@@ -129,6 +129,13 @@ def test_desktop_publishes_final_commands_before_wait_and_runs_in_order(tmp_path
+             assert approval.resolve_gateway_approval(key, "once", request_id=second["request_id"]) == 1
+             assert executed == []
+             assert approval.resolve_gateway_approval(key, "once", request_id=first["request_id"]) == 1
++            # The first command changes cwd. The second prepared approval was
++            # for the former cwd, so its execution needs a fresh human answer.
++            revised = published.get(timeout=10)
++            assert revised["command"] == commands["original-second"]
++            assert revised["request_id"] != second["request_id"]
++            assert "second" not in {m["tool_call_id"] for m in messages}
++            assert approval.resolve_gateway_approval(key, "once", request_id=revised["request_id"]) == 1
+             worker.join(timeout=15)
+             assert not worker.is_alive()
+             assert errors == []
 diff --git a/tools/approval.py b/tools/approval.py
 index fb9b8c1e77f..06883affddb 100644
 --- a/tools/approval.py
