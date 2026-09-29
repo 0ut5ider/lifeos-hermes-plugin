@@ -31,5 +31,16 @@
       {"event": "SessionEnd", "reason": "resume", "session_id": "db42cdb0-5e2f-4a45-a785-c32784edd77f"},
       {"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "d9833157-1087-4998-84cd-20d852fe10ff"}
     ]
+  },
+  "empty_resume_probe": {
+    "working_directory": "/home/lifeos-claude-ref/.claude/session-resume-empty-hlm_rbf2",
+    "seed_session_id": "29545a61-34ba-4cab-b97b-4cd722a5322a",
+    "seed_returncode": 0,
+    "terminal_input": ["/resume 29545a61-34ba-4cab-b97b-4cd722a5322a", "/exit"],
+    "input_terminator": "carriage_return",
+    "events": [
+      {"event": "SessionEnd", "reason": "resume", "session_id": "f3f5b465-3628-431b-8dc7-4cdeec93182a"},
+      {"event": "SessionEnd", "reason": "prompt_input_exit", "session_id": "29545a61-34ba-4cab-b97b-4cd722a5322a"}
+    ]
   }
 }
