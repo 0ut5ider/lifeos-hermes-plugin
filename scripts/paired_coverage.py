@@ -76,6 +76,12 @@ def build_coverage(registrations: Path, pairs: list[tuple], http_pairs: list[tup
                 continue
             native_rows = native.get(identifier, ())
             hermes_rows = hermes.get(identifier, ())
+            setup_probe_count = 0
+            if identifier == "TaskCreated.1.1":
+                setup_probe_count = sum("hermes_bridge_probe" in row.get("payload_keys", ())
+                                        for row in hermes_rows)
+                hermes_rows = [row for row in hermes_rows
+                               if "hermes_bridge_probe" not in row.get("payload_keys", ())]
             left = [_outcome(row) for row in native_rows]
             right = [_outcome(row) for row in hermes_rows]
             if not left and not right:
@@ -83,9 +89,12 @@ def build_coverage(registrations: Path, pairs: list[tuple], http_pairs: list[tup
             same_final_text = (identifier.startswith("Stop.") and left and right and
                                [row.get("last_assistant_message") for row in native_rows] !=
                                [row.get("last_assistant_message") for row in hermes_rows])
-            evidence[identifier].append({"scenario": label, "native": left, "hermes": right,
-                                         "transport_match": None if same_final_text else left == right,
-                                         "incomparable_reason": "different_final_text" if same_final_text else None})
+            case = {"scenario": label, "native": left, "hermes": right,
+                    "transport_match": None if same_final_text else left == right,
+                    "incomparable_reason": "different_final_text" if same_final_text else None}
+            if setup_probe_count:
+                case["hermes_setup_probe_count"] = setup_probe_count
+            evidence[identifier].append(case)
     for label, native_path, native_session, hermes_path, hermes_session in http_pairs:
         native = _http_rows(native_path, native_session)
         hermes = _http_rows(hermes_path, hermes_session)

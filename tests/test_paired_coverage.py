@@ -90,6 +90,29 @@ class PairedCoverageTests(unittest.TestCase):
             self.assertEqual(report["counts"]["matched_dispatch_and_output_shape"], 1)
             self.assertEqual(report["registrations"][0]["cases"][0]["native"][0]["http_status"], 200)
 
+    def test_task_setup_probe_is_reported_separately_from_created_task(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            manifest = root / "registrations.csv"
+            manifest.write_text("id,event,handler\nTaskCreated.1.1,TaskCreated,governance\n")
+            native = root / "native.jsonl"
+            hermes = root / "hermes.jsonl"
+            task = {"id": "TaskCreated.1.1", "exit_code": 0,
+                    "stdout_size": 0, "stderr_size": 0, "payload_keys": ["task_subject"]}
+            native.write_text(json.dumps({**task, "session_id": "n"}))
+            hermes.write_text("\n".join(json.dumps(row) for row in (
+                {**task, "session_id": "h", "stdout_size": 42,
+                 "payload_keys": ["hermes_bridge_probe"]},
+                {**task, "session_id": "h"},
+            )))
+            report = build_coverage(manifest, [
+                ("task", native, "n", hermes, "h", "TaskCreated.1.1")
+            ])
+            case = report["registrations"][0]["cases"][0]
+            self.assertTrue(case["transport_match"])
+            self.assertEqual(case["hermes_setup_probe_count"], 1)
+            self.assertEqual(len(case["hermes"]), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

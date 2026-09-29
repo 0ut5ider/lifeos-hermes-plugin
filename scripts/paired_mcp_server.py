@@ -28,8 +28,13 @@ def respond(request: dict) -> dict | None:
         }
     elif method == "tools/list":
         count = min(max(int(os.environ.get("PAIRED_MCP_TOOL_COUNT", "1")), 1), 150)
-        result = {"tools": [TOOL, *(
-            {**TOOL, "name": f"reference_{index:03d}"} for index in range(1, count)
+        description_length = min(max(int(os.environ.get("PAIRED_MCP_DESCRIPTION_LENGTH", "0")), 0), 4000)
+        tool = dict(TOOL)
+        if description_length:
+            tool["description"] = (TOOL["description"] *
+                                   ((description_length // len(TOOL["description"])) + 1))[:description_length]
+        result = {"tools": [tool, *(
+            {**tool, "name": f"reference_{index:03d}"} for index in range(1, count)
         )]}
     elif method == "tools/call" and request.get("params", {}).get("name") == "ping":
         result = {"content": [{"type": "text", "text": "PAIR_MCP_212"}], "isError": False}
