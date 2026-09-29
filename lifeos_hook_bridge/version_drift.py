@@ -21,6 +21,7 @@ SKIP_PARTS = frozenset({
     ".git", ".cache", ".venv", "venv", "node_modules", "__pycache__",
     "dist", "build", ".next", ".bun", "coverage",
 })
+RUNTIME_PATHS = ("LIFEOS/PULSE/state/",)
 NEW_FILE_SUFFIXES = frozenset({
     ".ts", ".tsx", ".js", ".mjs", ".cjs", ".py", ".sh", ".md",
     ".json", ".yaml", ".yml", ".toml", ".txt",
@@ -62,7 +63,7 @@ def _eligible(path: str) -> bool:
 
 
 def _installed_file(root: Path, name: str) -> Path | None:
-    if not _eligible(name):
+    if not _eligible(name) or name.startswith(RUNTIME_PATHS):
         return None
     path = root / name
     if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
@@ -202,6 +203,8 @@ def changed_paths(baseline: dict[str, Any], installed: Path) -> list[str]:
     files = baseline["files"]
     changed = set()
     for name, previous in files.items():
+        if name.startswith(RUNTIME_PATHS):
+            continue
         path = _installed_file(installed, name)
         if path is None or _digest(path) != previous:
             changed.add(name)

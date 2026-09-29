@@ -1,0 +1,44 @@
+test_adapter_answers_only_native_read_only_queries (test_version_drift_baseline.VersionDriftBaselineTests.test_adapter_answers_only_native_read_only_queries) ... ok
+test_baseline_excludes_tracked_pulse_runtime_state (test_version_drift_baseline.VersionDriftBaselineTests.test_baseline_excludes_tracked_pulse_runtime_state) ... FAIL
+test_baseline_rejects_mismatched_source_version (test_version_drift_baseline.VersionDriftBaselineTests.test_baseline_rejects_mismatched_source_version) ... ok
+test_baseline_uses_tracked_installed_system_files_only (test_version_drift_baseline.VersionDriftBaselineTests.test_baseline_uses_tracked_installed_system_files_only) ... ok
+test_baseline_write_is_private_and_requires_explicit_renewal (test_version_drift_baseline.VersionDriftBaselineTests.test_baseline_write_is_private_and_requires_explicit_renewal) ... ok
+test_changed_paths_include_edits_deletes_and_new_system_files (test_version_drift_baseline.VersionDriftBaselineTests.test_changed_paths_include_edits_deletes_and_new_system_files) ... ok
+test_changed_paths_include_new_source_owned_skill_root (test_version_drift_baseline.VersionDriftBaselineTests.test_changed_paths_include_new_source_owned_skill_root) ... ok
+test_default_baseline_is_outside_hermes_and_config_roots (test_version_drift_baseline.VersionDriftBaselineTests.test_default_baseline_is_outside_hermes_and_config_roots) ... ok
+test_executable_adapter_delegates_other_git_calls (test_version_drift_baseline.VersionDriftBaselineTests.test_executable_adapter_delegates_other_git_calls) ... ok
+test_loaded_baseline_rejects_path_traversal (test_version_drift_baseline.VersionDriftBaselineTests.test_loaded_baseline_rejects_path_traversal) ... ok
+test_loaded_baseline_requires_source_manifest (test_version_drift_baseline.VersionDriftBaselineTests.test_loaded_baseline_requires_source_manifest) ... ok
+test_pulse_runtime_state_does_not_report_system_drift (test_version_drift_baseline.VersionDriftBaselineTests.test_pulse_runtime_state_does_not_report_system_drift) ... FAIL
+test_review_fingerprint_changes_with_installed_content (test_version_drift_baseline.VersionDriftBaselineTests.test_review_fingerprint_changes_with_installed_content) ... ok
+test_scripts_run_from_installed_hyphenated_plugin_directory (test_version_drift_baseline.VersionDriftBaselineTests.test_scripts_run_from_installed_hyphenated_plugin_directory) ... ok
+
+======================================================================
+FAIL: test_baseline_excludes_tracked_pulse_runtime_state (test_version_drift_baseline.VersionDriftBaselineTests.test_baseline_excludes_tracked_pulse_runtime_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_version_drift_baseline.py", line 101, in test_baseline_excludes_tracked_pulse_runtime_state
+    self.assertNotIn(name, baseline["files"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'LIFEOS/PULSE/state/state.json' unexpectedly found in {'LIFEOS/PULSE/state/state.json': '655568aa65e66f219f6e05684c0a804fb83a67c8600c2b20f304ccf5cf91c21d', 'LIFEOS/TOOLS/Check.ts': '8ba8496a2525ae171ffd104d632dede6ef418d9b95962a9d88e2fcdbc8d48d24', 'hooks/VersionDrift.hook.ts': '83a87f7df6349114decbe3aaf122e32e3dd719fcea2eea4de8cb2da1dea0df56', 'skills/research/SKILL.md': '9c53c074d7ac6a2728b638ac1f376c5fa9eb8f71603017c3ea638c2fd40548df'}
+
+======================================================================
+FAIL: test_pulse_runtime_state_does_not_report_system_drift (test_version_drift_baseline.VersionDriftBaselineTests.test_pulse_runtime_state_does_not_report_system_drift)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_version_drift_baseline.py", line 94, in test_pulse_runtime_state_does_not_report_system_drift
+    self.assertEqual(changed_paths(baseline, self.installed), ["LIFEOS/PULSE/pulse.ts"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['LIFEOS/PULSE/pulse.ts', 'LIFEOS/PULSE/state/state.json'] != ['LIFEOS/PULSE/pulse.ts']
+
+First list contains 1 additional elements.
+First extra element 1:
+'LIFEOS/PULSE/state/state.json'
+
+- ['LIFEOS/PULSE/pulse.ts', 'LIFEOS/PULSE/state/state.json']
++ ['LIFEOS/PULSE/pulse.ts']
+
+----------------------------------------------------------------------
+Ran 14 tests in 0.456s
+
+FAILED (failures=2)

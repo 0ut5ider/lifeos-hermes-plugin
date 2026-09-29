@@ -83,6 +83,25 @@ class VersionDriftBaselineTests(unittest.TestCase):
         (self.installed / "skills/unrelated/SKILL.md").write_text("Hermes skill")
         self.assertEqual(changed_paths(baseline, self.installed), [new_skill])
 
+    def test_pulse_runtime_state_does_not_report_system_drift(self):
+        self._file("LIFEOS/PULSE/pulse.ts", "daemon code")
+        subprocess.run(["git", "-C", str(self.source), "add", "LIFEOS/PULSE/pulse.ts"], check=True)
+        baseline = create_baseline(self.source, self.installed)
+        runtime = self.installed / "LIFEOS/PULSE/state/state.json"
+        runtime.parent.mkdir(parents=True)
+        runtime.write_text('{"running": false}')
+        (self.installed / "LIFEOS/PULSE/pulse.ts").write_text("edited daemon code")
+        self.assertEqual(changed_paths(baseline, self.installed), ["LIFEOS/PULSE/pulse.ts"])
+
+    def test_baseline_excludes_tracked_pulse_runtime_state(self):
+        name = "LIFEOS/PULSE/state/state.json"
+        self._file(name, '{"running": true}')
+        subprocess.run(["git", "-C", str(self.source), "add", name], check=True)
+        baseline = create_baseline(self.source, self.installed)
+        self.assertNotIn(name, baseline["files"])
+        (self.installed / name).write_text('{"running": false}')
+        self.assertEqual(changed_paths(baseline, self.installed), [])
+
     def test_loaded_baseline_requires_source_manifest(self):
         baseline = create_baseline(self.source, self.installed)
         destination = self.root / "baseline.json"

@@ -21,6 +21,8 @@ The command-line equivalent is:
 
 The default baseline is `~/.local/state/lifeos-hook-bridge/version-drift-baseline.json`. The plugin creates its directory with mode `0700` and the file with mode `0600`. It stores paths, hashes, the LifeOS version, source checkout path, source commit, and baseline time. It stores no file contents. Keep the source checkout available: the adapter reads its tracked file manifest when it scans for new LifeOS skills. The source manifest supplies the tracked file list; the plugin excludes runtime dependency directories and does not include `USER/` or `LIFEOS/MEMORY/`. An adapter failure writes a private diagnostic next to the baseline and appears on the dashboard page.
 
+The baseline also excludes `LIFEOS/PULSE/state/`. Pulse writes daemon status, indexes, and caches there during normal operation. These files are runtime data. Changes to Pulse source files still count as system drift.
+
 ## Update and renewal
 
 Baselines created before schema 2 do not contain the source checkout path. After upgrading this plugin, review the candidate file list and renew the baseline through the dashboard or with `--apply --renew`. Until renewal, the native hook receives no synthetic Git tag and the dashboard reports the schema error.
