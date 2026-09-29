@@ -1,0 +1,92 @@
+ M .gitattributes
+ M README.md
+ M docs/clean-install.md
+ M docs/discord-setup.md
+ M docs/hook-parity.md
+ M docs/installation-workflow.md
+ M docs/upstream-hermes-proposals.md
+ M lifeos_hook_bridge/__init__.py
+ M lifeos_hook_bridge/bin/claude
+ M lifeos_hook_bridge/bin/claude_direct.py
+ M lifeos_hook_bridge/bridge.py
+ M lifeos_hook_bridge/carrier_probe.py
+ M lifeos_hook_bridge/install_source.py
+ M lifeos_hook_bridge/model_tiers.py
+ D lifeos_hook_bridge/patches/hermes-bypass-policy.patch
+ D lifeos_hook_bridge/patches/hermes-command-context.patch
+ D lifeos_hook_bridge/patches/hermes-command-denial.patch
+ M lifeos_hook_bridge/patches/hermes-command-policy.patch
+ D lifeos_hook_bridge/patches/hermes-command-rewrite.patch
+ D lifeos_hook_bridge/patches/hermes-cron-worker-bootstrap.patch
+ D lifeos_hook_bridge/patches/hermes-delegate-provider-routing.patch
+ D lifeos_hook_bridge/patches/hermes-delegate-tier-routing.patch
+ D lifeos_hook_bridge/patches/hermes-direct-provider-inference.patch
+ D lifeos_hook_bridge/patches/hermes-empty-session-clear.patch
+ D lifeos_hook_bridge/patches/hermes-empty-session-resume.patch
+ D lifeos_hook_bridge/patches/hermes-hook-controls.patch
+ D lifeos_hook_bridge/patches/hermes-permanent-policy-precedence.patch
+ D lifeos_hook_bridge/patches/hermes-policy-batch-order.patch
+ D lifeos_hook_bridge/patches/hermes-policy-failure-controls.patch
+ D lifeos_hook_bridge/patches/hermes-prompt-exit-reason.patch
+ D lifeos_hook_bridge/patches/hermes-remote-file-staleness.patch
+ D lifeos_hook_bridge/patches/hermes-session-reasons.patch
+ D lifeos_hook_bridge/patches/hermes-stop-effort.patch
+ D lifeos_hook_bridge/patches/hermes-stop-fail-closed.patch
+ M lifeos_hook_bridge/patches/lifeos-hermes-carrier-probe.patch
+ M lifeos_hook_bridge/patches/lifeos-model-rung-effort.patch
+ M lifeos_hook_bridge/patches/lifeos-task-governance.patch
+ D patches/hermes-bypass-policy.patch
+ D patches/hermes-command-context.patch
+ D patches/hermes-command-denial.patch
+ M patches/hermes-command-policy.patch
+ D patches/hermes-command-rewrite.patch
+ D patches/hermes-cron-worker-bootstrap.patch
+ D patches/hermes-delegate-provider-routing.patch
+ D patches/hermes-delegate-tier-routing.patch
+ D patches/hermes-direct-provider-inference.patch
+ D patches/hermes-empty-session-clear.patch
+ D patches/hermes-empty-session-resume.patch
+ D patches/hermes-hook-controls.patch
+ D patches/hermes-permanent-policy-precedence.patch
+ D patches/hermes-policy-batch-order.patch
+ D patches/hermes-policy-failure-controls.patch
+ D patches/hermes-prompt-exit-reason.patch
+ D patches/hermes-remote-file-staleness.patch
+ D patches/hermes-session-reasons.patch
+ D patches/hermes-stop-effort.patch
+ D patches/hermes-stop-fail-closed.patch
+ M patches/lifeos-hermes-carrier-probe.patch
+ M patches/lifeos-model-rung-effort.patch
+ M patches/lifeos-task-governance.patch
+ M scripts/prepare_sources.py
+ M tests/test_bridge.py
+ M tests/test_claude_adapter.py
+ M tests/test_native_task_hook.py
+ M tests/test_plugin_lifecycle.py
+ M tests/test_prepare_sources.py
+ M tests/test_stop_cap_policy.py
+ M tests/test_update_transaction.py
+?? docs/agents/2026-09-29-footprint-review/
+?? docs/patch-footprint.md
+?? docs/verification/2026-09-29-patch-footprint/
+?? lifeos_hook_bridge/cli.py
+?? lifeos_hook_bridge/native_capabilities.json
+?? lifeos_hook_bridge/native_capabilities.py
+?? lifeos_hook_bridge/patches/hermes-child-routing.patch
+?? lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch
+?? lifeos_hook_bridge/patches/hermes-plugin-events.patch
+?? lifeos_hook_bridge/patches/hermes-remote-files.patch
+?? lifeos_hook_bridge/patches/hermes-session-lifecycle.patch
+?? lifeos_hook_bridge/patches/hermes-strict-inference.patch
+?? lifeos_hook_bridge/patches/hermes-turn-gates.patch
+?? notes/2026-09-29-patch-footprint.md
+?? patches/hermes-child-routing.patch
+?? patches/hermes-cron-bootstrap.patch
+?? patches/hermes-plugin-events.patch
+?? patches/hermes-remote-files.patch
+?? patches/hermes-session-lifecycle.patch
+?? patches/hermes-strict-inference.patch
+?? patches/hermes-turn-gates.patch
+?? scripts/rebuild_hermes_patches.py
+?? tests/test_footprint_contracts.py
+?? tests/test_installed_plugin_commands.py

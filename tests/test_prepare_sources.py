@@ -9,6 +9,8 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from lifeos_hook_bridge.install_source import HERMES_PATCHES, LIFEOS_PATCHES
+
 
 ROOT = Path(__file__).resolve().parents[1]
 SCRIPT = ROOT / "scripts/prepare_sources.py"
@@ -48,9 +50,8 @@ class PrepareSourcesTests(unittest.TestCase):
             result = self.run_prepare(HERMES_REPO, LIFEOS_REPO, output)
             self.assertEqual(result.returncode, 0, result.stderr)
             manifest = json.loads((output / "source-manifest.json").read_text())
-            self.assertEqual(len(manifest["hermes"]["patches"]), 20)
-            self.assertEqual(manifest["hermes"]["patches"][-1]["name"], "hermes-policy-failure-controls.patch")
-            self.assertEqual(len(manifest["lifeos"]["patches"]), 9)
+            self.assertEqual(tuple(p["name"] for p in manifest["hermes"]["patches"]), HERMES_PATCHES)
+            self.assertEqual(tuple(p["name"] for p in manifest["lifeos"]["patches"]), LIFEOS_PATCHES)
             self.assertTrue((output / "hermes/hermes_cli/plugins.py").is_file())
             self.assertTrue((output / "lifeos/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts").is_file())
             runtime_check = subprocess.run(

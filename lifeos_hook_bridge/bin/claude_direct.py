@@ -13,8 +13,7 @@ import urllib.request
 from pathlib import Path
 
 
-def _arguments() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="LifeOS local child inference")
+def configure_arguments(parser: argparse.ArgumentParser) -> None:
     parser.add_argument("--print", action="store_true", required=True)
     parser.add_argument("--model", required=True)
     parser.add_argument("--effort", choices=("minimal", "low", "medium", "high", "xhigh", "max", "ultra"), default="medium")
@@ -25,12 +24,19 @@ def _arguments() -> argparse.Namespace:
     parser.add_argument("--allowedTools", default="")
     parser.add_argument("--tools", default="")
     parser.add_argument("--exclude-dynamic-system-prompt-sections", action="store_true")
-    args = parser.parse_args()
+
+
+def _arguments() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="LifeOS local child inference")
+    configure_arguments(parser)
+    return parser.parse_args()
+
+
+def _validate_arguments(args: argparse.Namespace) -> None:
     if (args.system_prompt is None) == (args.system_prompt_file is None):
-        parser.error("exactly one system prompt source is required")
+        raise ValueError("exactly one system prompt source is required")
     if args.allowedTools not in ("", "Read") or args.tools not in ("",):
-        parser.error("only LifeOS inference without tools or with Read image references is supported")
-    return args
+        raise ValueError("only LifeOS inference without tools or with Read image references is supported")
 
 
 def _message_content(prompt: str, allow_images: bool) -> str | list[dict[str, object]]:
@@ -104,8 +110,9 @@ def _run_hermes_provider(args: argparse.Namespace, system_prompt: str,
     return 0
 
 
-def main() -> int:
-    args = _arguments()
+def main(args: argparse.Namespace | None = None) -> int:
+    args = args if args is not None else _arguments()
+    _validate_arguments(args)
     system_prompt = args.system_prompt if args.system_prompt is not None else Path(args.system_prompt_file).read_text()
     content = _message_content(sys.stdin.read(), args.allowedTools == "Read")
     provider = os.environ.get("LIFEOS_CHILD_PROVIDER", "").strip()

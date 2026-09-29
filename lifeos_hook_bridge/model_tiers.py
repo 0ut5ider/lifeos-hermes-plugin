@@ -15,6 +15,25 @@ VALID_EFFORTS = frozenset({"minimal", "low", "medium", "high", "xhigh", "max", "
 VALID_PINS = frozenset({"none", *DEFAULT_EFFORTS})
 
 
+def carrier_observation(model: str, effort: str, provider: str, mapping: Mapping[str, Any]) -> dict[str, Any]:
+    """Describe the observed main route without changing its real model name."""
+    rungs = ("fable", "opus", "sonnet", "haiku")
+    name = model.lower()
+    tier = next((rung for rung in rungs if name == rung or name.startswith(f"claude-{rung}-")), None)
+    if tier is None and model and effort in VALID_EFFORTS:
+        for require_model in (True, False):
+            tier = next((rung for rung in rungs
+                         if isinstance(mapping.get(rung), Mapping)
+                         and mapping[rung].get("effort") == effort
+                         and mapping[rung].get("model", "") == (model if require_model else "")
+                         and (not mapping[rung].get("provider") or mapping[rung]["provider"] == provider)), None)
+            if tier is not None:
+                break
+    pin = mapping.get("pin")
+    return {"model": model or None, "provider": provider, "effort": effort,
+            "tier": tier, "pin": pin if pin in rungs else None}
+
+
 def configured_tiers(
     read_setting: Callable[[str, Any], Any], default_provider: str = "", default_model: str = "",
 ) -> dict[str, dict[str, str]]:

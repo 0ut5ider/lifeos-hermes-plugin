@@ -15,6 +15,9 @@ PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_r
 
 
 def register(ctx: Any) -> None:
+    from .cli import register_commands
+
+    register_commands(ctx)
     settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(Path.home() / ".claude/settings.json"))).expanduser()
     if not settings.is_file():
         return

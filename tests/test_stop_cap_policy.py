@@ -21,6 +21,9 @@ class Context:
     def get_config(self, key, default=None):
         return self.settings.get(key, default)
 
+    def register_cli_command(self, name, **entry):
+        pass
+
     def register_hook(self, name, callback):
         self.hooks[name] = callback
 

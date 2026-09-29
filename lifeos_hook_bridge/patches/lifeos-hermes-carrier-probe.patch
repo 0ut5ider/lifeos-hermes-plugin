@@ -1,5 +1,5 @@
 diff --git a/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts b/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
-index 62dd6ff..c8fca46 100755
+index 62dd6ff..f2559c0 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
 @@ -1104,7 +1104,12 @@ function checkWorkflows(): void {
@@ -9,7 +9,7 @@ index 62dd6ff..c8fca46 100755
 -    execFileSync('bun', [join(CLAUDE_DIR, 'LIFEOS', 'TOOLS', 'CarrierProbe.ts'), '--check'], { encoding: 'utf8' });
 +    const hermesProbe = process.env.LIFEOS_HERMES_CARRIER_PROBE;
 +    if (hermesProbe) {
-+      execFileSync('hermes', ['--run-file', hermesProbe, '--check'], { encoding: 'utf8' });
++      execFileSync('hermes', ['lifeos-probe', '--check'], { encoding: 'utf8' });
 +    } else {
 +      execFileSync('bun', [join(CLAUDE_DIR, 'LIFEOS', 'TOOLS', 'CarrierProbe.ts'), '--check'], { encoding: 'utf8' });
 +    }
@@ -23,7 +23,7 @@ index 62dd6ff..c8fca46 100755
 +  const hermesProbe = process.env.LIFEOS_HERMES_CARRIER_PROBE;
 +  if (hermesProbe && topRung) {
 +    try {
-+      execFileSync('hermes', ['--run-file', hermesProbe, '--check-main-rung', topRung], { encoding: 'utf8' });
++      execFileSync('hermes', ['lifeos-probe', '--check-main-rung', topRung], { encoding: 'utf8' });
 +    } catch (e: any) {
 +      const msg = (e.stderr || e.stdout || e.message || '').toString().trim().split('\n')[0];
 +      findings.push({ detail: msg || 'Hermes main rung check failed', blocking: true });

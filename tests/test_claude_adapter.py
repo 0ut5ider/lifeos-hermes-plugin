@@ -199,8 +199,8 @@ class ClaudeAdapterTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             payload = json.loads(result.stdout)
             self.assertEqual(payload["provider"], "custom")
-            self.assertEqual(payload["args"][:2], ["--run-file", str(ADAPTER.parent / "claude_direct.py")])
-            self.assertEqual(payload["args"][3:5], ["--model", "flashnext"])
+            self.assertEqual(payload["args"][:1], ["lifeos-infer"])
+            self.assertEqual(payload["args"][2:4], ["--model", "flashnext"])
 
     def test_selected_provider_needs_no_legacy_model_file(self):
         with tempfile.TemporaryDirectory() as directory:

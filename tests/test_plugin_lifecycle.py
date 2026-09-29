@@ -34,6 +34,9 @@ class PluginLifecycleTests(unittest.TestCase):
                     self.hooks = {}
                     self.unload = []
 
+                def register_cli_command(self, name, **entry):
+                    pass
+
                 def get_config(self, name, default=None):
                     return default
 
@@ -72,6 +75,9 @@ class PluginLifecycleTests(unittest.TestCase):
                     self.hooks = {}
                     self.unload = []
 
+                def register_cli_command(self, name, **entry):
+                    pass
+
                 def get_config(self, name, default=None):
                     return default
 
@@ -101,6 +107,9 @@ class PluginLifecycleTests(unittest.TestCase):
                 def __init__(self):
                     self.hooks = {}
                     self.unload = []
+
+                def register_cli_command(self, name, **entry):
+                    pass
 
                 def get_config(self, name, default=None):
                     return default

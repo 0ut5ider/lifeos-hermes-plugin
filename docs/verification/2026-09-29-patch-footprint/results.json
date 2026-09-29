@@ -1,0 +1,33 @@
+{
+  "plugin_suite": {
+    "total": 398,
+    "passed": 347,
+    "skipped": 51,
+    "result": "success",
+    "log": "plugin-tests.txt"
+  },
+  "focused_hermes_suite": {
+    "passed": 163,
+    "skipped": 1,
+    "warnings": 1,
+    "result": "success",
+    "log": "hermes-tests.txt",
+    "skip_reason": "Live SSH environment is not configured",
+    "warning": "Existing pm/shell.py invalid escape sequence"
+  },
+  "stock_launcher_suite": {
+    "passed": 21,
+    "skipped": 9,
+    "result": "success",
+    "log": "stock-launcher-tests.txt",
+    "skip_reason": "Windows-only cases on Linux"
+  },
+  "native_permission_case": {
+    "passed": 1,
+    "result": "success",
+    "log": "native-command-policy.txt",
+    "security_fixture": "Actual Tirith 0.4.2 binary verified against Hermes pm/lock.json SHA-256"
+  },
+  "deployment": "No running services or .211/.212/.213 server changes",
+  "full_74_hook_release_gate": "Not completed by this change"
+}

@@ -1,5 +1,5 @@
 diff --git a/LifeOS/install/hooks/TaskGovernance.hook.ts b/LifeOS/install/hooks/TaskGovernance.hook.ts
-index e1323a9..8785c92 100755
+index e1323a9..87f4b2c 100755
 --- a/LifeOS/install/hooks/TaskGovernance.hook.ts
 +++ b/LifeOS/install/hooks/TaskGovernance.hook.ts
 @@ -1,6 +1,6 @@
@@ -10,20 +10,7 @@ index e1323a9..8785c92 100755
   * TaskGovernance.hook.ts - Subagent Task Creation Governance (TaskCreated)
   *
   * PURPOSE:
-@@ -23,6 +23,12 @@ import { join } from "path";
- 
- const input = JSON.parse(readFileSync("/dev/stdin", "utf-8"));
- 
-+// Hermes probes this optional adapter before sending a session-owned count.
-+if (input.hermes_bridge_probe === true) {
-+  process.stdout.write(JSON.stringify({ hermes_bridge_task_governance: 1 }));
-+  process.exit(0);
-+}
-+
- const { task_description } = input;
- 
- // --- Quality gate: block empty descriptions ---
-@@ -37,17 +43,21 @@ if (!task_description || task_description.trim().length < 10) {
+@@ -37,17 +37,21 @@ if (!task_description || task_description.trim().length < 10) {
  // CLAUDE_SESSION_ID doesn't exist in env, so we use ppid (Claude Code process)
  // and reset the counter when the session (ppid) changes.
  const trackFile = join("/tmp", "pai-task-governance.json");
@@ -53,7 +40,7 @@ index e1323a9..8785c92 100755
  }
  
  const MAX_TASKS_PER_SESSION = 50;
-@@ -59,8 +69,10 @@ if (taskCount >= MAX_TASKS_PER_SESSION) {
+@@ -59,8 +63,10 @@ if (taskCount >= MAX_TASKS_PER_SESSION) {
  }
  
  // Increment counter with session tracking

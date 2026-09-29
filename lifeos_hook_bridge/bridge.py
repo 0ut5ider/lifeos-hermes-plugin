@@ -811,7 +811,6 @@ class HookBridge:
         self.hooks = hooks
         self.user_permission_rules = settings.get("permissions") or {}
         self.environment = environment
-        self.native_task_hook_supported: dict[tuple[str, str], bool] = {}
 
     def _config_sources(self) -> dict[Path, str]:
         sources = {
@@ -1055,8 +1054,18 @@ class HookBridge:
                             environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
         if platform and platform not in {"cli", "tui", "desktop"}:
             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
+        environment.pop("LIFEOS_CARRIER_OBSERVATION", None)
         if self.model_tiers_provider is not None:
-            environment["LIFEOS_MODEL_TIER_MAP"] = json.dumps(self.model_tiers_provider())
+            from .model_tiers import carrier_observation
+
+            mapping = self.model_tiers_provider()
+            environment["LIFEOS_MODEL_TIER_MAP"] = json.dumps(mapping)
+            if payload.get("hook_event_name") == "UserPromptSubmit":
+                observed = self._latest_carrier(payload.get("session_id", ""))
+                environment["LIFEOS_CARRIER_OBSERVATION"] = json.dumps(carrier_observation(
+                    observed.get("model", ""), observed.get("reasoning_effort", ""),
+                    observed.get("provider", ""), mapping,
+                ))
             environment["LIFEOS_HERMES_CARRIER_PROBE"] = str(Path(__file__).with_name("carrier_probe.py"))
         return environment
 
@@ -1115,7 +1124,6 @@ class HookBridge:
             elif source in {"project_settings", "local_settings"} and not blocked:
                 with self.session_lock:
                     self.project_hook_settings[path] = self._read_project_settings(path)
-                    self.native_task_hook_supported.clear()
                 self._start_config_watcher()
 
     def transcript_path(self, session_id: str) -> Path:
@@ -1123,7 +1131,7 @@ class HookBridge:
         return self.transcript_dir / f"{name}.jsonl"
 
     def _append_transcript(
-        self, session_id: str, kind: str, content: Any, model: str = "", reasoning_effort: str = "",
+        self, session_id: str, kind: str, content: Any, model: str = "", reasoning_effort: str = "", provider: str = "",
     ) -> None:
         row = {
             "type": kind,
@@ -1135,15 +1143,35 @@ class HookBridge:
             row["message"]["model"] = model
         if kind == "assistant" and reasoning_effort:
             row["message"]["reasoning_effort"] = reasoning_effort
+        if kind == "assistant" and provider:
+            row["message"]["provider"] = provider
         path = self.transcript_path(session_id)
         descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_APPEND, 0o600)
         with os.fdopen(descriptor, "w") as stream:
             stream.write(json.dumps(row, ensure_ascii=False) + "\n")
 
+    def _latest_carrier(self, session_id: str) -> dict[str, str]:
+        try:
+            with self.transcript_path(session_id).open("rb") as stream:
+                stream.seek(0, os.SEEK_END)
+                stream.seek(max(0, stream.tell() - 256 * 1024))
+                lines = stream.read().decode("utf-8", errors="replace").splitlines()
+            for line in reversed(lines):
+                try:
+                    row = json.loads(line)
+                    message = row.get("message", {})
+                    if row.get("type") == "assistant" and row.get("isSidechain") is not True and message.get("model"):
+                        return {key: message[key] for key in ("model", "reasoning_effort", "provider")
+                                if isinstance(message.get(key), str)}
+                except (ValueError, AttributeError, TypeError):
+                    continue
+        except OSError:
+            pass
+        return {}
+
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
-        native_task_probe: bool = False,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         host_paths = _task_uses_host_paths(task_id)
@@ -1166,11 +1194,6 @@ class HookBridge:
             if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
                 values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
             for hook in group.get("hooks", []):
-                if native_task_probe and (
-                    remote_project is not None or hook.get("type") != "command"
-                    or not _is_native_task_governance(hook.get("command", ""), self.root)
-                ):
-                    continue
                 if hook.get("type") == "http":
                     if remote_project is not None:
                         url = hook.get("url", "")
@@ -1853,15 +1876,18 @@ class HookBridge:
                 temporary.unlink(missing_ok=True)
 
     def _supports_native_task_hook(self, session_id: str, cwd: str, backend_task_id: str = "") -> bool:
-        key = (session_id, cwd)
-        if key not in self.native_task_hook_supported:
-            payload = self._payload("TaskCreated", session_id, cwd=cwd, hermes_bridge_probe=True)
-            self.native_task_hook_supported[key] = any(
-                process.returncode == 0 and (output or {}).get("hermes_bridge_task_governance") == 1
-                for process, output in self._run(
-                    "TaskCreated", payload, task_id=backend_task_id, native_task_probe=True)
-            )
-        return self.native_task_hook_supported[key]
+        from .native_capabilities import supports_task_count
+
+        return supports_task_count(self.root) and self._has_native_task_hook(session_id, cwd, backend_task_id)
+
+    def _has_native_task_hook(self, session_id: str, cwd: str, backend_task_id: str = "") -> bool:
+        payload = self._payload("TaskCreated", session_id, cwd=cwd)
+        groups = self._hook_groups("TaskCreated", payload, _task_uses_host_paths(backend_task_id), backend_task_id)
+        return any(
+            hook.get("type") == "command" and _is_native_task_governance(hook.get("command", ""), self.root)
+            for group in groups if "_remote_project" not in group for hook in group.get("hooks", [])
+            if _hook_matcher_matches(group.get("matcher", ""), "")
+        )
 
     def _native_task_verdict(
         self, session_id: str, task_id: str, subject: str, description: str, count: int,
@@ -1884,6 +1910,8 @@ class HookBridge:
         if not isinstance(todos, list):
             return None
         native = self._supports_native_task_hook(session_id, _scope_cwd(), backend_task_id)
+        if self._has_native_task_hook(session_id, _scope_cwd(), backend_task_id) and not native:
+            return {"action": "block", "message": "LifeOS task hook files do not match the verified installation. Repair or update LifeOS before creating tasks."}
         with self.session_lock:
             self._load_task_state(session_id)
             key = (session_id, call_id)
@@ -1917,6 +1945,8 @@ class HookBridge:
     ) -> dict[str, str] | None:
         description = args.get("body") or args.get("title", "")
         native = self._supports_native_task_hook(session_id, _scope_cwd(), backend_task_id)
+        if self._has_native_task_hook(session_id, _scope_cwd(), backend_task_id) and not native:
+            return {"action": "block", "message": "LifeOS task hook files do not match the verified installation. Repair or update LifeOS before creating tasks."}
         with self.session_lock:
             self._load_task_state(session_id)
             key = (session_id, call_id)
@@ -2129,9 +2159,6 @@ class HookBridge:
                 path: settings for path, settings in self.project_hook_settings.items()
                 if path.parent.parent in active_projects
             }
-            for key in tuple(self.native_task_hook_supported):
-                if key[0] == session_id:
-                    self.native_task_hook_supported.pop(key, None)
             watched = self._config_sources()
             self.config_files = {path: fingerprint for path, fingerprint in self.config_files.items() if path in watched}
             self.task_ids.pop(session_id, None)
@@ -2174,6 +2201,7 @@ class HookBridge:
 
     def stop(self, response: str, session_id: str = "", stop_hook_active: bool = False,
              model: str = "", platform: str = "", reasoning_effort: str = "",
+             provider: str = "",
              **_: Any) -> dict[str, str] | None:
         if platform:
             with self.session_lock:
@@ -2186,4 +2214,5 @@ class HookBridge:
                     return {"action": "continue", "message": str(message)[:2000]}
             return None
         finally:
-            self._append_transcript(session_id, "assistant", response, model=model, reasoning_effort=reasoning_effort)
+            self._append_transcript(session_id, "assistant", response, model=model,
+                                    reasoning_effort=reasoning_effort, provider=provider)

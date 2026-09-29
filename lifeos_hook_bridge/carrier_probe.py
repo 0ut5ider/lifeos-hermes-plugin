@@ -197,7 +197,7 @@ def main(argv: list[str] | None = None) -> int:
     if arguments not in (["--check"], ["--run"]) and not (
         len(arguments) == 2 and arguments[0] == "--check-main-rung" and arguments[1] in {"haiku", "sonnet", "opus", "fable"}
     ):
-        print("Usage: hermes --run-file carrier_probe.py --check|--run|--check-main-rung TIER", file=sys.stderr)
+        print("Usage: hermes lifeos-probe --check|--run|--check-main-rung TIER", file=sys.stderr)
         return 2
     try:
         if arguments[0] == "--check-main-rung":

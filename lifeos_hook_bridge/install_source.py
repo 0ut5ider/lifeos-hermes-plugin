@@ -21,26 +21,14 @@ UPSTREAM_LIFEOS = "https://github.com/danielmiessler/LifeOS.git"
 SUPPORTED_LIFEOS_COMMIT = "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c"
 SUPPORTED_HERMES_COMMIT = "758ad514eb0e800547e015edf05aa18f78b78d82"
 HERMES_PATCHES = (
-    "hermes-hook-controls.patch",
-    "hermes-command-denial.patch",
-    "hermes-remote-file-staleness.patch",
-    "hermes-stop-effort.patch",
-    "hermes-delegate-tier-routing.patch",
-    "hermes-cron-worker-bootstrap.patch",
-    "hermes-delegate-provider-routing.patch",
-    "hermes-direct-provider-inference.patch",
-    "hermes-stop-fail-closed.patch",
+    "hermes-plugin-events.patch",
+    "hermes-turn-gates.patch",
     "hermes-command-policy.patch",
-    "hermes-command-context.patch",
-    "hermes-command-rewrite.patch",
-    "hermes-session-reasons.patch",
-    "hermes-prompt-exit-reason.patch",
-    "hermes-empty-session-clear.patch",
-    "hermes-empty-session-resume.patch",
-    "hermes-permanent-policy-precedence.patch",
-    "hermes-policy-batch-order.patch",
-    "hermes-bypass-policy.patch",
-    "hermes-policy-failure-controls.patch",
+    "hermes-session-lifecycle.patch",
+    "hermes-child-routing.patch",
+    "hermes-strict-inference.patch",
+    "hermes-remote-files.patch",
+    "hermes-cron-bootstrap.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",
@@ -148,6 +136,9 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
             _git("apply", str(patch), cwd=stage)
             applied.append({"name": name, "sha256": hashlib.sha256(patch.read_bytes()).hexdigest()})
         _git("diff", "--check", cwd=stage)
+        from .native_capabilities import install_capability_record
+
+        install_capability_record(stage / "LifeOS/install")
         manifest = {"upstream": source, "upstream_commit": revision, "patches": applied,
                     "tree_sha256": _tree_digest(stage)}
         (stage / "lifeos-source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")

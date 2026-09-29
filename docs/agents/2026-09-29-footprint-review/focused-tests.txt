@@ -1,0 +1,448 @@
+test_capability_requires_record_and_exact_native_bytes (test_footprint_contracts.FootprintContractsTests.test_capability_requires_record_and_exact_native_bytes) ... ok
+test_changed_native_installation_blocks_task_creation (test_footprint_contracts.FootprintContractsTests.test_changed_native_installation_blocks_task_creation) ... ok
+test_commands_register_before_lifeos_is_installed (test_footprint_contracts.FootprintContractsTests.test_commands_register_before_lifeos_is_installed) ... ok
+test_identical_top_routes_choose_fable_and_unknown_effort_stays_unknown (test_footprint_contracts.FootprintContractsTests.test_identical_top_routes_choose_fable_and_unknown_effort_stays_unknown) ... ok
+test_observation_binds_provider_model_and_effort (test_footprint_contracts.FootprintContractsTests.test_observation_binds_provider_model_and_effort) ... ok
+test_observation_skips_sidechains_and_reclassifies_after_configuration_changes (test_footprint_contracts.FootprintContractsTests.test_observation_skips_sidechains_and_reclassifies_after_configuration_changes) ... ok
+test_commands_preserve_profiles_inputs_images_and_selected_provider_failures (test_installed_plugin_commands.InstalledPluginCommandTests.test_commands_preserve_profiles_inputs_images_and_selected_provider_failures) ... FAIL
+test_custom_tier_models_use_the_model_and_effort_pair (test_native_model_rung_guard.NativeModelRungGuardTests.test_custom_tier_models_use_the_model_and_effort_pair) ... ok
+test_local_model_medium_effort_uses_sonnet_rung (test_native_model_rung_guard.NativeModelRungGuardTests.test_local_model_medium_effort_uses_sonnet_rung) ... ok
+test_local_model_names_do_not_override_configured_tiers (test_native_model_rung_guard.NativeModelRungGuardTests.test_local_model_names_do_not_override_configured_tiers) ... ok
+test_lower_transcript_rung_warns_at_next_prompt (test_native_model_rung_guard.NativeModelRungGuardTests.test_lower_transcript_rung_warns_at_next_prompt) ... ok
+test_plugin_pin_classifies_local_model_settings (test_native_model_rung_guard.NativeModelRungGuardTests.test_plugin_pin_classifies_local_model_settings) ... ok
+test_discovery_does_not_dispatch_unrelated_creation_hooks (test_native_task_hook.NativeTaskHookTests.test_discovery_does_not_dispatch_unrelated_creation_hooks) ... ok
+test_external_count_controls_limit_without_writing_legacy_counter (test_native_task_hook.NativeTaskHookTests.test_external_count_controls_limit_without_writing_legacy_counter) ... ok
+test_short_description_blocks_with_external_count (test_native_task_hook.NativeTaskHookTests.test_short_description_blocks_with_external_count) ... ok
+test_synthetic_probe_does_not_bypass_native_quality_gate (test_native_task_hook.NativeTaskHookTests.test_synthetic_probe_does_not_bypass_native_quality_gate) ... ok
+test_applies_update_and_immediate_restore (test_update_transaction.UpdateTransactionTests.test_applies_update_and_immediate_restore) ... ok
+test_capability_record_applies_and_restores_with_native_hook_files (test_update_transaction.UpdateTransactionTests.test_capability_record_applies_and_restores_with_native_hook_files) ... ok
+test_recovers_process_death_between_directory_renames (test_update_transaction.UpdateTransactionTests.test_recovers_process_death_between_directory_renames) ... ok
+test_second_directory_rename_failure_restores_installed_tree (test_update_transaction.UpdateTransactionTests.test_second_directory_rename_failure_restores_installed_tree) ... ok
+test_verification_failure_restores_all_prior_state (test_update_transaction.UpdateTransactionTests.test_verification_failure_restores_all_prior_state) ... ok
+test_defaults_use_one_model_with_three_efforts (test_model_tiers.ModelTierTests.test_defaults_use_one_model_with_three_efforts) ... ok
+test_delegated_tier_carries_selected_provider (test_model_tiers.ModelTierTests.test_delegated_tier_carries_selected_provider) ... ok
+test_delegated_tiers_use_configured_routes (test_model_tiers.ModelTierTests.test_delegated_tiers_use_configured_routes) ... ok
+test_direct_route_includes_selected_provider (test_model_tiers.ModelTierTests.test_direct_route_includes_selected_provider) ... ok
+test_each_tier_can_select_its_own_model_and_effort (test_model_tiers.ModelTierTests.test_each_tier_can_select_its_own_model_and_effort) ... ok
+test_explicit_child_default_and_selected_model_override_hermes_default (test_model_tiers.ModelTierTests.test_explicit_child_default_and_selected_model_override_hermes_default) ... ok
+test_hermes_current_model_is_the_default_for_all_tiers (test_model_tiers.ModelTierTests.test_hermes_current_model_is_the_default_for_all_tiers) ... ok
+test_invalid_pin_and_effort_are_rejected (test_model_tiers.ModelTierTests.test_invalid_pin_and_effort_are_rejected) ... ok
+test_unset_model_inherits_hermes_parent_with_mapped_effort (test_model_tiers.ModelTierTests.test_unset_model_inherits_hermes_parent_with_mapped_effort) ... ok
+
+======================================================================
+FAIL: test_commands_preserve_profiles_inputs_images_and_selected_provider_failures (test_installed_plugin_commands.InstalledPluginCommandTests.test_commands_preserve_profiles_inputs_images_and_selected_provider_failures)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_installed_plugin_commands.py", line 134, in test_commands_preserve_profiles_inputs_images_and_selected_provider_failures
+    self.assertEqual(live_probe.returncode, 0, live_probe.stdout + live_probe.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : ⚠ install out of sync (ffmpeg: not installed or outdated; node: not installed or outdated; npm: not installed or outdated; ripgrep: not installed or outdated; venv: cannot read recorded package state: /tmp/lifeos installed commands bj5b71vm/A/.hermes/installs/06f605fbf9db5eb3/facts.json) — this unknown-managed install must rebuild the artifact to fix
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1155, in emit
+    self.flush()
+    ~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1137, in flush
+    self.stream.flush()
+    ~~~~~~~~~~~~~~~~~^^
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Could not determine context length for model %r (base_url=%s) — falling back to %s tokens. Set model.context_length in config.yaml to override.'
+Arguments: ('model-A', 'http://127.0.0.1:37811/v1', '256,000')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1155, in emit
+    self.flush()
+    ~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1137, in flush
+    self.stream.flush()
+    ~~~~~~~~~~~~~~~~~^^
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Could not determine context length for model %r (base_url=%s) — falling back to %s tokens. Set model.context_length in config.yaml to override.'
+Arguments: ('model-A', 'http://127.0.0.1:37811/v1', '256,000')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Could not detect context length for model %r at %s — defaulting to %s tokens (probe-down). Set model.context_length in config.yaml to override.'
+Arguments: ('model-A', 'http://127.0.0.1:37811/v1', '256,000')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'OpenAI client created (%s, shared=%s) %s'
+Arguments: ('agent_init', True, 'thread=MainThread:140355451145152 provider=custom base_url=http://127.0.0.1:37811/v1 model=model-A')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Could not detect context length for model %r at %s — defaulting to %s tokens (probe-down). Set model.context_length in config.yaml to override.'
+Arguments: ('model-A', 'http://127.0.0.1:37811/v1', '256,000')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Could not detect context length for model %r at %s — defaulting to %s tokens (probe-down). Set model.context_length in config.yaml to override.'
+Arguments: ('model-A', 'http://127.0.0.1:37811/v1', '256,000')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Hermes Relay runtime initialization failed'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Hermes Relay runtime initialization failed'
+Arguments: ()
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'conversation turn: session=%s model=%s provider=%s platform=%s history=%d msg=%r'
+Arguments: ('20260929_164354_220b37', 'model-A', 'custom', 'subagent', 0, 'Reply OK only.')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'OpenAI client created (%s, shared=%s) %s'
+Arguments: ('chat_completion_stream_request', False, 'thread=MainThread:140355451145152 provider=custom base_url=http://127.0.0.1:37811/v1 model=model-A')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'API call #%d: model=%s provider=%s in=? out=? total=? latency=%.1fs usage=unavailable'
+Arguments: (1, 'model-A', 'custom', 0.19890093803405762)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'Turn ended: reason=%s model=%s api_calls=%d/%d budget=%d/%d tool_turns=%d last_msg_role=%s response_len=%d session=%s'
+Arguments: ('text_response(finish_reason=stop)', 'model-A', 1, 1, 1, 1, 0, 'assistant', 5, '20260929_164354_220b37')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'OpenAI client closed (%s, shared=%s, tcp_force_closed=%d) %s'
+Arguments: ('agent_close', True, 0, 'thread=MainThread:140355451145152 provider=custom base_url=http://127.0.0.1:37811/v1 model=model-A')
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'OpenAI client closed (%s, shared=%s, tcp_force_closed=%d) %s'
+Arguments: ('agent_close', False, 0, 'thread=MainThread:140355451145152 provider=custom base_url=http://127.0.0.1:37811/v1 model=model-A')
+HermesCarrierProbe: INCONCLUSIVE: [Errno 122] Disk quota exceeded
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'memory trim: reason=%s malloc_trim=%s rss_kib=%s->%s rss_anon_kib=%s->%s threads=%s duration_ms=%.1f'
+Arguments: ('agent close', 1, 166572, 160304, 145676, 139408, 2, 101.55729699181393)
+--- Logging error ---
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/logging/handlers.py", line 79, in emit
+    if self.shouldRollover(record):
+       ~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/logging/handlers.py", line 200, in shouldRollover
+    pos = self.stream.tell()
+OSError: [Errno 122] Disk quota exceeded
+Call stack:
+  File "/usr/lib64/python3.14/threading.py", line 1044, in _bootstrap
+    self._bootstrap_inner()
+  File "/usr/lib64/python3.14/threading.py", line 1082, in _bootstrap_inner
+    self._context.run(self.run)
+  File "/usr/lib64/python3.14/threading.py", line 1024, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1618, in _monitor
+    self.handle(record)
+  File "/usr/lib64/python3.14/logging/handlers.py", line 1599, in handle
+    handler.handle(record)
+  File "/usr/lib64/python3.14/logging/__init__.py", line 1027, in handle
+    self.emit(record)
+  File "/tmp/lifeos installed commands bj5b71vm/Hermes source 'café/hermes_logging.py", line 503, in emit
+    super().emit(record)
+Message: 'OpenAI client closed (%s, shared=%s, tcp_force_closed=%d) %s'
+Arguments: ('agent_close', True, 0, 'thread=MainThread:140355451145152 provider=custom base_url=http://127.0.0.1:37811/v1 model=model-A')
+
+
+----------------------------------------------------------------------
+Ran 30 tests in 15.053s
+
+FAILED (failures=1)

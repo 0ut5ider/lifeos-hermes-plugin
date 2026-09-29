@@ -1,5 +1,95 @@
+diff --git a/agent/terminal_approval_batch.py b/agent/terminal_approval_batch.py
+index 00ef84ab..a4587708 100644
+--- a/agent/terminal_approval_batch.py
++++ b/agent/terminal_approval_batch.py
+@@ -57,7 +57,16 @@ class _TerminalSlot:
+                     turn_id=getattr(self.batch.agent, "_current_turn_id", "") or "",
+                 )
+                 try:
+-                    self.guard_key = (ref.args["command"], config["env_type"], tt._docker_has_host_access(config))
++                    overrides = tt.resolve_task_overrides(self.batch.task_id)
++                    base_cwd = tt.coerce_ssh_remote_cwd(
++                        overrides.get("cwd") or tt.get_session_cwd(self.batch.task_id) or config["cwd"],
++                        config["env_type"],
++                    )
++                    target_cwd = ref.args.get("workdir") or base_cwd
++                    self.guard_key = (
++                        ref.args["command"], config["env_type"], tt._docker_has_host_access(config),
++                        target_cwd, self.batch.task_id or "",
++                    )
+                     self.decision = tt._check_all_guards(*self.guard_key)
+                 finally:
+                     reset_current_observability_context(tokens)
+@@ -212,7 +221,7 @@ def register_prepared_approval(session_key, entry):
+         slot.batch.pending_approvals.append((session_key, entry))
+ 
+ 
+-def consume_prepared_guard(command, env_type, has_host_access):
++def consume_prepared_guard(command, env_type, has_host_access, cwd="", task_id=""):
+     slot = _slot.get()
+     if slot is None or slot.preparing:
+         return None
+@@ -229,7 +238,11 @@ def consume_prepared_guard(command, env_type, has_host_access):
+         return None
+     from tools.approval_context import _approval_tool_call_id
+     if (_approval_tool_call_id.get() != slot.parsed.ref(slot.batch.task_id).call_id
+-            or slot.guard_key != (command, env_type, has_host_access)):
++            or slot.guard_key != (command, env_type, has_host_access, cwd, task_id)):
++        return None
++    from hermes_cli.plugins import has_hook
++    if has_hook("pre_command_approval"):
++        slot.decision = None
+         return None
+     decision, slot.decision = slot.decision, None  # single-use, even for identical calls
+     return decision
+@@ -287,6 +300,10 @@ def terminal_approval_batch(agent, calls, messages, task_id):
+             or approval._gateway_notify_cb(approval.get_current_session_key()) is None):
+         yield
+         return
++    from hermes_cli.plugins import has_hook
++    if has_hook("pre_command_approval"):
++        yield
++        return
+     parsed = [_parse_tool_call(agent, call, flatten_probe=True) for call in calls]
+     # Never prepare across a nonterminal barrier; leave mixed segments and
+     # malformed calls with the established sequential path.
+diff --git a/tests/agent/test_terminal_approval_batch.py b/tests/agent/test_terminal_approval_batch.py
+index 9aa2e8aa..392ed3b0 100644
+--- a/tests/agent/test_terminal_approval_batch.py
++++ b/tests/agent/test_terminal_approval_batch.py
+@@ -129,6 +129,13 @@ def test_desktop_publishes_final_commands_before_wait_and_runs_in_order(tmp_path
+             assert approval.resolve_gateway_approval(key, "once", request_id=second["request_id"]) == 1
+             assert executed == []
+             assert approval.resolve_gateway_approval(key, "once", request_id=first["request_id"]) == 1
++            # The first command changes cwd. The second prepared approval was
++            # for the former cwd, so its execution needs a fresh human answer.
++            revised = published.get(timeout=10)
++            assert revised["command"] == commands["original-second"]
++            assert revised["request_id"] != second["request_id"]
++            assert "second" not in {m["tool_call_id"] for m in messages}
++            assert approval.resolve_gateway_approval(key, "once", request_id=revised["request_id"]) == 1
+             worker.join(timeout=15)
+             assert not worker.is_alive()
+             assert errors == []
+@@ -323,3 +330,16 @@ def test_failed_command_re_gates_later_prepared_approvals(tmp_path, monkeypatch)
+             worker.join(timeout=5)
+             cleanup_vm(key)
+             clear_session_vars(tokens)
++
++
++def test_command_policy_hook_defers_desktop_approvals_until_execution():
++    from agent.terminal_approval_batch import terminal_approval_batch
++
++    calls = [_call("first", "echo first"), _call("second", "echo second")]
++    with patch("gateway.session_context.get_session_env", return_value="desktop"), patch(
++        "tools.approval._gateway_notify_cb", return_value=object(),
++    ), patch("hermes_cli.plugins.has_hook", return_value=True), patch(
++        "agent.terminal_approval_batch._TerminalBatch", side_effect=AssertionError("batch prepared"),
++    ):
++        with terminal_approval_batch(SimpleNamespace(), calls, [], "policy-session"):
++            pass
 diff --git a/tests/hermes_cli/test_approval_transport.py b/tests/hermes_cli/test_approval_transport.py
-index db7a423c806..73f38bb2b3a 100644
+index db7a423c..73f38bb2 100644
 --- a/tests/hermes_cli/test_approval_transport.py
 +++ b/tests/hermes_cli/test_approval_transport.py
 @@ -409,8 +409,8 @@ def test_redaction_failure_denies_before_transport_callback(monkeypatch):
@@ -12,8 +102,82 @@ index db7a423c806..73f38bb2b3a 100644
              raise RuntimeError("redactor unavailable")
          return text
  
+diff --git a/tests/test_lifeos_execute_code_session.py b/tests/test_lifeos_execute_code_session.py
+new file mode 100644
+index 00000000..55df42ae
+--- /dev/null
++++ b/tests/test_lifeos_execute_code_session.py
+@@ -0,0 +1,68 @@
++"""Keep nested execute_code tool hooks in the outer Hermes session."""
++
++import json
++import os
++import unittest
++from unittest.mock import patch
++
++os.environ["TERMINAL_ENV"] = "local"
++
++from tools.code_execution_tool import _execute_code_handler, _execute_remote, execute_code
++from tools.code_execution_rpc import _default_dispatch
++from tools.code_kernel import shutdown_all_kernels
++
++
++class ExecuteCodeHookSessionTests(unittest.TestCase):
++    def tearDown(self):
++        shutdown_all_kernels()
++
++    def test_handler_passes_outer_session_to_execute_code(self):
++        with patch("tools.code_execution_tool.execute_code", return_value="ok") as call:
++            self.assertEqual(_execute_code_handler({"code": "print(1)"}, task_id="task", session_id="session"), "ok")
++        self.assertEqual(call.call_args.kwargs["session_id"], "session")
++
++    def test_rpc_dispatch_passes_outer_session_to_inner_tool(self):
++        calls = []
++        with patch("model_tools.handle_function_call", side_effect=lambda *args, **kwargs: calls.append(kwargs)):
++            _default_dispatch("task", session_id="session")("read_file", {"path": "note"})
++        self.assertEqual(calls, [{"task_id": "task", "session_id": "session"}])
++
++    def test_remote_fallback_passes_outer_session_to_per_call_rpc(self):
++        class RemoteEnv:
++            def execute(self, *args, **kwargs):
++                return {"output": "OK\n", "returncode": 0}
++
++        with patch("tools.code_execution_tool._load_config", return_value={"timeout": 30, "max_tool_calls": 5}), patch(
++            "tools.code_execution_tool._sandbox_tools_for", return_value={"read_file"}
++        ), patch(
++            "tools.code_execution_tool._get_or_create_env", return_value=(RemoteEnv(), "ssh")
++        ), patch(
++            "tools.code_kernel_remote.execute_in_remote_kernel", return_value=None
++        ) as kernel, patch(
++            "tools.code_execution_tool._run_remote_per_call", return_value="fallback-ok"
++        ) as fallback:
++            result = _execute_remote("print(1)", "task", ["read_file"], session_id="remote-session")
++        self.assertEqual(result, "fallback-ok")
++        self.assertEqual(kernel.call_args.kwargs["session_id"], "remote-session")
++        self.assertEqual(fallback.call_args.kwargs["session_id"], "remote-session")
++
++    def test_local_kernel_uses_each_cells_session_for_inner_tools(self):
++        calls = []
++
++        def record(name, args, **kwargs):
++            calls.append(kwargs)
++            return json.dumps({"ok": True})
++
++        code = "import hermes_tools\nhermes_tools.web_search(query='fixture')\n"
++        with patch("tools.code_execution_tool._load_config", return_value={"mode": "strict", "timeout": 30}), patch(
++            "model_tools.handle_function_call", side_effect=record
++        ):
++            first = json.loads(execute_code(code, task_id="task", session_id="session-one"))
++            second = json.loads(execute_code(code, task_id="task", session_id="session-two"))
++        self.assertEqual(first["status"], "success", first)
++        self.assertEqual(second["status"], "success", second)
++        self.assertEqual([call["session_id"] for call in calls], ["session-one", "session-two"])
++
++
++if __name__ == "__main__":
++    unittest.main()
 diff --git a/tests/tools/test_approval_plugin_hooks.py b/tests/tools/test_approval_plugin_hooks.py
-index 86b17bcd769..c1d40f94935 100644
+index 86b17bcd..c1d40f94 100644
 --- a/tests/tools/test_approval_plugin_hooks.py
 +++ b/tests/tools/test_approval_plugin_hooks.py
 @@ -182,11 +182,13 @@ class TestSmartModeFiresHooks:
@@ -59,14 +223,333 @@ index 86b17bcd769..c1d40f94935 100644
  
      @pytest.mark.parametrize("guard,first_value,second_value", [
          (
+diff --git a/tests/tools/test_code_execution.py b/tests/tools/test_code_execution.py
+index 53fcadc3..b64ffde8 100644
+--- a/tests/tools/test_code_execution.py
++++ b/tests/tools/test_code_execution.py
+@@ -62,7 +62,7 @@ from tools.code_execution_tool import (
+ from tools.registry import registry
+ 
+ 
+-def _mock_handle_function_call(function_name, function_args, task_id=None, user_task=None):
++def _mock_handle_function_call(function_name, function_args, task_id=None, user_task=None, session_id=None):
+     """Mock dispatcher that returns canned responses for each tool."""
+     if function_name == "terminal":
+         cmd = function_args.get("command", "")
+@@ -384,7 +384,7 @@ else:
+     print(f"OK {N}/{N}")
+ '''
+ 
+-        def slow_mock(function_name, function_args, task_id=None, user_task=None):
++        def slow_mock(function_name, function_args, task_id=None, user_task=None, session_id=None):
+             import time as _t
+             if function_name == "terminal":
+                 _t.sleep(0.05)  # ensure requests overlap on the socket
+diff --git a/tests/tools/test_code_execution_file_rpc.py b/tests/tools/test_code_execution_file_rpc.py
+index 88bc65ee..bf673943 100644
+--- a/tests/tools/test_code_execution_file_rpc.py
++++ b/tests/tools/test_code_execution_file_rpc.py
+@@ -47,10 +47,11 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
+     monkeypatch.setenv("HERMES_RPC_DIR", str(rpc))
+     monkeypatch.setenv("HERMES_RPC_TOKEN", "right-token")
+     exec(generate_hermes_tools_module(list(CALLS), transport="file"), namespace)
+-    seen, log, counter = [], [], [0]
++    seen, hook_ids, log, counter = [], [], [], [0]
+ 
+     def dispatch(name, args, **kwargs):
+         seen.append((name, args.copy()))
++        hook_ids.append(kwargs)
+         return json.dumps({"name": name, "args": args})
+ 
+     monkeypatch.setattr("model_tools.handle_function_call", dispatch)
+@@ -65,7 +66,7 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
+     stop = threading.Event()
+     budget = len(CALLS) + 8
+     poller = threading.Thread(target=_rpc_poll_loop, args=(Shell(), str(rpc), "owner", log, counter,
+-                               budget, frozenset(CALLS), stop, "right-token"), daemon=True)
++                               budget, frozenset(CALLS), stop, "right-token", "outer-session"), daemon=True)
+     poller.start()
+     try:
+         # Raw clients bypass stub visibility; neither missing nor wrong token may dispatch.
+@@ -87,6 +88,7 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
+             assert schema_keys <= set(args), (name, schema_keys - set(args))
+             assert namespace[name](**args) == {"name": name, "args": args}
+         assert seen == list(CALLS.items())
++        assert all(ids == {"task_id": "owner", "session_id": "outer-session"} for ids in hook_ids)
+         with concurrent.futures.ThreadPoolExecutor(max_workers=8) as pool:
+             results = list(pool.map(lambda i: namespace["terminal"](f"tag-{i}", 3, "/tmp"), range(8)))
+         assert [r["args"]["command"] for r in results] == [f"tag-{i}" for i in range(8)]
+diff --git a/tests/tools/test_code_kernel.py b/tests/tools/test_code_kernel.py
+index 1eb892f1..17ab0764 100644
+--- a/tests/tools/test_code_kernel.py
++++ b/tests/tools/test_code_kernel.py
+@@ -432,7 +432,7 @@ class TestPerCellRpcAuthority(unittest.TestCase):
+     """Interpreter state persists across cells; RPC authority must not."""
+ 
+     def _recorder(self, seen):
+-        def _handle(tool_name, tool_args, task_id=None):
++        def _handle(tool_name, tool_args, task_id=None, session_id=None):
+             from tools.thread_context import _callback_api
+ 
+             (get_approval, _set_a), *_rest = _callback_api()
+@@ -440,6 +440,7 @@ class TestPerCellRpcAuthority(unittest.TestCase):
+                 {
+                     "tool": tool_name,
+                     "task_id": task_id,
++                    "session_id": session_id,
+                     "approval_cb": get_approval(),
+                 }
+             )
+@@ -447,6 +448,18 @@ class TestPerCellRpcAuthority(unittest.TestCase):
+ 
+         return _handle
+ 
++    def test_nested_tool_inherits_each_outer_session_id(self):
++        seen = []
++        cell = "import hermes_tools\nhermes_tools.web_search(query='q')\n"
++        with _kernel_config(), patch(
++            "model_tools.handle_function_call", new=self._recorder(seen)
++        ):
++            first = _run(cell, session_id="session-one")
++            second = _run(cell, session_id="session-two")
++        self.assertEqual(first["status"], "success", first)
++        self.assertEqual(second["status"], "success", second)
++        self.assertEqual([call["session_id"] for call in seen], ["session-one", "session-two"])
++
+     def test_a_later_cells_rpc_runs_under_that_cells_authority(self):
+         from tools.terminal_tool import set_approval_callback
+ 
+diff --git a/tests/tools/test_code_kernel_remote.py b/tests/tools/test_code_kernel_remote.py
+index 6b1b2f14..eb5ef1c6 100644
+--- a/tests/tools/test_code_kernel_remote.py
++++ b/tests/tools/test_code_kernel_remote.py
+@@ -107,6 +107,19 @@ class RemoteKernelBase(unittest.TestCase):
+ 
+ 
+ class TestSpawnAndReuse(RemoteKernelBase):
++    def test_rpc_poller_receives_current_outer_session(self):
++        env = ScriptedEnv(_spawn_ok_handlers([_cell()]))
++        seen = []
++        with patch("tools.code_execution_tool._rpc_poll_loop", side_effect=lambda *args: seen.append(args)):
++            result = execute_in_remote_kernel(
++                "print(1)", env=env, env_type="ssh", task_env_id="task",
++                sandbox_tools=frozenset({"read_file"}), timeout=10,
++                max_tool_calls=5, reset=False, session_id="outer-session",
++            )
++        self.assertEqual(result["status"], "success", result)
++        self.assertEqual(len(seen), 1)
++        self.assertEqual(seen[0][-1], "outer-session")
++
+     def test_first_call_spawns_second_reuses(self):
+         healthy = _spawn_ok_handlers(
+             [_cell(stdout="one\n"), _cell(stdout="two\n", execution_count=2)],
 diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
-index 26d3b5f92b8..a0387040154 100644
---- a/tests/tools/test_plugin_command_approval.py
+new file mode 100644
+index 00000000..74a6cfe9
+--- /dev/null
 +++ b/tests/tools/test_plugin_command_approval.py
-@@ -199,3 +199,135 @@ def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
-     assert result["approved"] is False
-     assert result["outcome"] == "plugin_denied"
-     guardian.assert_not_called()
+@@ -0,0 +1,459 @@
++# ABOUTME: Checks plugin approval decisions against Hermes command safety floors.
++# ABOUTME: Verifies safe grants and refusals at the real command guard entry points.
++
++from unittest.mock import patch
++
++import pytest
++
++from tools import approval_context
++from tools.approval import check_all_command_guards, check_dangerous_command
++
++
++@pytest.fixture(autouse=True)
++def interactive(monkeypatch):
++    monkeypatch.setenv("HERMES_INTERACTIVE", "1")
++    monkeypatch.delenv("HERMES_GATEWAY_SESSION", raising=False)
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "manual")
++
++
++def test_plugin_grant_skips_dangerous_pattern_prompt():
++    def grant(name, **kwargs):
++        return [{"action": "allow"}] if name == "pre_command_approval" else []
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=grant), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is True
++
++
++def test_plugin_grant_does_not_skip_tirith_warning():
++    def grant(name, **kwargs):
++        return [{"action": "allow"}] if name == "pre_command_approval" else []
++
++    decisions = []
++
++    def decline(*args, **kwargs):
++        decisions.append(True)
++        return "deny"
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=grant), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "warn", "findings": [{"rule_id": "fixture"}], "summary": "fixture"},
++    ):
++        result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
++    assert result["approved"] is False
++    assert decisions == [True]
++
++
++def test_plugin_grant_does_not_skip_floor():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}]):
++        assert check_all_command_guards("rm -rf /", "local")["approved"] is False
++
++
++def test_plugin_grant_does_not_skip_user_deny(monkeypatch):
++    monkeypatch.setattr("tools.approval._match_user_deny_rule", lambda command: "rm -rf *")
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}]):
++        assert check_all_command_guards("rm -rf /tmp/plugin-fixture", "local")["approved"] is False
++
++
++def test_plugin_grant_on_simple_guard():
++    def grant(name, **kwargs):
++        return [{"action": "allow"}] if name == "pre_command_approval" else []
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=grant):
++        result = check_dangerous_command(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is True
++
++
++def test_plugin_grant_does_not_override_another_plugin_rejection():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}, {"action": "deny"}]):
++        result = check_dangerous_command(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: "deny",
++        )
++    assert result["approved"] is False
++
++
++def test_smart_plugin_grant_after_guardian_escalates(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    with patch("tools.approval._smart_verdict", return_value="escalate") as guardian, patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}],
++    ), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            "rm -rf /tmp/plugin-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Prompt was called"),
++        )
++    assert result["approved"] is True
++    guardian.assert_called_once()
++
++
++def test_smart_plugin_grant_does_not_override_guardian_deny(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    decisions = []
++
++    def decline(*args, **kwargs):
++        decisions.append(True)
++        return "deny"
++
++    with patch("tools.approval._smart_verdict", return_value="deny"), patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}],
++    ), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
++    assert result["approved"] is False
++    assert decisions == [True]
++
++
++def test_smart_plugin_grant_does_not_override_tirith(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    decisions = []
++
++    def decline(*args, **kwargs):
++        decisions.append(True)
++        return "deny"
++
++    with patch("tools.approval._smart_verdict", return_value="escalate"), patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}],
++    ), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "warn", "findings": [{"rule_id": "fixture"}], "summary": "fixture"},
++    ):
++        result = check_all_command_guards("rm -rf /tmp/plugin-fixture", "local", approval_callback=decline)
++    assert result["approved"] is False
++    assert decisions == [True]
++
++
++def test_native_plugin_denial_blocks_recoverable_pattern():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]):
++        result = check_dangerous_command(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++    assert result["approved"] is False
++    assert "plugin" in result["message"].lower()
++
++
++def test_native_plugin_denial_blocks_combined_guard():
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}]), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ):
++        result = check_all_command_guards(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++    assert result["approved"] is False
++    assert "plugin" in result["message"].lower()
++
++
++def test_installed_command_policy_denial_blocks_without_human_prompt(tmp_path, monkeypatch):
++    from hermes_cli import plugins as plugins_mod
++
++    home = tmp_path / "hermes-home"
++    plugin = home / "plugins" / "command_policy"
++    plugin.mkdir(parents=True)
++    (plugin / "plugin.yaml").write_text(
++        "name: command_policy\nversion: 0.1.0\nprovides_hooks:\n  - pre_command_approval\n"
++    )
++    (plugin / "__init__.py").write_text(
++        "def register(ctx):\n"
++        "    ctx.register_hook(\"pre_command_approval\", lambda **kwargs: {\"action\": \"deny\"})\n"
++    )
++    (home / "config.yaml").write_text("plugins:\n  enabled:\n    - command_policy\n")
++    monkeypatch.setenv("HERMES_HOME", str(home))
++    plugins_mod._reset_plugin_managers_for_tests()
++    try:
++        result = check_dangerous_command(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++        assert result["approved"] is False
++        assert result["outcome"] == "plugin_denied"
++    finally:
++        plugins_mod._reset_plugin_managers_for_tests()
++
++
++def test_native_plugin_denial_precedes_smart_guardian(monkeypatch):
++    monkeypatch.setattr(approval_context, "_get_approval_mode", lambda: "smart")
++    with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "allow"}, {"action": "deny"}]), patch(
++        "tools.tirith_security.check_command_security",
++        return_value={"action": "allow", "findings": [], "summary": ""},
++    ), patch("tools.approval._smart_verdict", return_value="approve") as guardian:
++        result = check_all_command_guards(
++            "rm -rf /tmp/lifeos-denial-fixture", "local",
++            approval_callback=lambda *args, **kwargs: pytest.fail("Human prompt was called"),
++        )
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++    guardian.assert_not_called()
 +
 +
 +def test_plugin_review_prompts_when_pattern_detector_is_quiet():
@@ -199,33 +682,274 @@ index 26d3b5f92b8..a0387040154 100644
 +        clear_session(session_key)
 +        from tools import approval_context
 +        approval_context._approval_session_key.reset(token)
++
++
++def test_plugin_command_policy_receives_target_workspace():
++    calls = []
++
++    def capture(name, **kwargs):
++        if name == "pre_command_approval":
++            calls.append(kwargs)
++        return [{"action": "review"}] if name == "pre_command_approval" else []
++
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=capture):
++        result = check_all_command_guards(
++            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
++            cwd="/workspace/project-a", task_id="docker-session-a",
++            approval_callback=lambda *args, **kwargs: "deny",
++        )
++    assert result["approved"] is False
++    assert len(calls) == 1
++    assert calls[0]["cwd"] == "/workspace/project-a"
++    assert calls[0]["task_id"] == "docker-session-a"
++    assert calls[0]["env_type"] == "docker"
++
++
++def test_terminal_approval_forwards_target_workspace():
++    from tools import terminal_tool as terminal_module
++
++    with patch.object(terminal_module, "_check_all_guards_impl", return_value={"approved": True}) as guard:
++        terminal_module._check_all_guards(
++            "curl -I http://192.168.8.1:9", "docker", has_host_access=False,
++            cwd="/workspace/project-a", task_id="docker-session-a",
++        )
++    assert guard.call_args.kwargs["cwd"] == "/workspace/project-a"
++    assert guard.call_args.kwargs["task_id"] == "docker-session-a"
++
++    with patch.object(terminal_module, "_check_all_guards", return_value={"approved": True}) as guard:
++        terminal_module._run_approval_guards(
++            "curl -I http://192.168.8.1:9", "docker", {"env_type": "docker"}, force=False,
++            cwd="/workspace/project-a", task_id="docker-session-a",
++        )
++    assert guard.call_args.kwargs["cwd"] == "/workspace/project-a"
++    assert guard.call_args.kwargs["task_id"] == "docker-session-a"
++
++
++def test_prepared_command_policy_is_bound_to_workspace():
++    from types import SimpleNamespace
++    from agent import terminal_approval_batch as batch_module
++    from tools.approval_context import _approval_tool_call_id
++
++    command = "curl -I http://192.168.8.1:9"
++    decision = {"approved": True}
++    slot = SimpleNamespace(
++        preparing=False, check_cancelled=lambda: None,
++        batch=SimpleNamespace(failure_seen=False, task_id="docker-session-a"),
++        parsed=SimpleNamespace(ref=lambda task_id: SimpleNamespace(call_id="call-a")),
++        guard_key=(command, "docker", False, "/workspace/project-a", "docker-session-a"),
++        decision=decision,
++    )
++    slot_token = batch_module._slot.set(slot)
++    call_token = _approval_tool_call_id.set("call-a")
++    try:
++        assert batch_module.consume_prepared_guard(
++            command, "docker", False, "/workspace/project-b", "docker-session-a",
++        ) is None
++        assert slot.decision is decision
++        assert batch_module.consume_prepared_guard(
++            command, "docker", False, "/workspace/project-a", "docker-session-a",
++        ) is decision
++        assert slot.decision is None
++    finally:
++        _approval_tool_call_id.reset(call_token)
++        batch_module._slot.reset(slot_token)
++
++
++
++def test_plugin_deny_precedes_permanent_command_allowlist():
++    command = "curl -I http://192.168.8.1:9"
++    with patch("tools.approval._command_matches_permanent_allowlist", return_value=True), patch(
++        "hermes_cli.plugins.invoke_hook", return_value=[{"action": "deny"}],
++    ) as hooks:
++        result = check_all_command_guards(command, "local")
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++    assert any(call.args[0] == "pre_command_approval" for call in hooks.call_args_list)
++
++
++@pytest.mark.parametrize("kind", ["local", "ssh", "docker"])
++def test_review_grant_is_bound_to_workspace_and_backend(kind, tmp_path, monkeypatch):
++    from types import SimpleNamespace
++    from tools.approval import clear_session
++    from tools.approval_context import set_current_session_key
++    session = f"test:review-scope:{kind}"
++    token = set_current_session_key(session)
++    prompts = []
++    workspace = str(tmp_path) if kind == "local" else "/workspace"
++    backend = SimpleNamespace(host="target-a", user="user", port=22, _container_id="container-a")
++    monkeypatch.setattr("tools.terminal_tool_lifecycle.get_active_env", lambda task_id: backend)
++    try:
++        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]), patch(
++            "tools.tirith_security.check_command_security", return_value={"action": "allow", "findings": [], "summary": ""}
++        ):
++            def run(cwd, task="task-a", command="printf reviewed"):
++                return check_all_command_guards(command, kind, cwd=cwd, task_id=task,
++                    approval_callback=lambda *args, **kwargs: prompts.append(cwd) or "session")
++            assert run(workspace)["approved"]
++            assert run(workspace, "same-target-another-task")["approved"]
++            assert len(prompts) == 1
++            assert run(workspace + "/other")["approved"]
++            assert len(prompts) == 2
++            if kind != "local":
++                backend.host = "target-b"
++                backend._container_id = "container-b"
++                assert run(workspace)["approved"]
++                assert len(prompts) == 3
++            assert run(workspace, command="printf different")["approved"]
++            assert len(prompts) == (3 if kind == "local" else 4)
++    finally:
++        clear_session(session)
++        approval_context._approval_session_key.reset(token)
++
++
++def test_command_dispatch_failure_denies_instead_of_allowing(caplog):
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=RuntimeError("expected dispatcher failure")):
++        result = check_all_command_guards("printf guarded", "local")
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++    assert "expected dispatcher failure" in caplog.text
 diff --git a/tools/approval.py b/tools/approval.py
-index b2cd411aa1c..fb9b8c1e77f 100644
+index cff8d0d8..877aeef0 100644
 --- a/tools/approval.py
 +++ b/tools/approval.py
-@@ -1081,10 +1081,9 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+@@ -1,3 +1,5 @@
++# ABOUTME: Applies command policy, safety checks, and approval decisions.
++# ABOUTME: Combines plugin decisions before terminal execution.
+ """Dangerous command approval -- the gate flow and per-session state.
+ 
+ Owns the session state (approvals, yolo, gateway queues, denial breaker), the three guard
+@@ -16,6 +18,10 @@ import hashlib
+ import importlib
+ import logging
+ import os
++import json
++import posixpath
++import uuid
++from pathlib import Path
+ import threading
+ from typing import Optional
+ 
+@@ -794,7 +800,8 @@ def _human_decision(spec: _GateSpec, *, command: str, description: str,
+                     pattern_key: str, pattern_keys: list[str], warnings: list[tuple],
+                     session_key: str, approval_callback, is_cli: bool, is_gateway: bool,
+                     is_ask: bool, smart: bool = False,
+-                    permanent_capable: bool = True, pending_body=None) -> dict:
++                    permanent_capable: bool = True, pending_body=None,
++                    plugin_grant=None) -> dict:
+     """Ask a human (after the optional guardian-LLM step) and turn the answer into the gate result.
+ 
+     ``warnings`` are the ``(key, _, is_tirith)`` tuples :func:`_persist_choice` stores on
+@@ -811,6 +818,10 @@ def _human_decision(spec: _GateSpec, *, command: str, description: str,
+                                            session_key, human_present=is_cli or is_gateway or is_ask)
+         if result is not None:
+             return result
++    # A native policy grant may resolve an escalation, but not a guardian denial.
++    # Hardline, user deny, and Tirith checks already ran at the caller.
++    if plugin_grant is not None and not smart_denied and plugin_grant():
++        return _approved()
+     pending_body = pending_body() if pending_body else None
+     allow_permanent = permanent_capable and not smart_denied
+ 
+@@ -1075,6 +1086,47 @@ def _floor_block(command: str, *, sudo_guard: bool = False) -> dict | None:
+     return _user_deny_block(command)
  
  
- def _plugin_command_decision(command: str, pattern_key: str, description: str) -> str | None:
--    """Combine plugin decisions for a recoverable command-pattern warning.
++def _plugin_command_decision(
++    command: str, pattern_key: str, description: str, *,
++    env_type: str = "", cwd: str = "", task_id: str = "",
++    approval_bypass: bool = False,
++) -> str | dict | None:
 +    """Combine plugin command decisions after the applicable safety floors.
- 
--    Callers check hardline and user deny floors first. A grant never overrides
--    a separate Tirith finding or smart guardian denial.
++
 +    A grant never overrides a separate Tirith finding or smart guardian denial.
-     """
-     try:
-         from hermes_cli.plugins import invoke_hook
-@@ -1098,6 +1097,8 @@ def _plugin_command_decision(command: str, pattern_key: str, description: str) -
-     actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
-     if "deny" in actions:
-         return "deny"
++    """
++    try:
++        from hermes_cli.plugins import invoke_hook
++        decisions = invoke_hook(
++            "pre_command_approval", command=command, pattern_key=pattern_key,
++            description=description, session_key=get_current_session_key(),
++            env_type=env_type, cwd=cwd, task_id=task_id,
++            approval_bypass=approval_bypass,
++        )
++    except (Exception, SystemExit):
++        logger.exception("pre_command_approval hook failed")
++        return "deny"
++    actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
++    if "deny" in actions:
++        return "deny"
++    replacements = [decision.get("command") for decision in (decisions or [])
++                    if isinstance(decision, dict) and decision.get("action") == "rewrite"]
++    if replacements:
++        if any(not isinstance(value, str) or not value.strip() for value in replacements):
++            return "deny"
++        if len(set(replacements)) != 1:
++            return "deny"
++        # A review of the original command does not authorize its replacement.
++        if "review" in actions:
++            return "deny"
++        if replacements[0] != command:
++            return {"action": "rewrite", "command": replacements[0]}
++        return "allow"
 +    if "review" in actions:
 +        return "review"
-     return "allow" if "allow" in actions else None
++    return "allow" if "allow" in actions else None
++
++
+ def check_dangerous_command(command: str, env_type: str,
+                             approval_callback=None,
+                             has_host_access: bool = False) -> dict:
+@@ -1093,6 +1145,19 @@ def check_dangerous_command(command: str, env_type: str,
+     is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     if not is_dangerous:
+         return _approved()
++    plugin_decision = _plugin_command_decision(command, pattern_key, description)
++    if plugin_decision == "deny":
++        return _denied(
++            "BLOCKED: a plugin command policy denied this command.",
++            pattern_key=pattern_key, description=description, outcome="plugin_denied",
++        )
++    if isinstance(plugin_decision, dict):
++        return _denied(
++            "BLOCKED: a plugin command replacement requires the full terminal guard.",
++            pattern_key=pattern_key, description=description, outcome="plugin_denied",
++        )
++    if approval_context._get_approval_mode() == "manual" and plugin_decision == "allow":
++        return _approved()
+     return _run_approval_gate(
+         pattern_key=pattern_key, description=description, display_target=command, approval_callback=approval_callback,
+         subject=f"Command flagged as dangerous ({description})", noun="dangerous commands",
+@@ -1165,32 +1230,94 @@ def _tirith_scan(command: str) -> dict:
+         }]}
  
  
-@@ -1206,17 +1207,19 @@ def check_all_command_guards(command: str, env_type: str,
++def _command_review_scope(env_type: str, cwd: str, task_id: str) -> tuple[str, str]:
++    """Bind review grants to an authoritative target without opening a backend."""
++    if env_type in {"local", ""}:
++        return ("local", str(Path(cwd or os.getcwd()).resolve()))
++    try:
++        from tools.terminal_tool_lifecycle import get_active_env
++        backend = get_active_env(task_id)
++        workspace = cwd or getattr(backend, "cwd", "")
++        if not posixpath.isabs(workspace):
++            raise ValueError("remote workspace is not absolute")
++        if env_type == "ssh":
++            target = [env_type, backend.host, backend.user, backend.port]
++        elif env_type == "docker" and backend._container_id:
++            target = [env_type, backend._container_id]
++        else:
++            raise ValueError("backend identity is unavailable")
++        return (json.dumps(target, separators=(",", ":")), posixpath.normpath(workspace))
++    except (Exception, SystemExit):
++        # An unknown target cannot reuse a stored grant, even within one task.
++        return (f"unresolved:{uuid.uuid4().hex}", cwd)
++
++
+ def check_all_command_guards(command: str, env_type: str,
+                              approval_callback=None,
+-                             has_host_access: bool = False) -> dict:
++                             has_host_access: bool = False,
++                             cwd: str = "", task_id: str = "") -> dict:
+     """Run all pre-exec security checks and return a single approval decision. Tirith and
      dangerous-command findings are presented as ONE combined approval request, so a gateway
      force=True replay cannot bypass one check when only the other was shown to the user.
      ``has_host_access``: a Docker sandbox with bind-mounted host paths takes the normal flow."""
@@ -247,21 +971,24 @@ index b2cd411aa1c..fb9b8c1e77f 100644
 -        return prepared
 +    if not isolated_container:
 +        from agent.terminal_approval_batch import consume_prepared_guard
-+        prepared = consume_prepared_guard(command, env_type, has_host_access)
++        prepared = consume_prepared_guard(command, env_type, has_host_access, cwd, task_id)
 +        if prepared is not None:
 +            return prepared
  
      approval_mode = approval_context._get_approval_mode()
-     if _yolo_active() or approval_mode == "off":
-@@ -1224,7 +1227,36 @@ def check_all_command_guards(command: str, env_type: str,
-     if _command_matches_permanent_allowlist(command):
-         return _approved()
- 
+-    if _yolo_active() or approval_mode == "off":
++    approval_bypass = _yolo_active() or approval_mode == "off"
 +    is_dangerous, pattern_key, description = detect_dangerous_command(command)
 +    session_key = get_current_session_key()
-+    policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
++    policy_scope = _command_review_scope(env_type, cwd, task_id)
++    policy_subject = json.dumps([command, *policy_scope], separators=(",", ":"))
++    policy_rule_key = f"command_policy:{hashlib.sha256(policy_subject.encode()).hexdigest()}"
 +    policy_key = f"plugin_rule:{policy_rule_key}"
-+    plugin_decision = _plugin_command_decision(command, pattern_key or "", description or "")
++    plugin_decision = _plugin_command_decision(
++        command, pattern_key or "", description or "",
++        env_type=env_type, cwd=cwd, task_id=task_id,
++        approval_bypass=approval_bypass,
++    )
 +    # An earlier review approval never suppresses a later policy denial.
 +    if plugin_decision == "review" and is_approved(session_key, policy_key):
 +        plugin_decision = None
@@ -272,7 +999,13 @@ index b2cd411aa1c..fb9b8c1e77f 100644
 +            description=description or "Plugin command policy denied the command",
 +            outcome="plugin_denied",
 +        )
-+
++    if approval_bypass:
+         return _approved()
++    if isinstance(plugin_decision, dict):
++        return {**_approved(), "replacement_command": plugin_decision["command"]}
+     if _command_matches_permanent_allowlist(command):
+         return _approved()
+ 
 +    if isolated_container:
 +        if plugin_decision == "review":
 +            return request_tool_approval(
@@ -290,7 +1023,7 @@ index b2cd411aa1c..fb9b8c1e77f 100644
      # Outside CLI/gateway/ask flows we never block on approvals: each
      # unattended context applies its configured deny/approve mode, else allow.
      if not is_cli and not is_gateway and not is_ask:
-@@ -1237,9 +1269,7 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1203,9 +1330,7 @@ def check_all_command_guards(command: str, env_type: str,
      # Gather findings: warnings = [(pattern_key, description, is_tirith)]. Tirith block AND warn both go through the
      # approval flow (block used to be a hard stop) so users can inspect the findings and approve.
      tirith_result = _tirith_scan(command)
@@ -300,7 +1033,7 @@ index b2cd411aa1c..fb9b8c1e77f 100644
      if tirith_result["action"] in {"block", "warn"}:
          findings = tirith_result.get("findings") or []
          rule_id = findings[0].get("rule_id", "unknown") if findings else "unknown"
-@@ -1248,19 +1278,12 @@ def check_all_command_guards(command: str, env_type: str,
+@@ -1214,9 +1339,15 @@ def check_all_command_guards(command: str, env_type: str,
              warnings.append((tirith_key, _format_tirith_description(tirith_result), True))
      if is_dangerous and not is_approved(session_key, pattern_key):
          warnings.append((pattern_key, description, False))
@@ -309,21 +1042,14 @@ index b2cd411aa1c..fb9b8c1e77f 100644
      if not warnings:
          return _approved()
  
--    # Plugin grants cover only the recoverable pattern layer. A Tirith finding
--    # still reaches the human approval path. An explicit plugin denial blocks.
--    plugin_decision = None
--    if is_dangerous and any(not is_tirith for _, _, is_tirith in warnings):
--        plugin_decision = _plugin_command_decision(command, pattern_key, description)
--        if plugin_decision == "deny":
--            return _denied(
--                "BLOCKED: a plugin command policy denied this command.",
--                pattern_key=pattern_key, description=description, outcome="plugin_denied",
--            )
 +    # A plugin grant cannot override a Tirith warning or a smart guardian denial.
-     if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
-         return _approved()
- 
-@@ -1275,7 +1298,8 @@ def check_all_command_guards(command: str, env_type: str,
++    if approval_mode == "manual" and len(warnings) == 1 and not warnings[0][2] and plugin_decision == "allow":
++        return _approved()
++
+     combined_desc = "; ".join(desc for _, desc, _ in warnings)
+     primary_key = warnings[0][0]
+     all_keys = [key for key, _, _ in warnings]
+@@ -1228,8 +1359,11 @@ def check_all_command_guards(command: str, env_type: str,
          _COMMAND_GATE, command=command, description=combined_desc,
          pattern_key=primary_key, pattern_keys=all_keys, warnings=warnings,
          session_key=session_key, approval_callback=approval_callback,
@@ -331,5 +1057,379 @@ index b2cd411aa1c..fb9b8c1e77f 100644
 +        is_cli=is_cli, is_gateway=is_gateway, is_ask=is_ask,
 +        smart=approval_mode == "smart" and plugin_decision != "review",
          permanent_capable=any(not is_t for _, _, is_t in warnings),
-         plugin_grant=(lambda: plugin_decision == "allow")
-         if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
++        plugin_grant=(lambda: plugin_decision == "allow")
++        if approval_mode == "smart" and len(warnings) == 1 and not warnings[0][2] else None,
+     )
+ 
+ 
+diff --git a/tools/code_execution_rpc.py b/tools/code_execution_rpc.py
+index e1a54001..58366fec 100644
+--- a/tools/code_execution_rpc.py
++++ b/tools/code_execution_rpc.py
+@@ -25,9 +25,11 @@ logger = logging.getLogger("tools.code_execution_tool")
+ _TERMINAL_BLOCKED_PARAMS = {"background", "pty", "notify", "notify_on_complete", "watch_patterns", "heartbeat", "persist_on_release"}
+ 
+ 
+-def _default_dispatch(task_id):
++def _default_dispatch(task_id, session_id=""):
+     from model_tools import handle_function_call
+-    return lambda tool_name, tool_args: handle_function_call(tool_name, tool_args, task_id=task_id)
++    return lambda tool_name, tool_args: handle_function_call(
++        tool_name, tool_args, task_id=task_id, session_id=session_id,
++    )
+ 
+ 
+ def _private_dirs_cmd(root: str, *subdirs: str) -> str:
+@@ -115,14 +117,14 @@ def _handle_rpc_request(request: dict, *, allowed_tools: frozenset, tool_call_co
+ 
+ def _rpc_server_loop(server_sock: socket.socket, task_id: str, tool_call_log: list,
+                      tool_call_counter: list, max_tool_calls: int, allowed_tools: frozenset,
+-                     stop_event: threading.Event, rpc_token: str, dispatch=None):
++                     stop_event: threading.Event, rpc_token: str, dispatch=None, session_id: str = ""):
+     """Accept one client and serve newline-delimited JSON requests until it disconnects, idles
+     300s, or the call limit is reached. ``tool_call_counter`` is a mutable ``[int]``. ``dispatch``
+     overrides how an allowed, budgeted call runs: per-call sandboxes use the default (the thread
+     carries the cell's context); session kernels rebind each call to the CURRENT cell's authority.
+     """
+     if dispatch is None:
+-        dispatch = _default_dispatch(task_id)
++        dispatch = _default_dispatch(task_id, session_id)
+     conn = None
+     try:
+         server_sock.settimeout(0.05)
+@@ -175,11 +177,11 @@ def _rpc_server_loop(server_sock: socket.socket, task_id: str, tool_call_log: li
+ 
+ def _rpc_poll_loop(env, rpc_dir: str, task_id: str, tool_call_log: list, tool_call_counter: list,
+                    max_tool_calls: int, allowed_tools: frozenset, stop_event: threading.Event,
+-                   rpc_token: str):
++                   rpc_token: str, session_id: str = ""):
+     """Poll the remote filesystem for request files and answer them. Background thread; each
+     ``env.execute()`` is an independent process, so this is safe alongside the script-execution
+     thread. Malformed or unauthorized requests are removed without a response."""
+-    dispatch = _default_dispatch(task_id)
++    dispatch = _default_dispatch(task_id, session_id)
+     poll_interval = 0.1
+     quoted_rpc_dir = shlex.quote(rpc_dir)
+     while not stop_event.is_set():
+diff --git a/tools/code_execution_tool.py b/tools/code_execution_tool.py
+index eeb8a475..783ee615 100644
+--- a/tools/code_execution_tool.py
++++ b/tools/code_execution_tool.py
+@@ -591,7 +591,7 @@ def _sandbox_tools_for(enabled_tools: Optional[List[str]]) -> frozenset:
+ 
+ def _run_remote_per_call(env, env_type: str, code: str, effective_task_id: str,
+                          sandbox_tools: frozenset, *, timeout: int, max_tool_calls: int,
+-                         exec_start: float) -> str:
++                         exec_start: float, session_id: str = "") -> str:
+     """Per-call script ship: stage hermes_tools.py + script.py in a fresh remote sandbox dir,
+     serve file-RPC from a polling thread, run, clean up."""
+     sandbox_dir = f"{_env_temp_dir(env)}/hermes_exec_{uuid.uuid4().hex[:12]}"
+@@ -613,7 +613,7 @@ def _run_remote_per_call(env, env_type: str, code: str, effective_task_id: str,
+         rpc_thread = threading.Thread(
+             target=propagate_context_to_thread(_rpc_poll_loop), daemon=True,
+             args=(env, f"{sandbox_dir}/rpc", effective_task_id, [], tool_call_counter,
+-                  max_tool_calls, sandbox_tools, stop_event, rpc_token))
++                  max_tool_calls, sandbox_tools, stop_event, rpc_token, session_id))
+         rpc_thread.start()
+         # The token travels in a sourced env file, never in argv. No umask on
+         # the launch command: the 700 dirs + explicit 0600 writes cover Hermes'
+@@ -652,7 +652,7 @@ def _run_remote_per_call(env, env_type: str, code: str, effective_task_id: str,
+ 
+ 
+ def _execute_remote(code: str, task_id: Optional[str], enabled_tools: Optional[List[str]],
+-                    reset: bool = False) -> str:
++                    reset: bool = False, session_id: str = "") -> str:
+     """Run code on the remote terminal backend: the owner's persistent remote session kernel
+     (tools/code_kernel_remote.py) first, else the per-call script ship — the fail-open route when
+     a kernel cannot be spawned and the only route for hosts that cannot sustain a background process."""
+@@ -679,6 +679,7 @@ def _execute_remote(code: str, task_id: Optional[str], enabled_tools: Optional[L
+                 sandbox_tools=frozenset(sandbox_tools), timeout=timeout,
+                 max_tool_calls=max_tool_calls, reset=bool(reset),
+                 idle_exit=int(_cfg.get("kernel_idle_timeout", 1800)),
++                session_id=session_id,
+             )
+         except Exception:
+             logger.warning("remote session-kernel path failed; falling back to per-call", exc_info=True)
+@@ -689,7 +690,8 @@ def _execute_remote(code: str, task_id: Optional[str], enabled_tools: Optional[L
+     except Exception as exc:
+         return _remote_failure(exc, exec_start, 0)
+     return _run_remote_per_call(env, env_type, code, effective_task_id, sandbox_tools,
+-                                timeout=timeout, max_tool_calls=max_tool_calls, exec_start=exec_start)
++                                timeout=timeout, max_tool_calls=max_tool_calls, exec_start=exec_start,
++                                session_id=session_id)
+ 
+ 
+ # ---- Main entry point ----
+@@ -700,6 +702,7 @@ def execute_code(
+     task_id: Optional[str] = None,
+     enabled_tools: Optional[List[str]] = None,
+     reset: bool = False,
++    session_id: str = "",
+ ) -> str:
+     """Run Python in the session's persistent kernel (local) or on the remote terminal backend,
+     with RPC access to a subset of Hermes tools; returns the JSON result string. "Sandbox" means
+@@ -775,7 +778,7 @@ def execute_code(
+         from tools.interrupt import clear_current_thread_interrupt
+         clear_current_thread_interrupt()
+     if env_type != "local":
+-        return _execute_remote(code, task_id, enabled_tools, reset=bool(reset))
++        return _execute_remote(code, task_id, enabled_tools, reset=bool(reset), session_id=session_id)
+     from tools.interrupt import is_interrupted as _is_interrupted
+     # Session kernels are always on locally (one interpreter per conversation); the guards above
+     # already ran for this cell, and the kernel path shares env builder, RPC server and redaction.
+@@ -788,7 +791,7 @@ def execute_code(
+         sandbox_tools=frozenset(_sandbox_tools_for(enabled_tools)),
+         timeout=_cfg.get("timeout", DEFAULT_TIMEOUT),
+         max_tool_calls=_cfg.get("max_tool_calls", DEFAULT_MAX_TOOL_CALLS),
+-        reset=bool(reset), is_interrupted=_is_interrupted,
++        reset=bool(reset), is_interrupted=_is_interrupted, session_id=session_id,
+     )
+ 
+ 
+@@ -951,7 +954,7 @@ def _execute_code_handler(args: dict, **kwargs) -> str:
+     if code is not None and not isinstance(code, str):
+         return tool_error(f"execute_code received a {type(code).__name__} in 'code', but it "
+                           "requires Python source as a string. Retry as execute_code(code=\"...\").")
+-    return execute_code(code=code or "", task_id=kwargs.get("task_id"),
++    return execute_code(code=code or "", task_id=kwargs.get("task_id"), session_id=kwargs.get("session_id") or "",
+                         enabled_tools=kwargs.get("enabled_tools"), reset=bool(args.get("reset", False)))
+ 
+ 
+diff --git a/tools/code_kernel.py b/tools/code_kernel.py
+index 8da86292..e88c2538 100644
+--- a/tools/code_kernel.py
++++ b/tools/code_kernel.py
+@@ -238,9 +238,10 @@ class CellAuthority:
+     refused instead of running under a stale approval/session/turn identity.
+     """
+ 
+-    def __init__(self, task_id: str):
++    def __init__(self, task_id: str, session_id: str = ""):
+         import contextvars
+         self.task_id = task_id
++        self.session_id = session_id
+         self.ctx = contextvars.copy_context()
+         self.active = True
+         # ((getter, setter), captured value) per thread-local prompt callback (approval, sudo, vault unlock…)
+@@ -274,7 +275,9 @@ class CellAuthority:
+             except Exception:
+                 previous = None
+         try:
+-            return handle_function_call(tool_name, tool_args, task_id=self.task_id)
++            return handle_function_call(
++                tool_name, tool_args, task_id=self.task_id, session_id=self.session_id,
++            )
+         finally:
+             if previous is not None:
+                 try:
+@@ -845,6 +848,7 @@ def _cell_result(kernel: SessionKernel, key: Tuple, status: str, payload: Dict[s
+ def execute_in_session_kernel(
+     code: str, *, task_id: str, mode: str, child_python: str, child_cwd: str,
+     sandbox_tools: frozenset, timeout: int, max_tool_calls: int, reset: bool, is_interrupted,
++    session_id: str = "",
+ ) -> str:
+     """Run one cell in the (owner, mode, python, cwd, tools) session kernel. The owner is the
+     session key (``_resolve_owner``), not the per-turn task id, so state survives across turns."""
+@@ -855,7 +859,8 @@ def execute_in_session_kernel(
+     try:
+         return _run_cell(kernel, key, code, task_id=task_id, child_python=child_python, child_cwd=child_cwd,
+                          sandbox_tools=sandbox_tools, timeout=timeout, max_tool_calls=max_tool_calls,
+-                         is_interrupted=is_interrupted, exec_start=exec_start, state_reset=state_reset)
++                         is_interrupted=is_interrupted, exec_start=exec_start, state_reset=state_reset,
++                         session_id=session_id)
+     finally:
+         with _REGISTRY.lock:
+             kernel.attached -= 1
+@@ -869,11 +874,11 @@ def execute_in_session_kernel(
+ 
+ def _run_cell(kernel: SessionKernel, key: Tuple, code: str, *, task_id: str, child_python: str,
+               child_cwd: str, sandbox_tools: frozenset, timeout: int, max_tool_calls: int,
+-              is_interrupted, exec_start: float, state_reset: bool) -> str:
++              is_interrupted, exec_start: float, state_reset: bool, session_id: str = "") -> str:
+     reused = kernel.proc is not None
+     # Captured on the calling thread BEFORE the cell runs (the snapshot a per-call RPC thread
+     # would get) and installed on the kernel so RPC dispatches under THIS cell's identity.
+-    authority = CellAuthority(task_id)
++    authority = CellAuthority(task_id, session_id)
+     with kernel.lock:
+         try:
+             if kernel.proc is None:
+diff --git a/tools/code_kernel_remote.py b/tools/code_kernel_remote.py
+index e8065e3a..e92714fc 100644
+--- a/tools/code_kernel_remote.py
++++ b/tools/code_kernel_remote.py
+@@ -336,6 +336,7 @@ def _run_remote_cell(kernel: RemoteKernel, code: str, timeout: int) -> Tuple[str
+ def execute_in_remote_kernel(
+     code: str, *, env, env_type: str, task_env_id: str, sandbox_tools: frozenset,
+     timeout: int, max_tool_calls: int, reset: bool, idle_exit: int = 1800,
++    session_id: str = "",
+ ) -> Optional[Dict[str, Any]]:
+     """Run one cell in the owner's remote kernel. Returns the raw cell result dict (caller
+     post-processes output), or ``None`` when no kernel could be spawned (caller falls open to
+@@ -356,7 +357,8 @@ def execute_in_remote_kernel(
+     try:
+         return _run_attached_cell(kernel, key, code, env=env, task_env_id=task_env_id,
+                                   sandbox_tools=sandbox_tools, timeout=timeout, max_tool_calls=max_tool_calls,
+-                                  reused=reused, state_reset=state_reset, state_lost=state_lost)
++                                  reused=reused, state_reset=state_reset, state_lost=state_lost,
++                                  session_id=session_id)
+     finally:
+         with _REGISTRY.lock:
+             kernel.attached -= 1
+@@ -365,7 +367,8 @@ def execute_in_remote_kernel(
+ 
+ def _run_attached_cell(kernel: RemoteKernel, key: Tuple, code: str, *, env, task_env_id: str,
+                        sandbox_tools: frozenset, timeout: int, max_tool_calls: int,
+-                       reused: bool, state_reset: bool, state_lost: bool) -> Dict[str, Any]:
++                       reused: bool, state_reset: bool, state_lost: bool,
++                       session_id: str = "") -> Dict[str, Any]:
+     from tools.code_execution_tool import _rpc_poll_loop
+     from tools.thread_context import propagate_context_to_thread
+     # Clean stale tool-RPC requests from a previous cell before arming this cell's poll loop, so
+@@ -381,7 +384,7 @@ def _run_attached_cell(kernel: RemoteKernel, key: Tuple, code: str, *, env, task
+     rpc_thread = threading.Thread(
+         target=propagate_context_to_thread(_rpc_poll_loop), daemon=True,
+         args=(env, f"{kernel.kernel_dir}/rpc", task_env_id, [], tool_call_counter,
+-              max_tool_calls, sandbox_tools, stop_event, kernel.rpc_token))
++              max_tool_calls, sandbox_tools, stop_event, kernel.rpc_token, session_id))
+     rpc_thread.start()
+     cell_status, cell_payload = "no-result", {}
+     try:
+diff --git a/tools/terminal_tool.py b/tools/terminal_tool.py
+index be149684..344f88a5 100644
+--- a/tools/terminal_tool.py
++++ b/tools/terminal_tool.py
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env python3
++# ABOUTME: Executes terminal commands in the selected environment.
++# ABOUTME: Rechecks command policy before execution and background dispatch.
+ """Terminal tool: run shell commands in the configured backend.
+ 
+ Backends (``TERMINAL_ENV``): local (default), docker, singularity, modal
+@@ -146,11 +148,12 @@ def _docker_has_host_access(config: Dict[str, Any]) -> bool:
+ 
+ 
+ def _check_all_guards(command: str, env_type: str,
+-                      has_host_access: bool = False) -> dict:
++                      has_host_access: bool = False,
++                      cwd: str = "", task_id: str = "") -> dict:
+     """Delegate to consolidated guard (tirith + dangerous cmd) with CLI callback."""
+     return _check_all_guards_impl(command, env_type,
+                                   approval_callback=_get_approval_callback(),
+-                                  has_host_access=has_host_access)
++                                  has_host_access=has_host_access, cwd=cwd, task_id=task_id)
+ 
+ 
+ from tools.environments.base import EnvironmentConnectionError
+@@ -991,15 +994,19 @@ class _ApprovalVerdict:
+     """
+     note: Optional[str] = None
+     approved_run: bool = False
++    command: Optional[str] = None
+ 
+ 
+-def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *, force: bool) -> _ApprovalVerdict:
++def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
++                         force: bool, cwd: str = "", task_id: str = "") -> _ApprovalVerdict:
+     """Run tirith + dangerous-command guards; ``force`` skips them entirely.
+     Raises :class:`_Rejected` when the command may not run (denied, or pending
+     gateway approval)."""
+     if force:
+         return _ApprovalVerdict(approved_run=True)
+-    approval = _check_all_guards(command, env_type, has_host_access=_docker_has_host_access(config))
++    approval = _check_all_guards(
++        command, env_type, has_host_access=_docker_has_host_access(config), cwd=cwd, task_id=task_id,
++    )
+     if not approval["approved"]:
+         if approval.get("status") == "pending_approval":  # gateway ask mode
+             raise _Rejected(_error_json(
+@@ -1018,6 +1025,8 @@ def _run_approval_guards(command: str, env_type: str, config: Dict[str, Any], *,
+         )
+         raise _Rejected(_error_json(approval.get("message", fallback_msg), status="blocked",
+                                     **({"user_summary": approval["user_summary"]} if approval.get("user_summary") else {})))
++    if approval.get("replacement_command") is not None:
++        return _ApprovalVerdict(command=approval["replacement_command"])
+     desc = approval.get("description", "flagged as dangerous")
+     if approval.get("user_approved"):
+         return _ApprovalVerdict(
+@@ -1352,6 +1361,7 @@ def terminal_tool(
+     _completion_output_chars: int = 0,
+     heartbeat: int = 0,
+     persist_on_release: bool = False,
++    _effective_args: Optional[Dict[str, Any]] = None,
+ ) -> str:
+     """Execute *command* in the configured terminal environment; returns a JSON string.
+ 
+@@ -1402,26 +1412,45 @@ def terminal_tool(
+         # The guard chain runs on the deadline worker; keep it answerable to /stop
+         # aimed at this tool thread (a remote-backend script read polls is_interrupted()).
+         guard_timeout = max(plan.effective_timeout, _PRE_EXEC_GUARD_MIN_TIMEOUT_S)
+-        _acting_token = acting_for_tid.set(threading.current_thread().ident)
+-        try:
+-            bounded_guard = run_bounded_sync(
+-                lambda: _pre_exec_block(
+-                    command, env=env, env_type=env_type, cwd=cwd, workdir=workdir, session_key=session_key,
+-                ),
+-                guard_timeout,
+-                label="terminal.pre-exec-guard",
++        seen_commands = {command}
++        for _ in range(4):
++            _acting_token = acting_for_tid.set(threading.current_thread().ident)
++            try:
++                bounded_guard = run_bounded_sync(
++                    lambda: _pre_exec_block(
++                        command, env=env, env_type=env_type, cwd=cwd, workdir=workdir, session_key=session_key,
++                    ),
++                    guard_timeout,
++                    label="terminal.pre-exec-guard",
++                )
++            finally:
++                acting_for_tid.reset(_acting_token)
++            if bounded_guard.timed_out:
++                raise _Rejected(_error_json(
++                    f"Terminal pre-execution guard did not finish within {guard_timeout}s "
++                    "(process-identity probe wedged); the command was not run. Retry the call.",
++                    status="error",
++                ))
++            verdict = _run_approval_guards(
++                command, env_type, plan.config, force=force,
++                cwd=workdir or cwd, task_id=task_id or "",
+             )
+-        finally:
+-            acting_for_tid.reset(_acting_token)
+-        if bounded_guard.timed_out:
+-            raise _Rejected(_error_json(
+-                f"Terminal pre-execution guard did not finish within {guard_timeout}s "
+-                "(process-identity probe wedged); the command was not run. Retry the call.",
+-                status="error",
+-            ))
+-        # Pre-exec security checks (tirith + dangerous command detection);
+-        # force=True means the user already confirmed.
+-        verdict = _run_approval_guards(command, env_type, plan.config, force=force)
++            if verdict.command is None:
++                break
++            replacement = verdict.command
++            if replacement in seen_commands:
++                raise _Rejected(_error_json("Command replacement cycle blocked.", status="blocked"))
++            if not background:
++                guidance = _foreground_background_guidance(replacement)
++                if guidance:
++                    raise _Rejected(_error_json(guidance, status="error"))
++            seen_commands.add(replacement)
++            command = replacement
++        else:
++            raise _Rejected(_error_json("Command replacement limit exceeded.", status="blocked"))
++
++        if _effective_args is not None:
++            _effective_args["command"] = command
+ 
+         pty_disabled = pty and _command_requires_pipe_stdin(command)
+         if plan.promoted_from_foreground_timeout is not None:
+@@ -1585,6 +1614,7 @@ def _handle_terminal(args, **kw):
+         notify_on_complete = True  # the heartbeat rides the completion delivery path
+     return terminal_tool(
+         command=args.get("command"),
++        _effective_args=args,
+         background=args.get("background", False),
+         timeout=args.get("timeout"),
+         task_id=kw.get("task_id"),

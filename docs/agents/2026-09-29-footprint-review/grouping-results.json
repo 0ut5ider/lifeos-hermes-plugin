@@ -1,0 +1,172 @@
+{
+  "historical_group_count": 20,
+  "new_group_count": 8,
+  "ownership": {
+    "hermes_cli/plugins.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "hermes_cli/plugins_dispatch.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "model_tools.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "tests/agent/test_tool_result_context_hook.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "tests/hermes_cli/test_plugins.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "tests/hermes_cli/test_required_policy_hooks.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "tests/hermes_cli/test_session_boundary_hooks.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "tests/plugins/test_transform_tool_result_hook.py": [
+      "hermes-plugin-events.patch"
+    ],
+    "agent/conversation_compression.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/conversation_loop.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/session_persistence.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/turn_api_call.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/turn_context.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/turn_failure_copy.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/turn_final_response.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/turn_finalizer.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/turn_stop_gates.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "tests/agent/test_prompt_hook_block.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "tests/agent/test_turn_context.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "tests/agent/test_verification_continuation_budget.py": [
+      "hermes-turn-gates.patch"
+    ],
+    "agent/terminal_approval_batch.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/agent/test_terminal_approval_batch.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/hermes_cli/test_approval_transport.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/test_lifeos_execute_code_session.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/tools/test_approval_plugin_hooks.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/tools/test_code_execution.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/tools/test_code_execution_file_rpc.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/tools/test_code_kernel.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/tools/test_code_kernel_remote.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tests/tools/test_plugin_command_approval.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tools/approval.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tools/code_execution_rpc.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tools/code_execution_tool.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tools/code_kernel.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tools/code_kernel_remote.py": [
+      "hermes-command-policy.patch"
+    ],
+    "tools/terminal_tool.py": [
+      "hermes-command-policy.patch"
+    ],
+    "cli.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "gateway/slash_commands_session.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "hermes_cli/cli_commands_mixin.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "hermes_cli/cli_session_mixin.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "hermes_cli/cli_tui_runtime_mixin.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "tests/gateway/test_resume_command.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "tests/hermes_cli/test_cli_resume_command.py": [
+      "hermes-session-lifecycle.patch"
+    ],
+    "tests/test_lifeos_delegate_tier_route.py": [
+      "hermes-child-routing.patch"
+    ],
+    "tools/delegate_tool.py": [
+      "hermes-child-routing.patch"
+    ],
+    "agent/auxiliary_client.py": [
+      "hermes-strict-inference.patch"
+    ],
+    "tests/test_lifeos_aux_no_fallback.py": [
+      "hermes-strict-inference.patch"
+    ],
+    "tests/tools/test_remote_file_staleness.py": [
+      "hermes-remote-files.patch"
+    ],
+    "tools/file_operations.py": [
+      "hermes-remote-files.patch"
+    ],
+    "tools/file_tools.py": [
+      "hermes-remote-files.patch"
+    ],
+    "tools/file_tools_read_tracking.py": [
+      "hermes-remote-files.patch"
+    ],
+    "cron/scheduler.py": [
+      "hermes-cron-bootstrap.patch"
+    ]
+  },
+  "mirror_mismatches": [],
+  "ownership_collisions": {},
+  "changed_from_historical": [
+    "agent/turn_stop_gates.py",
+    "hermes_cli/_launchers.py",
+    "hermes_cli/plugins.py",
+    "tests/agent/test_verification_continuation_budget.py",
+    "tests/hermes_cli/test_source_launcher_publication.py"
+  ],
+  "prepared_replay_mismatches": []
+}

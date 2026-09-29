@@ -65,6 +65,6 @@ hermes cron create 1m --name discord-delivery-test --deliver discord:12345678901
 hermes cron runs
 ```
 
-After the job completes, confirm the marker in Discord and remove `~/.hermes/scripts/discord-delivery-test.sh`. On `.212`, the first attempt failed because a source-install cron worker used a Python environment without `ruamel`; [the worker bootstrap patch](../patches/hermes-cron-worker-bootstrap.patch) made it use Hermes's managed dependency environment. Check `hermes cron runs` as well as the Discord channel when testing a new installation. A successful `hermes send` does not prove cron delivery works.
+After the job completes, confirm the marker in Discord and remove `~/.hermes/scripts/discord-delivery-test.sh`. On `.212`, the first attempt failed because a source-install cron worker used a Python environment without `ruamel`; [the worker bootstrap patch](../patches/hermes-cron-bootstrap.patch) made it use Hermes's managed dependency environment. Check `hermes cron runs` as well as the Discord channel when testing a new installation. A successful `hermes send` does not prove cron delivery works.
 
 A scheduled channel post by itself does not create a daily conversation thread. Before promising a daily thread, configure and test the exact creation path, target channel, local time zone, and prompt. No recurring morning job was installed on `.212` during this test.

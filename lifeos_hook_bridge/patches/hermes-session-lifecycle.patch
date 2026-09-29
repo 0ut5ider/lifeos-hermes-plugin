@@ -1,0 +1,185 @@
+diff --git a/cli.py b/cli.py
+index 5d3055be..e56f3ff3 100644
+--- a/cli.py
++++ b/cli.py
+@@ -495,7 +495,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
+         _arm_exit_watchdog(timeout_s=base * 2, from_signal=True)
+ 
+ 
+-def _run_cleanup(*, notify_session_finalize: bool = True):
++def _run_cleanup(*, notify_session_finalize: bool = True, reason: str = "shutdown", session_id: str | None = None):
+     """Run resource cleanup exactly once."""
+     global _cleanup_done, _cleanup_in_progress
+     if _cleanup_done:
+@@ -514,9 +514,9 @@ def _run_cleanup(*, notify_session_finalize: bool = True):
+             with suppress(swallow):
+                 globals()[step]()
+         if notify_session_finalize:
+-            cleanup_session_id = _active_agent_ref.session_id if _active_agent_ref else None
++            cleanup_session_id = _active_agent_ref.session_id if _active_agent_ref else session_id
+             if _should_emit_cleanup_session_finalize(cleanup_session_id):
+-                _notify_session_finalize(session_id=cleanup_session_id, platform="cli", reason="shutdown")
++                _notify_session_finalize(session_id=cleanup_session_id, platform="cli", reason=reason)
+         try:
+             _shutdown_agent_memory_provider(_active_agent_ref)
+         except Exception as e:
+diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
+index 23c85609..ab8e0aa3 100644
+--- a/gateway/slash_commands_session.py
++++ b/gateway/slash_commands_session.py
+@@ -896,6 +896,12 @@ class GatewaySessionCommandsMixin:
+         new_entry = await self.async_session_store.switch_session(session_key, target_id)
+         if not new_entry:
+             return t("gateway.resume.switch_failed")
++        # A successful switch ends the previous session. Notify lifecycle observers
++        # before clearing the old conversation scope.
++        with contextlib.suppress(Exception):
++            await self._finalize_session_off_loop(
++                session_id=current_entry.session_id, platform=source.platform.value,
++                reason="resume")
+         # Conversation boundary: all conversation-scoped state + security state in one funnel call.
+         # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
+         # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
+diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
+index eaba807d..739c28f0 100644
+--- a/hermes_cli/cli_commands_mixin.py
++++ b/hermes_cli/cli_commands_mixin.py
+@@ -1306,6 +1306,8 @@ class CLICommandsMixin:
+             return _cp("  Already on that session.")
+         old_session_id = self.session_id
+         _end_current_session(self, "resumed_other")
++        if old_session_id:
++            self._notify_session_boundary("on_session_finalize", reason="resume")
+         self.session_id, self._resumed, self._pending_title = target_id, True, None
+         _sync_process_session_id(target_id)
+         # One lineage SELECT, two projections: model_history is alternation-repaired for live
+diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
+index f7852838..28e1463d 100644
+--- a/hermes_cli/cli_session_mixin.py
++++ b/hermes_cli/cli_session_mixin.py
+@@ -425,16 +425,16 @@ class CLISessionMixin:
+         flush_tool_summary()
+         _cli_visible_print()
+ 
+-    def _notify_session_boundary(self, event_type: str) -> None:
++    def _notify_session_boundary(self, event_type: str, reason: str = "") -> None:
+         """Fire a session-boundary plugin hook (on_session_finalize / on_session_reset).
+         Non-blocking; errors swallowed. Safe from shutdown, /new, /reset."""
+         with contextlib.suppress(Exception):
+             from hermes_cli.lifecycle import finalize_session, invoke_hook
+ 
+             context = {
+-                "session_id": self.agent.session_id if self.agent else None,
++                "session_id": self.agent.session_id if self.agent else self.session_id,
+                 "platform": getattr(self, "platform", None) or "cli",
+-                "reason": "new_session" if event_type == "on_session_reset" else "session_boundary"}
++                "reason": reason or ("new_session" if event_type == "on_session_reset" else "session_boundary")}
+             if event_type == "on_session_finalize":
+                 finalize_session(**context)
+             else:
+@@ -501,7 +501,8 @@ class CLISessionMixin:
+                 # rotation) so /new never blocks on the LLM-bound call.
+                 _boundary_snapshot = self._launch_session_boundary_memory_flush(
+                     list(self.conversation_history), session_id=old_session_id)
+-            self._notify_session_boundary("on_session_finalize")
++        if old_session_id:
++            self._notify_session_boundary("on_session_finalize", reason="new_session")
+ 
+         if self._session_db and old_session_id:
+             # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
+diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
+index 9eeb62a6..439d5e04 100644
+--- a/hermes_cli/cli_tui_runtime_mixin.py
++++ b/hermes_cli/cli_tui_runtime_mixin.py
+@@ -494,8 +494,9 @@ class CLITuiRuntimeMixin:
+                 except (Exception, KeyboardInterrupt) as e:
+                     logger.debug("Could not delete session on exit: %s", e)
+         # run_conversation() fires on_session_end on normal completion; only fire here mid-turn.
++        at_prompt = not self._agent_running
+         if self.agent and self._agent_running:
+             _invoke_interrupted_session_end(self.agent, self.agent.session_id, "shutdown")
+-        _run_cleanup()
++        _run_cleanup(reason="prompt_input_exit" if at_prompt else "shutdown", session_id=self.session_id)
+         self._print_exit_summary()
+         self._release_active_session()
+diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
+index a114eae3..ee2a0c2f 100644
+--- a/tests/gateway/test_resume_command.py
++++ b/tests/gateway/test_resume_command.py
+@@ -103,6 +103,24 @@ class TestHandleResumeCommand:
+ 
+ 
+ 
++    @pytest.mark.asyncio
++    async def test_resume_finalizes_previous_session_with_reason(self, tmp_path):
++        from hermes_state import SessionDB
++
++        db = SessionDB(db_path=tmp_path / "state.db")
++        db.create_session("old_session_abc", "telegram", user_id="12345", chat_id="67890")
++        db.set_session_title("old_session_abc", "My Project")
++        db.create_session("current_session_001", "telegram", user_id="12345", chat_id="67890")
++        event = _make_event(text="/resume My Project")
++        runner = _make_runner(session_db=db, current_session_id="current_session_001", event=event)
++        runner._finalize_session_off_loop = AsyncMock()
++
++        await runner._handle_resume_command(event)
++
++        runner._finalize_session_off_loop.assert_awaited_once_with(
++            session_id="current_session_001", platform="telegram", reason="resume")
++        db.close()
++
+     @pytest.mark.asyncio
+     async def test_resume_clears_session_model_overrides(self, tmp_path):
+         """Resume must not carry a previous session's /model override into the
+diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
+index 36549966..a1548102 100644
+--- a/tests/hermes_cli/test_cli_resume_command.py
++++ b/tests/hermes_cli/test_cli_resume_command.py
+@@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:
+ 
+ 
+ 
++class TestResumeFinalizesPreviousSession:
++    def test_resume_notifies_old_session_with_resume_reason(self):
++        cli_obj = _make_cli()
++        cli_obj.agent = MagicMock()
++        cli_obj.agent.session_id = "current_session"
++        cli_obj._session_db.get_session.return_value = {"id": "target", "title": "T"}
++        cli_obj._session_db.get_resume_conversations.return_value = ([], [])
++        cli_obj._session_db.resolve_resume_session_id.return_value = "target"
++        observed = []
++        cli_obj._notify_session_boundary = lambda event, **kwargs: observed.append(
++            (event, kwargs.get("reason"), cli_obj.session_id))
++
++        with (
++            patch("hermes_cli.main._resolve_session_by_name_or_id", return_value="target"),
++            patch("cli._cprint"),
++        ):
++            cli_obj._handle_resume_command("/resume target")
++
++        assert observed == [("on_session_finalize", "resume", "current_session")]
++
++
++class TestResumeWithoutAgentFinalizesPreviousSession:
++    def test_resume_notifies_empty_session_with_resume_reason(self):
++        cli_obj = _make_cli()
++        cli_obj.agent = None
++        cli_obj._session_db.get_session.return_value = {"id": "target", "title": "T"}
++        cli_obj._session_db.get_resume_conversations.return_value = ([], [])
++        cli_obj._session_db.resolve_resume_session_id.return_value = "target"
++        observed = []
++        cli_obj._notify_session_boundary = lambda event, **kwargs: observed.append(
++            (event, kwargs.get("reason"), cli_obj.session_id))
++
++        with (
++            patch("hermes_cli.main._resolve_session_by_name_or_id", return_value="target"),
++            patch("cli._cprint"),
++        ):
++            cli_obj._handle_resume_command("/resume target")
++
++        assert observed == [("on_session_finalize", "resume", "current_session")]
++
++
+ class TestResumeFlushesBeforeEndSession:
+     """Regression for #47202: /resume must flush un-persisted messages to
+     the session DB before ending the old session, just like /new and

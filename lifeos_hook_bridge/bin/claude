@@ -37,7 +37,7 @@ for (( i=0; i<${#args[@]}; i++ )); do
 done
 if [[ -n "$local_provider" ]]; then
   export LIFEOS_CHILD_PROVIDER="$local_provider"
-  exec hermes --run-file "$(dirname "$0")/claude_direct.py" "${args[@]}"
+  exec hermes lifeos-infer "${args[@]}"
 fi
 if [[ "${LIFEOS_CHILD_INFERENCE_DIRECT:-0}" == 1 ]]; then
   exec python3 "$(dirname "$0")/claude_direct.py" "${args[@]}"

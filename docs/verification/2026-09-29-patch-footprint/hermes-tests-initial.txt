@@ -1,0 +1,39 @@
+
+==================================== ERRORS ====================================
+_______ ERROR collecting tests/hermes_cli/test_session_boundary_hooks.py _______
+ImportError while importing test module '/home/outsider/.cache/lifeos-footprint-20260929/prepared/hermes/tests/hermes_cli/test_session_boundary_hooks.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib64/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/hermes_cli/test_session_boundary_hooks.py:4: in <module>
+    from cli import HermesCLI
+cli.py:44: in <module>
+    from hermes_cli.cli_tui_mixin import CLITuiMixin
+hermes_cli/cli_tui_mixin.py:18: in <module>
+    from hermes_cli.commands_completion import SlashCommandAutoSuggest, SlashCommandCompleter
+hermes_cli/commands_completion.py:16: in <module>
+    from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
+E   ModuleNotFoundError: No module named 'prompt_toolkit'
+_________ ERROR collecting tests/hermes_cli/test_cli_resume_command.py _________
+ImportError while importing test module '/home/outsider/.cache/lifeos-footprint-20260929/prepared/hermes/tests/hermes_cli/test_cli_resume_command.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib64/python3.14/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/hermes_cli/test_cli_resume_command.py:4: in <module>
+    from cli import HermesCLI
+cli.py:44: in <module>
+    from hermes_cli.cli_tui_mixin import CLITuiMixin
+hermes_cli/cli_tui_mixin.py:18: in <module>
+    from hermes_cli.commands_completion import SlashCommandAutoSuggest, SlashCommandCompleter
+hermes_cli/commands_completion.py:16: in <module>
+    from prompt_toolkit.auto_suggest import AutoSuggest, Suggestion
+E   ModuleNotFoundError: No module named 'prompt_toolkit'
+=========================== short test summary info ============================
+ERROR tests/hermes_cli/test_session_boundary_hooks.py
+ERROR tests/hermes_cli/test_cli_resume_command.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 2 errors during collection !!!!!!!!!!!!!!!!!!!!
+2 errors in 4.29s

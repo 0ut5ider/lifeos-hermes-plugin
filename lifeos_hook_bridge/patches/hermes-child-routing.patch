@@ -1,0 +1,267 @@
+diff --git a/tests/test_lifeos_delegate_tier_route.py b/tests/test_lifeos_delegate_tier_route.py
+new file mode 100644
+index 00000000..97fa8ee9
+--- /dev/null
++++ b/tests/test_lifeos_delegate_tier_route.py
+@@ -0,0 +1,145 @@
++# ABOUTME: Checks that a delegated child receives its own model and reasoning effort.
++# ABOUTME: Rejects malformed routes before constructing any child.
++
++import unittest
++from pathlib import Path
++from tempfile import TemporaryDirectory
++from types import SimpleNamespace
++from unittest.mock import MagicMock, patch
++
++from tools.delegate_tool import DELEGATE_TASK_SCHEMA, _build_child_agent, _build_children, _task_model_route
++
++
++class DelegateTierRouteTests(unittest.TestCase):
++    def test_model_facing_schema_exposes_child_route(self):
++        fields = DELEGATE_TASK_SCHEMA["parameters"]["properties"]["tasks"]["items"]["properties"]
++        self.assertIn("model", fields)
++        self.assertIn("reasoning_effort", fields)
++
++    def test_child_routes_use_per_task_model_and_effort(self):
++        tasks = [
++            {"goal": "first", "model": "local-fast", "reasoning_effort": "low"},
++            {"goal": "second", "model": "local-large", "reasoning_effort": "xhigh"},
++        ]
++        creds = {"model": "default-local", "provider": None, "base_url": None,
++                 "api_key": None, "api_mode": None, "request_overrides": None,
++                 "command": None, "args": None}
++        with patch("tools.delegate_tool._build_child_preserving_parent_tools",
++                   side_effect=lambda **kwargs: SimpleNamespace()) as builder:
++            children, error = _build_children(
++                tasks, [None, None], creds, top_role="leaf", max_iterations=3,
++                parent_agent=SimpleNamespace(), routing_cfg={}, live_deleg_id=None, live_writers=[],
++            )
++        self.assertIsNone(error)
++        self.assertEqual(len(children), 2)
++        self.assertEqual([call.kwargs["model"] for call in builder.call_args_list],
++                         ["local-fast", "local-large"])
++        self.assertEqual([call.kwargs["reasoning_config_override"] for call in builder.call_args_list],
++                         [{"enabled": True, "effort": "low"}, {"enabled": True, "effort": "xhigh"}])
++
++    def test_invalid_route_prevents_all_children(self):
++        creds = {"model": "default-local", "provider": None, "base_url": None,
++                 "api_key": None, "api_mode": None, "request_overrides": None,
++                 "command": None, "args": None}
++        with patch("tools.delegate_tool._build_child_preserving_parent_tools") as builder:
++            children, error = _build_children(
++                [{"goal": "first"}, {"goal": "second", "reasoning_effort": "extreme"}],
++                [None, None], creds, top_role="leaf", max_iterations=3,
++                parent_agent=SimpleNamespace(), routing_cfg={}, live_deleg_id=None, live_writers=[],
++            )
++        self.assertEqual(children, [])
++        self.assertIn("reasoning_effort", error)
++        builder.assert_not_called()
++
++    def test_empty_model_inherits_configured_route(self):
++        self.assertEqual(_task_model_route({"model": "", "reasoning_effort": "medium"}, "default-local"),
++                         ("default-local", {"enabled": True, "effort": "medium"}))
++
++    def test_child_constructor_receives_model_and_effort(self):
++        parent = MagicMock()
++        parent.base_url = "https://openrouter.ai/api/v1"
++        parent.api_key = "test-only"
++        parent.provider = "openrouter"
++        parent.api_mode = "chat_completions"
++        parent.model = "default-local"
++        parent.platform = "cli"
++        parent._delegate_depth = 0
++        parent._session_db = None
++        parent.enabled_toolsets = ["file"]
++        parent.disabled_toolsets = []
++        parent.reasoning_config = {"enabled": True, "effort": "medium"}
++        with patch("run_agent.AIAgent") as agent:
++            _build_child_agent(
++                task_index=0, goal="inspect", context=None, toolsets=["file"], model="large-local",
++                reasoning_config_override={"enabled": True, "effort": "xhigh"},
++                max_iterations=3, task_count=1, parent_agent=parent,
++            )
++        self.assertEqual(agent.call_args.kwargs["model"], "large-local")
++        self.assertEqual(agent.call_args.kwargs["reasoning_config"], {"enabled": True, "effort": "xhigh"})
++
++    def test_real_child_keeps_selected_model_and_effort(self):
++        from run_agent import AIAgent
++        with TemporaryDirectory(prefix="delegate-tier-home-") as directory:
++            Path(directory, "config.yaml").write_text("model:\n  default: default-local\n")
++            with patch.dict("os.environ", {"HERMES_HOME": directory}):
++                kwargs = dict(api_key="test-only", base_url="https://openrouter.ai/api/v1",
++                              provider="openrouter", api_mode="chat_completions", model="default-local",
++                              platform="cli", quiet_mode=True, skip_context_files=True, skip_memory=True,
++                              save_trajectories=False, enabled_toolsets=["file"])
++                parent = AIAgent(session_id="tier-parent", **kwargs)
++                child = _build_child_agent(
++                    task_index=0, goal="inspect", context=None, toolsets=["file"],
++                    model="large-local", reasoning_config_override={"enabled": True, "effort": "xhigh"},
++                    max_iterations=3, task_count=1, parent_agent=parent,
++                )
++                try:
++                    self.assertEqual(child.model, "large-local")
++                    self.assertEqual(child.reasoning_config, {"enabled": True, "effort": "xhigh"})
++                    self.assertEqual(parent.model, "default-local")
++                finally:
++                    child.close()
++                    parent.close()
++
++    def test_per_task_provider_uses_its_credential_bundle(self):
++        creds = {"model": "default-local", "provider": "custom", "base_url": "http://127.0.0.1:8123/v1",
++                 "api_key": "local-only", "api_mode": "chat_completions", "request_overrides": None,
++                 "command": None, "args": None}
++        selected = {"model": "chosen-model", "provider": "configured-provider",
++                    "base_url": "https://configured.example/v1", "api_key": "provider-token",
++                    "api_mode": "chat_completions", "request_overrides": {"extra_body": {"test": True}},
++                    "command": None, "args": None}
++        task = {"goal": "one", "model": "chosen-model", "provider": "configured-provider",
++                "reasoning_effort": "high"}
++        with patch("tools.delegate_tool._resolve_delegation_credentials", return_value=selected) as resolver, \
++             patch("tools.delegate_tool._build_child_preserving_parent_tools",
++                   return_value=SimpleNamespace()) as builder:
++            children, error = _build_children(
++                [task], [None], creds, top_role="leaf", max_iterations=3,
++                parent_agent=SimpleNamespace(), routing_cfg={}, live_deleg_id=None, live_writers=[],
++            )
++        self.assertIsNone(error)
++        self.assertEqual(len(children), 1)
++        self.assertEqual(resolver.call_args.args[0], {"model": "chosen-model", "provider": "configured-provider"})
++        self.assertEqual(builder.call_args.kwargs["override_provider"], "configured-provider")
++        self.assertEqual(builder.call_args.kwargs["override_base_url"], "https://configured.example/v1")
++        self.assertEqual(builder.call_args.kwargs["override_api_key"], "provider-token")
++        self.assertEqual(builder.call_args.kwargs["model"], "chosen-model")
++        self.assertEqual(builder.call_args.kwargs["reasoning_config_override"], {"enabled": True, "effort": "high"})
++
++    def test_invalid_provider_prevents_all_children(self):
++        creds = {"model": "default-local", "provider": None, "base_url": None,
++                 "api_key": None, "api_mode": None, "request_overrides": None,
++                 "command": None, "args": None}
++        tasks = [{"goal": "first"}, {"goal": "second", "model": "m", "provider": "bad\nprovider"}]
++        with patch("tools.delegate_tool._build_child_preserving_parent_tools") as builder:
++            children, error = _build_children(
++                tasks, [None, None], creds, top_role="leaf", max_iterations=3,
++                parent_agent=SimpleNamespace(), routing_cfg={}, live_deleg_id=None, live_writers=[],
++            )
++        self.assertEqual(children, [])
++        self.assertIn("provider", error)
++        builder.assert_not_called()
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tools/delegate_tool.py b/tools/delegate_tool.py
+index 9e2379f1..21e8c2d1 100644
+--- a/tools/delegate_tool.py
++++ b/tools/delegate_tool.py
+@@ -162,6 +162,7 @@ def _build_child_agent(
+     max_iterations: int,
+     task_count: int,
+     parent_agent,
++    reasoning_config_override: Optional[Dict[str, Any]] = None,
+     # Credential overrides from delegation config
+     override_provider: Optional[str] = None,
+     override_base_url: Optional[str] = None,
+@@ -223,6 +224,8 @@ def _build_child_agent(
+         override_acp_args=override_acp_args,
+         routing_cfg=routing_cfg,
+     )
++    if reasoning_config_override is not None:
++        rt["reasoning_config"] = reasoning_config_override
+     if override_request_overrides is not None:
+         # honored whenever set, incl. the inherit branch where
+         # _resolve_delegation_credentials already merged OVER the parent's
+@@ -362,6 +365,36 @@ def _run_single_child(
+         run.cleanup(heartbeat=heartbeat, child_pool=child_pool, leased_cred_id=leased_cred_id, close_deferred=_child_close_deferred)
+ 
+ 
++def _task_model_route(task: Dict[str, Any], default_model: Optional[str]) -> tuple[Optional[str], Optional[Dict[str, Any]]]:
++    """Validate one model-facing child route before any child is constructed."""
++    model = task.get("model")
++    if model is not None and (not isinstance(model, str) or "\n" in model or "\r" in model):
++        raise ValueError("delegate_task model must be one model name on one line")
++    effort = task.get("reasoning_effort")
++    reasoning = None
++    if effort is not None:
++        from hermes_constants import parse_reasoning_effort
++        if not isinstance(effort, str) or not effort.strip():
++            raise ValueError("delegate_task reasoning_effort is not a supported level")
++        reasoning = parse_reasoning_effort(effort)
++        if reasoning is None:
++            raise ValueError("delegate_task reasoning_effort is not a supported level")
++    return (model.strip() if model and model.strip() else default_model), reasoning
++
++
++def _task_provider_route(task: Dict[str, Any], parent_agent, default_creds: Dict[str, Any]) -> Dict[str, Any]:
++    """Resolve an explicit child's provider through Hermes's configured credential route."""
++    provider = task.get("provider")
++    if provider is None:
++        return default_creds
++    if not isinstance(provider, str) or not provider.strip() or "\n" in provider or "\r" in provider:
++        raise ValueError("delegate_task provider must be one configured provider name on one line")
++    model = task.get("model")
++    if not isinstance(model, str) or not model.strip():
++        raise ValueError("delegate_task provider requires an explicit model")
++    return _resolve_delegation_credentials({"provider": provider.strip(), "model": model.strip()}, parent_agent)
++
++
+ def _build_children(
+     task_list: List[Dict[str, Any]], task_schemas: List[Optional[Dict[str, Any]]], creds: Dict[str, Any], *,
+     top_role: str, max_iterations: int, parent_agent, routing_cfg: Dict[str, Any],
+@@ -371,16 +404,24 @@ def _build_children(
+     ``(children, None)`` or ``([], error)`` on an explicit-pin preflight failure."""
+     from tools.delegation_live_log import wrap_progress_callback
+     from tools.delegation_output_schema import append_output_contract
+-    overrides = {
+-        "override_provider": creds["provider"], "override_base_url": creds["base_url"],
+-        "override_api_key": creds["api_key"], "override_api_mode": creds["api_mode"],
+-        "override_request_overrides": creds.get("request_overrides"),
+-        "override_acp_command": creds.get("command"),
+-        "override_acp_args": creds.get("args"),
+-        "routing_cfg": routing_cfg,
+-    }
++    try:
++        routes = [_task_model_route(task, creds["model"]) for task in task_list]
++        task_creds = [_task_provider_route(task, parent_agent, creds) for task in task_list]
++    except ValueError as exc:
++        return [], str(exc)
+     children = []
+     for i, t in enumerate(task_list):
++        selected_creds = task_creds[i]
++        overrides = {
++            "override_provider": selected_creds["provider"],
++            "override_base_url": selected_creds["base_url"],
++            "override_api_key": selected_creds["api_key"],
++            "override_api_mode": selected_creds["api_mode"],
++            "override_request_overrides": selected_creds.get("request_overrides"),
++            "override_acp_command": selected_creds.get("command"),
++            "override_acp_args": selected_creds.get("args"),
++            "routing_cfg": routing_cfg,
++        }
+         _task_schema = task_schemas[i] if i < len(task_schemas) else None
+         _child_context = t.get("context")
+         if _task_schema is not None:
+@@ -389,7 +430,9 @@ def _build_children(
+             child = _build_child_preserving_parent_tools(
+                 task_index=i, goal=t["goal"], context=_child_context,
+                 toolsets=None,  # always inherit the parent's toolsets
+-                model=creds["model"], max_iterations=max_iterations, task_count=len(task_list),
++                model=selected_creds["model"] if t.get("provider") else routes[i][0],
++                reasoning_config_override=routes[i][1],
++                max_iterations=max_iterations, task_count=len(task_list),
+                 parent_agent=parent_agent, role=_normalize_role(t.get("role") or top_role), **overrides,
+             )
+         except ValueError as exc:
+@@ -685,6 +728,13 @@ DELEGATE_TASK_SCHEMA = {
+                             "together in ONE message; ungrouped tasks return individually as each finishes. This does not "
+                             "order execution; if B needs A's output, dispatch B after A returns.",
+                         ),
++                        "model": _p(
++                            "string", "Optional model for this child. It uses the configured delegation endpoint."
++                        ),
++                        "reasoning_effort": _p(
++                            "string", "Optional effort for this child. It overrides delegation.reasoning_effort.",
++                            enum=["minimal", "low", "medium", "high", "xhigh", "max", "ultra"],
++                        ),
+                     },
+                     "required": ["goal"],
+                 },

@@ -2,6 +2,7 @@
 
 Reviewed on 2026-09-28 against the Hermes patches in `patches/hermes-*.patch`, the current plugin boundary review, and open Hermes issues and pull requests. This is a proposal, not a claim that current Hermes `main` includes these behaviors. Recheck upstream code and issue state before opening each pull request.
 
+The patch filenames below refer to the reviewed development sequence at commit `3966a42`. The [patch footprint guide](patch-footprint.md) lists the current groups.
 Hermes's [contribution guide](https://github.com/NousResearch/hermes-agent/blob/main/CONTRIBUTING.md) asks for focused pull requests with tests and manual verification. Its [plugin guide](https://hermes-agent.nousresearch.com/docs/developer-guide/plugins/) says integrations with other products belong in standalone plugin repositories. The LifeOS hook runner, payload translation, model tier names, and dashboard therefore stay here. The upstream changes below expose general host capabilities or fix host bugs.
 
 | Existing patch | Generic use beyond LifeOS | Proposed upstream destination |

@@ -1,0 +1,29 @@
+diff --git a/cron/scheduler.py b/cron/scheduler.py
+index a22815f3..bb0885d5 100644
+--- a/cron/scheduler.py
++++ b/cron/scheduler.py
+@@ -3470,15 +3470,15 @@ def _launch_external_cron_worker(job: dict) -> bool:
+     ack_path = handoff_dir / f"{execution_id}.ready"
+     # Captured so a worker that dies before its acknowledgement can name the cause (#112729).
+     stderr_path = handoff_dir / f"{execution_id}.stderr"
+-    command = [
+-        sys.executable,
+-        "-m",
+-        "cron.scheduler",
+-        "--external-worker-file",
+-        str(payload_path),
+-        "--ack-file",
+-        str(ack_path),
+-    ]
++    # The source launcher bootstraps the selected dependency generation. A bare
++    # sys.executable child uses store Python without the gateway's packages.
++    from hermes_cli._launchers import runtime_command
++    repo_root = Path(__file__).resolve().parent.parent
++    command = runtime_command(
++        repo_root,
++        ["--external-worker-file", str(payload_path), "--ack-file", str(ack_path)],
++        module="cron.scheduler",
++    )
+ 
+     from agent.secret_scope import (
+         build_profile_secret_scope,

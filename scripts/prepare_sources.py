@@ -19,26 +19,14 @@ SOURCES = {
     "hermes": {
         "base": "758ad514eb0e800547e015edf05aa18f78b78d82",
         "patches": (
-            "hermes-hook-controls.patch",
-            "hermes-command-denial.patch",
-            "hermes-remote-file-staleness.patch",
-            "hermes-stop-effort.patch",
-            "hermes-delegate-tier-routing.patch",
-            "hermes-cron-worker-bootstrap.patch",
-            "hermes-delegate-provider-routing.patch",
-            "hermes-direct-provider-inference.patch",
-            "hermes-stop-fail-closed.patch",
+            "hermes-plugin-events.patch",
+            "hermes-turn-gates.patch",
             "hermes-command-policy.patch",
-            "hermes-command-context.patch",
-            "hermes-command-rewrite.patch",
-            "hermes-session-reasons.patch",
-            "hermes-prompt-exit-reason.patch",
-            "hermes-empty-session-clear.patch",
-            "hermes-empty-session-resume.patch",
-            "hermes-permanent-policy-precedence.patch",
-            "hermes-policy-batch-order.patch",
-            "hermes-bypass-policy.patch",
-            "hermes-policy-failure-controls.patch",
+            "hermes-session-lifecycle.patch",
+            "hermes-child-routing.patch",
+            "hermes-strict-inference.patch",
+            "hermes-remote-files.patch",
+            "hermes-cron-bootstrap.patch",
         ),
     },
     "lifeos": {
@@ -95,6 +83,12 @@ def prepare_source(name: str, repo: Path, output: Path) -> dict[str, object]:
         run("git", "apply", str(patch), cwd=output)
         applied.append({"name": filename, "sha256": hashlib.sha256(patch.read_bytes()).hexdigest()})
     run("git", "diff", "--check", cwd=output)
+    if name == "lifeos":
+        if str(ROOT) not in sys.path:
+            sys.path.insert(0, str(ROOT))
+        from lifeos_hook_bridge.native_capabilities import install_capability_record
+
+        install_capability_record(output / "LifeOS/install")
     return {"base": base, "patches": applied}
 
 

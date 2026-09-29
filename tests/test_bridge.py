@@ -2222,36 +2222,36 @@ class HookBridgeTests(unittest.TestCase):
         self.assertIn("cannot be loaded for session damaged", captured.output[0])
         self.assertIn("limit of 50", result["message"])
 
+    @unittest.skipUnless(os.environ.get("LIFEOS_TASK_HOOK_PATH"), "Prepared native TaskGovernance is required")
     def test_native_task_hook_receives_session_count_and_controls_creation(self):
+        from lifeos_hook_bridge.native_capabilities import RECORD_NAME, capability_record
+
+        native = self.hooks / "TaskGovernance.hook.ts"
+        native.write_bytes(Path(os.environ["LIFEOS_TASK_HOOK_PATH"]).read_bytes())
+        (self.hooks / RECORD_NAME).write_text(json.dumps(capability_record()))
         marker = self.root / "native-task-counts"
-        command = self.make_hook(
-            "TaskGovernance.hook.ts",
+        recorder = self.make_hook(
+            "record-created.py",
             "import json,sys\nfrom pathlib import Path\n"
             "data=json.load(sys.stdin)\n"
-            "if data.get('hermes_bridge_probe'):\n"
-            " print(json.dumps({'hermes_bridge_task_governance':1}))\n"
-            " sys.exit(0)\n"
-            f"with Path({str(marker)!r}).open('a') as out: out.write(f\"{{data['session_id']}}:{{data['hermes_task_count']}}:{{data['task_description']}}\\n\")\n"
-            "if data['hermes_task_count'] >= 1:\n"
-            " print('native count blocked',file=sys.stderr)\n"
-            " sys.exit(2)\n",
+            f"with Path({str(marker)!r}).open('a') as out: out.write(f\"{{data['session_id']}}:{{data['hermes_task_count']}}:{{data['task_description']}}\\n\")\n",
         )
-        native = self.hooks / "TaskGovernance.hook.ts"
-        native.write_text(f"#!{sys.executable}\n" + native.read_text())
-        native.chmod(0o755)
-        command = str(native)
-        bridge = self.bridge({"TaskCreated": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge = self.bridge({"TaskCreated": [{"hooks": [
+            {"type": "command", "command": f"bun {native}"},
+            {"type": "command", "command": recorder},
+        ]}]})
         first = {"title": "First meaningful task", "assignee": "worker"}
         second = {"title": "Second meaningful task", "assignee": "worker"}
+        bridge.task_state_loaded.add("s1")
+        bridge.task_counts["s1"] = 49
         self.assertIsNone(bridge.pre_tool_call("kanban_create", first, session_id="s1", tool_call_id="a"))
         bridge.task_result("kanban_create", first, '{"ok":true}', session_id="s1", tool_call_id="a", status="ok")
-        self.assertEqual(
-            bridge.pre_tool_call("kanban_create", second, session_id="s1", tool_call_id="b"),
-            {"action": "block", "message": "native count blocked"},
-        )
+        denied = bridge.pre_tool_call("kanban_create", second, session_id="s1", tool_call_id="b")
+        self.assertEqual(denied["action"], "block")
+        self.assertIn("session limit of 50", denied["message"])
         self.assertIsNone(bridge.pre_tool_call("kanban_create", second, session_id="s2", tool_call_id="c"))
         self.assertEqual(marker.read_text().splitlines(), [
-            "s1:0:First meaningful task", "s1:1:Second meaningful task", "s2:0:Second meaningful task",
+            "s1:49:First meaningful task", "s1:50:Second meaningful task", "s2:0:Second meaningful task",
         ])
 
     def test_native_permission_grant_applies_to_command(self):
@@ -3258,6 +3258,9 @@ class HookBridgeTests(unittest.TestCase):
         cleanup = self.addCleanup
 
         class Context:
+            def register_cli_command(self, name, **entry):
+                pass
+
             def register_hook(self, name, callback):
                 hooks[name] = callback
 

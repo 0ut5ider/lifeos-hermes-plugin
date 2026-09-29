@@ -3,10 +3,13 @@
 
 import hashlib
 import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
 from unittest.mock import patch
+
+from lifeos_hook_bridge.native_capabilities import capability_record, supports_task_count, RECORD_NAME
 
 from lifeos_hook_bridge.update_transaction import (
     UpdateTransactionError, apply_update, recover_update, restore_update,
@@ -18,6 +21,32 @@ def digest(path):
 
 
 class UpdateTransactionTests(unittest.TestCase):
+    @unittest.skipUnless(os.environ.get("LIFEOS_TASK_HOOK_PATH"), "Prepared native TaskGovernance is required")
+    def test_capability_record_applies_and_restores_with_native_hook_files(self):
+        with tempfile.TemporaryDirectory() as directory:
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+            name = "hooks/TaskGovernance.hook.ts"
+            for root in (installed, prior):
+                (root / name).write_text("unpatched native hook")
+            for root in (selected, reference):
+                (root / name).write_bytes(Path(os.environ["LIFEOS_TASK_HOOK_PATH"]).read_bytes())
+                (root / "hooks" / RECORD_NAME).write_text(json.dumps(capability_record()))
+            data = json.loads(baseline.read_text())
+            data["files"][name] = digest(installed / name)
+            baseline.write_text(json.dumps(data))
+            self.assertFalse(supports_task_count(installed))
+            _, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+            result = apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                                  stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+            self.assertEqual(result["state"], "applied")
+            self.assertTrue(supports_task_count(installed))
+            restored = restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+            self.assertEqual(restored["state"], "rolled_back")
+            self.assertFalse(supports_task_count(installed))
+            self.assertFalse((installed / "hooks" / RECORD_NAME).exists())
+            self.assertEqual((installed / name).read_text(), "unpatched native hook")
+            self.assertEqual((installed / "LIFEOS/MEMORY/user.txt").read_text(), "private memory")
+
     def fixture(self, root):
         installed = root / "home/.claude"
         hermes = root / "home/.hermes"

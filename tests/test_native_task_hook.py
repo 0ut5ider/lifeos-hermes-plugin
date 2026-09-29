@@ -13,6 +13,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 from lifeos_hook_bridge.bridge import HookBridge
+from lifeos_hook_bridge.native_capabilities import RECORD_NAME, capability_record
 
 
 HOOK_PATH = os.environ.get("LIFEOS_TASK_HOOK_PATH")
@@ -43,6 +44,7 @@ class NativeTaskHookTests(unittest.TestCase):
             native = root / "hooks/TaskGovernance.hook.ts"
             native.parent.mkdir()
             native.symlink_to(HOOK_PATH)
+            (native.parent / RECORD_NAME).write_text(json.dumps(capability_record()))
             marker = root / "events.jsonl"
             recorder = root / "record.py"
             recorder.write_text(
@@ -77,10 +79,10 @@ class NativeTaskHookTests(unittest.TestCase):
             ["bun", HOOK_PATH], input=json.dumps(payload), text=True, capture_output=True, timeout=10,
         )
 
-    def test_capability_probe_has_no_task_description(self):
+    def test_synthetic_probe_does_not_bypass_native_quality_gate(self):
         result = self.invoke(hermes_bridge_probe=True)
-        self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(json.loads(result.stdout), {"hermes_bridge_task_governance": 1})
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("description too short", result.stderr)
 
     def test_external_count_controls_limit_without_writing_legacy_counter(self):
         legacy = Path("/tmp/pai-task-governance.json")

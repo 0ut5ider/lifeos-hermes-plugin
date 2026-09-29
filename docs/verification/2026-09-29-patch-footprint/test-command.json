@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "/tmp/lifeos-plugin-test-venv/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tests",
+    "-v"
+  ],
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "fixture_variables": {
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "LIFEOS_MODEL_RUNG_GUARD_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/hooks/ModelRungGuard.hook.ts",
+    "LIFEOS_WATCHDOG_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts",
+    "LIFEOS_EVENT_LOGGER_HOOK_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/hooks/EventLogger.hook.ts",
+    "LIFEOS_FAILURE_CAPTURE_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts",
+    "LIFEOS_KITTY_HOOK_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/hooks/KittyEnvPersist.hook.ts",
+    "LIFEOS_CHECKPOINT_HOOK_PATH": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/lifeos/LifeOS/install/hooks/CheckpointPerISC.hook.ts",
+    "LIFEOS_COMMAND_HERMES_SOURCE": "/home/outsider/.cache/lifeos-footprint-20260929/prepared-final/hermes",
+    "LIFEOS_COMMAND_DEPENDENCIES": "/tmp/lifeos-plugin-test-venv",
+    "LIFEOS_PREPARE_HERMES_REPO": "/home/outsider/.cache/lifeos-footprint-20260929/hermes-clean",
+    "LIFEOS_PREPARE_LIFEOS_REPO": "/home/outsider/.cache/lifeos-footprint-20260929/lifeos-clean",
+    "TMPDIR": "/home/outsider/.cache/lifeos-footprint-20260929"
+  }
+}
