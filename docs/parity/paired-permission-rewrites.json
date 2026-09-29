@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "scope": "Synthetic PermissionRequest hooks on the pinned local model. These cases compare effective input and action effects, not every approval timing rule or installed LifeOS handler.",
+  "claude_code": "2.1.272",
+  "hermes_commit": "95d46d4e49c6",
+  "bridge_sha256": "c236cbf865c9a804126e654b64a1c509219396c5a4063792cc09256293f48645",
+  "cases": [
+    {
+      "id": "bash-command-replacement",
+      "native": "../agents/2026-09-28-native-contract-probe/permission-rewrite-pwd-post.jsonl",
+      "hermes": "../agents/2026-09-28-native-contract-probe/command-rewrite-hermes.json",
+      "fields": {
+        "effective_command": {"native": "post_tool_input.command", "hermes": "effective_command", "expected": "pwd"},
+        "original_exists": {"native": "original_exists", "hermes": "original_exists", "expected": false}
+      }
+    },
+    {
+      "id": "write-path-and-content-replacement",
+      "native": "../agents/2026-09-28-native-contract-probe/file-rewrite-both.jsonl",
+      "hermes": "../agents/2026-09-28-native-contract-probe/file-rewrite-hermes.json",
+      "fields": {
+        "effective_target": {"native": "post_tool_input.file_path", "hermes": "effective_args.path", "normalize": "basename", "expected": "rewritten.txt"},
+        "effective_content": {"native": "post_tool_input.content", "hermes": "effective_args.content", "expected": "MODIFIED"},
+        "original_exists": {"native": "original_exists", "hermes": "original_exists", "expected": false},
+        "written_content": {"native": "rewritten_content", "hermes": "rewritten_content", "expected": "MODIFIED"}
+      }
+    },
+    {
+      "id": "mcp-argument-replacement",
+      "native": "../agents/2026-09-28-native-contract-probe/mcp-rewrite.jsonl",
+      "hermes": "../agents/2026-09-28-native-contract-probe/mcp-rewrite-hermes.json",
+      "fields": {
+        "effective_value": {"native": "post_tool_input.value", "hermes": "effective_args.value", "expected": "MODIFIED"},
+        "server_calls": {"native": "server_calls", "hermes": "server_calls", "expected": [{"value": "MODIFIED"}]}
+      }
+    }
+  ]
+}

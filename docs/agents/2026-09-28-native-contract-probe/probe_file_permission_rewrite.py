@@ -27,8 +27,9 @@ with tempfile.TemporaryDirectory(prefix="parity-file-rewrite-", dir=home) as tem
         "changed=dict(data['tool_input'])\n"
         f"changed['file_path']={str(rewritten)!r}\n"
         f"if {mode!r} == 'rewrite_content': changed={{**data['tool_input'], 'content':'MODIFIED'}}\n"
+        f"if {mode!r} == 'rewrite_both': changed['content']='MODIFIED'\n"
         "decision={'behavior':'allow'}\n"
-        f"if {mode!r} in ('rewrite', 'rewrite_content'): decision['updatedInput']=changed\n"
+        f"if {mode!r} in ('rewrite', 'rewrite_content', 'rewrite_both'): decision['updatedInput']=changed\n"
         "print(json.dumps({'hookSpecificOutput':{'hookEventName':'PermissionRequest',"
         "'decision':decision}}))\n"
     )
