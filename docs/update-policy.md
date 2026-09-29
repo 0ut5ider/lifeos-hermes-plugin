@@ -4,13 +4,15 @@ The current bridge is a tested combination of three independent code bases. The 
 
 | Component | Current test source | Update risk |
 | --- | --- | --- |
-| Hermes | Base `758ad514eb0e800547e015edf05aa18f78b78d82` plus nineteen patches | Stock plugin events do not provide every LifeOS control. A normal source update can switch away from the patched feature branch or leave untested patch merges. |
+| Hermes | Base `758ad514eb0e800547e015edf05aa18f78b78d82` plus eight patch groups | Stock plugin events do not provide every LifeOS control. A normal source update can switch away from the patched feature branch or leave untested patch merges. |
 | LifeOS | Base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c` plus nine patches | Hook files and registrations can change. The current `DeployCore.ts` uses `copyMissing`, which does not replace an already installed system file. Repeating the install commands alone cannot prove deployed hooks match a new source release. |
 | Bridge plugin | Public Git commit pinned during install | A plugin update cannot restore missing Hermes events or port LifeOS source changes. Hermes refuses automatic updates of a pinned plugin. |
 
 ## Rule for the current `.212` test installation
 
 Do not use the Hermes dashboard Update button or `hermes update` to advance this patched test install. Do not run a LifeOS update over its deployed hook tree. The test account now sets `updates.auto_switch_parked_branch: false` in `~/.hermes/config.yaml`. Hermes documents that this prevents a clean parked feature branch from being switched to the update target. This guards one failure mode only. The setting can be reverted with `hermes config set --force updates.auto_switch_parked_branch true`; the prior config is backed up at `~/.hermes/config.yaml.before-update-guard-20260928`.
+
+The original `lifeos-hermes` account uses a shared root: `~/.claude` links to `~/.hermes`. The LifeOS update worker requires separate roots and refuses this layout. The 2026-09-29 release uses a private operator transaction for the shared root. It preserves generated identity files, unchanged hook registrations, model settings, credentials, and user data. Its snapshot and checks are recorded in [the release note](../notes/2026-09-29-release-212.md). Use the separate-root layout in [the clean install guide](clean-install.md) for a new server. The `.211` and `.213` installations are outside this deployment plan.
 
 ## Required update workflow
 

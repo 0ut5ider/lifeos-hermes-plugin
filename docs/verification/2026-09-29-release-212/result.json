@@ -1,0 +1,31 @@
+{
+  "baseline_changed": 0,
+  "baseline_files": 1797,
+  "capability_verified": true,
+  "carrier_probe": "HermesCarrierProbe: HOLDS (custom / flashnext-w4a16-fp8ple, xhigh)",
+  "existing_user_data_unchanged_at_apply": true,
+  "gateway_pid": "4001844",
+  "hermes_revision": "a01564231eb587a28ceca75f7ad6fe8d2fba4b04",
+  "hooks": {
+    "foreign_hooks": 0,
+    "new_hooks": 74,
+    "old_hooks": 74
+  },
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "lifeos_changes": [
+    "LIFEOS/TOOLS/IntegrityCheck.ts",
+    "hooks/CheckpointPerISC.hook.ts",
+    "hooks/EventLogger.hook.ts",
+    "hooks/ModelRungGuard.hook.ts",
+    "hooks/TaskGovernance.hook.ts",
+    "hooks/lifeos-bridge-capabilities.json"
+  ],
+  "model_smoke": "RELEASE-212-READY",
+  "plugin_revision": "c9fa893a1c75ea94f7c7a568681fdad6e7624771",
+  "services": {
+    "com.lifeos.pulse.service": "active",
+    "hermes-dashboard.service": "active",
+    "hermes-gateway.service": "active"
+  },
+  "state": "applied"
+}
