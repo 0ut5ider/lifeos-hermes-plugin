@@ -44,7 +44,8 @@ class LiveNestedSshHookTests(unittest.TestCase):
                                                  enabled_tools=["read_file"]))
             self.assertEqual(result["status"], "success", result)
             self.assertIn("NESTED_SSH_READY", json.dumps(result))
-            transcript = (Path.home() / ".hermes/LIFEOS/MEMORY/STATE/hermes-transcripts"
+            lifeos_dir = Path(os.environ.get("LIFEOS_DIR", Path.home() / ".claude/LIFEOS"))
+            transcript = (lifeos_dir / "MEMORY/STATE/hermes-transcripts"
                           / f"{session}.jsonl")
             self.assertTrue(transcript.exists(), session)
             rows = [json.loads(line) for line in transcript.read_text().splitlines()]
