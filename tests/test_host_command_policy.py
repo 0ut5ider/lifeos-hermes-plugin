@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 
@@ -146,6 +147,28 @@ class HostCommandPolicyTests(unittest.TestCase):
                             "plugins:\n  enabled:\n    - lifeos-hook-bridge\napprovals:\n  mode: manual\n"
                         )
                         load_permanent_allowlist()
+                        from agent import terminal_approval_batch
+                        from tools.approval_context import _approval_tool_call_id
+                        prepared = SimpleNamespace(
+                            preparing=False,
+                            check_cancelled=lambda: None,
+                            batch=SimpleNamespace(failure_seen=False, task_id=""),
+                            parsed=SimpleNamespace(ref=lambda _: SimpleNamespace(call_id="policy-call")),
+                            guard_key=(permanent_command, "local", False, "", ""),
+                            decision={"approved": True, "message": None},
+                        )
+                        slot_token = terminal_approval_batch._slot.set(prepared)
+                        call_token = _approval_tool_call_id.set("policy-call")
+                        try:
+                            prepared_denial = check_all_command_guards(
+                                permanent_command, "local",
+                                approval_callback=lambda *args, **kwargs: self.fail("Denied rule asked for approval"),
+                            )
+                            self.assertFalse(prepared_denial["approved"])
+                            self.assertEqual(prepared_denial["outcome"], "plugin_denied")
+                        finally:
+                            _approval_tool_call_id.reset(call_token)
+                            terminal_approval_batch._slot.reset(slot_token)
                         guarded_path = Path(directory) / "guarded.txt"
                         redirect_command = f"printf PARITY > {guarded_path}"
                         settings.write_text(json.dumps({

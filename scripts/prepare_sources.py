@@ -36,6 +36,7 @@ SOURCES = {
             "hermes-empty-session-clear.patch",
             "hermes-empty-session-resume.patch",
             "hermes-permanent-policy-precedence.patch",
+            "hermes-policy-batch-order.patch",
         ),
     },
     "lifeos": {
