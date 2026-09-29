@@ -2,9 +2,12 @@
 # ABOUTME: Delegates validation and storage to Hermes's plugin settings service.
 
 import importlib.util
+import json
 import os
 from pathlib import Path
+import shutil
 import subprocess
+import sys
 from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
@@ -29,6 +32,9 @@ install_prepared_lifeos = install_module.install_prepared_lifeos
 finalize_prepared_lifeos = install_module.finalize_prepared_lifeos
 prepare_supported_hermes = install_module.prepare_supported_hermes
 validate_supported_hermes = install_module.validate_supported_hermes
+stage_supported_hermes_patch = install_module.stage_supported_hermes_patch
+request_hermes_restore = install_module.request_hermes_restore
+cancel_hermes_restore = install_module.cancel_hermes_restore
 IncompatibleLifeOS = install_module.IncompatibleLifeOS
 baseline_fingerprint = version_module.baseline_fingerprint
 adapter_error_path = version_module.adapter_error_path
@@ -42,6 +48,7 @@ HERMES_HOME = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
 BASELINE_PATH = default_baseline_path()
 INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
 HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
+HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"
 HOST_SOURCE = None
 PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 router = APIRouter()
@@ -152,6 +159,82 @@ def prepare_hermes_installation():
         return prepare_supported_hermes(_host_source(), HERMES_CANDIDATE)
     except (IncompatibleLifeOS, OSError) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+def _latest_host_patch():
+    if not HOST_PATCH_ROOT.is_dir() or HOST_PATCH_ROOT.is_symlink():
+        return None
+    snapshots = [path for path in HOST_PATCH_ROOT.iterdir()
+                 if path.is_dir() and not path.is_symlink() and (path / "manifest.json").is_file()]
+    return max(snapshots, key=lambda path: path.stat().st_mtime_ns) if snapshots else None
+
+
+@router.get("/installation/host-patch")
+def get_host_patch_status():
+    snapshot = _latest_host_patch()
+    if snapshot is None:
+        return {"state": "none"}
+    try:
+        manifest = json.loads((snapshot / "manifest.json").read_text())
+    except (OSError, ValueError):
+        return {"state": "error", "snapshot": str(snapshot)}
+    return {"state": manifest.get("state", "error"), "snapshot": str(snapshot),
+            "error": manifest.get("error")}
+
+
+def _launch_host_patch(snapshot: Path, action: str):
+    service = subprocess.run(["systemctl", "--user", "is-active", "hermes-gateway.service"],
+                             text=True, capture_output=True, timeout=15)
+    if service.returncode or service.stdout.strip() != "active":
+        raise IncompatibleLifeOS("A running Hermes gateway user service is required")
+    command = ["systemd-run", "--user", "--collect",
+               f"--unit=lifeos-bridge-{action}-{uuid4().hex}",
+               f"--setenv=HERMES_HOME={HERMES_HOME}", sys.executable,
+               str(PLUGIN_DIR / "install_source.py"), action, str(snapshot)]
+    launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
+    if launched.returncode:
+        raise IncompatibleLifeOS(f"Could not start the Hermes patch worker: {launched.returncode}")
+
+
+@router.post("/installation/apply-hermes")
+def apply_hermes_installation():
+    if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file():
+        raise HTTPException(status_code=409, detail="Install LifeOS before patching Hermes")
+    previous = get_host_patch_status()
+    if previous["state"] in {"staged", "applying", "applied", "restore_failed", "rollback_failed"}:
+        raise HTTPException(status_code=409, detail="A Hermes patch job already owns this installation")
+    if HOST_PATCH_ROOT.is_symlink():
+        raise HTTPException(status_code=409, detail="Hermes patch state directory cannot be a symbolic link")
+    HOST_PATCH_ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
+    snapshot = HOST_PATCH_ROOT / f"patch-{uuid4().hex}"
+    try:
+        stage_supported_hermes_patch(snapshot, _host_source(), HERMES_CANDIDATE,
+                                      HERMES_HOME / "config.yaml")
+        _launch_host_patch(snapshot, "apply")
+    except (IncompatibleLifeOS, OSError, ValueError, subprocess.CalledProcessError,
+            subprocess.TimeoutExpired) as error:
+        if snapshot.exists():
+            shutil.rmtree(snapshot)
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "staged", "snapshot": str(snapshot)}
+
+
+@router.post("/installation/restore-hermes")
+def restore_hermes_installation():
+    previous = get_host_patch_status()
+    if previous["state"] != "applied":
+        raise HTTPException(status_code=409, detail="There is no applied Hermes patch to restore")
+    snapshot = Path(previous["snapshot"])
+    requested = False
+    try:
+        request_hermes_restore(snapshot)
+        requested = True
+        _launch_host_patch(snapshot, "restore")
+    except (IncompatibleLifeOS, OSError, subprocess.TimeoutExpired) as error:
+        if requested:
+            cancel_hermes_restore(snapshot, str(error))
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "restoring", "snapshot": str(snapshot)}
 
 
 @router.get("/settings")

@@ -1,0 +1,9 @@
+# Service-backed release transaction rehearsal
+
+Date: 2026-09-29. Target: `lifeos-plugin-install-probe` on `192.168.8.212`. This account is separate from the connected `lifeos-hermes` gateway.
+
+I installed a stock Hermes runtime and a temporary user systemd gateway service in the disposable account. A coordinated release snapshot captured the stock Hermes tree, plugin tree, Hermes config, and LifeOS system-file overlay. Applying the prepared Hermes candidate stopped the service, copied the candidate, started a new gateway process, and passed a verifier that checked service activity, a patched hook name, and `hermes config check`. The apply returned `state: applied`.
+
+I restored that snapshot through the service path. The stock Hermes Git checkout was clean and the gateway restarted. A second staged release used a verifier that exited with status 23 after the new service started. The apply command returned status 1 and the snapshot recorded `rolled_back`. The stock checkout again had zero Git changes, the gateway was active, and SHA-256 hashes of the synthetic `LIFEOS/USER/CONFIG/probe.txt` and `LIFEOS/MEMORY/probe.txt` files matched their values before the test. The test service was then uninstalled and user linger was disabled.
+
+The overlay changed two installed files and created eight files during each apply, even though this probe's purpose was the Hermes patch. That made the existing VersionDrift baseline stale until rollback. A Hermes-only patch action should not run this LifeOS overlay. A later LifeOS update must renew its baseline only after the overlay, hook registrations, and gateway checks pass. This rehearsal did not install plugin dependencies, change hook registrations, run a configured model call, or test a dashboard action. The account's Hermes config still names a probe model.

@@ -3,14 +3,18 @@
 
 from __future__ import annotations
 
+import argparse
 import hashlib
 import json
 import os
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
+import time
 from pathlib import Path
+from typing import Callable
 
 
 UPSTREAM_LIFEOS = "https://github.com/danielmiessler/LifeOS.git"
@@ -378,3 +382,323 @@ def finalize_prepared_lifeos(candidate: Path, installed: Path, hermes_home: Path
     return finalize_lifeos(candidate, installed, hermes_home, baseline_path, "bun", "hermes",
                            SUPPORTED_LIFEOS_COMMIT, Path(__file__).parent / "patches", LIFEOS_PATCHES,
                            create_baseline, save_baseline)
+
+
+def _patch_paths(candidate: Path) -> list[str]:
+    paths = set()
+    for arguments in (("diff", "--name-only", "-z", "HEAD"),
+                      ("ls-files", "--others", "--exclude-standard", "-z")):
+        output = subprocess.check_output(["git", *arguments], cwd=candidate)
+        paths.update(name.decode("utf-8") for name in output.split(b"\0") if name)
+    paths.discard("hermes-source-manifest.json")
+    if not paths:
+        raise IncompatibleLifeOS("Hermes candidate has no changed files")
+    for name in paths:
+        path = Path(name)
+        if path.is_absolute() or any(part in {".", ".."} for part in path.parts):
+            raise IncompatibleLifeOS("Hermes candidate contains an invalid patch path")
+    return sorted(paths)
+
+
+def _file_hash(path: Path) -> str | None:
+    return hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else None
+
+
+def _write_patch_state(snapshot: Path, manifest: dict) -> None:
+    with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=snapshot,
+                                     prefix=".host-patch-", delete=False) as stream:
+        temporary = Path(stream.name)
+        json.dump(manifest, stream, indent=2)
+        stream.write("\n")
+    try:
+        os.chmod(temporary, 0o600)
+        os.replace(temporary, snapshot / "manifest.json")
+    finally:
+        temporary.unlink(missing_ok=True)
+
+
+def _read_patch_state(snapshot: Path) -> dict:
+    if snapshot.is_symlink() or not snapshot.is_dir():
+        raise IncompatibleLifeOS("Hermes patch snapshot is missing")
+    return json.loads((snapshot / "manifest.json").read_text())
+
+
+def stage_hermes_patch(snapshot: Path, current: Path, candidate: Path, config: Path,
+                       supported_revision: str, patches: Path, patch_names: tuple[str, ...]) -> dict:
+    validate_hermes_candidate(candidate, supported_revision, patches, patch_names)
+    current = current.absolute()
+    candidate = candidate.absolute()
+    config = config.absolute()
+    snapshot = snapshot.absolute()
+    if current.is_symlink() or not current.is_dir() or candidate.is_symlink():
+        raise IncompatibleLifeOS("Hermes source paths must be regular directories")
+    if _git("rev-parse", "HEAD", cwd=current) != supported_revision:
+        raise IncompatibleLifeOS("Running Hermes source is not the tested base commit")
+    if _git("status", "--porcelain", "--untracked-files=all", cwd=current):
+        raise IncompatibleLifeOS("Running Hermes source must be clean before patching")
+    if config.is_symlink() or not config.is_file():
+        raise IncompatibleLifeOS("Hermes config must be a regular file")
+    if snapshot.exists() or snapshot.is_symlink():
+        raise IncompatibleLifeOS("Hermes patch snapshot already exists")
+    if any(snapshot.is_relative_to(path) for path in (current, candidate)):
+        raise IncompatibleLifeOS("Hermes patch snapshot must be outside the source trees")
+    paths = _patch_paths(candidate)
+    snapshot.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    stage = Path(tempfile.mkdtemp(prefix=f".{snapshot.name}.", dir=snapshot.parent))
+    stage.chmod(0o700)
+    try:
+        entries = {}
+        for name in paths:
+            before = current / name
+            after = candidate / name
+            if not before.resolve().is_relative_to(current.resolve()) or not after.resolve().is_relative_to(candidate.resolve()):
+                raise IncompatibleLifeOS("Hermes patch path leaves a source tree")
+            if before.is_symlink() or after.is_symlink() or before.is_dir() or after.is_dir():
+                raise IncompatibleLifeOS(f"Hermes patch path is not a regular file: {name}")
+            entries[name] = {"before": _file_hash(before), "after": _file_hash(after)}
+            if before.is_file():
+                saved = stage / "files" / name
+                saved.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(before, saved)
+        shutil.copy2(config, stage / "config.yaml")
+        manifest = {"state": "staged", "current": str(current), "candidate": str(candidate),
+                    "config": str(config), "config_hash": _file_hash(config),
+                    "revision": supported_revision, "patches": str(patches.absolute()),
+                    "patch_names": list(patch_names), "files": entries}
+        _write_patch_state(stage, manifest)
+        os.replace(stage, snapshot)
+        return manifest
+    finally:
+        if stage.exists():
+            shutil.rmtree(stage)
+
+
+def stage_supported_hermes_patch(snapshot: Path, current: Path, candidate: Path,
+                                 config: Path) -> dict:
+    return stage_hermes_patch(snapshot, current, candidate, config, SUPPORTED_HERMES_COMMIT,
+                              Path(__file__).parent / "patches", HERMES_PATCHES)
+
+
+def _write_patch_files(source: Path, target: Path, entries: dict, field: str) -> None:
+    for name, hashes in entries.items():
+        destination = target / name
+        if hashes[field] is None:
+            destination.unlink(missing_ok=True)
+            continue
+        original = source / name
+        if _file_hash(original) != hashes[field]:
+            raise IncompatibleLifeOS(f"Hermes patch source changed: {name}")
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        with tempfile.NamedTemporaryFile(dir=destination.parent, prefix=f".{destination.name}.",
+                                         delete=False) as stream:
+            temporary = Path(stream.name)
+        try:
+            shutil.copy2(original, temporary)
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
+
+
+def apply_hermes_patch(snapshot: Path, *, stop: Callable[[], None],
+                       start: Callable[[], None], verify: Callable[[], None],
+                       verify_restored: Callable[[], None] | None = None) -> dict:
+    manifest = _read_patch_state(snapshot)
+    if manifest.get("state") != "staged":
+        raise IncompatibleLifeOS("Hermes patch snapshot is not staged")
+    current = Path(manifest["current"])
+    candidate = Path(manifest["candidate"])
+    config = Path(manifest["config"])
+    validate_hermes_candidate(candidate, manifest["revision"], Path(manifest["patches"]),
+                              tuple(manifest["patch_names"]))
+    if _git("rev-parse", "HEAD", cwd=current) != manifest["revision"] or _git(
+        "status", "--porcelain", "--untracked-files=all", cwd=current
+    ):
+        raise IncompatibleLifeOS("Running Hermes source changed since staging")
+    if _file_hash(config) != manifest["config_hash"] or _file_hash(snapshot / "config.yaml") != manifest["config_hash"]:
+        raise IncompatibleLifeOS("Hermes config changed since staging")
+    for name, hashes in manifest["files"].items():
+        if _file_hash(current / name) != hashes["before"]:
+            raise IncompatibleLifeOS(f"Running Hermes file changed since staging: {name}")
+        if hashes["before"] is not None and _file_hash(snapshot / "files" / name) != hashes["before"]:
+            raise IncompatibleLifeOS(f"Hermes patch backup changed: {name}")
+    manifest["state"] = "applying"
+    _write_patch_state(snapshot, manifest)
+    copy_started = False
+    try:
+        stop()
+        copy_started = True
+        _write_patch_files(candidate, current, manifest["files"], "after")
+        for name, hashes in manifest["files"].items():
+            if _file_hash(current / name) != hashes["after"]:
+                raise IncompatibleLifeOS(f"Hermes patch did not install: {name}")
+        start()
+        verify()
+        if _file_hash(config) != manifest["config_hash"]:
+            raise IncompatibleLifeOS("Hermes config changed during patch verification")
+    except BaseException as error:
+        if not copy_started:
+            manifest["state"] = "failed_preflight"
+            manifest["error"] = str(error)[:300]
+            _write_patch_state(snapshot, manifest)
+            raise IncompatibleLifeOS(str(error)) from error
+        try:
+            stop()
+            _write_patch_files(snapshot / "files", current, manifest["files"], "before")
+            shutil.copy2(snapshot / "config.yaml", config)
+            start()
+            if verify_restored is not None:
+                verify_restored()
+            if _git("status", "--porcelain", "--untracked-files=all", cwd=current):
+                raise IncompatibleLifeOS("Hermes source remained changed after rollback")
+        except BaseException as rollback_error:
+            manifest["state"] = "rollback_failed"
+            manifest["error"] = str(rollback_error)[:300]
+            _write_patch_state(snapshot, manifest)
+            raise IncompatibleLifeOS(f"Hermes patch rollback failed: {rollback_error}") from rollback_error
+        manifest["state"] = "rolled_back"
+        manifest["error"] = str(error)[:300]
+        _write_patch_state(snapshot, manifest)
+        if isinstance(error, KeyboardInterrupt):
+            raise
+        raise IncompatibleLifeOS(str(error)) from error
+    manifest["state"] = "applied"
+    _write_patch_state(snapshot, manifest)
+    return manifest
+
+
+def restore_hermes_patch(snapshot: Path, *, stop: Callable[[], None],
+                         start: Callable[[], None], verify: Callable[[], None]) -> dict:
+    manifest = _read_patch_state(snapshot)
+    if manifest.get("state") not in {"applied", "restoring"}:
+        raise IncompatibleLifeOS("Only an applied Hermes patch can be restored")
+    current = Path(manifest["current"])
+    for name, hashes in manifest["files"].items():
+        if _file_hash(current / name) != hashes["after"]:
+            raise IncompatibleLifeOS(f"Hermes patch file changed after apply: {name}")
+    stop()
+    try:
+        _write_patch_files(snapshot / "files", current, manifest["files"], "before")
+        start()
+        verify()
+        if _git("status", "--porcelain", "--untracked-files=all", cwd=current):
+            raise IncompatibleLifeOS("Hermes source remained changed after restore")
+    except BaseException as error:
+        try:
+            stop()
+            _write_patch_files(Path(manifest["candidate"]), current, manifest["files"], "after")
+            start()
+            verify()
+        except BaseException as recovery_error:
+            manifest["state"] = "restore_failed"
+            manifest["error"] = str(recovery_error)[:300]
+            _write_patch_state(snapshot, manifest)
+            raise IncompatibleLifeOS(f"Hermes patch restore failed: {recovery_error}") from recovery_error
+        manifest["state"] = "applied"
+        manifest["error"] = f"Restore failed; prior patch remains active: {error}"[:300]
+        _write_patch_state(snapshot, manifest)
+        raise IncompatibleLifeOS(str(error)) from error
+    manifest["state"] = "rolled_back"
+    manifest.pop("error", None)
+    _write_patch_state(snapshot, manifest)
+    return manifest
+
+
+def request_hermes_restore(snapshot: Path) -> None:
+    manifest = _read_patch_state(snapshot)
+    if manifest.get("state") == "restoring":
+        raise IncompatibleLifeOS("Hermes patch restore was already requested")
+    if manifest.get("state") != "applied":
+        raise IncompatibleLifeOS("Only an applied Hermes patch can be restored")
+    manifest["state"] = "restoring"
+    manifest.pop("error", None)
+    _write_patch_state(snapshot, manifest)
+
+
+def cancel_hermes_restore(snapshot: Path, message: str) -> None:
+    manifest = _read_patch_state(snapshot)
+    if manifest.get("state") == "restoring":
+        manifest["state"] = "applied"
+        manifest["error"] = message[:300]
+        _write_patch_state(snapshot, manifest)
+
+
+def _systemctl(action: str, service: str) -> str:
+    result = subprocess.run(["systemctl", "--user", action, service], text=True,
+                            capture_output=True, timeout=30)
+    if result.returncode:
+        raise IncompatibleLifeOS(f"Gateway {action} failed with code {result.returncode}")
+    return result.stdout.strip()
+
+
+def _verify_gateway(snapshot: Path, prior_pid: str) -> None:
+    time.sleep(3)
+    if _systemctl("is-active", "hermes-gateway.service") != "active":
+        raise IncompatibleLifeOS("Hermes gateway did not stay active")
+    result = subprocess.run(["systemctl", "--user", "show", "hermes-gateway.service",
+                             "-p", "MainPID", "--value"], text=True, capture_output=True, timeout=30)
+    pid = result.stdout.strip()
+    if result.returncode or not pid.isdigit() or int(pid) <= 0 or pid == prior_pid:
+        raise IncompatibleLifeOS("Hermes gateway did not start a new process")
+    manifest = _read_patch_state(snapshot)
+    command = Path(manifest["current"]) / ".hermes/bin/hermes"
+    if not command.is_file():
+        raise IncompatibleLifeOS("Hermes command is missing after gateway restart")
+    environment = dict(os.environ, HERMES_HOME=str(Path(manifest["config"]).parent))
+    check = subprocess.run([str(command), "config", "check"], cwd=Path(manifest["current"]),
+                           env=environment, text=True, capture_output=True, timeout=60)
+    if check.returncode:
+        raise IncompatibleLifeOS(f"Hermes config check failed with code {check.returncode}")
+
+
+def run_hermes_patch_job(snapshot: Path, action: str) -> dict:
+    service = "hermes-gateway.service"
+    manifest = _read_patch_state(snapshot)
+    launcher = str(Path(manifest["current"]) / ".hermes/bin/hermes")
+    command = subprocess.run(["systemctl", "--user", "show", service, "-p", "ExecStart", "--value"],
+                             text=True, capture_output=True, timeout=30)
+    service_path = re.search(r"\bpath=([^ ;}]+)", command.stdout)
+    if command.returncode or service_path is None or service_path.group(1) != launcher:
+        raise IncompatibleLifeOS("The Hermes gateway service does not run the staged source")
+    if _systemctl("is-active", service) != "active":
+        raise IncompatibleLifeOS("A running Hermes gateway service is required")
+    prior = subprocess.run(["systemctl", "--user", "show", service, "-p", "MainPID", "--value"],
+                           text=True, capture_output=True, timeout=30)
+    if prior.returncode or not prior.stdout.strip().isdigit() or int(prior.stdout.strip()) <= 0:
+        raise IncompatibleLifeOS("A running Hermes gateway service is required")
+    previous_pid = prior.stdout.strip()
+    stop = lambda: _systemctl("stop", service)
+    start = lambda: _systemctl("start", service)
+    verify = lambda: _verify_gateway(snapshot, previous_pid)
+    if action == "apply":
+        return apply_hermes_patch(snapshot, stop=stop, start=start, verify=verify,
+                                  verify_restored=verify)
+    if action == "restore":
+        return restore_hermes_patch(snapshot, stop=stop, start=start, verify=verify)
+    raise IncompatibleLifeOS("Unknown Hermes patch action")
+
+
+def _main() -> int:
+    parser = argparse.ArgumentParser(description="Apply a tested Hermes source patch")
+    parser.add_argument("action", choices=("apply", "restore"))
+    parser.add_argument("snapshot", type=Path)
+    args = parser.parse_args()
+    try:
+        result = run_hermes_patch_job(args.snapshot, args.action)
+    except (IncompatibleLifeOS, OSError, ValueError, subprocess.CalledProcessError,
+            subprocess.TimeoutExpired) as error:
+        try:
+            manifest = _read_patch_state(args.snapshot)
+            if manifest.get("state") in {"staged", "restoring"}:
+                manifest["state"] = "failed_preflight" if manifest["state"] == "staged" else "applied"
+                manifest["error"] = str(error)[:300]
+                _write_patch_state(args.snapshot, manifest)
+        except (IncompatibleLifeOS, OSError, ValueError):
+            pass
+        print(f"Hermes patch {args.action} failed: {error}", file=sys.stderr)
+        return 1
+    print(json.dumps({"action": args.action, "state": result["state"]}))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(_main())

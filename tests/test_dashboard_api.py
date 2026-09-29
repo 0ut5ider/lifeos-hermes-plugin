@@ -179,6 +179,40 @@ class DashboardApiTests(unittest.TestCase):
                 api.finalize_installation()
             self.assertEqual(duplicate.exception.status_code, 409)
 
+    def test_stages_host_patch_and_launches_detached_worker(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.INSTALLED_ROOT = root / ".claude"
+            (api.INSTALLED_ROOT / "LIFEOS").mkdir(parents=True)
+            (api.INSTALLED_ROOT / "LIFEOS/VERSION").write_text("7.40.4\n")
+            (api.INSTALLED_ROOT / "settings.json").write_text("{}")
+            api.HERMES_HOME = root / ".hermes"
+            api.HERMES_HOME.mkdir()
+            (api.HERMES_HOME / "config.yaml").write_text("model: local\n")
+            api.HERMES_CANDIDATE = root / "candidate"
+            api.HERMES_CANDIDATE.mkdir()
+            api.HOST_SOURCE = root / "source"
+            api.HOST_SOURCE.mkdir()
+            api.HOST_PATCH_ROOT = root / "patch-jobs"
+            staged = []
+
+            def stage(snapshot, current, candidate, config):
+                staged.append((snapshot, current, candidate, config))
+                snapshot.mkdir()
+                (snapshot / "manifest.json").write_text('{"state": "staged"}')
+
+            api.stage_supported_hermes_patch = stage
+            commands = []
+            with patch.object(api.subprocess, "run", side_effect=lambda command, **_: commands.append(command) or
+                              types.SimpleNamespace(returncode=0, stdout="active")):
+                result = api.apply_hermes_installation()
+            self.assertEqual(result["state"], "staged")
+            self.assertEqual(staged[0][1:], (api.HOST_SOURCE, api.HERMES_CANDIDATE,
+                                             api.HERMES_HOME / "config.yaml"))
+            self.assertTrue(any(command[0] == "systemd-run" for command in commands))
+            self.assertEqual(api.get_host_patch_status()["state"], "staged")
+
     def load_api(self, fields, save):
         fastapi = types.ModuleType("fastapi")
         fastapi.APIRouter = lambda: types.SimpleNamespace(

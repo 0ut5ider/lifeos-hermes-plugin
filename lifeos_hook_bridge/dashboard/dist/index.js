@@ -8,6 +8,7 @@
   const h = React.createElement;
   const endpoint = "/api/plugins/lifeos-hook-bridge/settings";
   const installationEndpoint = "/api/plugins/lifeos-hook-bridge/installation";
+  const hostPatchEndpoint = installationEndpoint + "/host-patch";
   const baselineEndpoint = "/api/plugins/lifeos-hook-bridge/version-drift";
   const modelEndpoint = "/api/model/options?explicit_only=1";
   const tiers = ["haiku", "sonnet", "opus", "fable"];
@@ -25,6 +26,7 @@
     const [installation, setInstallation] = SDK.hooks.useState(null);
     const [installationStatus, setInstallationStatus] = SDK.hooks.useState("");
     const [installationBusy, setInstallationBusy] = SDK.hooks.useState(false);
+    const [hostPatch, setHostPatch] = SDK.hooks.useState(null);
 
     SDK.hooks.useEffect(function () {
       let active = true;
@@ -59,6 +61,7 @@
       }).catch(function (error) {
         if (active) setInstallationStatus("Could not read installation status: " + error.message);
       });
+      refreshHostPatch(0);
       return function () { active = false; };
     }, []);
 
@@ -186,6 +189,45 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function refreshHostPatch(attempt) {
+      SDK.fetchJSON(hostPatchEndpoint).then(function (result) {
+        setHostPatch(result);
+        if (["staged", "applying", "restoring"].includes(result.state) && attempt < 60) {
+          window.setTimeout(function () { refreshHostPatch(attempt + 1); }, 3000);
+        } else if (["applied", "rolled_back"].includes(result.state)) {
+          return SDK.fetchJSON(installationEndpoint).then(setInstallation);
+        }
+      }).catch(function (error) {
+        if (attempt < 60) {
+          window.setTimeout(function () { refreshHostPatch(attempt + 1); }, 3000);
+        } else {
+          setInstallationStatus("Could not read Hermes patch status: " + error.message);
+        }
+      });
+    }
+
+    function applyHermes() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/apply-hermes", { method: "POST" }).then(function () {
+        setInstallationStatus("Hermes patch worker started. The gateway will restart while it applies the tested extension.");
+        refreshHostPatch(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not start Hermes patch: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
+    function restoreHermes() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/restore-hermes", { method: "POST" }).then(function () {
+        setInstallationStatus("Restoring the previous Hermes source. The gateway will restart.");
+        refreshHostPatch(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not start Hermes restore: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function renderTier(tier) {
       const label = tier.charAt(0).toUpperCase() + tier.slice(1);
       const modelKey = tier + "_model";
@@ -275,9 +317,25 @@
           }, installationBusy ? "Preparing..." : "Prepare tested Hermes extension"),
           installation.hermes_candidate_ready ? h("p", null,
             "Candidate base " + installation.hermes_candidate_commit + " contains " +
-            installation.hermes_candidate_patch_count + " Hermes patches. Applying it to the running host is not available yet.") : null,
+            installation.hermes_candidate_patch_count + " Hermes patches.") : null,
+          installation.hermes_candidate_ready && installation.setup_baseline_exists &&
+          ["none", "rolled_back", "failed_preflight"].includes(hostPatch?.state) ? h("button", {
+            type: "button", disabled: installationBusy, onClick: applyHermes,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, installationBusy ? "Starting..." : "Apply tested Hermes extension") : null,
           installation.hermes_candidate_error ? h("p", { role: "status" },
             "Hermes candidate cannot be used: " + installation.hermes_candidate_error) : null) : null,
+        hostPatch?.state === "applied" ? h("div", { className: "space-y-2 text-sm" },
+          h("p", null, "Hermes extension is active. Full LifeOS hook parity remains unverified."),
+          hostPatch.error ? h("p", { role: "status" }, hostPatch.error) : null,
+          h("button", {
+            type: "button", disabled: installationBusy, onClick: restoreHermes,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50",
+          }, "Restore previous Hermes")) : null,
+        ["staged", "applying", "restoring"].includes(hostPatch?.state) ? h("p", { role: "status" },
+          "Hermes patch job is " + hostPatch.state + ". The gateway may be unavailable during restart.") : null,
+        ["rolled_back", "rollback_failed", "restore_failed", "failed_preflight", "error"].includes(hostPatch?.state) ? h("p", { role: "status" },
+          "Hermes patch job: " + hostPatch.state + (hostPatch.error ? ". " + hostPatch.error : "")) : null,
         installation?.lifeos === "installed" && installation.hermes === "patched_hooks_present" ? h("p", { className: "text-sm" },
           "The required Hermes hook names are present. The complete patch set still needs a release verification before full parity can be claimed.") : null,
         installation?.hermes === "partial" ? h("p", { role: "status" },

@@ -224,6 +224,8 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
   let effectRan = false;
   let component;
   let candidateReady = false;
+  let hostPatched = false;
+  let hostRestored = false;
   const sdk = {
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
     hooks: {
@@ -240,8 +242,22 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
         candidateReady = true;
         return Promise.resolve({ base_commit: "b".repeat(40), patches: Array(19).fill({ name: "patch" }) });
       }
+      if (url.endsWith("/installation/apply-hermes")) {
+        hostPatched = true;
+        hostRestored = false;
+        return Promise.resolve({ state: "staged" });
+      }
+      if (url.endsWith("/installation/restore-hermes")) {
+        hostPatched = false;
+        hostRestored = true;
+        return Promise.resolve({ state: "restoring" });
+      }
+      if (url.endsWith("/installation/host-patch")) return Promise.resolve({
+        state: hostPatched ? "applied" : hostRestored ? "rolled_back" : "none",
+      });
       if (url.endsWith("/installation")) return Promise.resolve({
-        lifeos: "installed", version: "7.40.4", hermes: "stock", candidate_ready: false,
+        lifeos: "installed", version: "7.40.4", hermes: hostPatched ? "patched_hooks_present" : "stock",
+        candidate_ready: false, setup_baseline_exists: true,
         hermes_candidate_ready: candidateReady,
         hermes_candidate_commit: candidateReady ? "b".repeat(40) : null,
         hermes_candidate_patch_count: candidateReady ? 19 : null,
@@ -274,4 +290,22 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
   assert.ok(calls.some((call) => call.url.endsWith("/installation/prepare-hermes") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("19 Hermes patches"))));
+  const applyHost = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Apply tested Hermes extension"));
+  assert.ok(applyHost);
+  applyHost.props.onClick();
+  await new Promise(setImmediate);
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/apply-hermes") && call.init?.method === "POST"));
+  assert.ok(find(render(), (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("Hermes extension is active"))));
+  const restoreHost = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Restore previous Hermes"));
+  assert.ok(restoreHost);
+  restoreHost.props.onClick();
+  await new Promise(setImmediate);
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/restore-hermes") && call.init?.method === "POST"));
+  assert.equal(find(render(), (node) => node.type === "button" &&
+    node.children.includes("Restore previous Hermes")), null);
 });
