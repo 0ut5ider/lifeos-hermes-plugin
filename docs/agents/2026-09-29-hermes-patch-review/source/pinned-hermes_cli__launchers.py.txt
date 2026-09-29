@@ -1,0 +1,32 @@
+Revision 758ad514eb0e800547e015edf05aa18f78b78d82
+File hermes_cli/_launchers.py
+25:
+26: def runtime_command(repo_root: Path, args=(), *, module: str = "hermes_cli.main",
+27:                     code: str | None = None, python: str | Path | None = None,
+28:                     home: str | Path | None = None) -> list[str]:
+29:     """An installation-bound command, safe to persist across dependency GC.
+30:
+31:     Store Python owns the ABI; bootstrap selects and leases dependencies at
+32:     child start. Nix and developer interpreters retain their external owner.
+33:     No selected generation or ambient PYTHONPATH is captured in the command.
+34:     """
+35:     root = Path(repo_root).resolve()
+36:     python = python or resolve_store_python(root) or Path(sys.executable)
+37:     entry = f"exec({code!r})" if code is not None else (
+38:         f"runpy.run_module({module!r}, run_name='__main__', alter_sys=True)")
+39:     default_home = (f"{str(home)!r}" if home is not None else
+277:         f"sys.path.insert(0, {str(repo_root.resolve())!r})\n"
+278:         "if sys.argv[1:2] == ['--print-runtime-command']: sys.dont_write_bytecode = True\n"
+279:         "from hermes_constants import get_default_hermes_root\n"
+280:         "os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(get_default_hermes_root())\n"
+281:         "if sys.argv[1:2] == ['--print-runtime-command']:\n"
+282:         "    from pathlib import Path\n"
+283:         "    from hermes_cli._launchers import print_runtime_command\n"
+286:         "import hermes_bootstrap\n"
+287:         "if sys.argv[1:2] == ['--run-module']:\n"
+288:         "    import runpy\n"
+289:         "    if len(sys.argv) < 3: sys.exit('hermes: --run-module needs a module')\n"
+290:         "    module = sys.argv.pop(2)\n"
+291:         "    del sys.argv[1]\n"
+292:         "    runpy.run_module(module, run_name='__main__', alter_sys=True)\n"
+293:         "    sys.exit(0)\n"

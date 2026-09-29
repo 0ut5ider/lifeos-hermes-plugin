@@ -1,0 +1,34 @@
+{
+  "pre_command_approval_exception_returns": [],
+  "pre_turn_stop_exception_returns": [],
+  "pre_llm_call_timeout_returns": [],
+  "dispatch_recorded_errors": [
+    [
+      "pre_command_approval",
+      "ValueError"
+    ],
+    [
+      "pre_turn_stop",
+      "ValueError"
+    ]
+  ],
+  "new_policy_hooks_are_timeout_bounded": {
+    "pre_command_approval": false,
+    "pre_turn_stop": false
+  },
+  "workspace_review": {
+    "policy_workspaces": [
+      "/workspace/project-a",
+      "/workspace/project-b"
+    ],
+    "human_prompt_count": 1,
+    "grant_keys": [
+      "plugin_rule:command_policy:584a331fd6b02dcb"
+    ]
+  },
+  "multiple_stop_callbacks": "first check",
+  "has_hook_definition_lines": [
+    1843,
+    1896
+  ]
+}

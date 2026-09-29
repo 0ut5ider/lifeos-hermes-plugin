@@ -1,0 +1,97 @@
+[
+  {
+    "order": 1,
+    "patch": "hermes-hook-controls.patch",
+    "numstat": "29\t2\tagent/conversation_loop.py\n10\t2\tagent/turn_context.py\n37\t0\tagent/turn_stop_gates.py\n31\t7\thermes_cli/plugins.py\n20\t5\tmodel_tools.py\n61\t0\ttests/agent/test_prompt_hook_block.py\n40\t0\ttests/agent/test_tool_result_context_hook.py\n13\t0\ttests/agent/test_turn_context.py\n92\t0\ttests/agent/test_verification_continuation_budget.py\n14\t0\ttests/hermes_cli/test_plugins.py\n1\t1\ttests/plugins/test_transform_tool_result_hook.py\n68\t0\ttests/test_lifeos_execute_code_session.py\n2\t2\ttests/tools/test_code_execution.py\n4\t2\ttests/tools/test_code_execution_file_rpc.py\n14\t1\ttests/tools/test_code_kernel.py\n13\t0\ttests/tools/test_code_kernel_remote.py\n136\t0\ttests/tools/test_plugin_command_approval.py\n36\t1\ttools/approval.py\n8\t6\ttools/code_execution_rpc.py\n10\t7\ttools/code_execution_tool.py\n10\t5\ttools/code_kernel.py\n6\t3\ttools/code_kernel_remote.py\n"
+  },
+  {
+    "order": 2,
+    "patch": "hermes-command-denial.patch",
+    "numstat": "65\t0\ttests/tools/test_plugin_command_approval.py\n26\t12\ttools/approval.py\n"
+  },
+  {
+    "order": 3,
+    "patch": "hermes-remote-file-staleness.patch",
+    "numstat": "113\t0\ttests/tools/test_remote_file_staleness.py\n28\t0\ttools/file_operations.py\n45\t4\ttools/file_tools.py\n40\t2\ttools/file_tools_read_tracking.py\n"
+  },
+  {
+    "order": 4,
+    "patch": "hermes-stop-effort.patch",
+    "numstat": "2\t0\tagent/turn_stop_gates.py\n3\t3\thermes_cli/plugins.py\n"
+  },
+  {
+    "order": 5,
+    "patch": "hermes-delegate-tier-routing.patch",
+    "numstat": "105\t0\ttests/test_lifeos_delegate_tier_route.py\n33\t1\ttools/delegate_tool.py\n"
+  },
+  {
+    "order": 6,
+    "patch": "hermes-cron-worker-bootstrap.patch",
+    "numstat": "9\t9\tcron/scheduler.py\n"
+  },
+  {
+    "order": 7,
+    "patch": "hermes-delegate-provider-routing.patch",
+    "numstat": "40\t0\ttests/test_lifeos_delegate_tier_route.py\n27\t9\ttools/delegate_tool.py\n"
+  },
+  {
+    "order": 8,
+    "patch": "hermes-direct-provider-inference.patch",
+    "numstat": "13\t5\tagent/auxiliary_client.py\n7\t0\thermes_cli/_launchers.py\n26\t0\ttests/hermes_cli/test_source_launcher_publication.py\n40\t0\ttests/test_lifeos_aux_no_fallback.py\n"
+  },
+  {
+    "order": 9,
+    "patch": "hermes-stop-fail-closed.patch",
+    "numstat": "1\t1\tagent/conversation_compression.py\n1\t0\tagent/session_persistence.py\n3\t0\tagent/turn_api_call.py\n1\t0\tagent/turn_context.py\n2\t1\tagent/turn_failure_copy.py\n7\t2\tagent/turn_final_response.py\n12\t9\tagent/turn_finalizer.py\n44\t30\tagent/turn_stop_gates.py\n3\t1\thermes_cli/plugins.py\n106\t3\ttests/agent/test_verification_continuation_budget.py\n"
+  },
+  {
+    "order": 10,
+    "patch": "hermes-command-policy.patch",
+    "numstat": "1\t1\ttests/hermes_cli/test_approval_transport.py\n8\t4\ttests/tools/test_approval_plugin_hooks.py\n132\t0\ttests/tools/test_plugin_command_approval.py\n48\t24\ttools/approval.py\n"
+  },
+  {
+    "order": 11,
+    "patch": "hermes-command-context.patch",
+    "numstat": "12\t3\tagent/terminal_approval_batch.py\n71\t0\ttests/tools/test_plugin_command_approval.py\n7\t0\ttests/agent/test_terminal_approval_batch.py\n12\t4\ttools/approval.py\n12\t5\ttools/terminal_tool.py\n"
+  },
+  {
+    "order": 12,
+    "patch": "hermes-command-rewrite.patch",
+    "numstat": "9\t0\tmodel_tools.py\n23\t1\ttools/approval.py\n45\t22\ttools/terminal_tool.py\n"
+  },
+  {
+    "order": 13,
+    "patch": "hermes-session-reasons.patch",
+    "numstat": "6\t0\tgateway/slash_commands_session.py\n2\t0\thermes_cli/cli_commands_mixin.py\n2\t2\thermes_cli/cli_session_mixin.py\n18\t0\ttests/gateway/test_resume_command.py\n21\t0\ttests/hermes_cli/test_cli_resume_command.py\n"
+  },
+  {
+    "order": 14,
+    "patch": "hermes-prompt-exit-reason.patch",
+    "numstat": "3\t3\tcli.py\n2\t1\thermes_cli/cli_tui_runtime_mixin.py\n26\t0\ttests/hermes_cli/test_session_boundary_hooks.py\n"
+  },
+  {
+    "order": 15,
+    "patch": "hermes-empty-session-clear.patch",
+    "numstat": "3\t2\thermes_cli/cli_session_mixin.py\n16\t0\ttests/hermes_cli/test_session_boundary_hooks.py\n"
+  },
+  {
+    "order": 16,
+    "patch": "hermes-empty-session-resume.patch",
+    "numstat": "1\t1\thermes_cli/cli_commands_mixin.py\n20\t0\ttests/hermes_cli/test_cli_resume_command.py\n"
+  },
+  {
+    "order": 17,
+    "patch": "hermes-permanent-policy-precedence.patch",
+    "numstat": "12\t0\ttests/tools/test_plugin_command_approval.py\n2\t3\ttools/approval.py\n"
+  },
+  {
+    "order": 18,
+    "patch": "hermes-policy-batch-order.patch",
+    "numstat": "8\t0\tagent/terminal_approval_batch.py\n5\t0\thermes_cli/plugins.py\n13\t0\ttests/agent/test_terminal_approval_batch.py\n"
+  },
+  {
+    "order": 19,
+    "patch": "hermes-bypass-policy.patch",
+    "numstat": "6\t2\ttools/approval.py\n"
+  }
+]

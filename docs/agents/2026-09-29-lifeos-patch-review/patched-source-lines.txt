@@ -1,0 +1,515 @@
+Source revision 5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c plus nine packaged LifeOS patches in install_source.py order.
+Numbered excerpts only; source path /tmp/lifeos-astra-review-20260929/source
+
+FILE LifeOS/install/hooks/TaskGovernance.hook.ts
+Lines 23-31:
+23:
+24: const input = JSON.parse(readFileSync("/dev/stdin", "utf-8"));
+25:
+26: // Hermes probes this optional adapter before sending a session-owned count.
+27: if (input.hermes_bridge_probe === true) {
+28:   process.stdout.write(JSON.stringify({ hermes_bridge_task_governance: 1 }));
+29:   process.exit(0);
+30: }
+31:
+Lines 43-53:
+43: // CLAUDE_SESSION_ID doesn't exist in env, so we use ppid (Claude Code process)
+44: // and reset the counter when the session (ppid) changes.
+45: const trackFile = join("/tmp", "pai-task-governance.json");
+46: const hermesCount = input.hermes_task_count;
+47: const externallyCounted = Number.isSafeInteger(hermesCount) && hermesCount >= 0;
+48: let taskCount = externallyCounted ? hermesCount : 0;
+49: const currentPpid = String(process.ppid);
+50:
+51: if (!externallyCounted) {
+52:   try {
+53:     const data = JSON.parse(readFileSync(trackFile, "utf-8"));
+Lines 68-80:
+68:   process.exit(2);
+69: }
+70:
+71: // Increment counter with session tracking
+72: if (!externallyCounted) {
+73:   const { writeFileSync } = await import("fs");
+74:   writeFileSync(trackFile, JSON.stringify({ ppid: currentPpid, count: taskCount + 1 }));
+75: }
+76:
+77: // Allow task creation
+78: process.exit(0);
+
+FILE LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts
+Lines 39-68:
+39: const OBS_DIR = join(LIFEOS_DIR, "MEMORY", "OBSERVABILITY");
+40: const ACTIVITY_FILE = process.env.LIFEOS_WATCHDOG_ACTIVITY_FILE || join(OBS_DIR, "tool-activity.jsonl");
+41: const STARTS_FILE = process.env.LIFEOS_WATCHDOG_STARTS_FILE || join(OBS_DIR, "agent-starts.json");
+42:
+43: function positiveSeconds(value: string | undefined, fallback: number): number {
+44:   const parsed = Number(value);
+45:   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+46: }
+47:
+48: const SILENCE_THRESHOLD_S = positiveSeconds(process.env.LIFEOS_WATCHDOG_SILENCE_SECONDS, 90);
+49: const CHECK_INTERVAL_S = positiveSeconds(process.env.LIFEOS_WATCHDOG_CHECK_SECONDS, 15);
+50: const ALERT_COOLDOWN_S = 60;
+51:
+52: let lastAlertEpoch = 0;
+53:
+54: function getActiveAgents(): { count: number; names: string[] } {
+55:   try {
+56:     if (!existsSync(STARTS_FILE)) return { count: 0, names: [] };
+57:     const data = JSON.parse(readFileSync(STARTS_FILE, "utf-8"));
+58:     const entries = Object.entries(data) as [string, { type?: string; subagent_type?: string }][];
+59:     return {
+60:       count: entries.length,
+61:       names: entries.map(([id, info]) => `${info.subagent_type || info.type || "agent"}(${id.slice(0, 8)})`),
+62:     };
+63:   } catch {
+64:     return { count: 0, names: [] };
+65:   }
+66: }
+67:
+68: function getLastActivityEpoch(): number {
+Lines 82-100:
+82:   const lastActivity = getLastActivityEpoch();
+83:   const silenceS = now - lastActivity;
+84:
+85:   if (silenceS > SILENCE_THRESHOLD_S && now - lastAlertEpoch >= ALERT_COOLDOWN_S) {
+86:     const agentList = names.length > 0 ? names.join(", ") : `${count} agent(s)`;
+87:     const advice = process.env.LIFEOS_WATCHDOG_STARTS_FILE
+88:       ? "Check the background task status in Hermes."
+89:       : "Check with TaskList or SendMessage.";
+90:     console.log(
+91:       `WATCHDOG: No tool activity for ${silenceS}s; ${agentList} may be hung. ${advice}`
+92:     );
+93:     lastAlertEpoch = now;
+94:   }
+95: }
+96:
+97: // Run check loop
+98: const interval = setInterval(check, CHECK_INTERVAL_S * 1000);
+99:
+100: // Clean shutdown
+
+FILE LifeOS/install/hooks/EventLogger.hook.ts
+Lines 153-174:
+153:   if (BASH_TOOLS.has(toolName) && typeof input.command === 'string') {
+154:     gt.command = truncate(input.command, 500);
+155:     // Claude Code puts stdout/stderr/exit in tool_response — shape varies.
+156:     if (response && typeof response === 'object') {
+157:       const r = response as Record<string, unknown>;
+158:       if (typeof r.output === 'string' && !('stdout' in r) && !('stderr' in r)) {
+159:         gt.combined_output_preview = truncate(r.output, 800);
+160:         gt.combined_output_bytes = r.output.length;
+161:       }
+162:       if ('stdout' in r && typeof r.stdout === 'string') {
+163:         gt.stdout_preview = truncate(r.stdout, 800);
+164:         gt.stdout_bytes = r.stdout.length;
+165:       }
+166:       if ('stderr' in r && typeof r.stderr === 'string') {
+167:         gt.stderr_preview = truncate(r.stderr, 800);
+168:       }
+169:       if ('exit_code' in r || 'exitCode' in r) {
+170:         gt.exit_code = r.exit_code ?? r.exitCode;
+171:       }
+172:     }
+173:   }
+174:
+
+FILE LifeOS/install/hooks/CheckpointPerISC.hook.ts
+Lines 33-35:
+33: // life feature so users can write `~/Projects/foo` instead of the long form.
+34: const ALLOWLIST_PATH = join(homedir(), '.claude', 'checkpoint-repos.txt');
+35: const GIT_TIMEOUT_MS = 5000;
+Lines 86-92:
+86:
+87: function gitRun(repo: string, args: string[]): string {
+88:   return execFileSync('git', ['-C', repo, ...args], {
+89:     encoding: 'utf-8',
+90:     timeout: GIT_TIMEOUT_MS,
+91:     stdio: ['ignore', 'pipe', 'pipe'],
+92:   });
+Lines 193-215:
+193: function commitInRepo(repo: string, iscId: string, slug: string, description: string, startedMs: number): string | null {
+194:   try {
+195:     const paths = filterForeignPaths(repo, runTouchedPaths(repo, startedMs));
+196:     if (paths.length === 0) return null;
+197:     gitRun(repo, ['add', '--', ...paths]);
+198:     // iscId already has the canonical "ISC-<N>" form (or "ISC-<N>-A-<M>" for
+199:     // anti-criteria) per parseCriteriaList — use it verbatim, do not re-prefix.
+200:     const checkpoint = `${iscId} (${slug}): ${sanitizeMessage(description)}`;
+201:     const prefix = `chore(checkpoint): ${iscId} (${slug}): `;
+202:     let subjectPrefix = prefix;
+203:     if (subjectPrefix.length >= 50) subjectPrefix = `chore(checkpoint): ${iscId}: `;
+204:     if (subjectPrefix.length >= 50) subjectPrefix = 'chore(checkpoint): criterion ';
+205:     const subject = (subjectPrefix + sanitizeMessage(description)).slice(0, 49).trimEnd();
+206:     // Run repository hooks. --no-gpg-sign avoids an interactive signing prompt.
+207:     gitRun(repo, ['commit', '-m', subject, '-m', checkpoint, '--quiet', '--no-gpg-sign']);
+208:     const sha = gitRun(repo, ['rev-parse', 'HEAD']).trim();
+209:     return sha;
+210:   } catch (err: unknown) {
+211:     const e = err as { stderr?: { toString?: () => string }; message?: string };
+212:     const detail = e?.stderr?.toString?.() || e?.message || String(err);
+213:     console.error(`[CheckpointPerISC] commit failed in ${repo} for ${iscId}: ${detail}`);
+214:     return null;
+215:   }
+Lines 284-305:
+284:
+285:   for (const isc of newlyChecked) {
+286:     let failed = false;
+287:     for (const repo of allowlist) {
+288:       if (!existsSync(repo)) {
+289:         console.error(`[CheckpointPerISC] repo not found: ${repo}`);
+290:         failed = true;
+291:         continue;
+292:       }
+293:       if (!isGitRepo(repo)) {
+294:         console.error(`[CheckpointPerISC] not a git repo: ${repo}`);
+295:         failed = true;
+296:         continue;
+297:       }
+298:       if (!hasChanges(repo)) continue;
+299:       const sha = commitInRepo(repo, isc.id, slug, isc.description, startedMs);
+300:       if (sha) state.last_commit_sha[repo] = sha;
+301:       else failed = true;
+302:     }
+303:     if (!failed) state.committed_iscs.push(isc.id);
+304:   }
+305:
+
+FILE LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts
+Lines 129-135:
+129: } {
+130:   const entries: TranscriptEntry[] = [];
+131:   const toolCalls: ToolCall[] = [];
+132:   const toolCallsById = new Map<string, ToolCall>();
+133:   const conversations: { role: string; content: string; timestamp?: string }[] = [];
+134:
+135:   try {
+Lines 145-169:
+145:         // Extract conversations
+146:         if (entry.type === 'user' && entry.message?.content) {
+147:           const blocks = entry.message.content;
+148:           const text = contentToText(Array.isArray(blocks)
+149:             ? blocks.filter((block: any) => block?.type === 'text')
+150:             : blocks);
+151:           if (text) {
+152:             conversations.push({
+153:               role: 'user',
+154:               content: text,
+155:               timestamp: entry.timestamp,
+156:             });
+157:           }
+158:           if (Array.isArray(blocks)) {
+159:             for (const block of blocks as any[]) {
+160:               if (block?.type !== 'tool_result' || !block.tool_use_id) continue;
+161:               const call = toolCallsById.get(block.tool_use_id);
+162:               if (call) call.output = contentToText(block.content);
+163:             }
+164:           }
+165:         }
+166:
+167:         if (entry.type === 'assistant' && entry.message?.content) {
+168:           const text = contentToText(entry.message.content);
+169:           if (text) {
+Lines 175-188:
+175:           }
+176:
+177:           // Extract tool calls
+178:           if (Array.isArray(entry.message.content)) {
+179:             for (const block of entry.message.content as any[]) {
+180:               if (block.type === 'tool_use') {
+181:                 const call = {
+182:                   name: block.name,
+183:                   input: block.input,
+184:                   timestamp: entry.timestamp,
+185:                 };
+186:                 toolCalls.push(call);
+187:                 if (block.id) toolCallsById.set(block.id, call);
+188:               }
+Lines 373-385:
+373:   writeFileSync(
+374:     join(failureDir, 'sentiment.json'),
+375:     redactSecrets(JSON.stringify(sentimentData, null, 2)),
+376:     'utf-8'
+377:   );
+378:
+379:   // 3. Write tool-calls.json
+380:   writeFileSync(
+381:     join(failureDir, 'tool-calls.json'),
+382:     redactSecrets(JSON.stringify(toolCalls, null, 2)),
+383:     'utf-8'
+384:   );
+385:
+
+FILE LifeOS/install/hooks/KittyEnvPersist.hook.ts
+Lines 18-26:
+18: import { getDAName } from './lib/identity';
+19: import { isSubagentContext } from './lib/subagent';
+20: import { isDesktopChannel } from './lib/notification-channel';
+21:
+22: const paiDir = getLifeosDir();
+23:
+24: // Skip for subagents
+25: if (isSubagentContext() || !isDesktopChannel()) process.exit(0);
+26:
+
+FILE LifeOS/install/hooks/lib/tab-setter.ts
+Lines 131-159:
+131:   let listenOn = process.env.KITTY_LISTEN_ON || null;
+132:   let windowId = process.env.KITTY_WINDOW_ID || null;
+133:   if (listenOn && windowId) return { listenOn, windowId };
+134:
+135:   // Per-session file lookup (preferred — no shared mutable state)
+136:   if (sessionId) {
+137:     try {
+138:       const sessionPath = join(KITTY_SESSIONS_DIR, `${sessionId}.json`);
+139:       if (existsSync(sessionPath)) {
+140:         const entry = JSON.parse(readFileSync(sessionPath, 'utf-8'));
+141:         listenOn = listenOn || entry.listenOn || null;
+142:         windowId = windowId || entry.windowId || null;
+143:         if (listenOn && windowId) return { listenOn, windowId };
+144:       }
+145:     } catch { /* silent */ }
+146:   }
+147:
+148:   // Fallback: check default socket path used by kitty's listen_on config.
+149:   // This prevents escape-sequence IPC when KITTY_LISTEN_ON isn't propagated
+150:   // to subprocess contexts (the root cause of terminal garbage in #493).
+151:   if (!listenOn) {
+152:     const defaultSocket = `/tmp/kitty-${process.env.USER}`;
+153:     try {
+154:       if (existsSync(defaultSocket)) {
+155:         listenOn = `unix:${defaultSocket}`;
+156:       }
+157:     } catch { /* silent */ }
+158:   }
+159:
+Lines 251-266:
+251: }
+252:
+253: export function setTabState(opts: SetTabOptions): void {
+254:   if (!isDesktopChannel()) return;
+255:   const { state, previousTitle, previousAscent, sessionId } = opts;
+256:   const title = opts.title;
+257:   const colors = TAB_COLORS[state];
+258:
+259:   // cmux path: use sidebar metadata instead of Kitty remote control
+260:   if (isCmux()) {
+261:     setCmuxState(title, state);
+262:     return;
+263:   }
+264:
+265:   const kittyEnv = getKittyEnv(sessionId);
+266:
+
+FILE LifeOS/install/hooks/ISAStaleWriteGuard.hook.ts
+Lines 79-89:
+79: function remoteView(filePath: string, remote?: RemoteFile): { key: string; hash: string | null } | null {
+80:   if (!remote) return null;
+81:   if (typeof remote.identity !== "string" || !remote.identity) return { key: "", hash: null };
+82:   const key = `remote:${remote.identity}:${filePath}`;
+83:   if (remote.status !== "file" || typeof remote.sha256 !== "string" ||
+84:       !/^[0-9a-f]{64}$/i.test(remote.sha256)) return { key, hash: null };
+85:   return { key, hash: remote.sha256.toLowerCase() };
+86: }
+87:
+88: function viewFile(sessionId: string): string {
+89:   // Session ids are harness-generated UUIDs; strip anything that is not one so a
+Lines 124-138:
+124:  */
+125: export function recordView(sessionId: string, filePath: string, remote?: RemoteFile): void {
+126:   try {
+127:     if (!sessionId || !isISAPath(filePath)) return;
+128:     const backend = remoteView(filePath, remote);
+129:     if (backend ? !backend.hash : !existsSync(filePath)) return;
+130:     mkdirSync(STATE_DIR, { recursive: true });
+131:     const f = viewFile(sessionId);
+132:     if (!existsSync(f)) pruneStale();
+133:     const views = readViews(sessionId);
+134:     views[backend ? backend.key : filePath] = backend ? backend.hash! : hashOf(readFileSync(filePath, "utf-8"));
+135:     const tmp = `${f}.tmp`;
+136:     writeFileSync(tmp, JSON.stringify({ session_id: sessionId, views, updated: new Date().toISOString() }));
+137:     // tmp+rename so a concurrent reader never observes a half-written view file.
+138:     renameSync(tmp, f);
+Lines 180-201:
+180:     if (input?.tool_name !== "Write") return null; // Edit/MultiEdit are safe by construction
+181:     const filePath = input?.tool_input?.file_path;
+182:     if (!filePath || !isISAPath(filePath)) return null;
+183:     const backend = remoteView(filePath, input?.tool_input?.lifeos_remote_file);
+184:     if (backend ? !backend.hash : !existsSync(filePath)) return null; // creating it or no usable digest
+185:
+186:     const sessionId = input?.session_id;
+187:     if (!sessionId) return null;
+188:
+189:     const recorded = readViews(sessionId)[backend ? backend.key : filePath];
+190:     if (!recorded) return null; // never observed here — the harness's own
+191:     // read-before-overwrite rule is the guard for that case
+192:
+193:     const current = backend ? backend.hash! : hashOf(readFileSync(filePath, "utf-8"));
+194:     if (current === recorded) return null; // unchanged since we looked
+195:
+196:     return { block: true, message: denyMessage(filePath, current, recorded) };
+197:   } catch {
+198:     return null;
+199:   }
+200: }
+201:
+
+FILE LifeOS/install/hooks/ModelRungGuard.hook.ts
+Lines 55-57:
+55:  */
+56: const RUNGS = ["fable", "opus", "sonnet", "haiku"] as const;
+57: type Rung = (typeof RUNGS)[number];
+Lines 99-112:
+99: function claudeRungOf(model: string | null | undefined): Rung | null {
+100:   if (!model) return null;
+101:   const name = model.toLowerCase();
+102:   return RUNGS.some((rung) => name === rung) || name.startsWith("claude-") ? rungOf(name) : null;
+103: }
+104:
+105: /** The rung `settings.json` pins. Null when unpinned or unrecognizable. */
+106: export function pinnedRung(settingsPath: string = SETTINGS_PATH): Rung | null {
+107:   try {
+108:     if (!existsSync(settingsPath)) return null;
+109:     const parsed = JSON.parse(readFileSync(settingsPath, "utf8")) as Record<string, unknown>;
+110:     return claudeRungOf(typeof parsed.model === "string" ? parsed.model : null);
+111:   } catch {
+112:     return null;
+Lines 149-158:
+149:         const msg = row.message as Record<string, unknown> | undefined;
+150:         if (msg && typeof msg.model === "string" && msg.model.trim()) {
+151:           return {
+152:             model: msg.model,
+153:             reasoningEffort: typeof msg.reasoning_effort === "string" ? msg.reasoning_effort : null,
+154:           };
+155:         }
+156:       } catch { /* partial line at the tail boundary */ }
+157:     }
+158:     return { model: null, reasoningEffort: null };
+Lines 167-193:
+167:   return liveCarrier(transcriptPath).model;
+168: }
+169:
+170: function configuredRung(model: string | null, effort: string | null): Rung | null {
+171:   if (!model || !effort || !process.env.LIFEOS_MODEL_TIER_MAP) return null;
+172:   try {
+173:     const parsed = JSON.parse(process.env.LIFEOS_MODEL_TIER_MAP) as Record<string, unknown>;
+174:     for (const requireModel of [true, false]) {
+175:       for (const rung of RUNGS) {
+176:         const route = parsed[rung] as Record<string, unknown> | undefined;
+177:         if (!route || route.effort !== effort || typeof route.model !== "string") continue;
+178:         if (requireModel ? route.model === model : route.model === "") return rung;
+179:       }
+180:     }
+181:   } catch { /* malformed plugin settings leave the carrier unclassified */ }
+182:   return null;
+183: }
+184:
+185: function configuredPin(): Rung | null {
+186:   try {
+187:     const parsed = JSON.parse(process.env.LIFEOS_MODEL_TIER_MAP ?? "{}");
+188:     return RUNGS.find((rung) => rung === parsed.pin) ?? null;
+189:   } catch {
+190:     return null;
+191:   }
+192: }
+193:
+Lines 215-239:
+215:     const input = parseHookInput(await readStdinWithTimeout());
+216:     const pin = pinnedRung() ?? configuredPin();
+217:     const carrier = liveCarrier(input.transcript_path);
+218:     const model = carrier.model;
+219:     const live = claudeRungOf(model) ?? configuredRung(model, carrier.reasoningEffort);
+220:     const gap = rungGap(pin, live);
+221:
+222:     if (gap > 0) {
+223:       log({ event: "off-pin", pin, live, model, reasoning_effort: carrier.reasoningEffort, gap });
+224:       const liveLabel = claudeRungOf(model) ? live : `${live} equivalent at ${carrier.reasoningEffort} effort`;
+225:       // Name-free by construction: the release sanitizer rewrites the principal's
+226:       // name to a raw PRINCIPAL_NAME-style template token, which then showed up
+227:       // verbatim in this user-visible warning (public issue #1724,
+228:       // @waveman2020-sudo; literal kept out of this comment per the
+229:       // self-referential-redaction rule — the Doctor placeholder probe scans
+230:       // this file).
+231:       emit(
+232:         `⚠️ MODEL RUNG: this session is running '${model}' (${liveLabel}), ${gap} rung below the ` +
+233:           `'${pin}' pin in settings.json. Per OPERATIONAL_RULES § Model selection, MAX-class work ` +
+234:           `(judgment, design, architecture, scoping, synthesis, meta work on LifeOS) does NOT run here: ` +
+235:           `dispatch it now with the '${pin}' tier alias. Do not ask which rung to use, and do not ask ` +
+236:           `the principal to change /model.`,
+237:       );
+238:     } else {
+239:       log({ event: "on-pin", pin, live, model, reasoning_effort: carrier.reasoningEffort });
+
+FILE LifeOS/install/LIFEOS/TOOLS/IntegrityCheck.ts
+Lines 1104-1121:
+1104: function checkCarrierProbe(): void {
+1105:   const findings: Finding[] = [];
+1106:   try {
+1107:     const hermesProbe = process.env.LIFEOS_HERMES_CARRIER_PROBE;
+1108:     if (hermesProbe) {
+1109:       execFileSync('hermes', ['--run-file', hermesProbe, '--check'], { encoding: 'utf8' });
+1110:     } else {
+1111:       execFileSync('bun', [join(CLAUDE_DIR, 'LIFEOS', 'TOOLS', 'CarrierProbe.ts'), '--check'], { encoding: 'utf8' });
+1112:     }
+1113:   } catch (e: any) {
+1114:     const msg = (e.stderr || e.stdout || e.message || '').toString().trim().split('\n')[0];
+1115:     findings.push({ detail: msg || 'CarrierProbe --check failed', blocking: true });
+1116:   }
+1117:   record('carrier-probe', findings, findings.length === 0 ? 'fact fresh' : undefined);
+1118: }
+1119:
+1120: // ── Check: rule duplication — every rule has ONE home ──
+1121: // The 2026-07-26 rule-structure consolidation gave every rule exactly one file
+Lines 1665-1690:
+1665:     const models = readFileSync(join(CLAUDE_DIR, 'LIFEOS/TOOLS/models.ts'), 'utf8');
+1666:     const decl = models.split(/export const EFFORT_MODEL[^=]*=/)[1] ?? '';
+1667:     topRung = decl.split('}')[0]?.match(/\bmax:\s*"([a-z0-9-]+)"/)?.[1] ?? '';
+1668:   } catch { /* handled below */ }
+1669:
+1670:   const hermesProbe = process.env.LIFEOS_HERMES_CARRIER_PROBE;
+1671:   if (hermesProbe && topRung) {
+1672:     try {
+1673:       execFileSync('hermes', ['--run-file', hermesProbe, '--check-main-rung', topRung], { encoding: 'utf8' });
+1674:     } catch (e: any) {
+1675:       const msg = (e.stderr || e.stdout || e.message || '').toString().trim().split('\n')[0];
+1676:       findings.push({ detail: msg || 'Hermes main rung check failed', blocking: true });
+1677:     }
+1678:     record('model-rung-pin', findings,
+1679:       findings.length === 0 ? `Hermes main loop matches the configured ${topRung} route` : 'Hermes main loop and LifeOS top rung disagree');
+1680:     return;
+1681:   }
+1682:
+1683:   if (!topRung) {
+1684:     findings.push({ detail: 'could not resolve EFFORT_MODEL.max from LIFEOS/TOOLS/models.ts', blocking: true });
+1685:   } else if (settings.model === undefined) {
+1686:     findings.push({
+1687:       detail: `settings.json has no "model" key — the main loop runs the harness default, while doctrine claims the top rung (${topRung}). This exact gap has happened before and gone undetected.`,
+1688:       blocking: true,
+1689:     });
+1690:   } else if (settings.model !== topRung) {
+
+FILE LifeOS/install/hooks/AgentInvocation.hook.ts
+Lines 107-112:
+107:
+108: const OBS_DIR = paiPath('MEMORY', 'OBSERVABILITY');
+109: const EVENTS_FILE = join(OBS_DIR, 'subagent-events.jsonl');
+110: const STARTS_FILE = join(OBS_DIR, 'agent-starts.json');
+111:
+112: type StartRecord = { epoch: number; timestamp: string; subagent_type: string; description: string; model?: string; level?: string };
+Lines 168-182:
+168:           dispatch.model = carrier;
+169:           dispatch.level = 'session-inherited';
+170:         }
+171:       }
+172:
+173:       const starts = readStarts();
+174:       starts[key] = {
+175:         epoch: now,
+176:         timestamp: getISOTimestamp(),
+177:         subagent_type: subagentType,
+178:         description,
+179:         model: dispatch.model,
+180:         level: dispatch.level,
+181:       };
+182:       writeStarts(starts);

@@ -1,0 +1,22 @@
+{
+  "unicode_audit": {
+    "utf8_bytes": 6,
+    "ground_truth": {
+      "command": "printf unicode",
+      "combined_output_preview": "\u00e9\ud83d\ude80",
+      "combined_output_bytes": 3,
+      "exit_code": 0
+    }
+  },
+  "isa_record": {
+    "continue": true
+  },
+  "isa_changed": {
+    "block": true,
+    "message": "\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n  BLOCKED \u2014 stale whole-file Write to an ISA\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n\n  /remote/review/ISA.md\n\n  This file changed on disk after you last saw it, so writing your whole\n  copy over it would discard those changes with no trace. On an ISA that\n  usually means a closed claim and its evidence.\n\n    on disk now : fb04dcb6970e\n    your view   : 3bfc269594ef\n\n  Recover:\n    1. Read the file to pick up the current content.\n    2. Apply your change with Edit \u2014 it replaces an exact string against\n       what is on disk, so it keeps the other changes. Write replaces\n       everything, which is why only Write is guarded here.\n\n  Nothing is locked. Re-reading clears this immediately.\n\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\n"
+  },
+  "isa_unchanged": null,
+  "isa_unknown_digest": null,
+  "isa_other_backend": null,
+  "isa_refreshed": null
+}

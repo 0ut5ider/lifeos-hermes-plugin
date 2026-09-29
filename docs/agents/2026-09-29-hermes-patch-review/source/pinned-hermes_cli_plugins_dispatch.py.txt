@@ -1,0 +1,59 @@
+Revision 758ad514eb0e800547e015edf05aa18f78b78d82
+File hermes_cli/plugins_dispatch.py
+41: # gates/flushes.
+42: _HOOK_TIMEOUT_BOUNDED_HOOKS: Set[str] = {
+43:     "post_tool_call", "transform_terminal_output", "transform_tool_result", "transform_llm_output",
+44:     "pre_llm_call", "post_llm_call", "pre_api_request", "post_api_request", "api_request_error",
+45:     "pre_auxiliary_call", "post_auxiliary_call", "pre_verify", "on_session_start", "on_session_end",
+46: }
+47:
+48: # Policy hooks: timeout / still-running must fail closed (block the tool).
+49: _HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: Set[str] = {"pre_tool_call"}
+50: # Documented parent-thread serialization contract — never run on a timeout worker (hooks.md).
+51: _HOOK_CALLER_THREAD_HOOKS: Set[str] = {"subagent_stop"}
+208:
+209:     def invoke_hook(self, hook_name: str, **kwargs: Any) -> List[Any]:
+210:         """Call all callbacks for *hook_name*; return their non-``None`` results.
+211:
+212:         Payloads evolve additively: ``**kwargs`` callbacks get everything, narrow signatures only
+213:         what they declare. Each callback is isolated. Bounded hooks and ``pre_tool_call`` run under
+214:         ``plugins.hook_callback_timeout`` (worker abandoned, never joined); ``pre_tool_call`` fails
+215:         closed with a block directive, others skip. ``_HOOK_CALLER_THREAD_HOOKS`` always run on the
+216:         caller thread. ``pre_llm_call`` may return ``{"context": "..."}`` (or a str) to inject.
+217:         """
+218:         from hermes_cli.plugins import _resolve_hook_callback_timeout
+219:         # Gateway platform events define event-local envelopes; a bus-wide version here would turn
+220:         # unrelated adapter payloads into one monolithic compatibility contract.
+221:         if hook_name != "gateway_platform_event":
+222:             kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
+223:         results: List[Any] = []
+224:         timeout = _resolve_hook_callback_timeout()
+225:         use_timeout = _hook_uses_callback_timeout(hook_name, timeout)
+226:         fail_closed = hook_name in _HOOK_TIMEOUT_FAIL_CLOSED_HOOKS
+227:         for cb in self._hooks.get(hook_name, []):
+228:             try:
+229:                 if use_timeout:
+230:                     ret = self._run_hook_callback_bounded(hook_name, cb, kwargs, timeout)
+231:                     if ret is _HOOK_SKIPPED:
+232:                         if fail_closed:  # policy hook: fail closed with a block directive
+233:                             results.append({"action": "block", "message": _PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE})
+234:                         continue
+235:                 else:
+236:                     ret = self._invoke_hook_callback(cb, kwargs)
+237:                 if ret is not None:
+238:                     results.append(ret)
+239:             except (Exception, SystemExit) as exc:
+240:                 self._report_hook_failure(hook_name, cb, kwargs, exc)
+241:                 if fail_closed:  # a guard that raised made no decision: same veto as a timeout
+242:                     results.append(_policy_error_block_directive(hook_name, cb, exc))
+243:         return results
+244:
+245:     def _report_hook_failure(
+246:         self, hook_name: str, cb: Callable, kwargs: Dict[str, Any], exc: BaseException, *, surface: str = "Hook"
+247:     ) -> None:
+248:         """One WARNING per distinct (hook, callback, error); identical repeats at DEBUG.
+478:
+479:     def has_hook(self, hook_name: str) -> bool:
+480:         """Return True when at least one callback is registered for a hook."""
+481:         return bool(self._hooks.get(hook_name))
+482:

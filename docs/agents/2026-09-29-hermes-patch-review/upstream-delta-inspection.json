@@ -1,0 +1,157 @@
+{
+  "checked_at_utc": "2026-09-29T19:13:34.247727+00:00",
+  "source_url": "https://api.github.com/repos/NousResearch/hermes-agent/compare/6a8ef0c061f6f163a5997c03702373c8fd5bf348...dccb84b92401234db294667ec203d3ac3dc1b87f",
+  "base": "6a8ef0c061f6f163a5997c03702373c8fd5bf348",
+  "head": "dccb84b92401234db294667ec203d3ac3dc1b87f",
+  "status": "ahead",
+  "ahead_by": 28,
+  "total_commits": 28,
+  "files": [
+    {
+      "filename": "agent/relay_runtime.py",
+      "status": "modified",
+      "additions": 147,
+      "deletions": 51
+    },
+    {
+      "filename": "contributors/emails/mschwab@nvidia.com",
+      "status": "added",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
+      "filename": "hermes_cli/config_migrations.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "filename": "hermes_cli/doctor.py",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 1
+    },
+    {
+      "filename": "hermes_cli/doctor_config.py",
+      "status": "modified",
+      "additions": 41,
+      "deletions": 2
+    },
+    {
+      "filename": "hermes_cli/plugins.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "filename": "hermes_cli/plugins_cmd.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "filename": "hermes_cli/plugins_discovery.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "filename": "hermes_cli/relay_plugin_migrate.py",
+      "status": "modified",
+      "additions": 17,
+      "deletions": 28
+    },
+    {
+      "filename": "hermes_cli/subcommands/migrate.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 2
+    },
+    {
+      "filename": "pyproject.toml",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "filename": "tests/_fixtures/env_filter.py",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 0
+    },
+    {
+      "filename": "tests/agent/test_relay_runtime_plugins.py",
+      "status": "modified",
+      "additions": 284,
+      "deletions": 191
+    },
+    {
+      "filename": "tests/agent/test_relay_tools.py",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2
+    },
+    {
+      "filename": "tests/conftest.py",
+      "status": "modified",
+      "additions": 9,
+      "deletions": 1
+    },
+    {
+      "filename": "tests/hermes_cli/test_doctor_relay_plugins.py",
+      "status": "added",
+      "additions": 50,
+      "deletions": 0
+    },
+    {
+      "filename": "tests/hermes_cli/test_relay_plugin_migrate.py",
+      "status": "modified",
+      "additions": 47,
+      "deletions": 6
+    },
+    {
+      "filename": "uv.lock",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 10
+    },
+    {
+      "filename": "website/docs/developer-guide/middleware.md",
+      "status": "modified",
+      "additions": 3,
+      "deletions": 2
+    },
+    {
+      "filename": "website/docs/developer-guide/observer-hooks.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 1
+    },
+    {
+      "filename": "website/docs/developer-guide/relay-shared-metrics.md",
+      "status": "modified",
+      "additions": 27,
+      "deletions": 25
+    },
+    {
+      "filename": "website/docs/reference/environment-variables.md",
+      "status": "modified",
+      "additions": 1,
+      "deletions": 1
+    },
+    {
+      "filename": "website/docs/user-guide/features/built-in-plugins.md",
+      "status": "modified",
+      "additions": 2,
+      "deletions": 2
+    }
+  ],
+  "reviewed_patch_overlap": [
+    {
+      "filename": "hermes_cli/plugins.py",
+      "patch": "@@ -1460,7 +1460,8 @@ def _discover_and_load_inner(self) -> None:\n         stale_relay_keys = legacy_relay_plugin_keys(enabled)\n         if stale_relay_keys:\n             logger.warning(\"Removed Hermes plugin %s is still listed in plugins.enabled; \"\n-                           \"remove it and configure native Relay plugins with %s\",\n+                           \"remove it and configure a standard user or system Relay plugins.toml, or use %s \"\n+                           \"for an explicit user-file override\",\n                            \", \".join(stale_relay_keys), RELAY_PLUGINS_CONFIG_ENV)\n         # Later sources win on key collision (project > user > bundled) except a flat impostor claiming a\n         # bundled key from another directory (resolve_manifest_winners); gate the winners, then"
+    }
+  ],
+  "full_raw_compare_path": "/tmp/hermes-astra-upstream-delta-20260929.json",
+  "full_raw_sha256": "5fe88116fca5a21a041679585151876b25043b587e2569b00de1fb385ba2d415"
+}

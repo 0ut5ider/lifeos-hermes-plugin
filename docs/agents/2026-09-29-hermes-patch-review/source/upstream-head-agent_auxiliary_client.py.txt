@@ -1,0 +1,22 @@
+Revision 6a8ef0c061f6f163a5997c03702373c8fd5bf348
+File agent/auxiliary_client.py
+7818:         return resp
+7819:     resp = yield from _ladder_provider_fallback(first_err, route)
+7820:     if resp is not None:
+7821:         return resp
+7822:     # Connection/timeout errors poison the cached client (closed transport, half-read
+7823:     # stream); evict so the next aux call rebuilds a fresh one.
+7824:     # Reached only when no fallback answered, so the next auxiliary call rebuilds a fresh
+7881: @_relay_auxiliary_call
+7882: def call_llm(
+7883:     task: str = None, *, provider: str = None, model: str = None, base_url: str = None,
+7884:     api_key: str = None, main_runtime: Optional[Dict[str, Any]] = None, messages: list,
+7885:     temperature: Optional[float] = None, max_tokens: int = None, tools: list = None,
+7886:     timeout: float = None, extra_body: dict = None, reasoning_config: Optional[dict] = None,
+7887:     extra_headers: Optional[Dict[str, str]] = None, api_mode: str = None, stream: bool = False,
+7888:     stream_options: dict = None, route_info: Optional[Dict[str, str]] = None,
+7889:     latency_info: Optional[Dict[str, int]] = None,
+7890: ) -> Any:
+7891:     """Run an auxiliary LLM request, applying the configured task limit."""
+7892:     queue_started_at = time.monotonic()
+7893:     semaphore = _acquire_sync_aux_semaphore(task)

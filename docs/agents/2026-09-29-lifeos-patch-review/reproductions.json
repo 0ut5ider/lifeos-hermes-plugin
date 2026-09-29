@@ -1,0 +1,62 @@
+{
+  "default_rung": {
+    "mapping": {
+      "pin": "fable",
+      "haiku": {
+        "provider": "local",
+        "model": "local-model",
+        "effort": "low"
+      },
+      "sonnet": {
+        "provider": "local",
+        "model": "local-model",
+        "effort": "medium"
+      },
+      "opus": {
+        "provider": "local",
+        "model": "local-model",
+        "effort": "xhigh"
+      },
+      "fable": {
+        "provider": "local",
+        "model": "local-model",
+        "effort": "xhigh"
+      }
+    },
+    "result": null,
+    "log": "{\"ts\":\"2026-09-29T19:04:21.030Z\",\"event\":\"on-pin\",\"pin\":\"fable\",\"live\":\"fable\",\"model\":\"local-model\",\"reasoning_effort\":\"xhigh\"}\n"
+  },
+  "capability_probe": {
+    "supported": true,
+    "verdict": null,
+    "events": [
+      {
+        "hook_event_name": "TaskCreated",
+        "session_id": "probe-session",
+        "transcript_path": "/tmp/lifeos-review-probe-uo2s3yr_/LIFEOS/MEMORY/STATE/hermes-transcripts/probe-session.jsonl",
+        "cwd": "/tmp/lifeos-review-probe-uo2s3yr_",
+        "hermes_bridge_probe": true
+      },
+      {
+        "hook_event_name": "TaskCreated",
+        "session_id": "probe-session",
+        "transcript_path": "/tmp/lifeos-review-probe-uo2s3yr_/LIFEOS/MEMORY/STATE/hermes-transcripts/probe-session.jsonl",
+        "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+        "task_id": "task-1",
+        "task_subject": "meaningful description",
+        "task_description": "meaningful description",
+        "hermes_task_count": 0
+      }
+    ]
+  },
+  "checkpoint_slow_hook": {
+    "returncode": 0,
+    "stdout": "{\"continue\":true}\n",
+    "stderr": "[CheckpointPerISC] commit failed in /tmp/lifeos-review-checkpoint-k5mruac7/repo for ISC-1: spawnSync git ETIMEDOUT\n",
+    "state": {
+      "committed_iscs": [],
+      "last_commit_sha": {}
+    },
+    "git_status": "A  checkpoint-proof.txt\n"
+  }
+}

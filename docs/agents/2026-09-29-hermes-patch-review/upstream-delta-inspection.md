@@ -1,0 +1,9 @@
+Date: 2026-09-29, follow-up inspection at approximately 19:13 UTC.
+
+Compared `6a8ef0c061f6f163a5997c03702373c8fd5bf348` with the later observed HEAD `dccb84b92401234db294667ec203d3ac3dc1b87f` through GitHub's exact-revision compare API. The response reports 28 commits and 23 changed files. The full API response is retained outside the repository at `/tmp/hermes-astra-upstream-delta-20260929.json`; its hash, URL and complete changed-file inventory are in `upstream-delta-inspection.json`.
+
+I inspected all changed runtime-code hunks. The change updates NeMo Relay from the 0.8 line to the 0.9 line, changes Relay plugin configuration discovery and ownership, adds doctor diagnostics, and adjusts migration messages and validation. Tests, documentation and the lockfile follow those changes. In the 52 files touched by this bridge's Hermes patch bundle, the only overlap is `hermes_cli/plugins.py`: one warning message changes from explicit Relay configuration guidance to user/system configuration guidance. That raw hunk is saved in the JSON artifact.
+
+The delta adds none of the proposed prompt, command, Stop, result, per-child route, strict auxiliary fallback, cron-launch or session-boundary contracts. It does not alter the stock CLI registration and launcher facilities used by the proposed plugin-only launcher replacement. Existing conclusions and findings therefore remain unchanged at this later revision. Relay configuration changes are not evidence that its interceptors now provide the missing agent-loop lifecycle contracts. A deeper Relay-based architecture would require a separate design and parity test; this delta inspection does not establish that alternative.
+
+No test suite was run on the later HEAD, no patches were rebased onto it, and no installation was changed. The report's upstream claims are time-bound source inspections, not compatibility certification for either upstream revision.

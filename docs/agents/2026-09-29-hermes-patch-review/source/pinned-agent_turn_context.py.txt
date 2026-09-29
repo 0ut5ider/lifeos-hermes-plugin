@@ -1,0 +1,23 @@
+Revision 758ad514eb0e800547e015edf05aa18f78b78d82
+File agent/turn_context.py
+748:
+749: def _collect_pre_llm_call_context(
+750:     agent: Any, *, effective_task_id: str, turn_id: str, original_user_message: Any,
+751:     messages: List[Any], conversation_history: Optional[List[Any]],
+752: ) -> str:
+753:     """Run ``pre_llm_call`` plugins; their context is injected into the user message
+783:         _ctx_parts: list[str] = []
+784:         for r in _pre_results:
+785:             if isinstance(r, dict) and r.get("context"):
+786:                 _piece = str(r["context"])
+787:             elif isinstance(r, str) and r.strip():
+788:                 _piece = r
+789:             else:
+790:                 continue
+791:             if _spill_if_oversized is not None:
+792:                 try:
+793:                     _piece = _spill_if_oversized(
+794:                         _piece, session_id=agent.session_id, source="plugin hook",
+795:                         config=_spill_config_cached,
+796:                     )
+797:                 except Exception as _spill_exc:

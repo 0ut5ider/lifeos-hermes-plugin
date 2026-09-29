@@ -1,0 +1,13 @@
+Revision 6a8ef0c061f6f163a5997c03702373c8fd5bf348
+File cron/scheduler.py
+3477:     stderr_path = handoff_dir / f"{execution_id}.stderr"
+3478:     command = [
+3479:         sys.executable,
+3480:         "-m",
+3481:         "cron.scheduler",
+3482:         "--external-worker-file",
+3483:         str(payload_path),
+3484:         "--ack-file",
+3485:         str(ack_path),
+3486:     ]
+3487:

@@ -1,0 +1,296 @@
+
+FILE lifeos_hook_bridge/bridge.py
+240:     try:
+241:         from tools.file_tools_paths import _resolve_entry_for_task, _resolve_path_for_task
+242:     except ImportError:
+243:         expanded = os.path.expanduser(candidate)
+244:         return os.path.join(os.path.realpath(os.path.dirname(expanded)), os.path.basename(expanded)) if entry else os.path.realpath(expanded)
+245:     try:
+246:         resolver = _resolve_entry_for_task if entry else _resolve_path_for_task
+247:         return str(resolver(path, task_id or "default"))
+248:     except Exception as error:
+249:         LOG.warning("Hermes file path resolver unavailable: %s", error)
+250:         return os.path.normpath(candidate)
+251:
+252:
+253: def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "default") -> dict[str, Any]:
+254:     translated = dict(args)
+255:     translated.pop("lifeos_remote_file", None)
+256:     if name in {"Write", "Edit", "Read"} and "path" in translated:
+257:         path = translated.pop("path")
+258:         translated["file_path"] = _hook_file_path(path, cwd, task_id) if isinstance(path, str) and path else path
+259:     if name == "Agent" and isinstance(translated.get("tasks"), list):
+260:         tasks = translated["tasks"]
+261:         if tasks:
+262:             translated["prompt"] = tasks[0].get("goal", "")
+263:     if name == "Skill" and "name" in translated:
+264:         translated["skill"] = translated.pop("name")
+265:     if name == "AskUserQuestion" and isinstance(translated.get("question"), str):
+266:         question = {"question": translated["question"]}
+267:         choices = translated.get("choices")
+268:         if isinstance(choices, list):
+269:             question["options"] = [
+270:                 {"label": choice, "description": ""} for choice in choices if isinstance(choice, str)
+271:             ]
+272:         question["multiSelect"] = bool(translated.get("multi_select"))
+273:         return {"questions": [question]}
+274:     return translated
+275:
+276:
+277: def _native_file_input(name: str, native_input: dict[str, Any], task_id: str) -> dict[str, Any]:
+278:     """Give the ISA guard a digest from the filesystem that owns a remote path."""
+279:     if name not in {"Read", "Write", "Edit"}:
+280:         return native_input
+281:     path = native_input.get("file_path")
+282:     if not isinstance(path, str) or not re.fullmatch(r"(?:isa|[^/]+\.isa)\.md", os.path.basename(path), re.I):
+283:         return native_input
+284:     try:
+285:         from tools.file_tools import _file_ops_uses_host_paths, _get_file_ops, _remote_baseline_key
+286:         file_ops = _get_file_ops(task_id or "default")
+287:         if _file_ops_uses_host_paths(file_ops):
+288:             return native_input
+289:         status, digest = file_ops.file_digest(path)
+290:         owner, _ = _remote_baseline_key(file_ops, path)
+291:         return {**native_input, "lifeos_remote_file": {
+292:             "status": status, "sha256": digest, "identity": owner,
+293:         }}
+294:     except (ImportError, OSError, ValueError) as error:
+295:         LOG.warning("Remote ISA digest unavailable: %s", error)
+296:         return native_input
+297:
+298:
+299: def _web_cache_read(tool_input: dict[str, Any], cwd: str, task_id: str) -> bool:
+300:     path = tool_input.get("file_path")
+
+FILE lifeos_hook_bridge/bridge.py
+1029:     def _event_environment(self, payload: dict[str, Any], host_paths: bool = True) -> dict[str, str]:
+1030:         environment = dict(self.environment)
+1031:         with self.session_lock:
+1032:             platform = self.session_platforms.get(payload.get("session_id", ""), "")
+1033:         project = self._matching_project(payload, host_paths)
+1034:         if project is not None:
+1035:             with self.session_lock:
+1036:                 for name in ("settings.json", "settings.local.json"):
+1037:                     settings = self.project_hook_settings.get(project / ".claude" / name, {})
+1038:                     for key, value in settings.get("env", {}).items():
+1039:                         if isinstance(value, str):
+1040:                             environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+1041:         if platform and platform not in {"cli", "tui", "desktop"}:
+1042:             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
+1043:         if self.model_tiers_provider is not None:
+1044:             environment["LIFEOS_MODEL_TIER_MAP"] = json.dumps(self.model_tiers_provider())
+1045:             environment["LIFEOS_HERMES_CARRIER_PROBE"] = str(Path(__file__).with_name("carrier_probe.py"))
+1046:         return environment
+1047:
+1048:     def _config_files(self) -> dict[Path, tuple[int, int, int, int, int]]:
+1049:         result = {}
+1050:         for path in self._config_sources():
+
+FILE lifeos_hook_bridge/bridge.py
+1128:     def _run(
+1129:         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
+1130:         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
+1131:     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
+1132:         jobs = []
+1133:         host_paths = _task_uses_host_paths(task_id)
+1134:         environment = self._event_environment(payload, host_paths)
+1135:         process_cwd = _hook_process_cwd(payload, self.root) if host_paths else str(self.root)
+1136:         for group in self._hook_groups(event, payload, host_paths, task_id):
+1137:             matcher = group.get("matcher", "")
+1138:             native_match = _hook_matcher_matches(matcher, tool_name)
+1139:             alias_match = bool(matcher and matcher_alias and _hook_matcher_matches(matcher, matcher_alias))
+1140:             if not native_match and not alias_match:
+1141:                 continue
+1142:             group_payload = payload if native_match else {
+1143:                 **payload, "tool_name": matcher_alias,
+1144:                 **({"tool_input": alias_input} if alias_input is not None else {}),
+1145:             }
+1146:             remote_project = group.get("_remote_project")
+1147:             project_env = group.get("_project_env", {})
+1148:             values = {key: value for key, value in project_env.items()
+1149:                       if isinstance(key, str) and isinstance(value, str)}
+1150:             if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
+1151:                 values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
+1152:             for hook in group.get("hooks", []):
+1153:                 if hook.get("type") == "http":
+1154:                     if remote_project is not None:
+1155:                         url = hook.get("url", "")
+1156:                         parsed = urlparse(url)
+1157:                         if parsed.scheme != "http" or parsed.hostname not in {"localhost", "127.0.0.1", "::1"}:
+1158:                             LOG.warning("LifeOS remote HTTP hook must use backend loopback: %s", url)
+1159:                             continue
+1160:                         from .remote_hooks import run_project_hook
+1161:                         timeout = max(1, min(int(hook.get("timeout", 5)), 30))
+1162:                         command = (
+1163:                             f"curl --noproxy '*' --silent --show-error --fail --max-time {timeout} "
+1164:                             f"--header 'Content-Type: application/json' --data-binary @- {shlex.quote(url)}"
+1165:                         )
+1166:                         if hook.get("async"):
+1167:                             jobs.append((self._run_remote_async, (
+1168:                                 remote_project, command, group_payload, timeout, values,
+1169:                             ), True))
+1170:                         else:
+1171:                             jobs.append((run_project_hook, (
+1172:                                 remote_project.backend, command, group_payload,
+1173:                                 remote_project.cwd, timeout, values,
+1174:                             ), False))
+1175:                         continue
+1176:                     jobs.append((self._run_http, (hook, group_payload), False))
+1177:                     continue
+1178:                 if hook.get("type") != "command":
+1179:                     LOG.warning("LifeOS %s hook type %r is not executable by this bridge", event, hook.get("type"))
+1180:                     continue
+1181:                 command = hook.get("command")
+1182:                 if not isinstance(command, str) or not command.strip():
+1183:                     continue
+1184:                 if skip_checkpoint and _is_native_checkpoint(command):
+1185:                     continue
+1186:                 hook_environment = environment
+1187:                 if event == "UserPromptSubmit" and remote_project is None and _is_native_version_drift(command, self.root):
+1188:                     from .version_drift import default_baseline_path
+1189:                     hook_environment = dict(environment)
+1190:                     hook_environment["LIFEOS_VERSION_DRIFT_ROOT"] = str(self.root)
+1191:                     hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path()))
+1192:                     system_path = os.pathsep.join(
+1193:                         path for path in environment.get("PATH", "").split(os.pathsep)
+1194:                         if Path(path).resolve() != (Path(__file__).parent / "bin").resolve()
+1195:                     )
+1196:                     system_git = shutil.which("git", path=system_path)
+1197:                     if system_git:
+1198:                         hook_environment["LIFEOS_VERSION_DRIFT_SYSTEM_GIT"] = system_git
+1199:                 if remote_project is not None:
+1200:                     from .remote_hooks import run_project_hook
+1201:                     timeout = max(1, min(int(hook.get("timeout", 60)), 300))
+1202:                     if hook.get("async"):
+1203:                         jobs.append((self._run_remote_async, (
+1204:                             remote_project, command, group_payload, timeout, values,
+1205:                         ), True))
+1206:                         continue
+1207:                     jobs.append((run_project_hook, (
+1208:                         remote_project.backend, command, group_payload,
+1209:                         remote_project.cwd, timeout, values,
+1210:                     ), False))
+1211:                     continue
+1212:                 if hook.get("async"):
+1213:                     jobs.append((self._run_async, (command, group_payload, hook_environment, process_cwd), True))
+1214:                     continue
+1215:                 timeout = max(1, min(int(hook.get("timeout", 60)), 300))
+1216:                 jobs.append((self._run_command, (event, command, group_payload, timeout, hook_environment, process_cwd), False))
+1217:         outcomes = []
+1218:         if not jobs:
+1219:             return outcomes
+1220:         sync_hooks = []
+1221:         for callback, arguments, asynchronous in jobs:
+1222:             if asynchronous:
+1223:                 callback(*arguments)
+1224:             else:
+1225:                 sync_hooks.append((callback, arguments))
+1226:         if not sync_hooks:
+1227:             return outcomes
+1228:         with ThreadPoolExecutor(max_workers=min(len(sync_hooks), 32)) as executor:
+1229:             futures = [executor.submit(callback, *arguments) for callback, arguments in sync_hooks]
+1230:             for future in futures:
+1231:                 try:
+1232:                     process = future.result()
+1233:                 except Exception as error:
+1234:                     LOG.error("LifeOS %s hook failed: %s", event, error)
+1235:                     continue
+1236:                 if process is not None:
+1237:                     outcomes.append((process, _decode_output(process.stdout)))
+1238:         return outcomes
+1239:
+1240:     def _run_command(
+
+FILE lifeos_hook_bridge/bridge.py
+1820:
+1821:     def _save_task_state(self, session_id: str) -> None:
+1822:         path = self._task_state_path(session_id)
+1823:         temporary = None
+1824:         try:
+1825:             with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=self.task_state_dir, delete=False) as stream:
+1826:                 temporary = Path(stream.name)
+1827:                 json.dump({"count": self.task_counts.get(session_id, 0), "ids": sorted(self.task_ids.get(session_id, set()))}, stream)
+1828:             os.replace(temporary, path)
+1829:         except OSError as error:
+1830:             LOG.error("LifeOS task state cannot be saved for session %s: %s", session_id, error)
+1831:             if temporary is not None:
+1832:                 temporary.unlink(missing_ok=True)
+1833:
+1834:     def _supports_native_task_hook(self, session_id: str, cwd: str, backend_task_id: str = "") -> bool:
+1835:         key = (session_id, cwd)
+1836:         if key not in self.native_task_hook_supported:
+1837:             payload = self._payload("TaskCreated", session_id, cwd=cwd, hermes_bridge_probe=True)
+1838:             self.native_task_hook_supported[key] = any(
+1839:                 process.returncode == 0 and (output or {}).get("hermes_bridge_task_governance") == 1
+1840:                 for process, output in self._run("TaskCreated", payload, task_id=backend_task_id)
+1841:             )
+1842:         return self.native_task_hook_supported[key]
+1843:
+1844:     def _native_task_verdict(
+1845:         self, session_id: str, task_id: str, subject: str, description: str, count: int,
+1846:         backend_task_id: str = "",
+1847:     ) -> dict[str, str] | None:
+1848:         payload = self._payload(
+1849:             "TaskCreated", session_id, task_id=task_id, task_subject=subject,
+1850:             task_description=description, hermes_task_count=count,
+1851:         )
+1852:         for process, output in self._run("TaskCreated", payload, task_id=backend_task_id):
+1853:             if process.returncode == 2 or (output or {}).get("decision") == "block":
+1854:                 message = (output or {}).get("reason") or process.stderr.strip() or "LifeOS blocked task creation"
+1855:                 return {"action": "block", "message": str(message)[:2000]}
+1856:         return None
+1857:
+1858:     def _task_created_verdict(
+
+FILE lifeos_hook_bridge/bridge.py
+2044:                 "is_error": item_event == "PostToolUseFailure",
+2045:             } for item_id, (item_event, _, _, transcript_result) in zip(use_ids, native_events)],
+2046:         )
+2047:         context = []
+2048:         for item_event, native_input, item_response, _ in native_events:
+2049:             hook_input = _native_file_input(native_name, native_input, task_id) if item_event == "PostToolUse" else native_input
+2050:             payload = self._payload(
+2051:                 item_event, session_id, tool_name=native_name,
+2052:                 tool_input=hook_input,
+2053:                 cwd=cwd,
+2054:                 **({"error": error_message or str(result)} if item_event == "PostToolUseFailure" else {"tool_response": item_response}),
+2055:             )
+
+FILE lifeos_hook_bridge/model_tiers.py
+12:
+13: DEFAULT_EFFORTS = {"haiku": "low", "sonnet": "medium", "opus": "xhigh", "fable": "xhigh"}
+14: VALID_EFFORTS = frozenset({"minimal", "low", "medium", "high", "xhigh", "max", "ultra"})
+15: VALID_PINS = frozenset({"none", *DEFAULT_EFFORTS})
+16:
+17:
+18: def configured_tiers(
+19:     read_setting: Callable[[str, Any], Any], default_provider: str = "", default_model: str = "",
+20: ) -> dict[str, dict[str, str]]:
+21:     tiers = {}
+22:     for tier, default_effort in DEFAULT_EFFORTS.items():
+23:         provider = read_setting(f"{tier}_provider", "")
+24:         model = read_setting(f"{tier}_model", "")
+25:         effort = read_setting(f"{tier}_effort", default_effort)
+26:         inherit_child = read_setting(f"{tier}_inherit_child_default", False)
+27:         if not isinstance(provider, str) or "\n" in provider or "\r" in provider:
+28:             raise ValueError(f"{tier}_provider must be one provider name on one line")
+29:         if not isinstance(model, str) or "\n" in model or "\r" in model:
+30:             raise ValueError(f"{tier}_model must be one model name on one line")
+31:         if not isinstance(effort, str) or effort not in VALID_EFFORTS:
+32:             raise ValueError(f"{tier}_effort is not a supported Hermes effort")
+33:         if not isinstance(inherit_child, bool):
+34:             raise ValueError(f"{tier}_inherit_child_default must be true or false")
+35:         if inherit_child:
+36:             provider, model = "", ""
+37:         elif provider.strip() and not model.strip():
+38:             raise ValueError(f"{tier}_provider requires a configured model")
+39:         elif not model.strip() and default_model:
+40:             provider, model = default_provider, default_model
+41:         tiers[tier] = {"provider": provider.strip(), "model": model.strip(), "effort": effort}
+42:     return tiers
+43:
+44:
+45: def configured_model_map(
+46:     read_setting: Callable[[str, Any], Any], default_provider: str = "", default_model: str = "",
+47: ) -> dict[str, Any]:
+48:     pin = read_setting("pinned_tier", "fable")

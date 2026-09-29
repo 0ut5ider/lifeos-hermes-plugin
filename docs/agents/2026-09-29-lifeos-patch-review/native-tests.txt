@@ -1,0 +1,34 @@
+python -m unittest -v tests.test_native_task_hook tests.test_native_watchdog tests.test_native_event_logger tests.test_native_failure_capture tests.test_native_kitty_channel tests.test_native_model_rung_guard tests.test_carrier_probe tests.test_patch_bundle
+test_capability_probe_has_no_task_description (tests.test_native_task_hook.NativeTaskHookTests.test_capability_probe_has_no_task_description) ... ok
+test_external_count_controls_limit_without_writing_legacy_counter (tests.test_native_task_hook.NativeTaskHookTests.test_external_count_controls_limit_without_writing_legacy_counter) ... ok
+test_short_description_blocks_with_external_count (tests.test_native_task_hook.NativeTaskHookTests.test_short_description_blocks_with_external_count) ... ok
+test_active_agent_with_silent_activity_emits_alert (tests.test_native_watchdog.NativeWatchdogTests.test_active_agent_with_silent_activity_emits_alert) ... ok
+test_bash_combined_output_is_named_in_audit (tests.test_native_event_logger.NativeEventLoggerTests.test_bash_combined_output_is_named_in_audit) ... ok
+test_failed_bash_call_is_recorded_through_bridge (tests.test_native_event_logger.NativeEventLoggerTests.test_failed_bash_call_is_recorded_through_bridge) ... ok
+test_tool_result_is_attached_to_call_not_user_text (tests.test_native_failure_capture.NativeFailureCaptureTests.test_tool_result_is_attached_to_call_not_user_text) ... ok
+test_cli_session_preserves_kitty_environment (tests.test_native_kitty_channel.NativeKittyChannelTests.test_cli_session_preserves_kitty_environment) ... ok
+test_desktop_session_writes_tab_state (tests.test_native_kitty_channel.NativeKittyChannelTests.test_desktop_session_writes_tab_state) ... ok
+test_discord_session_does_not_persist_kitty_environment (tests.test_native_kitty_channel.NativeKittyChannelTests.test_discord_session_does_not_persist_kitty_environment) ... ok
+test_discord_session_does_not_write_tab_state (tests.test_native_kitty_channel.NativeKittyChannelTests.test_discord_session_does_not_write_tab_state) ... ok
+test_custom_tier_models_use_the_model_and_effort_pair (tests.test_native_model_rung_guard.NativeModelRungGuardTests.test_custom_tier_models_use_the_model_and_effort_pair) ... ok
+test_local_model_medium_effort_uses_sonnet_rung (tests.test_native_model_rung_guard.NativeModelRungGuardTests.test_local_model_medium_effort_uses_sonnet_rung) ... ok
+test_local_model_names_do_not_override_configured_tiers (tests.test_native_model_rung_guard.NativeModelRungGuardTests.test_local_model_names_do_not_override_configured_tiers) ... ok
+test_lower_transcript_rung_warns_at_next_prompt (tests.test_native_model_rung_guard.NativeModelRungGuardTests.test_lower_transcript_rung_warns_at_next_prompt) ... ok
+test_plugin_pin_classifies_local_model_settings (tests.test_native_model_rung_guard.NativeModelRungGuardTests.test_plugin_pin_classifies_local_model_settings) ... ok
+test_configured_model_change_invalidates_probe (tests.test_carrier_probe.CarrierProbeTests.test_configured_model_change_invalidates_probe) ... ok
+test_effort_and_endpoint_change_invalidate_probe (tests.test_carrier_probe.CarrierProbeTests.test_effort_and_endpoint_change_invalidate_probe) ... ok
+test_failed_live_probe_invalidates_previous_success (tests.test_carrier_probe.CarrierProbeTests.test_failed_live_probe_invalidates_previous_success) ... ok
+test_fresh_observed_route_passes (tests.test_carrier_probe.CarrierProbeTests.test_fresh_observed_route_passes) ... ok
+test_main_rung_matches_provider_model_and_effort (tests.test_carrier_probe.CarrierProbeTests.test_main_rung_matches_provider_model_and_effort) ... ok
+test_missing_execution_evidence_does_not_pass (tests.test_carrier_probe.CarrierProbeTests.test_missing_execution_evidence_does_not_pass) ... ok
+test_saved_plugin_tiers_are_used_without_hook_environment (tests.test_carrier_probe.CarrierProbeTests.test_saved_plugin_tiers_are_used_without_hook_environment) ... ok
+test_stale_and_failed_evidence_do_not_pass (tests.test_carrier_probe.CarrierProbeTests.test_stale_and_failed_evidence_do_not_pass) ... ok
+test_unprobed_route_fails (tests.test_carrier_probe.CarrierProbeTests.test_unprobed_route_fails) ... ok
+test_unsaved_tiers_use_hermes_current_model (tests.test_carrier_probe.CarrierProbeTests.test_unsaved_tiers_use_hermes_current_model) ... ok
+test_runtime_contains_exact_hermes_patch_sequence (tests.test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_hermes_patch_sequence) ... ok
+test_runtime_contains_exact_lifeos_patch_sequence (tests.test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_lifeos_patch_sequence) ... ok
+
+----------------------------------------------------------------------
+Ran 28 tests in 3.120s
+
+OK

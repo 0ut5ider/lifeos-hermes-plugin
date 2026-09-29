@@ -1,0 +1,32 @@
+Revision 6a8ef0c061f6f163a5997c03702373c8fd5bf348
+File hermes_cli/_launchers.py
+33:
+34: def runtime_command(repo_root: Path, args=(), *, module: str = "hermes_cli.main",
+35:                     code: str | None = None, python: str | Path | None = None,
+36:                     home: str | Path | None = None) -> list[str]:
+37:     """An installation-bound command, safe to persist across dependency GC.
+38:
+39:     Store Python owns the ABI; bootstrap selects and leases dependencies at
+40:     child start. Nix and developer interpreters retain their external owner.
+41:     No selected generation or ambient PYTHONPATH is captured in the command.
+42:     """
+43:     root = Path(repo_root).resolve()
+44:     python = python or resolve_store_python(root) or Path(sys.executable)
+45:     entry = f"exec({_inline_string_literal(code)})" if code is not None else (
+46:         f"runpy.run_module({_inline_string_literal(module)}, run_name='__main__', alter_sys=True)")
+47:     default_home = (_inline_string_literal(str(home)) if home is not None else
+285:         f"sys.path.insert(0, {str(repo_root.resolve())!r})\n"
+286:         "if sys.argv[1:2] == ['--print-runtime-command']: sys.dont_write_bytecode = True\n"
+287:         "from hermes_constants import get_default_hermes_root\n"
+288:         "os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(get_default_hermes_root())\n"
+289:         "if sys.argv[1:2] == ['--print-runtime-command']:\n"
+290:         "    from pathlib import Path\n"
+291:         "    from hermes_cli._launchers import print_runtime_command\n"
+294:         "import hermes_bootstrap\n"
+295:         "if sys.argv[1:2] == ['--run-module']:\n"
+296:         "    import runpy\n"
+297:         "    if len(sys.argv) < 3: sys.exit('hermes: --run-module needs a module')\n"
+298:         "    module = sys.argv.pop(2)\n"
+299:         "    del sys.argv[1]\n"
+300:         "    runpy.run_module(module, run_name='__main__', alter_sys=True)\n"
+301:         "    sys.exit(0)\n"

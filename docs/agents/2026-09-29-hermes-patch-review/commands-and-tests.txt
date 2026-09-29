@@ -1,0 +1,34 @@
+Review commands and outcomes, 2026-09-29
+
+Repository HEAD: git rev-parse HEAD -> 1d4929fb983dfbbd0e07dcf862e9592ef77c6c89
+Public remote: git ls-remote origin HEAD -> 6a8ef0c061f6f163a5997c03702373c8fd5bf348
+Fetched that exact revision into /tmp/hermes-upstream-current; no checkout change.
+Archived pinned 758ad514eb0e800547e015edf05aa18f78b78d82 into /tmp/hermes-astra-review-20260929.
+For each HERMES_PATCHES entry, ran git apply --check and git apply in the documented order: all 19 succeeded.
+Repeated source extraction and ordered application with only the added plugins.has_hook hunk removed: all 19 succeeded. See reduced-sequence-result.txt.
+Compared every touched final file between full and reduced trees: only the unused definition differs.
+
+python docs/agents/2026-09-29-hermes-patch-review/reproduce_review_findings.py
+Exit 0. Results saved in reproduction-results.json. Intact plugin dispatcher, source-extracted guard and Stop merger, explicit boundary doubles. This is not an end-to-end test.
+
+/tmp/lifeos-plugin-test-venv/bin/python -m unittest tests.test_patch_bundle -v
+Initial run in /tmp/hermes-astra-review-20260929 failed:
+ModuleNotFoundError: No module named 'tests.test_patch_bundle'
+Rerun in /home/outsider/Projects/Hermes_agent/LifeOS_plugin passed:
+test_runtime_contains_exact_hermes_patch_sequence ... ok
+test_runtime_contains_exact_lifeos_patch_sequence ... ok
+Ran 2 tests in 0.001s
+OK
+
+Dependency inspection:
+python -c 'import pytest,openai' -> ModuleNotFoundError: No module named 'pytest'
+/tmp/lifeos-plugin-test-venv/bin/python -c 'import pytest,openai' -> ModuleNotFoundError: No module named 'pytest'
+No dependency installation or full Hermes suite was attempted.
+No provider/SSH/Docker/Discord/native-LifeOS/gateway tests were run in this review.
+
+Follow-up upstream check:
+A git fetch of dccb84b92401234db294667ec203d3ac3dc1b87f stalled and was terminated. No claim is made that this Git fetch completed.
+Fetched and inspected the exact revision delta through GitHub compare API instead. HTTP request succeeded; 28 commits and 23 changed files reported.
+Full raw response: /tmp/hermes-astra-upstream-delta-20260929.json
+Relevant hunk, complete file inventory, source URL, timestamp and raw hash: upstream-delta-inspection.json
+Inspection conclusions: upstream-delta-inspection.md. No reduction conclusion changed.
