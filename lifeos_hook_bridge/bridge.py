@@ -15,6 +15,7 @@ import sys
 import tempfile
 import threading
 import time
+from collections import Counter
 from concurrent.futures import ThreadPoolExecutor
 from contextvars import copy_context
 from urllib.error import HTTPError, URLError
@@ -177,6 +178,19 @@ def _is_native_version_drift(command: str, root: Path) -> bool:
     return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
 
 
+def _is_native_checkpoint(command: str) -> bool:
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return False
+    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
+        tokens = tokens[1:]
+    if len(tokens) != 1:
+        return False
+    path = tokens[0].replace("${HOME}", "~").replace("$HOME", "~")
+    return Path(path).parts[-3:] == (".claude", "hooks", "CheckpointPerISC.hook.ts")
+
+
 def _managed_permission_sources() -> tuple[list[Any], bool]:
     paths = [POLICY_DIRECTORY / "managed-settings.json"]
     dropins = POLICY_DIRECTORY / "managed-settings.d"
@@ -299,19 +313,23 @@ def _web_cache_read(tool_input: dict[str, Any], cwd: str, task_id: str) -> bool:
         return False
 
 
-def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> list[dict[str, str]]:
-    edits = []
+def _v4a_edit_inputs(
+    patch_text: str, cwd: str, task_id: str = "default",
+    applied: dict[str, list[str]] | None = None,
+) -> list[dict[str, str]]:
+    operations: list[tuple[str, str, list[dict[str, str]]]] = []
     path = None
+    operation = None
     path_entry = False
     added = []
     removed = []
 
     def finish() -> None:
-        if path is not None:
-            edits.append({
+        if path is not None and operation is not None:
+            operations.append((operation, path, [{
                 "file_path": _hook_file_path(path, cwd, task_id, entry=path_entry),
                 "old_string": "\n".join(removed), "new_string": "\n".join(added),
-            })
+            }]))
 
     for line in patch_text.splitlines():
         header = V4A_WRITE_HEADER.match(line)
@@ -319,23 +337,25 @@ def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> lis
         if header:
             finish()
             path = header.group(2).strip()
+            operation = header.group(1)
             path_entry = header.group(1) == "Delete"
             added = []
             removed = []
         elif move:
             finish()
             path = None
-            edits.append({
+            source, destination = move.group(1).strip(), move.group(2).strip()
+            operations.append(("Move", f"{source} -> {destination}", [{
                 "file_path": _hook_file_path(move.group(1).strip(), cwd, task_id, entry=True),
                 "old_string": "", "new_string": "",
-            })
-            edits.append({
+            }, {
                 "file_path": _hook_file_path(move.group(2).strip(), cwd, task_id, entry=True),
                 "old_string": "", "new_string": "",
-            })
+            }]))
         elif line.startswith("***"):
             finish()
             path = None
+            operation = None
             path_entry = False
             added = []
             removed = []
@@ -344,6 +364,29 @@ def _v4a_edit_inputs(patch_text: str, cwd: str, task_id: str = "default") -> lis
         elif path is not None and line.startswith("-"):
             removed.append(line[1:])
     finish()
+    if applied is None:
+        return [edit for _, _, edits in operations for edit in edits]
+    buckets = {
+        "Update": "files_modified", "Move": "files_modified",
+        "Add": "files_created", "Delete": "files_deleted",
+    }
+    applied_counts = {bucket: Counter(paths) for bucket, paths in applied.items()}
+    remaining = {bucket: counts.copy() for bucket, counts in applied_counts.items()}
+    occurrences = Counter((buckets[kind], label) for kind, label, _ in operations)
+    uncertain = set()
+    edits = []
+    for kind, label, inputs in operations:
+        bucket = buckets[kind]
+        key = (bucket, label)
+        applied_count = applied_counts.get(bucket, Counter())[label]
+        if 0 < applied_count < occurrences[key]:
+            if key not in uncertain:
+                edits.extend({**item, "old_string": "", "new_string": ""} for item in inputs)
+                uncertain.add(key)
+            continue
+        if remaining.get(bucket, Counter())[label] > 0:
+            edits.extend(inputs)
+            remaining[bucket][label] -= 1
     return edits
 
 
@@ -1084,7 +1127,7 @@ class HookBridge:
 
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
-        alias_input: dict[str, Any] | None = None, task_id: str = "",
+        alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         host_paths = _task_uses_host_paths(task_id)
@@ -1137,6 +1180,8 @@ class HookBridge:
                     continue
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
+                    continue
+                if skip_checkpoint and _is_native_checkpoint(command):
                     continue
                 hook_environment = environment
                 if event == "UserPromptSubmit" and remote_project is None and _is_native_version_drift(command, self.root):
@@ -1969,38 +2014,55 @@ class HookBridge:
             _v4a_edit_inputs(args["patch"], cwd, task_id) if v4a and event == "PostToolUse" else
             _agent_inputs(args) if native_name == "Agent" else [_tool_input(native_name, args, cwd, task_id)]
         )
-        if not native_inputs:
+        native_events = [(event, native_input, hook_response, result) for native_input in native_inputs]
+        if v4a and event == "PostToolUseFailure" and isinstance(response, dict) and response.get("success") is False:
+            applied = {
+                bucket: [path for path in response.get(bucket, []) if isinstance(path, str)]
+                for bucket in ("files_modified", "files_created", "files_deleted")
+                if isinstance(response.get(bucket), list)
+            }
+            applied_events = []
+            for native_input in _v4a_edit_inputs(args["patch"], cwd, task_id, applied):
+                applied_response = {
+                    "success": True, "partial_patch": True, "file_path": native_input["file_path"],
+                }
+                applied_events.append((
+                    "PostToolUse", native_input, applied_response, json.dumps(applied_response),
+                ))
+            native_events = applied_events + native_events
+        if not native_events:
             return None
-        use_ids = [f"{use_id}:{index}" for index in range(len(native_inputs))] if len(native_inputs) > 1 else [use_id]
+        use_ids = [f"{use_id}:{index}" for index in range(len(native_events))] if len(native_events) > 1 else [use_id]
         self._append_transcript(session_id, "assistant", [
             {"type": "tool_use", "id": item_id, "name": native_name, "input": native_input}
-            for item_id, native_input in zip(use_ids, native_inputs)
+            for item_id, (_, native_input, _, _) in zip(use_ids, native_events)
         ])
         self._append_transcript(
             session_id, "user", [{
                 "type": "tool_result", "tool_use_id": item_id,
-                "content": result if isinstance(result, str) else json.dumps(result),
-                "is_error": status in {"error", "blocked"},
-            } for item_id in use_ids],
+                "content": transcript_result if isinstance(transcript_result, str) else json.dumps(transcript_result),
+                "is_error": item_event == "PostToolUseFailure",
+            } for item_id, (item_event, _, _, transcript_result) in zip(use_ids, native_events)],
         )
         context = []
-        for native_input in native_inputs:
-            hook_input = _native_file_input(native_name, native_input, task_id) if event == "PostToolUse" else native_input
+        for item_event, native_input, item_response, _ in native_events:
+            hook_input = _native_file_input(native_name, native_input, task_id) if item_event == "PostToolUse" else native_input
             payload = self._payload(
-                event, session_id, tool_name=native_name,
+                item_event, session_id, tool_name=native_name,
                 tool_input=hook_input,
                 cwd=cwd,
-                **({"error": error_message or str(result)} if event == "PostToolUseFailure" else {"tool_response": hook_response}),
+                **({"error": error_message or str(result)} if item_event == "PostToolUseFailure" else {"tool_response": item_response}),
             )
             external_content = tool_name in WEB_CONTENT_TOOLS or (
                 native_name == "Read" and _web_cache_read(native_input, cwd, task_id)
             )
             outcomes = self._run(
-                event, payload, native_name,
-                matcher_alias="WebFetch" if event == "PostToolUse" and external_content else "",
+                item_event, payload, native_name,
+                matcher_alias="WebFetch" if item_event == "PostToolUse" and external_content else "",
                 task_id=task_id,
+                skip_checkpoint=v4a and event == "PostToolUseFailure" and item_event == "PostToolUse",
             )
-            context.extend(self._context(outcomes, event))
+            context.extend(self._context(outcomes, item_event))
             context.extend(
                 process.stderr.strip() for process, _ in outcomes
                 if process.returncode == 2 and process.stderr.strip()

@@ -16,7 +16,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from unittest.mock import patch
 
-from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _native_file_input, _tool_cwd, _tool_input, _web_cache_read
+from lifeos_hook_bridge.bridge import HookBridge, _hook_file_path, _native_file_input, _tool_cwd, _tool_input, _v4a_edit_inputs, _web_cache_read
 from lifeos_hook_bridge.model_tiers import configured_tiers
 
 
@@ -1787,6 +1787,126 @@ class HookBridgeTests(unittest.TestCase):
             [item["tool_use_id"] for item in rows[1]["message"]["content"]],
             [item["id"] for item in rows[0]["message"]["content"]],
         )
+
+    def test_partially_applied_patch_reports_changed_file_and_failure(self):
+        changed = self.root / "changed.jsonl"
+        failures = self.root / "failures.jsonl"
+        record_changed = self.make_hook(
+            "record-applied-edit.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(changed)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        record_failure = self.make_hook(
+            "record-patch-failure.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            f"with Path({str(failures)!r}).open('a') as stream: stream.write(json.dumps(data)+'\\n')\n",
+        )
+        bridge = self.bridge({
+            "PostToolUse": [{"matcher": "Edit", "hooks": [{"type": "command", "command": record_changed}]}],
+            "PostToolUseFailure": [{"matcher": "Edit", "hooks": [{"type": "command", "command": record_failure}]}],
+        })
+        patch_text = (
+            "*** Begin Patch\n"
+            "*** Update File: first.txt\n-old-a\n+new-a\n"
+            "*** Update File: second.txt\n-old-b\n+new-b\n"
+            "*** End Patch"
+        )
+        result = json.dumps({
+            "success": False, "error": "forced second write failure",
+            "files_modified": ["first.txt"], "files_created": [], "files_deleted": [],
+        })
+        with patch("lifeos_hook_bridge.bridge._tool_cwd", return_value=str(self.root)), patch.dict(
+            os.environ, {"TERMINAL_CWD": str(self.root)},
+        ):
+            bridge.post_tool_call(
+                "patch", {"mode": "patch", "patch": patch_text}, result,
+                session_id="s1", tool_call_id="patch-1", status="error",
+                error_message="forced second write failure",
+            )
+        changed_rows = [json.loads(line) for line in changed.read_text().splitlines()]
+        self.assertEqual([row["tool_input"]["file_path"] for row in changed_rows], [
+            str(self.root / "first.txt"),
+        ])
+        self.assertEqual([row["tool_name"] for row in changed_rows], ["Edit"])
+        failure_rows = [json.loads(line) for line in failures.read_text().splitlines()]
+        self.assertEqual(len(failure_rows), 1)
+        self.assertEqual(failure_rows[0]["hook_event_name"], "PostToolUseFailure")
+        self.assertIn("forced second write failure", failure_rows[0]["error"])
+
+    def test_partial_patch_matches_applied_operations_in_patch_order(self):
+        first, created, deleted, source, target, failed = (
+            str(self.root / name) for name in (
+                "first.txt", "created.txt", "deleted.txt", "source.txt", "target.txt", "failed.txt",
+            )
+        )
+        patch_text = (
+            "*** Begin Patch\n"
+            f"*** Update File: {first}\n-old\n+new\n"
+            f"*** Add File: {created}\n+content\n"
+            f"*** Delete File: {deleted}\n"
+            f"*** Move File: {source} -> {target}\n"
+            f"*** Update File: {failed}\n-old\n+new\n"
+            "*** End Patch"
+        )
+        applied = {
+            "files_modified": [first, f"{source} -> {target}"],
+            "files_created": [created],
+            "files_deleted": [deleted],
+        }
+        inputs = _v4a_edit_inputs(patch_text, str(self.root), applied=applied)
+        self.assertEqual([item["file_path"] for item in inputs], [
+            first, created, deleted, source, target,
+        ])
+        self.assertEqual(inputs[0]["old_string"], "old")
+        self.assertEqual(inputs[0]["new_string"], "new")
+
+    def test_patch_validation_failure_emits_no_successful_edit(self):
+        changed = self.root / "unexpected-edit"
+        failed = self.root / "patch-failed"
+        record_changed = self.make_hook(
+            "record-unexpected-edit.py",
+            "from pathlib import Path\n"
+            f"Path({str(changed)!r}).touch()\n",
+        )
+        record_failure = self.make_hook(
+            "record-validation-failure.py",
+            "from pathlib import Path\n"
+            f"Path({str(failed)!r}).touch()\n",
+        )
+        bridge = self.bridge({
+            "PostToolUse": [{"matcher": "Edit", "hooks": [{"type": "command", "command": record_changed}]}],
+            "PostToolUseFailure": [{"matcher": "Edit", "hooks": [{"type": "command", "command": record_failure}]}],
+        })
+        patch_text = f"*** Begin Patch\n*** Update File: {self.root / 'note.txt'}\n-old\n+new\n*** End Patch"
+        result = json.dumps({"success": False, "error": "validation failed"})
+        bridge.augment_tool_result(
+            "patch", {"mode": "patch", "patch": patch_text}, result, original_result=result,
+            session_id="s1", status="error", error_message="validation failed",
+        )
+        self.assertFalse(changed.exists())
+        self.assertTrue(failed.exists())
+
+    def test_partial_patch_repeated_target_does_not_invent_changed_lines(self):
+        target = str(self.root / "note.txt")
+        patch_text = (
+            "*** Begin Patch\n"
+            f"*** Update File: {target}\n-old-one\n+new-one\n"
+            f"*** Update File: {target}\n-old-two\n+new-two\n"
+            "*** End Patch"
+        )
+        inputs = _v4a_edit_inputs(
+            patch_text, str(self.root), applied={"files_modified": [target]},
+        )
+        self.assertEqual(inputs, [{
+            "file_path": target, "old_string": "", "new_string": "",
+        }])
+        both_applied = _v4a_edit_inputs(
+            patch_text, str(self.root), applied={"files_modified": [target, target]},
+        )
+        self.assertEqual([item["old_string"] for item in both_applied], ["old-one", "old-two"])
+        self.assertEqual([item["new_string"] for item in both_applied], ["new-one", "new-two"])
 
     def test_post_tool_context_is_appended_after_guarded_result(self):
         command = self.make_hook(
