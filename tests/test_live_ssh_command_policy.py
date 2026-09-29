@@ -83,6 +83,11 @@ class LiveSshCommandPolicyTests(unittest.TestCase):
                         environment_key = terminal_module._resolve_container_task_id(task_id)
                         self.assertIn(environment_key, terminal_module._active_environments)
                         remote = terminal_module._active_environments[environment_key]
+                    prepared = remote.execute("mkdir -p .claude", cwd=SSH_PROJECT, timeout=20)
+                    self.assertEqual(prepared["returncode"], 0, prepared)
+                    prepared = remote.execute(f"rm -f {shlex.quote(project_settings_path)}",
+                                              cwd=SSH_PROJECT, timeout=20)
+                    self.assertEqual(prepared["returncode"], 0, prepared)
                     absent = remote.execute(
                         f"test ! -e {shlex.quote(project_settings_path)}", cwd=SSH_PROJECT, timeout=20,
                     )

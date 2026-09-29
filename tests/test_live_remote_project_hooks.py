@@ -19,6 +19,22 @@ from lifeos_hook_bridge.bridge import HookBridge
 
 
 class LiveRemoteProjectHookTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        host = os.environ.get("LIFEOS_SSH_PROBE_HOST")
+        user = os.environ.get("LIFEOS_SSH_PROBE_USER")
+        key = os.environ.get("LIFEOS_SSH_PROBE_KEY")
+        project = os.environ.get("LIFEOS_SSH_PROBE_PROJECT")
+        if not all((host, user, key, project)):
+            return
+        subprocess.run(
+            ["ssh", "-o", "BatchMode=yes", "-o", "StrictHostKeyChecking=accept-new",
+             "-i", key, f"{user}@{host}",
+             f"mkdir -p {shlex.quote(project)}/.claude"],
+            check=True, capture_output=True, text=True, timeout=20,
+        )
+
     def test_ssh_symlink_destination_file_rule(self):
         host = os.environ.get("LIFEOS_SSH_PROBE_HOST")
         user = os.environ.get("LIFEOS_SSH_PROBE_USER")

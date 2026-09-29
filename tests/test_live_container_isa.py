@@ -3,6 +3,7 @@
 
 import json
 import os
+import shutil
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -21,9 +22,12 @@ class LiveContainerISATests(unittest.TestCase):
         from tools.file_tools import clear_file_ops_cache, read_file_tool
         from tools.terminal_tool import _active_environments, _env_lock
 
-        bun = Path.home() / ".bun/bin/bun"
+        bun_path = shutil.which("bun")
+        if not bun_path:
+            self.skipTest("Bun is required for the installed LifeOS hook")
+        bun = Path(bun_path)
         hooks = Path.home() / ".claude/hooks"
-        if not bun.exists() or not (hooks / "ISAStaleWriteGuard.hook.ts").exists():
+        if not (hooks / "ISAStaleWriteGuard.hook.ts").exists():
             self.skipTest("installed LifeOS ISA hook and Bun are required")
 
         project = "/tmp/lifeos-container-isa-probe"

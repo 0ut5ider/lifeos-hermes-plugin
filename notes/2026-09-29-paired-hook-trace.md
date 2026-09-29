@@ -1,0 +1,21 @@
+# Paired installed hook traces
+
+Date: 2026-09-29. The native reference is Claude Code 2.1.272 in `lifeos-claude-ref` on `.212`. The Hermes side uses the patched source and plugin in `lifeos-plugin-install-probe`. Both accounts have fresh, synthetic LifeOS data and use the same private LAN model. The LifeOS source is pinned to `5e2f2e8`.
+
+`scripts/paired_hook_trace.py` wrapped the 72 command registrations in each installed `settings.json`. It left the two HTTP registrations unchanged. The wrapper forwarded input, output, and exit code and wrote private JSONL traces. The original settings remain in `.paired-original` files and must be restored after this study. The raw traces stay on `.212` because they can contain prompt and hook text.
+
+The [sanitized ledger](../docs/parity/paired-live-coverage.json) contains the observed registration IDs, exit codes, output presence, and source trace hashes. The current Bash, Read, Write, and Edit pairs cover 49 of 74 registrations. For the covered event handlers, dispatch, exit code, and output presence matched. This is a transport check, not a side-effect verdict. The other 25 registrations remain unobserved in matched live event cases.
+
+The Bash pair ran `printf PAIR_BASH_212` through each harness. Both tools returned the marker. The Read pair read a file containing `PAIR_READ_212`. Both tools returned that marker. The Write pair created `PAIR_WRITE_212` through native `Write` and Hermes `write_file`; both resulting files contained the marker. The Edit pair changed that marker to `PAIR_EDIT_212` through native `Edit` and Hermes `patch`; both resulting files contained the new marker. Hermes needed its temporary single-query approval setting set to `approve`, comparable to the native CLI's `--allowedTools Write`. That setting will be restored after the paired runs.
+
+An earlier simultaneous Write attempt was not a valid comparison. Native LifeOS's safety classifier timed out and denied the action. Hermes refused an attempted write inside `.claude` under `HERMES_WRITE_SAFE_ROOT`. Reading `LIFEOS/HERMES/Mount.ts` showed that the LifeOS sidecar intentionally keeps the mounted tree read-only and uses its memory API for persistence. Ordinary project writes belong in the permitted workspace. A second native Write succeeded after the classifier recovered.
+
+One Read run produced different final prose in Claude Code and Hermes. The native final response met the LifeOS voice closer format. The Hermes response did not, so `VoiceCompletion.hook.ts` logged a fallback. The ledger marks that Stop sample as incomparable input and uses the matched Bash response to compare the Stop handler. This observation may reflect different agent prompts or model output, and needs a separate output-format test before any host change.
+
+The first nested SSH test reported a missing transcript because its assertion used the former shared `.hermes/LIFEOS` path. The actual transcript existed under the separate `.claude/LIFEOS` root and contained the nested Read event. The assertion now uses `LIFEOS_DIR` or the installed default. The corrected SSH test and three Docker file and hook tests passed on `.212`.
+
+The full remote gate initially stopped on test fixture assumptions. The disposable SSH project had no `.claude` directory, the ISA file retained an edit from an earlier run, and the SSH cache probe selected `probe_only=True`, which disables cache synchronization. The tests now create their project directory, initialize the ISA, and stage the cache file on the remote target. The [remote gate runner](../scripts/run_live_remote_gate.py) then passed 19 SSH and Docker tests in 57.472 seconds with no selected skip. The probe used loopback SSH and the existing local `composer:2.8` image. Its raw log stays on `.212`.
+
+The native Claude Code `init` event listed 21 available tools. It included `Edit` but no `MultiEdit`, so the seven installed `PostToolUse` registrations for `MultiEdit` could not fire in that print-mode control. This does not establish their status in every Claude Code mode. The ledger leaves them unobserved until their native availability is resolved.
+
+The next checks are Edit and other tool events, permission modes and denials, lifecycle failure paths, and complete remote suites. The full release gate has not run yet.

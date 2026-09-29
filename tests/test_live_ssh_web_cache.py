@@ -30,7 +30,7 @@ class LiveSshWebCacheTests(unittest.TestCase):
 
         session = f"ssh-web-cache-{uuid4().hex}"
         env = SSHEnvironment(host=SSH_HOST, user=SSH_USER, key_path=SSH_KEY,
-                             cwd="/tmp/lifeos-ssh-cache-probe-20260928", probe_only=True)
+                             cwd="/tmp", probe_only=True)
         with _env_lock:
             self.assertNotIn("default", _active_environments)
             _active_environments["default"] = env
@@ -43,6 +43,12 @@ class LiveSshWebCacheTests(unittest.TestCase):
             cache_file.write_text("SSH_CACHE_CONTENT\n")
             visible_path = to_agent_visible_cache_path(str(cache_file))
             self.assertTrue(visible_path.startswith("~/.hermes/cache/web/"), visible_path)
+            remote_cache = f"$HOME/.hermes/cache/web/{cache_file.name}"
+            prepared = env.execute(
+                f"mkdir -p \"$HOME/.hermes/cache/web\" && cat > \"{remote_cache}\"",
+                cwd="/tmp", stdin_data=cache_file.read_text(), timeout=20,
+            )
+            self.assertEqual(prepared["returncode"], 0, prepared["output"])
 
             with TemporaryDirectory(prefix="ssh-web-cache-hook-") as directory:
                 root = Path(directory)
@@ -74,6 +80,9 @@ class LiveSshWebCacheTests(unittest.TestCase):
                     bridge.close()
         finally:
             reset_terminal_scope(token)
+            if cache_file is not None:
+                env.execute(f"rm -f \"$HOME/.hermes/cache/web/{cache_file.name}\"",
+                            cwd="/tmp", timeout=20)
             if cache_file is not None:
                 cache_file.unlink(missing_ok=True)
             clear_file_ops_cache("default")

@@ -4,6 +4,7 @@
 import json
 import os
 import shlex
+import shutil
 import subprocess
 import unittest
 from pathlib import Path
@@ -26,7 +27,10 @@ class LiveRemoteISATests(unittest.TestCase):
         from tools.file_tools import clear_file_ops_cache, read_file_tool
         from tools.terminal_tool import _active_environments, _env_lock
 
-        bun = Path.home() / ".bun/bin/bun"
+        bun_path = shutil.which("bun")
+        if not bun_path:
+            self.skipTest("Bun is required for the installed LifeOS hook")
+        bun = Path(bun_path)
         hooks = Path.home() / ".claude/hooks"
         session = f"remote-isa-{uuid4().hex}"
         state = Path.home() / f".claude/LIFEOS/MEMORY/STATE/isa-session-view/{session}.json"
@@ -35,6 +39,9 @@ class LiveRemoteISATests(unittest.TestCase):
         with _env_lock:
             _active_environments["default"] = env
         try:
+            initial = env.execute(f"cat > {shlex.quote(path)}", cwd=str(Path(path).parent),
+                                  stdin_data="one\nold\n", timeout=20)
+            self.assertEqual(initial["returncode"], 0, initial["output"])
             with TemporaryDirectory(prefix="live-remote-isa-") as directory:
                 root = Path(directory)
                 settings = root / "settings.json"

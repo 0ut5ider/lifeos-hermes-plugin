@@ -1,0 +1,2476 @@
+{
+  "scope": "registration dispatch, exit code, and output presence only; handler side effects require separate evidence",
+  "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
+  "scenarios": [
+    {
+      "label": "bash",
+      "native_session": "ed82e312-bcc4-485d-8943-55ac697e62be",
+      "hermes_session": "20260929_094959_1a4714",
+      "event_filter": null,
+      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
+      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+    },
+    {
+      "label": "read",
+      "native_session": "0b9148e4-f34d-461b-a5e2-6a4cec22bad8",
+      "hermes_session": "20260929_095303_c9f2f5",
+      "event_filter": null,
+      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
+      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+    },
+    {
+      "label": "write",
+      "native_session": "28279f6e-7f17-405e-bf3b-9c408ce66e1c",
+      "hermes_session": "20260929_101116_25f3ec",
+      "event_filter": "PostToolUse",
+      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
+      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+    },
+    {
+      "label": "edit",
+      "native_session": "b2232b66-ccae-4c26-a0fd-9f9da8bff4e1",
+      "hermes_session": "20260929_101832_ee34e3",
+      "event_filter": "PostToolUse",
+      "native_trace_sha256": "036c09011851892db77bf1817cacdb4148817ae34bee5d21b5638af58715738b",
+      "hermes_trace_sha256": "c5c98c0291e3d33d24c70ee4bfedc7b74a064ba6c92dd433d5421da1c1d29a32"
+    }
+  ],
+  "registrations": [
+    {
+      "id": "PreToolUse.1.1",
+      "event": "PreToolUse",
+      "handler": "$HOME/.claude/hooks/ContextReduction.hook.sh",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PreToolUse.2.1",
+      "event": "PreToolUse",
+      "handler": "http://localhost:31337/hooks/skill-guard",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PreToolUse.3.1",
+      "event": "PreToolUse",
+      "handler": "http://localhost:31337/hooks/agent-guard",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PreToolUse.3.2",
+      "event": "PreToolUse",
+      "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PreToolUse.4.1",
+      "event": "PreToolUse",
+      "handler": "$HOME/.claude/hooks/TabState.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PreToolUse.5.1",
+      "event": "PreToolUse",
+      "handler": "$HOME/.claude/hooks/PreToolGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.1.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.2.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.3.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.4.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.5.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.6.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/TabState.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.7.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.2",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.3",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.4",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ConfigEvalFire.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.5",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.6",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.8.7",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.2",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.3",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.4",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ConfigEvalFire.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.5",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.6",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.9.7",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.10.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.10.2",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.10.3",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.10.4",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ConfigEvalFire.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.10.5",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.10.6",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.10.7",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUse.11.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            },
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            },
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.12.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/PostToolObserver.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            },
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            },
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.12.2",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "write",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Write"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "edit",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            },
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Read"
+            },
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Edit"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUse.13.1",
+      "event": "PostToolUse",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": "Bash"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionEnd.1.1",
+      "event": "SessionEnd",
+      "handler": "$HOME/.claude/hooks/WorkCompletionLearning.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionEnd.1.2",
+      "event": "SessionEnd",
+      "handler": "$HOME/.claude/hooks/SessionCleanup.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionEnd.1.3",
+      "event": "SessionEnd",
+      "handler": "$HOME/.claude/hooks/UpdateCounts.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionEnd.1.4",
+      "event": "SessionEnd",
+      "handler": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionEnd.1.5",
+      "event": "SessionEnd",
+      "handler": "$HOME/.claude/hooks/DocIntegrity.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionEnd.1.6",
+      "event": "SessionEnd",
+      "handler": "$HOME/.claude/hooks/IntegrityCheck.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.1.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/PromptProcessing.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.2.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/SatisfactionCapture.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.3.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/ReminderRouter.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.4.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/VersionDrift.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.5.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/MemoryTurnStart.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.6.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/DriftReminder.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.7.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/AlgorithmNudge.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.8.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/TimeContext.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "UserPromptSubmit.9.1",
+      "event": "UserPromptSubmit",
+      "handler": "$HOME/.claude/hooks/ModelRungGuard.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "PostToolUseFailure.1.1",
+      "event": "PostToolUseFailure",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUseFailure.2.1",
+      "event": "PostToolUseFailure",
+      "handler": "$HOME/.claude/hooks/AlgorithmNudge.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PostToolUseFailure.3.1",
+      "event": "PostToolUseFailure",
+      "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "TaskCreated.1.1",
+      "event": "TaskCreated",
+      "handler": "$HOME/.claude/hooks/TaskGovernance.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "ConfigChange.1.1",
+      "event": "ConfigChange",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "SessionStart.1.1",
+      "event": "SessionStart",
+      "handler": "bun $HOME/.claude/hooks/HookHealer.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionStart.1.2",
+      "event": "SessionStart",
+      "handler": "$HOME/.claude/hooks/KittyEnvPersist.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionStart.1.3",
+      "event": "SessionStart",
+      "handler": "$HOME/.claude/hooks/LoadContext.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionStart.1.4",
+      "event": "SessionStart",
+      "handler": "bun $HOME/.claude/LIFEOS/TOOLS/FreshnessCache.ts --quiet",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "SessionStart.1.5",
+      "event": "SessionStart",
+      "handler": "bun $HOME/.claude/LIFEOS/TOOLS/SettingsBackport.ts; bun $HOME/.claude/LIFEOS/TOOLS/MergeSettings.ts --system $HOME/.claude/settings.system.json --user $HOME/.claude/LIFEOS/USER/CONFIG/settings.user.json --output $HOME/.claude/settings.json",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.1",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/LastResponseCache.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.2",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/TabState.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.3",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/VoiceCompletion.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.4",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/ISARenderOnStop.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.5",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/SpendAuditor.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.6",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/StopGates.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.1.7",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/MemoryReviewFire.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "Stop.2.1",
+      "event": "Stop",
+      "handler": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts",
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "bash",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        },
+        {
+          "scenario": "read",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": true,
+              "tool_name": null
+            }
+          ],
+          "transport_match": null,
+          "incomparable_reason": "different_final_text"
+        }
+      ]
+    },
+    {
+      "id": "StopFailure.1.1",
+      "event": "StopFailure",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PermissionRequest.1.1",
+      "event": "PermissionRequest",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    },
+    {
+      "id": "PermissionRequest.2.1",
+      "event": "PermissionRequest",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "status": "not_observed",
+      "cases": []
+    }
+  ],
+  "counts": {
+    "matched_dispatch_and_output_shape": 49,
+    "mismatch": 0,
+    "observed_with_different_input": 0,
+    "not_observed": 25
+  }
+}
