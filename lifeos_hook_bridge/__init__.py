@@ -11,7 +11,7 @@ from .bridge import HookBridge
 from .model_tiers import configured_model_map
 
 
-PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
+PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 
 
 def register(ctx: Any) -> None:
@@ -40,7 +40,7 @@ def register(ctx: Any) -> None:
     ctx.on_unload(bridge.close)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
     ctx.register_hook("post_tool_call", bridge.task_result)
-    ctx.register_hook("pre_llm_call", bridge.pre_llm_call)
+    ctx.register_hook("pre_prompt_admission" if patched_host else "pre_llm_call", bridge.pre_llm_call)
     if not patched_host:
         ctx.register_hook("post_tool_call", bridge.post_tool_call)
         ctx.register_hook("on_session_finalize", bridge.session_end)

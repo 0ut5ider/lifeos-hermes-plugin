@@ -43,6 +43,11 @@ class NativeEventLoggerTests(unittest.TestCase):
             self.assertEqual(row["error"], "Exit code 1")
 
     def test_bash_combined_output_is_named_in_audit(self):
+        for output in ("hello", "é🚀"):
+            with self.subTest(output=output):
+                self.assert_combined_output(output)
+
+    def assert_combined_output(self, output):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory) / "LIFEOS"
             environment = {**os.environ, "LIFEOS_DIR": str(root)}
@@ -51,7 +56,7 @@ class NativeEventLoggerTests(unittest.TestCase):
                 "session_id": "hermes-event-logger-test",
                 "tool_name": "Bash",
                 "tool_input": {"command": "printf hello"},
-                "tool_response": {"output": "hello", "exit_code": 0},
+                "tool_response": {"output": output, "exit_code": 0},
                 "cwd": directory,
             }
             result = subprocess.run(
@@ -61,6 +66,6 @@ class NativeEventLoggerTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             path = root / "MEMORY/OBSERVABILITY/tool-activity.jsonl"
             ground_truth = json.loads(path.read_text().splitlines()[-1])["ground_truth"]
-            self.assertEqual(ground_truth["combined_output_preview"], "hello")
-            self.assertEqual(ground_truth["combined_output_bytes"], 5)
+            self.assertEqual(ground_truth["combined_output_preview"], output)
+            self.assertEqual(ground_truth["combined_output_bytes"], len(output.encode("utf-8")))
             self.assertNotIn("stdout_preview", ground_truth)

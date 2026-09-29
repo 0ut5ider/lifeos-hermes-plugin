@@ -191,6 +191,21 @@ def _is_native_checkpoint(command: str) -> bool:
     return Path(path).parts[-3:] == (".claude", "hooks", "CheckpointPerISC.hook.ts")
 
 
+def _is_native_task_governance(command: str, root: Path) -> bool:
+    if not isinstance(command, str):
+        return False
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return False
+    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
+        tokens = tokens[1:]
+    if len(tokens) != 1:
+        return False
+    path = tokens[0].replace("${HOME}", "~").replace("$HOME", "~")
+    return Path(path).expanduser().resolve() == (root / "hooks/TaskGovernance.hook.ts").resolve()
+
+
 def _managed_permission_sources() -> tuple[list[Any], bool]:
     paths = [POLICY_DIRECTORY / "managed-settings.json"]
     dropins = POLICY_DIRECTORY / "managed-settings.d"
@@ -1128,6 +1143,7 @@ class HookBridge:
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
+        native_task_probe: bool = False,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         host_paths = _task_uses_host_paths(task_id)
@@ -1150,6 +1166,11 @@ class HookBridge:
             if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
                 values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
             for hook in group.get("hooks", []):
+                if native_task_probe and (
+                    remote_project is not None or hook.get("type") != "command"
+                    or not _is_native_task_governance(hook.get("command", ""), self.root)
+                ):
+                    continue
                 if hook.get("type") == "http":
                     if remote_project is not None:
                         url = hook.get("url", "")
@@ -1837,7 +1858,8 @@ class HookBridge:
             payload = self._payload("TaskCreated", session_id, cwd=cwd, hermes_bridge_probe=True)
             self.native_task_hook_supported[key] = any(
                 process.returncode == 0 and (output or {}).get("hermes_bridge_task_governance") == 1
-                for process, output in self._run("TaskCreated", payload, task_id=backend_task_id)
+                for process, output in self._run(
+                    "TaskCreated", payload, task_id=backend_task_id, native_task_probe=True)
             )
         return self.native_task_hook_supported[key]
 

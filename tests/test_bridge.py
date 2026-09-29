@@ -2225,7 +2225,7 @@ class HookBridgeTests(unittest.TestCase):
     def test_native_task_hook_receives_session_count_and_controls_creation(self):
         marker = self.root / "native-task-counts"
         command = self.make_hook(
-            "task-governance.py",
+            "TaskGovernance.hook.ts",
             "import json,sys\nfrom pathlib import Path\n"
             "data=json.load(sys.stdin)\n"
             "if data.get('hermes_bridge_probe'):\n"
@@ -2236,6 +2236,10 @@ class HookBridgeTests(unittest.TestCase):
             " print('native count blocked',file=sys.stderr)\n"
             " sys.exit(2)\n",
         )
+        native = self.hooks / "TaskGovernance.hook.ts"
+        native.write_text(f"#!{sys.executable}\n" + native.read_text())
+        native.chmod(0o755)
+        command = str(native)
         bridge = self.bridge({"TaskCreated": [{"hooks": [{"type": "command", "command": command}]}]})
         first = {"title": "First meaningful task", "assignee": "worker"}
         second = {"title": "Second meaningful task", "assignee": "worker"}
@@ -3273,6 +3277,8 @@ class HookBridgeTests(unittest.TestCase):
             module.register(Context())
         self.assertIn("on_session_finalize", hooks)
         self.assertIn("on_turn_result", hooks)
+        self.assertIn("pre_prompt_admission", hooks)
+        self.assertNotIn("pre_llm_call", hooks)
         self.assertNotIn("on_session_reset", hooks)
 
     def test_stop_failure_logs_only_terminal_api_error(self):

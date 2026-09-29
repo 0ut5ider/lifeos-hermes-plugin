@@ -37,6 +37,9 @@ class DashboardApiTests(unittest.TestCase):
                 self.assertEqual(installed["version"], "7.40.4")
                 host.VALID_HOOKS.update({"pre_command_approval", "augment_tool_result",
                                          "pre_turn_stop", "on_turn_result"})
+                self.assertEqual(api.get_installation()["hermes"], "partial")
+                self.assertEqual(api.get_installation()["missing_hooks"], ["pre_prompt_admission"])
+                host.VALID_HOOKS.add("pre_prompt_admission")
                 self.assertEqual(api.get_installation()["hermes"], "patched_hooks_present")
 
     def test_prepares_candidate_only_when_lifeos_is_missing(self):

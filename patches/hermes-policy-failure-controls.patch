@@ -1,0 +1,557 @@
+diff --git a/agent/turn_context.py b/agent/turn_context.py
+--- a/agent/turn_context.py
++++ b/agent/turn_context.py
+@@ -755,15 +755,14 @@
+     agent: Any, *, effective_task_id: str, turn_id: str, original_user_message: Any,
+     messages: List[Any], conversation_history: Optional[List[Any]],
+ ) -> str:
+-    """Run ``pre_llm_call`` plugins; their context is injected into the user message
++    """Run required prompt admission, then optional context callbacks. Context goes into the user message
+     (never the system prompt). Oversized per-hook context is spilled to disk so a
+     runaway plugin can't inflate every subsequent turn's prompt."""
+     if getattr(agent, "_persist_disabled", False):
+         return ""
+     try:
+         from hermes_cli.lifecycle import invoke_hook as _invoke_hook
+-        _pre_results = _invoke_hook(
+-            "pre_llm_call",
++        hook_kwargs = dict(
+             session_id=agent.session_id,
+             task_id=effective_task_id,
+             turn_id=turn_id,
+@@ -775,6 +774,22 @@
+             parent_session_id=getattr(agent, "_parent_session_id", None) or "",
+             sender_id=getattr(agent, "_user_id", None) or "",
+         )
++        try:
++            admission_results = _invoke_hook("pre_prompt_admission", **hook_kwargs)
++            for result in admission_results:
++                if isinstance(result, dict) and result.get("action") == "block":
++                    raise PromptBlocked(str(result.get("message") or "Prompt blocked by a hook"))
++        except PromptBlocked:
++            raise
++        except (Exception, SystemExit) as error:
++            logger.warning("pre_prompt_admission hook failed: %s", error)
++            raise PromptBlocked("Required prompt check unavailable") from error
++        try:
++            context_results = _invoke_hook("pre_llm_call", **hook_kwargs)
++        except Exception as error:
++            logger.warning("pre_llm_call hook failed: %s", error)
++            context_results = []
++        _pre_results = admission_results + context_results
+         try:
+             # Spill oversized per-hook context to disk so a runaway plugin can't inflate every subsequent
+             # turn's prompt. Ported from openai/codex PR #21069 ("Spill large hook outputs from context").
+@@ -807,9 +822,9 @@
+         return "\n\n".join(_ctx_parts)
+     except PromptBlocked:
+         raise
+-    except Exception as exc:
+-        logger.warning("pre_llm_call hook failed: %s", exc)
+-    return ""
++    except (Exception, SystemExit) as exc:
++        logger.warning("prompt hook collection failed: %s", exc)
++        raise PromptBlocked("Required prompt check unavailable") from exc
+
+
+ def _merge_gateway_notes(
+diff --git a/agent/turn_stop_gates.py b/agent/turn_stop_gates.py
+--- a/agent/turn_stop_gates.py
++++ b/agent/turn_stop_gates.py
+@@ -94,8 +94,9 @@
+                 attempt=attempt,
+                 final_response=final_response,
+             )
+-    except Exception:
+-        logger.debug("pre_turn_stop hook check failed", exc_info=True)
++    except (Exception, SystemExit):
++        logger.warning("pre_turn_stop hook check failed", exc_info=True)
++        return {"action": "fail", "message": "Required final check unavailable"}
+     return None
+
+
+@@ -155,6 +156,13 @@
+     _stop_nudge = _pre_turn_stop_nudge(agent, final_response, _stop_attempt)
+     _stop_limit_policy = "allow"
+     if isinstance(_stop_nudge, dict):
++        if _stop_nudge.get("action") == "fail":
++            agent._stop_gate_blocked_at_budget = True
++            return StopGateVerdict(
++                continue_turn=False, final_response=STOP_GATE_FAILURE_MESSAGE,
++                pending_verification_response=None, pending_verification_response_previewed=False,
++                failure_message=STOP_GATE_FAILURE_MESSAGE,
++            )
+         _stop_limit_policy = _stop_nudge.get("on_limit", "allow")
+         _stop_nudge = _stop_nudge.get("message")
+     if _stop_nudge:
+diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
+--- a/hermes_cli/plugins.py
++++ b/hermes_cli/plugins.py
+@@ -114,6 +114,7 @@
+     "pre_command_approval",
+     # transform_llm_output: return a replacement string (first non-None wins) or None.
+     "transform_llm_output", "pre_llm_call", "post_llm_call",
++    "pre_prompt_admission",
+     # Streaming observers (agent.plugin_stream_hooks), off the token path; payloads are immutable
+     # normalized text/lifecycle and cannot transform the stream.
+     "on_stream_start", "on_stream_delta", "on_stream_end", "on_interim_message",
+@@ -2105,16 +2106,22 @@
+         "pre_turn_stop", session_id=session_id, platform=platform, model=model,
+         reasoning_effort=reasoning_effort, attempt=attempt, final_response=final_response,
+     )
++    message = None
++    fail_at_limit = False
+     for result in results:
+         if not isinstance(result, dict):
+             continue
+         action = str(result.get("action") or result.get("decision") or "").strip().lower()
+-        message = result.get("message") or result.get("reason")
+-        if action in ("continue", "block") and isinstance(message, str) and message.strip():
+-            if result.get("on_limit") == "fail":
+-                return {"message": message.strip(), "on_limit": "fail"}
+-            return message.strip()
+-    return None
++        feedback = result.get("message") or result.get("reason")
++        if action == "fail":
++            return {"action": "fail", "message": str(feedback or "Required final check failed")}
++        if action in ("continue", "block") and isinstance(feedback, str) and feedback.strip():
++            if message is None:
++                message = feedback.strip()
++            fail_at_limit = fail_at_limit or result.get("on_limit") == "fail"
++    if message is not None and fail_at_limit:
++        return {"message": message, "on_limit": "fail"}
++    return message
+
+
+ def get_plugin_error_classification(
+diff --git a/hermes_cli/plugins_dispatch.py b/hermes_cli/plugins_dispatch.py
+--- a/hermes_cli/plugins_dispatch.py
++++ b/hermes_cli/plugins_dispatch.py
+@@ -16,6 +16,7 @@
+ import threading
+ import time
+ import types
++import uuid
+ from dataclasses import dataclass
+ from typing import Any, Callable, Dict, List, Mapping, Optional, Set, Union
+
+@@ -45,8 +46,13 @@
+     "pre_auxiliary_call", "post_auxiliary_call", "pre_verify", "on_session_start", "on_session_end",
+ }
+
+-# Policy hooks: timeout / still-running must fail closed (block the tool).
+-_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: Set[str] = {"pre_tool_call"}
++# Policy hooks return a veto appropriate to the operation when a callback fails.
++_HOOK_POLICY_FAILURE_ACTIONS = {
++    "pre_tool_call": "block", "pre_prompt_admission": "block",
++    "pre_command_approval": "deny", "pre_turn_stop": "fail",
++}
++_HOOK_TIMEOUT_FAIL_CLOSED_HOOKS: Set[str] = set(_HOOK_POLICY_FAILURE_ACTIONS)
++_REQUIRED_POLICY_HOOKS = {"pre_prompt_admission", "pre_command_approval", "pre_turn_stop"}
+ # Documented parent-thread serialization contract — never run on a timeout worker (hooks.md).
+ _HOOK_CALLER_THREAD_HOOKS: Set[str] = {"subagent_stop"}
+ # After a timeout, suppress the same callback this long so a hung hook cannot pile up threads.
+@@ -61,8 +67,14 @@
+     error (truncated — a hook that embeds tool args in its exception must not grow the tool
+     result) so the operator can tell a crashing guard from a slow one."""
+     callback_name = getattr(cb, "__name__", repr(cb))
+-    return {"action": "block",
++    return {"action": _HOOK_POLICY_FAILURE_ACTIONS[hook_name],
+             "message": f"{hook_name} plugin callback {callback_name} raised {type(exc).__name__}: {str(exc)[:200]}"}
++
++def _policy_timeout_directive(hook_name: str) -> Dict[str, str]:
++    message = (_PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE if hook_name == "pre_tool_call"
++               else f"{hook_name} plugin callback timed out or is still running")
++    return {"action": _HOOK_POLICY_FAILURE_ACTIONS[hook_name], "message": message}
++
+
+ # System-prompt sections are tightly bounded: they become high-trust prompt bytes charged every turn.
+ SYSTEM_PROMPT_SECTION_POSITIONS = frozenset({"after_memory"})
+@@ -164,7 +176,7 @@
+     payload; nothing new is plumbed. Deliberately not ``api_request_id`` — one API request
+     carries many tool calls, which would re-collapse the keys.
+     """
+-    for field in ("tool_call_id", "turn_id"):
++    for field in ("tool_call_id", "turn_id", "policy_call_id"):
+         value = kwargs.get(field)
+         if isinstance(value, str) and value:
+             return value
+@@ -212,16 +224,21 @@
+         Payloads evolve additively: ``**kwargs`` callbacks get everything, narrow signatures only
+         what they declare. Each callback is isolated. Bounded hooks and ``pre_tool_call`` run under
+         ``plugins.hook_callback_timeout`` (worker abandoned, never joined); ``pre_tool_call`` fails
+-        closed with a block directive, others skip. ``_HOOK_CALLER_THREAD_HOOKS`` always run on the
+-        caller thread. ``pre_llm_call`` may return ``{"context": "..."}`` (or a str) to inject.
++        closed with an operation-specific veto, optional hooks skip. ``_HOOK_CALLER_THREAD_HOOKS`` always run on the
++        caller thread. Required admission, command, and final gates remain bounded when
++        the optional callback timeout is disabled. ``pre_llm_call`` may return ``{"context": "..."}`` (or a str) to inject.
+         """
+         from hermes_cli.plugins import _resolve_hook_callback_timeout
+         # Gateway platform events define event-local envelopes; a bus-wide version here would turn
+         # unrelated adapter payloads into one monolithic compatibility contract.
+         if hook_name != "gateway_platform_event":
+             kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
++        if hook_name in _REQUIRED_POLICY_HOOKS:
++            kwargs.setdefault("policy_call_id", uuid.uuid4().hex)
+         results: List[Any] = []
+         timeout = _resolve_hook_callback_timeout()
++        if hook_name in _REQUIRED_POLICY_HOOKS and timeout <= 0:
++            timeout = 30.0
+         use_timeout = _hook_uses_callback_timeout(hook_name, timeout)
+         fail_closed = hook_name in _HOOK_TIMEOUT_FAIL_CLOSED_HOOKS
+         for cb in self._hooks.get(hook_name, []):
+@@ -230,7 +247,7 @@
+                     ret = self._run_hook_callback_bounded(hook_name, cb, kwargs, timeout)
+                     if ret is _HOOK_SKIPPED:
+                         if fail_closed:  # policy hook: fail closed with a block directive
+-                            results.append({"action": "block", "message": _PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE})
++                            results.append(_policy_timeout_directive(hook_name))
+                         continue
+                 else:
+                     ret = self._invoke_hook_callback(cb, kwargs)
+@@ -488,28 +505,41 @@
+         callback that awaits anything scheduled on that loop can make progress. Through the
+         sync path it runs on a helper thread while the caller blocks in ``done.wait()`` — on the
+         gateway that stalls the whole event loop for the callback's duration. Sync callbacks
+-        run inline. Bounded hooks keep ``plugins.hook_callback_timeout`` via ``asyncio.wait_for``
++        run inline for optional hooks. Required policy callbacks run on bounded workers
++        with independent event loops, so they must not depend on the caller's loop. Bounded hooks keep ``plugins.hook_callback_timeout`` via ``asyncio.wait_for``
+         (the coroutine is cancelled, not abandoned); a timed-out ``pre_tool_call`` fails closed.
+         """
+         from hermes_cli.plugins import _resolve_hook_callback_timeout
+         if hook_name != "gateway_platform_event":
+             kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
++        if hook_name in _REQUIRED_POLICY_HOOKS:
++            kwargs.setdefault("policy_call_id", uuid.uuid4().hex)
+         results: List[Any] = []
+         timeout = _resolve_hook_callback_timeout()
++        if hook_name in _REQUIRED_POLICY_HOOKS and timeout <= 0:
++            timeout = 30.0
+         use_timeout = _hook_uses_callback_timeout(hook_name, timeout)
+         fail_closed = hook_name in _HOOK_TIMEOUT_FAIL_CLOSED_HOOKS
+         for cb in self._hooks.get(hook_name, []):
+             callback_name = getattr(cb, "__name__", repr(cb))
+             try:
+-                ret = cb(**self._hook_callback_kwargs(cb, kwargs))
+-                if inspect.isawaitable(ret):
+-                    ret = await (asyncio.wait_for(ret, timeout) if use_timeout else ret)
++                if hook_name in _REQUIRED_POLICY_HOOKS:
++                    # Required gates use the same bounded worker in both dispatch paths.
++                    # A late result cannot resume a denied operation.
++                    ret = await asyncio.to_thread(self._run_hook_callback_bounded, hook_name, cb, kwargs, timeout)
++                    if ret is _HOOK_SKIPPED:
++                        results.append(_policy_timeout_directive(hook_name))
++                        continue
++                else:
++                    ret = cb(**self._hook_callback_kwargs(cb, kwargs))
++                    if inspect.isawaitable(ret):
++                        ret = await (asyncio.wait_for(ret, timeout) if use_timeout else ret)
+                 if ret is not None:
+                     results.append(ret)
+             except asyncio.TimeoutError:
+                 logger.warning("Hook '%s' callback %s timed out after %.0fs", hook_name, callback_name, timeout)
+                 if fail_closed:  # policy hook: fail closed with a block directive
+-                    results.append({"action": "block", "message": _PRE_TOOL_CALL_TIMEOUT_BLOCK_MESSAGE})
++                    results.append(_policy_timeout_directive(hook_name))
+             except (Exception, SystemExit) as exc:
+                 # Same isolation + failure contract as the sync path (#111922 warn-once, #109624
+                 # a raising policy guard fails closed).
+diff --git a/tests/agent/test_prompt_hook_block.py b/tests/agent/test_prompt_hook_block.py
+--- a/tests/agent/test_prompt_hook_block.py
++++ b/tests/agent/test_prompt_hook_block.py
+@@ -4,10 +4,13 @@
+ from types import SimpleNamespace
+ from unittest.mock import MagicMock, patch
+
++import pytest
++
+ from run_agent import AIAgent
+
+
+-def test_prompt_hook_block_skips_provider_and_user_history():
++@pytest.mark.parametrize("hook_name", ["pre_llm_call", "pre_prompt_admission"])
++def test_prompt_hook_block_skips_provider_and_user_history(hook_name):
+     with (
+         patch("model_tools.get_tool_definitions", return_value=[]),
+         patch("model_tools.check_toolset_requirements", return_value={}),
+@@ -28,7 +31,7 @@
+     with (
+         patch("hermes_cli.lifecycle.invoke_hook", side_effect=lambda name, **_: [
+             {"action": "block", "message": "Prompt denied by test"},
+-        ] if name == "pre_llm_call" else []),
++        ] if name == hook_name else []),
+         patch.object(agent, "_persist_session") as persist,
+         patch.object(agent, "_save_trajectory"),
+         patch.object(agent, "_cleanup_task_resources"),
+@@ -59,3 +62,40 @@
+
+     assert result["messages"] == history
+     db.latest_conversation_role.assert_not_called()
++
++
++@pytest.mark.parametrize("failure", ["raise", "timeout"])
++def test_admission_failure_never_persists_prompt(failure, monkeypatch, caplog):
++    from hermes_cli.plugins import PluginManager
++    import time
++    manager = PluginManager()
++    def guard(**kwargs):
++        if failure == "raise":
++            raise RuntimeError("expected admission failure")
++        time.sleep(0.1)
++        return {"action": "allow"}
++    manager._hooks["pre_prompt_admission"] = [guard]
++    monkeypatch.setattr("hermes_cli.plugins._resolve_hook_callback_timeout", lambda: 0.02)
++    with (
++        patch("model_tools.get_tool_definitions", return_value=[]),
++        patch("model_tools.check_toolset_requirements", return_value={}),
++        patch("agent.process_bootstrap.OpenAI"),
++    ):
++        agent = AIAgent(api_key="test-key-1234567890", base_url="http://127.0.0.1:9/v1",
++                        quiet_mode=True, skip_context_files=True, skip_memory=True)
++    agent.client = MagicMock()
++    agent._cached_system_prompt = "Test"
++    agent.compression_enabled = False
++    with (
++        patch("hermes_cli.lifecycle.invoke_hook", side_effect=manager.invoke_hook),
++        patch.object(agent, "_persist_session") as persist,
++        patch.object(agent, "_save_trajectory"),
++        patch.object(agent, "_cleanup_task_resources"),
++    ):
++        result = agent.run_conversation("prompt must not leave this process")
++    assert result["turn_exit_reason"] == "prompt_blocked"
++    assert result["api_calls"] == 0
++    assert result["messages"] == []
++    agent.client.chat.completions.create.assert_not_called()
++    persist.assert_not_called()
++    assert "pre_prompt_admission" in caplog.text
+diff --git a/tests/agent/test_verification_continuation_budget.py b/tests/agent/test_verification_continuation_budget.py
+--- a/tests/agent/test_verification_continuation_budget.py
++++ b/tests/agent/test_verification_continuation_budget.py
+@@ -446,3 +446,31 @@
+     assert any(row.get("content") == "allowed final" for row in rows)
+     assert all("withheld candidate" not in str(row) for row in rows)
+     assert all("check first" not in str(row) for row in rows)
++
++
++@pytest.mark.parametrize("strict_first", [False, True])
++def test_stop_composition_preserves_any_strict_cap_policy(strict_first):
++    from hermes_cli.plugins import get_pre_turn_stop_continue_message
++    ordinary = {"action": "continue", "message": "ordinary check"}
++    strict = {"action": "continue", "message": "required check", "on_limit": "fail"}
++    results = [strict, ordinary] if strict_first else [ordinary, strict]
++    with patch("hermes_cli.plugins.invoke_hook", return_value=results):
++        result = get_pre_turn_stop_continue_message(final_response="draft")
++    assert result == {"message": results[0]["message"], "on_limit": "fail"}
++
++
++def test_stop_callback_failure_fails_immediately_without_draft_history(agent, monkeypatch):
++    agent.max_iterations = 3
++    agent._interruptible_api_call = MagicMock(return_value=_response("withheld draft"))
++    monkeypatch.setenv("HERMES_VERIFY_ON_STOP", "0")
++    with (
++        patch("hermes_cli.plugins.has_hook", side_effect=lambda name: name == "pre_turn_stop"),
++        patch("hermes_cli.plugins.get_pre_turn_stop_continue_message", return_value={"action": "fail", "message": "required check unavailable"}),
++        patch("hermes_cli.plugins.invoke_hook", return_value=[]),
++    ):
++        result = agent.run_conversation("require final gate")
++    assert result["failed"] is True
++    assert result["failure_reason"] == "stop_gate_blocked"
++    assert agent._interruptible_api_call.call_count == 1
++    assert "withheld draft" not in str(result["messages"])
++    assert "withheld draft" not in result["final_response"]
+diff --git a/tests/hermes_cli/test_required_policy_hooks.py b/tests/hermes_cli/test_required_policy_hooks.py
+new file mode 100644
+--- /dev/null
++++ b/tests/hermes_cli/test_required_policy_hooks.py
+@@ -0,0 +1,75 @@
++# ABOUTME: Verifies required policy callbacks stop operations on failure.
++# ABOUTME: Exercises bounded synchronous and asynchronous plugin dispatch.
++
++import asyncio
++import threading
++import time
++
++import pytest
++
++from hermes_cli.plugins import PluginManager
++
++
++REQUIRED = [("pre_prompt_admission", "block"), ("pre_command_approval", "deny"), ("pre_turn_stop", "fail")]
++
++
++@pytest.mark.parametrize("name,action", REQUIRED)
++@pytest.mark.parametrize("exception", [RuntimeError, SystemExit])
++def test_required_callback_exception_is_a_veto(name, action, exception, monkeypatch, caplog):
++    manager = PluginManager()
++    def failed(**kwargs):
++        raise exception("expected policy failure")
++    manager._hooks[name] = [failed]
++    monkeypatch.setattr("hermes_cli.plugins._resolve_hook_callback_timeout", lambda: 0.02)
++    result = manager.invoke_hook(name)
++    assert result and result[0]["action"] == action
++    assert "expected policy failure" in result[0]["message"]
++    assert "expected policy failure" in caplog.text
++
++
++@pytest.mark.parametrize("name,action", REQUIRED)
++@pytest.mark.parametrize("asynchronous", [False, True])
++def test_timeout_and_suppression_never_admit_a_late_grant(name, action, asynchronous, monkeypatch, caplog):
++    manager = PluginManager()
++    completed = threading.Event()
++    def slow(**kwargs):
++        time.sleep(0.15)
++        completed.set()
++        return {"action": "allow"}
++    manager._hooks[name] = [slow]
++    monkeypatch.setattr("hermes_cli.plugins._resolve_hook_callback_timeout", lambda: 0.02)
++    async def dispatch():
++        return await manager.ainvoke_hook(name)
++    started = time.monotonic()
++    first = asyncio.run(dispatch()) if asynchronous else manager.invoke_hook(name)
++    assert time.monotonic() - started < 0.12
++    second = asyncio.run(dispatch()) if asynchronous else manager.invoke_hook(name)
++    assert first[0]["action"] == second[0]["action"] == action
++    assert completed.wait(1)
++    assert first[0]["action"] == action
++    assert "timed out" in caplog.text
++
++
++def test_optional_context_failure_stays_fail_open(monkeypatch, caplog):
++    manager = PluginManager()
++    def failed(**kwargs):
++        raise RuntimeError("expected optional failure")
++    manager._hooks["pre_llm_call"] = [failed]
++    monkeypatch.setattr("hermes_cli.plugins._resolve_hook_callback_timeout", lambda: 0.02)
++    assert manager.invoke_hook("pre_llm_call") == []
++    assert "expected optional failure" in caplog.text
++
++
++def test_concurrent_commands_have_independent_policy_calls(monkeypatch, caplog):
++    from concurrent.futures import ThreadPoolExecutor
++    manager = PluginManager()
++    barrier = threading.Barrier(2)
++    def guard(**kwargs):
++        barrier.wait(timeout=0.5)
++        return {"action": "allow"}
++    manager._hooks["pre_command_approval"] = [guard]
++    monkeypatch.setattr("hermes_cli.plugins._resolve_hook_callback_timeout", lambda: 0.6)
++    with ThreadPoolExecutor(max_workers=2) as executor:
++        calls = [executor.submit(manager.invoke_hook, "pre_command_approval", command=f"printf {i}") for i in range(2)]
++        assert [call.result() for call in calls] == [[{"action": "allow"}], [{"action": "allow"}]]
++    assert not caplog.text
+diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
+--- a/tests/tools/test_plugin_command_approval.py
++++ b/tests/tools/test_plugin_command_approval.py
+@@ -414,3 +414,46 @@
+     assert result["approved"] is False
+     assert result["outcome"] == "plugin_denied"
+     assert any(call.args[0] == "pre_command_approval" for call in hooks.call_args_list)
++
++
++@pytest.mark.parametrize("kind", ["local", "ssh", "docker"])
++def test_review_grant_is_bound_to_workspace_and_backend(kind, tmp_path, monkeypatch):
++    from types import SimpleNamespace
++    from tools.approval import clear_session
++    from tools.approval_context import set_current_session_key
++    session = f"test:review-scope:{kind}"
++    token = set_current_session_key(session)
++    prompts = []
++    workspace = str(tmp_path) if kind == "local" else "/workspace"
++    backend = SimpleNamespace(host="target-a", user="user", port=22, _container_id="container-a")
++    monkeypatch.setattr("tools.terminal_tool_lifecycle.get_active_env", lambda task_id: backend)
++    try:
++        with patch("hermes_cli.plugins.invoke_hook", return_value=[{"action": "review"}]), patch(
++            "tools.tirith_security.check_command_security", return_value={"action": "allow", "findings": [], "summary": ""}
++        ):
++            def run(cwd, task="task-a", command="printf reviewed"):
++                return check_all_command_guards(command, kind, cwd=cwd, task_id=task,
++                    approval_callback=lambda *args, **kwargs: prompts.append(cwd) or "session")
++            assert run(workspace)["approved"]
++            assert run(workspace, "same-target-another-task")["approved"]
++            assert len(prompts) == 1
++            assert run(workspace + "/other")["approved"]
++            assert len(prompts) == 2
++            if kind != "local":
++                backend.host = "target-b"
++                backend._container_id = "container-b"
++                assert run(workspace)["approved"]
++                assert len(prompts) == 3
++            assert run(workspace, command="printf different")["approved"]
++            assert len(prompts) == (3 if kind == "local" else 4)
++    finally:
++        clear_session(session)
++        approval_context._approval_session_key.reset(token)
++
++
++def test_command_dispatch_failure_denies_instead_of_allowing(caplog):
++    with patch("hermes_cli.plugins.invoke_hook", side_effect=RuntimeError("expected dispatcher failure")):
++        result = check_all_command_guards("printf guarded", "local")
++    assert result["approved"] is False
++    assert result["outcome"] == "plugin_denied"
++    assert "expected dispatcher failure" in caplog.text
+diff --git a/tools/approval.py b/tools/approval.py
+--- a/tools/approval.py
++++ b/tools/approval.py
+@@ -18,6 +18,10 @@
+ import importlib
+ import logging
+ import os
++import json
++import posixpath
++import uuid
++from pathlib import Path
+ import threading
+ from typing import Optional
+
+@@ -1099,9 +1103,9 @@
+             env_type=env_type, cwd=cwd, task_id=task_id,
+             approval_bypass=approval_bypass,
+         )
+-    except Exception:
++    except (Exception, SystemExit):
+         logger.exception("pre_command_approval hook failed")
+-        return None
++        return "deny"
+     actions = [decision.get("action") for decision in (decisions or []) if isinstance(decision, dict)]
+     if "deny" in actions:
+         return "deny"
+@@ -1226,6 +1230,28 @@
+         }]}
+
+
++def _command_review_scope(env_type: str, cwd: str, task_id: str) -> tuple[str, str]:
++    """Bind review grants to an authoritative target without opening a backend."""
++    if env_type in {"local", ""}:
++        return ("local", str(Path(cwd or os.getcwd()).resolve()))
++    try:
++        from tools.terminal_tool_lifecycle import get_active_env
++        backend = get_active_env(task_id)
++        workspace = cwd or getattr(backend, "cwd", "")
++        if not posixpath.isabs(workspace):
++            raise ValueError("remote workspace is not absolute")
++        if env_type == "ssh":
++            target = [env_type, backend.host, backend.user, backend.port]
++        elif env_type == "docker" and backend._container_id:
++            target = [env_type, backend._container_id]
++        else:
++            raise ValueError("backend identity is unavailable")
++        return (json.dumps(target, separators=(",", ":")), posixpath.normpath(workspace))
++    except (Exception, SystemExit):
++        # An unknown target cannot reuse a stored grant, even within one task.
++        return (f"unresolved:{uuid.uuid4().hex}", cwd)
++
++
+ def check_all_command_guards(command: str, env_type: str,
+                              approval_callback=None,
+                              has_host_access: bool = False,
+@@ -1252,7 +1278,9 @@
+     approval_bypass = _yolo_active() or approval_mode == "off"
+     is_dangerous, pattern_key, description = detect_dangerous_command(command)
+     session_key = get_current_session_key()
+-    policy_rule_key = f"command_policy:{hashlib.sha256(command.encode()).hexdigest()[:16]}"
++    policy_scope = _command_review_scope(env_type, cwd, task_id)
++    policy_subject = json.dumps([command, *policy_scope], separators=(",", ":"))
++    policy_rule_key = f"command_policy:{hashlib.sha256(policy_subject.encode()).hexdigest()}"
+     policy_key = f"plugin_rule:{policy_rule_key}"
+     plugin_decision = _plugin_command_decision(
+         command, pattern_key or "", description or "",

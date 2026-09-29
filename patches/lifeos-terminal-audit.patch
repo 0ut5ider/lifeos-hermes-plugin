@@ -1,5 +1,5 @@
 diff --git a/LifeOS/install/hooks/EventLogger.hook.ts b/LifeOS/install/hooks/EventLogger.hook.ts
-index f3eda88..d87baeb 100755
+index f3eda88..36d3499 100755
 --- a/LifeOS/install/hooks/EventLogger.hook.ts
 +++ b/LifeOS/install/hooks/EventLogger.hook.ts
 @@ -155,6 +155,10 @@ function captureGroundTruth(toolName: string, input: Record<string, unknown>, re
@@ -8,7 +8,7 @@ index f3eda88..d87baeb 100755
        const r = response as Record<string, unknown>;
 +      if (typeof r.output === 'string' && !('stdout' in r) && !('stderr' in r)) {
 +        gt.combined_output_preview = truncate(r.output, 800);
-+        gt.combined_output_bytes = r.output.length;
++        gt.combined_output_bytes = Buffer.byteLength(r.output, 'utf8');
 +      }
        if ('stdout' in r && typeof r.stdout === 'string') {
          gt.stdout_preview = truncate(r.stdout, 800);

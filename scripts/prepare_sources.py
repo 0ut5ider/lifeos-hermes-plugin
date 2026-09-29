@@ -38,6 +38,7 @@ SOURCES = {
             "hermes-permanent-policy-precedence.patch",
             "hermes-policy-batch-order.patch",
             "hermes-bypass-policy.patch",
+            "hermes-policy-failure-controls.patch",
         ),
     },
     "lifeos": {

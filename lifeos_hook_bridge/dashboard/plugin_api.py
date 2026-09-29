@@ -51,7 +51,7 @@ HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
 HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"
 LIFEOS_UPDATE_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/updates"
 HOST_SOURCE = None
-PATCHED_HOOKS = {"pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
+PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 router = APIRouter()
 
 
