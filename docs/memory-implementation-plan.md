@@ -25,7 +25,7 @@ The real localhost SSH test verifies restricted execution, a server-bound client
 
 ### Remaining implementation gates
 
-1. Complete retained learning sources, adoption, and owner preferences controls. Native direct proposal decisions, automatic approval, edit and applied-elsewhere outcomes, pending creation, diversion, and target revision checks are implemented.
+1. Complete retained learning sources and adoption. Owner preferences now expose native pending proposals and manual decisions. Native direct proposal decisions, automatic approval, edit and applied-elsewhere outcomes, pending creation, diversion, and target revision checks are implemented.
 2. Filter restricted LifeOS prompts and verify model inputs and delivery destinations across representative messaging apps and scheduled tasks.
 3. Complete child-agent, compression, resume, and model-call route coverage.
 4. Implement the fresh ownership transaction, preserved Hermes files, coherent backup and restore, updates, and configuration rollback.
@@ -53,3 +53,7 @@ The proposal suite passes 11 tests. Two independent reproductions now pass: eigh
 ## Native proposal consumer follow-up
 
 Native consumers now use governed decisions for all five outcomes. Separate creation and automatic-approval grants prevent creation from granting an edit. Three review findings are closed: malformed connector fallback, unvalidated resolution notes, and duplicated proposal bodies in stored receipts. Applied identity changes invalidate retained context. The fresh-source plugin suite passes 527 tests with 77 skips. The independent closure passes 48 focused tests. These results do not enable ownership or establish the full release gate.
+
+## Owner proposal preferences
+
+The preferences page shows pending text, its target, rationale, writer, and exact revision. The authenticated owner can accept, reject, edit, or mark a change as applied elsewhere. It cannot grant automatic approval. A conflict preserves the visible proposal. A failed list refresh preserves the reported committed outcome. Preferences, real FastAPI, and dashboard SDK checks pass 18 cases, and independent local HTTP and interface probes found no material issue. A full browser runtime check remains part of the release gate.

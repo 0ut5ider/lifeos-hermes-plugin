@@ -1,0 +1,295 @@
+diff --git a/lifeos_hook_bridge/dashboard/dist/index.js b/lifeos_hook_bridge/dashboard/dist/index.js
+index 3fd6f8b..18fa804 100644
+--- a/lifeos_hook_bridge/dashboard/dist/index.js
++++ b/lifeos_hook_bridge/dashboard/dist/index.js
+@@ -21,6 +21,8 @@
+     const [busy, setBusy] = SDK.hooks.useState(false);
+     const [query, setQuery] = SDK.hooks.useState("");
+     const [results, setResults] = SDK.hooks.useState([]);
++    const [proposals, setProposals] = SDK.hooks.useState(null);
++    const [drafts, setDrafts] = SDK.hooks.useState({});
+     const [client, setClient] = SDK.hooks.useState("");
+     const [publicKey, setPublicKey] = SDK.hooks.useState("");
+     const [projects, setProjects] = SDK.hooks.useState("");
+@@ -54,8 +56,26 @@
+           ...(body === undefined ? {} : { body: JSON.stringify(body) }),
+         });
+         if (path === "/review") {
+-          setResults(result.results ?? []);
+-          setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
++          if (body.tool === "lifeos_memory_proposals") {
++            if (result.status === "ok") setProposals(result.results ?? []);
++            setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
++          } else if (body.tool === "lifeos_memory_decide_proposal") {
++            if (result.status === "committed") {
++              const outcome = "Change " + result.proposal_status + ".";
++              setMessage(outcome);
++              try {
++                const pending = await SDK.fetchJSON(memoryEndpoint + "/review", {
++                  method: "POST", headers: { "Content-Type": "application/json" },
++                  body: JSON.stringify({ tool: "lifeos_memory_proposals", arguments: {} }),
++                });
++                if (pending.status !== "ok") throw new Error(pending.reason ?? pending.status);
++                setProposals(pending.results ?? []);
++              } catch (error) { setMessage(outcome + " Could not refresh pending changes: " + error.message); }
++            } else { setMessage(result.reason ?? result.status); }
++          } else {
++            setResults(result.results ?? []);
++            setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
++          }
+         } else {
+           setMemory(await SDK.fetchJSON(memoryEndpoint));
+           setMessage(result.status === "enrolled" ?
+@@ -77,6 +97,22 @@
+         h("input", { id: id, type: "checkbox", checked: value,
+           onChange: function (event) { setter(event.target.checked); } }), " " + label);
+     }
++    function draft(record, field, value) {
++      setDrafts(function (current) {
++        return { ...current, [record.reference.id]: { ...(current[record.reference.id] ?? {}), [field]: value } };
++      });
++    }
++    function decide(record, decision) {
++      const values = drafts[record.reference.id] ?? {};
++      const requestId = "dashboard-" + Array.from(window.crypto.getRandomValues(new Uint32Array(4)), function (value) {
++        return value.toString(16).padStart(8, "0");
++      }).join("");
++      return action("/review", "POST", { tool: "lifeos_memory_decide_proposal", arguments: {
++        reference: record.reference, decision: decision, request_id: requestId,
++        ...(decision === "edit" ? { content: values.content ?? record.edit } : {}),
++        ...(decision === "applied_elsewhere" ? { note: values.note ?? "" } : {}),
++      } });
++    }
+     const configured = memory && ["prepared", "configured"].includes(memory.state);
+     return h("section", { id: "lifeos_memory", className: "rounded border border-border p-4 space-y-3" },
+       h("h2", { className: "text-lg font-semibold" }, "Lasting memory"),
+@@ -101,7 +137,38 @@
+             h("p", { className: "whitespace-pre-wrap" }, record.content),
+             h("p", { className: "text-xs" }, record.reference.id + ", revision " + record.reference.revision + ". Writer: " + record.writer + "."));
+         }),
+-        h("p", { className: "text-sm" }, "Ask your agent to correct or forget a fact using its reference. Forget removes ordinary recall; it does not erase conversation history, audits, or backups. Native proposal approval is not connected to this page yet."),
++        h("p", { className: "text-sm" }, "Ask your agent to correct or forget a fact using its reference. Forget removes ordinary recall; it does not erase conversation history, audits, or backups."),
++        memory.proposal_review_available ? h("details", null,
++          h("summary", { className: "cursor-pointer font-semibold" }, "Pending preference and rule changes"),
++          h("div", { className: "space-y-3 pt-3" },
++            h("p", { className: "text-sm" }, "Pending changes have not been applied. Check the proposed text and its target before accepting. Changed targets require a fresh review. Applied identity changes require a new conversation."),
++            h("button", { type: "button", disabled: busy, onClick: function () {
++              return action("/review", "POST", { tool: "lifeos_memory_proposals", arguments: {} });
++            } }, "Review pending changes"),
++            proposals?.length === 0 ? h("p", null, "No pending changes.") : null,
++            (proposals ?? []).map(function (record) {
++              const values = drafts[record.reference.id] ?? {};
++              const editId = "memory_edit_" + record.reference.id;
++              const noteId = "memory_note_" + record.reference.id;
++              return h("article", { key: record.reference.id, className: "rounded border border-border p-3 space-y-2" },
++                h("p", { className: "whitespace-pre-wrap" }, record.edit),
++                h("p", { className: "text-sm" }, "Target: " + record.target_file),
++                h("p", { className: "text-sm" }, "Reason: " + record.rationale),
++                h("p", { className: "text-xs" }, "Proposed by " + record.writer + ". Reference: " + record.reference.id + ", revision " + record.reference.revision + "."),
++                h("div", { className: "flex gap-2" },
++                  h("button", { type: "button", disabled: busy, onClick: function () { return decide(record, "accept"); } }, "Accept change"),
++                  h("button", { type: "button", disabled: busy, onClick: function () { return decide(record, "reject"); } }, "Reject change")),
++                h("details", null, h("summary", null, "Edit or record another outcome"),
++                  h("label", { htmlFor: editId, className: "block text-sm" }, "Text to apply",
++                    h("textarea", { id: editId, value: values.content ?? record.edit, maxLength: 65536,
++                      className: "block w-full rounded border border-border bg-background p-2",
++                      onChange: function (event) { draft(record, "content", event.target.value); } })),
++                  h("button", { type: "button", disabled: busy || !(values.content ?? record.edit).trim(),
++                    onClick: function () { return decide(record, "edit"); } }, "Apply edited change"),
++                  input(noteId, "Where was this change applied?", values.note ?? "", function (value) { draft(record, "note", value); }, false),
++                  h("button", { type: "button", disabled: busy || !(values.note ?? "").trim(),
++                    onClick: function () { return decide(record, "applied_elsewhere"); } }, "Mark applied elsewhere")));
++            }))) : null,
+         h("details", null, h("summary", { className: "cursor-pointer font-semibold" }, "Share memory with another agent"),
+           h("div", { className: "space-y-3 pt-3" },
+             h("p", { className: "text-sm" }, "Sharing is " + (memory.sharing_enabled ? "enabled" : "disabled") + ". Each agent gets its own SSH key and permissions. This shares memory operations, not LifeOS hooks or Hermes conversations."),
+diff --git a/lifeos_hook_bridge/memory_native.ts b/lifeos_hook_bridge/memory_native.ts
+index 890b1df..aeccc9a 100644
+--- a/lifeos_hook_bridge/memory_native.ts
++++ b/lifeos_hook_bridge/memory_native.ts
+@@ -34,6 +34,10 @@ async function main(): Promise<void> {
+     if (typeof input.query !== "string" || !Array.isArray(input.corpus)) throw new Error("Invalid retrieval input");
+     const options = object(input.options) ? input.options : {topK: input.limit, excerptChars: 65536};
+     result = retriever.getRelevantContext(input.query, {...options, corpus: input.corpus});
++  } else if (input.action === "proposal_capabilities") {
++    const proposals: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/lib/memory-proposals.ts")).href);
++    result = { available: object(proposals) && ["acceptProposal", "rejectProposal", "editProposal", "markProposalAppliedElsewhere", "autoApplyProposal"]
++      .every((name) => typeof proposals[name] === "function") };
+   } else if (input.action === "proposal_decision") {
+     const proposals: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/lib/memory-proposals.ts")).href);
+     if (!object(proposals) || typeof input.identifier !== "string") throw new Error("Native proposal decisions are unavailable");
+diff --git a/lifeos_hook_bridge/memory_preferences.py b/lifeos_hook_bridge/memory_preferences.py
+index bd63dbe..b495000 100644
+--- a/lifeos_hook_bridge/memory_preferences.py
++++ b/lifeos_hook_bridge/memory_preferences.py
+@@ -53,6 +53,8 @@ class MemoryPreferences:
+                 result['active_facts'] = connection.execute("SELECT COUNT(*) FROM records WHERE status='active'").fetchone()[0]
+             memory._native('rank', query='memory health', corpus=[], limit=1)
+             result['native_health'] = 'ok'
++            if (self.root / 'LIFEOS/PULSE/lib/memory-proposals.ts').is_file():
++                result['proposal_review_available'] = memory._native('proposal_capabilities').get('available') is True
+         except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired) as error:
+             result.update(state='unavailable', native_health='unavailable', message=str(error))
+         return result
+@@ -60,7 +62,7 @@ class MemoryPreferences:
+     def review(self, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
+         config = self._configuration()
+         scope = MemoryScope(config['principal'], 'dashboard:owner', tuple(sorted(CATEGORIES)),
+-                            tuple(sorted(CATEGORIES)), ('*',), 'dashboard:owner')
++                            tuple(sorted(CATEGORIES)), ('*',), 'dashboard:owner', proposals=('review','approve'))
+         return MemoryService(self.configuration)._call(config, scope, name, arguments)
+ 
+     def sharing(self, enabled: bool) -> dict[str, Any]:
+diff --git a/tests/test_memory_dashboard.py b/tests/test_memory_dashboard.py
+index 679012f..9582d2c 100644
+--- a/tests/test_memory_dashboard.py
++++ b/tests/test_memory_dashboard.py
+@@ -16,6 +16,35 @@ import test_memory_sharing as sharing_fixture
+ 
+ 
+ class MemoryDashboardTests(unittest.TestCase):
++    def test_native_proposal_decisions_through_http(self):
++        from test_memory_proposals import MemoryProposalTests
++        fixture = MemoryProposalTests(); fixture.setUp()
++        self.addCleanup(fixture.doCleanups)
++        home = fixture.fixture.home
++        profile = home / 'hermes'
++        MemoryConfiguration(profile/'lifeos-memory.json').save({'version':1,'root':str(fixture.fixture.root),
++                                                               'principal':'owner','accounts':{},'destinations':{}})
++        api_path = Path(__file__).parents[1]/'lifeos_hook_bridge/dashboard/plugin_api.py'
++        with patch.dict(os.environ,{'HOME':str(home),'HERMES_HOME':str(profile)}):
++            spec = importlib.util.spec_from_file_location('memory_dashboard_proposal_http',api_path)
++            module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
++            app = FastAPI(); app.include_router(module.router,prefix='/api/plugins/lifeos-hook-bridge')
++            saved = fixture.enqueue()
++            with TestClient(app) as client:
++                endpoint = '/api/plugins/lifeos-hook-bridge/memory/review'
++                response = client.post(endpoint,json={'tool':'lifeos_memory_proposals','arguments':{}})
++                self.assertEqual(response.status_code,200,response.text)
++                reference = response.json()['results'][0]['reference']
++                self.assertEqual(reference,saved['receipt']['proposal_reference'])
++                response = client.post(endpoint,json={'tool':'lifeos_memory_decide_proposal','arguments':{
++                    'reference':reference,'decision':'edit','request_id':'http-edited',
++                    'content':'Always verify the synthetic HTTP edit before publication.'}})
++                self.assertEqual(response.status_code,200,response.text)
++                self.assertEqual(response.json()['proposal_status'],'edited',response.text)
++                self.assertIn('synthetic HTTP edit',fixture.target.read_text())
++                response = client.post(endpoint,json={'tool':'lifeos_memory_proposals','arguments':{}})
++                self.assertEqual(response.json()['results'],[])
++
+     def test_native_review_and_sharing_through_http(self):
+         fixture = sharing_fixture.MemorySharingTests(); fixture.setUp()
+         self.addCleanup(fixture.doCleanups)
+diff --git a/tests/test_memory_dashboard_ui.cjs b/tests/test_memory_dashboard_ui.cjs
+index bb2c164..b3fadfb 100644
+--- a/tests/test_memory_dashboard_ui.cjs
++++ b/tests/test_memory_dashboard_ui.cjs
+@@ -14,18 +14,21 @@ function find(node, match) {
+   return null;
+ }
+ 
+-async function panel(initial) {
++async function panel(initial, reviewResponse) {
+   const state = [], calls = []; let index = 0, mounted = false, root;
+   const sdk = {
+     React:{createElement:(type,props,...children)=>({type,props:props||{},children:children.flat()})},
+     hooks:{useState(value){const slot=index++; if (!(slot in state)) state[slot]=value;
+       return [state[slot],value=>{state[slot]=typeof value==='function'?value(state[slot]):value;}];},useEffect(){}},
+     fetchJSON(url,init){calls.push({url,init});
+-      if(url.endsWith('/memory/review'))return Promise.resolve({status:'ok',results:[{content:'Synthetic visible fact',reference:{id:'stable',revision:3},writer:'dashboard:owner',source:{kind:'explicit'}}]});
++      if(url.endsWith('/memory/review')) {
++        if(reviewResponse)return Promise.resolve(reviewResponse(JSON.parse(init.body)));
++        return Promise.resolve({status:'ok',results:[{content:'Synthetic visible fact',reference:{id:'stable',revision:3},writer:'dashboard:owner',source:{kind:'explicit'}}]});
++      }
+       if(url.endsWith('/memory/connections'))return Promise.resolve({status:'enrolled',client:'reader',permissions:{read:['project'],write:[]}});
+       return Promise.resolve(initial);},
+   };
+-  vm.runInNewContext(bundle,{window:{__HERMES_PLUGIN_SDK__:sdk,__HERMES_PLUGINS__:{register(_name,view){root=view;}}},console});
++  vm.runInNewContext(bundle,{window:{crypto:require('node:crypto').webcrypto,__HERMES_PLUGIN_SDK__:sdk,__HERMES_PLUGINS__:{register(_name,view){root=view;}}},console});
+   const container=root();
+   const component=find(container,node=>typeof node.type==='function'&&node.type.name==='MemoryPreferences');
+   assert.ok(component,'The LifeOS page must include the memory preferences panel');
+@@ -44,6 +47,48 @@ test('memory status names incomplete gates and does not offer activation',async(
+   assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Check memory status')));
+ });
+ 
++test('pending changes show their target and exact revision for manual decisions',async()=>{
++  const proposal={reference:{id:'pending-one',revision:2},edit:'Confirm before synthetic publication.',
++    target_file:'/synthetic/OPERATIONAL_RULES.md',rationale:'Synthetic owner rule.',writer:'chat-a:100',
++    confidence:0.8,status:'pending'};
++  let resolved=false;
++  const p=await panel({state:'prepared',native_health:'ok',proposal_review_available:true,remaining_gates:{}},request=>{
++    if(request.tool==='lifeos_memory_proposals')return {status:'ok',results:resolved?[]:[proposal]};
++    resolved=true;return {status:'committed',proposal_status:'accepted',proposal_reference:{id:'pending-one',revision:3}};
++  });
++  const show=find(p.render(),n=>n.type==='button'&&n.children.includes('Review pending changes'));
++  assert.ok(show,'The owner must be able to inspect native pending proposals');
++  await show.props.onClick();
++  let view=p.render();
++  assert.ok(find(view,n=>n.type==='p'&&n.children.includes(proposal.edit)));
++  assert.ok(find(view,n=>n.type==='p'&&n.children.some(c=>typeof c==='string'&&c.includes(proposal.target_file))));
++  await find(view,n=>n.type==='button'&&n.children.includes('Accept change')).props.onClick();
++  const request=p.calls.filter(c=>c.url.endsWith('/memory/review')).map(c=>JSON.parse(c.init.body))
++    .find(c=>c.tool==='lifeos_memory_decide_proposal');
++  assert.deepEqual(request.arguments.reference,proposal.reference);
++  assert.equal(request.arguments.decision,'accept');
++  assert.match(request.arguments.request_id,/^dashboard-/);
++  assert.equal(find(p.render(),n=>n.type==='p'&&n.children.includes(proposal.edit)),null);
++  assert.ok(find(p.render(),n=>n.type==='p'&&n.children.some(c=>typeof c==='string'&&c.includes('accepted'))));
++});
++
++test('conflicted proposal remains visible and edit decisions send the owner draft',async()=>{
++  const proposal={reference:{id:'conflict-one',revision:1},edit:'Original synthetic rule.',
++    target_file:'/synthetic/rules.md',rationale:'Synthetic proposal.',writer:'chat-a:100',status:'pending'};
++  const p=await panel({state:'prepared',native_health:'ok',proposal_review_available:true,remaining_gates:{}},request=>
++    request.tool==='lifeos_memory_proposals'?{status:'ok',results:[proposal]}:{status:'conflict',reason:'The target changed.'});
++  await find(p.render(),n=>n.type==='button'&&n.children.includes('Review pending changes')).props.onClick();
++  const field=find(p.render(),n=>n.type==='textarea'&&n.props.id==='memory_edit_conflict-one');
++  assert.ok(field);
++  field.props.onChange({target:{value:'Edited synthetic rule.'}});
++  await find(p.render(),n=>n.type==='button'&&n.children.includes('Apply edited change')).props.onClick();
++  const request=p.calls.map(c=>c.init?.body&&JSON.parse(c.init.body)).find(c=>c?.tool==='lifeos_memory_decide_proposal');
++  assert.equal(request.arguments.content,'Edited synthetic rule.');
++  assert.equal(request.arguments.decision,'edit');
++  assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes('The target changed.')));
++  assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes(proposal.edit)));
++});
++
+ test('valid minimal revoked grants do not break the preferences page',async()=>{
+   const p=await panel({state:'prepared',native_health:'ok',connections:[{client:'minimal',enabled:false}],remaining_gates:{}});
+   assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes('minimal: revoked')));
+diff --git a/tests/test_memory_preferences.py b/tests/test_memory_preferences.py
+index 6412289..86cf321 100644
+--- a/tests/test_memory_preferences.py
++++ b/tests/test_memory_preferences.py
+@@ -64,6 +64,30 @@ class MemoryPreferencesTests(unittest.TestCase):
+         with self.assertRaises(RuntimeError):
+             self.preferences.sharing(True)
+ 
++    def test_owner_can_review_and_decide_pending_native_proposals(self):
++        from test_memory_proposals import MemoryProposalTests
++        fixture = MemoryProposalTests(); fixture.setUp()
++        self.addCleanup(fixture.doCleanups)
++        config = fixture.fixture.home / 'hermes/lifeos-memory.json'
++        MemoryConfiguration(config).save({'version':1,'root':str(fixture.fixture.root),
++                                          'principal':'owner','accounts':{},'destinations':{}})
++        preferences = MemoryPreferences(config,fixture.fixture.root,fixture.fixture.home/'keys',
++                                        Path('/usr/bin/python3'),Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py')
++        saved = fixture.enqueue()
++        self.assertTrue(preferences.status()['proposal_review_available'])
++        rows = preferences.review('lifeos_memory_proposals',{})['results']
++        self.assertEqual(len(rows),1)
++        self.assertEqual(rows[0]['edit'],fixture.item()['edit'])
++        self.assertEqual(rows[0]['reference'],saved['receipt']['proposal_reference'])
++        approved = preferences.review('lifeos_memory_decide_proposal',{
++            'reference':rows[0]['reference'],'decision':'accept','request_id':'owner-approve'})
++        self.assertEqual(approved['status'],'committed',approved)
++        self.assertEqual(preferences.review('lifeos_memory_proposals',{})['results'],[])
++        self.assertIn(fixture.item()['edit'],fixture.target.read_text())
++        stale = preferences.review('lifeos_memory_decide_proposal',{
++            'reference':rows[0]['reference'],'decision':'accept','request_id':'owner-again'})
++        self.assertEqual(stale['status'],'conflict',stale)
++
+     def test_enrollment_and_revocation_recheck_installation_inside_configuration_update(self):
+         for action in ('enroll','revoke'):
+             with self.subTest(action=action):

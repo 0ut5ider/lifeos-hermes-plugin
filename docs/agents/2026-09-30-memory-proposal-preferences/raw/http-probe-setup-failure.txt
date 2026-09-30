@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-proposal-preferences/raw/probe_http.py", line 16, in <module>
+    spec=importlib.util.spec_from_file_location('probe_api',repo/'lifeos_hook_bridge/dashboard/plugin_api.py');mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+                                                                                                                                                         ~~~~~~~~~~~~~~~~~~~~~~~^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 16, in <module>
+    from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
+ModuleNotFoundError: No module named 'hermes_cli'

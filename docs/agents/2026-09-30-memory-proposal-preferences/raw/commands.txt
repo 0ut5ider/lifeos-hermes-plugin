@@ -1,0 +1,6 @@
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-proposal-delegation-fixed/lifeos/LifeOS/install
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_preferences.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_dashboard.py -v
+node --test tests/test_memory_dashboard_ui.cjs tests/test_dashboard_ui.cjs
+node docs/agents/2026-09-30-memory-proposal-preferences/raw/probe_ui.cjs
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-proposal-delegation-fixed/lifeos/LifeOS/install /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-proposal-preferences/raw/probe_http.py
