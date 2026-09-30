@@ -15,6 +15,7 @@ import subprocess
 import threading
 import time
 import uuid
+from http.cookies import CookieError, SimpleCookie
 from pathlib import Path
 from urllib.parse import unquote, unquote_plus, quote
 
@@ -51,12 +52,33 @@ def redact_url(match):
     return scheme + "://" + address
 
 
-def declared_secrets(value, seen=None, credential=False):
+def declared_secrets(value, seen=None, credential=False, key=""):
     if seen is None:
         seen = set()
     if isinstance(value, str):
         if credential and len(value) >= 4 and value != "[REDACTED]":
             yield value
+        if key.casefold().replace("-", "_") in {"authorization", "proxy_authorization"}:
+            parts = value.split()
+            if len(parts) == 2 and parts[0].casefold() == "basic":
+                if len(parts[1]) >= 4:
+                    yield parts[1]
+                try:
+                    decoded = base64.b64decode(parts[1], validate=True).decode("utf-8")
+                    if len(decoded) >= 4:
+                        yield decoded
+                    _, separator, password = decoded.partition(":")
+                    if separator and len(password) >= 4:
+                        yield password
+                except (ValueError, UnicodeError):
+                    pass
+        if key.casefold().replace("-", "_") in {"cookie", "set_cookie"}:
+            cookie = SimpleCookie()
+            try:
+                cookie.load(value)
+                yield from (item.value for item in cookie.values() if len(item.value) >= 4)
+            except CookieError:
+                pass
         for match in TOKEN_SHAPE.finditer(value):
             token = match.group(0)[len(match.group(1)):] if match.group(1) else match.group(0)
             if len(token) >= 4:
@@ -71,12 +93,12 @@ def declared_secrets(value, seen=None, credential=False):
             try:
                 key = json.loads('"' + match.group("field") + '"')
                 if SENSITIVE.search(key):
-                    yield from declared_secrets(json.loads(match.group(3)), seen, True)
+                    yield from declared_secrets(json.loads(match.group(3)), seen, True, key)
             except ValueError:
                 pass
         return
     if isinstance(value, bytes):
-        yield from declared_secrets(value.decode("utf-8", errors="surrogateescape"), seen, credential)
+        yield from declared_secrets(value.decode("utf-8", errors="surrogateescape"), seen, credential, key)
         return
     if isinstance(value, subprocess.CompletedProcess):
         yield from declared_secrets({"args": value.args, "returncode": value.returncode,
@@ -94,13 +116,13 @@ def declared_secrets(value, seen=None, credential=False):
         seen.add(id(value))
     if isinstance(value, dict):
         for key, item in value.items():
-            yield from declared_secrets(item, seen, credential or bool(SENSITIVE.search(str(key))))
+            yield from declared_secrets(item, seen, credential or bool(SENSITIVE.search(str(key))), str(key))
     elif isinstance(value, (list, tuple, set, frozenset)):
         for item in value:
-            yield from declared_secrets(item, seen, credential)
+            yield from declared_secrets(item, seen, credential, key)
     elif dataclasses.is_dataclass(value) and not isinstance(value, type):
         for field in dataclasses.fields(value):
-            yield from declared_secrets(getattr(value, field.name), seen, credential or bool(SENSITIVE.search(field.name)))
+            yield from declared_secrets(getattr(value, field.name), seen, credential or bool(SENSITIVE.search(field.name)), field.name)
 
 
 def safe(value, secrets=(), key=""):

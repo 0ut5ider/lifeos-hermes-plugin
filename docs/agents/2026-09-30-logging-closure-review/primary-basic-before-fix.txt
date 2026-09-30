@@ -1,0 +1,15 @@
+test_basic_authorization_learns_encoded_and_decoded_credentials (test_capture.EvidenceTests.test_basic_authorization_learns_encoded_and_decoded_credentials) ... FAIL
+
+======================================================================
+FAIL: test_basic_authorization_learns_encoded_and_decoded_credentials (test_capture.EvidenceTests.test_basic_authorization_learns_encoded_and_decoded_credentials)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 35, in test_basic_authorization_learns_encoded_and_decoded_credentials
+    self.assertNotIn(secret, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-BASIC-PASSWORD-483729' unexpectedly found in '{"echo":"SYNTHETIC-BASIC-PASSWORD-483729","encoded_echo":"c3ludGhldGljLXVzZXI6U1lOVEhFVElDLUJBU0lDLVBBU1NXT1JELTQ4MzcyOQ==","headers":{"Authorization":"[REDACTED]"}}'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+FAILED (failures=1)

@@ -1,0 +1,26 @@
+test_cookie_declarations_redact_cookie_value_echoes (test_capture.EvidenceTests.test_cookie_declarations_redact_cookie_value_echoes) ... 
+  test_cookie_declarations_redact_cookie_value_echoes (test_capture.EvidenceTests.test_cookie_declarations_redact_cookie_value_echoes) (header='Set-Cookie') ... FAIL
+  test_cookie_declarations_redact_cookie_value_echoes (test_capture.EvidenceTests.test_cookie_declarations_redact_cookie_value_echoes) (header='Cookie') ... FAIL
+
+======================================================================
+FAIL: test_cookie_declarations_redact_cookie_value_echoes (test_capture.EvidenceTests.test_cookie_declarations_redact_cookie_value_echoes) (header='Set-Cookie')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 34, in test_cookie_declarations_redact_cookie_value_echoes
+    self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-CLOSURE-COOKIE-192837' unexpectedly found in '{"body":"{\\"echo\\": \\"SYNTHETIC-CLOSURE-COOKIE-192837\\"}","headers":{"Set-Cookie":"[REDACTED]"}}'
+
+======================================================================
+FAIL: test_cookie_declarations_redact_cookie_value_echoes (test_capture.EvidenceTests.test_cookie_declarations_redact_cookie_value_echoes) (header='Cookie')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 34, in test_cookie_declarations_redact_cookie_value_echoes
+    self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-CLOSURE-COOKIE-192837' unexpectedly found in '{"body":"{\\"echo\\": \\"SYNTHETIC-CLOSURE-COOKIE-192837\\"}","headers":{"Cookie":"[REDACTED]"}}'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.008s
+
+FAILED (failures=2)

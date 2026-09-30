@@ -1,0 +1,28 @@
+{
+  "encoded_leak_stages": [
+    "hook.completed",
+    "process.completed",
+    "response.parsed.entered",
+    "response.parsed.returned",
+    "run_command.returned",
+    "translation.returned"
+  ],
+  "event_count": 19,
+  "password_leak_stages": [
+    "hook.completed",
+    "process.completed",
+    "response.parsed.entered",
+    "response.parsed.returned",
+    "run_command.returned",
+    "translation.returned"
+  ],
+  "same_native_outcome": true,
+  "source_hashes": {
+    "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+    "analysis.py": "6d2d23be5778b99976018fab81597fec905fda2f3d490c41afc22e3720779dc4",
+    "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+    "instrument.py": "d13042fdb5775059ed070f5597894625345cbfd917782143164651b14b9dd90d",
+    "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+    "store.py": "dc0cee1ba1df2b74bfa66e97e42be1999cd9a6274caad2d68b12c851cf451b8c"
+  }
+}

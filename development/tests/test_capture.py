@@ -22,6 +22,30 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_basic_authorization_learns_encoded_and_decoded_credentials(self):
+        from hook_capture.store import Recorder
+        secret = "SYNTHETIC-BASIC-PASSWORD-483729"
+        encoded = base64.b64encode(("synthetic-user:" + secret).encode()).decode()
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorder = Recorder(root, "test-run")
+            ref = recorder.artifact({"headers": {"Authorization": "Basic " + encoded},
+                                     "echo": secret, "encoded_echo": encoded})
+            raw = gzip.decompress((root / ref["path"]).read_bytes()).decode()
+            self.assertNotIn(secret, raw)
+            self.assertNotIn(encoded, raw)
+
+    def test_cookie_declarations_redact_cookie_value_echoes(self):
+        from hook_capture.store import Recorder
+        secret = "SYNTHETIC-CLOSURE-COOKIE-192837"
+        for header, value in (("Set-Cookie", "session=" + secret + "; HttpOnly; Path=/"),
+                              ("Cookie", "ordinary=another-cookie-value; session=" + secret)):
+            with self.subTest(header=header), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                recorder = Recorder(root, "test-run")
+                ref = recorder.artifact({"headers": {header: value}, "body": json.dumps({"echo": secret})})
+                self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+
     def test_each_artifact_reference_validates_its_expected_digest(self):
         from hook_capture.store import Recorder
         from hook_capture.analysis import rebuild, summary
@@ -390,13 +414,15 @@ def run_credential_hook(bridge):
     def test_real_http_url_headers_and_response_credentials_are_filtered(self):
         query_secret = "SYNTHETIC-QUERY-CREDENTIAL-928374"
         response_secret = "SYNTHETIC-RESPONSE-CREDENTIAL-918273"
-        body = json.dumps({"api_key": response_secret, "echo": response_secret}).encode()
+        cookie_secret = "SYNTHETIC-COOKIE-CREDENTIAL-918274"
+        body = json.dumps({"api_key": response_secret, "echo": response_secret, "cookie_echo": cookie_secret}).encode()
         class Handler(BaseHTTPRequestHandler):
             def do_POST(self):
                 self.rfile.read(int(self.headers["Content-Length"]))
                 self.send_response(200)
                 self.send_header("Content-Length", str(len(body)))
                 self.send_header("X-API-Key", response_secret)
+                self.send_header("Set-Cookie", "session=" + cookie_secret + "; HttpOnly; Path=/")
                 self.end_headers()
                 self.wfile.write(body)
             def log_message(self, *args):
@@ -415,9 +441,11 @@ def run_credential_hook(bridge):
                 raw = gzip.decompress((root / "capture" / event["data_ref"]["path"]).read_bytes()).decode()
                 self.assertNotIn(query_secret, raw)
                 self.assertNotIn(response_secret, raw)
+                self.assertNotIn(cookie_secret, raw)
                 if event["stage"] == "http.response_read":
                     decoded = base64.b64decode(json.loads(raw)["body"]["bytes"]).decode()
                     self.assertNotIn(response_secret, decoded)
+                    self.assertNotIn(cookie_secret, decoded)
 
     def test_http_observes_the_same_read_limit_without_draining_the_response(self):
         body = b"h" * 100000
