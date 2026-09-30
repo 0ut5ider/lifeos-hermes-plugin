@@ -1,0 +1,362 @@
+a01564231eb587a28ceca75f7ad6fe8d2fba4b04
+def get_builtin_memory_config(config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    """Normalized ``memory`` config section ({} when missing/malformed → flags default to
+    enabled). ``agent_init`` reads the same section so availability and store cannot diverge."""
+    if config is None:
+        try:
+            from hermes_cli.config import load_config_readonly
+            config = load_config_readonly()
+        except Exception:
+            logger.debug("Could not read memory config for availability", exc_info=True)
+            return {}
+    section = config.get("memory") if isinstance(config, dict) else None
+    return section if isinstance(section, dict) else {}
+
+
+def get_builtin_memory_store_flags(config: Optional[Dict[str, Any]] = None) -> Tuple[bool, bool]:
+    """Return ``(memory_enabled, user_profile_enabled)`` from resolved config."""
+    section = get_builtin_memory_config(config)
+    return tuple(is_truthy_value(section.get(k), default=True) for k in ("memory_enabled", "user_profile_enabled"))
+
+
+@no_cache_check_fn
+def check_memory_requirements() -> bool:
+    """Snapshot store flags and report whether the built-in tool is available."""
+    _memory_surface_flags.set(None)
+    flags = get_builtin_memory_store_flags()
+    _memory_surface_flags.set(flags)
+        # Memory is optional — don't break agent init
+        with suppress(Exception):
+            from tools.memory_tool import (
+                MemoryStore, get_builtin_memory_config, get_builtin_memory_store_flags,
+            )
+            mem_config = get_builtin_memory_config(_agent_cfg)
+            agent._memory_enabled, agent._user_profile_enabled = get_builtin_memory_store_flags(
+                _agent_cfg
+            )
+            agent._memory_nudge_interval = int(mem_config.get("nudge_interval", 10))
+            if agent._memory_enabled or agent._user_profile_enabled:
+                agent._memory_store = MemoryStore(
+                    memory_char_limit=mem_config.get("memory_char_limit", 2200),
+                    user_char_limit=mem_config.get("user_char_limit", 1375),
+                    memory_enabled=agent._memory_enabled,
+                    user_profile_enabled=agent._user_profile_enabled,
+                )
+                agent._memory_store.load_from_disk()
+
+    # External memory provider plugin (one at a time, alongside built-in): memory.provider.
+    agent._memory_manager = None
+    if memory_manager is not None and not skip_memory:
+        # A caller that rebuilds the agent per turn (gateway api_server) hands back the session's
+        # already-initialized manager: providers keep their prefetch/retain state across turns instead
+        # of being re-initialized (#120116). No initialize_all — the providers are already bound.
+        agent._memory_manager = memory_manager
+    elif not skip_memory:
+        try:
+            _mem_provider_name = mem_config.get("provider", "") if mem_config else ""
+            if not is_core_memory_provider(_mem_provider_name):
+                from agent.memory_manager import MemoryManager as _MemoryManager
+                from plugins.memory import load_memory_provider as _load_mem
+                agent._memory_manager = _MemoryManager()
+                _mp = _load_mem(_mem_provider_name)
+                if _mp is None:
+                    # The provider left core for the catalog (or was never installed): fetch it once.
+                    from hermes_cli.memory_provider_migration import recover_at_startup
+                    if recover_at_startup(_mem_provider_name):
+                        _mp = _load_mem(_mem_provider_name)
+                if _mp and _mp.is_available():
+                    agent._memory_manager.add_provider(_mp)
+                elif _mp is not None and _mem_provider_name not in _warned_unavailable_providers:
+                    # unavailable_reason() reads config/probes importlib — skip it once warned.
+                    _unavailable_reason = ""
+                    with suppress(Exception):
+                        _unavailable_reason = _mp.unavailable_reason()
+                    _warn_memory_provider_unavailable(_mem_provider_name, _unavailable_reason)
+                if agent._memory_manager.providers:
+                    agent._memory_manager.initialize_all(**_memory_provider_init_kwargs(agent, platform))
+                    _ra().logger.info("Memory provider '%s' activated", _mem_provider_name)
+                else:
+                    _ra().logger.debug("Memory provider '%s' not found or not available", _mem_provider_name)
+                    agent._memory_manager = None
+        except Exception as _mpe:
+            _ra().logger.warning("Memory provider plugin init failed: %s", _mpe)
+            agent._memory_manager = None
+
+    from agent.memory_manager import inject_memory_provider_tools
+    inject_memory_provider_tools(agent)
+
+
+def _apply_agent_section(agent, _agent_cfg):
+    # Skills config: nudge interval for skill creation reminders
+    agent._skill_nudge_interval = 10
+    with suppress(Exception):
+        agent._skill_nudge_interval = int(_agent_cfg.get("skills", {}).get("creation_nudge_interval", 10))
+
+    _agent_section = _cfg_dict(_agent_cfg, "agent")
+    agent.budget_warning_ratio = normalize_budget_warning_ratio(
+        _agent_section.get("budget_warning_ratio")
+    )
+    # Both: "auto" (model-list match), true, false, or list of model substrings; independent
+    # of each other (gates in agent/system_prompt.py).
+    # (#105921): a skill-nudge review never gets the memory tool, so an unattended fork cannot
+    # act on the memory tool's "consolidate now" hint and delete entries no one reviewed.
+    memory_on = review_agent._memory_enabled or review_agent._user_profile_enabled
+    review_toolsets = ["memory", "skills"] if memory_on and review_memory else ["skills"]
+    whitelist = {t["function"]["name"] for t in get_tool_definitions(enabled_toolsets=review_toolsets, quiet_mode=True)}
+    # Read-only file tools: denying read_file/search_files caused a per-review denial storm that
+    # starved the loop (read_file also registers the read with the read-before-write guard).
+    # Write tools stay denied — autonomous maintenance goes through skill_manage's validation.
+    whitelist |= {"read_file", "search_files"}
+    # ``extra_tools`` admits named parent tools (e.g. a human-gated proposal tool). The whitelist
+    # can only admit, never advertise: a listed tool must already exist in the inherited schema.
+    # Read-only file tools are whitelisted too (#61521, #39996): the model naturally reaches for
+    # read_file/search_files to inspect a skill before patching it. Denying them caused a per-review denial
+def is_trivial_prompt(text: Optional[str]) -> bool:
+    """True for empty input, slash commands and bare greetings/acknowledgements (skipping
+    recall saves a round-trip and keeps stale context from derailing one-word replies)."""
+    stripped = (text or "").strip()
+    if not stripped or stripped.startswith("/"):
+        return True
+    return bool(TRIVIAL_PROMPT_RE.match(stripped))
+
+
+class MemoryProvider(ABC):
+    """Abstract base class for memory providers."""
+
+    # Providers that durably checkpoint every successful on_pre_compress() set this to
+    # PRE_COMPRESS_CHECKPOINT_API_VERSION; 1 = best-effort legacy.
+    pre_compress_checkpoint_api_version = 1
+
+    @property
+    @abstractmethod
+    def name(self) -> str:
+        """Short identifier for this provider (e.g. 'builtin', 'honcho', 'hindsight')."""
+
+    # -- Core lifecycle (implement these) ------------------------------------
+
+    @abstractmethod
+    def is_available(self) -> bool:
+        """Configured, credentialed and ready? Gates activation; check config/deps only, no network."""
+
+    @abstractmethod
+    def initialize(self, session_id: str, **kwargs) -> None:
+        """Initialize once at agent startup (connections, resources, threads).
+
+        kwargs always include ``hermes_home`` (profile-scoped storage; never hardcode
+        ``~/.hermes``) and ``platform``; may include ``agent_context`` ("primary" |
+        "subagent" | "cron" | "flush" — skip writes for non-primary contexts),
+        ``agent_identity``, ``agent_workspace``, ``parent_session_id``, ``user_id``, ``user_id_alt``.
+        """
+
+    def unavailable_reason(self) -> str:
+        """User-facing hint for the "provider unavailable" warning (``initialize()`` never runs then)."""
+        return ""
+
+    def system_prompt_block(self) -> str:
+        """STATIC system-prompt text; "" to skip. Recalled context goes through prefetch(), not here."""
+        return ""
+
+    def prefetch(self, query: str, *, session_id: str = "") -> str:
+        """Formatted recall context for the upcoming turn ("" if none). Must be fast — recall
+        in the background and return cached results; ``session_id`` scopes concurrent sessions."""
+        return ""
+
+    def queue_prefetch(self, query: str, *, session_id: str = "") -> None:
+        """Queue a background recall after each turn; prefetch() consumes it next turn."""
+
+    def recall_status(self) -> Optional[RecallStatus]:
+        """What the most recent :meth:`prefetch` injected (``None`` = no indicator). Must reflect
+        only the LAST prefetch, never a stale prior count."""
+        return None
+
+    def sync_turn(
+        self, user_content: str, assistant_content: str, *,
+        session_id: str = "", messages: Optional[List[Dict[str, Any]]] = None,
+        turn_author: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """Persist a completed turn (non-blocking). ``messages`` is the OpenAI-style list so far.
+        ``turn_author`` (``{"id", "name", "is_bot"}``) is who wrote the user side; the manager sends it only to signatures that accept it."""
+
+    @abstractmethod
+    def get_tool_schemas(self) -> List[Dict[str, Any]]:
+        """OpenAI function-calling schemas ({"name", "description", "parameters"}); [] if none."""
+
+    def handle_tool_call(self, tool_name: str, args: Dict[str, Any], **kwargs) -> str:
+        """Handle one of this provider's tools; must return a JSON string."""
+        raise NotImplementedError(f"Provider {self.name} does not handle tool {tool_name}")
+
+    def shutdown(self) -> None:
+        """Clean shutdown — flush queues, close connections."""
+
+    # -- Optional hooks (override to opt in) ---------------------------------
+
+    def on_turn_start(self, turn_number: int, message: str, **kwargs) -> None:
+        """Per-turn tick. kwargs may include remaining_tokens, model, platform, tool_count, author_id, author_name,
+        author_is_bot. The author trio names who wrote THIS turn (None, None, False without one): a shared session
+        carries several participants, so a provider keying durable state on identity must read it per turn."""
+
+    def identity_signature(self) -> Dict[str, Any]:
+        """Identity-mapping values that must bust a cached gateway agent when they change (writer identity, alias
+        tables, session-name prefixing). Provider-namespaced keys, JSON-serializable values. The gateway calls this
+        on an uninitialized instance on every inbound message, so keep it cheap and read-only."""
+        return {}
+
+    def on_session_end(self, messages: List[Dict[str, Any]]) -> None:
+        """End-of-session extraction; fires only at real session boundaries, never per-turn."""
+
+    def on_session_switch(
+        self, new_session_id: str, *, parent_session_id: str = "", reset: bool = False, rewound: bool = False, **kwargs,
+    ) -> None:
+        """session_id reassigned mid-process (/resume, /branch, /reset, /new, compression)
+        without teardown: rebind per-session state so later writes land in the right record.
+        ``reset`` is True only for a genuinely new conversation (flush buffers); ``rewound``:
+ *
+ * If the resulting list exceeds the cap, the caller (typically the reviewer
+ * subprocess) is responsible for trimming. add() surfaces the at-cap error
+ * verbatim so the caller can re-submit with explicit eviction choices.
+ */
+function addMemoryItem(item: TypedItem & { type: "memory" }, path: string): AddResult {
+  const current = memoryWriterRead(path);
+  if ("code" in current) {
+    return { ok: false, code: "EINVAL_ITEM", message: `Memory file unreadable: ${current.message}` };
+  }
+
+  // op:"set" — the curation path (Honcho peer-card model). The reviewer has
+  // already read the current entries and returns the FULL desired list:
+  // additions, supersessions (contradicted fact dropped + rewritten), merges,
+  // and evictions (stale fact simply omitted). We REPLACE, never merge. This is
+  // what makes the system forget — and what permanently kills the cap-jam,
+  // because the reviewer can drop to make room instead of stacking to overflow.
+  let newEntries: string[];
+  if (item.op === "set") {
+    if (!Array.isArray(item.entries)) {
+      return { ok: false, code: "EINVAL_ITEM", message: `op:"set" requires an 'entries' array` };
+    }
+    newEntries = item.entries.map((e) => String(e).trim()).filter((e) => e.length > 0);
+    // The catastrophic-shrink guard lives IN-LOCK in MemoryWriter.setEntries
+    // (computed against the just-read prior state so it can't race). See there.
+  } else {
+    // legacy op:"add" / absent — merge-append a single content entry.
+    if (typeof item.content !== "string" || item.content.trim().length === 0) {
+      return { ok: false, code: "EINVAL_ITEM", message: `op:"add" requires non-empty 'content'` };
+    }
+    newEntries = [...current.entries, item.content.trim()];
+  }
+
+  const writeResult = memoryWriterSetEntries(path, newEntries, { updatedBy: "MemorySystem.add" });
+  if (!writeResult.ok) {
+    return {
+      ok: false,
+      code: "EWRITE_FAILED",
+      message: `MemoryWriter rejected: ${writeResult.code} — ${writeResult.message}`,
+      underlying: writeResult,
+    };
+  }
+  return {
+    ok: true,
+    type: "memory",
+    path,
+    detail: {
+      prior_count: writeResult.prior_count,
+      new_count: writeResult.new_count,
+      accepted: writeResult.accepted,
+      dropped_malformed: writeResult.dropped_malformed,
+      dropped_overlength: writeResult.dropped_overlength,
+function withLock<T>(filePath: string, action: () => T): T | SetEntriesErrLock | SetEntriesErrIO {
+  const lockPath = `${filePath}.lock`;
+  let fd: number | null = null;
+  try {
+    fd = openSync(lockPath, "wx"); // O_CREAT | O_EXCL
+  } catch (e: any) {
+    if (e?.code === "EEXIST") {
+      return {
+        ok: false,
+        code: "ELOCK_HELD",
+        message: `Lock held by another writer: ${lockPath}. Investigate stale lock if persistent.`,
+      };
+    }
+    return {
+      ok: false,
+      code: "EWRITE_FAILED",
+      message: `Failed to acquire lock: ${e?.message || String(e)}`,
+    };
+  }
+
+  try {
+    const result = action();
+    return result;
+  } catch (e: any) {
+    return {
+      ok: false,
+      code: "EWRITE_FAILED",
+      message: `Write action threw: ${e?.message || String(e)}`,
+    };
+  } finally {
+    try {
+      if (fd !== null) closeSync(fd);
+    } catch { /* ignore */ }
+    try {
+      unlinkSync(lockPath);
+    } catch { /* lockfile cleanup best-effort */ }
+  }
+}
+
+// ── Per-write snapshots (recoverability) ──
+export interface SetEntriesOptions {
+  /** Who is writing — appears in the file's frontmatter last_updated_by. */
+  updatedBy?: string;
+  /** Bypass the catastrophic-shrink guard (legitimate full-clear / restore). */
+  allowDrastic?: boolean;
+}
+
+export function setEntries(
+  filePath: string,
+  entries: string[],
+  options: SetEntriesOptions = {},
+): SetEntriesResult {
+  const pathCheck = validatePath(filePath);
+  if (!("abs" in pathCheck)) return pathCheck;
+  const abs = pathCheck.abs;
+
+  if (!existsSync(abs)) {
+    return {
+      ok: false,
+      code: "EINVAL_PATH",
+      message: `Memory file does not exist (scaffold it first): ${abs}`,
+    };
+  }
+
+  const validated = validateAndDedup(entries);
+  const submitted = validated.accepted.length;
+  const indexedSubmission = validated.accepted.map((e, i) => `[${i}] ${e}`);
+
+  if (submitted > MAX_ENTRIES) {
+    return {
+      ok: false,
+      code: "EAT_CAP",
+      message: `Memory file cap is ${MAX_ENTRIES} entries — your submission has ${submitted} accepted+deduped entries. Trim ${submitted - MAX_ENTRIES} before re-submitting.`,
+      over_count: submitted - MAX_ENTRIES,
+      cap: MAX_ENTRIES,
+      indexed_submission: indexedSubmission,
+    };
+  }
+
+  const result = withLock(abs, () => {
+    const content = readFileSync(abs, "utf8");
+    const parsed = parseMemoryContent(content);
+    const priorEntries = parsed.entries;
+    const newEntries = validated.accepted;
+    } catch (e) {
+      process.stderr.write(`MemoryTurnStart ground error: ${(e as Error)?.message || String(e)}\n`);
+    }
+  }
+  process.exit(0);
+})().catch(() => process.exit(0));
+a4e44a293013fff831ac136ab77c556541cd18817f53bd662e97090cd80bd5a6  agent/memory_provider.py
+3b5424fb8fb4bafcdeae4b3441a3627a196326643edb78600d928cbd66662434  agent/agent_init.py
+214870bfcc4c67cc502459d16dda9bd4627e58ae521d73ee03e41afc598f6178  tools/memory_tool.py
+0457a5110f1afb4a9fcbe32fcd02eda8fb7d160f7e44a2c10109a320fd23656e  agent/background_review.py
+a89b8cce04b3e21e7192670ff1f44426ad6f41b257026707107ece2ee6119210  /home/lifeos-hermes/.hermes/LIFEOS/TOOLS/MemorySystem.ts
+ab9a270dafaba1387176e2ffe3a63dbf0d7e0c3d1a470b44ad4d9845ec1c5fd8  /home/lifeos-hermes/.hermes/LIFEOS/TOOLS/MemoryWriter.ts
+2b15f178aa4c4f7e0b4e96d5a61c59fa5dab6bec4bc3b56d6d816a9a8cdf5c75  /home/lifeos-hermes/.hermes/hooks/MemoryTurnStart.hook.ts
+149688f1e3239a586dd5a9b8ad5cad170878d2b8dbb642fa65a626a74be5267d  /home/lifeos-hermes/.hermes/hooks/MemoryReviewFire.hook.ts

@@ -2,6 +2,62 @@
 
 Date: 2026-09-30. Status: Adrian accepted this design direction for later implementation. This feature is not implemented. Start after the [hook parity completion gate](../docs/parity-resolution-plan.md) passes. This record does not authorize a memory migration or a change to a running installation.
 
+## Resolved fresh-install experience
+
+Design resolution: a fresh LifeOS-enabled installation provides one lasting memory system, owned by LifeOS. Hermes retains conversation history, session search, and context compression. Other agents can optionally use the same lasting memory through an authenticated MCP connection. This is the target experience, not a statement that a memory provider is installed today.
+
+### What the user does
+
+1. Install Hermes and the LifeOS plugin.
+2. Select **Install LifeOS** in the plugin page.
+3. Complete LifeOS setup and select **Use LifeOS for lasting memory**, the recommended fresh-install choice.
+4. Chat normally. Native LifeOS hooks recall relevant memory and run their existing review process.
+5. Ask the agent to remember, find, correct, or forget a fact. The agent reports whether the change is saved, waiting for review, or rejected.
+6. Enable **Share memory with another agent** only when another agent needs access. Sharing is off until this step.
+
+The user does not choose two memory providers or keep two stores synchronized. The plugin must show whether LifeOS recall and saving work before it switches memory ownership. A failed setup keeps the prior configuration and shows the failure.
+
+Fresh installations contain only their new owner's data. They require no existing server, copied archive, or `.211`/`.213` connection. Existing Hermes users get a separate, optional import preview. That migration does not form part of the fresh-install default.
+
+### What remembering means
+
+| User action | Required result |
+| --- | --- |
+| Remember this fact | Save an allowed fact in the appropriate native LifeOS layer. Return its reference and writer provenance. If approval is required, say that it is pending. |
+| What do you know about this project? | Search permitted current LifeOS knowledge. Keep source references and distinguish retrieved facts from inference. |
+| That fact is wrong | Correct the identified record or submit a clearly labeled proposal. Ordinary recall must stop presenting the superseded version as current after the correction applies. |
+| Forget this | Remove the record from ordinary recall and invalidate derived context. Report remaining audit, backup, conversation-history, and development-log copies separately. Do not promise that these copies were erased. |
+
+The same meaning applies in Hermes and in an authorized MCP client. Raw conversation transcripts remain conversation history; saving them does not make every statement a lasting fact. Pending changes must never be described as applied changes.
+
+### Default sharing policy
+
+Remote sharing starts disabled. The first optional remote connection uses MCP over a restricted SSH connection. Give each client its own authenticated identity and revocable key. Generate connection instructions for supported clients instead of asking users to edit memory paths.
+
+A newly enrolled client starts with read access to the categories the user selected. The connection page preselects project knowledge, with principal preferences and identity left unselected. Project-fact writes require a separate grant. Changes to principal preferences, assistant rules, and identity use the native review policy. Another agent cannot grant itself those permissions by supplying a caller name. Revoking access removes its connection; it does not delete facts it previously contributed.
+
+Separate credentials from memory contents. The service sends only records that the client may read. MCP permissions govern that interface. A client with direct filesystem access can bypass it, so stronger isolation requires separate operating-system permissions. Local clients may use process transport; remote clients need authenticated transport. No public HTTP endpoint is needed for the initial version. A cloud-routed client can expose returned memory to its model provider, so the connection page must show the client's declared model route and permitted categories. An unknown model route must appear as unknown; the memory service cannot establish a client's downstream route from its name or SSH key.
+
+The MCP service shares facts and memory operations. It does not automatically give another agent LifeOS hooks, personality, background review jobs, or Hermes conversations. That boundary must be stated in the connection page.
+
+### Normal preferences page
+
+Keep the main page small:
+
+- **Lasting memory:** LifeOS, with a short explanation that Hermes retains conversation history.
+- **Memory status:** recall, saving, reviewer status, and the last verified failure.
+- **Review memories:** search current records and view their sources, corrections, and pending changes.
+- **Automatic review:** the existing LifeOS cadence and the configured review model.
+- **Share with another agent:** disabled by default; connected clients and their permissions appear after enrollment.
+
+Put import, backup, restore, and diagnostic details in an advanced section. Restore changes configuration without deleting memories. Keep privacy and retention settings separate from model routing.
+
+### Implementation boundary
+
+Ship the memory provider and optional MCP support with the plugin. Both adapters use native LifeOS retrieval and write operations through one policy implementation. Keep native memory hooks as the automatic recall and review owners. Do not add a second provider-driven extractor or a second archive of the same facts.
+
+Native hooks already call LifeOS operations. The adapter must use those operations and preserve their validation, locking, caps, and proposal rules. Drawing a shared access layer does not make existing direct hook writes pass through it. Verify all active writers and retrieval paths before claiming that a policy is enforced for the whole installation.
+
 ## Installation model
 
 Build a self-contained installation: Hermes, the plugin, and LifeOS on a new server. The user installs Hermes, installs the plugin, and installs LifeOS through the plugin settings page. Memory must work on that server without another machine.
@@ -136,3 +192,16 @@ The 2026-09-30 inspection found built-in memory and profile enabled on `.212`. I
 The existing `.211` memory MCP returned `integrity_error` during the discussion. The cause was not established. Use it as a failure-handling example, not a diagnosis of `.212` or a dependency of this design.
 
 Hermes documents its [memory-provider interface](https://hermes-agent.nousresearch.com/docs/developer-guide/memory-provider-plugin) and [built-in memory controls](https://hermes-agent.nousresearch.com/docs/user-guide/features/memory#configuration). Verify both against the plugin's pinned host version. Documentation for current upstream does not prove support in the pinned fixture.
+
+## Pinned source inspection for this resolution
+
+The primary agent inspected source on `.212` at Hermes revision `a01564231eb587a28ceca75f7ad6fe8d2fba4b04`. The [source excerpts and hashes](../docs/verification/2026-09-30-memory-design/pinned-source-excerpts.txt) contain code only, with no memory records.
+
+- `get_builtin_memory_store_flags` separately reads `memory.memory_enabled` and `memory.user_profile_enabled`. Agent initialization loads the external provider independently of those flags. This supports the proposed configuration; a live disposable-profile test must still confirm tools, prompts, background review, and failure paths.
+- The external provider contract supplies tool schemas, tool dispatch, session lifecycle, and configuration fields. The memory toolset must remain enabled so the provider's tools are visible.
+- Hermes background review can retain skill tools when built-in memory is off. It is not necessary to disable all skill learning to stop duplicate fact extraction.
+- Native `MemoryTurnStart` performs gated hot-memory injection and task retrieval. Native `MemoryReviewFire` owns review cadence. Keep them; provider recall and extraction should not duplicate their work.
+- Native `MemorySystem` supports hot-memory `op:set` curation through `MemoryWriter`, in addition to append-style additions. Correction and forgetting therefore have a native starting point; a new append-only archive is not the answer.
+- `MemoryWriter` locks and atomically publishes each hot-memory file write. `MemorySystem.addMemoryItem` reads entries before submitting the new list. The inspected writer options have no expected-revision argument. File-write atomicity alone does not establish safe multi-client correction or prevent stale-list replacement. Verify this with concurrent native reviewers and MCP clients before enabling shared writes.
+
+The design choice is resolved. Native operation details, privacy enforcement across hook injection and delivery, concurrent updates, and record-level correction remain implementation acceptance work. Do not enable the new default until those tests pass. This record does not authorize a live migration or relax the existing hook completion gate.

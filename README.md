@@ -23,7 +23,7 @@ The [upstream Hermes proposal](docs/upstream-hermes-proposals.md) separates gene
 
 The [VersionDrift baseline guide](docs/version-drift-baseline.md) explains the plugin-owned baseline, dashboard review action, update procedure, and native hook timing. It keeps Git metadata out of the shared Hermes home.
 
-The [accepted memory design](notes/2026-09-30-memory-design.md) records future work after the hook parity gate passes. A fresh installation will use LifeOS for durable facts and preferences, retain Hermes session management, and offer optional MCP access for other agents. This integration is not implemented. It will work independently of the existing `.211` and `.213` systems.
+The [resolved memory experience](notes/2026-09-30-memory-design.md) defines the fresh-install default, conversational memory operations, and optional sharing. Implementation starts after the hook parity gate passes. A fresh installation will use LifeOS for durable facts and preferences, retain Hermes session management, and offer optional MCP access for other agents. This integration is not implemented. It will work independently of the existing `.211` and `.213` systems.
 
 The [2026-09-29 test-server release](notes/2026-09-29-release-212.md) records the deployment of the reviewed patch reduction to the active `.212` account. This account keeps its original shared LifeOS and Hermes root. A new server must use the separate roots in the clean install guide. The shared-root account cannot use the separate-root LifeOS update worker.
 
@@ -78,7 +78,7 @@ When a tier uses a Hermes provider and model, the LifeOS child launcher uses Her
 
 Development evidence is collected with an [external recorder](development/README.md). It is excluded from the installed plugin. Captured prompts, tool data, and hook streams stay in a private directory outside this repository.
 
-The recorder is active on `.212`. Its [deployment record](notes/2026-09-30-development-capture-212.md) gives verified boundaries, coverage limits, private paths, and removal steps. The `.212` bot accepts ordinary messages in its dedicated `#hermes-212` channel. No scheduled analysis or automatic log deletion is configured.
+The recorder is active on `.212`. Its [deployment record](notes/2026-09-30-development-capture-212.md) gives verified boundaries, coverage limits, private paths, and removal steps. The `.212` bot accepts ordinary messages in its dedicated `#hermes-212` channel. The [completed logging review](notes/2026-09-30-logging-review-fixes.md) records verified corrections and the updated deployment. No scheduled analysis or automatic log deletion is configured.
 
 ## Reminder routing and privacy
 
