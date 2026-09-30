@@ -1,0 +1,35 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Native source fixture: /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install
+Interpreter: /home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python
+
+Principal source reads:
+cat lifeos_hook_bridge/memory_rpc.py lifeos_hook_bridge/memory_native.ts
+cat tests/test_memory_curation.py tests/test_memory_delegation.py
+cat lifeos_hook_bridge/memory_access.py
+sed -n '/    def native(/,$p' lifeos_hook_bridge/memory_service.py
+cat patches/lifeos-memory-access.patch
+sed -n '252,391p' lifeos_hook_bridge/memory_access.py
+sed -n '400,700p' lifeos_hook_bridge/memory_access.py
+cat tests/native_memory_calls.ts
+sed -n '330,385p' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
+sed -n '510,610p' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
+sed -n '126,150p' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryTypes.ts
+cmp patches/lifeos-memory-access.patch lifeos_hook_bridge/patches/lifeos-memory-access.patch
+
+Full suite, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p 'test_memory_*.py' -v > docs/agents/2026-09-30-memory-native-review/raw/memory-tests.txt 2>&1
+
+Curation suite, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p test_memory_curation.py -v > docs/agents/2026-09-30-memory-native-review/raw/curation-tests.txt 2>&1
+
+Delegation suite, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p test_memory_delegation.py -v > docs/agents/2026-09-30-memory-native-review/raw/delegation-tests.txt 2>&1
+
+Independent probes, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-native-review/raw/probe_native.py > docs/agents/2026-09-30-memory-native-review/raw/native-probes.jsonl
+
+The diagnostic command ran as cases were added. The preserved final JSONL contains all eight cases. The initial related-link exploration used related_to, which the real native validator correctly rejected with related[0].type is invalid. The final case uses the supported relation type related and reproduces the reference break after a successful native write.
+
+The archive correction probe kills a real child process with os._exit(73) at the metadata-record boundary, after actual native publication. The native concurrency case starts four independent Bun/RPC call sequences against one temporary root. The reviewer case builds the real native prompt but does not invoke a model.
+
+The plugin sources were copied before the tests. Native public sources were also preserved and hashed. Neither source snapshot contains installed memory data. The bundled patch is byte-identical to the top-level patch.

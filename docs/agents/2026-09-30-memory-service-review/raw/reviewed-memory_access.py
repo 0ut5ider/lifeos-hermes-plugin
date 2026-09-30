@@ -20,7 +20,7 @@ from .memory_policy import CATEGORIES, MemoryScope
 from .memory_transaction import MemoryTransaction
 
 
-SCHEMA_VERSION = 2
+SCHEMA_VERSION = 1
 HOT_FILES = {
     "principal": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
     "assistant": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
@@ -29,16 +29,6 @@ HOT_FILES = {
 
 def _digest(text: str) -> str:
     return hashlib.sha256(text.encode()).hexdigest()
-
-
-def _claim_words(text: str) -> list[str]:
-    body = re.sub(r"^(NAME|ROLE|RELATION|PREFERENCE|RULE):\s*", "", text)
-    body = re.sub(r"\s+~(?:explicit|deduced|inferred)\s*$", "", body)
-    return re.findall(r"\w+", body.casefold())
-
-
-def _claim_digest(text: str) -> str:
-    return _digest(" ".join(_claim_words(text)))
 
 
 def _now() -> str:
@@ -77,9 +67,9 @@ class NativeMemory:
         self.database.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
         connection = sqlite3.connect(self.database, timeout=30, isolation_level=None)
         connection.row_factory = sqlite3.Row
+        connection.execute("PRAGMA busy_timeout=30000")
+        connection.execute("BEGIN IMMEDIATE")
         try:
-            connection.execute("PRAGMA busy_timeout=30000")
-            connection.execute("BEGIN IMMEDIATE")
             version = connection.execute("PRAGMA user_version").fetchone()[0]
             if version not in (0, SCHEMA_VERSION):
                 raise MemoryUnavailable("The memory metadata schema is unsupported")
@@ -88,8 +78,7 @@ class NativeMemory:
                     id TEXT PRIMARY KEY, path TEXT NOT NULL, category TEXT NOT NULL, project TEXT NOT NULL,
                     digest TEXT NOT NULL, chars INTEGER NOT NULL, position INTEGER NOT NULL,
                     revision INTEGER NOT NULL, status TEXT NOT NULL, writer TEXT NOT NULL,
-                    source_session TEXT NOT NULL, source_kind TEXT NOT NULL, updated TEXT NOT NULL,
-                    claim_digest TEXT NOT NULL, claim_words INTEGER NOT NULL
+                    source_session TEXT NOT NULL, source_kind TEXT NOT NULL, updated TEXT NOT NULL
                 );
                 CREATE TABLE IF NOT EXISTS operations (
                     writer TEXT NOT NULL, request_id TEXT NOT NULL, payload_digest TEXT NOT NULL,
@@ -152,10 +141,7 @@ class NativeMemory:
 
     @staticmethod
     def _allowed(scope: MemoryScope, record: sqlite3.Row, *, write: bool = False) -> bool:
-        permissions = scope.write if write else scope.read
-        if record["category"] not in permissions:
-            return False
-        if record["path"].startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/")) and "principal" not in permissions:
+        if record["category"] not in (scope.write if write else scope.read):
             return False
         return record["category"] != "project" or "*" in scope.projects or record["project"] in scope.projects
 
@@ -192,61 +178,8 @@ class NativeMemory:
 
     @staticmethod
     def _blocked(connection: sqlite3.Connection, content: str) -> bool:
-        return connection.execute("""SELECT id FROM records AS retained WHERE claim_digest=? AND status IN ('forgotten','superseded')
-                                  AND NOT EXISTS (SELECT 1 FROM records AS current WHERE current.status='active'
-                                  AND current.claim_digest=retained.claim_digest AND current.category=retained.category
-                                  AND current.project=retained.project)""",
-                                  (_claim_digest(content),)).fetchone() is not None
-
-    def _archive_write(self, connection: sqlite3.Connection, item: dict[str, Any]) -> dict[str, Any]:
-        path = Path(self._native("route", item=item)["path"])
-        relative = path.relative_to(self.root).as_posix()
-        path = self._path(relative)
-        rows = connection.execute("SELECT * FROM records WHERE path=? AND status='active'", (relative,)).fetchall()
-        old_text = path.read_text(encoding="utf-8") if path.exists() else ""
-        for row in rows:
-            self._content(row)
-        result = self._native("add", item=item)
-        if not result.get("ok"):
-            return result
-        if Path(result["path"]) != path:
-            raise MemoryUnavailable("Native publication changed its declared archive destination")
-        if rows:
-            text = path.read_text(encoding="utf-8")
-            old_frontmatter = re.match(r"^---\n.*?\n---\n", old_text, re.DOTALL)
-            frontmatter = re.match(r"^---\n.*?\n---\n", text, re.DOTALL)
-            if old_frontmatter is None or frontmatter is None or not text[frontmatter.end():].startswith(old_text[old_frontmatter.end():].rstrip("\r\n")):
-                raise MemoryUnavailable("Native archive publication changed an earlier section; recovery is required")
-            delta = frontmatter.end() - old_frontmatter.end()
-            for row in rows:
-                connection.execute("UPDATE records SET position=position+? WHERE id=?", (delta, row["id"]))
-                updated = connection.execute("SELECT * FROM records WHERE id=?", (row["id"],)).fetchone()
-                self._content(updated)
-        return result
-
-    @staticmethod
-    def _archive_item(path: Path, content: str, source_session: str) -> dict[str, Any]:
-        common = {"content": content, "source_session": source_session or "none"}
-        if path.parent.name == "Ideas":
-            return {**common, "type": "idea", "title": path.stem}
-        entity = {"People": "person", "Companies": "company", "Research": "research"}.get(path.parent.name)
-        if entity is None:
-            raise MemoryUnavailable("The archive reference has no supported native routing type")
-        return {**common, "type": "knowledge", "entity_type": entity, "name": path.stem}
-
-    @staticmethod
-    def _private_entity(path: str) -> bool:
-        return path.startswith(("LIFEOS/MEMORY/KNOWLEDGE/People/", "LIFEOS/MEMORY/KNOWLEDGE/Companies/"))
-
-    def _duplicate(self, connection: sqlite3.Connection, scope: MemoryScope, content: str,
-                   category: str, project: str, destination: str) -> sqlite3.Row | None:
-        candidates = connection.execute("SELECT * FROM records WHERE digest=? AND category=? AND project=? AND status='active'",
-                                        (_digest(content), category, project)).fetchall()
-        for candidate in candidates:
-            if self._allowed(scope, candidate, write=True) and self._private_entity(candidate["path"]) == self._private_entity(destination):
-                self._content(candidate)
-                return candidate
-        return None
+        return connection.execute("SELECT id FROM records WHERE digest=? AND status IN ('forgotten','superseded')",
+                                  (_digest(content),)).fetchone() is not None
 
     def _record(self, connection: sqlite3.Connection, scope: MemoryScope, path: Path,
                 content: str, category: str, project: str, source: dict[str, str]) -> dict[str, Any]:
@@ -260,9 +193,9 @@ class NativeMemory:
         if position < 0 or text[position:position + len(content)] != content:
             raise MemoryUnavailable("The native writer did not save the requested fact")
         identifier = uuid4().hex
-        connection.execute("INSERT INTO records VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (
+        connection.execute("INSERT INTO records VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (
             identifier, relative, category, project, _digest(content), len(content), position,
-            1, "active", scope.writer, source.get("session", ""), source.get("kind", "explicit"), _now(), _claim_digest(content), len(_claim_words(content)),
+            1, "active", scope.writer, source.get("session", ""), source.get("kind", "explicit"), _now(),
         ))
         return {"id": identifier, "revision": 1}
 
@@ -306,9 +239,7 @@ class NativeMemory:
                     "reason": str(error), "writer": scope.writer, "request_id": request_id}
 
     def _publication_paths(self, connection: sqlite3.Connection, payload: dict[str, Any]) -> list[str]:
-        if payload["operation"] == "native_set":
-            return [HOT_FILES[payload["category"]]]
-        if payload["operation"] in ("remember", "native_add"):
+        if payload["operation"] == "remember":
             checked = self._native("validate", item=payload["item"])
             if not checked.get("ok") or checked["item"] != payload["item"]:
                 return []
@@ -319,156 +250,6 @@ class NativeMemory:
             return []
         row = connection.execute("SELECT path FROM records WHERE id=?", (reference["id"],)).fetchone()
         return [row["path"]] if row is not None else []
-
-    @staticmethod
-    def _native_receipt(receipt: dict[str, Any], *, category: str, path: Path) -> dict[str, Any]:
-        if receipt["status"] not in ("committed", "unchanged"):
-            return {"ok": False, "code": "EINVAL_ITEM", "message": receipt.get("reason", "Memory operation did not commit"),
-                    "receipt": receipt}
-        return {"ok": True, "type": "memory" if category != "project" else "knowledge", "path": str(path),
-                "detail": receipt.get("detail", {}), "receipt": receipt}
-
-    def _hot_snapshot(self, connection: sqlite3.Connection, category: str) -> dict[str, Any]:
-        path = self._path(HOT_FILES[category])
-        snapshot = self._native("read_hot", path=str(path))
-        if "entries" not in snapshot or snapshot.get("dropped_invalid"):
-            raise MemoryUnavailable("Native hot memory needs repair before governed curation")
-        indexed = connection.execute("SELECT * FROM records WHERE category=? AND status='active'", (category,)).fetchall()
-        entries = snapshot["entries"]
-        if sorted(_digest(entry) for entry in entries) != sorted(row["digest"] for row in indexed):
-            raise MemoryConflict("Native hot memory changed outside governed publication; review it before adoption")
-        return {**snapshot, "revision": _digest(path.read_text(encoding="utf-8"))}
-
-    def read_hot(self, scope: MemoryScope, category: str) -> dict[str, Any]:
-        if category not in HOT_FILES or category not in scope.read:
-            return {"ok": False, "code": "EINVAL_PATH", "message": "This hot-memory file has no read grant"}
-        with self._transaction() as connection:
-            return self._hot_snapshot(connection, category)
-
-    def _curate_hot(self, connection: sqlite3.Connection, scope: MemoryScope, category: str,
-                    entries: list[str], observed_revision: str, *, allow_drastic: bool = False) -> dict[str, Any]:
-        current = self._hot_snapshot(connection, category)
-        if not observed_revision or observed_revision != current["revision"]:
-            return {"status": "conflict", "reason": "The native memory revision changed after the reviewer read it"}
-        desired = list(dict.fromkeys(entries))
-        prior = connection.execute("SELECT * FROM records WHERE category=? AND status='active'", (category,)).fetchall()
-        by_digest = {row["digest"]: row for row in prior}
-        by_claim: dict[str, list[sqlite3.Row]] = {}
-        for row in prior:
-            by_claim.setdefault(row["claim_digest"], []).append(row)
-        assignments = []
-        preserved = set()
-        desired_digests = {_digest(entry) for entry in desired}
-        for entry in desired:
-            item = {"type": "memory", "actor": category, "content": entry}
-            if not re.match(r"^(NAME|ROLE|RELATION|PREFERENCE|RULE): ", entry):
-                return {"status": "rejected", "reason": "Every native hot entry requires a recognized prefix"}
-            invalid = self._validate(item, entry, category)
-            if invalid:
-                return {"status": "rejected", "reason": invalid}
-            if entry not in current["entries"] and self._blocked(connection, entry):
-                return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
-            row = by_digest.get(_digest(entry))
-            equivalent = by_claim.get(_claim_digest(entry), [])
-            if row is None and len(equivalent) == 1 and equivalent[0]["digest"] not in desired_digests:
-                row = equivalent[0]
-            if row is not None:
-                if row["id"] in preserved:
-                    return {"status": "conflict", "reason": "Curation maps several replacements to one native fact"}
-                preserved.add(row["id"])
-            assignments.append(row)
-        path = self._path(HOT_FILES[category])
-        result = self._native("set_hot", path=str(path), entries=desired, writer=scope.writer, allowDrastic=allow_drastic)
-        if not result.get("ok"):
-            return {"status": "rejected", "reason": result.get("message", "Native curation rejected the update")}
-        if result.get("dropped_malformed") or result.get("dropped_overlength"):
-            raise MemoryUnavailable("Native curation dropped submitted facts; publication requires recovery")
-        actual = self._native("read_hot", path=str(path)).get("entries")
-        if actual != desired:
-            raise MemoryUnavailable("Native curation did not publish the complete requested snapshot")
-        references = []
-        for row in prior:
-            if row["id"] not in preserved:
-                connection.execute("UPDATE records SET status='superseded',revision=revision+1,updated=? WHERE id=?", (_now(), row["id"]))
-        for entry, row in zip(desired, assignments):
-            if row is None:
-                references.append(self._record(connection, scope, path, entry, category, "", {"kind": "native-curation"}))
-            elif row["digest"] == _digest(entry):
-                references.append({"id": row["id"], "revision": row["revision"]})
-            else:
-                text = path.read_text(encoding="utf-8")
-                start = text.index("<!-- BEGIN ENTRIES -->") + len("<!-- BEGIN ENTRIES -->")
-                position = text.find(entry, start, text.index("<!-- END ENTRIES -->"))
-                if position < 0:
-                    raise MemoryUnavailable("Native curation did not save the replacement fact")
-                connection.execute("UPDATE records SET digest=?,chars=?,position=?,revision=revision+1,updated=? WHERE id=?",
-                                   (_digest(entry), len(entry), position, _now(), row["id"]))
-                references.append({"id": row["id"], "revision": row["revision"] + 1})
-        return {"status": "committed", "references": references, "detail": result}
-
-    def native_set(self, scope: MemoryScope, category: str, entries: list[str], request_id: str,
-                   observed_revision: str, *, allow_drastic: bool = False) -> dict[str, Any]:
-        if category not in HOT_FILES or category not in scope.read or category not in scope.write:
-            return {"ok": False, "code": "EINVAL_PATH", "message": "Native curation needs read and write grants for the whole file"}
-        if not isinstance(entries, list) or any(not isinstance(entry, str) for entry in entries) or type(allow_drastic) is not bool:
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "Native curation requires a validated entry list"}
-        payload = {"operation": "native_set", "category": category, "entries": entries,
-                   "observed_revision": observed_revision, "allow_drastic": allow_drastic}
-        receipt = self._operation(scope, request_id, payload, lambda connection:
-                                  self._curate_hot(connection, scope, category, entries, observed_revision, allow_drastic=allow_drastic))
-        result = self._native_receipt(receipt, category=category, path=self._path(HOT_FILES[category]))
-        return {**receipt["detail"], "receipt": receipt} if result["ok"] else {**result, "code": "EWRITE_FAILED"}
-
-    def native_add(self, scope: MemoryScope, item: dict[str, Any], *, request_id: str, project: str,
-                   observed_revision: str = "", source_session: str = "") -> dict[str, Any]:
-        if not isinstance(item, dict):
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "A native memory item is required"}
-        category = item.get("actor") if item.get("type") == "memory" else "project"
-        if not isinstance(category, str) or item.get("type") not in ("memory", "knowledge", "idea") or category not in CATEGORIES:
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "This native memory item needs a supported governed operation"}
-        if category not in scope.write or (category == "project" and (not project or ("*" not in scope.projects and project not in scope.projects))):
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "This native memory item has no write grant"}
-        if category != "project" and category not in scope.read:
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "Native curation requires a read grant for the current hot file"}
-        if item.get("type") == "knowledge" and item.get("entity_type") in ("person", "company") and "principal" not in scope.write:
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "Native private entity notes need principal write permission"}
-        checked = self._native("validate", item=item)
-        if not checked.get("ok") or checked["item"] != item:
-            return {"ok": False, "code": "EINVAL_ITEM", "message": checked.get("message", "Native validation changed the requested item")}
-        if category != "project" and item.get("op") == "set":
-            result = self.native_set(scope, category, item.get("entries"), request_id, observed_revision)
-            if not result.get("ok"):
-                return result
-            return {"ok": True, "type": "memory", "path": str(self._path(HOT_FILES[category])), "detail": result, "receipt": result["receipt"]}
-        project = project if category == "project" else ""
-        content = item.get("content")
-        if not isinstance(content, str) or not content.strip():
-            return {"ok": False, "code": "EINVAL_ITEM", "message": "A native fact requires content"}
-        def save(connection):
-            invalid = self._validate(item, content, category)
-            if invalid:
-                return {"status": "rejected", "reason": invalid}
-            if category != "project":
-                snapshot = self._hot_snapshot(connection, category)
-                return self._curate_hot(connection, scope, category, [*snapshot["entries"], content], snapshot["revision"])
-            if self._blocked(connection, content):
-                return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
-            result = self._archive_write(connection, item)
-            if not result.get("ok"):
-                return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
-            reference = self._record(connection, scope, Path(result["path"]), content, category, project,
-                                     {"kind": "native", "session": source_session})
-            return {"status": "committed", "reference": reference, "detail": result["detail"]}
-        receipt = self._operation(scope, request_id, {"operation": "native_add", "item": item, "project": project,
-                                                    "source_session": source_session}, save)
-        path = self._path(HOT_FILES[category]) if category in HOT_FILES else self.root / "LIFEOS/MEMORY"
-        result = self._native_receipt(receipt, category=category, path=path)
-        if result["ok"] and category == "project":
-            result["type"] = item["type"]
-            with self._transaction() as connection:
-                row = connection.execute("SELECT path FROM records WHERE id=?", (receipt["reference"]["id"],)).fetchone()
-                result["path"] = str(self._path(row["path"]))
-        return result
 
     def remember(self, scope: MemoryScope, *, category: str, content: str, title: str, project: str,
                  request_id: str, source: dict[str, str] | None = None) -> dict[str, Any]:
@@ -492,11 +273,11 @@ class NativeMemory:
                 return {"status": "rejected", "reason": invalid}
             if self._blocked(connection, content):
                 return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
-            destination = Path(self._native("route", item=item)["path"]).relative_to(self.root).as_posix()
-            existing = self._duplicate(connection, scope, content, category, project, destination)
+            existing = connection.execute("SELECT * FROM records WHERE digest=? AND category=? AND project=? AND status='active'",
+                                          (_digest(content), category, project)).fetchone()
             if existing:
                 return {"status": "unchanged", "reference": {"id": existing["id"], "revision": existing["revision"]}, "source": source}
-            result = self._archive_write(connection, item) if category == "project" else self._native("add", item=item)
+            result = self._native("add", item=item)
             if not result.get("ok"):
                 return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
             reference = self._record(connection, scope, Path(result["path"]), content, category, project, source)
@@ -509,76 +290,24 @@ class NativeMemory:
             raise ValueError("A memory query is required")
         if type(limit) is not int:
             raise ValueError("The memory result limit must be an integer")
+        records = {}
+        corpus = []
         with self._transaction() as connection:
-            records, corpus = self._corpus(connection, scope)
+            for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
+                if not self._allowed(scope, row):
+                    continue
+                content = self._content(row)
+                records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
+                                      "content": content, "category": row["category"], "project": row["project"],
+                                      "writer": row["writer"], "status": row["status"]}
+                corpus.append({"filePath": row["id"], "frontmatter": {"type": "knowledge" if row["category"] == "project" else "memory",
+                                                                     "title": row["project"] or row["category"]},
+                               "body": content, "wordCount": max(1, len(content.split())),
+                               "noteClass": "knowledge" if row["category"] == "project" else "memory"})
             if not corpus:
                 return []
             ranked = self._native("rank", query=query, corpus=corpus, limit=max(1, min(limit, 100)))
             return [{**records[item["path"]], "score": item["score"]} for item in ranked["results"]]
-
-    def _corpus(self, connection: sqlite3.Connection, scope: MemoryScope) -> tuple[dict[str, Any], list[dict[str, Any]]]:
-        records = {}
-        corpus = []
-        for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
-            if not self._allowed(scope, row):
-                continue
-            content = self._content(row)
-            records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
-                                  "content": content, "category": row["category"], "project": row["project"],
-                                  "writer": row["writer"], "status": row["status"]}
-            corpus.append({"filePath": row["id"], "frontmatter": {"type": ("idea" if "/KNOWLEDGE/Ideas/" in row["path"] else "knowledge") if row["category"] == "project" else "memory",
-                                                                 "title": row["project"] or row["category"]},
-                           "body": content, "wordCount": max(1, len(content.split())),
-                           "noteClass": "knowledge" if row["category"] == "project" else "memory"})
-        return records, corpus
-
-    def relevant_context(self, scope: MemoryScope, query: str, options: dict[str, Any]) -> dict[str, Any]:
-        if not isinstance(query, str) or len(query) > 4096 or not isinstance(options, dict):
-            raise ValueError("Invalid native memory retrieval request")
-        if set(options) - {"topK", "threshold", "excerptChars", "typeFilter"}:
-            raise ValueError("Unsupported native memory retrieval options")
-        for key, maximum in (("topK", 100), ("excerptChars", 65536)):
-            if key in options and (type(options[key]) is not int or not 1 <= options[key] <= maximum):
-                raise ValueError("Invalid native retrieval limit")
-        if "threshold" in options and (type(options["threshold"]) not in (int, float) or not 0 <= options["threshold"] < float("inf")):
-            raise ValueError("Invalid native retrieval threshold")
-        if "typeFilter" in options and options["typeFilter"] not in ("memory", "idea", "knowledge", "unknown"):
-            raise ValueError("Invalid native retrieval type")
-        with self._transaction() as connection:
-            _, corpus = self._corpus(connection, scope)
-            return self._native("rank", query=query, corpus=corpus, options=options)
-
-    def filter_history(self, scope: MemoryScope, content: str, timestamp: str) -> dict[str, Any]:
-        if not isinstance(content, str) or len(content) > 65536 or not isinstance(timestamp, str):
-            raise ValueError("Invalid reviewer history input")
-        if not CATEGORIES <= set(scope.read) or "*" not in scope.projects:
-            return {"content": "", "excluded": True}
-        with self._transaction() as connection:
-            retained = connection.execute("""SELECT * FROM records AS retained WHERE status IN ('forgotten','superseded')
-                                          AND NOT EXISTS (SELECT 1 FROM records AS current WHERE current.status='active'
-                                          AND current.claim_digest=retained.claim_digest AND current.category=retained.category
-                                          AND current.project=retained.project)""").fetchall()
-            retained = [row for row in retained if self._allowed(scope, row)]
-            if not retained:
-                return {"content": content, "excluded": False}
-            try:
-                source_time = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
-                if source_time.tzinfo is None:
-                    raise ValueError("Reviewer sources need an explicit timezone")
-                if source_time <= max(datetime.fromisoformat(row["updated"]) for row in retained):
-                    return {"content": "", "excluded": True}
-            except ValueError:
-                return {"content": "", "excluded": True}
-            words = _claim_words(content)
-            hashes_by_length: dict[int, set[str]] = {}
-            for row in retained:
-                if row["claim_words"] > 0:
-                    hashes_by_length.setdefault(row["claim_words"], set()).add(row["claim_digest"])
-            for length, hashes in hashes_by_length.items():
-                for start in range(len(words) - length + 1):
-                    if _digest(" ".join(words[start:start + length])) in hashes:
-                        return {"content": "", "excluded": True}
-            return {"content": content, "excluded": False}
 
     def _target(self, connection: sqlite3.Connection, scope: MemoryScope, reference: dict[str, Any]):
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str) or type(reference.get("revision")) is not int:
@@ -614,7 +343,8 @@ class NativeMemory:
             replacement = content.strip()
             path = self._path(row["path"])
             if row["category"] == "project":
-                item = self._archive_item(path, replacement, row["source_session"])
+                item = {"type": "knowledge", "entity_type": "research", "name": path.stem,
+                        "content": replacement, "source_session": row["source_session"] or "none"}
             else:
                 if not re.match(r"^(NAME|ROLE|RELATION|PREFERENCE|RULE): ", replacement):
                     replacement = old.split(": ", 1)[0] + ": " + replacement
@@ -627,10 +357,13 @@ class NativeMemory:
                 return {"status": "unchanged", "reference": reference}
             if self._blocked(connection, replacement):
                 return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
-            existing = self._duplicate(connection, scope, replacement, row["category"], row["project"], row["path"])
+            existing = connection.execute("SELECT * FROM records WHERE digest=? AND category=? AND project=? AND status='active'",
+                                          (_digest(replacement), row["category"], row["project"])).fetchone()
+            if existing:
+                self._content(existing)
             if row["category"] == "project" and not existing:
                 # Native path slugs must remain unchanged for section references.
-                result = self._archive_write(connection, item)
+                result = self._native("add", item=item)
                 if not result.get("ok"):
                     return {"status": "rejected", "reason": result.get("message", "Native correction rejected")}
                 path = Path(result["path"])

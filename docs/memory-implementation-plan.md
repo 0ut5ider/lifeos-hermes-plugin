@@ -17,7 +17,9 @@ Native LifeOS files remain the authoritative facts. Integration metadata must no
 
 Implementation started on `feature/lifeos-memory`. No running memory ownership switch or remote sharing activation has occurred. Test data is synthetic. The existing `.211` and `.213` installations remain unchanged.
 
-The governed-operation foundation now passes 28 tests against native LifeOS tools. Independent review verifies correction validation, stable hot-entry identity, complete archive-section identity, interrupted-write recovery, and lock retention by a surviving native child. Native retrieval ranks a supplied authorized corpus and bypasses the unscoped query cache. Direct native writer delegation, provider integration, sharing, preferences, and installation gates remain open.
+The memory suite passes 61 tests against native LifeOS tools and the installed MCP SDK. Independent reviews verify archive references after related-link updates, private entity separation, restricted reviewer history, current hot-entry identity, interrupted-write recovery, and strict MCP arguments. The native read, add, full-list curation, retrieval, and reviewer prompt paths delegate to the common policy when the connector is configured. The complete ordered source preparation also succeeds.
+
+The primary agent reran the saved closure and follow-up probes. Both pass. No live ownership activation has occurred. Provider integration, required model-request checks, native proposal approval, credential-bound sharing, preferences, and installation gates remain open. The host context builder has five passing tests but has not yet been independently reviewed. Native delegation coverage does not establish that every active context or writer path is governed.
 
 ## Required evidence
 

@@ -1,0 +1,29 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+SDK interpreter: /home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python
+Native source fixture: managed-source, as selected by tests/test_memory_native.py
+
+Source inspection:
+cat lifeos_hook_bridge/memory_service.py lifeos_hook_bridge/memory_mcp.py
+rg -n '^    def get|^    def recall' lifeos_hook_bridge/memory_access.py
+cat tests/test_memory_service.py tests/test_memory_mcp.py
+sed -n '312,353p' lifeos_hook_bridge/memory_access.py
+sed -n '1,130p' lifeos_hook_bridge/memory_policy.py
+cat lifeos_hook_bridge/plugin.yaml
+git status --short
+rg -n 'def call_tool|validate_input|extra=|extra:|strict|model_validate|validate_json' /home/outsider/.cache/lifeos-plugin-memory/sdk-env/lib/python*/site-packages/mcp/server -g '*.py' | head -60
+
+One exploratory rg command included pyproject.toml, which does not exist. The dependency declaration was read from lifeos_hook_bridge/plugin.yaml instead.
+
+Service tests, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p 'test_memory_service.py' -v > docs/agents/2026-09-30-memory-service-review/raw/service-tests.txt 2>&1
+
+MCP tests, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p 'test_memory_mcp.py' -v > docs/agents/2026-09-30-memory-service-review/raw/mcp-tests.txt 2>&1
+
+Service probes, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-service-review/raw/probe_service.py > docs/agents/2026-09-30-memory-service-review/raw/service-probes.jsonl
+
+Installed-copy MCP probes, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-service-review/raw/probe_mcp.py > docs/agents/2026-09-30-memory-service-review/raw/mcp-probes.json
+
+The configuration race probe rotates a real configuration file at a controlled point immediately after the first real load. Both roots and all facts are temporary synthetic fixtures. The MCP probe uses a real installed module copy, real SDK stdio transport, and real native mutation. Database corruption is confined to a disposable fixture. The scripts preserve actual outcomes, including the expected review failures, and do not treat those outcomes as passing regressions.
