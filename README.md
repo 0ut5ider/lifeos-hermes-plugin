@@ -74,6 +74,10 @@ A session review grant covers the reviewed command, target backend, and working 
 
 When a tier uses a Hermes provider and model, the LifeOS child launcher uses Hermes's installed runtime and that provider's credentials automatically. It does not need a separate gateway token in `model.env`. The direct provider route does not fall back to another provider when the selected provider fails. **Keep existing child routing (advanced)** is an explicit per-tier choice. Delegated Agent children then inherit the parent Hermes model, while direct inference uses `ANTHROPIC_MODEL` and the Anthropic Messages compatible gateway from `model.env` when direct mode is enabled. For that separate gateway route, set `LIFEOS_CHILD_INFERENCE_DIRECT=1` and keep `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_MODEL` in `model.env` with mode `0600`. Without direct mode, the child launcher passes the selected model and effort to the installed Claude CLI. A launcher started outside Hermes needs `LIFEOS_MODEL_TIER_MAP` in its environment to use plugin settings. The direct path accepts LifeOS text requests and image file references. For the Hermes integrity gate, run `hermes lifeos-probe --run` once and repeat it after changing the Fable route. The probe evidence expires after 30 days. `CarrierProbe.ts` remains the Claude Code specific test. See [the direct inference probe](notes/2026-09-28-direct-child-inference.md).
 
+## Development evidence
+
+Development evidence is collected with an [external recorder](development/README.md). It is excluded from the installed plugin. Captured prompts, tool data, and hook streams stay in a private directory outside this repository.
+
 ## Reminder routing and privacy
 
 LifeOS's `ReminderRouter` hook creates a GitHub issue containing the original prompt when `WORK.REPO` is configured and the prompt matches an explicit reminder, research, or queue phrase. The isolated test account has no `WORK.REPO`, so this route is inactive there. Decide where reminder text may be stored before enabling that configuration in a private deployment. See [the egress record](notes/2026-09-28-reminder-router-egress.md).

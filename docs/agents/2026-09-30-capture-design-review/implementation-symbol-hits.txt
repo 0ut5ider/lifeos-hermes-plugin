@@ -1,0 +1,57 @@
+32:def emit(stage, data=None, **fields):
+42:def optional_observer(fallback):
+43:    def decorate(function):
+45:        def call(*args, **kwargs):
+55:def identity(arguments):
+76:def arguments_for(function, args, kwargs):
+88:def observed(function, stage, *, hermes_event=None):
+92:    def before(args, kwargs):
+113:    def after(values, result, started):
+123:        async def wrapper(*args, **kwargs):
+136:        def wrapper(*args, **kwargs):
+152:def groups(bridge, event, values):
+169:                "workspace": getattr(remote, "root", None)}
+176:def registration(bridge, event, group, hook):
+185:def evaluated(bridge, event, group, hook):
+190:def skipped(bridge, event, group, hook, reason):
+196:def decision(result):
+204:def job(bridge, event, group, hook, value):
+209:    def call(*args, **kwargs):
+219:                emit("hook.failed" if result is None else "hook.completed", {"result": result},
+232:def bridge_module(bridge):
+236:def backend_execute(backend, *args, **kwargs):
+250:    def __init__(self):
+254:    def visit_FunctionDef(self, node):
+261:    def visit_If(self, node):
+269:    def visit_For(self, node):
+275:    def visit_Continue(self, node):
+302:    def visit_Call(self, node):
+316:def patch_bridge(module):
+324:    def selected(self, event, *args, **kwargs):
+335:    def handoff(spool_path, process_cwd, environment):
+357:    def initialize(self, *args, **kwargs):
+370:def patch_module(module, path):
+379:        def register(ctx):
+381:                def __getattr__(self, name):
+383:                def register_hook(self, name, callback):
+399:            for name in ("_handle_message", "send"):
+404:def discord_observed(function, name):
+406:    async def call(*args, **kwargs):
+411:            # Read attributes only; do not call mutating admission or deduplication checks again.
+427:            emit("discord."+name+".returned",result,status="accepted" if name=="_handle_message" and result else "ignored" if name=="_handle_message" else "delivered" if getattr(result,"success",False) else "delivery_failed",duration_ns=time.monotonic_ns()-started,evidence_level="adapter-observed")
+437:def patch_processes():
+440:    def run(*args, **kwargs):
+452:        asynchronous = context.get("_detached",False)
+470:            emit("hook.completed" if asynchronous else "process.completed",captured,status=status,
+485:def capture_streams(captured, stdout, stderr):
+496:def patch_http():
+499:    def open_url(*args, **kwargs):
+512:            def __getattr__(self, key):
+514:            def __enter__(self):
+517:            def __exit__(self, *values):
+519:            def read(self, *values, **options):
+534:def install(configuration):
+559:        CURRENT.set({**request.get("_development_capture",{}),"_detached":True})
+564:    def exec_module(loader,module):
+566:        expected=CONFIG.get("fingerprints",{}).get(str(file))
+591:        if name and str(Path(name).resolve()) in CONFIG.get("fingerprints",{}):
