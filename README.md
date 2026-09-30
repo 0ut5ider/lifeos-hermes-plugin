@@ -23,6 +23,8 @@ The [upstream Hermes proposal](docs/upstream-hermes-proposals.md) separates gene
 
 The [VersionDrift baseline guide](docs/version-drift-baseline.md) explains the plugin-owned baseline, dashboard review action, update procedure, and native hook timing. It keeps Git metadata out of the shared Hermes home.
 
+The [accepted memory design](notes/2026-09-30-memory-design.md) records future work after the hook parity gate passes. A fresh installation will use LifeOS for durable facts and preferences, retain Hermes session management, and offer optional MCP access for other agents. This integration is not implemented. It will work independently of the existing `.211` and `.213` systems.
+
 The [2026-09-29 test-server release](notes/2026-09-29-release-212.md) records the deployment of the reviewed patch reduction to the active `.212` account. This account keeps its original shared LifeOS and Hermes root. A new server must use the separate roots in the clean install guide. The shared-root account cannot use the separate-root LifeOS update worker.
 
 The plugin declares exact `tree-sitter`, `tree-sitter-bash`, and `pathspec` Python dependencies for Bash parsing and file-rule matching. Hermes asks for dependency consent when installing or enabling the plugin and retains those packages through managed updates. Run `hermes plugins validate PATH --install-deps` against the downloaded plugin before enabling it. A missing parser prevents the bridge from loading rather than silently dropping deny rules. See [the compound Bash probe](notes/2026-09-28-compound-bash-permissions.md).
