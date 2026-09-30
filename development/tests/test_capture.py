@@ -3,6 +3,7 @@
 
 import gzip
 import base64
+import dataclasses
 import json
 import os
 import subprocess
@@ -21,6 +22,111 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_http_credentials_are_redacted_and_echoed_values_are_learned(self):
+        from hook_capture.store import Recorder
+        secret = "SYNTHETIC-HTTP-CREDENTIAL-928374"
+        cases = [
+            {"headers": {"X-API-Key": secret}},
+            {"url": "https://operator:" + secret + "@example.invalid/route?ordinary=yes"},
+            {"url": "https://example.invalid/route?ordinary=yes&access_token=" + secret},
+            {"url": "https://example.invalid/route#access_token=" + secret},
+        ]
+        for declared in cases:
+            with self.subTest(declared=declared), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                recorder = Recorder(root, "test-run")
+                ref = recorder.artifact({**declared, "stdout": secret, "prompt": "keep this ordinary prompt"})
+                raw = gzip.decompress((root / ref["path"]).read_bytes()).decode()
+                self.assertNotIn(secret, raw)
+                self.assertEqual(json.loads(raw)["prompt"], "keep this ordinary prompt")
+                if "url" in declared and "ordinary=yes" in declared["url"]:
+                    self.assertIn("ordinary=yes", json.loads(raw)["url"])
+
+    def test_json_text_and_dataclasses_declare_credentials_before_echo_redaction(self):
+        from hook_capture.store import Recorder
+        secret = "SYNTHETIC-DECLARED-CREDENTIAL-382719"
+        @dataclasses.dataclass
+        class Result:
+            api_key: str
+            stdout: str
+        for declared in (json.dumps({"api_key": secret, "stdout": secret}), Result(secret, secret),
+                         subprocess.CompletedProcess(["true"], 0, json.dumps({"api_key": secret, "echo": secret}), secret)):
+            with self.subTest(kind=type(declared).__name__), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                recorder = Recorder(root, "test-run")
+                ref = recorder.artifact({"input": declared, "stdout": secret})
+                self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+
+    def test_summary_reports_known_capture_loss_and_instrumentation_gaps(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        root = Path(temporary.name)
+        script = """
+import sys, json
+from pathlib import Path
+from hook_capture.store import Recorder
+from hook_capture.analysis import rebuild, summary
+root = Path(sys.argv[1])
+first = Recorder(root, 'test-run')
+first.emit('lost.first', data={'value': float('nan')})
+first.emit('observed.first')
+first.emit('observed.second')
+second = Recorder(root, 'test-run')
+second.emit('lost.second', data={'value': float('nan')})
+second.emit('lost.third', data={'value': float('nan')})
+second.emit('instrumentation.failed', status='capture_gap')
+print(json.dumps(summary(rebuild(root))))
+"""
+        env = dict(os.environ, PYTHONPATH=str(ROOT / "development"))
+        result = subprocess.run([sys.executable, "-c", script, str(root)], env=env,
+                                capture_output=True, text=True, timeout=10)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stderr.count("Development capture lost an event (ValueError)"), 3)
+        report = json.loads(result.stdout)
+        self.assertEqual(report["known_lost_events"], 3)
+        self.assertEqual(report["capture_failure_processes"], 2)
+        self.assertEqual(report["capture_gaps"], 1)
+
+    def test_index_reports_malformed_records_and_corrupt_compressed_artifacts(self):
+        from hook_capture.store import Recorder
+        from hook_capture.analysis import rebuild, summary
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorder = Recorder(root, "test-run")
+            event = recorder.emit("observed.artifact", data={"content": "a" * 1000})
+            artifact = root / event["data_ref"]["path"]
+            damaged = bytearray(artifact.read_bytes())
+            damaged[10:14] = b"\xff\xff\xff\xff"
+            artifact.write_bytes(damaged)
+            with recorder.event_path.open("a") as stream:
+                for malformed in ([], None, {"schema_version": 1, "data_ref": ["bad"]},
+                                  {"schema_version": 1, "status": ["bad"]}, {"schema_version": 1},
+                                  {**event, "data_ref": []}):
+                    stream.write(json.dumps(malformed) + "\n")
+            report = summary(rebuild(root))
+            self.assertEqual(report["events"], 1)
+            self.assertEqual(report["integrity_issues"], {"invalid_event": 6, "artifact_error": 1})
+
+    def test_failed_hook_is_reported_as_failure_not_successful_execution(self):
+        from hook_capture.store import Recorder
+        from hook_capture.analysis import rebuild, summary
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorder = Recorder(root, "test-run")
+            recorder.emit("hook.failed", registration_id="failed", status="timeout", duration_ns=100)
+            report = summary(rebuild(root))
+            hook = report["hooks"][0]
+            self.assertEqual(hook["terminal_outcomes"], 1)
+            self.assertEqual(hook["successful_executions"], 0)
+            self.assertEqual(hook["failures"], 1)
+
+    def test_host_identity_retains_native_agent_turn(self):
+        from hook_capture.instrument import identity
+        class Agent:
+            session_id = "native-session"
+            _current_turn_id = "native-turn"
+        self.assertEqual(identity({"agent": Agent()}), {"session_id": "native-session", "turn_id": "native-turn"})
+
     def test_credential_fields_inside_json_stdin_and_stdout_are_redacted(self):
         from hook_capture.store import safe
         from hook_capture.instrument import transport_input, transport_output
@@ -94,7 +200,7 @@ class EvidenceTests(unittest.TestCase):
 
 
 class OverlayTests(unittest.TestCase):
-    def run_bridge(self, hooks, action, *, traced=True, setup=""):
+    def run_bridge(self, hooks, action, *, traced=True, setup="", config_overrides=None):
         temporary = tempfile.TemporaryDirectory()
         self.addCleanup(temporary.cleanup)
         root = Path(temporary.name)
@@ -104,9 +210,12 @@ class OverlayTests(unittest.TestCase):
                   "plugin_root": str(PLUGIN), "host_root": "",
                   "fingerprints": {}}
         import hashlib
+        config["capture_sources"] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                                     for p in (ROOT / "development/hook_capture").glob("*.py")}
         for name in ("bridge.py", "bin/hook_runner.py", "remote_hooks.py", "__init__.py"):
             p = PLUGIN / name
             config["fingerprints"][str(p)] = hashlib.sha256(p.read_bytes()).hexdigest()
+        config.update(config_overrides or {})
         configuration = root / "capture.json"
         configuration.write_text(json.dumps(config))
         code = ("from hook_capture.instrument import install\n"
@@ -122,6 +231,34 @@ class OverlayTests(unittest.TestCase):
         for p in (root / "capture").glob("runs/*/events/*/*.jsonl"):
             events.extend(json.loads(line) for line in p.read_text().splitlines())
         return root, result.stdout, events
+
+    def test_recorder_source_drift_is_reported_without_changing_native_result(self):
+        hooks = {"PreToolUse": [{"hooks": [{"type": "command", "command": "true"}]}]}
+        action = "bridge.pre_tool_call('terminal',{'command':'pwd'},session_id='source-drift')"
+        _, baseline, _ = self.run_bridge(hooks, action, traced=False)
+        _, observed, events = self.run_bridge(hooks, action, config_overrides={"capture_sources": {"instrument.py": "0" * 64}})
+        self.assertEqual(baseline, observed)
+        self.assertTrue(any(e.get("status") == "capture_gap" for e in events))
+        self.assertFalse(any(e["stage"] == "hook.completed" for e in events))
+
+    def test_identical_hooks_at_distinct_settings_origins_have_distinct_registration_ids(self):
+        hooks = {"PreToolUse": [{"hooks": [{"type": "command", "command": "true"}]}]}
+        setup = """
+def run_two_origins(bridge):
+    second_settings = bridge.settings_path.with_name('second-settings.json')
+    second_settings.write_text(bridge.settings_path.read_text())
+    second = type(bridge)(second_settings, bridge.root)
+    try:
+        return [b.pre_tool_call('terminal', {'command':'pwd'}, session_id='origins') for b in (bridge,second)]
+    finally:
+        second.close()
+"""
+        root, _, events = self.run_bridge(hooks, "run_two_origins(bridge)", setup=setup)
+        completed = [e for e in events if e["stage"] == "hook.completed"]
+        self.assertEqual(len(completed), 2)
+        self.assertEqual(len({e["registration_id"] for e in completed}), 2)
+        from hook_capture.analysis import rebuild, summary
+        self.assertEqual(summary(rebuild(root / "capture"))["known_registrations"], 2)
 
     def test_duplicate_commands_and_skips_have_exact_distinct_identities(self):
         command = "printf '{\"hookSpecificOutput\":{\"hookEventName\":\"PreToolUse\",\"permissionDecision\":\"deny\"}}'"
@@ -155,6 +292,62 @@ class OverlayTests(unittest.TestCase):
         failed = next(e for e in events if e["stage"] == "process.failed")
         payload = json.loads(gzip.decompress((root / "capture" / failed["data_ref"]["path"]).read_bytes()))
         self.assertIn("partial", str(payload))
+
+    def test_real_hook_credential_echo_is_filtered_before_every_result_artifact(self):
+        secret = "SYNTHETIC-HOOK-CREDENTIAL-172839"
+        setup = """
+def run_credential_hook(bridge):
+    import sys, json
+    path = bridge.root / 'credential-hook.py'
+    body = {'api_key': 'SYNTHETIC-HOOK-CREDENTIAL-172839', 'echo': 'SYNTHETIC-HOOK-CREDENTIAL-172839'}
+    path.write_text('import json\\nprint(json.dumps(' + repr(body) + '))\\n')
+    bridge.hooks['PreToolUse'][0]['hooks'][0]['command'] = sys.executable + ' ' + str(path)
+    return bridge.pre_tool_call('terminal', {'command':'pwd'}, session_id='credential-echo')
+"""
+        hooks = {"PreToolUse": [{"hooks": [{"type": "command", "command": "true"}]}]}
+        _, baseline, _ = self.run_bridge(hooks, "run_credential_hook(bridge)", setup=setup, traced=False)
+        root, observed, events = self.run_bridge(hooks, "run_credential_hook(bridge)", setup=setup)
+        self.assertEqual(observed, baseline)
+        stages = {"process.completed", "run_command.returned", "hook.completed", "response.parsed.entered"}
+        inspected = set()
+        for event in events:
+            if event["stage"] in stages:
+                raw = gzip.decompress((root / "capture" / event["data_ref"]["path"]).read_bytes()).decode()
+                self.assertNotIn(secret, raw)
+                inspected.add(event["stage"])
+        self.assertEqual(inspected, stages)
+
+    def test_real_http_url_headers_and_response_credentials_are_filtered(self):
+        query_secret = "SYNTHETIC-QUERY-CREDENTIAL-928374"
+        response_secret = "SYNTHETIC-RESPONSE-CREDENTIAL-918273"
+        body = json.dumps({"api_key": response_secret, "echo": response_secret}).encode()
+        class Handler(BaseHTTPRequestHandler):
+            def do_POST(self):
+                self.rfile.read(int(self.headers["Content-Length"]))
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("X-API-Key", response_secret)
+                self.end_headers()
+                self.wfile.write(body)
+            def log_message(self, *args):
+                pass
+        server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
+        self.addCleanup(server.server_close)
+        self.addCleanup(server.shutdown)
+        threading.Thread(target=server.serve_forever, daemon=True).start()
+        hooks = {"PreToolUse": [{"hooks": [{"type": "http", "url": f"http://127.0.0.1:{server.server_port}/?access_token={query_secret}"}]}]}
+        action = "bridge.pre_tool_call('terminal',{'command':'pwd'},session_id='http-credentials')"
+        _, baseline, _ = self.run_bridge(hooks, action, traced=False)
+        root, observed, events = self.run_bridge(hooks, action)
+        self.assertEqual(observed, baseline)
+        for event in events:
+            if event["stage"] in {"http.request", "http.response_read", "hook.completed", "run_http.returned", "inventory.observed"}:
+                raw = gzip.decompress((root / "capture" / event["data_ref"]["path"]).read_bytes()).decode()
+                self.assertNotIn(query_secret, raw)
+                self.assertNotIn(response_secret, raw)
+                if event["stage"] == "http.response_read":
+                    decoded = base64.b64decode(json.loads(raw)["body"]["bytes"]).decode()
+                    self.assertNotIn(response_secret, decoded)
 
     def test_http_observes_the_same_read_limit_without_draining_the_response(self):
         body = b"h" * 100000
@@ -221,6 +414,8 @@ class OverlayTests(unittest.TestCase):
             configuration = root / "config.json"
             configuration.write_text(json.dumps({"enabled": True, "root": str(root / "capture"),
                 "run_id": "async-run", "plugin_root": str(PLUGIN),
+                "capture_sources": {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
+                                    for p in (ROOT / "development/hook_capture").glob("*.py")},
                 "fingerprints": {str(PLUGIN / name): hashlib.sha256((PLUGIN / name).read_bytes()).hexdigest()
                                  for name in ("bridge.py", "remote_hooks.py", "__init__.py", "bin/hook_runner.py")}}))
             configuration.chmod(0o600)

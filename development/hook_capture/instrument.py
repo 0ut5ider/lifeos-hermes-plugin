@@ -65,7 +65,10 @@ def identity(arguments):
             result["tool_call_id" if key == "call_id" else key] = arguments[key]
     agent = arguments.get("agent")
     if agent is not None:
-        result["session_id"] = getattr(agent, "session_id", None)
+        for target, source in (("session_id", "session_id"), ("turn_id", "_current_turn_id")):
+            value = getattr(agent, source, None)
+            if isinstance(value, (str, int)) and not isinstance(value, bool):
+                result[target] = value
     ref = arguments.get("ref")
     if ref is not None:
         for target, source in (("tool_call_id", "call_id"), ("task_id", "task_id"), ("tool_name", "name")):
@@ -175,11 +178,7 @@ def observed(function, stage, *, hermes_event=None):
 def groups(bridge, event, values):
     registry = CURRENT.get().get("_groups")
     if registry is not None:
-        inventory = [{**{k: v for k, v in group.items() if k != "_remote_project"},
-                      **({"capture_workspace": remote_scope(group["_remote_project"])} if group.get("_remote_project") else {})}
-                     for group in values]
-        raw = json.dumps(safe(inventory, RECORDER.secrets), sort_keys=True, default=lambda v: type(v).__name__)
-        digest = hashlib.sha256(raw.encode()).hexdigest()
+        inventory, metadata = [], []
         for index, group in enumerate(values):
             origin = str(bridge.settings_path) if any(group is item for item in bridge.hooks.get(event, [])) else None
             if origin is None:
@@ -188,9 +187,15 @@ def groups(bridge, event, values):
                         origin = str(path)
                         break
             remote = group.get("_remote_project")
-            registry[id(group)] = {"group_index": index, "inventory_id": digest,
+            metadata.append({"group_index": index,
                 "settings_origin": origin, "origin_observed": origin is not None,
-                **remote_scope(remote)}
+                **remote_scope(remote)})
+            inventory.append({**{k: v for k, v in group.items() if k != "_remote_project"},
+                              "capture_source": metadata[-1]})
+        raw = json.dumps(safe(inventory, RECORDER.secrets), sort_keys=True, default=lambda v: type(v).__name__)
+        digest = hashlib.sha256(raw.encode()).hexdigest()
+        for group, source in zip(values, metadata):
+            registry[id(group)] = {**source, "inventory_id": digest}
         entries = [{**registration(bridge, event, group, hook), "hook": hook}
                    for group in values for hook in group.get("hooks", [])]
         emit("inventory.observed", {"event": event, "groups": inventory, "registrations": entries}, inventory_id=digest)
@@ -704,8 +709,14 @@ def install(configuration):
                     if SENSITIVE.search(key) and len(value)>=4:
                         secrets.append(value)
     RECORDER=Recorder(Path(config["root"]),config["run_id"],secrets)
+    actual_sources = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in Path(__file__).parent.glob("*.py")}
+    emit("process.initialized",{"config":config,"capture_sources_actual":actual_sources,
+                                "python":sys.version,"argv":sys.argv,"prefix":sys.prefix})
+    if actual_sources != config.get("capture_sources"):
+        emit("instrumentation.incompatible", {"operation": "recorder_source_manifest",
+             "expected": config.get("capture_sources"), "actual": actual_sources}, status="capture_gap")
+        return
     INSTALLED=True
-    emit("process.initialized",{"config":config,"python":sys.version,"argv":sys.argv,"prefix":sys.prefix})
     if len(sys.argv)>1 and Path(sys.argv[0]).resolve()==Path(config["plugin_root"])/"bin/hook_runner.py":
         runner = Path(sys.argv[0]).resolve()
         if hashlib.sha256(runner.read_bytes()).hexdigest() == config["fingerprints"].get(str(runner)):

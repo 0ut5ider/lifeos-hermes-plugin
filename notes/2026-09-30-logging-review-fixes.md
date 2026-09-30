@@ -1,0 +1,34 @@
+# Development recorder: independent review corrections
+
+Date: 2026-09-30. Initial status: local corrections verified; deployment and follow-up review pending.
+
+The [independent baseline review](../docs/agents/2026-09-30-logging-independent-review/logging-independent-review.md) found eight confirmed issues in commit `8995ac2`. The primary agent reproduced the findings, added failing regressions, and implemented the corrections below. No public plugin runtime or compatibility patch changed.
+
+| Finding | Correction | Evidence |
+| --- | --- | --- |
+| Declared credentials survive in echoed JSON and supported objects | Learn declarations from JSON text, partial fields, bytes, dataclasses, command results, and timeout output before artifact serialization | Primitive fixtures and a real command hook verify all four previously leaking result stages |
+| HTTP headers and URL credentials escape recognition | Recognize hyphenated credential headers, URL passwords, credential query and fragment parameters, and echoed values | URL fixtures and an actual local HTTP hook preserve native results and filter stored evidence |
+| Known lost events disappear from summaries | Sum the maximum cumulative failure count per run and process; expose gap counts | Three intentional failed writes in two processes produce an explicit loss count of three |
+| Damaged data stops analysis | Validate event and reference shapes; catch corrupt deflate data; retain valid events and report issues | Six malformed records and a damaged compressed artifact do not stop reconstruction |
+| Different settings origins share a registration identity | Hash the observed origin and execution scope with hook content and positions | Two actual bridges with identical hooks in distinct settings files retain two identities |
+| Recorder source drift is unreported | Compare actual source hashes with the configured recorder manifest before installing observers | Intentional drift records a gap and preserves the native hook outcome |
+| Host records omit available turn identity | Read the native scalar agent turn ID at surrounding host boundaries | An identity fixture retains both native session and turn IDs |
+| Failed hooks appear in a field called completed | Separate terminal outcomes, successful executions, interventions, and failures | A failed-only fixture reports one failure and zero successful executions |
+
+All 21 tests pass locally. Exact output is [primary-fixed-tests.txt](../docs/agents/2026-09-30-logging-independent-review/primary-fixed-tests.txt). Historical baseline probe files remain unchanged so that the failures remain reproducible from the reviewed revision.
+
+The first URL expression caused the existing 1,100,000-character artifact test to remain in its first case for more than 51 seconds. Its unrestricted scheme scan tried overlapping starts in ordinary text. A scheme boundary prevents those overlapping scans. The corrected full suite finishes in 5.678 seconds. The slow process was terminated before any deployment.
+
+## Review probe side effect
+
+The reviewer imported `hermes_bootstrap` with a disposable Hermes home. Runtime preparation installed dependencies in that temporary home but also rebuilt generated products in the shared Hermes source checkout. The probe did not reach its host policy assertions. It was stopped, and its temporary fixtures were removed.
+
+The primary agent verified a clean tracked Git tree and unchanged hashes for all nine inspected runtime sources on `.212`. Both generated products have complete build manifests: `ui-tui/dist/hermes-build.json` and `hermes_cli/web_dist/hermes-build.json`. The web manifest timestamp is 15:39:02 UTC. The dashboard returns HTTP 200 at its login page and HTTP 401 for an unauthenticated configuration API request. The generated products remain in place. Their prior ignored-file hashes were unavailable, so this is a documented rebuild, not a claim that their bytes remained unchanged.
+
+Future read-only host probes must add the existing dependency site directly. Importing bootstrap under a temporary home does not isolate generated build output. No `.211` or `.213` system was accessed or modified during this review.
+
+## Remaining limits
+
+Existing private artifacts are immutable. Improved filtering protects new capture and does not sanitize historical artifacts retroactively. Inspect historical data with private, count-only checks before considering any cleanup. Do not publish raw artifacts or rewrite them without preserving reference integrity.
+
+Known loss counts cannot reveal a process that fails before its first successful write or after its last successful write. Registration inventory counts describe observed versions across all captured runs. Completed execution still does not prove semantic parity. Comparative overhead and a complete host permission matrix remain separate verification work.

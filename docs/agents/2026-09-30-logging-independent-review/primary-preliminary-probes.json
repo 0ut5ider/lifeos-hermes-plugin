@@ -1,0 +1,40 @@
+[
+  {
+    "case": "hyphenated_api_header",
+    "recognizable_credential_retained": true,
+    "representation": {
+      "headers": {
+        "X-API-Key": "SYNTHETIC-CREDENTIAL-CANARY-119283"
+      }
+    }
+  },
+  {
+    "case": "url_userinfo",
+    "recognizable_credential_retained": true,
+    "representation": {
+      "url": "https://operator:SYNTHETIC-CREDENTIAL-CANARY-119283@example.invalid/route"
+    }
+  },
+  {
+    "case": "url_token_parameter",
+    "recognizable_credential_retained": true,
+    "representation": {
+      "url": "https://example.invalid/route?access_token=SYNTHETIC-CREDENTIAL-CANARY-119283"
+    }
+  },
+  {
+    "case": "dropped_event_accounting",
+    "recorder_failure_count": 1,
+    "summary": {
+      "events": 1,
+      "statuses": {},
+      "incomplete_invocations": 0,
+      "known_registrations": 0,
+      "unexercised_registrations": [],
+      "partial_tails": 0,
+      "integrity_issues": {},
+      "hooks": [],
+      "note": "Completion is execution evidence, not semantic parity."
+    }
+  }
+]

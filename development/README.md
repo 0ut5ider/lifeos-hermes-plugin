@@ -39,7 +39,7 @@ PYTHONPATH=/path/to/development python -m hook_capture.setup install \
 
 The installer writes `~/.config/lifeos-development-capture/config.json` with mode 0600. It places `lifeos_development_capture.pth` in the interpreter's site directory. The startup file also enables systemd-launched children that do not inherit `PYTHONPATH`. The capture root defaults to `~/.local/state/lifeos-development-capture` with mode 0700.
 
-The configuration pins inspected source hashes. A source mismatch generates `capture_gap` and runs the original source. After a Hermes or plugin update, inspect the affected observers and reinstall the capture configuration. Do not count a source mismatch as a successful hook observation.
+The configuration pins inspected source hashes. Startup also compares the recorder's actual source files with its configured manifest. A recorder mismatch records `capture_gap` and leaves native execution active without installing observers. A pinned Hermes or plugin source mismatch leaves that source unmodified and records `capture_gap`. After an update, inspect the affected observers and reinstall the capture configuration. Do not count a source mismatch as a successful hook observation.
 
 ## Review captured behavior
 
@@ -56,6 +56,10 @@ PYTHONPATH=/path/to/development python -m hook_capture.analysis /private/capture
 ```
 
 Start with the summary. Inspect capture gaps and integrity errors before judging hook outcomes. Separate expected exit-code-2 interventions, parse failures, transport failures, native timeouts, and incomplete invocations. Follow one invocation through input, result, returned directive, host action, context construction, and delivery where applicable. A hook's intended file or memory side effect needs its own observed evidence.
+
+`known_lost_events` sums the highest reported recorder failure count per run and process. `capture_failure_processes` identifies how many processes reported loss. A process that loses every event, or exits before its next successful write, cannot report its final failure count this way. A zero count is the absence of reported loss, not proof of complete capture. Malformed records and compressed artifact errors are reported while the index continues through valid evidence.
+
+Hook tables separate `terminal_outcomes`, `successful_executions`, `interventions`, and `failures`. Duration statistics include terminal outcomes. Registration identity includes its observed settings origin and execution scope. The inventory count covers registration versions seen across captured runs, rather than only the currently installed configuration. Use the inventory records and source manifest when comparing versions.
 
 HTTP capture retains only the bytes Hermes actually reads. `unknown_at_limit` means the read reached the native limit; the recorder does not drain the response. Unknown Python objects are represented by type names rather than arbitrary object representations. Attachment metadata is recorded, but the recorder does not download an attachment solely for tracing.
 
@@ -76,8 +80,10 @@ PYTHONPATH=/path/to/development python -m hook_capture.setup remove
 python3 -m unittest discover -s development/tests -v
 ```
 
-The 11 tests run real hook processes and compare traced results with native results. They cover large streams, detached parent exit, HTTP limits, duplicate registrations, malformed output, credential redaction in JSON and encoded transport, storage failure, partial JSON Lines tails, and thread context propagation.
+The 21 tests include real hook processes and traced versus native comparisons. They cover large streams, detached parent exit, HTTP limits, duplicate registrations, distinct settings origins, malformed output and evidence, credential redaction in JSON and encoded transport, URL and header credentials, echoed credentials, storage failure, reported capture loss, source drift, turn identity, partial JSON Lines tails, and thread context propagation.
 
-Both the local suite and the deployed `.212` suite passed on 2026-09-30. Separate live probes verified an actual systemd detached runner, SSH and Docker detached success and failure, a Hermes terminal tool turn, and Discord admission and reply delivery. See the [deployment record](../notes/2026-09-30-development-capture-212.md). These observations do not establish all permission cases or semantic parity for every registration. Comparative latency has not been measured.
+The initial 11-test suite passed locally and on `.212` on 2026-09-30. The later 21-test suite passes locally. Separate live probes verified an actual systemd detached runner, SSH and Docker detached success and failure, a Hermes terminal tool turn, and Discord admission and reply delivery. See the [deployment record](../notes/2026-09-30-development-capture-212.md). These observations do not establish all permission cases or semantic parity for every registration. Comparative latency has not been measured.
+
+The [independent review and fixes](../notes/2026-09-30-logging-review-fixes.md) distinguish the initial 11-test deployment from later review corrections. The record identifies which corrected revision has reached `.212`.
 
 `development/probes/remote_capture.py` runs against disposable SSH and Docker fixtures supplied through environment variables. It exercises the remote execution boundary directly. It does not establish trusted project selection or full remote tool behavior. The operator must prepare and remove its keys, container, account access, and workspace.

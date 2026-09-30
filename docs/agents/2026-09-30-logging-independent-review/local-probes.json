@@ -1,0 +1,111 @@
+{
+  "actual_hook": {
+    "baseline_exit": 0,
+    "credential_leaking_stages": [
+      "process.completed",
+      "run_command.returned",
+      "hook.completed",
+      "response.parsed.entered"
+    ],
+    "event_stages": [
+      "bridge.initialized",
+      "bridge_callback.entered",
+      "bridge_callback.returned",
+      "hook.completed",
+      "hook.started",
+      "instrumentation.loaded",
+      "inventory.observed",
+      "process.completed",
+      "process.initialized",
+      "process.started",
+      "registration.evaluated",
+      "response.parsed.entered",
+      "response.parsed.returned",
+      "run_command.entered",
+      "run_command.returned",
+      "translation.entered",
+      "translation.returned"
+    ],
+    "process_failures": [],
+    "same_outcome": true,
+    "traced_exit": 0
+  },
+  "capture_loss": {
+    "reported_prior_failures": 2,
+    "summary": {
+      "events": 1,
+      "hooks": [],
+      "incomplete_invocations": 0,
+      "integrity_issues": {},
+      "known_registrations": 0,
+      "note": "Completion is execution evidence, not semantic parity.",
+      "partial_tails": 0,
+      "statuses": {},
+      "unexercised_registrations": []
+    }
+  },
+  "completed_process": {
+    "declared_field_redacted": true,
+    "echo_credential_stored": true
+  },
+  "corrupt_gzip": {
+    "analysis_exception": "error",
+    "module": "zlib"
+  },
+  "dataclass": {
+    "declared_field_redacted": true,
+    "echo_credential_stored": true
+  },
+  "failed_hook_summary": {
+    "events": 1,
+    "hooks": [
+      {
+        "completed": 1,
+        "max_ms": 0.0,
+        "p50_ms": null,
+        "p95_ms": null,
+        "registration_id": "failed-registration"
+      }
+    ],
+    "incomplete_invocations": 0,
+    "integrity_issues": {},
+    "known_registrations": 0,
+    "note": "Completion is execution evidence, not semantic parity.",
+    "partial_tails": 0,
+    "statuses": {
+      "exception": 1
+    },
+    "unexercised_registrations": []
+  },
+  "http_credentials": {
+    "header_value_leaked": true,
+    "url_password_leaked": true,
+    "url_query_token_leaked": true
+  },
+  "json_string": {
+    "declared_field_redacted": true,
+    "echo_credential_stored": true
+  },
+  "malformed_array": {
+    "analysis_exception": "AttributeError"
+  },
+  "malformed_bad_ref": {
+    "analysis_exception": "AttributeError"
+  },
+  "malformed_bad_status": {
+    "analysis_exception": "ProgrammingError"
+  },
+  "malformed_null": {
+    "analysis_exception": "AttributeError"
+  },
+  "observer_source_drift": {
+    "configured_instrument_hash_incorrect": true,
+    "observer_hooks_active": true,
+    "runtime_capture_gap_events": 0
+  },
+  "registration_origins": {
+    "distinct_origins": 2,
+    "distinct_registration_ids": 1,
+    "indexed_registrations": 1
+  }
+}

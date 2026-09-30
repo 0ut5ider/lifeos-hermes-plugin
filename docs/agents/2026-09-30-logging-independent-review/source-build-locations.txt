@@ -1,0 +1,11 @@
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:27:  const { source, out: destination } = productOutput(options.source, options.out, ['ui-tui', 'apps/shared', 'node_modules'])
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:28:  const { build } = await import(pathToFileURL(workspaceTool(source, 'ui-tui', 'esbuild')).href)
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:29:  const root = join(source, 'ui-tui')
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:30:  const inputs = buildInputs(source, 'tui')
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:71:    recordProduct({ source, product: 'tui', out: join(product, 'dist'), inputs })
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:76:// npm's existing developer entrypoint retains ui-tui/dist without replacing
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:79:  const scratch = mkdtempSync(join(tmpdir(), 'hermes-tui-'))
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:81:    const result = await buildTui({ source: repoRoot, out: join(scratch, 'tui') })
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:83:    const staged = mkdtempSync(join(repoRoot, 'ui-tui/.dist-'))
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:86:      publishDirectory(staged, join(repoRoot, 'ui-tui/dist'), { source: repoRoot })
+/home/lifeos-hermes/workspace/hermes-agent/scripts/build/tui.mjs:90:    return { out: join(repoRoot, 'ui-tui'), entry: join(repoRoot, 'ui-tui/dist/entry.js') }

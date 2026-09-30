@@ -16,21 +16,87 @@ import threading
 import time
 import uuid
 from pathlib import Path
+from urllib.parse import unquote, unquote_plus, quote
 
-SENSITIVE = re.compile(r"(^|_)(password|passwd|secret|token|api_?key|(?:access|refresh|auth)_?token|private_?key|client_?secret)($|_)|^authorization$|^cookie$|^set.cookie$", re.I)
+SENSITIVE = re.compile(r"(^|[_-])(password|passwd|secret|token|api[_-]?key|(?:access|refresh|auth)[_-]?token|private[_-]?key|client[_-]?secret|authorization|cookie)($|[_-])|^set.cookie$", re.I)
 TOKEN_SHAPE = re.compile(r"(?i)(Bearer\s+)[A-Za-z0-9._~+/=-]+|-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----", re.S)
 JSON_FIELD = re.compile(r'("(?P<field>(?:\\.|[^"\\])*)"\s*:\s*)("(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?|true|false|null)')
+URL_SHAPE = re.compile(r"(?<![A-Za-z0-9+.-])[A-Za-z][A-Za-z0-9+.-]*://[^\s<>\"']+")
 
 
-def declared_secrets(value):
+def url_credentials(value):
+    for match in URL_SHAPE.finditer(value):
+        _, address = match.group(0).split("://", 1)
+        authority = re.split(r"[/?#]", address, maxsplit=1)[0]
+        if "@" in authority:
+            userinfo = authority.rsplit("@", 1)[0]
+            if ":" in userinfo:
+                yield unquote(userinfo.split(":", 1)[1])
+        for parameters in re.split(r"[?#]", address)[1:]:
+            for field in parameters.split("&"):
+                key, separator, item = field.partition("=")
+                if separator and SENSITIVE.search(unquote_plus(key)):
+                    yield unquote_plus(item)
+
+
+def redact_url(match):
+    scheme, address = match.group(0).split("://", 1)
+    authority = re.split(r"[/?#]", address, maxsplit=1)[0]
+    if "@" in authority:
+        address = quote("[REDACTED]", safe="") + "@" + authority.rsplit("@", 1)[1] + address[len(authority):]
+    def parameter(match):
+        prefix, key, item = match.groups()
+        return prefix + key + "=" + quote("[REDACTED]", safe="") if SENSITIVE.search(unquote_plus(key)) else match.group(0)
+    address = re.sub(r"([?&#])([^=?&#]+)=([^&#]*)", parameter, address)
+    return scheme + "://" + address
+
+
+def declared_secrets(value, seen=None, credential=False):
+    if seen is None:
+        seen = set()
+    if isinstance(value, str):
+        if credential and len(value) >= 4 and value != "[REDACTED]":
+            yield value
+        yield from (item for item in url_credentials(value) if len(item) >= 4)
+        if value.lstrip().startswith(("{", "[")):
+            try:
+                yield from declared_secrets(json.loads(value), seen)
+            except (ValueError, RecursionError):
+                pass
+        for match in JSON_FIELD.finditer(value):
+            try:
+                key = json.loads('"' + match.group("field") + '"')
+                if SENSITIVE.search(key):
+                    yield from declared_secrets(json.loads(match.group(3)), seen, True)
+            except ValueError:
+                pass
+        return
+    if isinstance(value, bytes):
+        yield from declared_secrets(value.decode("utf-8", errors="surrogateescape"), seen, credential)
+        return
+    if isinstance(value, subprocess.CompletedProcess):
+        yield from declared_secrets({"args": value.args, "returncode": value.returncode,
+                                    "stdout": value.stdout, "stderr": value.stderr}, seen)
+        return
+    if isinstance(value, BaseException):
+        fields = {"message": str(value)}
+        if isinstance(value, subprocess.TimeoutExpired):
+            fields.update({"stdout": value.stdout, "stderr": value.stderr})
+        yield from declared_secrets(fields, seen)
+        return
+    if isinstance(value, (dict, list, tuple, set, frozenset)) or dataclasses.is_dataclass(value):
+        if id(value) in seen:
+            return
+        seen.add(id(value))
     if isinstance(value, dict):
         for key, item in value.items():
-            if SENSITIVE.search(str(key)) and isinstance(item, str) and len(item) >= 4 and item != "[REDACTED]":
-                yield item
-            yield from declared_secrets(item)
-    elif isinstance(value, (list, tuple)):
+            yield from declared_secrets(item, seen, credential or bool(SENSITIVE.search(str(key))))
+    elif isinstance(value, (list, tuple, set, frozenset)):
         for item in value:
-            yield from declared_secrets(item)
+            yield from declared_secrets(item, seen, credential)
+    elif dataclasses.is_dataclass(value) and not isinstance(value, type):
+        for field in dataclasses.fields(value):
+            yield from declared_secrets(getattr(value, field.name), seen, credential or bool(SENSITIVE.search(field.name)))
 
 
 def safe(value, secrets=(), key=""):
@@ -39,6 +105,7 @@ def safe(value, secrets=(), key=""):
     if value is None or isinstance(value, (bool, int, float)):
         return value
     if isinstance(value, str):
+        value = URL_SHAPE.sub(redact_url, value)
         for secret in secrets:
             if secret:
                 value = value.replace(secret, "[REDACTED]")
