@@ -1,0 +1,78 @@
+diff --git a/README.md b/README.md
+index afa263a..f672160 100644
+--- a/README.md
++++ b/README.md
+@@ -23,7 +23,7 @@ The [upstream Hermes proposal](docs/upstream-hermes-proposals.md) separates gene
+ 
+ The [VersionDrift baseline guide](docs/version-drift-baseline.md) explains the plugin-owned baseline, dashboard review action, update procedure, and native hook timing. It keeps Git metadata out of the shared Hermes home.
+ 
+-The [resolved memory experience](notes/2026-09-30-memory-design.md) defines the fresh-install default, conversational memory operations, and optional sharing. Implementation starts after the hook parity gate passes. A fresh installation will use LifeOS for durable facts and preferences, retain Hermes session management, and offer optional MCP access for other agents. This integration is not implemented. It will work independently of the existing `.211` and `.213` systems.
++The [resolved memory experience](notes/2026-09-30-memory-design.md) defines the fresh-install default, conversational memory operations, and optional sharing. An [independent design review](docs/agents/2026-09-30-memory-design-review/memory-design-review.md) identified requirements for historical corrections, privacy before model input, and safe write references. The design applies the same memory policy to every connected messaging app. Implementation starts after the hook parity gate passes. A fresh installation will use LifeOS for durable facts and preferences, retain Hermes session management, and offer optional MCP access for other agents. This integration is not implemented. It will work independently of the existing `.211` and `.213` systems.
+ 
+ The [2026-09-29 test-server release](notes/2026-09-29-release-212.md) records the deployment of the reviewed patch reduction to the active `.212` account. This account keeps its original shared LifeOS and Hermes root. A new server must use the separate roots in the clean install guide. The shared-root account cannot use the separate-root LifeOS update worker.
+ 
+diff --git a/docs/parity-resolution-plan.md b/docs/parity-resolution-plan.md
+index 0e47c97..a16a30d 100644
+--- a/docs/parity-resolution-plan.md
++++ b/docs/parity-resolution-plan.md
+@@ -54,5 +54,5 @@ Build for a fresh, self-contained Hermes, plugin, and LifeOS installation. LifeO
+ 
+ 1. Map the active data flows for Hermes `MEMORY.md` and `USER.md`, Hermes session search, LifeOS Cortex hot memory and retrieval hooks, the LifeOS reviewer, and any LifeOS snapshot mounted into `SOUL.md`. Identify duplicate writes, duplicate retrieval, and stale context with measured examples.
+ 2. Implement governed LifeOS access through a Hermes memory provider and optional MCP service. Preserve native memory hooks, define one automatic recall owner, and coordinate reviewer jobs. Verify corrections, forgetting, and independent skill learning before disabling built-in durable writes in a test profile.
+-3. Test the chosen design in disposable profiles across turns, restarts, concurrent Claude Code and Hermes sessions, and rollback. Include an SSH or remote adapter only if the deployment needs to share memory across hosts. Check what memory can appear in Discord replies.
++3. Test the chosen design in disposable profiles across turns, restarts, concurrent Claude Code and Hermes sessions, and rollback. Include an SSH or remote adapter only if the deployment needs to share memory across hosts. Apply the same identity, audience, and destination policy to every connected messaging app. Verify memory exposure before model input and before delivery.
+ 4. Add understandable preferences and test a clean installation, updates, and configuration rollback. Record evidence and a recovery path before enabling the new default. Importing existing Hermes memory is a separate, optional feature; preserve existing files until a reviewed migration is verified.
+diff --git a/notes/2026-09-30-memory-design.md b/notes/2026-09-30-memory-design.md
+index 2accc85..12cf2d3 100644
+--- a/notes/2026-09-30-memory-design.md
++++ b/notes/2026-09-30-memory-design.md
+@@ -144,10 +144,48 @@ Report unavailable recall and failed saves clearly. Never report a failed save a
+ 
+ Set read and write permissions for each authenticated client. Permissions must follow the client's approved use and model route. A process running on the LAN may still send returned records to a cloud model.
+ 
+-Keep memory access permissions separate from delivery permissions. A record permitted in a private session is not automatically permitted in a public Discord channel. Verify private chats, server channels, threads, scheduled messages, and child-agent context where supported.
++Keep memory access permissions separate from delivery permissions. A record permitted in a private session is not automatically permitted in a shared conversation. Use one policy for every connected messaging app. Verify private chats, groups, shared channels, threads, scheduled messages, and child-agent context where supported.
+ 
+ Protect credentials and sensitive records through the governed access path. Document what the service enforces and what requires operating-system isolation or agent instructions. Do not describe a configurable caller name as enforced isolation.
+ 
++## Contracts clarified by the independent review
++
++The [independent design review](../docs/agents/2026-09-30-memory-design-review/memory-design-review.md) identified three contracts that need explicit requirements before implementation. These requirements refine the accepted ownership model. They do not enable a provider, migrate data, or establish runtime guarantees.
++
++### Current facts, retained history, and corrections
++
++Use active, superseded, forgotten, and pending status consistently across hot entries, archive sections, searchable learning records, and derived context. Ordinary recall must exclude superseded and forgotten claims. Retained historical material may remain available through an explicitly requested history operation under the user's access and retention policy. A historical label alone does not satisfy forgetting.
++
++Applied corrections and forget decisions must also govern native reviewers that process old transcripts or learning records. An older retained source cannot automatically recreate the removed claim. A later authenticated request to remember the fact again must be treated as a new request, with any conflicting correction or forget decision shown before the user authorizes reactivation.
++
++Reuse native references, status, and operations where they satisfy these requirements. If native operations cannot express them, document and test the smallest necessary extension before enabling the operation. Keep any required metadata with this installation's native store and backups. Do not create another editable copy of the facts.
++
++### One context policy for all messaging apps
++
++The host binds each operation to an authenticated principal and a trusted context policy. The policy includes the current author, participants, conversation visibility, permitted memory categories, selected model route, and actual outbound destination. Messaging adapters supply this information; the memory rules remain the same across apps. Equivalent authenticated contexts receive equivalent memory behavior and access.
++
++Bind account IDs from different apps to the same principal only through an approved identity mapping. Display names, prompt text, tool arguments, and client-supplied caller names cannot establish that binding. Recheck the current author in shared sessions. Unknown identity, visibility, or recipients receive restricted access; private memory remains excluded until authorization is established. Expose missing adapter metadata as a capability limit rather than treating it as a private conversation.
++
++Apply the policy before memory reaches any model through native hook output, explicit tools, rendered context, inherited child context, compression, or reviewer input. Enforce destination permissions separately before sending a response. A task that sends to another audience must use context permitted for that audience; filtering the final response alone is insufficient.
++
++Permission reductions, participant changes, audience changes, and destination changes require affected context and caches to be invalidated or rebuilt. Recalled facts must also refresh after corrections and forgetting. Cache results must be scoped by identity, policy, and store revision, or invalidated with equivalent guarantees. Never reuse a private context for a restricted session because its query text matches.
++
++Preserve native hook ownership, cadence, and behavior in authorized contexts. Restricted-context filtering is an explicit privacy requirement. If native interfaces cannot enforce it, record the necessary extension and its comparison tests. Do not claim that provider or MCP permissions govern native direct reads without proving that boundary.
++
++Verify actual model inputs with synthetic permitted and denied markers across at least two messaging adapters. Cover private and shared conversations, changing authors and participants, unknown metadata, scheduled sends, child tasks, resume, and compression. These tests establish representative evidence. Verify trusted metadata and common-policy behavior for every supported adapter before claiming support. An adapter that lacks required metadata stays restricted and reports that limitation.
++
++### References, write receipts, and safe retries
++
++A saved reference identifies a native file or note plus its entry or section, revision, and status. It must remain meaningful when unrelated entries move or change. Corrections and forgetting must refuse ambiguous targets and stale destructive edits. Establish the concrete native representation in disposable fixtures before exposing these operations.
++
++Bind writer identity to the authenticated Hermes author or enrolled MCP credential. Keep writer identity separate from source provenance. Return both in an operation receipt, and preserve the necessary metadata through restart, backup, and restore. A source-session string is not proof of the writer's identity.
++
++Scope retry keys to the authenticated writer and operation. Repeating a request after a lost response must resolve its previous outcome rather than append another fact or proposal. Receipts distinguish committed, unchanged, pending, rejected, conflict, and unknown outcomes. Partial acceptance must identify the accepted and rejected changes. A successful native call or spawned reviewer does not alone prove that the requested fact was saved.
++
++All writers, including native reviewers, must preserve other committed changes. Use native read-modify-write within the same lock, or revision checks with safe conflict handling. A mutex around only the provider or MCP cannot govern a direct native writer. Test content and metadata publication, interrupted operations, archive creation, related-link updates, guarded deletion, and live versus stale locks before enabling ownership.
++
++Before sharing, verify restricted SSH execution, server-bound client policy, separate proposal creation and approval grants, and revocation of active connections. Provider discovery, profile roots, skill learning, schema checks, and update or restore behavior remain required ownership tests. A backup must include the authoritative records and required status, identity, policy, and pending-operation metadata consistently with active writers.
++
+ ## Preferences page
+ 
+ | Proposed control | User-visible purpose |
