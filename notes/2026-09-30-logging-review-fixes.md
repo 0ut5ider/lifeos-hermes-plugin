@@ -40,3 +40,11 @@ The second review confirmed that remote protocol frames could hide an echoed cre
 The analyzer now rejects registration fields that SQLite cannot store, reports malformed inventories, and validates signed 64-bit bounds for indexed numeric fields. Valid events remain searchable after these errors. Three added regressions fail before the corrections and pass afterward. All 24 local tests pass. A further independent review and deployment validation remain pending.
 
 A first staged test attempt on `.212` imported the previous recorder package from the account startup file despite capture being disabled. Disabling observation does not prevent Python package import. The staged test uses a clean virtual environment and the staged working directory to avoid that cached package. Failed staged outputs are retained as diagnostic evidence.
+
+## Third review corrections
+
+A fresh reviewer reproduced a declared Bearer authorization value whose bare token echo survived. Credential discovery now learns the token body before filtering supported evidence. The primary regression fails against the prior code. The reviewer independently verifies a real hook: six leaking stages before the correction, no leaking stages afterward, and unchanged native results.
+
+The reviewer also found a checksum cache keyed only by artifact path. A later reference with a different expected digest could pass without validation. The cache now keys by path and expected digest. A failed checksum prevents that inventory from adding registrations. The primary regression fails before the correction. The suite now contains 26 tests. Another independent closure review remains pending.
+
+A staging command quoting error also extracted a development copy and a symlink into the `.212` login account's home. Those files were moved to the private directory `/home/outsider/lifeos-capture-staging-command-20260930/`. They are inactive diagnostic copies. The corrected staging command runs inside the intended test account. No service or native source changed through this failed command.

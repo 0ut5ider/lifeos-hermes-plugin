@@ -57,6 +57,10 @@ def declared_secrets(value, seen=None, credential=False):
     if isinstance(value, str):
         if credential and len(value) >= 4 and value != "[REDACTED]":
             yield value
+        for match in TOKEN_SHAPE.finditer(value):
+            token = match.group(0)[len(match.group(1)):] if match.group(1) else match.group(0)
+            if len(token) >= 4:
+                yield token
         yield from (item for item in url_credentials(value) if len(item) >= 4)
         if value.lstrip().startswith(("{", "[")):
             try:

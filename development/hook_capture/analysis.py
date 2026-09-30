@@ -33,6 +33,7 @@ def rebuild(root: Path):
         """)
         columns = [row[1] for row in db.execute("PRAGMA table_info(events)")]
         checked = set()
+        invalid_references = set()
         for path in sorted(root.glob("runs/*/events/*/*.jsonl")):
             with path.open("rb") as stream:
                 for line_number, line in enumerate(stream, 1):
@@ -67,7 +68,8 @@ def rebuild(root: Path):
                         relative = ref.get("path")
                         if relative is not None and (not isinstance(relative, str) or not isinstance(ref.get("sha256"), str)):
                             raise ValueError("Invalid artifact reference")
-                        if relative and relative not in checked:
+                        reference_id = (relative, ref.get("sha256"))
+                        if relative and reference_id not in checked:
                             artifact = (root / relative).resolve()
                             if not artifact.is_relative_to(root.resolve()):
                                 raise ValueError("Artifact path escapes capture root")
@@ -77,8 +79,9 @@ def rebuild(root: Path):
                                     raise ValueError("Artifact digest mismatch")
                             except (OSError, ValueError, EOFError, zlib.error) as error:
                                 db.execute("INSERT INTO issues VALUES(?,?,?)", ("artifact_error", relative, type(error).__name__))
-                            checked.add(relative)
-                        if row.get("stage") == "inventory.observed" and relative:
+                                invalid_references.add(reference_id)
+                            checked.add(reference_id)
+                        if row.get("stage") == "inventory.observed" and relative and reference_id not in invalid_references:
                             try:
                                 inventory = json.loads(gzip.decompress((root / relative).read_bytes()))
                                 if not isinstance(inventory, dict) or not isinstance(inventory.get("registrations"), list):

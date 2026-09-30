@@ -22,6 +22,30 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_each_artifact_reference_validates_its_expected_digest(self):
+        from hook_capture.store import Recorder
+        from hook_capture.analysis import rebuild, summary
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorder = Recorder(root, "test-run")
+            event = recorder.emit("observed.valid", data={"registrations": [{"registration_id": "bad-digest"}]})
+            with recorder.event_path.open("a") as stream:
+                stream.write(json.dumps({**event, "event_id": "second-event", "stage": "inventory.observed",
+                    "data_ref": {**event["data_ref"], "sha256": "0" * 64}}) + "\n")
+            report = summary(rebuild(root))
+            self.assertEqual(report["events"], 2)
+            self.assertEqual(report["known_registrations"], 0)
+            self.assertEqual(report["integrity_issues"], {"artifact_error": 1})
+
+    def test_bearer_declarations_redact_bare_token_echoes(self):
+        from hook_capture.store import Recorder
+        secret = "SYNTHETIC-BEARER-CREDENTIAL-482739"
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorder = Recorder(root, "test-run")
+            ref = recorder.artifact({"headers": {"Authorization": "Bearer " + secret}, "stdout": secret})
+            self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+
     def test_transport_learns_all_decoded_frames_before_redaction(self):
         from hook_capture.instrument import transport_input, transport_output
         secret = "SYNTHETIC-REMOTE-DECLARATION-283749"

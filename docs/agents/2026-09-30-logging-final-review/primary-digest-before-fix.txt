@@ -1,0 +1,15 @@
+test_each_artifact_reference_validates_its_expected_digest (test_capture.EvidenceTests.test_each_artifact_reference_validates_its_expected_digest) ... FAIL
+
+======================================================================
+FAIL: test_each_artifact_reference_validates_its_expected_digest (test_capture.EvidenceTests.test_each_artifact_reference_validates_its_expected_digest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 37, in test_each_artifact_reference_validates_its_expected_digest
+    self.assertEqual(report["known_registrations"], 0)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0
+
+----------------------------------------------------------------------
+Ran 1 test in 0.014s
+
+FAILED (failures=1)
