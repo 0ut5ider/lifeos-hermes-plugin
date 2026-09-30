@@ -95,7 +95,7 @@ index fb6dffa..599a563 100644
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
-index dcc185e..e7d1ec7 100755
+index dcc185e..ef2bb3a 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
 @@ -44,6 +44,7 @@ import * as fs from "fs";
@@ -124,15 +124,17 @@ index dcc185e..e7d1ec7 100755
  interface ScoredNote {
    note: KnowledgeNote;
    score: number;
-@@ -664,7 +667,7 @@ function loadMemoryFiles(): KnowledgeNote[] {
+@@ -664,8 +667,8 @@ function loadMemoryFiles(): KnowledgeNote[] {
   * getRelevantContext(). See HOT_PATH_LEARNING_LIMIT for why LEARNING is
   * bounded here and unbounded on the CLI path.
   */
 -function discoverAllItems(): KnowledgeNote[] {
-+export function discoverAllItems(): KnowledgeNote[] {
-   return [...discoverNotes(), ...discoverLearningNotes(HOT_PATH_LEARNING_LIMIT), ...loadMemoryFiles()];
+-  return [...discoverNotes(), ...discoverLearningNotes(HOT_PATH_LEARNING_LIMIT), ...loadMemoryFiles()];
++export function discoverAllItems(learningLimit: number | null = HOT_PATH_LEARNING_LIMIT): KnowledgeNote[] {
++  return [...discoverNotes(), ...discoverLearningNotes(learningLimit ?? undefined), ...loadMemoryFiles()];
  }
  
+ /**
 @@ -687,8 +690,14 @@ function discoverAllItems(): KnowledgeNote[] {
   */
  export function getRelevantContext(

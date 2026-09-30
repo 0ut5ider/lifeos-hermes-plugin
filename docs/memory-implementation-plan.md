@@ -57,3 +57,10 @@ Native consumers now use governed decisions for all five outcomes. Separate crea
 ## Owner proposal preferences
 
 The preferences page shows pending text, its target, rationale, writer, and exact revision. The authenticated owner can accept, reject, edit, or mark a change as applied elsewhere. It cannot grant automatic approval. A conflict preserves the visible proposal. A failed list refresh preserves the reported committed outcome. Preferences, real FastAPI, and dashboard SDK checks pass 18 cases, and independent local HTTP and interface probes found no material issue. A full browser runtime check remains part of the release gate.
+
+
+## Native source adoption
+
+The owner can preview and adopt existing native facts, learning notes, and pending proposals. Adoption preserves native files and unknown writer provenance. Unclassified notes stay private. Optional per-file project assignments determine project access. Learning notes retain historical labels. Forgotten and corrected quotes remain excluded. Preview identity includes content, timestamps, metadata, and eligibility outcomes. Changed previews return a conflict, and identical retries retain the receipt.
+
+Independent closure passes 38 focused tests. The complete memory regression passes 145 tests without skips against fresh prepared sources. The primary agent reran the reviewer probes. These results close source adoption and its development preferences controls, but do not close all retained-source readers, restricted prompts, lifecycle, ownership installation, or the release gate.
