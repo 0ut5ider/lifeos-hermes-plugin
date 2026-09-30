@@ -33,7 +33,7 @@ class HermesMemoryProviderTests(unittest.TestCase):
         self.assertEqual(self.provider.prefetch('synthetic query'), '')
         self.assertIsNone(self.provider.sync_turn('user','assistant'))
         self.assertEqual(self.provider.on_pre_compress([]), '')
-        self.assertEqual(len(self.provider.get_tool_schemas()),6)
+        self.assertEqual(len(self.provider.get_tool_schemas()),9)
     def test_profile_mismatch_and_session_switch_reject_stale_tools(self):
         with self.assertRaisesRegex(RuntimeError,'different Hermes profile'):
             self.provider.initialize('session',hermes_home=str(self.fixture.home / 'other'))

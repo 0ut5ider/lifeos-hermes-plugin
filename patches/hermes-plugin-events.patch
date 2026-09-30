@@ -1,7 +1,16 @@
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
-index bba82a3b..332f80ff 100644
+index bba82a3b4..01f139b01 100644
 --- a/hermes_cli/plugins.py
 +++ b/hermes_cli/plugins.py
+@@ -32,7 +32,7 @@ from hermes_constants import get_hermes_home, get_process_hermes_home, hermes_ho
+ from registration_lifecycle import replacement_coordinator
+ from utils import env_var_enabled
+ from hermes_cli.config import load_config_readonly
+-from hermes_cli.middleware import VALID_MIDDLEWARE
++from hermes_cli.middleware import VALID_MIDDLEWARE, REQUIRED_MIDDLEWARE_API_VERSION
+ from hermes_cli.plugin_capabilities import plugin_capability_granted
+ from hermes_cli.relay_plugin_cutover import RELAY_PLUGINS_CONFIG_ENV, legacy_relay_plugin_keys
+ # Sibling modules' names are re-exported here (origin) so plugins and tests keep one import path.
 @@ -107,15 +107,21 @@ _install_plugin_debug_handler()
  
  VALID_HOOKS: Set[str] = {
@@ -34,7 +43,32 @@ index bba82a3b..332f80ff 100644
      "on_session_finalize", "on_session_reset",
      # on_skill_lifecycle: successful skill lifecycle facts (local skill name visible to plugins).
      "on_skill_lifecycle", "subagent_start", "subagent_stop",
-@@ -1969,15 +1975,15 @@ def _get_pre_tool_call_directive_details(
+@@ -931,9 +937,22 @@ class PluginContext:
+         """Register a lifecycle hook callback (unknown names warn but are still stored)."""
+         return self._track_callback("hook", hook_name, callback, self._manager._hooks, VALID_HOOKS)
+ 
+-    def register_middleware(self, kind: str, callback: Callable) -> PluginRegistration:
++    def register_middleware(self, kind: str, callback: Callable, *, required: bool = False) -> PluginRegistration:
+         """Register behavior-changing middleware (request kinds rewrite the payload, execution kinds
+-        wrap the callback). Unknown kinds warn but are stored."""
++        wrap the callback). Required middleware propagates failures before execution continues.
++        Unknown kinds warn but are stored."""
++        if type(required) is not bool:
++            raise TypeError("required must be a boolean")
++        if required:
++            if (inspect.iscoroutinefunction(callback) or inspect.isasyncgenfunction(callback)
++                    or inspect.iscoroutinefunction(getattr(callback, "__call__", None))
++                    or inspect.isasyncgenfunction(getattr(callback, "__call__", None))):
++                raise TypeError("Required middleware must be synchronous")
++            original = callback
++            @wraps(original)
++            def callback(**kwargs):
++                return original(**kwargs)
++            callback._hermes_required_middleware = True
+         return self._track_callback(
+             "middleware", kind, callback, self._manager._middleware, VALID_MIDDLEWARE
+         )
+@@ -1969,15 +1988,15 @@ def _get_pre_tool_call_directive_details(
          if not isinstance(result, dict):
              continue
          action = result.get("action")
@@ -55,7 +89,7 @@ index bba82a3b..332f80ff 100644
          if action not in ("block", "approve"):
              continue
          message = result.get("message")
-@@ -2086,6 +2092,33 @@ def get_pre_verify_continue_message(
+@@ -2086,6 +2105,33 @@ def get_pre_verify_continue_message(
      return None
  
  
@@ -90,7 +124,7 @@ index bba82a3b..332f80ff 100644
      *, provider: str = "", model: str = "", status_code: Optional[int] = None, error_type: str = "",
      error_code: str = "", error_message: str = "", error_body: Optional[Dict[str, Any]] = None,
 diff --git a/hermes_cli/plugins_dispatch.py b/hermes_cli/plugins_dispatch.py
-index 78c3927f..6ee1c11e 100644
+index 78c3927fc..583b122b4 100644
 --- a/hermes_cli/plugins_dispatch.py
 +++ b/hermes_cli/plugins_dispatch.py
 @@ -16,6 +16,7 @@ import re
@@ -223,8 +257,23 @@ index 78c3927f..6ee1c11e 100644
              except (Exception, SystemExit) as exc:
                  # Same isolation + failure contract as the sync path (#111922 warn-once, #109624
                  # a raising policy guard fails closed).
+@@ -593,10 +623,13 @@ class PluginDispatchMixin:
+         results: List[Any] = []
+         for cb in self._middleware.get(kind, []):
+             try:
+-                ret = cb(**kwargs)
++                from hermes_cli.middleware import check_required_result
++                ret = check_required_result(cb, cb(**kwargs))
+                 if ret is not None:
+                     results.append(ret)
+             except (Exception, SystemExit) as exc:
+                 # Runs once per tool call like a hook, so a mis-declared callback floods identically.
+                 self._report_hook_failure(kind, cb, kwargs, exc, surface="Middleware")
++                if getattr(cb, "_hermes_required_middleware", False):
++                    raise
+         return results
 diff --git a/model_tools.py b/model_tools.py
-index 9a068d5a..553a9660 100644
+index 9a068d5a1..553a96609 100644
 --- a/model_tools.py
 +++ b/model_tools.py
 @@ -1,3 +1,5 @@
@@ -299,7 +348,7 @@ index 9a068d5a..553a9660 100644
          return _apply_transform_tool_result_hook(function_name, function_args, result, duration_ms, ids)
 diff --git a/tests/agent/test_tool_result_context_hook.py b/tests/agent/test_tool_result_context_hook.py
 new file mode 100644
-index 00000000..c2dea9ef
+index 000000000..c2dea9efe
 --- /dev/null
 +++ b/tests/agent/test_tool_result_context_hook.py
 @@ -0,0 +1,40 @@
@@ -344,7 +393,7 @@ index 00000000..c2dea9ef
 +    assert seen["status"] == "error"
 +    assert seen["error_message"] == "failed"
 diff --git a/tests/hermes_cli/test_plugins.py b/tests/hermes_cli/test_plugins.py
-index 3fe75a3b..e9eacc7f 100644
+index 3fe75a3b2..e9eacc7fd 100644
 --- a/tests/hermes_cli/test_plugins.py
 +++ b/tests/hermes_cli/test_plugins.py
 @@ -2718,3 +2718,17 @@ class TestAsyncHookOnCallerLoop:
@@ -367,7 +416,7 @@ index 3fe75a3b..e9eacc7f 100644
 +    assert details.modified_args == {"path": "/tmp/changed.txt"}
 diff --git a/tests/hermes_cli/test_required_policy_hooks.py b/tests/hermes_cli/test_required_policy_hooks.py
 new file mode 100644
-index 00000000..091b24f5
+index 000000000..091b24f5b
 --- /dev/null
 +++ b/tests/hermes_cli/test_required_policy_hooks.py
 @@ -0,0 +1,75 @@
@@ -447,7 +496,7 @@ index 00000000..091b24f5
 +        assert [call.result() for call in calls] == [[{"action": "allow"}], [{"action": "allow"}]]
 +    assert not caplog.text
 diff --git a/tests/hermes_cli/test_session_boundary_hooks.py b/tests/hermes_cli/test_session_boundary_hooks.py
-index 6b0ce767..d64c61d9 100644
+index 6b0ce767d..d64c61d94 100644
 --- a/tests/hermes_cli/test_session_boundary_hooks.py
 +++ b/tests/hermes_cli/test_session_boundary_hooks.py
 @@ -25,6 +25,7 @@ def test_session_finalize_on_reset(mock_finalize_session, mock_invoke_hook):
@@ -515,7 +564,7 @@ index 6b0ce767..d64c61d9 100644
      """Verify quiet single-query interruption emits a correlated session end."""
 diff --git a/tests/hermes_cli/test_stop_policy_dispatch.py b/tests/hermes_cli/test_stop_policy_dispatch.py
 new file mode 100644
-index 00000000..e0e9db05
+index 000000000..e0e9db058
 --- /dev/null
 +++ b/tests/hermes_cli/test_stop_policy_dispatch.py
 @@ -0,0 +1,26 @@
@@ -546,7 +595,7 @@ index 00000000..e0e9db05
 +    assert observed[0][1]["provider"] == "custom"
 +    assert observed[0][1]["reasoning_effort"] == "xhigh"
 diff --git a/tests/plugins/test_transform_tool_result_hook.py b/tests/plugins/test_transform_tool_result_hook.py
-index 810fd962..45fc7e65 100644
+index 810fd962a..45fc7e658 100644
 --- a/tests/plugins/test_transform_tool_result_hook.py
 +++ b/tests/plugins/test_transform_tool_result_hook.py
 @@ -60,7 +60,7 @@ def _run_handle_function_call(

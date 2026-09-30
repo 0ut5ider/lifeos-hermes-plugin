@@ -200,32 +200,42 @@ index 5122376..a53aa26 100755
    const pathCheck = validatePath(filePath);
    if (!("abs" in pathCheck)) return pathCheck;
    const abs = pathCheck.abs;
-diff --git a/LifeOS/install/hooks/LoadMemory.hook.ts b/LifeOS/install/hooks/LoadMemory.hook.ts
-index 12af0c6..1412a55 100755
---- a/LifeOS/install/hooks/LoadMemory.hook.ts
-+++ b/LifeOS/install/hooks/LoadMemory.hook.ts
-@@ -24,7 +24,8 @@ import { existsSync, readFileSync } from "node:fs";
- import { resolve as pathResolve } from "node:path";
- import { homedir } from "node:os";
- import { isSubagentContext as isSubagentInvocation } from './lib/subagent';
--import { parseMemoryContent } from "../LIFEOS/TOOLS/MemoryWriter";
-+import { parseMemoryContent, read as memoryRead } from "../LIFEOS/TOOLS/MemoryWriter";
-+import { hasMemoryAccess } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
+index 30db06e..7c1ca94 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
+@@ -36,6 +36,11 @@ const UPGRADES_DIR = join(BASE_DIR, "MEMORY", "UPGRADES");
+ const RECORDS_DIR = join(UPGRADES_DIR, "records");
+ const STATE_FILE = join(UPGRADES_DIR, ".state.json");
+ const EXPIRY_DAYS = 30;
++let publicationObserver: ((path: string) => void) | undefined;
++
++export function observeUpgradePublication(observer: (path: string) => void): void {
++  publicationObserver = observer;
++}
  
- const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
- const PRINCIPAL_MEMORY = pathResolve(CLAUDE_ROOT, "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md");
-@@ -37,6 +38,11 @@ interface MemoryRead {
+ export type UpgradeStatus = "recommended" | "accepted" | "applied" | "verified" | "rejected" | "expired";
+ export type UpgradeSource = "directive" | "correction" | "upgrade-skill" | "algo-run" | "autonomous" | "manual";
+@@ -189,7 +194,7 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+   const stamp = now.toISOString();
+   const idStamp = stamp.slice(0, 19).replace(/[-:T]/g, "").replace(/^(\d{8})(\d{6})$/, "$1-$2");
+   const slug = slugify(input.claim);
+-  const id = `${idStamp}_${slug}`;
++  const id = `${idStamp}_${slug}_${hash}`;
+   const record: UpgradeRecord = {
+     ...input,
+     claim: input.claim.trim().slice(0, 1000),
+@@ -202,8 +207,10 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+     notes: [`${stamp} — created (source: ${input.source})`],
+     filename: `${id}.md`,
+   };
++  publicationObserver?.(join(RECORDS_DIR, record.filename));
+   writeFileSync(join(RECORDS_DIR, record.filename), renderRecord(record));
+   st.claim_hashes[hash] = { id, created: stamp };
++  publicationObserver?.(STATE_FILE);
+   saveState(st);
+   return { created: true, id };
  }
- 
- function readMemory(path: string): MemoryRead {
-+  if (hasMemoryAccess()) {
-+    const result = memoryRead(path);
-+    if ("code" in result) return {entries: [], count: 0, charsUsed: 0};
-+    return {entries: result.entries, count: result.count, charsUsed: result.chars_used};
-+  }
-   if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };
-   try {
-     // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
 index 0000000..f60f084
@@ -283,3 +293,29 @@ index 0000000..f60f084
 +  }
 +  return response;
 +}
+diff --git a/LifeOS/install/hooks/LoadMemory.hook.ts b/LifeOS/install/hooks/LoadMemory.hook.ts
+index 12af0c6..1412a55 100755
+--- a/LifeOS/install/hooks/LoadMemory.hook.ts
++++ b/LifeOS/install/hooks/LoadMemory.hook.ts
+@@ -24,7 +24,8 @@ import { existsSync, readFileSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { isSubagentContext as isSubagentInvocation } from './lib/subagent';
+-import { parseMemoryContent } from "../LIFEOS/TOOLS/MemoryWriter";
++import { parseMemoryContent, read as memoryRead } from "../LIFEOS/TOOLS/MemoryWriter";
++import { hasMemoryAccess } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const PRINCIPAL_MEMORY = pathResolve(CLAUDE_ROOT, "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md");
+@@ -37,6 +38,11 @@ interface MemoryRead {
+ }
+ 
+ function readMemory(path: string): MemoryRead {
++  if (hasMemoryAccess()) {
++    const result = memoryRead(path);
++    if ("code" in result) return {entries: [], count: 0, charsUsed: 0};
++    return {entries: result.entries, count: result.count, charsUsed: result.chars_used};
++  }
+   if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };
+   try {
+     // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice

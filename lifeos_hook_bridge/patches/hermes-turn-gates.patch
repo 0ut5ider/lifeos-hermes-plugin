@@ -1,5 +1,5 @@
 diff --git a/agent/conversation_compression.py b/agent/conversation_compression.py
-index 0fe34c1c..083255a7 100644
+index 0fe34c1ca..083255a77 100644
 --- a/agent/conversation_compression.py
 +++ b/agent/conversation_compression.py
 @@ -2255,7 +2255,7 @@ def _message_text(message: Any) -> str:
@@ -12,7 +12,7 @@ index 0fe34c1c..083255a7 100644
  )
  
 diff --git a/agent/conversation_loop.py b/agent/conversation_loop.py
-index 9028cb92..05740e2c 100644
+index 9028cb926..05740e2c6 100644
 --- a/agent/conversation_loop.py
 +++ b/agent/conversation_loop.py
 @@ -33,7 +33,7 @@ from agent.runtime_cwd import resolve_agent_cwd
@@ -75,7 +75,7 @@ index 9028cb92..05740e2c 100644
          if (
              result.get("compression_exhausted") or result.get("compression_deferred")
 diff --git a/agent/session_persistence.py b/agent/session_persistence.py
-index 1c5c04a5..a2f3c947 100644
+index 1c5c04a5c..a2f3c9474 100644
 --- a/agent/session_persistence.py
 +++ b/agent/session_persistence.py
 @@ -36,6 +36,7 @@ _EPHEMERAL_SCAFFOLDING_FLAGS = (
@@ -87,7 +87,7 @@ index 1c5c04a5..a2f3c947 100644
      "_dropped_toolcall_nudge",  # internal retry instruction; must not replay as user context
  )
 diff --git a/agent/turn_api_call.py b/agent/turn_api_call.py
-index 36d8c977..462829c4 100644
+index 36d8c977a..462829c4a 100644
 --- a/agent/turn_api_call.py
 +++ b/agent/turn_api_call.py
 @@ -51,6 +51,9 @@ def _should_stream(agent: Any) -> bool:
@@ -101,7 +101,7 @@ index 36d8c977..462829c4 100644
      from hermes_cli.runtime_provider_backends import _is_external_process_provider
  
 diff --git a/agent/turn_context.py b/agent/turn_context.py
-index 452a2f51..70535345 100644
+index 452a2f519..d14a69da1 100644
 --- a/agent/turn_context.py
 +++ b/agent/turn_context.py
 @@ -295,7 +295,7 @@ def export_current_turn_boundary(agent: Any, result: Any, user_message: Any) ->
@@ -152,7 +152,14 @@ index 452a2f51..70535345 100644
              session_id=agent.session_id,
              task_id=effective_task_id,
              turn_id=turn_id,
-@@ -770,6 +774,22 @@ def _collect_pre_llm_call_context(
+@@ -766,10 +770,29 @@ def _collect_pre_llm_call_context(
+             conversation_history=list(messages),
+             is_first_turn=(not bool(conversation_history)),
+             model=agent.model,
++            provider=getattr(agent, "provider", None) or "",
++            base_url=getattr(agent, "base_url", None) or "",
++            api_mode=getattr(agent, "api_mode", None) or "",
+             platform=getattr(agent, "platform", None) or "",
              parent_session_id=getattr(agent, "_parent_session_id", None) or "",
              sender_id=getattr(agent, "_user_id", None) or "",
          )
@@ -175,7 +182,7 @@ index 452a2f51..70535345 100644
          try:
              # Spill oversized per-hook context to disk so a runaway plugin can't inflate every subsequent
              # turn's prompt. Ported from openai/codex PR #21069 ("Spill large hook outputs from context").
-@@ -782,6 +802,8 @@ def _collect_pre_llm_call_context(
+@@ -782,6 +805,8 @@ def _collect_pre_llm_call_context(
              _spill_config_cached = None
          _ctx_parts: list[str] = []
          for r in _pre_results:
@@ -184,7 +191,7 @@ index 452a2f51..70535345 100644
              if isinstance(r, dict) and r.get("context"):
                  _piece = str(r["context"])
              elif isinstance(r, str) and r.strip():
-@@ -798,9 +820,11 @@ def _collect_pre_llm_call_context(
+@@ -798,9 +823,11 @@ def _collect_pre_llm_call_context(
                      logger.warning("hook context spill failed: %s", _spill_exc)
              _ctx_parts.append(_piece)
          return "\n\n".join(_ctx_parts)
@@ -200,7 +207,7 @@ index 452a2f51..70535345 100644
  
  def _merge_gateway_notes(
 diff --git a/agent/turn_failure_copy.py b/agent/turn_failure_copy.py
-index 115231f6..63da3133 100644
+index 115231f66..63da31337 100644
 --- a/agent/turn_failure_copy.py
 +++ b/agent/turn_failure_copy.py
 @@ -18,7 +18,7 @@ from hermes_constants import display_hermes_home
@@ -221,7 +228,7 @@ index 115231f6..63da3133 100644
      ("local_processing_error", "loop_error", False, False),
      ("repeated_outer_errors", "loop_error", True, True),
 diff --git a/agent/turn_final_response.py b/agent/turn_final_response.py
-index 6ebc4050..0ea5264a 100644
+index 6ebc40503..0ea5264ad 100644
 --- a/agent/turn_final_response.py
 +++ b/agent/turn_final_response.py
 @@ -330,6 +330,10 @@ def finish_text_response(
@@ -247,7 +254,7 @@ index 6ebc4050..0ea5264a 100644
          agent._safe_print(f"🎉 Conversation completed after {api_call_count} OpenAI-compatible API call(s)")
      return _verdict("break")
 diff --git a/agent/turn_finalizer.py b/agent/turn_finalizer.py
-index 9c444674..cb01a960 100644
+index 9c4446743..cb01a960f 100644
 --- a/agent/turn_finalizer.py
 +++ b/agent/turn_finalizer.py
 @@ -22,10 +22,11 @@ from agent.message_metadata import append_message, stamp_message_timestamp
@@ -300,7 +307,7 @@ index 9c444674..cb01a960 100644
      _drop_verification_continuation_scaffolding(messages)
  
 diff --git a/agent/turn_stop_gates.py b/agent/turn_stop_gates.py
-index dc202a01..dd8f4b6f 100644
+index dc202a010..dd8f4b6f0 100644
 --- a/agent/turn_stop_gates.py
 +++ b/agent/turn_stop_gates.py
 @@ -1,12 +1,8 @@
@@ -443,7 +450,7 @@ index dc202a01..dd8f4b6f 100644
          agent._verification_stop_nudges = getattr(agent, "_verification_stop_nudges", 0) + 1
 diff --git a/tests/agent/test_prompt_hook_block.py b/tests/agent/test_prompt_hook_block.py
 new file mode 100644
-index 00000000..163ccc0b
+index 000000000..163ccc0b9
 --- /dev/null
 +++ b/tests/agent/test_prompt_hook_block.py
 @@ -0,0 +1,101 @@
@@ -549,7 +556,7 @@ index 00000000..163ccc0b
 +    persist.assert_not_called()
 +    assert "pre_prompt_admission" in caplog.text
 diff --git a/tests/agent/test_turn_context.py b/tests/agent/test_turn_context.py
-index 41c3ecfb..3f3b4aa1 100644
+index 41c3ecfb0..3f3b4aa12 100644
 --- a/tests/agent/test_turn_context.py
 +++ b/tests/agent/test_turn_context.py
 @@ -541,3 +541,16 @@ def test_prologue_forwards_the_submit_title_preview_to_the_titler():
@@ -570,7 +577,7 @@ index 41c3ecfb..3f3b4aa1 100644
 +
 +    assert agent._persist_calls == 0
 diff --git a/tests/agent/test_verification_continuation_budget.py b/tests/agent/test_verification_continuation_budget.py
-index 2231b2c1..d1963a7b 100644
+index 2231b2c17..d1963a7bf 100644
 --- a/tests/agent/test_verification_continuation_budget.py
 +++ b/tests/agent/test_verification_continuation_budget.py
 @@ -251,3 +251,247 @@ def test_streamed_interim_then_different_summary_not_marked_previewed(agent, mon

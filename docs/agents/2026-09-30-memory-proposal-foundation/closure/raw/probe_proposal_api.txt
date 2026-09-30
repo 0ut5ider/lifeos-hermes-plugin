@@ -1,0 +1,13 @@
+{"case": "invalid-0", "change": {"target_kind": "invalid"}, "result": {"status": "rejected", "reason": "proposal target_kind is invalid"}}
+{"case": "invalid-1", "change": {"confidence": true}, "result": {"status": "rejected", "reason": "confidence must be a finite number between 0 and 1"}}
+{"case": "invalid-2", "change": {"edit": []}, "result": {"status": "rejected", "reason": "edit must be a string"}}
+{"case": "invalid-3", "change": {"rationale": "<private>synthetic private rationale</private>"}, "result": {"status": "rejected", "reason": "rationale must not be empty"}}
+{"case": "invalid-4", "change": {"observed_across_sessions": 0}, "result": {"status": "rejected", "reason": "observed_across_sessions must be a positive integer"}}
+{"case": "invalid-5", "change": {"target_kind": "identity", "target_file": "/tmp/native-memory-07ypuel8/outside.md"}, "result": {"status": "rejected", "reason": "target_file '/tmp/native-memory-07ypuel8/outside.md' is not an allowed 'identity' target", "writer": "chat:owner", "request_id": "invalid-5"}}
+{"case": "invalid-6", "change": {"unexpected": "field"}, "result": {"status": "rejected", "reason": "Invalid native proposal fields"}}
+{"case": "bad-reference-0", "result": {"status": "rejected", "reason": "Invalid memory revision"}}
+{"case": "bad-reference-1", "result": {"status": "rejected", "reason": "Invalid memory reference"}}
+{"case": "bad-reference-2", "result": {"status": "rejected", "reason": "Invalid memory revision"}}
+{"case": "bad-reference-3", "result": {"status": "rejected", "reason": "Invalid memory reference"}}
+{"case": "external-cannot-approve", "result": {"status": "rejected", "reason": "This context has no proposal approval grant"}}
+{"case": "changed-native-row", "result": {"status": "conflict", "reason": "The native proposal changed outside its recorded revision", "writer": "chat:owner", "request_id": "changed-row"}}

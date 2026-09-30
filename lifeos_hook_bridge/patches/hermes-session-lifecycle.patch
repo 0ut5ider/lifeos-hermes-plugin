@@ -1,5 +1,5 @@
 diff --git a/cli.py b/cli.py
-index 5d3055be..e56f3ff3 100644
+index 5d3055be6..e56f3ff34 100644
 --- a/cli.py
 +++ b/cli.py
 @@ -495,7 +495,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
@@ -24,7 +24,7 @@ index 5d3055be..e56f3ff3 100644
              _shutdown_agent_memory_provider(_active_agent_ref)
          except Exception as e:
 diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
-index 23c85609..ab8e0aa3 100644
+index 23c856091..ab8e0aa33 100644
 --- a/gateway/slash_commands_session.py
 +++ b/gateway/slash_commands_session.py
 @@ -896,6 +896,12 @@ class GatewaySessionCommandsMixin:
@@ -41,7 +41,7 @@ index 23c85609..ab8e0aa3 100644
          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
 diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
-index eaba807d..739c28f0 100644
+index eaba807d2..739c28f0a 100644
 --- a/hermes_cli/cli_commands_mixin.py
 +++ b/hermes_cli/cli_commands_mixin.py
 @@ -1306,6 +1306,8 @@ class CLICommandsMixin:
@@ -54,7 +54,7 @@ index eaba807d..739c28f0 100644
          _sync_process_session_id(target_id)
          # One lineage SELECT, two projections: model_history is alternation-repaired for live
 diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
-index f7852838..28e1463d 100644
+index f78528388..28e1463d5 100644
 --- a/hermes_cli/cli_session_mixin.py
 +++ b/hermes_cli/cli_session_mixin.py
 @@ -425,16 +425,16 @@ class CLISessionMixin:
@@ -88,7 +88,7 @@ index f7852838..28e1463d 100644
          if self._session_db and old_session_id:
              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
 diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
-index 9eeb62a6..439d5e04 100644
+index 9eeb62a63..439d5e04b 100644
 --- a/hermes_cli/cli_tui_runtime_mixin.py
 +++ b/hermes_cli/cli_tui_runtime_mixin.py
 @@ -494,8 +494,9 @@ class CLITuiRuntimeMixin:
@@ -103,7 +103,7 @@ index 9eeb62a6..439d5e04 100644
          self._print_exit_summary()
          self._release_active_session()
 diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
-index a114eae3..ee2a0c2f 100644
+index a114eae37..ee2a0c2f1 100644
 --- a/tests/gateway/test_resume_command.py
 +++ b/tests/gateway/test_resume_command.py
 @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
@@ -132,7 +132,7 @@ index a114eae3..ee2a0c2f 100644
      async def test_resume_clears_session_model_overrides(self, tmp_path):
          """Resume must not carry a previous session's /model override into the
 diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
-index 36549966..a1548102 100644
+index 365499669..a1548102d 100644
 --- a/tests/hermes_cli/test_cli_resume_command.py
 +++ b/tests/hermes_cli/test_cli_resume_command.py
 @@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:

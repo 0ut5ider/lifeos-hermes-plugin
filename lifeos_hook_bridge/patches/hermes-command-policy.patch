@@ -1,5 +1,5 @@
 diff --git a/agent/terminal_approval_batch.py b/agent/terminal_approval_batch.py
-index 00ef84ab..a4587708 100644
+index 00ef84abb..a45877086 100644
 --- a/agent/terminal_approval_batch.py
 +++ b/agent/terminal_approval_batch.py
 @@ -57,7 +57,16 @@ class _TerminalSlot:
@@ -54,7 +54,7 @@ index 00ef84ab..a4587708 100644
      # Never prepare across a nonterminal barrier; leave mixed segments and
      # malformed calls with the established sequential path.
 diff --git a/tests/agent/test_terminal_approval_batch.py b/tests/agent/test_terminal_approval_batch.py
-index 9aa2e8aa..392ed3b0 100644
+index 9aa2e8aaa..392ed3b01 100644
 --- a/tests/agent/test_terminal_approval_batch.py
 +++ b/tests/agent/test_terminal_approval_batch.py
 @@ -129,6 +129,13 @@ def test_desktop_publishes_final_commands_before_wait_and_runs_in_order(tmp_path
@@ -89,7 +89,7 @@ index 9aa2e8aa..392ed3b0 100644
 +        with terminal_approval_batch(SimpleNamespace(), calls, [], "policy-session"):
 +            pass
 diff --git a/tests/hermes_cli/test_approval_transport.py b/tests/hermes_cli/test_approval_transport.py
-index db7a423c..73f38bb2 100644
+index db7a423c8..73f38bb2b 100644
 --- a/tests/hermes_cli/test_approval_transport.py
 +++ b/tests/hermes_cli/test_approval_transport.py
 @@ -409,8 +409,8 @@ def test_redaction_failure_denies_before_transport_callback(monkeypatch):
@@ -104,7 +104,7 @@ index db7a423c..73f38bb2 100644
  
 diff --git a/tests/test_lifeos_execute_code_session.py b/tests/test_lifeos_execute_code_session.py
 new file mode 100644
-index 00000000..55df42ae
+index 000000000..55df42aed
 --- /dev/null
 +++ b/tests/test_lifeos_execute_code_session.py
 @@ -0,0 +1,68 @@
@@ -177,7 +177,7 @@ index 00000000..55df42ae
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tests/tools/test_approval_plugin_hooks.py b/tests/tools/test_approval_plugin_hooks.py
-index 86b17bcd..c1d40f94 100644
+index 86b17bcd7..c1d40f949 100644
 --- a/tests/tools/test_approval_plugin_hooks.py
 +++ b/tests/tools/test_approval_plugin_hooks.py
 @@ -182,11 +182,13 @@ class TestSmartModeFiresHooks:
@@ -224,7 +224,7 @@ index 86b17bcd..c1d40f94 100644
      @pytest.mark.parametrize("guard,first_value,second_value", [
          (
 diff --git a/tests/tools/test_code_execution.py b/tests/tools/test_code_execution.py
-index 53fcadc3..b64ffde8 100644
+index 53fcadc35..b64ffde8a 100644
 --- a/tests/tools/test_code_execution.py
 +++ b/tests/tools/test_code_execution.py
 @@ -62,7 +62,7 @@ from tools.code_execution_tool import (
@@ -246,7 +246,7 @@ index 53fcadc3..b64ffde8 100644
              if function_name == "terminal":
                  _t.sleep(0.05)  # ensure requests overlap on the socket
 diff --git a/tests/tools/test_code_execution_file_rpc.py b/tests/tools/test_code_execution_file_rpc.py
-index 88bc65ee..bf673943 100644
+index 88bc65eea..bf6739439 100644
 --- a/tests/tools/test_code_execution_file_rpc.py
 +++ b/tests/tools/test_code_execution_file_rpc.py
 @@ -47,10 +47,11 @@ def test_generated_file_rpc_kwargs_correlation_and_authority(tmp_path, monkeypat
@@ -280,7 +280,7 @@ index 88bc65ee..bf673943 100644
              results = list(pool.map(lambda i: namespace["terminal"](f"tag-{i}", 3, "/tmp"), range(8)))
          assert [r["args"]["command"] for r in results] == [f"tag-{i}" for i in range(8)]
 diff --git a/tests/tools/test_code_kernel.py b/tests/tools/test_code_kernel.py
-index 1eb892f1..17ab0764 100644
+index 1eb892f1f..17ab0764a 100644
 --- a/tests/tools/test_code_kernel.py
 +++ b/tests/tools/test_code_kernel.py
 @@ -432,7 +432,7 @@ class TestPerCellRpcAuthority(unittest.TestCase):
@@ -320,7 +320,7 @@ index 1eb892f1..17ab0764 100644
          from tools.terminal_tool import set_approval_callback
  
 diff --git a/tests/tools/test_code_kernel_remote.py b/tests/tools/test_code_kernel_remote.py
-index 6b1b2f14..eb5ef1c6 100644
+index 6b1b2f14b..eb5ef1c6c 100644
 --- a/tests/tools/test_code_kernel_remote.py
 +++ b/tests/tools/test_code_kernel_remote.py
 @@ -107,6 +107,19 @@ class RemoteKernelBase(unittest.TestCase):
@@ -345,7 +345,7 @@ index 6b1b2f14..eb5ef1c6 100644
              [_cell(stdout="one\n"), _cell(stdout="two\n", execution_count=2)],
 diff --git a/tests/tools/test_plugin_command_approval.py b/tests/tools/test_plugin_command_approval.py
 new file mode 100644
-index 00000000..74a6cfe9
+index 000000000..74a6cfe95
 --- /dev/null
 +++ b/tests/tools/test_plugin_command_approval.py
 @@ -0,0 +1,459 @@
@@ -809,7 +809,7 @@ index 00000000..74a6cfe9
 +    assert result["outcome"] == "plugin_denied"
 +    assert "expected dispatcher failure" in caplog.text
 diff --git a/tools/approval.py b/tools/approval.py
-index cff8d0d8..877aeef0 100644
+index cff8d0d8d..877aeef0c 100644
 --- a/tools/approval.py
 +++ b/tools/approval.py
 @@ -1,3 +1,5 @@
@@ -1063,7 +1063,7 @@ index cff8d0d8..877aeef0 100644
  
  
 diff --git a/tools/code_execution_rpc.py b/tools/code_execution_rpc.py
-index e1a54001..58366fec 100644
+index e1a540014..58366fece 100644
 --- a/tools/code_execution_rpc.py
 +++ b/tools/code_execution_rpc.py
 @@ -25,9 +25,11 @@ logger = logging.getLogger("tools.code_execution_tool")
@@ -1112,7 +1112,7 @@ index e1a54001..58366fec 100644
      quoted_rpc_dir = shlex.quote(rpc_dir)
      while not stop_event.is_set():
 diff --git a/tools/code_execution_tool.py b/tools/code_execution_tool.py
-index eeb8a475..783ee615 100644
+index eeb8a475d..783ee615d 100644
 --- a/tools/code_execution_tool.py
 +++ b/tools/code_execution_tool.py
 @@ -591,7 +591,7 @@ def _sandbox_tools_for(enabled_tools: Optional[List[str]]) -> frozenset:
@@ -1196,7 +1196,7 @@ index eeb8a475..783ee615 100644
  
  
 diff --git a/tools/code_kernel.py b/tools/code_kernel.py
-index 8da86292..e88c2538 100644
+index 8da862929..e88c25381 100644
 --- a/tools/code_kernel.py
 +++ b/tools/code_kernel.py
 @@ -238,9 +238,10 @@ class CellAuthority:
@@ -1255,7 +1255,7 @@ index 8da86292..e88c2538 100644
          try:
              if kernel.proc is None:
 diff --git a/tools/code_kernel_remote.py b/tools/code_kernel_remote.py
-index e8065e3a..e92714fc 100644
+index e8065e3a6..e92714fcb 100644
 --- a/tools/code_kernel_remote.py
 +++ b/tools/code_kernel_remote.py
 @@ -336,6 +336,7 @@ def _run_remote_cell(kernel: RemoteKernel, code: str, timeout: int) -> Tuple[str
@@ -1296,7 +1296,7 @@ index e8065e3a..e92714fc 100644
      cell_status, cell_payload = "no-result", {}
      try:
 diff --git a/tools/terminal_tool.py b/tools/terminal_tool.py
-index be149684..344f88a5 100644
+index be1496847..344f88a5e 100644
 --- a/tools/terminal_tool.py
 +++ b/tools/terminal_tool.py
 @@ -1,4 +1,6 @@

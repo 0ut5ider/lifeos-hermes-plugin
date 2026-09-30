@@ -1,6 +1,8 @@
+diff --git a/agent/auxiliary_hooks.py b/agent/auxiliary_hooks.py
+index 613d794ca..b60065bd3 100644
 --- a/agent/auxiliary_hooks.py
 +++ b/agent/auxiliary_hooks.py
-@@ -225,6 +225,9 @@
+@@ -225,6 +225,9 @@ def run_with_aux_hooks(
  ) -> Any:
      """Run one synchronous provider attempt between ``pre_auxiliary_call`` and
      ``post_auxiliary_call``; the exception (if any) is reported in ``post`` and re-raised."""
@@ -10,7 +12,7 @@
      hooks = _hooks_or_none(aux_task=aux_task, metadata=metadata, client=client, kwargs=kwargs,
                             provider=provider, model=model, api_mode=api_mode, streaming=streaming)
      try:
-@@ -241,6 +244,9 @@
+@@ -241,6 +244,9 @@ async def arun_with_aux_hooks(
      kwargs: Dict[str, Any], provider: str, model: str, api_mode: str,
  ) -> Any:
      """Async twin of :func:`run_with_aux_hooks`."""
@@ -20,21 +22,11 @@
      hooks = _hooks_or_none(aux_task=aux_task, metadata=metadata, client=client, kwargs=kwargs,
                             provider=provider, model=model, api_mode=api_mode, streaming=False)
      try:
---- a/agent/turn_context.py
-+++ b/agent/turn_context.py
-@@ -770,6 +770,9 @@
-             conversation_history=list(messages),
-             is_first_turn=(not bool(conversation_history)),
-             model=agent.model,
-+            provider=getattr(agent, "provider", None) or "",
-+            base_url=getattr(agent, "base_url", None) or "",
-+            api_mode=getattr(agent, "api_mode", None) or "",
-             platform=getattr(agent, "platform", None) or "",
-             parent_session_id=getattr(agent, "_parent_session_id", None) or "",
-             sender_id=getattr(agent, "_user_id", None) or "",
+diff --git a/hermes_cli/middleware.py b/hermes_cli/middleware.py
+index 1c6ed2ae2..336d01dc3 100644
 --- a/hermes_cli/middleware.py
 +++ b/hermes_cli/middleware.py
-@@ -7,6 +7,7 @@
+@@ -7,6 +7,7 @@ wrapping the actual execution callback. Agent-loop call sites and plugins share
  from __future__ import annotations
  
  import logging
@@ -42,7 +34,7 @@
  from copy import deepcopy
  from dataclasses import dataclass, field
  from typing import Any, Callable, Dict, List
-@@ -15,14 +16,16 @@
+@@ -15,14 +16,16 @@ logger = logging.getLogger(__name__)
  
  OBSERVER_SCHEMA_VERSION = "hermes.observer.v1"
  MIDDLEWARE_SCHEMA_VERSION = "hermes.middleware.v1"
@@ -60,12 +52,10 @@
  }
  
  
-@@ -34,6 +37,15 @@
-     original_payload: Any
-     changed: bool = False
+@@ -36,6 +39,15 @@ class RequestMiddlewareResult:
      trace: List[Dict[str, Any]] = field(default_factory=list)
-+
-+
+ 
+ 
 +def check_required_result(callback: Callable, result: Any) -> Any:
 +    """Refuse asynchronous results from a required synchronous middleware check."""
 +    if getattr(callback, "_hermes_required_middleware", False) and (inspect.isawaitable(result) or inspect.isasyncgen(result)):
@@ -73,10 +63,12 @@
 +            result.close()
 +        raise TypeError("Required middleware must return a synchronous result")
 +    return result
- 
- 
++
++
  def observer_payload(**kwargs: Any) -> Dict[str, Any]:
-@@ -135,9 +147,18 @@
+     kwargs.setdefault("telemetry_schema_version", OBSERVER_SCHEMA_VERSION)
+     return kwargs
+@@ -135,11 +147,20 @@ def apply_tool_request_middleware(
  def run_llm_execution_middleware(
      request: Dict[str, Any], next_call: Callable[[Dict[str, Any]], Any], **context: Any) -> Any:
      """Run provider execution through registered LLM execution middleware."""
@@ -87,16 +79,18 @@
 -        LLM_EXECUTION_MIDDLEWARE, next_call,
 +        LLM_EXECUTION_MIDDLEWARE, admitted_call,
          request=request, original_request=context.pop("original_request", request), **context)
-+
-+
+ 
+ 
 +def admit_llm_request(request: Dict[str, Any], **context: Any) -> None:
 +    """Run model-request checks before provider dispatch. Admission results do not rewrite requests."""
 +    from hermes_cli.plugins import invoke_middleware
 +    invoke_middleware(LLM_ADMISSION_MIDDLEWARE, request=request, **context)
- 
- 
++
++
  def run_tool_execution_middleware(
-@@ -198,13 +219,15 @@
+     tool_name: str, args: Dict[str, Any], next_call: Callable[[Dict[str, Any]], Any], **context: Any,
+ ) -> Any:
+@@ -198,13 +219,15 @@ def _run_execution_chain(kind: str, terminal_call: Callable[[Any], Any], **kwarg
          call_kwargs[payload_key] = payload
          call_kwargs["next_call"] = next_call
          try:
@@ -113,59 +107,9 @@
              if next_succeeded:
                  return next_result
              if next_called:
---- a/hermes_cli/plugins.py
-+++ b/hermes_cli/plugins.py
-@@ -32,7 +32,7 @@
- from registration_lifecycle import replacement_coordinator
- from utils import env_var_enabled
- from hermes_cli.config import load_config_readonly
--from hermes_cli.middleware import VALID_MIDDLEWARE
-+from hermes_cli.middleware import VALID_MIDDLEWARE, REQUIRED_MIDDLEWARE_API_VERSION
- from hermes_cli.plugin_capabilities import plugin_capability_granted
- from hermes_cli.relay_plugin_cutover import RELAY_PLUGINS_CONFIG_ENV, legacy_relay_plugin_keys
- # Sibling modules' names are re-exported here (origin) so plugins and tests keep one import path.
-@@ -937,9 +937,22 @@
-         """Register a lifecycle hook callback (unknown names warn but are still stored)."""
-         return self._track_callback("hook", hook_name, callback, self._manager._hooks, VALID_HOOKS)
- 
--    def register_middleware(self, kind: str, callback: Callable) -> PluginRegistration:
-+    def register_middleware(self, kind: str, callback: Callable, *, required: bool = False) -> PluginRegistration:
-         """Register behavior-changing middleware (request kinds rewrite the payload, execution kinds
--        wrap the callback). Unknown kinds warn but are stored."""
-+        wrap the callback). Required middleware propagates failures before execution continues.
-+        Unknown kinds warn but are stored."""
-+        if type(required) is not bool:
-+            raise TypeError("required must be a boolean")
-+        if required:
-+            if (inspect.iscoroutinefunction(callback) or inspect.isasyncgenfunction(callback)
-+                    or inspect.iscoroutinefunction(getattr(callback, "__call__", None))
-+                    or inspect.isasyncgenfunction(getattr(callback, "__call__", None))):
-+                raise TypeError("Required middleware must be synchronous")
-+            original = callback
-+            @wraps(original)
-+            def callback(**kwargs):
-+                return original(**kwargs)
-+            callback._hermes_required_middleware = True
-         return self._track_callback(
-             "middleware", kind, callback, self._manager._middleware, VALID_MIDDLEWARE
-         )
---- a/hermes_cli/plugins_dispatch.py
-+++ b/hermes_cli/plugins_dispatch.py
-@@ -623,10 +623,13 @@
-         results: List[Any] = []
-         for cb in self._middleware.get(kind, []):
-             try:
--                ret = cb(**kwargs)
-+                from hermes_cli.middleware import check_required_result
-+                ret = check_required_result(cb, cb(**kwargs))
-                 if ret is not None:
-                     results.append(ret)
-             except (Exception, SystemExit) as exc:
-                 # Runs once per tool call like a hook, so a mis-declared callback floods identically.
-                 self._report_hook_failure(kind, cb, kwargs, exc, surface="Middleware")
-+                if getattr(cb, "_hermes_required_middleware", False):
-+                    raise
-         return results
+diff --git a/tests/hermes_cli/test_required_middleware.py b/tests/hermes_cli/test_required_middleware.py
+new file mode 100644
+index 000000000..4ea198a2a
 --- /dev/null
 +++ b/tests/hermes_cli/test_required_middleware.py
 @@ -0,0 +1,127 @@
