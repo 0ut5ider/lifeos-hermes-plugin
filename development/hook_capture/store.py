@@ -111,9 +111,10 @@ def declared_secrets(value, seen=None, credential=False, key=""):
         yield from declared_secrets(fields, seen)
         return
     if isinstance(value, (dict, list, tuple, set, frozenset)) or dataclasses.is_dataclass(value):
-        if id(value) in seen:
+        context = (id(value), credential, key)
+        if context in seen:
             return
-        seen.add(id(value))
+        seen.add(context)
     if isinstance(value, dict):
         for key, item in value.items():
             yield from declared_secrets(item, seen, credential or bool(SENSITIVE.search(str(key))), str(key))

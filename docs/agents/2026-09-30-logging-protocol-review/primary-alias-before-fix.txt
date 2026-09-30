@@ -1,0 +1,15 @@
+test_shared_container_declarations_are_learned_in_sensitive_context (test_capture.EvidenceTests.test_shared_container_declarations_are_learned_in_sensitive_context) ... FAIL
+
+======================================================================
+FAIL: test_shared_container_declarations_are_learned_in_sensitive_context (test_capture.EvidenceTests.test_shared_container_declarations_are_learned_in_sensitive_context)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 33, in test_shared_container_declarations_are_learned_in_sensitive_context
+    self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-ALIASED-CREDENTIAL-847261' unexpectedly found in '{"api_key":"[REDACTED]","ordinary":["SYNTHETIC-ALIASED-CREDENTIAL-847261"]}'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.006s
+
+FAILED (failures=1)

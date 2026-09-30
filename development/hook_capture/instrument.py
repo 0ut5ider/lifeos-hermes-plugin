@@ -671,7 +671,8 @@ def patch_http():
                     emit("http.failed", {"error": error}, status="http_failure")
                     raise
                 limit = values[0] if values else options.get("amt", -1)
-                emit("http.response_read", {"body": data, "headers": dict(response.headers)},
+                emit("http.response_read", {"body": data, "headers": {
+                    name: response.headers.get_all(name) for name in response.headers}},
                      observed_bytes=len(data), read_limit=limit,
                      completeness="unknown_at_limit" if isinstance(limit, int) and limit >= 0 and len(data) >= limit else "end_of_read")
                 return data
