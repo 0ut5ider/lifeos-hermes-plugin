@@ -25,7 +25,7 @@ import uuid
 import weakref
 from pathlib import Path
 
-from .store import Recorder, SENSITIVE, safe
+from .store import Recorder, SENSITIVE, declared_secrets, safe
 
 CURRENT = contextvars.ContextVar("development_hook_capture", default={})
 RECORDER = None
@@ -318,13 +318,19 @@ def transport_input(text, secrets):
             raise ValueError("Invalid transport environment count")
         def encoded(clean):
             return base64.b64encode(clean.encode()).decode()
-        lines[0] = encoded(safe(base64.b64decode(lines[0], validate=True).decode(), secrets))
+        command = base64.b64decode(lines[0], validate=True).decode()
+        environment = {}
         for index in range(2, count + 2):
             assignment = base64.b64decode(lines[index], validate=True).decode()
             key, value = assignment.split("=", 1)
-            clean = safe({key: value}, secrets)[key]
-            lines[index] = encoded(key + "=" + clean)
-        lines[count + 2:] = [safe("\n".join(lines[count + 2:]), secrets)]
+            environment[index] = (key, value)
+        payload = "\n".join(lines[count + 2:])
+        secrets = sorted(set(secrets).union(declared_secrets(
+            {"command": command, "environment": dict(environment.values()), "payload": payload})), key=len, reverse=True)
+        lines[0] = encoded(safe(command, secrets))
+        for index, (key, value) in environment.items():
+            lines[index] = encoded(key + "=" + safe({key: value}, secrets)[key])
+        lines[count + 2:] = [safe(payload, secrets)]
         return safe("\n".join(lines), secrets)
     except (ValueError, UnicodeError, TypeError, IndexError):
         emit("instrumentation.failed", {"operation": "transport_input_redaction"}, status="capture_gap")
@@ -333,18 +339,21 @@ def transport_input(text, secrets):
 
 def transport_output(text, secrets):
     lines = text.split("\n")
+    decoded = {}
     for index, line in enumerate(lines):
         if re.fullmatch(r"__LIFEOS_HOOK_[a-f0-9]{32}__", line):
             for position in (index + 2, index + 3):
                 if position >= len(lines):
                     continue
                 try:
-                    value = base64.b64decode(lines[position], validate=True)
-                    lines[position] = safe(value, secrets)["bytes"]
+                    decoded[position] = base64.b64decode(lines[position], validate=True)
                 except (ValueError, TypeError):
                     # Invalid frames must remain visible without storing undecodable bytes.
                     lines[position] = "[UNDECODABLE-FRAME]"
                     emit("instrumentation.failed", {"operation": "transport_output_redaction"}, status="capture_gap")
+    secrets = sorted(set(secrets).union(declared_secrets(list(decoded.values()))), key=len, reverse=True)
+    for position, value in decoded.items():
+        lines[position] = safe(value, secrets)["bytes"]
     return safe("\n".join(lines), secrets)
 
 

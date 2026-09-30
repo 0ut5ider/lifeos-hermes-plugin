@@ -32,3 +32,11 @@ Future read-only host probes must add the existing dependency site directly. Imp
 Existing private artifacts are immutable. Improved filtering protects new capture and does not sanitize historical artifacts retroactively. Inspect historical data with private, count-only checks before considering any cleanup. Do not publish raw artifacts or rewrite them without preserving reference integrity.
 
 Known loss counts cannot reveal a process that fails before its first successful write or after its last successful write. Registration inventory counts describe observed versions across all captured runs. Completed execution still does not prove semantic parity. Comparative overhead and a complete host permission matrix remain separate verification work.
+
+## Follow-up review corrections
+
+The second review confirmed that remote protocol frames could hide an echoed credential in base64. The recorder now decodes all protocol fields, learns their credential declarations, and only then redacts and re-encodes the captured representation. The native wire remains unchanged. The primary agent reran the actual native remote hook probe. It reports no stored credential and the same native result.
+
+The analyzer now rejects registration fields that SQLite cannot store, reports malformed inventories, and validates signed 64-bit bounds for indexed numeric fields. Valid events remain searchable after these errors. Three added regressions fail before the corrections and pass afterward. All 24 local tests pass. A further independent review and deployment validation remain pending.
+
+A first staged test attempt on `.212` imported the previous recorder package from the account startup file despite capture being disabled. Disabling observation does not prevent Python package import. The staged test uses a clean virtual environment and the staged working directory to avoid that cached package. Failed staged outputs are retained as diagnostic evidence.

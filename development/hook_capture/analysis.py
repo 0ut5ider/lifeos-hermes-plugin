@@ -55,7 +55,8 @@ def rebuild(root: Path):
                                        "status", "decision", "span_id", "parent_span_id")
                         if any(row.get(key) is not None and not isinstance(row[key], str) for key in text_fields):
                             raise ValueError("Invalid event text field")
-                        if any(row.get(key) is not None and (not isinstance(row[key], int) or isinstance(row[key], bool))
+                        if any(row.get(key) is not None and (not isinstance(row[key], int) or isinstance(row[key], bool)
+                               or not -(2**63) <= row[key] < 2**63)
                                for key in ("sequence", "duration_ns", "exit_code")):
                             raise ValueError("Invalid event numeric field")
                         ref = row.get("data_ref")
@@ -80,11 +81,19 @@ def rebuild(root: Path):
                         if row.get("stage") == "inventory.observed" and relative:
                             try:
                                 inventory = json.loads(gzip.decompress((root / relative).read_bytes()))
-                                for item in inventory.get("registrations", []):
-                                    db.execute("INSERT OR IGNORE INTO registrations VALUES(?,?,?,?,?)", tuple(item.get(key) for key in
-                                        ("registration_id", "native_event", "hook_kind", "matcher", "settings_origin")))
+                                if not isinstance(inventory, dict) or not isinstance(inventory.get("registrations"), list):
+                                    raise ValueError("Invalid inventory object")
+                                keys = ("registration_id", "native_event", "hook_kind", "matcher", "settings_origin")
+                                registrations = []
+                                for item in inventory["registrations"]:
+                                    if not isinstance(item, dict) or not isinstance(item.get("registration_id"), str) or not item["registration_id"]:
+                                        raise ValueError("Invalid registration identity")
+                                    if any(item.get(key) is not None and not isinstance(item[key], str) for key in keys):
+                                        raise ValueError("Invalid registration field")
+                                    registrations.append(tuple(item.get(key) for key in keys))
+                                db.executemany("INSERT OR IGNORE INTO registrations VALUES(?,?,?,?,?)", registrations)
                             except (OSError, ValueError, TypeError, AttributeError, EOFError, zlib.error):
-                                pass  # The integrity check above reports damaged artifacts.
+                                db.execute("INSERT INTO issues VALUES(?,?,?)", ("invalid_inventory", relative, "Invalid inventory data"))
                         values = [json.dumps(row, separators=(",", ":")) if key == "record" else
                                   relative if key == "data_path" else row.get(key) for key in columns]
                         db.execute(f"INSERT OR IGNORE INTO events VALUES({','.join('?' for _ in columns)})", values)

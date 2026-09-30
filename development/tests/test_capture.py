@@ -22,6 +22,52 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_transport_learns_all_decoded_frames_before_redaction(self):
+        from hook_capture.instrument import transport_input, transport_output
+        secret = "SYNTHETIC-REMOTE-DECLARATION-283749"
+        encode = lambda value: base64.b64encode(value.encode()).decode()
+        marker = "__LIFEOS_HOOK_" + "a" * 32 + "__"
+        for stdout, stderr in ((secret, json.dumps({"api_key": secret})),
+                               (json.dumps({"api_key": secret, "echo": secret}), secret)):
+            wire = "\n".join((marker, "0", encode(stdout), encode(stderr), marker + "_END"))
+            clean = transport_output(wire, [])
+            for frame in clean.splitlines()[2:4]:
+                self.assertNotIn(secret, base64.b64decode(frame).decode())
+        wire = "\n".join((encode("echo " + secret), "1", encode("API_KEY=" + secret),
+                           json.dumps({"echo": secret})))
+        clean = transport_input(wire, [])
+        self.assertNotIn(secret, base64.b64decode(clean.splitlines()[0]).decode())
+        self.assertNotIn(secret, clean.splitlines()[-1])
+
+    def test_index_rejects_invalid_inventory_and_keeps_valid_events(self):
+        from hook_capture.store import Recorder
+        from hook_capture.analysis import rebuild, summary
+        for malformed in ({"registrations": [{"registration_id": "bad", "matcher": []}]},
+                          {"registrations": None}, {"registrations": [None]}):
+            with self.subTest(inventory=malformed), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                recorder = Recorder(root, "test-run")
+                recorder.emit("inventory.observed", data=malformed)
+                recorder.emit("observed.valid")
+                report = summary(rebuild(root))
+                self.assertEqual(report["events"], 2)
+                self.assertEqual(report["known_registrations"], 0)
+                self.assertEqual(report["integrity_issues"], {"invalid_inventory": 1})
+
+    def test_index_rejects_out_of_range_integers_and_keeps_valid_events(self):
+        from hook_capture.store import Recorder
+        from hook_capture.analysis import rebuild, summary
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            recorder = Recorder(root, "test-run")
+            event = recorder.emit("observed.valid")
+            with recorder.event_path.open("a") as stream:
+                for field in ("sequence", "duration_ns", "exit_code"):
+                    stream.write(json.dumps({**event, field: 2**100}) + "\n")
+            report = summary(rebuild(root))
+            self.assertEqual(report["events"], 1)
+            self.assertEqual(report["integrity_issues"], {"invalid_event": 3})
+
     def test_http_credentials_are_redacted_and_echoed_values_are_learned(self):
         from hook_capture.store import Recorder
         secret = "SYNTHETIC-HTTP-CREDENTIAL-928374"
