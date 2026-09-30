@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-foundation-review/raw/probe_foundation.py", line 87, in <module>
+    run('ambiguous_reference_accepted', ambiguous_reference)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-foundation-review/raw/probe_foundation.py", line 14, in run
+    result = callback(test)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-foundation-review/raw/probe_foundation.py", line 84, in ambiguous_reference
+    return {'correction':correction, 'recall':test.memory.recall(OWNER, 'replacement')}
+                                              ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 262, in recall
+    content = self._content(row)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 156, in _content
+    raise MemoryConflict("The referenced fact changed outside its recorded revision")
+lifeos_hook_bridge.memory_access.MemoryConflict: The referenced fact changed outside its recorded revision

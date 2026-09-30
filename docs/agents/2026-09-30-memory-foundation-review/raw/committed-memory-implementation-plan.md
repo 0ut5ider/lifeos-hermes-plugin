@@ -17,8 +17,6 @@ Native LifeOS files remain the authoritative facts. Integration metadata must no
 
 Implementation started on `feature/lifeos-memory`. No running memory ownership switch or remote sharing activation has occurred. Test data is synthetic. The existing `.211` and `.213` installations remain unchanged.
 
-The governed-operation foundation now passes 28 tests against native LifeOS tools. Independent review verifies correction validation, stable hot-entry identity, complete archive-section identity, interrupted-write recovery, and lock retention by a surviving native child. Native retrieval ranks a supplied authorized corpus and bypasses the unscoped query cache. Direct native writer delegation, provider integration, sharing, preferences, and installation gates remain open.
-
 ## Required evidence
 
 - Native remember, recall, correction, forgetting, rejected writes, and request retries.

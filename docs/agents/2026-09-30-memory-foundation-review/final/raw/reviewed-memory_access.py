@@ -154,9 +154,8 @@ class NativeMemory:
         position = record["position"]
         candidate = text[position:position + length]
         if record["category"] == "project":
-            boundary = re.search(r"\n## Appended \d{4}-\d{2}-\d{2}T[^\n]+Z\n<!-- source_session: [^\n]* -->\n", text[position:])
-            end = position + boundary.start() if boundary else len(text)
-            section = text[position:end].rstrip("\r\n")
+            end = text.find("\n## Appended ", position)
+            section = text[position:end if end >= 0 else len(text)].rstrip("\r\n")
             if section == candidate and _digest(candidate) == record["digest"]:
                 return candidate
         if record["category"] != "project":
@@ -288,26 +287,19 @@ class NativeMemory:
     def recall(self, scope: MemoryScope, query: str, *, limit: int = 20) -> list[dict[str, Any]]:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("A memory query is required")
-        if type(limit) is not int:
-            raise ValueError("The memory result limit must be an integer")
-        records = {}
-        corpus = []
+        terms = re.findall(r"\w+", query.casefold())
+        results = []
         with self._transaction() as connection:
             for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
                 if not self._allowed(scope, row):
                     continue
                 content = self._content(row)
-                records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
-                                      "content": content, "category": row["category"], "project": row["project"],
-                                      "writer": row["writer"], "status": row["status"]}
-                corpus.append({"filePath": row["id"], "frontmatter": {"type": "knowledge" if row["category"] == "project" else "memory",
-                                                                     "title": row["project"] or row["category"]},
-                               "body": content, "wordCount": max(1, len(content.split())),
-                               "noteClass": "knowledge" if row["category"] == "project" else "memory"})
-            if not corpus:
-                return []
-            ranked = self._native("rank", query=query, corpus=corpus, limit=max(1, min(limit, 100)))
-            return [{**records[item["path"]], "score": item["score"]} for item in ranked["results"]]
+                score = sum(content.casefold().count(term) for term in terms)
+                if score:
+                    results.append({"reference": {"id": row["id"], "revision": row["revision"]},
+                                    "content": content, "category": row["category"], "project": row["project"],
+                                    "writer": row["writer"], "status": row["status"], "score": score})
+        return sorted(results, key=lambda item: item["score"], reverse=True)[:max(1, min(limit, 100))]
 
     def _target(self, connection: sqlite3.Connection, scope: MemoryScope, reference: dict[str, Any]):
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str) or type(reference.get("revision")) is not int:

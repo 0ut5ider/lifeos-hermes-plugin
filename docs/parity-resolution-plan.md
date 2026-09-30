@@ -48,7 +48,7 @@ The [2026-09-29 release gate](../notes/2026-09-29-release-gate.md) is blocked by
 
 ## Follow-up after plugin completion: memory integration
 
-Start this work after the six-phase completion gate passes. The [accepted memory design](../notes/2026-09-30-memory-design.md) records the direction, open questions, and acceptance cases. It does not change the hook parity gate or authorize a memory migration.
+Adrian now authorizes implementation of the [accepted memory design](../notes/2026-09-30-memory-design.md). The [implementation plan](memory-implementation-plan.md) records progress and activation gates. This work does not change the hook parity gate or authorize copying existing memory.
 
 Build for a fresh, self-contained Hermes, plugin, and LifeOS installation. LifeOS owns durable facts and preferences; Hermes retains its memory manager, session history, and context compression. Optional MCP access shares this installation's memory with authorized agents. The existing `.211` and `.213` systems remain unchanged and are not dependencies.
 

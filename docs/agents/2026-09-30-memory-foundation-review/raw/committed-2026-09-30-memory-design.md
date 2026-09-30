@@ -1,6 +1,6 @@
 # Future memory integration: LifeOS as the durable store
 
-Date: 2026-09-30. Status: Adrian authorizes implementation of this design now. The [implementation plan](../docs/memory-implementation-plan.md) records progress and activation gates. Memory ownership and sharing require their acceptance evidence. Hook parity remains a separate completion gate. This authorization does not permit copying existing server memory.
+Date: 2026-09-30. Status: Adrian accepted this design direction for later implementation. This feature is not implemented. Start after the [hook parity completion gate](../docs/parity-resolution-plan.md) passes. This record does not authorize a memory migration or a change to a running installation.
 
 ## Resolved fresh-install experience
 
@@ -203,7 +203,7 @@ These controls are a design proposal, not available page actions. Keep normal se
 
 ## Implementation order and acceptance evidence
 
-1. Map the actual `.212` reads, writes, reviewers, and context injection. Use synthetic data to measure duplication and stale recall.
+1. After the hook gate passes, map the actual `.212` reads, writes, reviewers, and context injection. Use synthetic data to measure duplication and stale recall.
 2. Define the shared access contract and implement the provider against disposable LifeOS roots. Preserve hook behavior and establish one automatic recall owner.
 3. Verify remembering, correcting, forgetting, review behavior, skill learning, and failure reporting before disabling built-in durable writes in a test profile.
 4. Add optional MCP access and authenticate client policies. Prove that Hermes and another agent can exchange an allowed fact through the same store.

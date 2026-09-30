@@ -1,0 +1,84 @@
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+index dcc185e..35542d9 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+@@ -121,7 +121,7 @@ interface Frontmatter {
+  */
+ type NoteClass = "knowledge" | "learning" | "memory";
+ 
+-interface KnowledgeNote {
++export interface KnowledgeNote {
+   filePath: string;
+   frontmatter: Frontmatter;
+   body: string;
+@@ -129,6 +129,8 @@ interface KnowledgeNote {
+   noteClass: NoteClass;
+ }
+ 
++export const SUPPLIED_CORPUS_API_VERSION = 1;
++
+ interface ScoredNote {
+   note: KnowledgeNote;
+   score: number;
+@@ -664,7 +666,7 @@ function loadMemoryFiles(): KnowledgeNote[] {
+  * getRelevantContext(). See HOT_PATH_LEARNING_LIMIT for why LEARNING is
+  * bounded here and unbounded on the CLI path.
+  */
+-function discoverAllItems(): KnowledgeNote[] {
++export function discoverAllItems(): KnowledgeNote[] {
+   return [...discoverNotes(), ...discoverLearningNotes(HOT_PATH_LEARNING_LIMIT), ...loadMemoryFiles()];
+ }
+ 
+@@ -687,7 +689,7 @@ function discoverAllItems(): KnowledgeNote[] {
+  */
+ export function getRelevantContext(
+   query: string,
+-  options: { topK?: number; threshold?: number; excerptChars?: number; typeFilter?: string } = {},
++  options: { topK?: number; threshold?: number; excerptChars?: number; typeFilter?: string; corpus?: KnowledgeNote[] } = {},
+ ): GetRelevantContextResult {
+   const topK = options.topK ?? RELEVANT_DEFAULT_TOP_K;
+   const threshold = options.threshold ?? RELEVANT_DEFAULT_THRESHOLD;
+@@ -696,7 +698,7 @@ export function getRelevantContext(
+ 
+   // Cache check — key on query + options
+   const cacheKey = JSON.stringify({ q: query.trim().toLowerCase(), topK, threshold, excerptChars, typeFilter });
+-  const cached = relevantCache.get(cacheKey);
++  const cached = options.corpus === undefined ? relevantCache.get(cacheKey) : undefined;
+   if (cached && Date.now() - cached.ts < RELEVANT_CACHE_TTL_MS) {
+     return { ...cached.result, cached: true };
+   }
+@@ -705,13 +707,13 @@ export function getRelevantContext(
+ 
+   const queryTerms = tokenize(query);
+   if (queryTerms.length === 0) {
+-    relevantCache.set(cacheKey, { ts: Date.now(), result: empty });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result: empty });
+     return empty;
+   }
+ 
+-  const allNotes = discoverAllItems();
++  const allNotes = options.corpus ?? discoverAllItems();
+   if (allNotes.length === 0) {
+-    relevantCache.set(cacheKey, { ts: Date.now(), result: { ...empty, totalSearched: 0 } });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result: { ...empty, totalSearched: 0 } });
+     return empty;
+   }
+ 
+@@ -730,7 +732,7 @@ export function getRelevantContext(
+ 
+   if (scored.length === 0) {
+     const result = { ...empty, totalSearched: allNotes.length };
+-    relevantCache.set(cacheKey, { ts: Date.now(), result });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result });
+     return result;
+   }
+ 
+@@ -745,7 +747,7 @@ export function getRelevantContext(
+ 
+   const markdownBlock = formatRelevantBlock(results);
+   const result: GetRelevantContextResult = { results, markdownBlock, totalSearched: allNotes.length, cached: false };
+-  relevantCache.set(cacheKey, { ts: Date.now(), result });
++  if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result });
+   return result;
+ }
+ 

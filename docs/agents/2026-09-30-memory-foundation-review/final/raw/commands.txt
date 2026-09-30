@@ -1,0 +1,20 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+Source inspection:
+cat lifeos_hook_bridge/memory_transaction.py
+cat lifeos_hook_bridge/memory_access.py
+sed -n '170,350p' tests/test_memory_native.py
+cat lifeos_hook_bridge/memory_native.ts
+
+Test command, exit status 0:
+python -m unittest discover -s tests -p 'test_memory*.py' -v > docs/agents/2026-09-30-memory-foundation-review/final/raw/tests-26.txt 2>&1
+
+Prior foundation probes, exit status 0:
+python docs/agents/2026-09-30-memory-foundation-review/followup/raw/probe_followup.py > docs/agents/2026-09-30-memory-foundation-review/final/raw/foundation-probes.jsonl
+
+Final diagnostic command, exit status 0:
+python docs/agents/2026-09-30-memory-foundation-review/final/raw/probe_final.py > docs/agents/2026-09-30-memory-foundation-review/final/raw/probe-results.jsonl
+
+The final script loads definitions from recovery/raw/probe_recovery.py using Python ast, excludes its top-level run calls, and supplies adapted cases. The surviving-child gate is released by a separate thread because recovery now correctly waits for the child to finish. The script uses actual native operations and disposable synthetic fixtures. Its new Markdown-heading case records the remaining defect.
+
+Source snapshots and SHA-256 hashes were saved before test execution. The reviewed paths appear in reviewed-hashes.json.

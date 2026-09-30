@@ -2,14 +2,10 @@
 # ABOUTME: Uses isolated synthetic user data for retries, curation, permissions, and concurrency.
 
 from concurrent.futures import ThreadPoolExecutor
-import fcntl
 import json
 import os
 from pathlib import Path
 import shutil
-import subprocess
-import sys
-import time
 import tempfile
 import unittest
 
@@ -17,7 +13,7 @@ from lifeos_hook_bridge.memory_access import NativeMemory
 from lifeos_hook_bridge.memory_policy import MemoryScope
 
 
-SOURCE = Path(os.environ.get("LIFEOS_MEMORY_SOURCE", str(Path.home() / ".cache/lifeos-plugin-memory/managed-source/LifeOS/install")))
+SOURCE = Path(os.environ.get("LIFEOS_MEMORY_SOURCE", str(Path.home() / ".cache/lifeos-plugin-memory/source/LifeOS/install")))
 OWNER = MemoryScope("owner", "local:owner", ("assistant", "principal", "project"),
                     ("assistant", "principal", "project"), ("*",), "owner-test")
 READER = MemoryScope("client", "mcp:reader", ("project",), (), ("lab",), "reader-test")
@@ -126,13 +122,12 @@ class NativeMemoryTests(unittest.TestCase):
         for index, replacement in enumerate((
             "RULE: public <private>SYNTHETIC_DENIED_MARKER</private>",
             "RULE: first line\nsecond line",
-            "RULE: " + "😀" * 129,
         )):
             with self.subTest(replacement=replacement):
                 receipt = self.memory.correct(OWNER, saved["reference"], replacement, f"invalid-{index}")
                 self.assertEqual(receipt["status"], "rejected")
                 self.assertEqual(self.memory.recall(OWNER, "original")[0]["reference"], saved["reference"])
-                self.assertNotIn("SYNTHETIC_DENIED_MARKER", json.dumps(self.memory.recall(OWNER, "DENIED_MARKER")))
+                self.assertEqual(self.memory.recall(OWNER, "DENIED_MARKER"), [])
 
     def test_correction_cannot_reactivate_forgotten_text(self):
         first = self.remember("Synthetic forgotten marker", "forgotten")
@@ -168,158 +163,6 @@ class NativeMemoryTests(unittest.TestCase):
         result = self.memory.correct(OWNER, first["reference"], "Synthetic replacement marker", "ambiguous")
         self.assertEqual(result["status"], "conflict")
         self.assertNotIn("Synthetic replacement marker", note.read_text())
-
-    def test_reference_binds_body_when_title_contains_the_same_text(self):
-        content = "Synthetic exact title marker"
-        saved = self.memory.remember(OWNER, category="project", content=content, title=content,
-                                     project="lab", request_id="title-body")
-        note = next((self.root / "LIFEOS/MEMORY/KNOWLEDGE/Research").glob("*.md"))
-        note.write_text(note.read_text().replace("\n" + content + "\n", "\nSynthetic changed body marker\n"))
-        result = self.memory.correct(OWNER, saved["reference"], "Synthetic replacement marker", "stale-title")
-        self.assertEqual(result["status"], "conflict")
-        self.assertNotIn("Synthetic replacement marker", note.read_text())
-
-    def test_interrupted_native_publication_recovers_before_retry(self):
-        script = '''import os, sys
-from pathlib import Path
-sys.path.insert(0, str(Path.cwd() / "tests"))
-from test_memory_native import OWNER
-from lifeos_hook_bridge.memory_access import NativeMemory
-memory = NativeMemory(Path(sys.argv[1]))
-def interrupt(*args, **kwargs):
-    os._exit(73)
-memory._record = interrupt
-memory.remember(OWNER, category="project", content="Synthetic crash marker", title="Crash recovery",
-                project="lab", request_id="crash")
-'''
-        child = subprocess.run([sys.executable, "-c", script, str(self.root)], capture_output=True, text=True)
-        self.assertEqual(child.returncode, 73, child.stderr)
-        arguments = dict(category="project", content="Synthetic crash marker", title="Crash recovery", project="lab")
-        retry = self.memory.remember(OWNER, request_id="crash", **arguments)
-        self.assertEqual(retry["status"], "committed", retry)
-        self.assertEqual(len(self.memory.recall(OWNER, "crash")), 1)
-        note = next((self.root / "LIFEOS/MEMORY/KNOWLEDGE/Research").glob("*.md"))
-        self.assertEqual(note.read_text().count("Synthetic crash marker"), 1)
-
-    def test_conflict_retry_reports_the_same_outcome(self):
-        first = self.remember("Synthetic section original marker", "one")
-        note = next((self.root / "LIFEOS/MEMORY/KNOWLEDGE/Research").glob("*.md"))
-        note.write_text(note.read_text().replace("original", "changed"))
-        arguments = (OWNER, first["reference"], "Synthetic replacement marker", "conflict-retry")
-        first_result = self.memory.correct(*arguments)
-        self.assertEqual(first_result["status"], "conflict")
-        self.assertEqual(self.memory.correct(*arguments), first_result)
-
-    def test_private_title_is_rejected_before_native_routing(self):
-        saved = self.memory.remember(OWNER, category="project", content="Synthetic title routing marker",
-                                     title="<private>hidden</private>Visible", project="lab", request_id="private-title")
-        self.assertEqual(saved["status"], "rejected", saved)
-        self.assertEqual(list((self.root / "LIFEOS/MEMORY").rglob("visible.md")), [])
-
-    def test_crash_before_journal_cannot_leave_an_unknown_reservation(self):
-        script = '''import os, sys
-from pathlib import Path
-sys.path.insert(0, str(Path.cwd() / "tests"))
-from test_memory_native import OWNER
-from lifeos_hook_bridge.memory_access import NativeMemory
-memory = NativeMemory(Path(sys.argv[1]))
-memory.transaction.prepare = lambda *args, **kwargs: os._exit(73)
-memory.remember(OWNER, category="project", content="Synthetic recovery marker", title="Recovery ordering",
-                project="lab", request_id="before-prepare")
-'''
-        child = subprocess.run([sys.executable, "-c", script, str(self.root)], capture_output=True, text=True)
-        self.assertEqual(child.returncode, 73, child.stderr)
-        result = self.memory.remember(OWNER, category="project", content="Synthetic recovery marker",
-                                     title="Recovery ordering", project="lab", request_id="before-prepare")
-        self.assertEqual(result["status"], "committed", result)
-
-    def test_changed_section_cannot_keep_an_obsolete_prefix_active(self):
-        content = "The synthetic lab uses port 9123"
-        saved = self.remember(content, "body-extension")
-        note = next((self.root / "LIFEOS/MEMORY/KNOWLEDGE/Research").glob("*.md"))
-        note.write_text(note.read_text().replace(content, content + " is obsolete; use port 9443."))
-        result = self.memory.correct(OWNER, saved["reference"], "The synthetic lab uses port 9555", "extended")
-        self.assertEqual(result["status"], "conflict")
-
-    def test_native_child_holds_recovery_lock_after_parent_dies(self):
-        saved = self.remember("RULE: synthetic original", "original", "principal")
-        ready, gate, done = (self.home / name for name in ("ready", "continue", "done"))
-        worker = self.home / "gated-native.ts"
-        worker.write_text('''// ABOUTME: Pauses a real native writer for the parent-crash fixture.
-// ABOUTME: Keeps publication inside the child that inherits the recovery lock.
-import { existsSync, writeFileSync } from "node:fs";
-const request = JSON.parse(await Bun.stdin.text());
-writeFileSync(READY, "ready");
-while (!existsSync(GATE)) await Bun.sleep(10);
-const writer = await import(process.argv[2] + "/LIFEOS/TOOLS/MemoryWriter.ts");
-const result = writer.setEntries(request.path, request.entries, {updatedBy: request.writer, allowDrastic: request.allowDrastic});
-writeFileSync(DONE, JSON.stringify(result));
-process.stdout.write(JSON.stringify(result));
-'''.replace("READY", json.dumps(str(ready))).replace("GATE", json.dumps(str(gate))).replace("DONE", json.dumps(str(done))))
-        script = '''import sys
-from pathlib import Path
-sys.path.insert(0, str(Path.cwd() / "tests"))
-from test_memory_native import OWNER
-from lifeos_hook_bridge.memory_access import NativeMemory
-memory = NativeMemory(Path(sys.argv[1]))
-original = memory._native
-def native(action, **values):
-    if action == "set_hot": memory.worker = Path(WORKER)
-    return original(action, **values)
-memory._native = native
-memory.correct(OWNER, REFERENCE, "RULE: synthetic orphan correction", "orphan")
-'''.replace("WORKER", repr(str(worker))).replace("REFERENCE", repr(saved["reference"]))
-        process = subprocess.Popen([sys.executable, "-c", script, str(self.root)], stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL)
-        def wait_file(path):
-            deadline = time.monotonic() + 10
-            while not path.exists():
-                if time.monotonic() >= deadline:
-                    self.fail(f"Timed out waiting for {path.name}")
-                time.sleep(0.01)
-        try:
-            wait_file(ready)
-            process.kill()
-            process.wait(timeout=5)
-            with (self.memory.database.parent / "memory-access.lock").open("rb") as lock:
-                with self.assertRaises(BlockingIOError):
-                    fcntl.flock(lock.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-            gate.write_text("continue")
-            wait_file(done)
-            self.assertTrue(json.loads(done.read_text())["ok"])
-            self.assertEqual(self.memory.recall(OWNER, "synthetic")[0]["reference"], saved["reference"])
-            later = self.remember("RULE: synthetic acknowledged later", "later", "principal")
-            self.assertEqual(later["status"], "committed")
-            self.assertEqual(len(self.memory.recall(OWNER, "synthetic")), 2)
-        finally:
-            gate.write_text("continue")
-            if process.poll() is None:
-                process.kill()
-                process.wait(timeout=5)
-
-    def test_native_ranking_uses_only_the_authorized_corpus(self):
-        self.remember("RULE: synthetic forbidden lab preference", "private", "principal")
-        first = self.remember("The synthetic lab uses port 9123.", "original")
-        corrected = self.memory.correct(OWNER, first["reference"], "The synthetic lab uses port 9443.", "correct")
-        observed = []
-        native = self.memory._native
-        def record_native(action, **values):
-            if action == "rank":
-                observed.append(values["corpus"])
-            return native(action, **values)
-        self.memory._native = record_native
-        found = self.memory.recall(READER, "synthetic lab")
-        self.assertEqual(found[0]["reference"], corrected["reference"])
-        self.assertEqual(len(observed), 1)
-        self.assertEqual(len(observed[0]), 1)
-        self.assertNotIn("forbidden", json.dumps(observed))
-        self.assertNotIn("9123", json.dumps(observed))
-
-    def test_user_heading_does_not_act_as_a_native_append_boundary(self):
-        content = "Synthetic first paragraph\n## Appended experiment notes\nSynthetic second paragraph"
-        saved = self.remember(content, "heading")
-        self.assertEqual(saved["status"], "committed")
-        self.assertEqual(self.memory.recall(OWNER, "synthetic paragraph")[0]["content"], content)
 
 
 if __name__ == "__main__":

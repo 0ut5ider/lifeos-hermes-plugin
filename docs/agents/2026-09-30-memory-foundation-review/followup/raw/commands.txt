@@ -1,0 +1,19 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+Read current fix:
+git diff -- lifeos_hook_bridge/memory_access.py tests/test_memory_native.py
+git status --short
+cat lifeos_hook_bridge/memory_access.py
+
+Test command, exit status 0:
+python -m unittest discover -s tests -p 'test_memory*.py' -v > docs/agents/2026-09-30-memory-foundation-review/followup/raw/tests-19.txt 2>&1
+
+Original diagnostic command, exit status 1:
+python docs/agents/2026-09-30-memory-foundation-review/raw/probe_foundation.py > docs/agents/2026-09-30-memory-foundation-review/followup/raw/original-probes.jsonl 2> docs/agents/2026-09-30-memory-foundation-review/followup/raw/original-probes.stderr
+
+The original script calls recall after deliberately changing a project body. The stricter lookup now raises MemoryConflict. The preserved traceback explains this diagnostic interruption. The follow-up copy catches this expected exception, then continues to the original recovery probe and three added probes.
+
+Follow-up diagnostic command, exit status 0:
+python docs/agents/2026-09-30-memory-foundation-review/followup/raw/probe_followup.py > docs/agents/2026-09-30-memory-foundation-review/followup/raw/probe-results.jsonl
+
+Source snapshots were captured with pathlib.Path.read_bytes() and SHA-256 hashed before the follow-up diagnostic run. The reviewed paths are listed in reviewed-hashes.json. The source-only native fixture is unchanged from the first review. Each diagnostic uses the project's TemporaryDirectory fixture, actual Bun, and actual native tools. No production data is used.

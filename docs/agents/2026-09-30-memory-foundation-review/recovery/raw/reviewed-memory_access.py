@@ -117,8 +117,7 @@ class NativeMemory:
         environment["BUN_CONFIG_NO_AUTO_INSTALL"] = "1"
         result = subprocess.run([self.bun, "--no-install", str(self.worker), str(self.root)],
                                 input=json.dumps({"action": action, **values}), text=True,
-                                capture_output=True, timeout=30, env=environment, cwd=self.root,
-                                pass_fds=self.transaction.inherited_descriptors())
+                                capture_output=True, timeout=30, env=environment, cwd=self.root)
         if result.returncode:
             raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
         try:
@@ -153,12 +152,8 @@ class NativeMemory:
         length = record["chars"]
         position = record["position"]
         candidate = text[position:position + length]
-        if record["category"] == "project":
-            boundary = re.search(r"\n## Appended \d{4}-\d{2}-\d{2}T[^\n]+Z\n<!-- source_session: [^\n]* -->\n", text[position:])
-            end = position + boundary.start() if boundary else len(text)
-            section = text[position:end].rstrip("\r\n")
-            if section == candidate and _digest(candidate) == record["digest"]:
-                return candidate
+        if record["category"] == "project" and _digest(candidate) == record["digest"]:
+            return candidate
         if record["category"] != "project":
             entries = self._native("read_hot", path=str(path)).get("entries", [])
             matches = [entry for entry in entries if _digest(entry) == record["digest"]]
@@ -170,8 +165,8 @@ class NativeMemory:
         checked = self._native("validate", item=item)
         if not checked.get("ok"):
             return checked.get("message", "Native validation rejected the fact")
-        if checked["item"] != item:
-            return "Native validation changed the requested fact or metadata"
+        if checked["item"].get("content") != content:
+            return "Native validation changed the requested content"
         if category != "project" and (len(content.split(": ", 1)[-1].encode("utf-16-le")) // 2 > 256 or "\n" in content or "\r" in content):
             return "A native hot-memory entry requires one line of at most 256 characters"
         return None
@@ -215,13 +210,12 @@ class NativeMemory:
                     return json.loads(prior["receipt"])
                 unknown = {"status": "unknown", "reason": "The operation outcome needs recovery before retry",
                            "writer": scope.writer, "request_id": request_id}
-                paths = self._publication_paths(connection, payload)
-                self.transaction.prepare(scope.writer, request_id, paths)
                 connection.execute("INSERT INTO operations VALUES (?,?,?,?)",
                                    (scope.writer, request_id, payload_digest, json.dumps(unknown)))
-                connection.commit()
-                reserved = True
-                connection.execute("BEGIN IMMEDIATE")
+            reserved = True
+            with self._transaction() as connection:
+                paths = self._publication_paths(connection, payload)
+                self.transaction.prepare(scope.writer, request_id, paths)
                 try:
                     receipt = callback(connection)
                 except MemoryConflict as error:
@@ -230,7 +224,6 @@ class NativeMemory:
                 receipt.setdefault("request_id", request_id)
                 connection.execute("UPDATE operations SET receipt=? WHERE writer=? AND request_id=?",
                                    (json.dumps(receipt), scope.writer, request_id))
-                self.transaction.flush_publication()
                 return receipt
         except MemoryConflict as error:
             return {"status": "conflict", "reason": str(error), "writer": scope.writer, "request_id": request_id}
@@ -240,10 +233,7 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, payload: dict[str, Any]) -> list[str]:
         if payload["operation"] == "remember":
-            checked = self._native("validate", item=payload["item"])
-            if not checked.get("ok") or checked["item"] != payload["item"]:
-                return []
-            result = self._native("route", item=checked["item"])
+            result = self._native("route", item=payload["item"])
             return [Path(result["path"]).relative_to(self.root).as_posix()]
         reference = payload.get("reference")
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str):
@@ -288,26 +278,19 @@ class NativeMemory:
     def recall(self, scope: MemoryScope, query: str, *, limit: int = 20) -> list[dict[str, Any]]:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("A memory query is required")
-        if type(limit) is not int:
-            raise ValueError("The memory result limit must be an integer")
-        records = {}
-        corpus = []
+        terms = re.findall(r"\w+", query.casefold())
+        results = []
         with self._transaction() as connection:
             for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
                 if not self._allowed(scope, row):
                     continue
                 content = self._content(row)
-                records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
-                                      "content": content, "category": row["category"], "project": row["project"],
-                                      "writer": row["writer"], "status": row["status"]}
-                corpus.append({"filePath": row["id"], "frontmatter": {"type": "knowledge" if row["category"] == "project" else "memory",
-                                                                     "title": row["project"] or row["category"]},
-                               "body": content, "wordCount": max(1, len(content.split())),
-                               "noteClass": "knowledge" if row["category"] == "project" else "memory"})
-            if not corpus:
-                return []
-            ranked = self._native("rank", query=query, corpus=corpus, limit=max(1, min(limit, 100)))
-            return [{**records[item["path"]], "score": item["score"]} for item in ranked["results"]]
+                score = sum(content.casefold().count(term) for term in terms)
+                if score:
+                    results.append({"reference": {"id": row["id"], "revision": row["revision"]},
+                                    "content": content, "category": row["category"], "project": row["project"],
+                                    "writer": row["writer"], "status": row["status"], "score": score})
+        return sorted(results, key=lambda item: item["score"], reverse=True)[:max(1, min(limit, 100))]
 
     def _target(self, connection: sqlite3.Connection, scope: MemoryScope, reference: dict[str, Any]):
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str) or type(reference.get("revision")) is not int:

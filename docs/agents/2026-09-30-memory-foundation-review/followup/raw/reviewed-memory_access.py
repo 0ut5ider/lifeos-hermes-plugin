@@ -17,7 +17,6 @@ from typing import Any, Callable
 from uuid import uuid4
 
 from .memory_policy import CATEGORIES, MemoryScope
-from .memory_transaction import MemoryTransaction
 
 
 SCHEMA_VERSION = 1
@@ -49,7 +48,6 @@ class NativeMemory:
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
-        self.transaction = MemoryTransaction(self.database.parent, self._path)
 
     def _boundary(self) -> None:
         user = self.root.parent / ".config/LIFEOS/USER"
@@ -95,20 +93,16 @@ class NativeMemory:
 
     @contextmanager
     def _transaction(self):
-        self._boundary()
-        with self.transaction.lock():
-            connection = self._connect()
-            try:
-                self.transaction.recover(connection)
-                connection.execute("BEGIN IMMEDIATE")
-                yield connection
-                connection.commit()
-                self.transaction.finish()
-            except BaseException:
-                connection.rollback()
-                raise
-            finally:
-                connection.close()
+        connection = self._connect()
+        try:
+            connection.execute("BEGIN IMMEDIATE")
+            yield connection
+            connection.commit()
+        except BaseException:
+            connection.rollback()
+            raise
+        finally:
+            connection.close()
 
     def _native(self, action: str, **values: Any) -> dict[str, Any]:
         environment = dict(os.environ)
@@ -117,8 +111,7 @@ class NativeMemory:
         environment["BUN_CONFIG_NO_AUTO_INSTALL"] = "1"
         result = subprocess.run([self.bun, "--no-install", str(self.worker), str(self.root)],
                                 input=json.dumps({"action": action, **values}), text=True,
-                                capture_output=True, timeout=30, env=environment, cwd=self.root,
-                                pass_fds=self.transaction.inherited_descriptors())
+                                capture_output=True, timeout=30, env=environment, cwd=self.root)
         if result.returncode:
             raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
         try:
@@ -153,12 +146,8 @@ class NativeMemory:
         length = record["chars"]
         position = record["position"]
         candidate = text[position:position + length]
-        if record["category"] == "project":
-            boundary = re.search(r"\n## Appended \d{4}-\d{2}-\d{2}T[^\n]+Z\n<!-- source_session: [^\n]* -->\n", text[position:])
-            end = position + boundary.start() if boundary else len(text)
-            section = text[position:end].rstrip("\r\n")
-            if section == candidate and _digest(candidate) == record["digest"]:
-                return candidate
+        if _digest(candidate) == record["digest"]:
+            return candidate
         if record["category"] != "project":
             entries = self._native("read_hot", path=str(path)).get("entries", [])
             matches = [entry for entry in entries if _digest(entry) == record["digest"]]
@@ -170,9 +159,9 @@ class NativeMemory:
         checked = self._native("validate", item=item)
         if not checked.get("ok"):
             return checked.get("message", "Native validation rejected the fact")
-        if checked["item"] != item:
-            return "Native validation changed the requested fact or metadata"
-        if category != "project" and (len(content.split(": ", 1)[-1].encode("utf-16-le")) // 2 > 256 or "\n" in content or "\r" in content):
+        if checked["item"].get("content") != content:
+            return "Native validation changed the requested content"
+        if category != "project" and (len(content.split(": ", 1)[-1]) > 256 or "\n" in content or "\r" in content):
             return "A native hot-memory entry requires one line of at most 256 characters"
         return None
 
@@ -185,12 +174,8 @@ class NativeMemory:
                 content: str, category: str, project: str, source: dict[str, str]) -> dict[str, Any]:
         relative = path.relative_to(self.root).as_posix()
         text = self._path(relative).read_text(encoding="utf-8")
-        if category == "project":
-            position = len(text.rstrip("\r\n")) - len(content)
-        else:
-            start = text.index("<!-- BEGIN ENTRIES -->") + len("<!-- BEGIN ENTRIES -->")
-            position = text.find(content, start, text.index("<!-- END ENTRIES -->"))
-        if position < 0 or text[position:position + len(content)] != content:
+        position = text.find(content)
+        if position < 0:
             raise MemoryUnavailable("The native writer did not save the requested fact")
         identifier = uuid4().hex
         connection.execute("INSERT INTO records VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)", (
@@ -215,41 +200,21 @@ class NativeMemory:
                     return json.loads(prior["receipt"])
                 unknown = {"status": "unknown", "reason": "The operation outcome needs recovery before retry",
                            "writer": scope.writer, "request_id": request_id}
-                paths = self._publication_paths(connection, payload)
-                self.transaction.prepare(scope.writer, request_id, paths)
                 connection.execute("INSERT INTO operations VALUES (?,?,?,?)",
                                    (scope.writer, request_id, payload_digest, json.dumps(unknown)))
-                connection.commit()
-                reserved = True
-                connection.execute("BEGIN IMMEDIATE")
-                try:
-                    receipt = callback(connection)
-                except MemoryConflict as error:
-                    receipt = {"status": "conflict", "reason": str(error)}
+            reserved = True
+            with self._transaction() as connection:
+                receipt = callback(connection)
                 receipt.setdefault("writer", scope.writer)
                 receipt.setdefault("request_id", request_id)
                 connection.execute("UPDATE operations SET receipt=? WHERE writer=? AND request_id=?",
                                    (json.dumps(receipt), scope.writer, request_id))
-                self.transaction.flush_publication()
                 return receipt
         except MemoryConflict as error:
             return {"status": "conflict", "reason": str(error), "writer": scope.writer, "request_id": request_id}
         except (MemoryUnavailable, OSError, sqlite3.Error, subprocess.TimeoutExpired) as error:
             return {"status": "unknown" if reserved else "rejected",
                     "reason": str(error), "writer": scope.writer, "request_id": request_id}
-
-    def _publication_paths(self, connection: sqlite3.Connection, payload: dict[str, Any]) -> list[str]:
-        if payload["operation"] == "remember":
-            checked = self._native("validate", item=payload["item"])
-            if not checked.get("ok") or checked["item"] != payload["item"]:
-                return []
-            result = self._native("route", item=checked["item"])
-            return [Path(result["path"]).relative_to(self.root).as_posix()]
-        reference = payload.get("reference")
-        if not isinstance(reference, dict) or not isinstance(reference.get("id"), str):
-            return []
-        row = connection.execute("SELECT path FROM records WHERE id=?", (reference["id"],)).fetchone()
-        return [row["path"]] if row is not None else []
 
     def remember(self, scope: MemoryScope, *, category: str, content: str, title: str, project: str,
                  request_id: str, source: dict[str, str] | None = None) -> dict[str, Any]:
@@ -288,26 +253,19 @@ class NativeMemory:
     def recall(self, scope: MemoryScope, query: str, *, limit: int = 20) -> list[dict[str, Any]]:
         if not isinstance(query, str) or not query.strip():
             raise ValueError("A memory query is required")
-        if type(limit) is not int:
-            raise ValueError("The memory result limit must be an integer")
-        records = {}
-        corpus = []
+        terms = re.findall(r"\w+", query.casefold())
+        results = []
         with self._transaction() as connection:
             for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
                 if not self._allowed(scope, row):
                     continue
                 content = self._content(row)
-                records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
-                                      "content": content, "category": row["category"], "project": row["project"],
-                                      "writer": row["writer"], "status": row["status"]}
-                corpus.append({"filePath": row["id"], "frontmatter": {"type": "knowledge" if row["category"] == "project" else "memory",
-                                                                     "title": row["project"] or row["category"]},
-                               "body": content, "wordCount": max(1, len(content.split())),
-                               "noteClass": "knowledge" if row["category"] == "project" else "memory"})
-            if not corpus:
-                return []
-            ranked = self._native("rank", query=query, corpus=corpus, limit=max(1, min(limit, 100)))
-            return [{**records[item["path"]], "score": item["score"]} for item in ranked["results"]]
+                score = sum(content.casefold().count(term) for term in terms)
+                if score:
+                    results.append({"reference": {"id": row["id"], "revision": row["revision"]},
+                                    "content": content, "category": row["category"], "project": row["project"],
+                                    "writer": row["writer"], "status": row["status"], "score": score})
+        return sorted(results, key=lambda item: item["score"], reverse=True)[:max(1, min(limit, 100))]
 
     def _target(self, connection: sqlite3.Connection, scope: MemoryScope, reference: dict[str, Any]):
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str) or type(reference.get("revision")) is not int:

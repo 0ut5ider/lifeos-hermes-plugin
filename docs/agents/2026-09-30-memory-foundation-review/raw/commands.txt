@@ -1,0 +1,31 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Reviewed commit: bc0f06b31d57fc682176db59b37e3813d5c65f22
+Source fixture: /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install
+
+Baseline command:
+python -m unittest discover -s tests -p 'test_memory*.py' -v > docs/agents/2026-09-30-memory-foundation-review/raw/baseline-tests.txt 2>&1
+
+Probe command:
+python docs/agents/2026-09-30-memory-foundation-review/raw/probe_foundation.py > docs/agents/2026-09-30-memory-foundation-review/raw/probe-results.jsonl
+
+The probe command was run after each appended diagnostic case. probe-results.jsonl contains the complete final run with seven cases. Each case creates and cleans a TemporaryDirectory through the existing NativeMemoryTests fixture. No test uses production data. The interruption case launches an actual child process, runs the actual native writer, and exits with status 73 at the _record boundary before metadata publication. This is explicit process-failure injection, not a mock native backend.
+
+Source inspection:
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+pwd; git status --short; git rev-parse HEAD; rg --files -g 'AGENTS.md' -g '*memory*' -g 'pyproject.toml' -g 'pytest.ini' -g 'package.json'
+cat notes/2026-09-30-memory-design.md docs/memory-implementation-plan.md
+cat lifeos_hook_bridge/memory_policy.py lifeos_hook_bridge/memory_access.py
+cat lifeos_hook_bridge/memory_native.ts tests/test_memory_policy.py tests/test_memory_native.py
+git show --stat bc0f06b
+nl -ba lifeos_hook_bridge/memory_access.py | sed -n '138,325p'
+rg -n 'function (add|addMemory|addKnowledge|sanitize)|export|MAX_|slice|setEntries|proposal|threshold|cap|lock' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+sed -n '176,247p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+sed -n '398,468p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+sed -n '622,812p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+sed -n '517,638p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+rg -n 'private|function strip' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/CaptureEnvelope.ts | head -35
+
+One exploratory lookup tried hooks/lib/privacy.ts, which does not exist. MemorySystem.ts identifies the actual implementation as LIFEOS/TOOLS/CaptureEnvelope.ts. No runtime or bootstrap command was used.
+
+Evidence preservation:
+Committed review inputs were copied using git show bc0f06b:<path>. Native source files were copied from the source-only fixture. source-hashes.json contains SHA-256 hashes. environment.txt contains the reviewed commit and Python/Bun versions. These copies keep the review reproducible while the primary agent fixes the shared working tree.

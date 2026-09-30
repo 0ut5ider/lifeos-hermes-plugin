@@ -17,7 +17,7 @@ from lifeos_hook_bridge.memory_access import NativeMemory
 from lifeos_hook_bridge.memory_policy import MemoryScope
 
 
-SOURCE = Path(os.environ.get("LIFEOS_MEMORY_SOURCE", str(Path.home() / ".cache/lifeos-plugin-memory/managed-source/LifeOS/install")))
+SOURCE = Path(os.environ.get("LIFEOS_MEMORY_SOURCE", str(Path.home() / ".cache/lifeos-plugin-memory/source/LifeOS/install")))
 OWNER = MemoryScope("owner", "local:owner", ("assistant", "principal", "project"),
                     ("assistant", "principal", "project"), ("*",), "owner-test")
 READER = MemoryScope("client", "mcp:reader", ("project",), (), ("lab",), "reader-test")
@@ -132,7 +132,7 @@ class NativeMemoryTests(unittest.TestCase):
                 receipt = self.memory.correct(OWNER, saved["reference"], replacement, f"invalid-{index}")
                 self.assertEqual(receipt["status"], "rejected")
                 self.assertEqual(self.memory.recall(OWNER, "original")[0]["reference"], saved["reference"])
-                self.assertNotIn("SYNTHETIC_DENIED_MARKER", json.dumps(self.memory.recall(OWNER, "DENIED_MARKER")))
+                self.assertEqual(self.memory.recall(OWNER, "DENIED_MARKER"), [])
 
     def test_correction_cannot_reactivate_forgotten_text(self):
         first = self.remember("Synthetic forgotten marker", "forgotten")
@@ -296,30 +296,6 @@ memory.correct(OWNER, REFERENCE, "RULE: synthetic orphan correction", "orphan")
             if process.poll() is None:
                 process.kill()
                 process.wait(timeout=5)
-
-    def test_native_ranking_uses_only_the_authorized_corpus(self):
-        self.remember("RULE: synthetic forbidden lab preference", "private", "principal")
-        first = self.remember("The synthetic lab uses port 9123.", "original")
-        corrected = self.memory.correct(OWNER, first["reference"], "The synthetic lab uses port 9443.", "correct")
-        observed = []
-        native = self.memory._native
-        def record_native(action, **values):
-            if action == "rank":
-                observed.append(values["corpus"])
-            return native(action, **values)
-        self.memory._native = record_native
-        found = self.memory.recall(READER, "synthetic lab")
-        self.assertEqual(found[0]["reference"], corrected["reference"])
-        self.assertEqual(len(observed), 1)
-        self.assertEqual(len(observed[0]), 1)
-        self.assertNotIn("forbidden", json.dumps(observed))
-        self.assertNotIn("9123", json.dumps(observed))
-
-    def test_user_heading_does_not_act_as_a_native_append_boundary(self):
-        content = "Synthetic first paragraph\n## Appended experiment notes\nSynthetic second paragraph"
-        saved = self.remember(content, "heading")
-        self.assertEqual(saved["status"], "committed")
-        self.assertEqual(self.memory.recall(OWNER, "synthetic paragraph")[0]["content"], content)
 
 
 if __name__ == "__main__":

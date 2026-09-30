@@ -17,18 +17,7 @@ async function main(): Promise<void> {
   const writer: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryWriter.ts")).href);
   if (!object(system) || !object(writer)) throw new Error("Native memory exports are unavailable");
   let result: unknown;
-  if (input.action === "rank") {
-    const retriever: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryRetriever.ts")).href);
-    if (!object(retriever) || retriever.SUPPLIED_CORPUS_API_VERSION !== 1 || typeof retriever.getRelevantContext !== "function") {
-      throw new Error("The governed native retrieval capability is unavailable");
-    }
-    if (typeof input.query !== "string" || !Array.isArray(input.corpus)) throw new Error("Invalid retrieval input");
-    result = retriever.getRelevantContext(input.query, {corpus: input.corpus, topK: input.limit, excerptChars: 65536});
-  } else if (input.action === "route") {
-    const types: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryTypes.ts")).href);
-    if (!object(types) || typeof types.resolveStoragePath !== "function") throw new Error("Native memory routing is unavailable");
-    result = { path: types.resolveStoragePath(input.item) };
-  } else if (input.action === "add" || input.action === "validate") {
+  if (input.action === "add" || input.action === "validate") {
     if (typeof system.sanitizeTypedItemForPersistence !== "function" || typeof system.add !== "function") {
       throw new Error("Native memory validation or add operation is unavailable");
     }
