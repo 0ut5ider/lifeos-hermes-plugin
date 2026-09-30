@@ -54,13 +54,18 @@ try:
     updated = json.loads(config_path.read_text())
     assert fingerprints() == before, 'Native sources changed'
     service('start', *unit_names)
+    previous_pids = {}
+    stable_checks = 0
     for attempt in range(30):
-        if all(service('is-active', unit, check=False).stdout.strip() == 'active' for unit in unit_names):
+        pids = {unit: int(service('show', unit, '-p', 'MainPID', '--value').stdout.strip()) for unit in unit_names}
+        active = all(service('is-active', unit, check=False).stdout.strip() == 'active' for unit in unit_names)
+        stable_checks = stable_checks + 1 if active and all(pids.values()) and pids == previous_pids else 0
+        if stable_checks >= 3:
             break
+        previous_pids = pids
         time.sleep(1)
     else:
         raise RuntimeError('Services do not become active')
-    pids = {unit: int(service('show', unit, '-p', 'MainPID', '--value').stdout.strip()) for unit in unit_names}
     print(json.dumps({'applied': True, 'native_sources_unchanged': before == fingerprints(),
                      'backup_source': str(backup_source), 'backup_config': str(backup_config),
                      'services': pids, 'capture_sources': updated['capture_sources'], 'installation': installed}))

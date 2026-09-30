@@ -1,6 +1,6 @@
 # Development recorder: independent review corrections
 
-Date: 2026-09-30. Initial status: local corrections verified; deployment and follow-up review pending.
+Date: 2026-09-30. Current status: review corrections verified and deployed on `.212`. Earlier sections retain the findings and their verification sequence.
 
 The [independent baseline review](../docs/agents/2026-09-30-logging-independent-review/logging-independent-review.md) found eight confirmed issues in commit `8995ac2`. The primary agent reproduced the findings, added failing regressions, and implemented the corrections below. No public plugin runtime or compatibility patch changed.
 
@@ -60,3 +60,21 @@ The fourth reviewer also reproduced Basic authorization component echoes with a 
 The protocol review verified single-cookie and Basic corrections, then reproduced two Set-Cookie headers whose second value disappeared in a dictionary conversion. The observer now keeps all response header values before credential discovery. The actual HTTP regression fails before the correction and passes afterward with unchanged native outcomes.
 
 The primary agent also reproduced a shared-container declaration issue. The same list first visited under an ordinary field and later under an API key field skipped credential learning. Cycle tracking now includes credential context and the field name. A new regression fails before correction and passes afterward. All 29 local tests pass in 5.834 seconds. The reviewer is checking the corrected snapshot in a separate closure report.
+
+## Review gate and deployment complete
+
+The [corrected protocol closure review](../docs/agents/2026-09-30-logging-protocol-closure/logging-protocol-closure.md) independently verifies recorder commit `d7758db`. It reports no meaningful confirmed open findings within the bounded logging review. All 29 tests pass independently in 6.490 seconds. The primary agent reran the actual hook probes and the alias/cycle probes. The isolated `.212` suite passes in 5.850 seconds.
+
+The reviewed recorder is deployed. The [final deployment verification](../docs/verification/2026-09-30-reviewed-capture/verified.json) confirms both running service processes loaded the reviewed manifest, all nine native source fingerprints remain unchanged, and configuration and capture-root modes remain 0600 and 0700. At the snapshot there are 1,236 events, zero reported losses, zero capture gaps, zero integrity issues, and zero incomplete invocations. The 149 registration identities form a historical union of observed versions, not 149 installed native hooks.
+
+No public plugin runtime or compatibility patch changed. No push occurred. `.211` and `.213` remain unchanged. Historical artifacts remain immutable and have not been retroactively sanitized. A new live user turn after this restart has not been used to verify host turn IDs or Discord delivery.
+
+### Launcher side effect correction and recovery
+
+Correction to the earlier side-effect account: the bootstrap probe also rewrote two ignored native launchers, `.hermes/bin/hermes` and `.hermes/bin/hermes-acp`, to reference the Python interpreter inside its temporary Hermes home. After that temporary directory was removed, existing service processes kept running. Their next restart exited 127 because that interpreter no longer existed. The tracked tree and nine inspected source hashes were insufficient to detect this launcher change.
+
+The deployment initially treated a transient `active` state as success and printed service process IDs of zero. The subsequent health check caught the failure. That initial JSON remains diagnostic evidence, not the final deployment result. The deployment helper now requires nonzero, stable process IDs before reporting service startup success.
+
+The primary agent backed up both launchers and restored only the interpreter path to the existing managed account Python. Native launcher code and service configuration remain otherwise unchanged. The gateway and dashboard then start successfully with zero restart counts. The dashboard login request finishes at HTTP 200 and its unauthenticated configuration API returns HTTP 401.
+
+Private rollback backups are recorded in [deployment.json](../docs/verification/2026-09-30-reviewed-capture/deployment.json) and [launcher-recovery.json](../docs/verification/2026-09-30-reviewed-capture/launcher-recovery.json). Restoring the old recorder requires restoring its corresponding configuration manifest and restarting both services. Keep the corrected launchers: their backups intentionally preserve the broken temporary interpreter path. The generated UI products remain from the earlier documented rebuild; their prior ignored-file hashes are unavailable.

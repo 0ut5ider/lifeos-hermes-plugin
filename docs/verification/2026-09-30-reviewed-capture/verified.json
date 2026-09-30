@@ -1,0 +1,47 @@
+{
+  "services_stable": {
+    "hermes-gateway.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "MainPID": "204462",
+      "NRestarts": "0"
+    },
+    "hermes-dashboard.service": {
+      "ActiveState": "active",
+      "SubState": "running",
+      "MainPID": "204463",
+      "NRestarts": "0"
+    }
+  },
+  "running_recorder_manifests": {
+    "hermes-gateway.service": {
+      "pid": 204462,
+      "manifest_matches": true
+    },
+    "hermes-dashboard.service": {
+      "pid": 204463,
+      "manifest_matches": true
+    }
+  },
+  "capture_sources": {
+    "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+    "store.py": "24f18190afecd2088f0aec0824c840aa73a378e2aee16b9a9f805278c2932385",
+    "analysis.py": "6d2d23be5778b99976018fab81597fec905fda2f3d490c41afc22e3720779dc4",
+    "instrument.py": "e4cb288785b4ca9a0e07206fd6924a1d3e464ae1c38d96fe803e8a2ae27699ca",
+    "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+    "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3"
+  },
+  "native_fingerprints_unchanged": true,
+  "dashboard_login": 200,
+  "unauthenticated_config_api": 401,
+  "config_mode": "0o600",
+  "root_mode": "0o700",
+  "health": {
+    "events": 1236,
+    "known_lost_events": 0,
+    "capture_gaps": 0,
+    "integrity_issues": {},
+    "incomplete_invocations": 0,
+    "known_registrations": 149
+  }
+}

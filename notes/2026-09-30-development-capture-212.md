@@ -2,7 +2,13 @@
 
 Date: 2026-09-30
 
-## Outcome
+## Reviewed update on the same day
+
+Recorder commit `d7758db` replaces the initial observer after repeated independent reviews and corrections. All 29 development tests pass locally and in an isolated `.212` environment. The [review correction record](2026-09-30-logging-review-fixes.md) lists the fixes, final clear review, restart failure, launcher recovery, and backups.
+
+The [final verification snapshot](../docs/verification/2026-09-30-reviewed-capture/verified.json) confirms stable gateway and dashboard processes, matching running recorder manifests, unchanged native source fingerprints, and protected dashboard access. Its 1,236 events have zero reported losses, gaps, integrity issues, and incomplete invocations. Registration counts represent historical versions. The observations below describe the initial 11-test deployment, including its live model, SSH, Docker, and Discord fixtures. They are not new live tests of the corrected revision.
+
+## Initial outcome
 
 The external development recorder is installed and active for the `lifeos-hermes` account on `192.168.8.212`. The gateway and dashboard loaded the final recorder source manifest after restart. The dashboard still returns HTTP 401 for an unauthenticated API request. All nine inspected Hermes and plugin source fingerprints remain unchanged.
 
