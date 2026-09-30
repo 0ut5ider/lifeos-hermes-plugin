@@ -29,4 +29,3 @@ traced= True failure= AssertionError 1 != 0 : Traceback (most recent call last):
     return specific.get("permissionDecision") or result.get("decision") or result.get("action")
            ^^^^^^^^^^^^
 AttributeError: 'str' object has no attribute 'get'
-

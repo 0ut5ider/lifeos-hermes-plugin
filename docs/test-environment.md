@@ -1,6 +1,6 @@
 # Isolated LifeOS test environment
 
-As of 2026-09-29, the development fixture is the unprivileged `lifeos-hermes` account on `192.168.8.212`. It started with fresh Hermes and LifeOS installations. No LifeOS data was copied from an existing installation. The principal is the fictional `Test Operator`.
+As of 2026-09-30, the development fixture is the unprivileged `lifeos-hermes` account on `192.168.8.212`. It started with fresh Hermes and LifeOS installations. No LifeOS data was copied from an existing installation. The principal is the fictional `Test Operator`.
 
 ## Installed baseline
 
@@ -14,6 +14,7 @@ As of 2026-09-29, the development fixture is the unprivileged `lifeos-hermes` ac
 - The Hermes main loop uses xhigh effort, matching the configured Fable tier. A native IntegrityCheck test passed the Hermes carrier and model-rung sections after this change. The previous medium setting produced a main-rung mismatch.
 - The four LifeOS tiers use Hermes's `custom` provider and `flashnext-w4a16-fp8ple`. Haiku uses low effort, Sonnet uses medium, and Opus and Fable use xhigh. Native LifeOS inference uses the plugin-owned `hermes lifeos-infer` command and Hermes provider routing. Claude Code remains installed for reference tests.
 - The Discord extra is installed through `hermes pm install --extra discord`. The `hermes-gateway.service` user service is enabled, and systemd linger keeps it running after logout.
+- The Discord gateway now accepts Adrian's ordinary messages in `#hermes-212`, channel `1554859357374513222`, without an @ mention. Its server-channel allowlist restricts it to that channel and its threads. The user allowlist remains active. Replies are inline, and the same channel is the proactive default. The `.213` gateway configuration remains unchanged.
 - Hermes's `agent-browser` and `chromium` packages are installed through `hermes pm install agent-browser chromium` for local browser hook tests.
 - LifeOS Pulse runs as the `com.lifeos.pulse` user service on loopback port 31337. Its five enabled template jobs are overridden to disabled in `LIFEOS/USER/CONFIG/PULSE.user.toml` for this test account. The service provides the local Skill and Agent HTTP hook routes.
 
@@ -46,6 +47,14 @@ Identity substitution also replaces placeholder literals in LifeOS's installed `
 ## Outbound firewall and Discord scope
 
 The account's persistent egress rule in `/etc/lifeos-hermes-test-egress.nft` allows UID 1004 to send outbound TCP traffic on port 443 to any destination before its LAN-only reject rules. The service `lifeos-hermes-test-egress.service` is enabled and active. The prior ruleset is backed up at `/etc/lifeos-hermes-test-egress.nft.before-discord-20260928-082859`. This exception enabled Discord package installation and the bot connection. It is broader than a Discord-only allowlist. Other outbound Internet ports remain blocked by the rules shown in that file. The plugin does not install or manage this firewall rule.
+
+## Private development logging
+
+The account has an external recorder at `~/workspace/development-hook-capture/development`. A startup file in the managed base Python interpreter loads source-pinned observers in gateway, dashboard, and detached hook processes. Hermes, LifeOS, and public plugin runtime files remain unchanged by this logging installation.
+
+The private configuration is `~/.config/lifeos-development-capture/config.json`. Raw event files and compressed artifacts are under `~/.local/state/lifeos-development-capture`, with directory mode 0700 and file mode 0600. The run ID is `development-20260930T140347Z`. Logs retain ordinary conversation content and filter recognized credentials. They are not copied into the installed public plugin or committed to Git.
+
+The [development capture record](../notes/2026-09-30-development-capture-212.md) gives the tests, coverage snapshot, review procedure, and removal steps. This recorder is active for development use. No recurring analysis job or automatic retention policy is configured.
 
 LifeOS Doctor now reports that every registered hook interpreter resolves. The bridge executes mapped events through the Hermes plugin API and generic core extensions in the test fork. The [hook parity record](hook-parity.md) identifies unverified effects and missing events. Full hook parity has not been verified. Pulse reports a missing Bunker module from the public LifeOS fixture, but its hook routes remain active. Optional external services such as voice, Cloudflare, and a GitHub login are not configured in the fixture.
 

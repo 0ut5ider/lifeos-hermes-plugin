@@ -22,12 +22,13 @@ def rebuild(root: Path):
           CREATE TABLE events(event_id TEXT PRIMARY KEY, run_id TEXT, process_id TEXT, sequence INTEGER,
             time_utc TEXT, stage TEXT, session_id TEXT, callback_id TEXT, dispatch_id TEXT,
             invocation_id TEXT, registration_id TEXT, native_event TEXT, hermes_event TEXT,
-            status TEXT, decision TEXT, duration_ns INTEGER, exit_code INTEGER, data_path TEXT, record TEXT);
+            status TEXT, decision TEXT, duration_ns INTEGER, exit_code INTEGER, span_id TEXT, parent_span_id TEXT, data_path TEXT, record TEXT);
           CREATE TABLE issues(kind TEXT, path TEXT, detail TEXT);
           CREATE INDEX by_registration ON events(registration_id,stage,status);
           CREATE INDEX by_session ON events(session_id,time_utc);
           CREATE INDEX by_invocation ON events(invocation_id,stage);
           CREATE INDEX by_stage ON events(stage,time_utc);
+          CREATE INDEX by_span ON events(span_id,parent_span_id);
         """)
         columns = [row[1] for row in db.execute("PRAGMA table_info(events)")]
         checked = set()

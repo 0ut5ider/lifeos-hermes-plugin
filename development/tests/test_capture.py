@@ -21,6 +21,24 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_credential_fields_inside_json_stdin_and_stdout_are_redacted(self):
+        from hook_capture.store import safe
+        from hook_capture.instrument import transport_input, transport_output
+        value = "UNREGISTERED-TOOL-API-KEY-731"
+        body = json.dumps({"tool_input": {"api_key": value, "apiKey": value,
+                           "accessToken": value, "clientSecret": value}, "prompt": "keep this prompt"})
+        clean = safe({"input": body, "stdout": body})
+        self.assertNotIn(value, str(clean))
+        self.assertEqual(json.loads(clean["input"])["prompt"], "keep this prompt")
+        encoded = base64.b64encode(b"true").decode()
+        wire = encoded + "\n0\n" + body
+        self.assertNotIn(value, transport_input(wire, []))
+        marker = "__LIFEOS_HOOK_" + "b" * 32 + "__"
+        wire = "\n".join(("", marker, "0", base64.b64encode(body.encode()).decode(), "", marker + "_END"))
+        decoded = base64.b64decode(transport_output(wire, []).splitlines()[3]).decode()
+        self.assertNotIn(value, decoded)
+        self.assertNotIn(value, safe('{"api_key":"' + value + '"'))
+
     def test_encoded_transport_credentials_are_removed_before_storage(self):
         from hook_capture.instrument import transport_input, transport_output
         encode = lambda text: base64.b64encode(text.encode()).decode()
@@ -52,6 +70,11 @@ class EvidenceTests(unittest.TestCase):
             self.assertEqual(loaded["max_tokens"], 4000)
             self.assertEqual((root / ref["path"]).stat().st_mode & 0o777, 0o600)
             self.assertEqual(ref, recorder.artifact(value))
+            dynamic = "DYNAMIC-CREDENTIAL-918342"
+            ref = recorder.artifact({"stdout": dynamic, "environment": {"API_KEY": dynamic}})
+            self.assertNotIn(dynamic, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+            ref = recorder.artifact({"stdout": dynamic})
+            self.assertNotIn(dynamic, gzip.decompress((root / ref["path"]).read_bytes()).decode())
 
     def test_index_handles_a_partial_tail_and_reports_missing_completion(self):
         from hook_capture.store import Recorder
@@ -172,6 +195,21 @@ class OverlayTests(unittest.TestCase):
         _, observed, events = self.run_bridge(hooks, action)
         self.assertEqual(observed, baseline)
         self.assertTrue(any(e["stage"] == "response.parsed.returned" for e in events))
+
+    def test_thread_pool_retains_only_the_capture_context(self):
+        setup = ("from concurrent.futures import ThreadPoolExecutor\n"
+                 "from hook_capture.instrument import CURRENT,observed\n"
+                 "from contextvars import ContextVar\n"
+                 "other=ContextVar('native_other',default='native-default')\nother.set('caller-only')\n"
+                 "CURRENT.set({'session_id':'threaded','span_id':'parent-span'})\n"
+                 "def value():return other.get()\n"
+                 "worker=observed(value,'host.thread_probe')\n"
+                 "pool=ThreadPoolExecutor(max_workers=1)\n")
+        _, outcome, events = self.run_bridge({}, "pool.submit(worker).result()", setup=setup)
+        self.assertIn('"native-default"', outcome)
+        entered = next(e for e in events if e["stage"] == "host.thread_probe.entered")
+        self.assertEqual(entered["session_id"], "threaded")
+        self.assertEqual(entered["parent_span_id"], "parent-span")
 
     def test_detached_runner_survives_parent_and_captures_discarded_large_streams(self):
         import hashlib

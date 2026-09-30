@@ -17,8 +17,20 @@ import time
 import uuid
 from pathlib import Path
 
-SENSITIVE = re.compile(r"(^|_)(password|passwd|secret|token|api_key|auth_token|private_key)($|_)|^authorization$|^cookie$|^set.cookie$", re.I)
+SENSITIVE = re.compile(r"(^|_)(password|passwd|secret|token|api_?key|(?:access|refresh|auth)_?token|private_?key|client_?secret)($|_)|^authorization$|^cookie$|^set.cookie$", re.I)
 TOKEN_SHAPE = re.compile(r"(?i)(Bearer\s+)[A-Za-z0-9._~+/=-]+|-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----", re.S)
+JSON_FIELD = re.compile(r'("(?P<field>(?:\\.|[^"\\])*)"\s*:\s*)("(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?|true|false|null)')
+
+
+def declared_secrets(value):
+    if isinstance(value, dict):
+        for key, item in value.items():
+            if SENSITIVE.search(str(key)) and isinstance(item, str) and len(item) >= 4 and item != "[REDACTED]":
+                yield item
+            yield from declared_secrets(item)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            yield from declared_secrets(item)
 
 
 def safe(value, secrets=(), key=""):
@@ -30,7 +42,22 @@ def safe(value, secrets=(), key=""):
         for secret in secrets:
             if secret:
                 value = value.replace(secret, "[REDACTED]")
-        return TOKEN_SHAPE.sub("[REDACTED]", value)
+        value = TOKEN_SHAPE.sub("[REDACTED]", value)
+        if value.lstrip().startswith(("{", "[")):
+            try:
+                parsed = json.loads(value)
+                clean = safe(parsed, secrets)
+                if clean != parsed:
+                    return json.dumps(clean, ensure_ascii=True, separators=(",", ":"))
+            except (ValueError, RecursionError):
+                pass
+        def redact_fragment(match):
+            try:
+                field = json.loads('"' + match.group("field") + '"')
+            except ValueError:
+                return match.group(0)
+            return match.group(1) + '"[REDACTED]"' if SENSITIVE.search(field) else match.group(0)
+        return JSON_FIELD.sub(redact_fragment, value)
     if isinstance(value, bytes):
         text = value.decode("utf-8", errors="surrogateescape")
         clean = safe(text, secrets)
@@ -76,7 +103,10 @@ class Recorder:
         return directory / f"{self.process_id}.jsonl"
 
     def artifact(self, value):
-        clean = safe(value, self.secrets)
+        with self.lock:
+            self.secrets = sorted(set(self.secrets).union(declared_secrets(value)), key=len, reverse=True)
+            secrets = self.secrets
+        clean = safe(value, secrets)
         data = json.dumps(clean, ensure_ascii=True, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
         digest = hashlib.sha256(data).hexdigest()
         relative = Path("artifacts/sha256") / digest[:2] / f"{digest[2:]}.json.gz"

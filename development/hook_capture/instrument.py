@@ -6,6 +6,7 @@ from __future__ import annotations
 import ast
 import base64
 import contextvars
+from concurrent.futures import ThreadPoolExecutor
 import functools
 import hashlib
 import importlib.machinery
@@ -111,6 +112,10 @@ def observed(function, stage, *, hermes_event=None):
             context["bridge_method"] = hermes_event
         if hermes_event and (stage != "bridge_callback" or not context.get("hermes_event")):
             context["hermes_event"] = hermes_event
+        if stage.startswith("host.") and values.get("hook_name"):
+            context["hermes_event"] = values["hook_name"]
+        context["parent_span_id"] = context.get("span_id")
+        context["span_id"] = uuid.uuid4().hex
         token = CURRENT.set(context)
         started = time.monotonic_ns()
         emit(stage + ".entered", values)
@@ -314,6 +319,7 @@ def transport_input(text, secrets):
             key, value = assignment.split("=", 1)
             clean = safe({key: value}, secrets)[key]
             lines[index] = encoded(key + "=" + clean)
+        lines[count + 2:] = [safe("\n".join(lines[count + 2:]), secrets)]
         return safe("\n".join(lines), secrets)
     except (ValueError, UnicodeError, TypeError, IndexError):
         emit("instrumentation.failed", {"operation": "transport_input_redaction"}, status="capture_gap")
@@ -566,6 +572,16 @@ def patch_processes():
             payload = {}
         native = isinstance(payload,dict) and payload.get("hook_event_name")
         if not native:
+            argv = args[0] if args else kwargs.get("args", [])
+            if isinstance(argv, (tuple, list)) and argv and Path(str(argv[0])).name == "systemd-run":
+                emit("async.launch_systemd.started", {"argv": argv, "options": kwargs})
+                try:
+                    result = original(*args, **kwargs)
+                    emit("async.launch_systemd.returned", result, status="launched" if result.returncode == 0 else "launch_failed", exit_code=result.returncode)
+                    return result
+                except Exception as error:
+                    emit("async.launch_systemd.failed", {"error": error}, status="launch_failed")
+                    raise
             return original(*args,**kwargs)
         asynchronous = context.get("_detached",False)
         started = time.monotonic_ns()
@@ -649,6 +665,24 @@ def patch_http():
     urllib.request.OpenerDirector.open = open_url
 
 
+def patch_threads():
+    original = ThreadPoolExecutor.submit
+    @functools.wraps(original)
+    def submit(executor, function, /, *args, **kwargs):
+        context = dict(CURRENT.get())
+        if not context:
+            return original(executor, function, *args, **kwargs)
+        @functools.wraps(function)
+        def run():
+            token = CURRENT.set(context)
+            try:
+                return function(*args, **kwargs)
+            finally:
+                CURRENT.reset(token)
+        return original(executor, run)
+    ThreadPoolExecutor.submit = submit
+
+
 def install(configuration):
     global INSTALLED, RECORDER, CONFIG
     if INSTALLED:
@@ -692,6 +726,7 @@ def install(configuration):
             emit("instrumentation.incompatible", {"path": str(runner)}, status="capture_gap")
     patch_processes()
     patch_http()
+    patch_threads()
     original_exec=importlib.machinery.SourceFileLoader.exec_module
     def exec_module(loader,module):
         file=Path(loader.path).resolve()

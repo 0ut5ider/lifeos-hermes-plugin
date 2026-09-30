@@ -78,6 +78,8 @@ When a tier uses a Hermes provider and model, the LifeOS child launcher uses Her
 
 Development evidence is collected with an [external recorder](development/README.md). It is excluded from the installed plugin. Captured prompts, tool data, and hook streams stay in a private directory outside this repository.
 
+The recorder is active on `.212`. Its [deployment record](notes/2026-09-30-development-capture-212.md) gives verified boundaries, coverage limits, private paths, and removal steps. The `.212` bot accepts ordinary messages in its dedicated `#hermes-212` channel. No scheduled analysis or automatic log deletion is configured.
+
 ## Reminder routing and privacy
 
 LifeOS's `ReminderRouter` hook creates a GitHub issue containing the original prompt when `WORK.REPO` is configured and the prompt matches an explicit reminder, research, or queue phrase. The isolated test account has no `WORK.REPO`, so this route is inactive there. Decide where reminder text may be stored before enabling that configuration in a private deployment. See [the egress record](notes/2026-09-28-reminder-router-egress.md).

@@ -13,11 +13,13 @@ private-capture-root/
   analysis/index.sqlite
 ```
 
-Small JSON Lines records contain schema version 1, UTC and monotonic time, process identity, local sequence, session and callback identity, dispatch and hook invocation identity, registration position, workspace scope, status, duration, and artifact references. Duplicate commands have separate registration identities. Inventory records identify registrations that were not exercised.
+Small JSON Lines records contain schema version 1, UTC and monotonic time, process identity, local sequence, session and callback identity, dispatch and hook invocation identity, registration position, workspace scope, status, duration, and artifact references. Observed function calls also carry span and parent span IDs. Discord records retain message IDs across admission and reply delivery. Duplicate commands have separate registration identities. Inventory records identify registrations that were not exercised.
 
-Full inputs and outputs are compressed artifacts. Identical redacted content shares an artifact. Prompts and conversation content remain intact. Known account credentials, credential fields, bearer strings, private keys, and encoded credentials in the remote hook protocol are removed before hashing. This filter cannot recognize every unknown credential in arbitrary prose or an unrelated encoding.
+Full inputs and outputs are compressed artifacts. Identical redacted content shares an artifact. Ordinary prompts and conversation content remain intact. Known account credentials, credential fields, bearer strings, private keys, and encoded credentials in the remote hook protocol are removed before hashing. Credential fields remain filtered when JSON appears inside stdin, stdout, or a partial text fragment. Each process also learns declared credential values from structured artifacts, so later output that repeats a value can be filtered. This filter cannot recognize every unknown credential in arbitrary prose or an unrelated encoding.
 
 Each process appends to its own daily file. A child runner retains its parent's invocation identity and records a different process UUID. SQLite is rebuilt offline. Capture does not write to SQLite during a conversation.
+
+The development observer forwards its own trace context through `ThreadPoolExecutor` jobs. It does not forward unrelated application context variables. This preserves correlation when Hermes executes a hook on a worker thread.
 
 ## Install on a development account
 
@@ -74,4 +76,8 @@ PYTHONPATH=/path/to/development python -m hook_capture.setup remove
 python3 -m unittest discover -s development/tests -v
 ```
 
-Tests run real hook processes and compare traced results with native results. They cover large streams, detached parent exit, HTTP limits, duplicate registrations, malformed output, encoded credential redaction, storage failure, and partial JSON Lines tails. Live host enforcement, systemd, SSH, Docker, and Discord observations require the deployed environment and separate evidence.
+The 11 tests run real hook processes and compare traced results with native results. They cover large streams, detached parent exit, HTTP limits, duplicate registrations, malformed output, credential redaction in JSON and encoded transport, storage failure, partial JSON Lines tails, and thread context propagation.
+
+Both the local suite and the deployed `.212` suite passed on 2026-09-30. Separate live probes verified an actual systemd detached runner, SSH and Docker detached success and failure, a Hermes terminal tool turn, and Discord admission and reply delivery. See the [deployment record](../notes/2026-09-30-development-capture-212.md). These observations do not establish all permission cases or semantic parity for every registration. Comparative latency has not been measured.
+
+`development/probes/remote_capture.py` runs against disposable SSH and Docker fixtures supplied through environment variables. It exercises the remote execution boundary directly. It does not establish trusted project selection or full remote tool behavior. The operator must prepare and remove its keys, container, account access, and workspace.

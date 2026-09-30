@@ -105,3 +105,21 @@ The current trace records observed boundaries, not semantic parity. Generic hook
 ## Files changed by this reviewer
 
 Only review reports and raw evidence under docs/agents/2026-09-30-capture-design-review/. No implementation files, server settings, or memory records changed. The primary agent changed implementation concurrently and received each finding directly.
+
+## Final source review addendum
+
+The current files were re-inspected after the primary agent's follow-up fixes. `python -m unittest discover -s development/tests -v` now passes all 9 tests in 3.488 seconds. Exact output is implementation-tests-final.txt.
+
+Verified fixes:
+
+1. The truncated-frame canary now passes. transport_output sanitizes each present stream independently. The earlier encoded-frame activation blocker is closed.
+2. Public bridge methods record bridge_callback and bridge_method. Registration callbacks retain the actual Hermes event. A real bridge call wrapped as pre_prompt_admission retained hermes_event=pre_prompt_admission and bridge_method=pre_llm_call across translation events. Raw output is registered-event-probe.txt.
+3. The current Discord adapter instrumentation observes _discord_message_admission and _dispatch_discord_message without invoking admission twice. This is source-verified, not a live Discord delivery test.
+4. Remote inventory now includes SSH or Docker target kind, backend identity, workspace, and current working directory in its digest. This is source-verified.
+5. Escaping detached remote exceptions now emit hook.failed under the originating invocation. This is source-verified, with live remote execution still pending.
+6. The dispatcher passes its actual single parser call through decode_result. A locked weak process-context map restores individual invocation identity for parsing. The passing duplicate-registration test confirms that parser invocation IDs equal the distinct completed-hook IDs.
+7. The source targets are agent/turn_stop_gates.py and plugins/platforms/discord/adapter.py. No alternative invented filename is required.
+
+A further credential issue remains at this review snapshot. JSON native stdin is stored as a string in subprocess options.input and as the trailing body of remote transport_input. A JSON field named api_key therefore loses structural redaction when its value is not already a known startup credential. json-credential-probe.txt demonstrates both paths with a synthetic canary. The original structured callback payload can be redacted correctly while these alternate representations still expose the value.
+
+Redact known native JSON protocol copies as structured data before storing their string representation. Apply equivalent handling to decoded JSON stdout where sensitive field names occur. Do not modify the actual input, wire payload, stdout, or native interpretation. This is a recognizable protocol structure and should be fixed before capture activation; it is separate from the unavoidable limit on detecting arbitrary secrets embedded in prose.
