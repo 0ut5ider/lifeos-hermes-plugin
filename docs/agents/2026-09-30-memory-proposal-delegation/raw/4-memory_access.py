@@ -446,10 +446,6 @@ class NativeMemory:
         return decide(self, scope, reference, decision, request_id, content=content, note=note,
                       confidence_threshold=confidence_threshold)
 
-    def proposal_decision_row(self, scope: MemoryScope, reference: dict[str, Any]) -> dict[str, Any]:
-        from .memory_proposals import decision_row
-        return decision_row(self, scope, reference)
-
     def native_add(self, scope: MemoryScope, item: dict[str, Any], *, request_id: str, project: str,
                    observed_revision: str = "", source_session: str = "") -> dict[str, Any]:
         if not isinstance(item, dict):

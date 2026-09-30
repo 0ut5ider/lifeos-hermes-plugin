@@ -25,7 +25,7 @@ The real localhost SSH test verifies restricted execution, a server-bound client
 
 ### Remaining implementation gates
 
-1. Complete native direct proposal writer interception, automatic approval, edit and applied-elsewhere decisions, retained learning sources, and adoption. Explicit pending creation, native diversion, acceptance, rejection, and target revision checks are implemented.
+1. Complete retained learning sources, adoption, and owner preferences controls. Native direct proposal decisions, automatic approval, edit and applied-elsewhere outcomes, pending creation, diversion, and target revision checks are implemented.
 2. Filter restricted LifeOS prompts and verify model inputs and delivery destinations across representative messaging apps and scheduled tasks.
 3. Complete child-agent, compression, resume, and model-call route coverage.
 4. Implement the fresh ownership transaction, preserved Hermes files, coherent backup and restore, updates, and configuration rollback.
@@ -49,3 +49,7 @@ Each result must identify the fixture, source revision, command, expected result
 The proposal operations add separate create, review, approve, and automatic-approval grants. External clients cannot hold approval grants. Native queue rows remain authoritative, and metadata records only identity, revision, status, and writer provenance. Upgrade diversion uses the native scope classifier. Exact-path publication journals recover interrupted writes without deleting unrelated files.
 
 The proposal suite passes 11 tests. Two independent reproductions now pass: eight same-slug claims retain eight native upgrade records, and a dangling upgrade-state symlink creates no file outside USER_DATA. The full plugin suite passes 514 tests with 77 fixture-dependent skips against fresh prepared LifeOS and Hermes sources. The patch generator now covers the required model-request extension. Regeneration and ordered preparation reproduce all 56 changed host files byte for byte. Ownership activation remains disabled.
+
+## Native proposal consumer follow-up
+
+Native consumers now use governed decisions for all five outcomes. Separate creation and automatic-approval grants prevent creation from granting an edit. Three review findings are closed: malformed connector fallback, unvalidated resolution notes, and duplicated proposal bodies in stored receipts. Applied identity changes invalidate retained context. The fresh-source plugin suite passes 527 tests with 77 skips. The independent closure passes 48 focused tests. These results do not enable ownership or establish the full release gate.

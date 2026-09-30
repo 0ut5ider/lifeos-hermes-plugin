@@ -190,8 +190,7 @@ class MemoryService:
                 if not required <= set(arguments) or set(arguments) - required - {"content", "note", "confidence_threshold"}:
                     raise ValueError("Invalid native proposal decision fields")
                 receipt = memory.decide_proposal(scope, **arguments)
-                row = memory.proposal_decision_row(scope, receipt['proposal_reference']) if receipt['status'] == 'committed' else None
-                return {"ok":receipt['status'] == 'committed', "row":row, "receipt":receipt,
+                return {"ok":receipt['status'] == 'committed', "row":receipt.get('row'), "receipt":receipt,
                         "reason":receipt.get('reason', '')}
             if operation == "retrieve" and set(arguments) == {"query", "options"}:
                 return memory.relevant_context(scope, **arguments)

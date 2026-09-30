@@ -1,0 +1,27 @@
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/ProposalDecide.ts:6: * Everything below it enqueues to pending-proposals.jsonl and waits — and until
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryTypes.ts:49:export const PENDING_PROPOSALS_PATH = pathJoin(LIFEOS_DIR, "MEMORY", "OBSERVABILITY", "pending-proposals.jsonl");
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryTypes.ts:364:    // Proposals always queue to the single pending-proposals.jsonl. The
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryTypes.ts:367:    storage_path_resolver: () => PENDING_PROPOSALS_PATH,
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryTypes.ts:453:  // 8. Path resolution — proposal always goes to pending-proposals.jsonl
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryTypes.ts:461:  check("proposal → pending-proposals.jsonl", prop === PENDING_PROPOSALS_PATH, prop);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts:33:  PENDING_PROPOSALS_PATH,
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts:153:  if (!existsSync(PENDING_PROPOSALS_PATH)) return empty;
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts:155:    const raw = readFileSync(PENDING_PROPOSALS_PATH, "utf8");
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts:538:      // The enqueue already landed via MemorySystem.add → pending-proposals.jsonl.
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts:564:          : applyProposalEdit(pinnedTarget, item.edit);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts:566:          markProposal(proposalId, {
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts:113:  const proposals = readJsonlSince<any>(pathResolve(OBS, "pending-proposals.jsonl"), sinceMs);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts:207:  const proposalLog = join(obs, "pending-proposals.jsonl"), proposals = readJsonl(proposalLog);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:27:  PENDING_PROPOSALS_PATH,
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:118:export function loadProposalQueue(path: string = PENDING_PROPOSALS_PATH): ProposalRow[] {
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:145:export function writeProposalQueue(rows: ProposalRow[], path: string = PENDING_PROPOSALS_PATH): void {
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:153:export function markProposal(id: string, patch: Partial<ProposalRow>, path: string = PENDING_PROPOSALS_PATH): ProposalRow | null {
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:164:  if (matched) writeProposalQueue(rows, path);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:242:export function applyProposalEdit(targetFile: string, editText: string): { ok: true } | { ok: false; reason: string } {
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:316:  const path = opts.path ?? PENDING_PROPOSALS_PATH;
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:335:    const applied = applyProposalEdit(target, editText);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:342:  const marked = markProposal(id, patch, path);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:385:export function pendingProposals(path: string = PENDING_PROPOSALS_PATH): ProposalRow[] {
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts:394:  const found = openRow(id, path ?? PENDING_PROPOSALS_PATH);
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/modules/memory.ts:42:const PROPOSALS_LOG = join(OBS_DIR, "pending-proposals.jsonl");
+/home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/PULSE/modules/menubar.ts:268:    for (const line of tailLines(join(OBS, "pending-proposals.jsonl"), 2000)) {

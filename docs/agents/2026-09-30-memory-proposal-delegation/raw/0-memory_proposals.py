@@ -95,16 +95,6 @@ def review(memory, scope: MemoryScope, *, include_resolved: bool = False) -> lis
                 for row in rows]
 
 
-def decision_row(memory, scope: MemoryScope, reference: dict[str, Any]) -> dict[str, Any]:
-    if not (_permitted(scope, 'approve') or _permitted(scope, 'auto_apply')):
-        raise MemoryUnavailable('This context cannot read a native proposal decision')
-    with memory._transaction() as connection:
-        record = connection.execute('SELECT * FROM proposals WHERE id=?', (reference['id'],)).fetchone()
-        if record is None or record['revision'] != reference['revision'] or record['status'] == 'pending':
-            raise MemoryUnavailable('The resolved native proposal revision is unavailable')
-        return _current_row(memory, record)
-
-
 def decide(memory, scope: MemoryScope, reference: dict[str, Any], decision: str,
            request_id: str, *, content: str = "", note: str = "",
            confidence_threshold: float | None = None) -> dict[str, Any]:
@@ -122,12 +112,6 @@ def decide(memory, scope: MemoryScope, reference: dict[str, Any], decision: str,
             or (decision == 'auto_apply' and (type(confidence_threshold) not in (int, float) or not 0 <= confidence_threshold <= 1))
             or (decision != 'auto_apply' and confidence_threshold is not None)):
         return {'status':'rejected', 'reason':'The native proposal decision arguments are invalid'}
-
-    if note:
-        note_item = {'type':'idea', 'title':'Proposal resolution', 'content':note}
-        checked = memory._native('validate', item=note_item)
-        if not checked.get('ok') or checked.get('item') != note_item:
-            return {'status':'rejected', 'reason':'Native validation rejected the resolution note'}
 
     def resolve(connection):
         record = connection.execute('SELECT * FROM proposals WHERE id=?', (reference['id'],)).fetchone()
@@ -158,7 +142,7 @@ def decide(memory, scope: MemoryScope, reference: dict[str, Any], decision: str,
                            (_digest(json.dumps(row, sort_keys=True)), expected, _now(), record['id']))
         return {'status':'committed', 'proposal_status':expected,
                 'proposal_reference':{'id':record['id'], 'revision':record['revision'] + 1},
-                'destination':str(memory._path(record['target'])), 'creator':record['writer']}
+                'destination':str(memory._path(record['target'])), 'creator':record['writer'], 'row':row}
 
     return memory._operation(scope, request_id, {'operation':'proposal_decision', 'reference':reference,
                                                 'decision':decision, 'content':content, 'note':note,

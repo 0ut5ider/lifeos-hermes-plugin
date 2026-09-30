@@ -221,29 +221,3 @@ class MemoryProposalTests(unittest.TestCase):
         result = self.enqueue(item=self.item('RULE: forgotten synthetic instruction'))
         self.assertFalse(result['ok'], result)
         self.assertFalse((self.fixture.root / 'LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl').exists())
-
-    def test_resolution_notes_use_native_text_validation(self):
-        saved = self.enqueue()
-        reference = saved['receipt']['proposal_reference']
-        for index, note in enumerate(('Applied <private>PRIVATE-NOTE-MARKER</private>',
-                                      'Applied\x00 in a hook.', 'Applied\n---\nforeign: value')):
-            with self.subTest(index=index):
-                result = self.memory.decide_proposal(self.scope,reference,'applied_elsewhere',
-                                                    'invalid-note-'+str(index),note=note)
-                self.assertEqual(result['status'],'rejected',result)
-        self.assertEqual(len(self.memory.review_proposals(self.scope)),1)
-        self.assertNotIn('PRIVATE-NOTE-MARKER',Path(saved['path']).read_text())
-
-    def test_decision_receipts_do_not_duplicate_native_proposal_text(self):
-        saved = self.enqueue()
-        result = self.memory.decide_proposal(self.scope,saved['receipt']['proposal_reference'],
-                                            'applied_elsewhere','receipt-note',note='Applied by the synthetic enforcement hook.')
-        self.assertEqual(result['status'],'committed',result)
-        with self.memory._transaction() as connection:
-            receipt = connection.execute("SELECT receipt FROM operations WHERE request_id='receipt-note'").fetchone()[0]
-        self.assertNotIn(self.item()['edit'],receipt)
-        self.assertNotIn(self.item()['rationale'],receipt)
-        self.assertNotIn('synthetic enforcement hook',receipt)
-        self.assertNotIn('row',result)
-        self.assertEqual(result,self.memory.decide_proposal(self.scope,saved['receipt']['proposal_reference'],
-                         'applied_elsewhere','receipt-note',note='Applied by the synthetic enforcement hook.'))

@@ -351,14 +351,14 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..04c6182
+index 0000000..f60f084
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,51 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
-+import { lstatSync, readFileSync } from "node:fs";
++import { existsSync, lstatSync, readFileSync } from "node:fs";
 +import { homedir } from "node:os";
 +import { isAbsolute, resolve } from "node:path";
 +import { spawnSync } from "node:child_process";
@@ -370,14 +370,7 @@ index 0000000..04c6182
 +}
 +
 +export function hasMemoryAccess(): boolean {
-+  if (process.env.LIFEOS_MEMORY_INTERNAL === "1") return false;
-+  try {
-+    lstatSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json"));
-+    return true;
-+  } catch (error: unknown) {
-+    if (memoryObject(error) && error.code === "ENOENT") return false;
-+    throw error;
-+  }
++  return process.env.LIFEOS_MEMORY_INTERNAL !== "1" && existsSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json"));
 +}
 +
 +export function observedMemoryRevision(path: string): string {
