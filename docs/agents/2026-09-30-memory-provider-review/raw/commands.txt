@@ -1,0 +1,48 @@
+Date: 2026-09-30
+Plugin working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Host working directory: /home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-provider/hermes
+
+Skill read:
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+
+Plugin baseline, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p 'test_memory_*.py' -v > docs/agents/2026-09-30-memory-provider-review/raw/memory-tests.txt 2>&1
+
+Provider baseline, exit 0:
+/tmp/lifeos-plugin-test-venv/bin/python -m unittest discover -s tests -p test_hermes_memory_provider.py -v > docs/agents/2026-09-30-memory-provider-review/raw/provider-tests.txt 2>&1
+
+Canonical host tests, run in host working directory, exit 0:
+HERMES_PYTHON=/tmp/lifeos-plugin-test-venv/bin/python scripts/run_tests.sh tests/hermes_cli/test_required_middleware.py tests/agent/test_auxiliary_hooks.py > /home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-provider-review/raw/host-tests.txt 2>&1
+
+Provider integration probes, exit 0:
+/tmp/lifeos-plugin-test-venv/bin/python docs/agents/2026-09-30-memory-provider-review/raw/probe_provider.py > docs/agents/2026-09-30-memory-provider-review/raw/provider-probes.jsonl 2> docs/agents/2026-09-30-memory-provider-review/raw/provider-probes.stderr
+
+This script ran first with three cases, then again after the installed-copy loader case was added. Final JSONL contains all four cases. No implementation changed between runs. The expected denied-admission warning is preserved separately.
+
+Required asynchronous callback probe, exit 0:
+/tmp/lifeos-plugin-test-venv/bin/python docs/agents/2026-09-30-memory-provider-review/raw/probe_required_async.py > docs/agents/2026-09-30-memory-provider-review/raw/required-async-probe.jsonl 2>&1
+
+Primary plugin reads:
+cat lifeos_hook_bridge/memory_provider.py lifeos_hook_bridge/memory_runtime.py lifeos_hook_bridge/memory_context.py
+cat patches/hermes-required-middleware.patch
+cat tests/test_memory_runtime.py tests/test_hermes_memory_provider.py
+cat lifeos_hook_bridge/memory_rpc.py lifeos_hook_bridge/__init__.py
+sed -n '65,160p' lifeos_hook_bridge/memory_service.py
+sed -n '1040,1085p' lifeos_hook_bridge/bridge.py
+
+Primary prepared-host reads:
+sed -n '710,815p' agent/turn_context.py
+sed -n '90,165p' agent/turn_api_call.py
+sed -n '25,60p' hermes_cli/plugins_dispatch.py
+sed -n '295,380p' hermes_cli/plugins_dispatch.py
+sed -n '606,640p' hermes_cli/plugins_dispatch.py
+sed -n '120,245p' hermes_cli/middleware.py
+sed -n '300,445p' plugins/memory/__init__.py
+sed -n '75,92p' plugins/memory/__init__.py
+sed -n '170,245p' hermes_cli/plugins_ledger.py
+sed -n '595,660p' hermes_cli/plugins_loader.py
+sed -n '240,275p' hermes_cli/plugins_discovery.py
+sed -n '245,293p' hermes_cli/plugins_manifest.py
+sed -n '2550,2705p' agent/auxiliary_client.py
+
+Source snapshots use pathlib byte reads, shutil.copyfile, and hashlib.sha256. Both bundled required patches were compared byte-for-byte. Final hash comparison found no changes to the initially snapshotted plugin files. Prepared source and synthetic files only.

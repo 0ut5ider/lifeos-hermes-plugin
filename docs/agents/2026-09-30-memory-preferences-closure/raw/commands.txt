@@ -1,0 +1,8 @@
+cwd: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+/home/outsider/.cache/lifeos-plugin-memory/memory-test-env/bin/python -m unittest discover -s tests -p 'test_memory_*.py' -v
+node --test tests/test_memory_dashboard_ui.cjs tests/test_dashboard_ui.cjs
+/home/outsider/.cache/lifeos-plugin-memory/memory-test-env/bin/python docs/agents/2026-09-30-memory-context-revocation-review/raw/probe_preferences_race.py
+node --test docs/agents/2026-09-30-memory-context-revocation-review/raw/probe_ui_minimal_grant.cjs
+/home/outsider/.cache/lifeos-plugin-memory/memory-test-env/bin/python docs/agents/2026-09-30-memory-context-revocation-review/raw/probe_children_negative.py
+/home/outsider/.cache/lifeos-plugin-memory/memory-test-env/bin/python docs/agents/2026-09-30-memory-preferences-closure/raw/probe_failed_enrollment.py
+/home/outsider/.cache/lifeos-plugin-memory/memory-test-env/bin/python docs/agents/2026-09-30-memory-preferences-closure/raw/probe_failed_enrollment_same_root.py

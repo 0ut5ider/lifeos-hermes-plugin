@@ -30,6 +30,7 @@ HERMES_PATCHES = (
     "hermes-strict-inference.patch",
     "hermes-remote-files.patch",
     "hermes-cron-bootstrap.patch",
+    "hermes-required-middleware.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",

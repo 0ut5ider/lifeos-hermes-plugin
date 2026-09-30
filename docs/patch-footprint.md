@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The bundle uses eight Hermes patch groups and nine LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
+The bundle uses nine Hermes patch groups and ten LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
 
 ## Hermes patch groups
 
@@ -14,8 +14,9 @@ The bundle uses eight Hermes patch groups and nine LifeOS patches. It targets th
 | `hermes-strict-inference.patch` | Selected-provider inference without provider fallback |
 | `hermes-remote-files.patch` | Remote whole-file stale-write protection |
 | `hermes-cron-bootstrap.patch` | Installation-bound scheduled worker startup |
+| `hermes-required-middleware.patch` | Required admission before model requests and rejection of asynchronous required callbacks |
 
-The groups replace the earlier 20-patch development sequence. Each changed file belongs to one group. This removes overlapping patch history. It does not remove the required host behavior.
+The groups replace the earlier 20-patch development sequence. The first eight groups assign each file to one group. The ninth is an ordered extension and overlaps dispatch and turn-context files. It does not remove the required host behavior.
 
 The redundant hook lookup helper is removed. Hermes's stock source launcher remains unchanged. The plugin registers `hermes lifeos-infer` and `hermes lifeos-probe` through the existing command API. These commands register before LifeOS is installed.
 

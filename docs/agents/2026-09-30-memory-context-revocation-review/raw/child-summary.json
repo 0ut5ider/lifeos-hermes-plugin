@@ -1,0 +1,110 @@
+[
+  {
+    "case": "raw_approved",
+    "exit_code": 0,
+    "denied": null,
+    "http_requests": 1
+  },
+  {
+    "case": "raw_missing_context_enabled",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "raw_configuration_profile_mismatch",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "raw_disabled_original_inherited_context",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "disabled_readmission",
+    "exit_code": null,
+    "denied": true,
+    "http_requests": 0
+  },
+  {
+    "case": "disabled_environment_rebind",
+    "exit_code": null,
+    "denied": true,
+    "http_requests": 0
+  },
+  {
+    "case": "raw_disabled_sealed_session_only",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "deleted_readmission",
+    "exit_code": null,
+    "denied": true,
+    "http_requests": 0
+  },
+  {
+    "case": "deleted_environment_rebind",
+    "exit_code": null,
+    "denied": true,
+    "http_requests": 0
+  },
+  {
+    "case": "raw_deleted_original_inherited_context",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "raw_deleted_sealed_session_only",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "deleted_recorded_session_readmission_without_bound_context",
+    "exit_code": null,
+    "denied": true,
+    "http_requests": 0
+  },
+  {
+    "case": "fresh_inactive_raw_child",
+    "exit_code": 0,
+    "denied": null,
+    "http_requests": 1
+  },
+  {
+    "case": "actual_hermes_provider_approved",
+    "exit_code": 0,
+    "denied": null,
+    "http_requests": 1
+  },
+  {
+    "case": "actual_hermes_provider_unapproved_route",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "actual_hermes_provider_missing_context",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "actual_hermes_provider_after_forget",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  },
+  {
+    "case": "legacy_native_fallback_inherited_context",
+    "exit_code": 1,
+    "denied": null,
+    "http_requests": 0
+  }
+]

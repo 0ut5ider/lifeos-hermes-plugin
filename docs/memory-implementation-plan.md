@@ -17,9 +17,21 @@ Native LifeOS files remain the authoritative facts. Integration metadata must no
 
 Implementation started on `feature/lifeos-memory`. No running memory ownership switch or remote sharing activation has occurred. Test data is synthetic. The existing `.211` and `.213` installations remain unchanged.
 
-The memory suite passes 61 tests against native LifeOS tools and the installed MCP SDK. Independent reviews verify archive references after related-link updates, private entity separation, restricted reviewer history, current hot-entry identity, interrupted-write recovery, and strict MCP arguments. The native read, add, full-list curation, retrieval, and reviewer prompt paths delegate to the common policy when the connector is configured. The complete ordered source preparation also succeeds.
+The current foundation includes governed native operations, a Hermes memory provider, required model-request admission, restricted SSH enrollment, revocation, and development preferences. Native files remain authoritative. Both interfaces use the same operations and permission policy. The provider leaves automatic recall and review to native hooks.
 
-The primary agent reran the saved closure and follow-up probes. Both pass. No live ownership activation has occurred. Provider integration, required model-request checks, native proposal approval, credential-bound sharing, preferences, and installation gates remain open. The host context builder has five passing tests but has not yet been independently reviewed. Native delegation coverage does not establish that every active context or writer path is governed.
+The memory suite passes 95 tests without skips, including the real localhost SSH daemon. The complete plugin suite passes 503 tests with 77 fixture-dependent skips. This does not pass the full release gate. The first full run failed because the isolated environment omitted the plugin's declared parser dependencies. Rebuilding from the complete declared core, development, and plugin requirements resolved those 86 import errors. The bounded host suite passes 131 tests. Existing and memory dashboard interface tests pass seven cases. The actual Hermes dashboard rejects unauthenticated requests with HTTP 401 and permits an authenticated synthetic-fact lookup.
+
+The real localhost SSH test verifies restricted execution, a server-bound client identity, denied writes, private-fact exclusion, active-connection revocation, and reuse of the same native reference. Independent reviews found and closed context propagation, retained admission, installation binding, key identity, minimal grant rendering, and failed-enrollment compensation defects. The primary agent reran both enrollment failure probes. No meaningful finding remains open in that focused review.
+
+### Remaining implementation gates
+
+1. Govern native proposals and approval, preserve upgrade diversion, and cover retained learning sources and adoption.
+2. Filter restricted LifeOS prompts and verify model inputs and delivery destinations across representative messaging apps and scheduled tasks.
+3. Complete child-agent, compression, resume, and model-call route coverage.
+4. Implement the fresh ownership transaction, preserved Hermes files, coherent backup and restore, updates, and configuration rollback.
+5. Run the full release gate and independent review before enabling lasting-memory ownership.
+
+The page exposes health, current-fact search, and optional client grants. It deliberately has no ownership activation action while these gates remain open. These development controls do not change the live `.212` account.
 
 ## Required evidence
 
