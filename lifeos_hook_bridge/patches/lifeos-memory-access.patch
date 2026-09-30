@@ -353,10 +353,10 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..04c6182
+index 0000000..b2c2e3d
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,58 @@
+@@ -0,0 +1,84 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -415,6 +415,111 @@ index 0000000..04c6182
 +  }
 +  return response;
 +}
++
++
++export function readMemorySource(path: string): string {
++  const governed = memoryAccess("read_source", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return readFileSync(path, "utf8");
++  if (governed.ok !== true || typeof governed.content !== "string" || governed.excluded !== false) {
++    throw new Error("The retained native source is excluded or unavailable");
++  }
++  return governed.content;
++}
++
++
++export function filterMemorySource(content: string, timestamp: string): string | null {
++  const governed = memoryAccess("filter_source", {content, timestamp},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.content === "string" && typeof value.excluded === "boolean");
++  if (governed === undefined) return content;
++  return governed.excluded ? null : String(governed.content);
++}
++
++
++export function checkMemorySource(path: string): void {
++  const governed = memoryAccess("check_source", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined && governed.ok !== true) throw new Error("The native source path is excluded or unavailable");
++}
+diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
+index eb68d1d..5ec5c22 100755
+--- a/LifeOS/install/hooks/LoadContext.hook.ts
++++ b/LifeOS/install/hooks/LoadContext.hook.ts
+@@ -47,6 +47,7 @@ import { loadWisdomFrames } from './lib/learning-readback';
+ import { loadAdvisoryDigest } from './lib/advisory-readback';
+ import { isSubagentContext } from './lib/subagent';
+ import { isDesktopChannel, getNotificationChannel } from './lib/notification-channel';
++import { readMemorySource, hasMemoryAccess } from '../LIFEOS/TOOLS/lib/MemoryAccess';
+ import { PHASE_TO_ASCENT } from '../LIFEOS/TOOLS/ascent';
+ 
+ /**
+@@ -139,7 +140,7 @@ function loadRelationshipContext(paiDir: string): string | null {
+     );
+     if (existsSync(notePath)) {
+       try {
+-        const content = readFileSync(notePath, 'utf-8');
++        const content = readMemorySource(notePath);
+         const notes = content
+           .split('\n')
+           .filter(line => line.trim().startsWith('- '))
+@@ -221,7 +222,7 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+   const namesPath = join(paiDir, 'MEMORY', 'STATE', 'session-names.json');
+   try {
+     if (existsSync(namesPath)) {
+-      sessionNames = JSON.parse(readFileSync(namesPath, 'utf-8'));
++      sessionNames = JSON.parse(readMemorySource(namesPath));
+     }
+   } catch { /* ignore parse errors */ }
+ 
+@@ -270,7 +271,7 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+         // v4.0+: Read from ISA.md / PRD.md frontmatter. Modern ISAs carry
+         // `phase:`; `status:` is the legacy key, and wins when both are present.
+         try {
+-          const head = readFileSync(isaPath, 'utf-8').substring(0, 600);
++          const head = readMemorySource(isaPath).substring(0, 600);
+           const statusMatch = head.match(/^status:\s*"?(\w+)"?/m);
+           const phaseMatch = head.match(/^phase:\s*"?([\w-]+)"?/m);
+           const titleMatch = head.match(/^title:\s*"?(.+?)"?\s*$/m);
+@@ -279,18 +280,18 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+           else if (phaseMatch) status = phaseMatch[1];
+           if (titleMatch) rawTitle = titleMatch[1];
+           if (sessionIdMatch) sessionId = sessionIdMatch[1]?.trim();
+-        } catch { /* skip */ }
++        } catch { if (hasMemoryAccess()) continue; /* skip */ }
+       } else if (existsSync(metaPath)) {
+         // Legacy: Read from META.yaml
+         try {
+-          const meta = readFileSync(metaPath, 'utf-8');
++          const meta = readMemorySource(metaPath);
+           const statusMatch = meta.match(/^status:\s*"?(\w+)"?/m);
+           const titleMatch = meta.match(/^title:\s*"?(.+?)"?\s*$/m);
+           const sessionIdMatch = meta.match(/^session_id:\s*"?(.+?)"?\s*$/m);
+           if (statusMatch) status = statusMatch[1];
+           if (titleMatch) rawTitle = titleMatch[1];
+           if (sessionIdMatch) sessionId = sessionIdMatch[1]?.trim();
+-        } catch { /* skip */ }
++        } catch { if (hasMemoryAccess()) continue; /* skip */ }
+       } else {
+         continue; // No ISA.md / PRD.md / META.yaml — skip
+       }
+@@ -322,7 +323,7 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+             if (files.length > 0) artifactFile = join(dirPath, files[0]);
+           }
+           if (artifactFile) {
+-            const isaContent = readFileSync(artifactFile, 'utf-8');
++            const isaContent = readMemorySource(artifactFile);
+             const idMatch = isaContent.match(/^id:\s*(.+)$/m);
+             const statusMatch2 = isaContent.match(/^status:\s*(.+)$/m);
+             const verifyMatch = isaContent.match(/^verification_summary:\s*"?(.+?)"?$/m);
+@@ -368,7 +369,7 @@ function getProjectProgress(paiDir: string): WorkSession[] {
+ 
+     for (const file of files) {
+       try {
+-        const content = readFileSync(join(progressDir, file), 'utf-8');
++        const content = readMemorySource(join(progressDir, file));
+ 
+         interface ProgressFile {
+           project: string;
 diff --git a/LifeOS/install/hooks/LoadMemory.hook.ts b/LifeOS/install/hooks/LoadMemory.hook.ts
 index 12af0c6..1412a55 100755
 --- a/LifeOS/install/hooks/LoadMemory.hook.ts
@@ -441,3 +546,91 @@ index 12af0c6..1412a55 100755
    if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };
    try {
      // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice
+diff --git a/LifeOS/install/hooks/lib/advisory-readback.ts b/LifeOS/install/hooks/lib/advisory-readback.ts
+index fdf5dfa..cdbec6a 100644
+--- a/LifeOS/install/hooks/lib/advisory-readback.ts
++++ b/LifeOS/install/hooks/lib/advisory-readback.ts
+@@ -29,7 +29,8 @@
+ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+ import { dirname } from 'path';
+ import { paiPath } from './paths';
+-import { readLatestByType, findingsOf, type EventRecord, type Finding } from './events';
++import { filterMemorySource, checkMemorySource } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
++import { readLatestByType, findingsOf, type EventRecord, type Finding, eventsPath } from './events';
+ 
+ /** UTC, matching the event log. See the note in lib/events.ts. */
+ function nowIso(): string {
+@@ -196,8 +197,13 @@ export function writeMarker(marker: AdvisoryMarker, path: string = markerPath())
+  */
+ export function loadAdvisoryDigest(opts: { eventsPath?: string; markerPath?: string } = {}): string | null {
+   try {
++    checkMemorySource(opts.eventsPath ?? eventsPath());
+     const latest = readLatestByType([...ADVISORY_EVENT_TYPES], { path: opts.eventsPath });
+-    const findings = collectFindings(latest);
++    const findings = collectFindings(latest).filter((finding) => {
++      const event = latest.get(finding.type);
++      const content = [finding.type, finding.key, finding.detail].join("\n");
++      return filterMemorySource(content, typeof event?.timestamp === "string" ? event.timestamp : "") !== null;
++    });
+     const marker = readMarker(opts.markerPath ?? markerPath());
+     const decision = decideDigest(findings, marker);
+     writeMarker(decision.marker, opts.markerPath ?? markerPath());
+diff --git a/LifeOS/install/hooks/lib/learning-readback.ts b/LifeOS/install/hooks/lib/learning-readback.ts
+index 5b428b7..81a753f 100755
+--- a/LifeOS/install/hooks/lib/learning-readback.ts
++++ b/LifeOS/install/hooks/lib/learning-readback.ts
+@@ -23,7 +23,8 @@
+  * Combined output stays under 2000 chars for context injection.
+  */
+ 
+-import { readFileSync, existsSync, readdirSync } from 'fs';
++import { existsSync, readdirSync } from 'fs';
++import { readMemorySource } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
+ import { join } from 'path';
+ 
+ /** Default freshness window for the learning digest. Entries older than this are
+@@ -88,7 +89,7 @@ function getRecentLearnings(baseDir: string, subdir: string, count: number, maxA
+           // Skip stale entries so a quiet category can't surface old signals.
+           if (!isFresh(file, maxAgeDays)) continue;
+           try {
+-            const content = readFileSync(join(monthPath, file), 'utf-8');
++            const content = readMemorySource(join(monthPath, file));
+             const feedbackMatch = content.match(/\*\*Feedback:\*\*\s*(.+)/);
+             const ratingMatch = content.match(/rating:\s*(\d+)/);
+             if (feedbackMatch) {
+@@ -147,7 +148,7 @@ export function loadWisdomFrames(paiDir: string): string | null {
+ 
+     for (const file of files) {
+       try {
+-        const content = readFileSync(join(framesDir, file), 'utf-8');
++        const content = readMemorySource(join(framesDir, file));
+         const domain = file.replace('.md', '');
+ 
+         // Extract principle headers with CRYSTAL confidence
+@@ -204,7 +205,7 @@ export function loadFailurePatterns(paiDir: string): string | null {
+           if (!existsSync(contextPath)) continue;
+ 
+           try {
+-            const content = readFileSync(contextPath, 'utf-8');
++            const content = readMemorySource(contextPath);
+             // Get date from dir name
+             const dateMatch = dir.match(/^(\d{4}-\d{2}-\d{2})/);
+             const date = dateMatch ? dateMatch[1] : '';
+@@ -262,7 +263,7 @@ export function loadSynthesisPatterns(paiDir: string): string | null {
+ 
+         for (const file of files) {
+           try {
+-            const content = readFileSync(join(monthPath, file), 'utf-8');
++            const content = readMemorySource(join(monthPath, file));
+ 
+             const avgMatch = content.match(/\*\*Average Rating:\*\*\s*([\d.]+\/10)/);
+             if (!avgMatch) continue;
+@@ -300,7 +301,7 @@ export function loadSignalTrends(paiDir: string): string | null {
+   if (!existsSync(cachePath)) return null;
+ 
+   try {
+-    const content = readFileSync(cachePath, 'utf-8');
++    const content = readMemorySource(cachePath);
+ 
+     // Parse shell variable assignments (key='value' or key=value)
+     const vars: Record<string, string> = {};

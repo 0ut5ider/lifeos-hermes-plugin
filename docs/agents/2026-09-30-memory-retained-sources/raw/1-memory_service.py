@@ -180,9 +180,6 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
-            if operation == "check_source" and set(arguments) == {"path"}:
-                from .memory_sources import check
-                return check(memory,scope,arguments['path'])
             if operation == "filter_source" and set(arguments) == {"content","timestamp"}:
                 from .memory_sources import filter_content
                 return filter_content(memory,scope,**arguments)

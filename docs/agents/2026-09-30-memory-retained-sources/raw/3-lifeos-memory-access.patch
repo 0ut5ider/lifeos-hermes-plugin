@@ -353,10 +353,10 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..b2c2e3d
+index 0000000..73aeeba
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,77 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -433,13 +433,6 @@ index 0000000..b2c2e3d
 +    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.content === "string" && typeof value.excluded === "boolean");
 +  if (governed === undefined) return content;
 +  return governed.excluded ? null : String(governed.content);
-+}
-+
-+
-+export function checkMemorySource(path: string): void {
-+  const governed = memoryAccess("check_source", {path: resolve(path)},
-+    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
-+  if (governed !== undefined && governed.ok !== true) throw new Error("The native source path is excluded or unavailable");
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..5ec5c22 100755
@@ -547,29 +540,25 @@ index 12af0c6..1412a55 100755
    try {
      // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice
 diff --git a/LifeOS/install/hooks/lib/advisory-readback.ts b/LifeOS/install/hooks/lib/advisory-readback.ts
-index fdf5dfa..cdbec6a 100644
+index fdf5dfa..88307a9 100644
 --- a/LifeOS/install/hooks/lib/advisory-readback.ts
 +++ b/LifeOS/install/hooks/lib/advisory-readback.ts
-@@ -29,7 +29,8 @@
+@@ -29,6 +29,7 @@
  import { readFileSync, writeFileSync, mkdirSync } from 'fs';
  import { dirname } from 'path';
  import { paiPath } from './paths';
--import { readLatestByType, findingsOf, type EventRecord, type Finding } from './events';
-+import { filterMemorySource, checkMemorySource } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
-+import { readLatestByType, findingsOf, type EventRecord, type Finding, eventsPath } from './events';
++import { filterMemorySource } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
+ import { readLatestByType, findingsOf, type EventRecord, type Finding } from './events';
  
  /** UTC, matching the event log. See the note in lib/events.ts. */
- function nowIso(): string {
-@@ -196,8 +197,13 @@ export function writeMarker(marker: AdvisoryMarker, path: string = markerPath())
-  */
+@@ -197,7 +198,11 @@ export function writeMarker(marker: AdvisoryMarker, path: string = markerPath())
  export function loadAdvisoryDigest(opts: { eventsPath?: string; markerPath?: string } = {}): string | null {
    try {
-+    checkMemorySource(opts.eventsPath ?? eventsPath());
      const latest = readLatestByType([...ADVISORY_EVENT_TYPES], { path: opts.eventsPath });
 -    const findings = collectFindings(latest);
 +    const findings = collectFindings(latest).filter((finding) => {
 +      const event = latest.get(finding.type);
-+      const content = [finding.type, finding.key, finding.detail].join("\n");
++      const content = JSON.stringify(finding);
 +      return filterMemorySource(content, typeof event?.timestamp === "string" ? event.timestamp : "") !== null;
 +    });
      const marker = readMarker(opts.markerPath ?? markerPath());

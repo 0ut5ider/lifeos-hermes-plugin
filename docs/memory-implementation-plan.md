@@ -25,7 +25,7 @@ The real localhost SSH test verifies restricted execution, a server-bound client
 
 ### Remaining implementation gates
 
-1. Complete retained learning sources and adoption. Owner preferences now expose native pending proposals and manual decisions. Native direct proposal decisions, automatic approval, edit and applied-elsewhere outcomes, pending creation, diversion, and target revision checks are implemented.
+1. Complete the source and writer inventory. Adoption and bounded retained-source readback are implemented. Owner preferences expose native pending proposals and manual decisions. Native direct proposal decisions, automatic approval, edit and applied-elsewhere outcomes, pending creation, diversion, and target revision checks are implemented. These results do not establish policy coverage for every native reader or writer.
 2. Filter restricted LifeOS prompts and verify model inputs and delivery destinations across representative messaging apps and scheduled tasks.
 3. Complete child-agent, compression, resume, and model-call route coverage.
 4. Implement the fresh ownership transaction, preserved Hermes files, coherent backup and restore, updates, and configuration rollback.
@@ -64,3 +64,13 @@ The preferences page shows pending text, its target, rationale, writer, and exac
 The owner can preview and adopt existing native facts, learning notes, and pending proposals. Adoption preserves native files and unknown writer provenance. Unclassified notes stay private. Optional per-file project assignments determine project access. Learning notes retain historical labels. Forgotten and corrected quotes remain excluded. Preview identity includes content, timestamps, metadata, and eligibility outcomes. Changed previews return a conflict, and identical retries retain the receipt.
 
 Independent closure passes 38 focused tests. The complete memory regression passes 145 tests without skips against fresh prepared sources. The primary agent reran the reviewer probes. These results close source adoption and its development preferences controls, but do not close all retained-source readers, restricted prompts, lifecycle, ownership installation, or the release gate.
+
+## Retained native source readback
+
+The governed source interface now covers learning readback, startup relationship and work context, and advisory findings. Source authorization precedes body reads. The interface rejects redirects into configuration files, invalid text, removed claims, and unsupported paths. Unclassified history requires unrestricted owner recall. Accepted standalone native behavior remains available when no connector exists.
+
+Independent review found three output paths that the first 11 tests missed. Native startup rendered a WORK filename into a forgotten title. Advisory readback bypassed the physical source check. Decoded JSON whitespace changed the claim comparison. The fixes check rendered path labels, decoded string fields, and the advisory source before reading. Both original probe scripts now pass unchanged. The primary agent reran them against freshly prepared distributed sources.
+
+The closure review passes 14 tests without skips and finds no further material defect in these bounded paths. The complete plugin run executes 561 tests: 484 pass and 77 skip. There are no failures or errors. The earlier 547-test run had one fixture error because prepared Hermes test additions were untracked during patch regeneration. Marking those existing fixture files for inclusion in Git diffs resolves the error without changing their contents.
+
+Evidence is in `docs/verification/2026-09-30-memory-retained-sources/`. Review closure is in `docs/agents/2026-09-30-memory-retained-sources/closure/`. These results do not enable ownership. Restricted prompts, complete host and source coverage, lifecycle, browser behavior, ownership transactions, and the full release gate remain open. Separate path attestation and reading do not protect against a hostile process with the same operating-system identity replacing files between those operations.
