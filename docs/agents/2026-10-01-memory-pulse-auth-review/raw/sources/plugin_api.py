@@ -7,14 +7,13 @@ import json
 import os
 from pathlib import Path
 import shutil
-import sqlite3
 import subprocess
 import sys
 import types
 from typing import Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, FastAPI, HTTPException, Request
+from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import JSONResponse
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
 
@@ -60,40 +59,6 @@ PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_r
 router = APIRouter()
 
 
-class MemoryResponseHeaders:
-    def __init__(self, app):
-        self.app = app
-
-    async def __call__(self, scope, receive, send):
-        path = scope.get('path', '')
-        root = scope.get('root_path', '')
-        if root and path.startswith(root + '/'):
-            path = path[len(root):]
-        if scope['type'] != 'http' or not path.startswith('/api/plugins/lifeos-hook-bridge/memory/pulse/'):
-            return await self.app(scope, receive, send)
-
-        async def send_private(message):
-            if message['type'] == 'http.response.start':
-                headers = [(key, value) for key, value in message.get('headers', [])
-                           if key.lower() not in (b'cache-control', b'etag', b'last-modified')]
-                message = {**message, 'headers': [*headers, (b'cache-control', b'no-store')]}
-            await send(message)
-
-        await self.app(scope, receive, send_private)
-
-
-def install_memory_cache_headers(app: FastAPI) -> None:
-    if not getattr(app.state, 'lifeos_memory_cache_headers', False):
-        app.add_middleware(MemoryResponseHeaders)
-        app.state.lifeos_memory_cache_headers = True
-
-
-# Hermes imports plugin routers while assembling its app, before its middleware stack starts.
-_dashboard_host = sys.modules.get('hermes_cli.web_server')
-if _dashboard_host is not None and isinstance(getattr(_dashboard_host, 'app', None), FastAPI):
-    install_memory_cache_headers(_dashboard_host.app)
-
-
 def _memory_preferences():
     name = 'lifeos_memory_settings'
     if name not in sys.modules:
@@ -135,7 +100,7 @@ def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], reque
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'},
                             status_code=403, headers=headers)
-    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+    except (ValueError, OSError, RuntimeError):
         return JSONResponse({'error': 'Memory is unavailable under the current installation policy'},
                             status_code=503, headers=headers)
     return JSONResponse(result, headers=headers)

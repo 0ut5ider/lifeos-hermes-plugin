@@ -35,4 +35,20 @@ The final primary gate passes 72 cases in 44.507 seconds. The final independent 
 
 ## Open boundaries
 
-The projection alone does not authenticate an HTTP caller. The authenticated Hermes owner endpoint, managed native relay, and browser credential path require separate tests. The four routes do not include graph, wiki, context generation, or the complete PULSE listener. Ownership activation remains disabled.
+The projection alone does not authenticate an HTTP caller. The protected Hermes API now requires a verified dashboard session. The managed native relay and browser credential path remain open. The four routes do not include graph, wiki, context generation, or the complete PULSE listener. Ownership activation remains disabled.
+
+## Authenticated Hermes API
+
+The API exposes only GET requests under `/api/plugins/lifeos-hook-bridge/memory/pulse/`. Supported views are snapshot, state, health, and runs. The host authenticates the session. The plugin reloads private configuration and requires `dashboard:<provider>:<user_id>` to map to the installation principal in the existing account map. The plugin refuses service-token-only requests and disabled authentication without a verified session. Query parameters cannot supply an account, scope, or source path.
+
+Each successful request uses current source and retirement state. Removing the owner binding blocks the next request on the same connection. Configuration faults, redirected sources, and registry corruption produce a sanitized unavailable response. The plugin never adds a new session or bearer issuer.
+
+Plugin-owned ASGI middleware sets `Cache-Control: no-store` on this exact route prefix. It covers host authentication and framework errors. It removes ETag and Last-Modified from protected responses. Unrelated routes keep their original headers. Hermes imports the plugin while assembling its app, so the plugin can install this middleware before startup. No additional Hermes patch is required.
+
+The primary 38-case gate passes in 19.432 seconds. Real localhost uvicorn and HTTPX requests verify all four views, forgetting, owner-binding removal, and browser logout. The real owned Hermes dashboard assembly also verifies middleware installation and protected 401, 200, 422, and 405 responses. That source emits an expected SQLite version warning and selects its non-WAL database mode. The complete warning is preserved. No interpreter, dependency, or live server change occurs.
+
+Basic authentication uses stateless signed tokens in the tested host. Logout clears browser cookies. A previously copied bearer can remain valid until expiry. Removing its account binding immediately blocks memory access. These tests do not claim server-side bearer revocation.
+
+The initial API review finds missing cache headers and an uncaught registry error. Both regressions fail before correction and pass after correction. Review reports are in `docs/agents/2026-10-01-memory-pulse-auth-review/`. The original failures remain in this directory.
+
+Final independent API closure passes 38 cases in 20.273 seconds and identifies no new material finding. The primary reruns its error, binding, header, and real HTTP probes. Forty concurrent header controls preserve exact-prefix isolation, configured root paths, unrelated response headers, and idempotent installation. This closes the protected Hermes API unit, not the native PULSE relay or browser integration.

@@ -1,0 +1,65 @@
+diff --git a/lifeos_hook_bridge/dashboard/plugin_api.py b/lifeos_hook_bridge/dashboard/plugin_api.py
+index 11df94a..5facbb0 100644
+--- a/lifeos_hook_bridge/dashboard/plugin_api.py
++++ b/lifeos_hook_bridge/dashboard/plugin_api.py
+@@ -10,9 +10,11 @@ import shutil
+ import subprocess
+ import sys
+ import types
++from typing import Literal
+ from uuid import uuid4
+ 
+-from fastapi import APIRouter, HTTPException
++from fastapi import APIRouter, HTTPException, Request
++from fastapi.responses import JSONResponse
+ from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
+ 
+ 
+@@ -81,6 +83,29 @@ def get_memory():
+     return _memory_action(lambda preferences:preferences.status())
+ 
+ 
++@router.get('/memory/pulse/{view}')
++def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], request: Request):
++    headers = {'Cache-Control': 'no-store'}
++    try:
++        from hermes_cli.dashboard_auth.base import Session
++    except ImportError:
++        return JSONResponse({'error': 'Memory request authentication is unavailable'}, status_code=503, headers=headers)
++    session = getattr(request.state, 'session', None)
++    if not isinstance(session, Session):
++        return JSONResponse({'error': 'An authenticated dashboard session is required'}, status_code=401, headers=headers)
++    if request.query_params:
++        return JSONResponse({'error': 'Memory views use the installed owner configuration'}, status_code=400, headers=headers)
++    try:
++        result = _memory_preferences().pulse_snapshot(view, account=f'dashboard:{session.provider}:{session.user_id}')
++    except PermissionError:
++        return JSONResponse({'error': 'This dashboard account has no installation owner binding'},
++                            status_code=403, headers=headers)
++    except (ValueError, OSError, RuntimeError):
++        return JSONResponse({'error': 'Memory is unavailable under the current installation policy'},
++                            status_code=503, headers=headers)
++    return JSONResponse(result, headers=headers)
++
++
+ @router.post('/memory/review')
+ def review_memory(request: dict):
+     if set(request) != {'tool','arguments'} or not isinstance(request['tool'], str) or not isinstance(request['arguments'], dict):
+diff --git a/lifeos_hook_bridge/memory_preferences.py b/lifeos_hook_bridge/memory_preferences.py
+index 822b16f..b16e8ef 100644
+--- a/lifeos_hook_bridge/memory_preferences.py
++++ b/lifeos_hook_bridge/memory_preferences.py
+@@ -68,9 +68,12 @@ class MemoryPreferences:
+         config = self._configuration()
+         return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
+ 
+-    def pulse_snapshot(self, view: str):
++    def pulse_snapshot(self, view: str, *, account: str | None = None):
+         from .memory_pulse import snapshot
+         config = self._configuration()
++        if account is not None and (not isinstance(account, str)
++                or config.get('accounts', {}).get(account) != config['principal']):
++            raise PermissionError('This dashboard account has no installation owner binding')
+         return snapshot(NativeMemory(self.root), self._owner_scope(config), view)
+ 
+     def preview_adoption(self) -> dict[str, Any]:

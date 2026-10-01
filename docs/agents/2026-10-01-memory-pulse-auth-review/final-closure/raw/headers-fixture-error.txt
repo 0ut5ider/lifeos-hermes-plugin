@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-01-memory-pulse-auth-review/final-closure/raw/probe_headers.py", line 8, in <module>
+    endpoint=next(r.endpoint for r in c.app.routes if getattr(r,'path','')==c.endpoint+'{view}')
+StopIteration

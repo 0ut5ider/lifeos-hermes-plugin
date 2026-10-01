@@ -1,0 +1,42 @@
+{
+  "anonymous": {
+    "status": 401,
+    "cache_control": null,
+    "body": "{\"error\":\"unauthenticated\",\"detail\":\"Unauthorized\",\"reason\":\"no_cookie\",\"login_url\":\"/login\"}",
+    "etag_present": false
+  },
+  "invalid_bearer": {
+    "status": 401,
+    "cache_control": null,
+    "body": "{\"error\":\"session_expired\",\"detail\":\"Unauthorized\",\"reason\":\"invalid_or_expired_session\",\"login_url\":\"/login\"}",
+    "etag_present": false
+  },
+  "unsupported_view": {
+    "status": 422,
+    "cache_control": null,
+    "body": "{\"detail\":[{\"type\":\"literal_error\",\"loc\":[\"path\",\"view\"],\"msg\":\"Input should be 'snapshot', 'state', 'health' or 'runs'\",\"input\":\"graph\",\"ctx\":{\"expected\":\"'snapshot', 'state', 'health' or 'runs'\"}}]}",
+    "etag_present": false
+  },
+  "unsupported_method": {
+    "status": 405,
+    "cache_control": null,
+    "body": "{\"detail\":\"Method Not Allowed\"}",
+    "etag_present": false
+  },
+  "scope_query": {
+    "status": 400,
+    "cache_control": "no-store",
+    "body": "{\"error\":\"Memory views use the installed owner configuration\"}",
+    "etag_present": false
+  },
+  "registry_exception": {
+    "class": "DatabaseError",
+    "message": "file is not a database"
+  },
+  "corrupt_registry": {
+    "status": 500,
+    "cache_control": null,
+    "body": "Internal Server Error",
+    "etag_present": false
+  }
+}
