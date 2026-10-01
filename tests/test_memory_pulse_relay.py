@@ -43,11 +43,15 @@ class MemoryPulseRelayTests(unittest.TestCase):
         self.marker = self.root / 'LIFEOS/USER/CONFIG/memory-http.json'
         self.marker.write_text(json.dumps({'version':1,'managed':True}))
         self.marker.chmod(0o600)
-        module = self.root/'LIFEOS/PULSE/modules'/getattr(self, 'native_module', 'memory.ts')
+        directory = 'Observability' if self.native_module_name() == 'observability.ts' else 'modules'
+        module = self.root/'LIFEOS/PULSE'/directory/getattr(self, 'native_module', 'memory.ts')
         program = self.fixture.home/'pulse-relay.ts'
-        exports = 'startWiki,stopWiki,handleWikiRequest' if self.native_module_name() == 'wiki.ts' else 'handleRequest'
-        handler = 'handleWikiRequest' if self.native_module_name() == 'wiki.ts' else 'handleRequest'
-        start = 'startWiki();\n' if self.native_module_name() == 'wiki.ts' else ''
+        exports, handler, start = {
+            'wiki.ts': ('startWiki,stopWiki,handleWikiRequest', 'handleWikiRequest', 'startWiki();\n'),
+            'observability.ts': ('startObservability,handleObservabilityRequest', 'handleObservabilityRequest',
+                                 'startObservability({enabled:true});\n'),
+            'memory.ts': ('handleRequest', 'handleRequest', ''),
+        }[self.native_module_name()]
         program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+
             'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){\n'
             'return await '+handler+'(request,new URL(request.url).pathname) ?? new Response("not found",{status:404});}});\n'

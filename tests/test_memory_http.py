@@ -16,6 +16,7 @@ class MemoryHTTPTests(unittest.TestCase):
         self.addCleanup(self.fixture.doCleanups)
         self.configuration=MemoryConfiguration(self.fixture.config)
         self.seen=[]
+        self.write_disconnects=[]
         self.extra_length=0
         self.status,self.payload,self.kind,self.headers=200,b'{}','application/json',{
             'X-LifeOS-Memory-Installation':installation_binding(self.configuration.load(),self.configuration.path)}
@@ -29,7 +30,10 @@ class MemoryHTTPTests(unittest.TestCase):
                 for key,value in test.headers.items():self.send_header(key,value)
                 self.send_header('Content-Length',str(len(test.payload)+test.extra_length))
                 self.end_headers()
-                self.wfile.write(test.payload)
+                try:
+                    self.wfile.write(test.payload)
+                except (ConnectionResetError, BrokenPipeError) as error:
+                    test.write_disconnects.append({'error': type(error).__name__, 'bytes': len(test.payload)})
             def log_message(self,*args):pass
         self.server=http.server.ThreadingHTTPServer(('127.0.0.1',0),Handler)
         self.thread=threading.Thread(target=self.server.serve_forever,daemon=True);self.thread.start()
@@ -40,6 +44,9 @@ class MemoryHTTPTests(unittest.TestCase):
     def stop(self):
         self.server.shutdown();self.server.server_close();self.thread.join(timeout=5)
         self.assertFalse(self.thread.is_alive())
+        for disconnect in self.write_disconnects:
+            self.assertGreater(disconnect['bytes'], RESPONSE_LIMIT, disconnect)
+            self.assertIn(disconnect['error'], ('ConnectionResetError', 'BrokenPipeError'))
 
     def call(self,**kwargs):
         return relay(self.configuration,dict(view='state',authorization='Bearer synthetic',cookie='',**kwargs))
@@ -51,6 +58,17 @@ class MemoryHTTPTests(unittest.TestCase):
         self.assertEqual(self.seen,[{'path':'/hermes/api/plugins/lifeos-hook-bridge/memory/pulse/state',
             'authorization':'Bearer synthetic','cookie':'hermes_session_at=synthetic-at; __Secure-hermes_session_rt=synthetic-rt'}])
         self.assertEqual(dict(result['headers'])['cache-control'],'no-store')
+
+    def test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found(self):
+        arguments = {'view':'knowledge', 'authorization':'Bearer synthetic', 'cookie':'',
+                     'target':'/api/knowledge/Research/synthetic-note'}
+        self.assertEqual(relay(self.configuration, arguments)['status'], 200)
+        self.assertEqual(self.seen[-1]['path'],
+            '/hermes/api/plugins/lifeos-hook-bridge/memory/knowledge?target=%2Fapi%2Fknowledge%2Fresearch%2Fsynthetic-note')
+        self.status = 404
+        self.assertEqual(relay(self.configuration, arguments)['status'], 404)
+        self.headers['X-LifeOS-Memory-Installation'] = 'foreign-installation'
+        self.assertEqual(relay(self.configuration, arguments)['status'], 503)
 
     def test_redirect_does_not_receive_forwarded_credentials(self):
         self.status=302;self.headers={'Location':self.base+'/unexpected'}

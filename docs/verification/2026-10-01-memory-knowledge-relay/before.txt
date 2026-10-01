@@ -1,0 +1,76 @@
+test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata) ... FAIL
+test_authenticated_index_and_note_preserve_native_metadata_from_current_sources (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_authenticated_index_and_note_preserve_native_metadata_from_current_sources) ... FAIL
+test_correction_and_forget_replace_current_read_shapes_without_deleting_history (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_correction_and_forget_replace_current_read_shapes_without_deleting_history) ... FAIL
+test_cross_origin_and_query_parameters_cannot_select_another_source (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_cross_origin_and_query_parameters_cannot_select_another_source) ... FAIL
+test_direct_observability_graph_handler_cannot_reopen_raw_cache (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_direct_observability_graph_handler_cannot_reopen_raw_cache) ... FAIL
+test_managed_put_refuses_unreviewed_file_replacement (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_managed_put_refuses_unreviewed_file_replacement) ... FAIL
+test_revocation_and_connector_loss_never_return_raw_notes (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_revocation_and_connector_loss_never_return_raw_notes) ... FAIL
+test_unmanaged_native_control_keeps_raw_index_note_and_write_behavior (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_unmanaged_native_control_keeps_raw_index_note_and_write_behavior) ... ok
+
+======================================================================
+FAIL: test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 26, in test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"domains":[{"name":"People","count":0,"avgQuality":0,"lowCount":0,"midCount":0,"highCount":0},{"name":"Companies","count":0,"avgQuality":0,"lowCount":0,"midCount":0,"highCount":0},{"name":"Ideas","count":0,"avgQuality":0,"lowCount":0,"midCount":0,"highCount":0},{"name":"Research","count":2,"avgQuality":3.5,"lowCount":1,"midCount":1,"highCount":0}],"notes":[{"title":"Synthetic lab routing","domain":"research","type":"research","quality":2,"tags":["untagged"],"created":"2026-10-01T19:35:34.417Z","updated":"2026-10-01T19:35:34.417Z","slug":"synthetic-lab-routing"},{"title":"SyntheticWikiUnknownTitle","domain":"research","type":"research","quality":5,"tags":[],"created":"","updated":"","slug":"synthetic-wiki-unknown"}],"totalNotes":2,"avgQuality":3.5,"topTags":[{"tag":"untagged","count":1}],"lastHarvest":null}
+
+======================================================================
+FAIL: test_authenticated_index_and_note_preserve_native_metadata_from_current_sources (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_authenticated_index_and_note_preserve_native_metadata_from_current_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 39, in test_authenticated_index_and_note_preserve_native_metadata_from_current_sources
+    self.assertEqual(body['totalNotes'], 1)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1
+
+======================================================================
+FAIL: test_correction_and_forget_replace_current_read_shapes_without_deleting_history (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_correction_and_forget_replace_current_read_shapes_without_deleting_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 63, in test_correction_and_forget_replace_current_read_shapes_without_deleting_history
+    self.assertNotIn('SyntheticWikiCurrentMarker', response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticWikiCurrentMarker' unexpectedly found in '{"domain":"research","slug":"synthetic-lab-routing","content":"---\\nid: kb_c8303c5038bf\\ntype: research\\ntitle: \\"Synthetic lab routing\\"\\ntags: [untagged]\\nstatus: seedling\\nquality: 2\\nquality_inferred: true\\nsource_kind: internal\\ncreated: 2026-10-01T19:35:37.104Z\\nupdated: 2026-10-01T19:35:37.104Z\\nrelated: []\\nconvention: kb-v3\\n---\\n\\n# Synthetic lab routing\\n\\nSyntheticWikiCurrentMarker\\n\\n## Appended 2026-10-01T19:35:37.469Z\\n<!-- source_session: none · confidence: 1 -->\\n\\nSyntheticKnowledgeReplacementMarker\\n","title":"Synthetic lab routing","type":"research","quality":2,"tags":["untagged"],"created":"2026-10-01T19:35:37.104Z","updated":"2026-10-01T19:35:37.104Z"}'
+
+======================================================================
+FAIL: test_cross_origin_and_query_parameters_cannot_select_another_source (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_cross_origin_and_query_parameters_cannot_select_another_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 114, in test_cross_origin_and_query_parameters_cannot_select_another_source
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"domains":[{"name":"People","count":0,"avgQuality":0,"lowCount":0,"midCount":0,"highCount":0},{"name":"Companies","count":0,"avgQuality":0,"lowCount":0,"midCount":0,"highCount":0},{"name":"Ideas","count":0,"avgQuality":0,"lowCount":0,"midCount":0,"highCount":0},{"name":"Research","count":2,"avgQuality":3.5,"lowCount":1,"midCount":1,"highCount":0}],"notes":[{"title":"Synthetic lab routing","domain":"research","type":"research","quality":2,"tags":["untagged"],"created":"2026-10-01T19:35:38.729Z","updated":"2026-10-01T19:35:38.729Z","slug":"synthetic-lab-routing"},{"title":"SyntheticWikiUnknownTitle","domain":"research","type":"research","quality":5,"tags":[],"created":"","updated":"","slug":"synthetic-wiki-unknown"}],"totalNotes":2,"avgQuality":3.5,"topTags":[{"tag":"untagged","count":1}],"lastHarvest":null}
+
+======================================================================
+FAIL: test_direct_observability_graph_handler_cannot_reopen_raw_cache (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_direct_observability_graph_handler_cannot_reopen_raw_cache)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 105, in test_direct_observability_graph_handler_cannot_reopen_raw_cache
+    self.assertEqual(response.status_code, 404, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 404 : {"nodes":[{"id":"synthetic","title":"SyntheticKnowledgeRawGraphMarker","category":"research","backlinkCount":0,"type":"research","tags":[],"pagerank":1}],"edges":[],"themes":[],"built":"2026-10-01T00:00:00Z","nodeCount":1,"edgeCount":0}
+
+======================================================================
+FAIL: test_managed_put_refuses_unreviewed_file_replacement (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_managed_put_refuses_unreviewed_file_replacement)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 93, in test_managed_put_refuses_unreviewed_file_replacement
+    self.assertEqual(response.status_code, 405, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 405 : {"ok":true,"domain":"research","slug":"synthetic-lab-routing","content":"SyntheticUnreviewedReplacement","title":"synthetic-lab-routing","quality":5,"updated":"2026-10-01"}
+
+======================================================================
+FAIL: test_revocation_and_connector_loss_never_return_raw_notes (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_revocation_and_connector_loss_never_return_raw_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_relay.py", line 79, in test_revocation_and_connector_loss_never_return_raw_notes
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"domain":"research","slug":"synthetic-lab-routing","content":"---\nid: kb_125f7cbed9b8\ntype: research\ntitle: \"Synthetic lab routing\"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T19:35:42.255Z\nupdated: 2026-10-01T19:35:42.255Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSyntheticWikiCurrentMarker\n","title":"Synthetic lab routing","type":"research","quality":2,"tags":["untagged"],"created":"2026-10-01T19:35:42.255Z","updated":"2026-10-01T19:35:42.255Z"}
+
+----------------------------------------------------------------------
+Ran 8 tests in 10.516s
+
+FAILED (failures=7)

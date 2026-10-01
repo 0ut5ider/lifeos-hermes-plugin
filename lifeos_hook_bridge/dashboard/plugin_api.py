@@ -158,19 +158,29 @@ def review_memory(request: dict, account: str = Depends(_memory_account)):
 
 @router.get('/memory/wiki')
 def get_memory_wiki(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('wiki', request, account)
+
+
+@router.get('/memory/knowledge')
+def get_memory_knowledge(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('knowledge', request, account)
+
+
+def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, account: str):
     preferences = _memory_preferences()
-    request_target = importlib.import_module('lifeos_memory_settings.memory_wiki').request_target
+    request_target = importlib.import_module('lifeos_memory_settings.memory_' + view).request_target
     headers = {'Cache-Control': 'no-store'}
     try:
         if list(request.query_params.keys()) != ['target'] or len(request.query_params.getlist('target')) != 1:
-            raise ValueError('Wiki reads require one fixed route')
+            raise ValueError('Source reads require one fixed route')
         target = request_target(request.query_params['target'])
     except LookupError:
-        return JSONResponse({'error': 'This wiki route is not a governed read view'}, status_code=404, headers=headers)
+        return JSONResponse({'error': 'This source route is not a governed read view'}, status_code=404, headers=headers)
     except ValueError:
-        return JSONResponse({'error': 'Invalid wiki read route'}, status_code=400, headers=headers)
+        return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
     try:
-        result, binding = preferences.wiki_response(target, account=account)
+        operation = preferences.wiki_response if view == 'wiki' else preferences.knowledge_response
+        result, binding = operation(target, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
     except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):

@@ -92,6 +92,13 @@ class MemoryPreferences:
         return (view(NativeMemory(self.root), self._owner_scope(config), target),
                 installation_binding(config, self.configuration.path))
 
+    def knowledge_response(self, target: str, *, account: str | None = None):
+        from .memory_knowledge import view
+        from .memory_http import installation_binding
+        config = self._configuration(account=account)
+        return (view(NativeMemory(self.root), self._owner_scope(config), target),
+                installation_binding(config, self.configuration.path))
+
     def adopt(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
         if not isinstance(request,dict) or set(request) != {'signature','projects','request_id'}:
             raise ValueError('Provide the reviewed source preview, project assignments, and request identifier')

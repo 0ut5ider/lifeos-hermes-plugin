@@ -40,6 +40,20 @@ async function main(): Promise<void> {
       metadata.push(module.canonicalMetadata(source.content,source.path,input.root));
     }
     result = {records, metadata};
+  } else if (input.action === "knowledge_view") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/Observability/observability.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeView !== "function" || typeof input.target !== "string"
+        || !Array.isArray(input.sources)) throw new Error("Native Knowledge rendering needs declared source text");
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge sources are unavailable");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    const response: unknown = module.renderKnowledgeView(sources, input.target);
+    if (!(response instanceof Response)) throw new Error("Native Knowledge rendering did not return a response");
+    result = {status: response.status, body: await response.json()};
   } else if (input.action === "wiki_view") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/wiki.ts")).href);
     if (!object(module) || typeof module.renderWikiView !== "function" || typeof input.target !== "string"

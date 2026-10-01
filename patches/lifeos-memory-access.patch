@@ -1,3 +1,141 @@
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
+index 787cf28..0938faf 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves native LifeOS operational views and declared current Knowledge pages.
++// ABOUTME: Delegates managed Knowledge requests to authenticated memory admission.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -36,6 +38,7 @@ import YAML from "yaml"
+ import { PULSE_BASE } from "../endpoint"
+ import { RUN_ACTIVITY } from "../../TOOLS/ascent"
+ import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess"
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -1535,9 +1538,9 @@ function handleMemoryGraphApi(): Response {
+   }
+ }
+ 
+-function handleKnowledgeApi(): Response {
++function handleKnowledgeApi(declared?: ReadonlyMap<string, string>): Response {
+   try {
+-    if (!existsSync(KNOWLEDGE_DIR)) {
++    if (declared === undefined && !existsSync(KNOWLEDGE_DIR)) {
+       return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })
+     }
+ 
+@@ -1548,7 +1551,7 @@ function handleKnowledgeApi(): Response {
+ 
+     // Parse master _index.md for last harvest date
+     const masterIndexPath = join(KNOWLEDGE_DIR, "_index.md")
+-    if (existsSync(masterIndexPath)) {
++    if (declared === undefined && existsSync(masterIndexPath)) {
+       const content = readFileSync(masterIndexPath, "utf-8")
+       const harvestMatch = content.match(/\*\*Last harvest:\*\*\s*(\S+)/)
+       if (harvestMatch) lastHarvest = harvestMatch[1]
+@@ -1556,14 +1559,17 @@ function handleKnowledgeApi(): Response {
+ 
+     for (const domain of KNOWLEDGE_DOMAINS) {
+       const domainDir = join(KNOWLEDGE_DIR, domain)
+-      if (!existsSync(domainDir)) {
++      if (declared === undefined && !existsSync(domainDir)) {
+         domains.push({ name: domain, count: 0, avgQuality: 0, lowCount: 0, midCount: 0, highCount: 0 })
+         continue
+       }
+ 
+       let files: string[]
+       try {
+-        files = readdirSync(domainDir).filter(f => f.endsWith(".md") && !f.startsWith("_"))
++        files = declared === undefined
++          ? readdirSync(domainDir).filter(f => f.endsWith(".md") && !f.startsWith("_"))
++          : [...declared.keys()].filter(path => path.startsWith(domainDir + "/"))
++              .map(path => path.slice(domainDir.length + 1))
+       } catch {
+         files = []
+       }
+@@ -1573,7 +1579,8 @@ function handleKnowledgeApi(): Response {
+       for (const file of files) {
+         const filePath = join(domainDir, file)
+         try {
+-          const raw = readFileSync(filePath, "utf-8")
++          const raw = declared === undefined ? readFileSync(filePath, "utf-8") : declared.get(filePath)
++          if (raw === undefined) throw new Error("The declared Knowledge note is unavailable")
+           const fm = parseFrontmatter(raw)
+ 
+           const title = (fm.title as string) || file.replace(/\.md$/, "")
+@@ -1656,13 +1663,14 @@ function capitalizeFirst(s: string): string {
+   return s.charAt(0).toUpperCase() + s.slice(1)
+ }
+ 
+-function handleGetKnowledgeNote(domain: string, slug: string): Response {
++function handleGetKnowledgeNote(domain: string, slug: string, declared?: ReadonlyMap<string, string>): Response {
+   const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
+-  if (!existsSync(filePath)) {
++  if (declared === undefined ? !existsSync(filePath) : !declared.has(filePath)) {
+     return Response.json({ error: "Note not found" }, { status: 404 })
+   }
+   try {
+-    const content = readFileSync(filePath, "utf-8")
++    const content = declared === undefined ? readFileSync(filePath, "utf-8") : declared.get(filePath)
++    if (content === undefined) throw new Error("The declared Knowledge note is unavailable")
+     const fm = parseFrontmatter(content)
+     return Response.json({
+       domain,
+@@ -1680,6 +1688,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
+   }
+ }
+ 
++export function renderKnowledgeView(sources: ReadonlyArray<{path: string; content: string}>, pathname: string): Response {
++  const declared = new Map<string, string>()
++  for (const source of sources) {
++    const relative = source.path.startsWith(KNOWLEDGE_DIR + "/") ? source.path.slice(KNOWLEDGE_DIR.length + 1) : ""
++    const parts = relative.split("/")
++    if (parts.length !== 2 || !KNOWLEDGE_DOMAINS.includes(parts[0]) || !parts[1].endsWith(".md")
++        || parts[1].startsWith(".") || parts[1].startsWith("_") || declared.has(source.path)) {
++      throw new Error("The declared Knowledge sources require valid unique native paths")
++    }
++    declared.set(source.path, source.content)
++  }
++  if (pathname === "/api/knowledge") return handleKnowledgeApi(declared)
++  const note = parseKnowledgeNotePath(pathname)
++  if (note) return handleGetKnowledgeNote(note.domain, note.slug, declared)
++  return Response.json({error: "This is not a declared Knowledge read view"}, {status: 404})
++}
++
+ async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
+   const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
+   if (!existsSync(filePath)) {
+@@ -4531,6 +4556,26 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+   const pathname = url.pathname
+   const method = req.method
+ 
++  if (hasManagedMemoryHTTP() && (pathname === "/api/knowledge" || pathname.startsWith("/api/knowledge/")
++      || pathname === "/api/memory/graph")) {
++    const headers = {"cache-control": "no-store"}
++    if (pathname === "/api/memory/graph") {
++      return Response.json({error: "The managed graph cache is not a governed read view"}, {status: 404, headers})
++    }
++    if (method !== "GET") {
++      return Response.json({error: "Knowledge edits require reviewed current references"}, {status: 405, headers})
++    }
++    const origin = req.headers.get("origin")
++    if (origin && origin !== url.origin) {
++      return Response.json({error: "Knowledge reads require a same-origin request"}, {status: 403, headers})
++    }
++    try {
++      return memoryHTTPResponse(req, "knowledge", pathname + url.search)
++    } catch {
++      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers})
++    }
++  }
++
+   // ── PUT routes ──
+ 
+   if (method === "PUT") {
 diff --git a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
 index a65dfb3..0a7f66c 100644
 --- a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts

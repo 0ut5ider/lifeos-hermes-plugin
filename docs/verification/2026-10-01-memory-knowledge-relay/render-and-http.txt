@@ -1,0 +1,76 @@
+test_declared_index_and_body_match_native_standalone_for_the_same_sources (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_declared_index_and_body_match_native_standalone_for_the_same_sources) ... FAIL
+test_declared_source_needs_no_physical_note_or_directory_stat (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_declared_source_needs_no_physical_note_or_directory_stat) ... ok
+test_duplicate_and_foreign_sources_refuse_without_partial_index (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_duplicate_and_foreign_sources_refuse_without_partial_index) ... ok
+test_later_empty_corpus_cannot_reuse_prior_notes_or_index (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_later_empty_corpus_cannot_reuse_prior_notes_or_index) ... ok
+test_native_declared_body_does_not_reopen_raw_note_text (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_native_declared_body_does_not_reopen_raw_note_text) ... ok
+test_native_declared_index_uses_source_metadata_without_raw_unknown_note (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_native_declared_index_uses_source_metadata_without_raw_unknown_note) ... ok
+test_nonknowledge_and_unknown_routes_do_not_reopen_raw_routes (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_nonknowledge_and_unknown_routes_do_not_reopen_raw_routes) ... ok
+test_route_admission_refuses_servers_queries_traversal_and_hidden_names (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_route_admission_refuses_servers_queries_traversal_and_hidden_names) ... ok
+test_destination_is_literal_loopback_and_has_no_redirect_inputs (test_memory_http.MemoryHTTPTests.test_destination_is_literal_loopback_and_has_no_redirect_inputs) ... ok
+test_fixed_prefix_and_supported_session_credentials_only (test_memory_http.MemoryHTTPTests.test_fixed_prefix_and_supported_session_credentials_only) ... ok
+test_incomplete_http_body_returns_unavailable (test_memory_http.MemoryHTTPTests.test_incomplete_http_body_returns_unavailable) ... ok
+test_invalid_content_and_oversized_response_refuse (test_memory_http.MemoryHTTPTests.test_invalid_content_and_oversized_response_refuse) ... ----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 38332)
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/http/server.py", line 500, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/http/server.py", line 488, in handle_one_request
+    method()
+    ~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_http.py", line 32, in do_GET
+    self.wfile.write(test.payload)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/socketserver.py", line 845, in write
+    self._sock.sendall(b)
+    ~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 104] Connection reset by peer
+----------------------------------------
+ok
+test_invalid_wiki_targets_never_receive_forwarded_credentials (test_memory_http.MemoryHTTPTests.test_invalid_wiki_targets_never_receive_forwarded_credentials) ... ok
+test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found (test_memory_http.MemoryHTTPTests.test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found) ... FAIL
+test_login_link_uses_configured_browser_address_instead_of_loopback (test_memory_http.MemoryHTTPTests.test_login_link_uses_configured_browser_address_instead_of_loopback) ... ok
+test_no_credentials_or_invalid_arguments_never_contact_backend (test_memory_http.MemoryHTTPTests.test_no_credentials_or_invalid_arguments_never_contact_backend) ... ok
+test_redirect_does_not_receive_forwarded_credentials (test_memory_http.MemoryHTTPTests.test_redirect_does_not_receive_forwarded_credentials) ... ok
+test_upstream_server_failures_are_sanitized (test_memory_http.MemoryHTTPTests.test_upstream_server_failures_are_sanitized) ... ok
+test_wiki_not_found_responses_require_the_current_installation_binding (test_memory_http.MemoryHTTPTests.test_wiki_not_found_responses_require_the_current_installation_binding) ... ok
+test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target (test_memory_http.MemoryHTTPTests.test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target) ... ok
+test_wrong_local_installation_cannot_supply_a_successful_snapshot (test_memory_http.MemoryHTTPTests.test_wrong_local_installation_cannot_supply_a_successful_snapshot) ... ok
+
+======================================================================
+FAIL: test_declared_index_and_body_match_native_standalone_for_the_same_sources (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_declared_index_and_body_match_native_standalone_for_the_same_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_render.py", line 39, in test_declared_index_and_body_match_native_standalone_for_the_same_sources
+    self.assertEqual(managed, standalone)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'st[459 chars]heticDeclaredWikiTitle', 'domain': 'research',[946 chars]''}}] != [{'st[459 chars]heticUnknownWikiTitle', 'domain': 'research', [946 chars]''}}]
+
+First differing element 0:
+{'sta[458 chars]heticDeclaredWikiTitle', 'domain': 'research',[582 chars]one}}
+{'sta[458 chars]heticUnknownWikiTitle', 'domain': 'research', [582 chars]one}}
+
+Diff is 4033 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found (test_memory_http.MemoryHTTPTests.test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_http.py", line 64, in test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found
+    self.assertEqual(relay(self.configuration, arguments)['status'], 503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 503
+
+----------------------------------------------------------------------
+Ran 21 tests in 7.142s
+
+FAILED (failures=2)
