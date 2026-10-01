@@ -201,6 +201,51 @@ memory.remember(OWNER, category="project", content="Synthetic crash marker", tit
         note = next((self.root / "LIFEOS/MEMORY/KNOWLEDGE/Research").glob("*.md"))
         self.assertEqual(note.read_text().count("Synthetic crash marker"), 1)
 
+    def test_interrupted_hot_edits_recover_their_audit_prefix(self):
+        from lifeos_hook_bridge.memory_access import HOT_FILES, HOT_WRITE_LOG
+        for category in ('principal', 'assistant'):
+            for operation in ('correct', 'forget', 'native_set'):
+                fixture = NativeMemoryTests()
+                fixture.setUp()
+                try:
+                    saved = fixture.remember('RULE: Synthetic interrupted edit target', 'target', category)
+                    fixture.remember('RULE: Synthetic preserved neighbor', 'neighbor', category)
+                    path, log = fixture.root / HOT_FILES[category], fixture.root / HOT_WRITE_LOG
+                    before = path.read_bytes(), log.read_bytes()
+                    script = '''import json, os, sys
+from pathlib import Path
+from lifeos_hook_bridge.memory_access import NativeMemory
+from test_memory_native import OWNER
+memory = NativeMemory(Path(sys.argv[1]))
+original = memory._native
+def interrupt(action, **values):
+    result = original(action, **values)
+    if action == 'set_hot':
+        os._exit(73)
+    return result
+memory._native = interrupt
+category, operation = sys.argv[2:4]
+reference = json.loads(sys.argv[4])
+if operation == 'correct':
+    memory.correct(OWNER, reference, 'RULE: Synthetic interrupted replacement', 'interrupted-edit')
+elif operation == 'forget':
+    memory.forget(OWNER, reference, 'interrupted-edit')
+else:
+    current = memory.read_hot(OWNER, category)
+    memory.native_set(OWNER, category, [*current['entries'], 'RULE: Synthetic interrupted curation'],
+        'interrupted-edit', current['revision'])
+'''
+                    child = subprocess.run([sys.executable, '-c', script, str(fixture.root), category, operation,
+                                            json.dumps(saved['reference'])], capture_output=True, text=True, timeout=45)
+                    with self.subTest(category=category, operation=operation):
+                        self.assertEqual(child.returncode, 73, child.stderr)
+                        self.assertNotEqual(log.read_bytes(), before[1])
+                        fixture.memory.read_hot(OWNER, category)
+                        self.assertEqual((path.read_bytes(), log.read_bytes()), before)
+                        self.assertEqual(fixture.memory.get(OWNER, saved['reference'])['status'], 'ok')
+                finally:
+                    fixture.doCleanups()
+
     def test_conflict_retry_reports_the_same_outcome(self):
         first = self.remember("Synthetic section original marker", "one")
         note = next((self.root / "LIFEOS/MEMORY/KNOWLEDGE/Research").glob("*.md"))

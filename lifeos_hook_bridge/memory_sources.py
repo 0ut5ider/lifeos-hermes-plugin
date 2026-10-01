@@ -6,7 +6,7 @@ from pathlib import Path
 import re
 from typing import Any
 
-from .memory_access import MemoryUnavailable
+from .memory_access import HOT_FILES, MemoryUnavailable, _digest
 from .memory_policy import CATEGORIES, MemoryScope
 
 
@@ -109,6 +109,7 @@ def _read_log(memory, connection, scope: MemoryScope, relative: str, content: st
         return ''
     checked = memory._native('validate_batch',items=items)['results']
     rows = []
+    current_additions = {}
     for (line,row,text),item,result in zip(candidates,items,checked,strict=True):
         row_timestamp = row.get('ts') if isinstance(row.get('ts'),str) else timestamp
         if (result.get('ok') and result.get('item') == item
@@ -119,6 +120,22 @@ def _read_log(memory, connection, scope: MemoryScope, relative: str, content: st
                 additions, evictions = row.get('additions',[]), row.get('evictions',[])
                 if any(re.search(r'SmokeTest|smoke-test',entry,re.IGNORECASE) for entry in additions):
                     continue
+                if row['file'] not in HOT_FILES.values():
+                    continue
+                confirmed = []
+                for entry in additions:
+                    key = row['file'], entry
+                    if key not in current_additions:
+                        fact = connection.execute("SELECT * FROM records WHERE path=? AND digest=? AND status='active'",
+                                                  (row['file'], _digest(entry))).fetchone()
+                        current_additions[key] = (fact is not None and memory._allowed(scope, fact)
+                                                  and memory._content(fact) == entry)
+                    if current_additions[key]:
+                        confirmed.append(entry)
+                # Retained audit rows cannot establish that an uncommitted fact was learned.
+                if additions and not confirmed:
+                    continue
+                additions = confirmed
                 rows.append(json.dumps({'ts':row['ts'], 'file':row['file'], 'updated_by':row['updated_by'],
                                         'additions':additions[:2], 'evictions':evictions[:1],
                                         'additions_count':len(additions), 'evictions_count':len(evictions)}))

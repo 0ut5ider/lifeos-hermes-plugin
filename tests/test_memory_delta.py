@@ -5,6 +5,7 @@ from dataclasses import asdict, replace
 import json
 import os
 import subprocess
+import sys
 import unittest
 
 import test_memory_delegation as delegation_fixture
@@ -49,6 +50,56 @@ class MemoryDeltaTests(unittest.TestCase):
         self.assertIn('<lifeos-memory-delta>', second)
         self.assertIn('last curation', second)
         self.assertNotIn('+1 learned', second)
+
+    def test_interrupted_hot_additions_restore_audit_and_do_not_surface(self):
+        for category in ('principal', 'assistant'):
+            for operation in ('remember', 'native_add'):
+                fixture = MemoryDeltaTests()
+                fixture.setUp()
+                try:
+                    fixture.fixture.fixture.remember('RULE: Synthetic committed recovery control', 'baseline', category)
+                    log = fixture.obs / 'memory-writes.jsonl'
+                    before = log.read_bytes()
+                    script = '''import os, sys
+from pathlib import Path
+from lifeos_hook_bridge.memory_access import NativeMemory
+from test_memory_native import OWNER
+memory = NativeMemory(Path(sys.argv[1]))
+def interrupt(*args, **kwargs):
+    os._exit(73)
+memory._record = interrupt
+if sys.argv[3] == 'remember':
+    memory.remember(OWNER, category=sys.argv[2], content='RULE: Synthetic aborted recovery candidate',
+        title='', project='', request_id='interrupted-save')
+else:
+    memory.native_add(OWNER, {'type':'memory','actor':sys.argv[2],
+        'content':'RULE: Synthetic aborted recovery candidate'}, project='', request_id='interrupted-save')
+'''
+                    child = subprocess.run([sys.executable, '-c', script, str(fixture.root), category, operation],
+                                           capture_output=True, text=True, timeout=45)
+                    with self.subTest(category=category, operation=operation):
+                        self.assertEqual(child.returncode, 73, child.stderr)
+                        self.assertIn(b'Synthetic aborted recovery candidate', log.read_bytes())
+                        hot = fixture.memory.read_hot(OWNER, category)
+                        self.assertEqual(hot['entries'], ['RULE: Synthetic committed recovery control'])
+                        self.assertEqual(log.read_bytes(), before)
+                        output = fixture.call()
+                        self.assertNotIn('Synthetic aborted recovery candidate', output)
+                        self.assertIn('+1 learned', output)
+                finally:
+                    fixture.doCleanups()
+
+    def test_unregistered_log_additions_cannot_become_learning_samples(self):
+        self.remember('Synthetic registered learning control', 'registered')
+        log = self.obs / 'memory-writes.jsonl'
+        row = json.loads(log.read_text().splitlines()[-1])
+        row['additions'] = ['RULE: Synthetic unregistered learning sample']
+        log.write_text(log.read_text() + json.dumps(row) + '\n')
+        before = log.read_bytes()
+        output = self.call()
+        self.assertIn('+1 learned', output)
+        self.assertNotIn('Synthetic unregistered learning sample', output)
+        self.assertEqual(log.read_bytes(), before)
 
     def test_unmanaged_turn_start_keeps_native_log_behavior(self):
         self.remember('Synthetic unmanaged delta marker', 'unmanaged')

@@ -91,6 +91,20 @@ class MemoryCurationTests(unittest.TestCase):
         self.assertFalse(result["ok"])
         self.assertEqual(len(self.memory.recall(self.scope, "original")), 1)
 
+    def test_hot_publication_refuses_an_audit_log_redirect(self):
+        self.fixture.remember('RULE: Synthetic log redirect control', 'control', 'principal')
+        log = self.fixture.root / 'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl'
+        secret = self.fixture.root / 'LIFEOS/USER/CONFIG/synthetic-secret.json'
+        secret.parent.mkdir(parents=True, exist_ok=True)
+        secret.write_text('{"synthetic":"private configuration"}')
+        log.unlink()
+        log.symlink_to(secret)
+        native = self.fixture.root / HOT_FILES['principal']
+        before = native.read_bytes(), secret.read_bytes()
+        saved = self.fixture.remember('RULE: Synthetic redirected log addition', 'redirect', 'principal')
+        self.assertEqual(saved['status'], 'rejected', saved)
+        self.assertEqual((native.read_bytes(), secret.read_bytes()), before)
+
     def test_explicit_remember_refuses_unadopted_hot_entries_without_changing_bytes(self):
         for category in ('principal', 'assistant'):
             with self.subTest(category=category):

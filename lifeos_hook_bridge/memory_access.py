@@ -25,6 +25,7 @@ HOT_FILES = {
     "principal": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
     "assistant": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
 }
+HOT_WRITE_LOG = 'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl'
 
 
 def _digest(text: str) -> str:
@@ -333,13 +334,15 @@ class NativeMemory:
         if payload["operation"] == "native_proposal":
             return ["LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl"]
         if payload["operation"] == "native_set":
-            return [HOT_FILES[payload["category"]]]
+            return self._hot_publication_paths(payload['category'])
         if payload["operation"] in ("remember", "native_add"):
             checked = self._native("validate", item=payload["item"])
             if not checked.get("ok") or checked["item"] != payload["item"]:
                 return []
             result = self._native("route", item=checked["item"])
-            return [Path(result["path"]).relative_to(self.root).as_posix()]
+            relative = Path(result["path"]).relative_to(self.root).as_posix()
+            category = next((category for category, path in HOT_FILES.items() if path == relative), None)
+            return self._hot_publication_paths(category) if category else [relative]
         reference = payload.get("reference")
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str):
             return []
@@ -351,7 +354,7 @@ class NativeMemory:
                 return []
             # Refuse drift before the recovery journal copies the whole source file.
             self._hot_snapshot(connection, row['category'])
-        paths = [row['path']]
+        paths = self._hot_publication_paths(row['category']) if row['category'] in HOT_FILES else [row['path']]
         if payload['operation'] == 'correct' and row['category'] == 'project' and isinstance(payload['content'],str):
             item = self._archive_item(self._path(row['path']),payload['content'],row['source_session'])
             checked = self._native('validate',item=item)
@@ -360,6 +363,14 @@ class NativeMemory:
                 self._path(target)
                 paths.append(target)
         return paths
+
+    def _hot_publication_paths(self, category: str) -> list[str]:
+        log = self._path(HOT_WRITE_LOG)
+        expected = self.root.parent / '.config/LIFEOS/USER/MEMORY/OBSERVABILITY/memory-writes.jsonl'
+        if log.resolve() != expected.absolute() or (log.exists() and not log.is_file()):
+            raise MemoryUnavailable('The native hot-write log changes its permitted physical path')
+        # Native append evidence must recover with the fact publication it describes.
+        return [HOT_FILES[category], HOT_WRITE_LOG]
 
     @staticmethod
     def _native_receipt(receipt: dict[str, Any], *, category: str, path: Path) -> dict[str, Any]:
