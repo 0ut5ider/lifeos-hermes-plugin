@@ -30,6 +30,8 @@ Every response disables storage with `Cache-Control: no-store`. Native missing p
 - [Distributed focused gate](focused.txt): 85 cases pass in 80.248 seconds. There are no skips, failures, or errors. The gate includes 15 live wiki cases, native standalone renderer controls, existing relay and authentication cases, current canonical reads, and actual ordered source preparation.
 - [Completion marker](focused.done): exit status 0.
 - [Gate runner](run_gate.py): exact source paths and commands. It also supports the complete memory regression and neighboring Hermes provider and patch contracts.
+- [Complete memory regression](regression.txt): 477 memory cases pass in 618.109 seconds. The 12 neighboring Hermes provider, source preparation, and patch cases pass in 8.213 seconds. There are no skips, failures, or errors. The [completion marker](regression.done) records exit status 0. This result verifies commit `cad81ce` and does not pass the full release gate.
+- [Additional reader probes](other-reader-boundaries.md): actual remaining Observability, native sidecar editing, and mount-renderer boundaries. Raw responses and exact synthetic written bytes remain available for the next implementation units.
 
 Prepared sources use Hermes base `758ad514eb0e800547e015edf05aa18f78b78d82` and LifeOS base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. Both memory patch copies are identical. This unit changes two existing native patch paths and adds no Hermes patch group.
 

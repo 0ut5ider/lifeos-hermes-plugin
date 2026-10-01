@@ -1,0 +1,239 @@
+{
+  "native_mount_renderer": {
+    "status": 0,
+    "caller_context": false,
+    "contains_forgotten_identity_claim": true,
+    "contains_current_hot_claim": true
+  },
+  "generated_prompt_guard": {
+    "refused": true,
+    "reason": "The rendered LifeOS prompt contains a removed or superseded claim. Refresh the LifeOS prompt before starting a conversation."
+  },
+  "anonymous_knowledge_index": {
+    "method": "GET",
+    "path": "/api/knowledge",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "domains": [
+        {
+          "name": "People",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Companies",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Ideas",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Research",
+          "count": 2,
+          "avgQuality": 3.5,
+          "lowCount": 1,
+          "midCount": 1,
+          "highCount": 0
+        }
+      ],
+      "notes": [
+        {
+          "title": "Synthetic lab routing",
+          "domain": "research",
+          "type": "research",
+          "quality": 2,
+          "tags": [
+            "untagged"
+          ],
+          "created": "2026-10-01T18:48:56.351Z",
+          "updated": "2026-10-01T18:48:56.351Z",
+          "slug": "synthetic-lab-routing"
+        },
+        {
+          "title": "SyntheticOtherReaderUnknownTitle",
+          "domain": "research",
+          "type": "research",
+          "quality": 5,
+          "tags": [],
+          "created": "2026-10-01",
+          "updated": "2026-10-01",
+          "slug": "synthetic-other-reader-unknown"
+        }
+      ],
+      "totalNotes": 2,
+      "avgQuality": 3.5,
+      "topTags": [
+        {
+          "tag": "untagged",
+          "count": 1
+        }
+      ],
+      "lastHarvest": null
+    }
+  },
+  "anonymous_current_knowledge_body": {
+    "method": "GET",
+    "path": "/api/knowledge/research/synthetic-lab-routing",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "domain": "research",
+      "slug": "synthetic-lab-routing",
+      "content": "---\nid: kb_e4e81d3230d6\ntype: research\ntitle: \"Synthetic lab routing\"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T18:48:56.351Z\nupdated: 2026-10-01T18:48:56.351Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSyntheticOtherReaderForgottenMarker\n",
+      "title": "Synthetic lab routing",
+      "type": "research",
+      "quality": 2,
+      "tags": [
+        "untagged"
+      ],
+      "created": "2026-10-01T18:48:56.351Z",
+      "updated": "2026-10-01T18:48:56.351Z"
+    }
+  },
+  "forget_receipt": {
+    "status": "committed",
+    "reference": {
+      "id": "9c64850a9f8541ae9bf30c7daa5378be",
+      "revision": 2
+    },
+    "retained": [
+      "native history",
+      "audit evidence",
+      "backups",
+      "conversation history",
+      "development logs"
+    ],
+    "writer": "local:owner",
+    "request_id": "other-reader-forget"
+  },
+  "anonymous_forgotten_knowledge_body": {
+    "method": "GET",
+    "path": "/api/knowledge/research/synthetic-lab-routing",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "domain": "research",
+      "slug": "synthetic-lab-routing",
+      "content": "---\nid: kb_e4e81d3230d6\ntype: research\ntitle: \"Synthetic lab routing\"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T18:48:56.351Z\nupdated: 2026-10-01T18:48:56.351Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSyntheticOtherReaderForgottenMarker\n",
+      "title": "Synthetic lab routing",
+      "type": "research",
+      "quality": 2,
+      "tags": [
+        "untagged"
+      ],
+      "created": "2026-10-01T18:48:56.351Z",
+      "updated": "2026-10-01T18:48:56.351Z"
+    }
+  },
+  "direct_observability_forgotten_graph": {
+    "method": "GET",
+    "path": "/api/memory/graph",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "nodes": [
+        {
+          "id": "synthetic-forgotten-node",
+          "title": "SyntheticOtherReaderForgottenMarker",
+          "category": "research",
+          "backlinkCount": 0,
+          "silo": "knowledge",
+          "type": "research",
+          "tags": [],
+          "pagerank": 1
+        }
+      ],
+      "edges": [],
+      "themes": [],
+      "built": "2026-10-01T00:00:00Z",
+      "nodeCount": 1,
+      "edgeCount": 0
+    }
+  },
+  "anonymous_native_sidecar_hot_body": {
+    "method": "GET",
+    "path": "/api/hermes/file/principal-memory",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "meta": {
+        "id": "principal-memory",
+        "label": "PRINCIPAL_MEMORY.md",
+        "plane": "source",
+        "language": "markdown",
+        "role": "Hot-layer memory about the principal, budgeted into SOUL.md.",
+        "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+        "exists": true,
+        "sealed": false,
+        "editable": true,
+        "generatedBy": null,
+        "sourceIds": [],
+        "bytes": 156,
+        "lines": 8,
+        "modified": "2026-10-01T18:48:57.935Z"
+      },
+      "content": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T18:48:57.935Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: SyntheticOtherReaderHotMarker\n<!-- END ENTRIES -->\n"
+    }
+  },
+  "unreviewed_native_knowledge_write": {
+    "method": "PUT",
+    "path": "/api/knowledge/research/synthetic-lab-routing",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "ok": true,
+      "domain": "research",
+      "slug": "synthetic-lab-routing",
+      "content": "---\ntitle: SyntheticOtherReaderEditedTitle\n---\nSyntheticOtherReaderUnreviewedBody\n",
+      "title": "SyntheticOtherReaderEditedTitle",
+      "quality": 5,
+      "updated": "2026-10-01"
+    }
+  },
+  "knowledge_written_bytes": "---\ntitle: SyntheticOtherReaderEditedTitle\n---\nSyntheticOtherReaderUnreviewedBody\n",
+  "unreviewed_native_sidecar_hot_write": {
+    "method": "PUT",
+    "path": "/api/hermes/file/principal-memory",
+    "status": 200,
+    "cache_control": null,
+    "body": {
+      "ok": true,
+      "meta": {
+        "id": "principal-memory",
+        "label": "PRINCIPAL_MEMORY.md",
+        "plane": "source",
+        "language": "markdown",
+        "role": "Hot-layer memory about the principal, budgeted into SOUL.md.",
+        "displayPath": "~/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+        "exists": true,
+        "sealed": false,
+        "editable": true,
+        "generatedBy": null,
+        "sourceIds": [],
+        "bytes": 118,
+        "lines": 7,
+        "modified": "2026-10-01T18:48:58.110Z"
+      },
+      "backup": "~/.claude/LIFEOS/MEMORY/STATE/hermes-edits/principal-memory.2026-10-01T18-48-58-110Z.PRINCIPAL_MEMORY.md",
+      "written": "2026-10-01T18:48:58.110Z"
+    }
+  },
+  "hot_reference_after_raw_write": {
+    "status": "conflict",
+    "reason": "The referenced fact changed outside its recorded revision"
+  },
+  "backup_count": 1
+}
