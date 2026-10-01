@@ -19,7 +19,7 @@ Implementation started on `feature/lifeos-memory`. No running memory ownership s
 
 The current foundation includes governed native fact and proposal operations, a Hermes memory provider, required model-request admission, restricted SSH enrollment, revocation, and development preferences. Native files remain authoritative. Both interfaces use the same operations and permission policy. The provider leaves automatic recall and review to native hooks.
 
-The memory suite passes 95 tests without skips, including the real localhost SSH daemon. The complete plugin suite passes 503 tests with 77 fixture-dependent skips. This does not pass the full release gate. The first full run failed because the isolated environment omitted the plugin's declared parser dependencies. Rebuilding from the complete declared core, development, and plugin requirements resolved those 86 import errors. The bounded host suite passes 131 tests. Existing and memory dashboard interface tests pass seven cases. The actual Hermes dashboard rejects unauthenticated requests with HTTP 401 and permits an authenticated synthetic-fact lookup.
+The initial memory foundation passes 95 tests without skips, including the real localhost SSH daemon. Its initial complete plugin suite passes 503 tests with 77 fixture-dependent skips. This does not pass the full release gate. The first full run failed because the isolated environment omitted the plugin's declared parser dependencies. Rebuilding from the complete declared core, development, and plugin requirements resolved those 86 import errors. The bounded host suite passes 131 tests. Existing and memory dashboard interface tests pass seven cases. The actual Hermes dashboard rejects unauthenticated requests with HTTP 401 and permits an authenticated synthetic-fact lookup.
 
 The real localhost SSH test verifies restricted execution, a server-bound client identity, denied writes, private-fact exclusion, active-connection revocation, and reuse of the same native reference. Independent reviews found and closed context propagation, retained admission, installation binding, key identity, minimal grant rendering, and failed-enrollment compensation defects. The primary agent reran both enrollment failure probes. No meaningful finding remains open in that focused review.
 
@@ -110,3 +110,21 @@ Six complete agent cases pass, including real LoadMemory recall through the gove
 Independent review exposed and drove fixes for concurrent registry publication, the current-user native recall exemption, and auxiliary original-input handling. Both primary and independent final closures pass 71 cases without skips. The final review finds no further material defect in this bounded unit. The primary reruns the archived reproductions and accepted controls. Auxiliary Responses string input and encoded instruction content now receive exact-claim checks. These changes add no Hermes or LifeOS patch files.
 
 Evidence is in `docs/verification/2026-09-30-memory-history-repair/`. Resume repair, changed installed prompt reconstruction, full compression rotation, Responses repair, restricted prompt delivery, complete source coverage, the ownership transaction, and the release gate remain open. The current complete-turn evidence uses a scripted local model endpoint. Ownership activation remains disabled on running installations.
+
+
+## Conversation repair full regression
+
+The complete plugin suite executes 612 tests against the fresh prepared sources: 535 pass and 77 skip. There are no failures or errors. The fixture-dependent skips remain release requirements. The log is `docs/verification/2026-09-30-memory-history-repair/full-regression.txt`. This run predates the background skill review work. Ownership activation remains disabled.
+
+
+## Hermes skill review and ordinary foreground continuation
+
+The real background review fork now uses generated-content checks. It cannot borrow the primary human-quote exemption. The actual tool loop creates a Hermes skill with its default write policy, or stages the write when skill approval is enabled. Both built-in lasting-memory files remain unchanged and excluded from model input. Forgotten review focus, forgotten retained human quotes, and an unapproved review model reach no model completion request. The ordinary model metadata probe remains available.
+
+Independent review finds a separate foreground continuation defect. The prompt-check worker records a new input proof, while the parent retains the previous proof. A no-review control reproduces the failure. Primary execution now rebinds only the worker proof when scope, fact generation, installed prompt, and context match. Actual input verification remains required. Auxiliary and direct final checks cannot use this handoff.
+
+Both primary and independent closure pass 81 cases without skips. The unchanged archived reproduction now completes the foreground turn, real skill write, and next foreground quote with four HTTP requests. The parent origin remains `assistant_tool`. The final review finds no further material defect in this bounded unit. Evidence is `docs/verification/2026-09-30-memory-background-review/`. Review closure is `docs/agents/2026-09-30-memory-background-review/closure/`. The fix adds no host or native patch.
+
+These results verify actual review fork execution, not every automatic cadence, idle queue, cancellation, or model judgment. Stale generated review history can still be refused; automatic rebuilding remains open. Resume, changed SOUL reconstruction, compression rotation, Responses repair, restricted prompts, delivery, ownership transactions, and the release gate remain open. No running installation changes.
+
+The next source inventory scan records 132 candidate files and 555 reference lines in `docs/verification/2026-09-30-memory-native-inventory/`. Text references are candidates, not coverage proof. Native diagnostics and PULSE consumers require actual read and publication-path checks.

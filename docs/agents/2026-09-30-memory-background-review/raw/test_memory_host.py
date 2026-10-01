@@ -27,7 +27,7 @@ class MemoryHostTests(unittest.TestCase):
 
     def initialize(self, memory, *, expected_warning='', operation='', message='', author='100',
                    background_review=False, review_focus='Synthetic skill review',skill_approval=False,
-                   review_explicit=False,followup_message=None):
+                   review_explicit=False):
         configuration = dict(self.fixture.host_config,memory=memory,plugins={'enabled':['lifeos-hook-bridge']})
         if background_review:
             configuration['skills'] = {'write_approval':skill_approval}
@@ -42,7 +42,7 @@ class MemoryHostTests(unittest.TestCase):
         result = subprocess.run([sys.executable,str(Path(__file__).with_name('memory_host_calls.py'))],
                                 input=json.dumps({'route':self.fixture.route,'operation':operation,'message':message,'author':author,
                                                   'background_review':background_review,'review_focus':review_focus,
-                                                  'review_explicit':review_explicit,'followup_message':followup_message}),env=environment,
+                                                  'review_explicit':review_explicit}),env=environment,
                                 capture_output=True,text=True,timeout=45)
         self.assertEqual(result.returncode,0,result.stderr)
         self.assertEqual(result.stderr,'')

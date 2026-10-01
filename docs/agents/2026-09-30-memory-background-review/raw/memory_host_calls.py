@@ -43,7 +43,6 @@ def main():
                 conversation = agent.run_conversation(settings['message'])
         review_done = None
         review_summaries = []
-        followup = None
         if settings.get('background_review'):
             agent.background_review_callback = review_summaries.append
             with redirect_stdout(diagnostics):
@@ -55,10 +54,6 @@ def main():
                     if thread.name == 'bg-review':
                         thread.join(timeout=20)
                         review_done = review_done and not thread.is_alive()
-        if settings.get('followup_message') is not None:
-            with redirect_stdout(diagnostics):
-                followup = agent.run_conversation(settings['followup_message'],
-                                                  conversation_history=conversation['messages'])
         denied_writes = []
         if agent._memory_store is None:
             from tools.memory_tool import memory_tool,load_on_disk_store
@@ -71,7 +66,7 @@ def main():
                           'has_builtin_store':agent._memory_store is not None,'providers':providers,'tools':tools,
                           'prompt':prompt,'skill_nudge_interval':agent._skill_nudge_interval,'disabled_writes':denied_writes,
                           'warnings':warnings.getvalue(),'conversation':conversation,'diagnostics':diagnostics.getvalue(),
-                          'review_done':review_done,'review_summaries':review_summaries,'followup':followup}))
+                          'review_done':review_done,'review_summaries':review_summaries}))
     finally:
         if agent is not None:
             agent.close()

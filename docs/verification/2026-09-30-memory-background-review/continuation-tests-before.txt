@@ -1,0 +1,50 @@
+test_new_foreground_turn_keeps_its_quote_permission_after_background_review (test_memory_review.MemoryReviewTests.test_new_foreground_turn_keeps_its_quote_permission_after_background_review) ... FAIL
+test_new_foreground_turn_uses_its_worker_input_proof_without_background_review (test_memory_review.MemoryReviewTests.test_new_foreground_turn_uses_its_worker_input_proof_without_background_review) ... FAIL
+test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context (test_memory_history.MemoryHistoryTests.test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context) ... ERROR
+
+======================================================================
+ERROR: test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context (test_memory_history.MemoryHistoryTests.test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_history.py", line 58, in test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context
+    self.assertEqual(self.project(request),request)
+                     ~~~~~~~~~~~~^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_history.py", line 35, in project
+    self.fixture.runtime.project_call(request=request,next_call=dispatch,
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                      **self.fixture.route,session_id='session')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 223, in project_call
+    projected = self._check_call(request=request, project=True, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 285, in _check_call
+    raise MemoryAdmissionError('The model call contains an invalidated memory context. Start a new conversation.')
+lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: The model call contains an invalidated memory context. Start a new conversation.
+
+======================================================================
+FAIL: test_new_foreground_turn_keeps_its_quote_permission_after_background_review (test_memory_review.MemoryReviewTests.test_new_foreground_turn_keeps_its_quote_permission_after_background_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 114, in test_new_foreground_turn_keeps_its_quote_permission_after_background_review
+    self.continued_foreground(True)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 108, in continued_foreground
+    self.assertFalse(result['followup'].get('failed'),result['followup'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'final_response': "custom didn't answer after 3 attempts — it looks temporarily unavailable. Wait a minute and send /retry, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`.\n\nProvider said: The model call contains an invalidated memory context. Start a new conversation.", 'messages': [{'role': 'user', 'content': 'Verify a synthetic task.', 'timestamp': 1790819338.7127624}, {'role': 'assistant', 'content': 'SYNTHETIC-FOREGROUND-OK', 'reasoning': None, 'finish_reason': 'stop', 'timestamp': 1790819338.9469016}, {'role': 'user', 'content': 'Synthetic forgotten followup foreground quote', 'timestamp': 1790819339.0940394}], 'api_calls': 1, 'completed': False, 'failed': True, 'error': 'The model call contains an invalidated memory context. Start a new conversation.', 'failure_reason': 'unknown', 'failure_retryable': True, 'billing_unverified': False, 'billing_block': None, 'turn_id': 'session:ddc0817c-685d-4795-9d81-6d71e3491635:8352ae30', 'current_turn_user_idx': 2}
+
+======================================================================
+FAIL: test_new_foreground_turn_uses_its_worker_input_proof_without_background_review (test_memory_review.MemoryReviewTests.test_new_foreground_turn_uses_its_worker_input_proof_without_background_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 117, in test_new_foreground_turn_uses_its_worker_input_proof_without_background_review
+    self.continued_foreground(False)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 108, in continued_foreground
+    self.assertFalse(result['followup'].get('failed'),result['followup'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'final_response': "custom didn't answer after 3 attempts — it looks temporarily unavailable. Wait a minute and send /retry, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`.\n\nProvider said: The model call contains an invalidated memory context. Start a new conversation.", 'messages': [{'role': 'user', 'content': 'Verify a synthetic task.', 'timestamp': 1790819350.136375}, {'role': 'assistant', 'content': 'SYNTHETIC-FOREGROUND-OK', 'reasoning': None, 'finish_reason': 'stop', 'timestamp': 1790819350.3578284}, {'role': 'user', 'content': 'Synthetic forgotten followup foreground quote', 'timestamp': 1790819350.3656375}], 'api_calls': 1, 'completed': False, 'failed': True, 'error': 'The model call contains an invalidated memory context. Start a new conversation.', 'failure_reason': 'unknown', 'failure_retryable': True, 'billing_unverified': False, 'billing_block': None, 'turn_id': 'session:4627a351-615f-44df-a1ae-fc7ce5b792f0:d7cae626', 'current_turn_user_idx': 2}
+
+----------------------------------------------------------------------
+Ran 3 tests in 24.571s
+
+FAILED (failures=2, errors=1)

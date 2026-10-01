@@ -1,0 +1,30 @@
+test_background_review_cannot_borrow_foreground_model_permission (test_memory_review.MemoryReviewTests.test_background_review_cannot_borrow_foreground_model_permission) ... FAIL
+test_background_review_cannot_reuse_a_forgotten_foreground_quote (test_memory_review.MemoryReviewTests.test_background_review_cannot_reuse_a_forgotten_foreground_quote) ... ok
+test_background_review_creates_skill_without_reenabling_builtin_memory (test_memory_review.MemoryReviewTests.test_background_review_creates_skill_without_reenabling_builtin_memory) ... ok
+test_background_review_does_not_treat_generated_focus_as_a_human_quote (test_memory_review.MemoryReviewTests.test_background_review_does_not_treat_generated_focus_as_a_human_quote) ... ok
+test_background_review_preserves_skill_approval_and_stages_write (test_memory_review.MemoryReviewTests.test_background_review_preserves_skill_approval_and_stages_write) ... ok
+
+======================================================================
+FAIL: test_background_review_cannot_borrow_foreground_model_permission (test_memory_review.MemoryReviewTests.test_background_review_cannot_borrow_foreground_model_permission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 86, in test_background_review_cannot_borrow_foreground_model_permission
+    self.run_review()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 44, in run_review
+    result = self.fixture.initialize(OWNERSHIP,operation='conversation',message=message,
+                                     background_review=True,review_focus=focus,skill_approval=approval,
+                                     review_explicit=explicit)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 62, in initialize
+    self.assertEqual(request['body'],{'name':'synthetic-model'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'name': 'synthetic-unapproved-review-model'} != {'name': 'synthetic-model'}
+- {'name': 'synthetic-unapproved-review-model'}
+?                     ------------------
+
++ {'name': 'synthetic-model'}
+
+----------------------------------------------------------------------
+Ran 5 tests in 42.354s
+
+FAILED (failures=1)

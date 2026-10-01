@@ -277,13 +277,8 @@ class MemoryRuntime:
         memory = NativeMemory(Path(configuration['root']))
         with memory._transaction() as connection:
             states = self._states()
-            saved = states.get(context.session_id)
-            # Prompt workers publish the next human input without changing this thread's binding.
-            if (project and isinstance(saved,dict) and saved.get('user_input') is not None
-                    and all(saved.get(key)==admitted.get(key) for key in ('scope','generation','rendered','context'))):
-                admitted = saved
-                bound = (self.key,context,admitted)
             current = self._stamp(configuration, context, connection,admitted.get('user_input'))
+            saved = states.get(context.session_id)
             can_refresh = (project and saved in (admitted,current)
                            and all(current.get(key)==admitted.get(key) for key in ('scope','context','rendered','user_input')))
             if (current != admitted or saved != admitted) and not can_refresh:

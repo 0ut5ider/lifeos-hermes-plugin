@@ -1,0 +1,31 @@
+test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills (test_memory_host.MemoryHostTests.test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills) ... ok
+test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files (test_memory_host.MemoryHostTests.test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files) ... ok
+test_provider_selection_alone_keeps_builtin_memory_enabled (test_memory_host.MemoryHostTests.test_provider_selection_alone_keeps_builtin_memory_enabled) ... ok
+test_unavailable_lifeos_provider_does_not_reenable_disabled_builtin_stores (test_memory_host.MemoryHostTests.test_unavailable_lifeos_provider_does_not_reenable_disabled_builtin_stores) ... ok
+test_background_review_cannot_reuse_a_forgotten_foreground_quote (test_memory_review.MemoryReviewTests.test_background_review_cannot_reuse_a_forgotten_foreground_quote) ... ok
+test_background_review_creates_skill_without_reenabling_builtin_memory (test_memory_review.MemoryReviewTests.test_background_review_creates_skill_without_reenabling_builtin_memory) ... FAIL
+test_background_review_does_not_treat_generated_focus_as_a_human_quote (test_memory_review.MemoryReviewTests.test_background_review_does_not_treat_generated_focus_as_a_human_quote) ... ok
+test_background_review_preserves_skill_approval_and_stages_write (test_memory_review.MemoryReviewTests.test_background_review_preserves_skill_approval_and_stages_write) ... FAIL
+
+======================================================================
+FAIL: test_background_review_creates_skill_without_reenabling_builtin_memory (test_memory_review.MemoryReviewTests.test_background_review_creates_skill_without_reenabling_builtin_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 54, in test_background_review_creates_skill_without_reenabling_builtin_memory
+    self.assertEqual(len(self.calls),3)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 3
+
+======================================================================
+FAIL: test_background_review_preserves_skill_approval_and_stages_write (test_memory_review.MemoryReviewTests.test_background_review_preserves_skill_approval_and_stages_write)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review.py", line 64, in test_background_review_preserves_skill_approval_and_stages_write
+    self.assertEqual(len(self.calls),3)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 3
+
+----------------------------------------------------------------------
+Ran 8 tests in 63.362s
+
+FAILED (failures=2)

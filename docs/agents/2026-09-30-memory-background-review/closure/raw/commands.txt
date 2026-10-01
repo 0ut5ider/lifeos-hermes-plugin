@@ -1,0 +1,10 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest test_memory_review test_memory_agent test_memory_host test_memory_runtime test_memory_history test_memory_model_calls test_hermes_memory_provider -v > docs/agents/2026-09-30-memory-background-review/closure/raw/tests.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-background-review/closure/raw/rerun_archived_continuation.py > docs/agents/2026-09-30-memory-background-review/closure/raw/archived-continuation.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-background-review/closure/raw/probe_handoff_guards.py > docs/agents/2026-09-30-memory-background-review/closure/raw/handoff-guards.txt 2>&1
+
+The archived-continuation wrapper differs from the primary wrapper only in its evidence output directory. The executed child is byte-identical to the original failed child.
+The guard matrix uses real thread-pool admissions, native synthetic operations, real configuration updates and state publication. It does not simulate policy or replace implementation methods.

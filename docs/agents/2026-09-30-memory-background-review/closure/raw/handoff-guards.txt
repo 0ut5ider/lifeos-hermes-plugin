@@ -1,0 +1,10 @@
+{"scenario": "valid", "error": null, "dispatches": 1, "binding_unchanged": false, "sent": [{"messages": [{"role": "user", "content": "Synthetic admitted next user input"}]}]}
+{"scenario": "old_input", "error": "Memory history cannot verify the current user input", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "unapproved_model", "error": "The model route has no approved memory grant", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "changed_author", "error": "The current author or destination differs from admission", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "changed_policy", "error": "The model call contains an invalidated memory context. Start a new conversation.", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "changed_prompt", "error": "The model call contains an invalidated memory context. Start a new conversation.", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "lost_state", "error": "The model call contains an invalidated memory context. Start a new conversation.", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "inactive", "error": "Memory ownership changed for retained context. Start a new conversation.", "dispatches": 0, "binding_unchanged": true, "sent": []}
+{"scenario": "third_input", "error": "Memory history cannot verify the current user input", "dispatches": 0, "binding_unchanged": true, "sent": [{"messages": [{"role": "user", "content": "Synthetic concurrently admitted third user input"}]}], "latest_admitted_input_dispatches": 1}
+{"scenario": "combined_forget", "error": null, "dispatches": 1, "binding_unchanged": false, "sent": [{"messages": [{"role": "user", "content": "Synthetic admitted next user input"}, {"role": "assistant", "content": "[Content excluded after a memory correction or forget request.]"}]}]}
