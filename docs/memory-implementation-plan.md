@@ -249,6 +249,12 @@ Managed PULSE context requires current unrestricted owner recall, governed ident
 
 The native connector now passes its current environment explicitly to the Python subprocess. Real probes establish that Bun otherwise retains its initial environment after caller context changes. The [context evidence](verification/2026-10-01-memory-context/README.md) preserves both failing probes and valid native controls. The existing native memory patch changes 23 files and adds no Hermes patch group. Siri credential mapping, restricted context, final delivery, other caches, and lifecycle remain open.
 
+## Native wiki rendering foundation
+
+A real localhost native wiki handler returns unregistered notes and retains a forgotten note in its index and body route. The top-level PULSE Host guard does not supply a memory grant. The [wiki evidence](verification/2026-10-01-memory-wiki/README.md) records route responses and a declared native renderer.
+
+The renderer preserves native parsing, tree, search, excerpts, note bodies, backlinks, and graph output from declared content. It does not reopen raw bodies. It clears temporary indexes after each result and rejects duplicate page identities. Nine native cases pass. Authenticated HTTP delegation and current source selection remain open. The renderer is not an admission boundary. The [reader trace](verification/2026-10-01-memory-wiki/reader-boundaries.md) records related graph, Observability, sidecar editor, derivative, and SDK paths without claiming complete inventory coverage.
+
 This unit expands the existing native memory patch to 22 files and adds no Hermes patch group. It governs promotion and its derived index generation. Harvester collection, review, rejection, other derived readers, complete source inventory, restricted prompts, lifecycle, ownership setup, coherent backup, and the full release gate remain open. Ownership remains disabled on running installations.
 
 The distributed staging, recovery, canonical, and Knowledge-query gate passes 65 cases in 72.749 seconds without skips, failures, or errors. The broader memory regression follows this source revision. This result does not pass the full release gate.

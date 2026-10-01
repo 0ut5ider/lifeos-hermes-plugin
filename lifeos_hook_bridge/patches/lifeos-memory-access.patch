@@ -271,6 +271,138 @@ index ea4d80b..68a149f 100644
    if (req.method !== "GET") return null;
  
    if (pathname === "/api/memory" || pathname === "/api/memory/") {
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts b/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
+index 65ae65c..8b3852d 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves native wiki metadata, bodies, search, backlinks, and graph views.
++// ABOUTME: Renders declared current sources without reading their raw bodies again.
+ /**
+  * LifeOS Pulse - Wiki Module
+  *
+@@ -100,9 +102,16 @@ interface IndexOptions {
+   group?: string
+ }
+ 
++export interface WikiSource extends IndexOptions {
++  path: string
++  content: string
++  lastModified: string
++}
++
+ // State
+ 
+ const pageIndex: Map<string, WikiPage> = new Map()
++const pageContents = new Map<string, string>()
+ const backlinkIndex: Map<string, BacklinkEntry[]> = new Map()
+ let searchIndex: MiniSearch | null = null
+ let moduleStartedAt: string | null = null
+@@ -291,18 +300,18 @@ function stringArrayFromFrontmatter(value: unknown): string[] {
+ 
+ // Index a Single File
+ 
+-function indexFile(filePath: string, options: IndexOptions): WikiPage | null {
++function indexFile(filePath: string, options: IndexOptions, supplied?: WikiSource): WikiPage | null {
+   try {
+-    if (!existsSync(filePath)) return null
++    if (!supplied && !existsSync(filePath)) return null
+ 
+-    const raw = readFileSync(filePath, "utf-8")
++    const raw = supplied?.content ?? readFileSync(filePath, "utf-8")
+     const fm = parseFrontmatter(raw)
+     const filename = basename(filePath)
+     const slug = options.slug ?? stripMarkdownExtension(filename)
+ 
+     let mtime: string
+     try {
+-      mtime = statSync(filePath).mtime.toISOString()
++      mtime = supplied?.lastModified ?? statSync(filePath).mtime.toISOString()
+     } catch {
+       mtime = new Date().toISOString()
+     }
+@@ -467,6 +476,7 @@ function indexResearchOutputs(): void {
+ 
+ function buildFullIndex(): void {
+   pageIndex.clear()
++  pageContents.clear()
+ 
+   indexSystemDocs()
+   indexKnowledgeArchive()
+@@ -530,7 +540,7 @@ function rebuildSearchIndex(): void {
+     let content = ""
+ 
+     try {
+-      content = stripFrontmatter(readFileSync(page.filePath, "utf-8")).slice(
++      content = stripFrontmatter(readPageContent(page)).slice(
+         0,
+         5000
+       )
+@@ -803,6 +813,7 @@ function notFound(message: string): Response {
+ }
+ 
+ function readPageContent(page: WikiPage): string {
++  if (pageContents.has(page.filePath)) return pageContents.get(page.filePath) ?? ""
+   try {
+     return readFileSync(page.filePath, "utf-8")
+   } catch {
+@@ -936,7 +947,7 @@ function buildExcerpt(page: WikiPage, query: string): string {
+   let body = ""
+ 
+   try {
+-    body = stripFrontmatter(readFileSync(page.filePath, "utf-8"))
++    body = stripFrontmatter(readPageContent(page))
+   } catch {
+     body = ""
+   }
+@@ -1033,6 +1044,47 @@ function handleGraph(): Response {
+ 
+ // Lifecycle
+ 
++export function renderWikiView(sources: ReadonlyArray<WikiSource>, request: Request, pathname: string): Response {
++  pageIndex.clear()
++  pageContents.clear()
++  backlinkIndex.clear()
++  searchIndex = null
++  try {
++    for (const source of sources) {
++      const page = indexFile(source.path, source, source)
++      if (!page || pageIndex.has(page.slug) || pageContents.has(source.path)) {
++        throw new Error("The declared wiki sources require valid unique pages")
++      }
++      pageIndex.set(page.slug, page)
++      pageContents.set(source.path, source.content)
++    }
++    rebuildBacklinks()
++    rebuildSearchIndex()
++    lastIndexedAt = new Date().toISOString()
++    if (request.method !== "GET") return jsonResponse({error: "Wiki rendering requires a read request"}, 405)
++    if (pathname === "/api/wiki") return handleIndex()
++    if (pathname === "/api/wiki/graph") return handleGraph()
++    if (pathname === "/api/wiki/search") {
++      const url = new URL(request.url)
++      const limit = parseInt(url.searchParams.get("limit") ?? "20", 10) || 20
++      return handleSearch(url.searchParams.get("q") ?? "", limit)
++    }
++    const backlinks = pathname.match(/^\/api\/wiki\/backlinks\/([^/]+)$/)
++    if (backlinks) return handleBacklinks(decodeURIComponent(backlinks[1]))
++    const knowledge = pathname.match(/^\/api\/wiki\/knowledge\/([^/]+)\/([^/]+)$/)
++    if (knowledge) return handleKnowledgeNote(decodeURIComponent(knowledge[1]), decodeURIComponent(knowledge[2]))
++    const doc = pathname.match(/^\/api\/wiki\/doc\/([^/]+)$/)
++    if (doc) return handleDoc(decodeURIComponent(doc[1]))
++    return jsonResponse({error: "This is not a declared wiki read view"}, 404)
++  } finally {
++    pageIndex.clear()
++    pageContents.clear()
++    backlinkIndex.clear()
++    searchIndex = null
++    lastIndexedAt = null
++  }
++}
++
+ export function startWiki(): void {
+   moduleStartedAt = new Date().toISOString()
+   buildFullIndex()
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
 index 390808e..2baccc7 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts

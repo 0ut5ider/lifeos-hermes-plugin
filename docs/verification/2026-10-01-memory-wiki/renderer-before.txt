@@ -1,0 +1,103 @@
+test_empty_later_corpus_cannot_reuse_previous_search_or_index (test_memory_wiki_render.MemoryWikiRenderTests.test_empty_later_corpus_cannot_reuse_previous_search_or_index) ... FAIL
+test_missing_declared_note_has_native_not_found_result (test_memory_wiki_render.MemoryWikiRenderTests.test_missing_declared_note_has_native_not_found_result) ... FAIL
+test_standalone_wiki_keeps_native_index_search_and_raw_note_control (test_memory_wiki_render.MemoryWikiRenderTests.test_standalone_wiki_keeps_native_index_search_and_raw_note_control) ... ok
+test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources) ... FAIL
+test_supplied_native_note_body_search_and_excerpt_never_read_raw_body (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_native_note_body_search_and_excerpt_never_read_raw_body) ... FAIL
+
+======================================================================
+FAIL: test_empty_later_corpus_cannot_reuse_previous_search_or_index (test_memory_wiki_render.MemoryWikiRenderTests.test_empty_later_corpus_cannot_reuse_previous_search_or_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 79, in test_empty_later_corpus_cannot_reuse_previous_search_or_index
+    result = self.call([self.request('/api/wiki/search?q=SyntheticDeclaredWikiBodyMarker'),
+        self.request('/api/wiki/search?q=SyntheticDeclaredWikiBodyMarker', []),
+        self.request('/api/wiki/graph', []), self.request('/api/wiki', [])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 :  7 | try {
+ 8 |   for (const request of input.requests) {
+ 9 |     const url = 'http://127.0.0.1' + request.path;
+10 |     const response = input.standalone === true
+11 |       ? await module.handleWikiRequest(new Request(url), new URL(url).pathname)
+12 |       : await module.renderWikiView(request.sources, new Request(url), new URL(url).pathname);
+                          ^
+TypeError: module.renderWikiView is not a function. (In 'module.renderWikiView(request.sources, new Request(url), new URL(url).pathname)', 'module.renderWikiView' is undefined)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/native_memory_wiki.ts:12:22
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_missing_declared_note_has_native_not_found_result (test_memory_wiki_render.MemoryWikiRenderTests.test_missing_declared_note_has_native_not_found_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 88, in test_missing_declared_note_has_native_not_found_result
+    result = self.call([self.request('/api/wiki/knowledge/research/' + self.unknown.stem)])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 :  7 | try {
+ 8 |   for (const request of input.requests) {
+ 9 |     const url = 'http://127.0.0.1' + request.path;
+10 |     const response = input.standalone === true
+11 |       ? await module.handleWikiRequest(new Request(url), new URL(url).pathname)
+12 |       : await module.renderWikiView(request.sources, new Request(url), new URL(url).pathname);
+                          ^
+TypeError: module.renderWikiView is not a function. (In 'module.renderWikiView(request.sources, new Request(url), new URL(url).pathname)', 'module.renderWikiView' is undefined)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/native_memory_wiki.ts:12:22
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 71, in test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources
+    result = self.call([self.request('/api/wiki'), self.request('/api/wiki/graph'),
+        self.request('/api/wiki/backlinks/' + self.linked['slug'])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 :  7 | try {
+ 8 |   for (const request of input.requests) {
+ 9 |     const url = 'http://127.0.0.1' + request.path;
+10 |     const response = input.standalone === true
+11 |       ? await module.handleWikiRequest(new Request(url), new URL(url).pathname)
+12 |       : await module.renderWikiView(request.sources, new Request(url), new URL(url).pathname);
+                          ^
+TypeError: module.renderWikiView is not a function. (In 'module.renderWikiView(request.sources, new Request(url), new URL(url).pathname)', 'module.renderWikiView' is undefined)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/native_memory_wiki.ts:12:22
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_supplied_native_note_body_search_and_excerpt_never_read_raw_body (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_native_note_body_search_and_excerpt_never_read_raw_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 61, in test_supplied_native_note_body_search_and_excerpt_never_read_raw_body
+    result = self.call([self.request('/api/wiki/knowledge/research/' + self.note.stem),
+        self.request('/api/wiki/doc/' + self.note.stem),
+        self.request('/api/wiki/search?q=SyntheticDeclaredWikiBodyMarker')])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 :  7 | try {
+ 8 |   for (const request of input.requests) {
+ 9 |     const url = 'http://127.0.0.1' + request.path;
+10 |     const response = input.standalone === true
+11 |       ? await module.handleWikiRequest(new Request(url), new URL(url).pathname)
+12 |       : await module.renderWikiView(request.sources, new Request(url), new URL(url).pathname);
+                          ^
+TypeError: module.renderWikiView is not a function. (In 'module.renderWikiView(request.sources, new Request(url), new URL(url).pathname)', 'module.renderWikiView' is undefined)
+      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/native_memory_wiki.ts:12:22
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.185s
+
+FAILED (failures=4)
