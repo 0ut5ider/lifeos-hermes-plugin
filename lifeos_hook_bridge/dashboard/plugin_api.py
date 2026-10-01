@@ -156,6 +156,29 @@ def review_memory(request: dict, account: str = Depends(_memory_account)):
     return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments'], account=account))
 
 
+@router.get('/memory/wiki')
+def get_memory_wiki(request: Request, account: str = Depends(_memory_account)):
+    preferences = _memory_preferences()
+    request_target = importlib.import_module('lifeos_memory_settings.memory_wiki').request_target
+    headers = {'Cache-Control': 'no-store'}
+    try:
+        if list(request.query_params.keys()) != ['target'] or len(request.query_params.getlist('target')) != 1:
+            raise ValueError('Wiki reads require one fixed route')
+        target = request_target(request.query_params['target'])
+    except LookupError:
+        return JSONResponse({'error': 'This wiki route is not a governed read view'}, status_code=404, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Invalid wiki read route'}, status_code=400, headers=headers)
+    try:
+        result, binding = preferences.wiki_response(target, account=account)
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Memory is unavailable under the current installation policy'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'],
+                        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
 @router.post('/memory/adoption/preview')
 def preview_memory_adoption(request: dict, account: str = Depends(_memory_account)):
     if request:

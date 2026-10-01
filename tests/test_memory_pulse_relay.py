@@ -43,11 +43,14 @@ class MemoryPulseRelayTests(unittest.TestCase):
         self.marker = self.root / 'LIFEOS/USER/CONFIG/memory-http.json'
         self.marker.write_text(json.dumps({'version':1,'managed':True}))
         self.marker.chmod(0o600)
-        module = self.root/'LIFEOS/PULSE/modules/memory.ts'
+        module = self.root/'LIFEOS/PULSE/modules'/getattr(self, 'native_module', 'memory.ts')
         program = self.fixture.home/'pulse-relay.ts'
-        program.write_text('import {handleRequest} from '+json.dumps(str(module))+';\n'
+        exports = 'startWiki,stopWiki,handleWikiRequest' if self.native_module_name() == 'wiki.ts' else 'handleRequest'
+        handler = 'handleWikiRequest' if self.native_module_name() == 'wiki.ts' else 'handleRequest'
+        start = 'startWiki();\n' if self.native_module_name() == 'wiki.ts' else ''
+        program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+
             'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){\n'
-            'return await handleRequest(request,new URL(request.url).pathname) ?? new Response("not found",{status:404});}});\n'
+            'return await '+handler+'(request,new URL(request.url).pathname) ?? new Response("not found",{status:404});}});\n'
             'console.log(server.port);\n')
         environment = dict(os.environ, HOME=str(self.fixture.home), BUN_CONFIG_NO_AUTO_INSTALL='1',
                            LIFEOS_MEMORY_INTERNAL='1', LIFEOS_MEMORY_CONTEXT=json.dumps({'author':'100','principal':'owner'}))
@@ -56,6 +59,9 @@ class MemoryPulseRelayTests(unittest.TestCase):
         self.addCleanup(self.stop_pulse)
         self.assertTrue(select.select([self.process.stdout],[],[],10)[0], 'Native listener did not start')
         self.native = f'http://127.0.0.1:{int(self.process.stdout.readline())}'
+
+    def native_module_name(self):
+        return getattr(self, 'native_module', 'memory.ts')
 
     def stop_dashboard(self):
         self.server.should_exit = True

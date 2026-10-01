@@ -272,7 +272,7 @@ index ea4d80b..68a149f 100644
  
    if (pathname === "/api/memory" || pathname === "/api/memory/") {
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts b/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
-index 65ae65c..8b3852d 100644
+index 65ae65c..1eeb3c3 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
 @@ -1,3 +1,5 @@
@@ -281,7 +281,15 @@ index 65ae65c..8b3852d 100644
  /**
   * LifeOS Pulse - Wiki Module
   *
-@@ -100,9 +102,16 @@ interface IndexOptions {
+@@ -32,6 +34,7 @@ import {
+ } from "fs"
+ import MiniSearch from "minisearch"
+ import { homedir } from "node:os";
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess";
+ 
+ // Path Construction
+ 
+@@ -100,9 +103,16 @@ interface IndexOptions {
    group?: string
  }
  
@@ -298,7 +306,7 @@ index 65ae65c..8b3852d 100644
  const backlinkIndex: Map<string, BacklinkEntry[]> = new Map()
  let searchIndex: MiniSearch | null = null
  let moduleStartedAt: string | null = null
-@@ -291,18 +300,18 @@ function stringArrayFromFrontmatter(value: unknown): string[] {
+@@ -291,18 +301,18 @@ function stringArrayFromFrontmatter(value: unknown): string[] {
  
  // Index a Single File
  
@@ -321,7 +329,7 @@ index 65ae65c..8b3852d 100644
      } catch {
        mtime = new Date().toISOString()
      }
-@@ -467,6 +476,7 @@ function indexResearchOutputs(): void {
+@@ -467,6 +477,7 @@ function indexResearchOutputs(): void {
  
  function buildFullIndex(): void {
    pageIndex.clear()
@@ -329,7 +337,7 @@ index 65ae65c..8b3852d 100644
  
    indexSystemDocs()
    indexKnowledgeArchive()
-@@ -530,7 +540,7 @@ function rebuildSearchIndex(): void {
+@@ -530,7 +541,7 @@ function rebuildSearchIndex(): void {
      let content = ""
  
      try {
@@ -338,7 +346,7 @@ index 65ae65c..8b3852d 100644
          0,
          5000
        )
-@@ -803,6 +813,7 @@ function notFound(message: string): Response {
+@@ -803,6 +814,7 @@ function notFound(message: string): Response {
  }
  
  function readPageContent(page: WikiPage): string {
@@ -346,7 +354,7 @@ index 65ae65c..8b3852d 100644
    try {
      return readFileSync(page.filePath, "utf-8")
    } catch {
-@@ -936,7 +947,7 @@ function buildExcerpt(page: WikiPage, query: string): string {
+@@ -936,7 +948,7 @@ function buildExcerpt(page: WikiPage, query: string): string {
    let body = ""
  
    try {
@@ -355,7 +363,7 @@ index 65ae65c..8b3852d 100644
    } catch {
      body = ""
    }
-@@ -1033,6 +1044,47 @@ function handleGraph(): Response {
+@@ -1033,8 +1045,59 @@ function handleGraph(): Response {
  
  // Lifecycle
  
@@ -402,7 +410,38 @@ index 65ae65c..8b3852d 100644
 +
  export function startWiki(): void {
    moduleStartedAt = new Date().toISOString()
++  if (hasManagedMemoryHTTP()) {
++    stopWatchers()
++    stopSafetyRebuild()
++    pageIndex.clear()
++    pageContents.clear()
++    backlinkIndex.clear()
++    searchIndex = null
++    lastIndexedAt = null
++    return
++  }
    buildFullIndex()
+   startWatchers()
+   startSafetyRebuild()
+@@ -1303,6 +1366,18 @@ export async function handleWikiRequest(
+   req: Request,
+   pathname: string
+ ): Promise<Response | null> {
++  if ((pathname === "/api/wiki" || pathname.startsWith("/api/wiki/")) && hasManagedMemoryHTTP()) {
++    const headers = {"content-type": "application/json", "cache-control": "no-store"}
++    if (req.method !== "GET") return new Response(JSON.stringify({error: "Managed wiki editing is unavailable"}), {status: 405, headers})
++    try {
++      const url = new URL(req.url)
++      const origin = req.headers.get("origin")
++      if (origin && origin !== url.origin) return new Response(JSON.stringify({error: "Wiki views require the current origin"}), {status: 403, headers})
++      return memoryHTTPResponse(req, "wiki", pathname + url.search)
++    } catch {
++      return new Response(JSON.stringify({error: "Authenticated wiki is unavailable"}), {status: 503, headers})
++    }
++  }
+   if (pathname === "/api/wiki/reindex") {
+     buildFullIndex()
+     return jsonResponse({ ok: true, pages: pageIndex.size, indexedAt: lastIndexedAt })
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
 index 390808e..2baccc7 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
@@ -1381,7 +1420,7 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..2072558
+index 0000000..e2deddf
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 @@ -0,0 +1,205 @@
@@ -1575,15 +1614,15 @@ index 0000000..2072558
 +  body: string;
 +}
 +
-+export function memoryHTTPResponse(request: Request, view: string): Response {
++export function memoryHTTPResponse(request: Request, view: string, target?: string): Response {
 +  const valid = (value: unknown): value is MemoryHTTPResponse => memoryObject(value)
-+    && typeof value.status === "number" && [200, 400, 401, 403, 503].includes(value.status)
++    && typeof value.status === "number" && [200, 400, 401, 403, 404, 503].includes(value.status)
 +    && typeof value.body === "string" && Array.isArray(value.headers)
 +    && value.headers.every(header => Array.isArray(header) && header.length === 2
 +      && typeof header[0] === "string" && typeof header[1] === "string"
 +      && ["content-type", "cache-control", "set-cookie"].includes(header[0]));
 +  const response = memoryAccess("pulse_http", {view, authorization: request.headers.get("authorization") ?? "",
-+    cookie: request.headers.get("cookie") ?? ""}, valid);
++    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})}, valid);
 +  if (response === undefined) throw new Error("Authenticated memory is unavailable");
 +  const headers = new Headers();
 +  for (const header of response.headers) headers.append(header[0], header[1]);

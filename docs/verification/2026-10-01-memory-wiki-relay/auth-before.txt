@@ -1,0 +1,66 @@
+test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) ... 
+  test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki') ... FAIL
+  test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/graph') ... FAIL
+  test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/search?q=SyntheticWiki') ... FAIL
+  test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/backlinks/synthetic-lab-routing') ... FAIL
+  test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/doc/synthetic-lab-routing') ... FAIL
+  test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/knowledge/research/synthetic-lab-routing') ... FAIL
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 44, in test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"tree":[{"label":"Documentation","children":[],"count":0},{"label":"People","count":0,"children":[]},{"label":"Companies","count":0,"children":[]},{"label":"Ideas","count":0,"children":[]},{"label":"Blogs","count":0,"children":[]},{"label":"Books","count":0,"children":[]},{"label":"Research","count":0,"children":[]},{"label":"ISAs","count":0,"children":[]},{"label":"Lessons","count":0,"children":[]},{"label":"Wisdom","count":0,"children":[]}],"recentChanges":[],"stats":{"totalPages":0,"totalSystem":0,"totalPeople":0,"totalCompanies":0,"totalIdeas":0,"totalBlogs":0,"totalBooks":0,"totalResearch":0,"totalIsas":0,"totalLessons":0,"totalWisdom":0},"lastIndexedAt":"2026-10-01T18:25:20.021Z"}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/graph')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 44, in test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"nodes":[],"edges":[]}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/search?q=SyntheticWiki')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 44, in test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"results":[]}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/backlinks/synthetic-lab-routing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 44, in test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {"backlinks":[]}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/doc/synthetic-lab-routing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 44, in test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 401 : {"error":"Wiki page \"synthetic-lab-routing\" not found"}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) (path='/api/wiki/knowledge/research/synthetic-lab-routing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 44, in test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 401 : {"error":"Knowledge note \"research/synthetic-lab-routing\" not found"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.295s
+
+FAILED (failures=6)

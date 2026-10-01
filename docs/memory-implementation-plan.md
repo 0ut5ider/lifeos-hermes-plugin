@@ -258,3 +258,11 @@ The renderer preserves native parsing, tree, search, excerpts, note bodies, back
 This unit expands the existing native memory patch to 22 files and adds no Hermes patch group. It governs promotion and its derived index generation. Harvester collection, review, rejection, other derived readers, complete source inventory, restricted prompts, lifecycle, ownership setup, coherent backup, and the full release gate remain open. Ownership remains disabled on running installations.
 
 The distributed staging, recovery, canonical, and Knowledge-query gate passes 65 cases in 72.749 seconds without skips, failures, or errors. The broader memory regression follows this source revision. This result does not pass the full release gate.
+
+## Authenticated native wiki Knowledge routes
+
+Managed wiki startup avoids raw indexing, watchers, and safety rebuilds. Its six read routes delegate incoming credentials through the fixed local Hermes dashboard endpoint. Each request checks the actual dashboard session and current installation owner binding. One cooperating transaction selects registered current Knowledge notes and invokes the declared native renderer in an isolated worker.
+
+The native directory determines the wiki category. Frontmatter type remains part of the note content. Live correction, forget, revocation, cross-origin refusal, connector failure, missing pages, and dashboard shutdown preserve the HTTP and current-source contracts. The [distributed focused gate](verification/2026-10-01-memory-wiki-relay/README.md) passes 85 cases without skips, errors, or failures. The implementation extends two existing native patch paths and adds no Hermes patch group.
+
+The complete retained-silo and documentation corpus still needs governed source collection. Managed editing, reindex, skills, hooks, and Arbol routes remain unavailable. Complete PULSE browser deployment, the other reader and publication boundaries, restricted delivery, lifecycle, ownership setup, and the full release gate remain open. No running installation activates memory ownership.

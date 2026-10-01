@@ -80,7 +80,7 @@ class MemoryPulseAuthTests(unittest.TestCase):
             ('POST', '/connections', {'client': 'denied-client', 'public_key': public_key(90),
                 'projects': ['lab'], 'model_route': 'unknown'}),
             ('DELETE', '/connections/absent-client', None),
-            ('GET', '/pulse/snapshot', None))]
+            ('GET', '/pulse/snapshot', None), ('GET', '/wiki?target=%2Fapi%2Fwiki', None))]
 
     def assert_memory_routes_deny(self, status):
         before = self.configuration.path.read_bytes()

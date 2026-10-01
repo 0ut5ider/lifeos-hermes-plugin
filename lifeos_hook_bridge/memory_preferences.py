@@ -85,6 +85,13 @@ class MemoryPreferences:
         config = self._configuration(account=account)
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))
 
+    def wiki_response(self, target: str, *, account: str | None = None):
+        from .memory_wiki import view
+        from .memory_http import installation_binding
+        config = self._configuration(account=account)
+        return (view(NativeMemory(self.root), self._owner_scope(config), target),
+                installation_binding(config, self.configuration.path))
+
     def adopt(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
         if not isinstance(request,dict) or set(request) != {'signature','projects','request_id'}:
             raise ValueError('Provide the reviewed source preview, project assignments, and request identifier')

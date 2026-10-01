@@ -40,6 +40,22 @@ async function main(): Promise<void> {
       metadata.push(module.canonicalMetadata(source.content,source.path,input.root));
     }
     result = {records, metadata};
+  } else if (input.action === "wiki_view") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/wiki.ts")).href);
+    if (!object(module) || typeof module.renderWikiView !== "function" || typeof input.target !== "string"
+        || !Array.isArray(input.sources)) throw new Error("Native wiki rendering needs declared source text");
+    const sources: Array<{path: string; content: string; lastModified: string; category: string; slug: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
+          || typeof source.lastModified !== "string" || typeof source.category !== "string"
+          || typeof source.slug !== "string") throw new Error("Native wiki sources are unavailable");
+      sources.push({path: source.path, content: source.content, lastModified: source.lastModified,
+        category: source.category, slug: source.slug});
+    }
+    const request = new Request("http://127.0.0.1" + input.target);
+    const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
+    if (!(response instanceof Response)) throw new Error("Native wiki response is unavailable");
+    result = {status: response.status, body: await response.json()};
   } else if (input.action === "knowledge_indexes") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
     if (!object(module) || typeof module.renderKnowledgeIndexes !== "function" || !Array.isArray(input.sources)

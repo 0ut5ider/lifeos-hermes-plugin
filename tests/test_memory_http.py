@@ -103,5 +103,35 @@ class MemoryHTTPTests(unittest.TestCase):
         self.assertEqual(result['status'],401)
         self.assertEqual(json.loads(result['body'])['login_url'],'https://hermes.example.test/hermes/login')
 
+    def test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target(self):
+        result = relay(self.configuration, {'view': 'wiki', 'target': '/api/wiki/search?q=synthetic+words&limit=5',
+            'authorization': 'Bearer synthetic', 'cookie': ''})
+        self.assertEqual(result['status'], 200)
+        self.assertEqual(self.seen[0]['path'], '/hermes/api/plugins/lifeos-hook-bridge/memory/wiki?'
+            'target=%2Fapi%2Fwiki%2Fsearch%3Fq%3Dsynthetic%2Bwords%26limit%3D5')
+
+    def test_invalid_wiki_targets_never_receive_forwarded_credentials(self):
+        for target, status in [('https://other.invalid/api/wiki', 400), ('//other.invalid/api/wiki', 400),
+                ('/api/wiki/reindex', 404), ('/api/wiki/skills', 404),
+                ('/api/wiki/doc/%2e%2e', 400), ('/api/wiki/doc/name%2Fother', 400),
+                ('/api/wiki/doc/name%252Fother', 400), ('/api/wiki/doc/%FF', 400),
+                ('/api/wiki/doc/%00', 400), ('/api/wiki?owner=other', 400),
+                ('/api/wiki/search?q=one&q=two', 400), ('/api/wiki/search?q=one&root=other', 400),
+                ('/api/wiki/search?q=one&limit=0', 400), ('/api/wiki/search?q=' + 'x' * 1025, 400)]:
+            with self.subTest(target=target[:80]):
+                result = relay(self.configuration, {'view': 'wiki', 'target': target,
+                    'authorization': 'Bearer synthetic', 'cookie': ''})
+                self.assertEqual(result['status'], status)
+        self.assertEqual(self.seen, [])
+
+    def test_wiki_not_found_responses_require_the_current_installation_binding(self):
+        self.status = 404
+        self.payload = b'{"error":"Native page not found"}'
+        arguments = {'view': 'wiki', 'target': '/api/wiki/doc/missing',
+            'authorization': 'Bearer synthetic', 'cookie': ''}
+        self.assertEqual(relay(self.configuration, arguments)['status'], 404)
+        self.headers['X-LifeOS-Memory-Installation'] = 'another-installation'
+        self.assertEqual(relay(self.configuration, arguments)['status'], 503)
+
 
 if __name__=='__main__':unittest.main()

@@ -64,9 +64,21 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
-    if (set(arguments)!={'view','authorization','cookie'}
-            or not isinstance(arguments['view'],str) or arguments['view'] not in VIEWS):
+    wiki = arguments.get('view') == 'wiki'
+    expected = {'view','authorization','cookie'} | ({'target'} if wiki else set())
+    if (set(arguments)!=expected or not isinstance(arguments['view'],str)
+            or (arguments['view'] not in VIEWS and not wiki)):
         return _response(400,{'error':'Choose a supported native memory view'})
+    route = '/memory/pulse/' + arguments['view']
+    if wiki:
+        from .memory_wiki import request_target
+        try:
+            target = request_target(arguments['target'])
+        except LookupError:
+            return _response(404,{'error':'This wiki route is not a governed read view'})
+        except ValueError:
+            return _response(400,{'error':'Invalid wiki read route'})
+        route = '/memory/wiki?' + urllib.parse.urlencode({'target':target})
     credentials={}
     for key in ('authorization','cookie'):
         value=arguments[key]
@@ -92,7 +104,7 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         base=dashboard_base(settings['dashboard_base_url'])
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
-        request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge/memory/pulse/'+arguments['view'],
+        request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route,
                                       headers=credentials,method='GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         try:
@@ -101,9 +113,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             response=error
         with response:
             status=response.status
-            if status not in (200,400,401,403):
+            if status not in ({200,400,401,403,404} if wiki else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
-            if (status==200 and response.headers.get('x-lifeos-memory-installation')
+            if (status in ({200,404} if wiki else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):
                 raise ValueError('The authenticated response belongs to another installation')
             if response.headers.get_content_type()!='application/json':
