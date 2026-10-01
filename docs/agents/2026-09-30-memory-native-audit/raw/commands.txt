@@ -1,0 +1,25 @@
+Review cwd: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Interpreter: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+Native source: /home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install
+Host source: /home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-native-audit/raw/probe_native_reads.py > docs/agents/2026-09-30-memory-native-audit/raw/native-reads.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-native-audit/raw/probe_writers_context.py > docs/agents/2026-09-30-memory-native-audit/raw/writers-context.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-native-audit/raw/probe_secondary_paths.py > docs/agents/2026-09-30-memory-native-audit/raw/secondary-paths.txt 2>&1
+
+setsid bash docs/agents/2026-09-30-memory-native-audit/raw/run_tests.sh > docs/agents/2026-09-30-memory-native-audit/raw/test-runner.txt 2>&1 < /dev/null &
+
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-native-audit/raw/capture_sources.py
+
+Each probe output records its exact Bun argv, stdout, stderr and exit code. run_tests.sh records exact unittest command and environment. writers-context-initial.txt and probe_writers_context_initial.py preserve the initial uncaught MemoryConflict observation before the observer was changed to catch it. No production file was edited.
+
+Source searches included:
+rg -n 'MemoryStatus|MemoryInsights|CortexHealth|loadCanonicalRecords|memory\.ts|modules/memory' hooks LIFEOS/TOOLS LIFEOS/PULSE --glob '*.ts' --glob '!*.test.ts'
+rg -n 'applyEdit|edit-handler' LIFEOS/PULSE --glob '*.ts' --glob '!*.test.ts'
+rg -n 'buildLifeosContextBlock|memory-proposals|MemoryRestore|MemoryWriter|MemorySystem' LIFEOS/PULSE --glob '*.ts' --glob '!*.test.ts'
+rg -n 'MemoryGraph|KnowledgeHarvester|LearningPatternSynthesis|ProposalGC' LIFEOS/PULSE --glob '*.ts' --glob '*.sh' --glob '*.toml' --glob '!*.test.ts'
+rg -n 'MemoryStatus|MemoryInsights|CortexHealth|memory-writes|reviewer-runs' tests lifeos_hook_bridge
+
+Concrete matched source evidence is in source-evidence.txt. Complete selected public source snapshots are under sources/. All 132 inventory files and 8 additional caller/manifest files are hashed; hashes do not establish review coverage. inventory-triage.csv records the actual boundary traced or the lack of a coverage conclusion for every inventory candidate.

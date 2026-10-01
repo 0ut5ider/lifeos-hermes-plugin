@@ -1,0 +1,55 @@
+test_native_tail_window_finishes_within_registered_hook_timeout (test_memory_delta.MemoryDeltaTests.test_native_tail_window_finishes_within_registered_hook_timeout) ... ERROR
+test_malformed_write_row_does_not_hide_later_current_updates (test_memory_delta.MemoryDeltaTests.test_malformed_write_row_does_not_hide_later_current_updates) ... FAIL
+test_excluded_latest_health_does_not_replay_older_critical_warning (test_memory_delta.MemoryDeltaTests.test_excluded_latest_health_does_not_replay_older_critical_warning) ... FAIL
+
+======================================================================
+ERROR: test_native_tail_window_finishes_within_registered_hook_timeout (test_memory_delta.MemoryDeltaTests.test_native_tail_window_finishes_within_registered_hook_timeout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 185, in test_native_tail_window_finishes_within_registered_hook_timeout
+    output = self.call(timeout=8)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 32, in call
+    result = subprocess.run(['bun', '--no-install', str(self.root / 'hooks' / script)],
+                            input=json.dumps({'session_id': 'delta-session', 'prompt': 'memory'}),
+                            env=environment, cwd=self.root, capture_output=True, text=True, timeout=timeout)
+  File "/usr/lib64/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['bun', '--no-install', '/tmp/native-memory-lfryb6ic/.claude/hooks/MemoryTurnStart.hook.ts']' timed out after 8 seconds
+
+======================================================================
+FAIL: test_malformed_write_row_does_not_hide_later_current_updates (test_memory_delta.MemoryDeltaTests.test_malformed_write_row_does_not_hide_later_current_updates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 196, in test_malformed_write_row_does_not_hide_later_current_updates
+    output = self.call()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 36, in call
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: "MemoryDeltaSurface error: (row.additions[146 chars]d)\n" != ''
+- MemoryDeltaSurface error: (row.additions ?? []).some is not a function. (In '(row.additions ?? []).some((e) => /SmokeTest|smoke-test/i.test(e))', '(row.additions ?? []).some' is undefined)
+
+
+======================================================================
+FAIL: test_excluded_latest_health_does_not_replay_older_critical_warning (test_memory_delta.MemoryDeltaTests.test_excluded_latest_health_does_not_replay_older_critical_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 212, in test_excluded_latest_health_does_not_replay_older_critical_warning
+    self.assertNotIn('Synthetic obsolete critical warning', output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic obsolete critical warning' unexpectedly found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 37/12288 chars]\nRULE: Synthetic latest health control\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-health>\nMemory subsystem health is CRITICAL. Surface this line VERBATIM in your response so it cannot be ignored:\n🩺 MEMORY HEALTH: CRITICAL — Synthetic obsolete critical warning. Fix: bun ~/.claude/LIFEOS/TOOLS/MemoryHealthCheck.ts\n</lifeos-memory-health>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: +1 learned — "principal: RULE: Synthetic latest health control" · freshness: no data\n</lifeos-memory-delta>\n'
+
+----------------------------------------------------------------------
+Ran 3 tests in 11.481s
+
+FAILED (failures=2, errors=1)

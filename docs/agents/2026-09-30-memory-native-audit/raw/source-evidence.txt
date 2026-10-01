@@ -1,0 +1,104 @@
+hooks/hooks.json:270:            "command": "$HOME/.claude/hooks/WorkCompletionLearning.hook.ts"
+hooks/hooks.json:282:            "command": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts"
+hooks/hooks.json:310:            "command": "$HOME/.claude/hooks/SatisfactionCapture.hook.ts",
+hooks/hooks.json:340:            "command": "$HOME/.claude/hooks/MemoryTurnStart.hook.ts",
+hooks/hooks.json:492:            "command": "$HOME/.claude/hooks/MemoryReviewFire.hook.ts"
+hooks/hooks.json:500:            "command": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts",
+hooks/MemoryTurnStart.hook.ts:14: *   4. getRelevantContext(prompt) — <lifeos-ground> task-scoped BM25 retrieval
+hooks/MemoryTurnStart.hook.ts:32:import { run as deltaSurface } from "./MemoryDeltaSurface.hook";
+hooks/MemoryTurnStart.hook.ts:33:import { getRelevantContext } from "../LIFEOS/TOOLS/MemoryRetriever";
+hooks/MemoryTurnStart.hook.ts:64:function shouldInject(sessionId: string): boolean {
+hooks/MemoryTurnStart.hook.ts:109:  if (shouldInject(sessionId)) {
+hooks/MemoryTurnStart.hook.ts:113:  const delta = deltaSurface();
+hooks/MemoryTurnStart.hook.ts:121:      const ground = getRelevantContext(prompt, { topK: 5, threshold: 0.20 });
+hooks/MemoryDeltaSurface.hook.ts:68:function writeCursor(ts: string): void {
+hooks/MemoryDeltaSurface.hook.ts:179:      const allLines = readFileSync(WRITES_LOG, "utf8").split("\n").filter((l) => l.trim().length > 0);
+hooks/MemoryDeltaSurface.hook.ts:185:        const isTestRow = (row.additions ?? []).some((e) => /SmokeTest|smoke-test/i.test(e));
+hooks/MemoryDeltaSurface.hook.ts:190:        const adds = row.additions ?? [];
+hooks/MemoryDeltaSurface.hook.ts:191:        const evs = row.evictions ?? [];
+hooks/MemoryDeltaSurface.hook.ts:194:        for (const a of adds) if (learnedSamples.length < 2) learnedSamples.push(`${fileLabel(row.file)}: ${short(a)}`);
+hooks/MemoryDeltaSurface.hook.ts:195:        for (const e of evs) if (droppedSamples.length < 1) droppedSamples.push(short(e));
+hooks/MemoryDeltaSurface.hook.ts:199:    if (maxTs && maxTs !== cursor) writeCursor(maxTs);
+LIFEOS/TOOLS/MemoryRestore.ts:9: *   bun MemoryRestore.ts latest principal         — restore the newest snapshot
+LIFEOS/TOOLS/MemoryRestore.ts:61:    const content = readFileSync(src, "utf8");
+LIFEOS/TOOLS/MemoryRestore.ts:62:    writeFileSync(TARGETS[which], content, "utf8");
+LIFEOS/TOOLS/MemoryRestore.ts:67:  if (cmd === "latest" && arg) {
+LIFEOS/TOOLS/MemoryRestore.ts:70:    const latest = snaps[snaps.length - 1];
+LIFEOS/TOOLS/MemoryRestore.ts:71:    const content = readFileSync(pathResolve(SNAPSHOT_DIR, latest), "utf8");
+LIFEOS/TOOLS/MemoryRestore.ts:72:    writeFileSync(TARGETS[arg], content, "utf8");
+LIFEOS/TOOLS/MemoryRestore.ts:73:    console.log(`Restored ${arg} from latest snapshot ${latest} (${countEntries(content)} entries).`);
+LIFEOS/TOOLS/MemoryRestore.ts:77:  console.error("Usage: bun MemoryRestore.ts {list [principal|da] | restore <snapshot-file> | latest <principal|da>}");
+LIFEOS/TOOLS/MemoryInsights.ts:54:function readJsonlSince<T = any>(path: string, sinceMs: number): T[] {
+LIFEOS/TOOLS/MemoryInsights.ts:111:  const memoryWrites = readJsonlSince<any>(pathResolve(OBS, "memory-writes.jsonl"), sinceMs);
+LIFEOS/TOOLS/MemoryInsights.ts:112:  const reviewerRuns = readJsonlSince<any>(pathResolve(OBS, "reviewer-runs.jsonl"), sinceMs);
+LIFEOS/TOOLS/MemoryInsights.ts:113:  const proposals = readJsonlSince<any>(pathResolve(OBS, "pending-proposals.jsonl"), sinceMs);
+LIFEOS/TOOLS/MemoryInsights.ts:114:  const healthRows = readJsonlSince<any>(pathResolve(OBS, "memory-health.jsonl"), sinceMs);
+LIFEOS/TOOLS/MemoryInsights.ts:115:  const formatGate = readJsonlSince<any>(pathResolve(OBS, "format-gate.jsonl"), sinceMs);
+LIFEOS/TOOLS/MemoryInsights.ts:201:    out.push("  Recent samples:");
+LIFEOS/TOOLS/MemoryInsights.ts:203:      const edit = (p.edit || "").slice(0, 80);
+LIFEOS/TOOLS/MemoryStatus.ts:102:  last_reviewer_run: ReviewerRunSummary | null;
+LIFEOS/TOOLS/MemoryStatus.ts:210:function lastJsonlRow<T>(path: string): T | null {
+LIFEOS/TOOLS/MemoryStatus.ts:216:    return JSON.parse(lines[lines.length - 1]!) as T;
+LIFEOS/TOOLS/MemoryStatus.ts:235:    last_reviewer_run: lastJsonlRow<ReviewerRunSummary>(REVIEWER_RUNS_PATH),
+LIFEOS/TOOLS/MemoryStatus.ts:236:    last_retrieval: lastJsonlRow<RetrievalSummary>(RETRIEVALS_PATH),
+LIFEOS/TOOLS/MemoryStatus.ts:294:  if (r.last_reviewer_run) {
+LIFEOS/TOOLS/MemoryStatus.ts:295:    const lr = r.last_reviewer_run;
+LIFEOS/TOOLS/Cortex.ts:274:    const memoryAdd=runtime.memoryAdd??(await import("./MemorySystem")).add; const result=memoryAdd(item);
+LIFEOS/TOOLS/Cortex.ts:284:  let memoryRoot=requestedRoot, records:CortexRecord[];try{const corpus=enumerateCanonicalCorpus(requestedRoot);memoryRoot=corpus.root;records=corpus.records;}catch(error){if(error instanceof IntegrityError)return fail(command,EXIT.INVALID_INPUT,"integrity_error",error.message);return fail(command,EXIT.INTERNAL,"internal_error",error instanceof Error?error.message:String(error));}
+LIFEOS/TOOLS/Cortex.ts:299:  const byId=new Map(validRecords.map(r=>[r.id,r]));const chosen=parsed.positionals.map(id=>byId.get(id)).filter((r):r is CortexRecord=>Boolean(r));if(chosen.length!==parsed.positionals.length)return fail(command,EXIT.NOT_FOUND,"not_found","One or more records were not found");return ok(command,{format:"lifeos-cortex-export/v1",items:chosen});
+LIFEOS/TOOLS/CortexHealth.ts:4:import { loadCanonicalRecords } from "./Cortex";
+LIFEOS/TOOLS/CortexHealth.ts:131:  const error = String(latest.error ?? "");
+LIFEOS/TOOLS/CortexHealth.ts:134:    return { status, ts: latest.ts, runId: latest.runId, evidence: `${log}:latest`, error: latest.error, priorSuccesses: parsed.rows.slice(0, -1).filter((r) => r.ok === true && r.skipped !== true).length };
+LIFEOS/TOOLS/CortexHealth.ts:138:  return { status, ts: latest.ts, runId: latest.runId, evidence: `${log}:latest`, error: latest.error, priorSuccesses: parsed.rows.slice(0, -1).filter((r) => r.ok === true).length };
+LIFEOS/TOOLS/CortexHealth.ts:158:  const records = loadCanonicalRecords(memoryRoot);
+LIFEOS/PULSE/modules/memory.ts:118:    const { entries } = parseMemoryContent(readFileSync(path, "utf-8"));
+LIFEOS/PULSE/modules/memory.ts:246:    proposalsRecent: proposals.slice(-5),
+LIFEOS/PULSE/modules/memory.ts:256:  if (pathname === "/api/memory" || pathname === "/api/memory/") {
+LIFEOS/PULSE/pulse.ts:19:import { isLoopbackHostHeader } from "./lib/host-guard.ts"
+LIFEOS/PULSE/pulse.ts:132:      wikiModule = await import("./modules/wiki")
+LIFEOS/PULSE/pulse.ts:231:      memoryModule = await import("./modules/memory")
+LIFEOS/PULSE/pulse.ts:812:    hostname: bindAll ? "0.0.0.0" : "127.0.0.1",
+LIFEOS/PULSE/pulse.ts:822:      if (!bindAll && !isLoopbackHostHeader(req.headers.get("host"), config.port)) {
+LIFEOS/PULSE/pulse.ts:860:      if (wikiModule && pathname.startsWith("/api/wiki")) {
+LIFEOS/PULSE/pulse.ts:947:      if (memoryModule && pathname.startsWith("/api/memory")) {
+LIFEOS/PULSE/lib/lifeos-context.ts:119:      return cachedContext.text
+LIFEOS/PULSE/lib/lifeos-context.ts:125:      const raw = await readFile(join(LIFEOS_DIR, rel), "utf8")
+LIFEOS/PULSE/lib/lifeos-context.ts:152:      const r = readMemory(join(LIFEOS_DIR, rel))
+LIFEOS/PULSE/modules/siri.ts:90:  const contextBlock = await buildLifeosContextBlock(text)
+LIFEOS/PULSE/modules/siri.ts:120:      append: `\n\n${contextBlock}\n\n## SIRI MODE — HOW YOU RESPOND
+LIFEOS/PULSE/modules/siri.ts:178:  if (!authorized(req)) {
+LIFEOS/PULSE/modules/siri.ts:190:  if (!text) return Response.json({ error: "empty text" }, { status: 400 })
+LIFEOS/PULSE/edit/edit-handler.ts:3:import { atomicWriteText } from "../lib/atomic-write";
+LIFEOS/PULSE/edit/edit-handler.ts:49:export function applyEdit(req: EditRequest): EditResult {
+LIFEOS/PULSE/edit/edit-handler.ts:91:  atomicWriteText(truePath, next);
+LIFEOS/TOOLS/KnowledgeHarvester.ts:1027:function cmdPromote(target: string | null, all: boolean): void {
+LIFEOS/TOOLS/KnowledgeHarvester.ts:1057:    fs.writeFileSync(targetPath, content);
+LIFEOS/TOOLS/KnowledgeHarvester.ts:1326:    cmdPromote(positionals[1] ?? null, !!values.all);
+LIFEOS/TOOLS/KnowledgeQuery.ts:79:  const parsed = parseNote(readFileSync(path, "utf8"));
+LIFEOS/TOOLS/KnowledgeQuery.ts:87:    type: scalar(parsed, "type"), title: scalar(parsed, "title"),
+LIFEOS/PULSE/modules/wiki.ts:533:      content = stripFrontmatter(readFileSync(page.filePath, "utf-8")).slice(
+LIFEOS/PULSE/modules/wiki.ts:807:    return readFileSync(page.filePath, "utf-8")
+LIFEOS/PULSE/modules/wiki.ts:849:      content: readPageContent(page),
+LIFEOS/PULSE/modules/wiki.ts:869:    content: readPageContent(page),
+LIFEOS/PULSE/modules/wiki.ts:919:    content: readPageContent(page),
+LIFEOS/PULSE/modules/wiki.ts:939:    body = stripFrontmatter(readFileSync(page.filePath, "utf-8"))
+LIFEOS/PULSE/modules/wiki.ts:1361:  const knowledgeMatch = pathname.match(
+LIFEOS/PULSE/modules/wiki.ts:1364:  if (knowledgeMatch) {
+LIFEOS/PULSE/modules/wiki.ts:1366:      decodeURIComponent(knowledgeMatch[1]),
+LIFEOS/PULSE/modules/wiki.ts:1367:      decodeURIComponent(knowledgeMatch[2])
+LIFEOS/TOOLS/ProposalGC.ts:50:import { readFileSync, writeFileSync, renameSync, existsSync } from "node:fs";
+LIFEOS/TOOLS/ProposalGC.ts:59:const TARGETS = [
+LIFEOS/TOOLS/ProposalGC.ts:234:      writeFileSync(tmp, w.content, "utf8");
+LIFEOS/TOOLS/ProposalGC.ts:235:      renameSync(tmp, w.path);
+LIFEOS/PULSE/PULSE.toml:193:command = "bun run ~/.claude/LIFEOS/TOOLS/SessionHarvester.ts --recent 20 && bun run ~/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts --week"
+LIFEOS/PULSE/PULSE.toml:210:command = "bun run ~/.claude/LIFEOS/TOOLS/ProposalGC.ts --auto"
+LIFEOS/TOOLS/MemorySystem.ts:897:export function find(query: string, options: FindOptions = {}): FindResult[] {
+LIFEOS/TOOLS/MemorySystem.ts:901:  const ctx = getRelevantContext(query, {
+LIFEOS/TOOLS/MemorySystem.ts:1070:      writeFileSync(PRINCIPAL_MEMORY_PATH, MEM_BACKUP, "utf8");
+LIFEOS/TOOLS/MemoryReviewer.ts:362:    const result = memoryAccess("filter_history", {content: `${exchange.user}\n${exchange.assistant}`, timestamp: exchange.ts},
+LIFEOS/TOOLS/MemoryReviewer.ts:532:    const result = memoryAdd(item);
+LIFEOS/TOOLS/MemoryReviewer.ts:547:          const applied = memoryAccess("proposal_decision", {reference, decision: "auto_apply", request_id: randomUUID(), confidence_threshold: threshold},
+LIFEOS/TOOLS/MemoryReviewer.ts:685:  const userPrompt = renderNames(buildReviewerUserPrompt(exchanges, snapshot));
+LIFEOS/PULSE/Observability/observability.ts:1499:function handleMemoryGraphApi(): Response {
+LIFEOS/PULSE/Observability/observability.ts:1505:    const g = JSON.parse(readFileSync(graphPath, "utf-8")) as {
+LIFEOS/PULSE/Observability/observability.ts:4599:    if (pathname === "/api/memory/graph") return handleMemoryGraphApi()

@@ -1,0 +1,123 @@
+test_missing_context_cannot_write_or_recall_private_memory (test_memory_delegation.MemoryDelegationTests.test_missing_context_cannot_write_or_recall_private_memory) ... ok
+test_native_add_shares_reference_and_recall_with_the_service (test_memory_delegation.MemoryDelegationTests.test_native_add_shares_reference_and_recall_with_the_service) ... ok
+test_native_full_curation_saves_new_entries_after_its_own_read (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_saves_new_entries_after_its_own_read) ... ok
+test_native_functions_keep_their_unmanaged_behavior_without_a_connector (test_memory_delegation.MemoryDelegationTests.test_native_functions_keep_their_unmanaged_behavior_without_a_connector) ... ok
+test_native_loader_excludes_hot_memory_without_an_approved_context (test_memory_delegation.MemoryDelegationTests.test_native_loader_excludes_hot_memory_without_an_approved_context) ... ok
+test_native_reviewer_excludes_a_recent_quote_of_a_forgotten_fact (test_memory_delegation.MemoryDelegationTests.test_native_reviewer_excludes_a_recent_quote_of_a_forgotten_fact) ... ok
+test_native_reviewer_excludes_sources_that_predate_a_correction (test_memory_delegation.MemoryDelegationTests.test_native_reviewer_excludes_sources_that_predate_a_correction) ... ok
+test_native_reviewer_snapshot_rejects_a_later_full_overwrite (test_memory_delegation.MemoryDelegationTests.test_native_reviewer_snapshot_rejects_a_later_full_overwrite) ... ok
+test_project_only_reviewer_excludes_unlabeled_personal_history (test_memory_delegation.MemoryDelegationTests.test_project_only_reviewer_excludes_unlabeled_personal_history) ... ok
+test_project_restriction_also_excludes_unlabeled_reviewer_history (test_memory_delegation.MemoryDelegationTests.test_project_restriction_also_excludes_unlabeled_reviewer_history) ... ok
+test_authorized_freshness_and_health_remain_visible (test_memory_delta.MemoryDeltaTests.test_authorized_freshness_and_health_remain_visible) ... ok
+test_authorized_updates_and_native_heartbeat_still_surface (test_memory_delta.MemoryDeltaTests.test_authorized_updates_and_native_heartbeat_still_surface) ... ok
+test_health_and_freshness_retained_text_is_filtered (test_memory_delta.MemoryDeltaTests.test_health_and_freshness_retained_text_is_filtered) ... FAIL
+test_invalid_connector_cannot_fall_back_to_native_log (test_memory_delta.MemoryDeltaTests.test_invalid_connector_cannot_fall_back_to_native_log) ... FAIL
+test_missing_context_does_not_consume_cursor_or_injection_state (test_memory_delta.MemoryDeltaTests.test_missing_context_does_not_consume_cursor_or_injection_state) ... FAIL
+test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows (test_memory_delta.MemoryDeltaTests.test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows) ... FAIL
+test_restricted_destination_cannot_read_unclassified_log (test_memory_delta.MemoryDeltaTests.test_restricted_destination_cannot_read_unclassified_log) ... FAIL
+test_standalone_delta_excludes_superseded_log_claims (test_memory_delta.MemoryDeltaTests.test_standalone_delta_excludes_superseded_log_claims) ... FAIL
+test_standalone_delta_refuses_missing_context (test_memory_delta.MemoryDeltaTests.test_standalone_delta_refuses_missing_context) ... FAIL
+test_unmanaged_turn_start_keeps_native_log_behavior (test_memory_delta.MemoryDeltaTests.test_unmanaged_turn_start_keeps_native_log_behavior) ... ok
+
+======================================================================
+FAIL: test_health_and_freshness_retained_text_is_filtered (test_memory_delta.MemoryDeltaTests.test_health_and_freshness_retained_text_is_filtered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 113, in test_health_and_freshness_retained_text_is_filtered
+    self.assertNotIn('Synthetic forgotten diagnostic marker', output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic forgotten diagnostic marker' unexpectedly found in '<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-health>\nMemory subsystem health is CRITICAL. Surface this line VERBATIM in your response so it cannot be ignored:\n🩺 MEMORY HEALTH: CRITICAL — Synthetic forgotten diagnostic marker. Fix: bun ~/.claude/LIFEOS/TOOLS/MemoryHealthCheck.ts\n</lifeos-memory-health>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: +1 learned — "principal: RULE: Synthetic forgotten diagnostic marker" · F (0/8 fresh)\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_invalid_connector_cannot_fall_back_to_native_log (test_memory_delta.MemoryDeltaTests.test_invalid_connector_cannot_fall_back_to_native_log)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 93, in test_invalid_connector_cannot_fall_back_to_native_log
+    self.assertEqual(self.call(), '')
+                     ~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 36, in call
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: "LoadMemory error: JSON Parse error: Expe[68 chars]}'\n" != ''
+- LoadMemory error: JSON Parse error: Expected '}'
+- MemoryTurnStart ground error: JSON Parse error: Expected '}'
+
+
+======================================================================
+FAIL: test_missing_context_does_not_consume_cursor_or_injection_state (test_memory_delta.MemoryDeltaTests.test_missing_context_does_not_consume_cursor_or_injection_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 78, in test_missing_context_does_not_consume_cursor_or_injection_state
+    self.assertEqual(self.call(context=False), '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '<lifeos-memory>\n## PRINCIPAL MEMORY [0/4[499 chars]a>\n' != ''
+- <lifeos-memory>
+- ## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]
+- (no entries yet)
+- 
+- ## DA MEMORY [0/48 entries · 0/12288 chars]
+- (no entries yet)
+- </lifeos-memory>
+- <lifeos-memory-delta>
+- Memory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:
+- 🧠 MEMORY: +1 learned — "principal: RULE: Synthetic private delta marker" · freshness: no data
+- </lifeos-memory-delta>
+
+
+======================================================================
+FAIL: test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows (test_memory_delta.MemoryDeltaTests.test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 63, in test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows
+    self.assertNotIn('Synthetic forgotten delta marker', output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic forgotten delta marker' unexpectedly found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 36/12288 chars]\nRULE: Synthetic current delta marker\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: +2 learned — "principal: RULE: Synthetic forgotten delta marker", "principal: RULE: Synthetic current delta marker" · freshness: no data\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_restricted_destination_cannot_read_unclassified_log (test_memory_delta.MemoryDeltaTests.test_restricted_destination_cannot_read_unclassified_log)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 101, in test_restricted_destination_cannot_read_unclassified_log
+    self.assertEqual(self.call(), '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: '<lifeos-memory>\n## PRINCIPAL MEMORY [0/4[502 chars]a>\n' != ''
+- <lifeos-memory>
+- ## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]
+- (no entries yet)
+- 
+- ## DA MEMORY [0/48 entries · 0/12288 chars]
+- (no entries yet)
+- </lifeos-memory>
+- <lifeos-memory-delta>
+- Memory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:
+- 🧠 MEMORY: +1 learned — "principal: RULE: Synthetic restricted delta marker" · freshness: no data
+- </lifeos-memory-delta>
+
+
+======================================================================
+FAIL: test_standalone_delta_excludes_superseded_log_claims (test_memory_delta.MemoryDeltaTests.test_standalone_delta_excludes_superseded_log_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 73, in test_standalone_delta_excludes_superseded_log_claims
+    self.assertNotIn('Synthetic superseded delta marker', output)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic superseded delta marker' unexpectedly found in '<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: +2 learned — "principal: RULE: Synthetic superseded delta marker", "principal: RULE: Synthetic next delta marker" · freshness: no data\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_standalone_delta_refuses_missing_context (test_memory_delta.MemoryDeltaTests.test_standalone_delta_refuses_missing_context)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 87, in test_standalone_delta_refuses_missing_context
+    self.assertEqual(self.call(context=False, standalone=True), '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '<lifeos-memory-delta>\nMemory status from[334 chars]a>\n' != ''
+- <lifeos-memory-delta>
+- Memory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:
+- 🧠 MEMORY: +1 learned — "principal: RULE: Synthetic private standalone marker" · freshness: no data
+- </lifeos-memory-delta>
+
+
+----------------------------------------------------------------------
+Ran 20 tests in 18.339s
+
+FAILED (failures=7)

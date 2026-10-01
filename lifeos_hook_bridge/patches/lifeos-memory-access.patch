@@ -353,10 +353,10 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..b2c2e3d
+index 0000000..8a53a49
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,96 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -440,6 +440,18 @@ index 0000000..b2c2e3d
 +  const governed = memoryAccess("check_source", {path: resolve(path)},
 +    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
 +  if (governed !== undefined && governed.ok !== true) throw new Error("The native source path is excluded or unavailable");
++}
++
++
++export function canReadMemorySources(): boolean {
++  try {
++    if (!hasMemoryAccess()) return true;
++    const governed = memoryAccess("check_sources", {},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    return governed?.ok === true;
++  } catch {
++    return false;
++  }
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
 index eb68d1d..75a715a 100755
@@ -564,6 +576,84 @@ index 12af0c6..1412a55 100755
    if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };
    try {
      // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice
+diff --git a/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts b/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
+index ebcbb89..ae2c998 100755
+--- a/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
++++ b/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
+@@ -35,6 +35,8 @@ import { resolve as pathResolve, dirname } from "node:path";
+ import { homedir } from "node:os";
+ import { isSubagentContext as isSubagent } from './lib/subagent';
+ 
++import { canReadMemorySources, readMemorySource } from "../LIFEOS/TOOLS/lib/MemoryAccess";
++
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const WRITES_LOG = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl");
+ const CURSOR = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-delta-cursor.json");
+@@ -119,7 +121,7 @@ function freshnessSegment(): string {
+   try {
+     if (!existsSync(FRESHNESS_CACHE)) return "freshness: no data";
+     const age = Date.now() - statSync(FRESHNESS_CACHE).mtimeMs;
+-    const f = JSON.parse(readFileSync(FRESHNESS_CACHE, "utf8"));
++    const f = JSON.parse(readMemorySource(FRESHNESS_CACHE));
+     const grade = f.overall_grade ?? "?";
+     const fresh = f.fresh_count ?? "?";
+     const total = f.total ?? "?";
+@@ -132,7 +134,7 @@ function freshnessSegment(): string {
+ 
+ function stalestSegment(): string {
+   try {
+-    const f = JSON.parse(readFileSync(FRESHNESS_CACHE, "utf8"));
++    const f = JSON.parse(readMemorySource(FRESHNESS_CACHE));
+     const ms = f.most_stale;
+     if (!ms?.name || (!ms.stale && ms.grade !== "F")) return "";
+     const why = ms.why ? ` (${ms.why})` : "";
+@@ -146,7 +148,7 @@ function stalestSegment(): string {
+ function criticalHealthLine(): string | null {
+   try {
+     if (!existsSync(HEALTH_LOG)) return null;
+-    const lines = readFileSync(HEALTH_LOG, "utf8").trim().split("\n");
++    const lines = readMemorySource(HEALTH_LOG).trim().split("\n");
+     const last = JSON.parse(lines[lines.length - 1]);
+     if (last?.overall !== "critical") return null;
+     const blockers = (last.findings ?? [])
+@@ -161,6 +163,7 @@ function criticalHealthLine(): string | null {
+ 
+ /** Returns the <lifeos-memory-health>? + <lifeos-memory-delta> blocks, or null. Pure — no exit. */
+ export function run(): string | null {
++  if (!canReadMemorySources()) return null;
+   let out = "";
+   try {
+     touchHeartbeat(); // liveness guard: MemoryHealthCheck flags a dead surface
+@@ -176,7 +179,7 @@ export function run(): string | null {
+     if (existsSync(WRITES_LOG)) {
+       // Tail-bounded scan: rows are append-only chronological; cursor advances
+       // every prompt, so only the tail can hold unsurfaced rows.
+-      const allLines = readFileSync(WRITES_LOG, "utf8").split("\n").filter((l) => l.trim().length > 0);
++      const allLines = readMemorySource(WRITES_LOG).split("\n").filter((l) => l.trim().length > 0);
+       for (const line of allLines.slice(-500)) {
+         let row: WriteRow;
+         try { row = JSON.parse(line); } catch { continue; }
+diff --git a/LifeOS/install/hooks/MemoryTurnStart.hook.ts b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
+index 1e73f45..1c96139 100755
+--- a/LifeOS/install/hooks/MemoryTurnStart.hook.ts
++++ b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
+@@ -28,6 +28,7 @@
+ 
+ // tickCadence removed 2026-07-11: MemoryReviewFire (Stop) owns the whole
+ // cadence now — counting, decision, and firing in one place.
++import { canReadMemorySources } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+ import { run as loadMemory } from "./LoadMemory.hook";
+ import { run as deltaSurface } from "./MemoryDeltaSurface.hook";
+ import { getRelevantContext } from "../LIFEOS/TOOLS/MemoryRetriever";
+@@ -88,7 +89,7 @@ async function readStdin(): Promise<string> {
+   });
+ }
+ 
+-if (isSubagent()) process.exit(0);
++if (isSubagent() || !canReadMemorySources()) process.exit(0);
+ 
+ (async () => {
+   let sessionId = "unknown";
 diff --git a/LifeOS/install/hooks/lib/advisory-readback.ts b/LifeOS/install/hooks/lib/advisory-readback.ts
 index fdf5dfa..cdbec6a 100644
 --- a/LifeOS/install/hooks/lib/advisory-readback.ts

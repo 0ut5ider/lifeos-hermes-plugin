@@ -56,58 +56,6 @@ def _strings(value: Any) -> list[str]:
     return []
 
 
-def _valid_log_row(row: dict[str, Any], relative: str) -> bool:
-    if relative.endswith('/memory-writes.jsonl'):
-        if not isinstance(row.get('ts'),str) or not isinstance(row.get('file'),str):
-            return False
-        try:
-            if datetime.fromisoformat(row['ts'].replace('Z','+00:00')).tzinfo is None:
-                return False
-        except ValueError:
-            return False
-        return all(isinstance(row.get(key,[]),list) and all(isinstance(item,str) for item in row.get(key,[]))
-                   for key in ('additions','evictions'))
-    return (row.get('overall') in ('ok','warn','critical') and isinstance(row.get('findings',[]),list)
-            and all(isinstance(finding,dict) and finding.get('severity') in ('ok','warn','critical')
-                    and isinstance(finding.get('message'),str) for finding in row.get('findings',[])))
-
-
-def _health_status(row: dict[str, Any]) -> str:
-    status = {'overall':row['overall'], 'findings':[]}
-    if row['overall'] == 'critical':
-        status['findings'] = [{'severity':'critical',
-                              'message':'Memory diagnostic details are unavailable under the current policy.'}]
-    return json.dumps(status)
-
-
-def _read_log(memory, connection, scope: MemoryScope, relative: str, content: str, timestamp: str) -> str:
-    health = relative.endswith('/memory-health.jsonl')
-    lines = [line for line in content.splitlines() if line.strip()][-1 if health else -500:]
-    candidates, items = [], []
-    for line in lines:
-        try:
-            row = json.loads(line)
-        except ValueError:
-            continue
-        if not isinstance(row,dict) or not _valid_log_row(row,relative):
-            continue
-        text = line + '\n' + '\n'.join(_strings(row))
-        candidates.append((line,row,text))
-        items.append({'type':'idea','title':'Native retained log','content':text})
-    if not items:
-        return ''
-    checked = memory._native('validate_batch',items=items)['results']
-    rows = []
-    for (line,row,text),item,result in zip(candidates,items,checked,strict=True):
-        row_timestamp = row.get('ts') if isinstance(row.get('ts'),str) else timestamp
-        if (result.get('ok') and result.get('item') == item
-                and not memory._filter_history(connection,scope,text,row_timestamp)['excluded']):
-            rows.append(line)
-        elif health:
-            rows.append(_health_status(row))
-    return '\n'.join(rows)
-
-
 def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
     rejected = {'ok':False, 'content':'', 'excluded':True}
     with memory._transaction() as connection:
@@ -115,8 +63,22 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
         content = source.read_text(encoding='utf-8')
         timestamp = datetime.fromtimestamp(source.stat().st_mtime,timezone.utc).isoformat()
         if relative in LOG_FILES:
-            return {'ok':True, 'content':_read_log(memory,connection,scope,relative,content,timestamp),
-                    'excluded':False, 'historical':True}
+            rows = []
+            for line in content.splitlines():
+                try:
+                    row = json.loads(line)
+                except ValueError:
+                    continue
+                if not isinstance(row,dict):
+                    continue
+                decoded = '\n'.join(_strings(row))
+                text = line + '\n' + decoded
+                if memory._validate({'type':'idea','title':'Native retained log','content':text},text,'project'):
+                    continue
+                row_timestamp = row.get('ts') if isinstance(row.get('ts'),str) else timestamp
+                if not memory._filter_history(connection,scope,text,row_timestamp)['excluded']:
+                    rows.append(line)
+            return {'ok':True, 'content':'\n'.join(rows), 'excluded':False, 'historical':True}
         decoded = ''
         if source.suffix in ('.json','.jsonl'):
             values = ([json.loads(line) for line in content.splitlines() if line.strip()]

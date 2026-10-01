@@ -180,9 +180,6 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
-            if operation == "check_sources" and not arguments:
-                from .memory_sources import authorize
-                return authorize(scope)
             if operation == "check_source" and set(arguments) == {"path"}:
                 from .memory_sources import check
                 return check(memory,scope,arguments['path'])
