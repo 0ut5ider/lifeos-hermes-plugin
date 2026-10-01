@@ -1,0 +1,35 @@
+test_retired_marker_field_preserves_native_critical_report_and_publication (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_marker_field_preserves_native_critical_report_and_publication) ... ERROR
+test_retired_state_and_cortex_field_names_preserve_native_report (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_state_and_cortex_field_names_preserve_native_report) ... FAIL
+test_declared_health_detail_fields_do_not_exempt_nested_content_keys (test_memory_cortex_health.MemoryCortexHealthTests.test_declared_health_detail_fields_do_not_exempt_nested_content_keys) ... ERROR
+
+======================================================================
+ERROR: test_retired_marker_field_preserves_native_critical_report_and_publication (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_marker_field_preserves_native_critical_report_and_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 156, in test_retired_marker_field_preserves_native_critical_report_and_publication
+    self.assertEqual(report['overall'], 'critical')
+                     ~~~~~~^^^^^^^^^^^
+KeyError: 'overall'
+
+======================================================================
+ERROR: test_declared_health_detail_fields_do_not_exempt_nested_content_keys (test_memory_cortex_health.MemoryCortexHealthTests.test_declared_health_detail_fields_do_not_exempt_nested_content_keys)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 187, in test_declared_health_detail_fields_do_not_exempt_nested_content_keys
+    self.assertEqual(detail['begins'], 1)
+                     ~~~~~~^^^^^^^^^^
+KeyError: 'begins'
+
+======================================================================
+FAIL: test_retired_state_and_cortex_field_names_preserve_native_report (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_state_and_cortex_field_names_preserve_native_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 167, in test_retired_state_and_cortex_field_names_preserve_native_report
+    self.assertNotIn('unavailable', report)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' unexpectedly found in {'unavailable': 'Memory diagnostics are unavailable under the current policy'}
+
+----------------------------------------------------------------------
+Ran 3 tests in 16.189s
+
+FAILED (failures=1, errors=2)

@@ -36,6 +36,12 @@ BOOLEAN_FIELDS = {
 CLOCK_FIELDS = {'ts', 'timestamp', 'created_at', 'last_review_at', 'last_message_at'}
 STATE_FIELDS = {'turn_count_since_last_review', 'last_review_at', 'last_message_at', 'pending_review'}
 RUN_FIELDS = {'runId', 'ts', 'itemsTotal', 'itemsOk', 'itemsFailed', 'byType', 'itemPaths'}
+HEALTH_DETAIL_FIELDS = {
+    'path', 'hook', 'lastWrite', 'heartbeat', 'turn_count', 'last_review_at', 'pending_review',
+    'age_days', 'count', 'begins', 'ends', 'inverted', 'skips', 'runs', 'failed', 'name', 'value',
+    'staleThresholdMs', 'thresholdMs', 'threshold', 'pending', 'bytes', 'oldestMs', 'files',
+    'available', 'maxBytes', 'maxAgeMs',
+}
 
 
 def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
@@ -88,6 +94,11 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
                       'observabilityMaxAgeMs', 'reviewerRunGraceMs', 'indexStaleMs'}
     if len(path) == 2 and path[0] == 'findings' and isinstance(path[1], int):
         return key in {'id', 'severity', 'message', 'evidence', 'detail'}
+    if (len(path) == 2 and path[0] == 'dropped_invalid' and isinstance(path[1], int)
+            or len(path) == 5 and _finding_evidence(path[:3]) and path[3] == 'dropped' and isinstance(path[4], int)):
+        return key in {'entry', 'reason'}
+    if _finding_evidence(path) and key in HEALTH_DETAIL_FIELDS:
+        return True
     if evidence_field:
         return key in {'status', 'ts', 'runId', 'evidence', 'priorSuccesses', 'error', 'queryHash',
                       'returnedCount', 'durationMs', 'malformedLines', 'manifest', 'policy', 'measuredAt',
@@ -96,13 +107,13 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
     return False
 
 
-def _finding_detail(path: tuple[str | int, ...]) -> bool:
-    return len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and path[2] == 'detail'
+def _finding_evidence(path: tuple[str | int, ...]) -> bool:
+    return len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and path[2] in ('detail', 'evidence')
 
 
 def _evidence_field(path: tuple[str | int, ...]) -> bool:
     return path in (('reviewer',), ('retrieval',), ('index',),
-                    ('evidence', 'reviewer'), ('evidence', 'retrieval'), ('evidence', 'index')) or _finding_detail(path)
+                    ('evidence', 'reviewer'), ('evidence', 'retrieval'), ('evidence', 'index')) or _finding_evidence(path)
 
 
 def _clock(path: tuple[str | int, ...], value: str) -> bool:
@@ -318,7 +329,7 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str, *, v
                                                 'missing', 'invalid', 'absent', 'no-index-v1', 'mismatch'):
                     return value
                 reason = ((len(metadata) == 3 and metadata[0] == 'dropped_invalid' and isinstance(metadata[1], int)) or
-                          (len(metadata) == 6 and _finding_detail(metadata[:3]) and metadata[3] == 'dropped' and isinstance(metadata[4], int)))
+                          (len(metadata) == 6 and _finding_evidence(metadata[:3]) and metadata[3] == 'dropped' and isinstance(metadata[4], int)))
                 if key == 'reason' and reason and value in ('malformed', 'overlength'):
                     return value
                 if view == 'snapshot':

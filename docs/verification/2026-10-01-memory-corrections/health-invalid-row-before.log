@@ -1,0 +1,14 @@
+test_retired_invalid_entry_field_names_preserve_native_warning (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_invalid_entry_field_names_preserve_native_warning) ... ERROR
+
+======================================================================
+ERROR: test_retired_invalid_entry_field_names_preserve_native_warning (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_invalid_entry_field_names_preserve_native_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 206, in test_retired_invalid_entry_field_names_preserve_native_warning
+    warning = next(row for row in report['findings'] if row['id'] == 'pending-silent-loss:principal')
+StopIteration
+
+----------------------------------------------------------------------
+Ran 1 test in 3.315s
+
+FAILED (errors=1)

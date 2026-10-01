@@ -23,3 +23,13 @@ Two regressions use actual Python file-open audit events. Before the correction,
 Explicit hot remember requires read and write grants for the current file. It verifies the whole native snapshot before duplicate detection or publication. It uses the existing verified curation operation, with the explicit writer's source metadata. Adoption remains a separate reviewed action. Project-note publication retains its native archive path.
 
 The before run fails six subcases across unadopted principal and assistant entries, outside additions, changed recorded entries, and a missing read grant. The corrected native, curation, adoption, and authorization gate passes 48 tests in 49.989 seconds. The controls verify byte preservation on refusal, existing references, explicit provenance, duplicate and retry behavior, and a usable governed read after adoption. Evidence is `hot-publication-before.log` and `hot-publication-after.log`.
+
+## Native diagnostic schema
+
+The projection declares the fixed finding fields used by MemoryHealthCheck and CortexHealth. It preserves schema labels in both `detail` and `evidence`, plus the exact invalid-entry row locations. The native response validator retains its strict key, array, and primitive-type checks. Unknown dynamic keys and all fact-bearing strings remain governed.
+
+The original marker and state reproductions fail before the correction. Additional actual native calls reproduce invalid-entry label removal and the Cortex assessment format. The corrected four-case collector gate passes in 20.555 seconds. The separate assessment case passes in 4.091 seconds. Critical marker diagnoses, warning details, and publication survive retirement of their schema words. Nested content keys still receive filtering.
+
+The intermediate logs retain probe mistakes. Native reports omit details for successful checks, and identifiers and filenames still receive text filtering. The corrected tests inspect warning details and the existing success summary. An invalid-entry probe first uses a line the native parser ignores, then uses a recognized overlength entry to reproduce the real label failure. These fixture errors do not establish implementation failures.
+
+These four corrections add no Hermes or LifeOS patch. The prepared native memory patch remains unchanged. `run-regression.sh` runs the combined 15-module gate and writes `regression.log` and `regression.done`. A passing correction gate does not close the outstanding whole-install activation requirements.

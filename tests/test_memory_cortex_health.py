@@ -27,12 +27,15 @@ class MemoryCortexHealthTests(unittest.TestCase):
         (self.obs / 'reviewer-runs.jsonl').write_text(json.dumps({'ts': self.now, 'ok': False,
             'parse_ok': False, 'runId': '2026-09-30T23-55-00-000Z', 'error': error}) + '\n')
 
-    def call(self, *, context=True, root=None, now=None):
+    def call(self, *, context=True, root=None, now=None, filter_assessment=False):
         source = str(self.root / 'LIFEOS/TOOLS/CortexHealth.ts')
         code = ('const m=await import(' + json.dumps(source) + '); try {'
                 'const evidence=m.collectCortexEvidence({root:' + json.dumps(str(root or self.root))
                 + (',nowMs:Date.parse(' + json.dumps(now) + ')' if now else '') + '});'
-                'console.log(JSON.stringify({evidence, assessment:m.assessCortexEvidence(evidence)}));'
+                'let assessment=m.assessCortexEvidence(evidence);'
+                + ('const a=await import(' + json.dumps(str(self.root / 'LIFEOS/TOOLS/lib/MemoryAccess.ts')) + ');'
+                   'assessment=a.filterMemoryDiagnostic(assessment,new Date().toISOString());' if filter_assessment else '') +
+                'console.log(JSON.stringify({evidence, assessment}));'
                 '} catch {console.log(JSON.stringify({unavailable:true}));}')
         environment = dict(os.environ, HOME=str(self.fixture.fixture.home), BUN_CONFIG_NO_AUTO_INSTALL='1')
         environment.pop('LIFEOS_MEMORY_INTERNAL', None)
@@ -112,10 +115,12 @@ class MemoryCortexHealthTests(unittest.TestCase):
         self.assertNotIn('Synthetic encoded retired Cortex error', error)
         self.assertEqual(result['assessment']['overall'], 'critical')
 
-    def health(self, *, context=True, timeout=45, report_path=None, clock=None, expected_error=None):
+    def health(self, *, context=True, timeout=45, report_path=None, clock=None, expected_error=None,
+               max_observability_bytes=None):
         environment = dict(os.environ, HOME=str(self.fixture.fixture.home), BUN_CONFIG_NO_AUTO_INSTALL='1')
         for key in ('LIFEOS_MEMORY_INTERNAL', 'LIFEOS_MEMORY_CONTEXT', 'CORTEX_HEALTH_ROOT', 'CORTEX_INDEX_MANIFEST',
-                    'CORTEX_HEALTH_NOW', 'CORTEX_HEALTH_NO_WRITE', 'CORTEX_HEALTH_REPORT_PATH'):
+                    'CORTEX_HEALTH_NOW', 'CORTEX_HEALTH_NO_WRITE', 'CORTEX_HEALTH_REPORT_PATH',
+                    'CORTEX_OBSERVABILITY_MAX_BYTES'):
             environment.pop(key, None)
         if context:
             environment['LIFEOS_MEMORY_CONTEXT'] = json.dumps(asdict(self.fixture.context))
@@ -123,6 +128,8 @@ class MemoryCortexHealthTests(unittest.TestCase):
             environment['CORTEX_HEALTH_REPORT_PATH'] = str(report_path)
         if clock is not None:
             environment['CORTEX_HEALTH_NOW'] = clock
+        if max_observability_bytes is not None:
+            environment['CORTEX_OBSERVABILITY_MAX_BYTES'] = str(max_observability_bytes)
         result = subprocess.run(['bun', '--no-install', str(self.root / 'LIFEOS/TOOLS/MemoryHealthCheck.ts')],
                                 env=environment, cwd=self.root, capture_output=True, text=True, timeout=timeout)
         if expected_error is not None:
@@ -141,6 +148,82 @@ class MemoryCortexHealthTests(unittest.TestCase):
         self.assertIn('Synthetic current published health error', json.dumps(report))
         published = json.loads((self.obs / 'memory-health.jsonl').read_text().splitlines()[-1])
         self.assertEqual(published, report)
+
+    def retire_fields(self, fields):
+        for field in fields:
+            saved = self.fixture.fixture.remember('RULE: ' + field, 'schema-' + field, 'principal')
+            self.fixture.fixture.memory.forget(OWNER, saved['reference'], 'forget-schema-' + field)
+
+    def test_retired_marker_field_preserves_native_critical_report_and_publication(self):
+        self.retire_fields(('begins', 'ends', 'inverted'))
+        path = self.root / 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md'
+        path.write_text(path.read_text().replace('<!-- END ENTRIES -->', '<!-- END ENTRIES -->\n<!-- END ENTRIES -->'))
+        result, report = self.health()
+        self.assertEqual(result.returncode, 2)
+        self.assertEqual(report['overall'], 'critical')
+        marker = next(row for row in report['findings'] if row['id'] == 'markers-corrupt:principal')
+        self.assertEqual(marker['detail'], {'begins': 1, 'ends': 2, 'inverted': False})
+        self.assertEqual(json.loads((self.obs / 'memory-health.jsonl').read_text().splitlines()[-1]), report)
+
+    def test_retired_state_and_cortex_field_names_preserve_native_report(self):
+        self.retire_fields(('hook', 'turn_count', 'last_review_at', 'pending_review', 'age_days',
+                            'staleThresholdMs', 'thresholdMs', 'files', 'bytes', 'available', 'maxBytes'))
+        (self.obs / 'review-state.json').write_text(json.dumps({'last_review_at': '2020-01-01T00:00:00Z',
+            'turn_count_since_last_review': 7, 'pending_review': True}))
+        result, report = self.health(max_observability_bytes=1)
+        self.assertNotIn('unavailable', report)
+        by_id = {row['id']: row for row in report['findings']}
+        self.assertIn('state-readable', report['ok_summary'])
+        hook = next(row for row in report['findings'] if 'hook' in row.get('detail', {}))
+        self.assertIsInstance(hook['detail']['hook'], str)
+        self.assertEqual(by_id['review-stale']['detail']['last_review_at'], '2020-01-01T00:00:00Z')
+        self.assertEqual(by_id['reviewer-evidence-missing']['detail']['staleThresholdMs'], 604800000)
+        self.assertEqual(by_id['retrieval-missing']['detail']['thresholdMs'], 86400000)
+        observability = next(row['detail'] for row in report['findings'] if 'maxBytes' in row.get('detail', {}))
+        self.assertGreater(observability['files'], 0)
+        self.assertGreater(observability['bytes'], 1)
+        self.assertTrue(observability['available'])
+        self.assertEqual(observability['maxBytes'], 1)
+        self.assertEqual(json.loads((self.obs / 'memory-health.jsonl').read_text().splitlines()[-1]), report)
+
+    def test_declared_health_detail_fields_do_not_exempt_nested_content_keys(self):
+        from lifeos_hook_bridge.memory_diagnostics import filter_report
+        self.retire_fields(('begins',))
+        report = {'findings': [{'detail': {'begins': 1, 'nested': {'begins': 'unrelated control'},
+            'error': {'begins': 'other control'}, 'content': 'begins'}}]}
+        projected = filter_report(self.fixture.fixture.memory, OWNER, json.dumps(report),
+                                  datetime.now(timezone.utc).isoformat())
+        detail = json.loads(projected['content'])['findings'][0]['detail']
+        self.assertEqual(detail['begins'], 1)
+        self.assertEqual(detail['nested'], {})
+        self.assertEqual(detail['error'], {})
+        self.assertNotIn('begins', detail['content'])
+
+    def test_retired_invalid_entry_field_names_preserve_native_warning(self):
+        self.retire_fields(('entry', 'reason'))
+        path = self.root / 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md'
+        entry = 'RULE: Synthetic overlength health row' + ' x' * 150
+        path.write_text(path.read_text().replace('<!-- END ENTRIES -->',
+            entry + '\n<!-- END ENTRIES -->'))
+        result, report = self.health()
+        self.assertNotIn('unavailable', report)
+        warning = next(row for row in report['findings'] if row['id'] == 'pending-silent-loss:principal')
+        self.assertEqual(warning['detail']['dropped'],
+                         [{'entry': entry, 'reason': 'overlength'}])
+        self.assertEqual(json.loads((self.obs / 'memory-health.jsonl').read_text().splitlines()[-1]), report)
+
+    def test_native_cortex_assessment_evidence_preserves_retired_schema_field_names(self):
+        self.retire_fields(('staleThresholdMs', 'thresholdMs', 'files', 'available'))
+        (self.obs / 'memory-writes.jsonl').unlink(missing_ok=True)
+        result = self.call(filter_assessment=True)
+        self.assertNotIn('unavailable', result)
+        self.assertEqual(result['assessment']['overall'], 'warn')
+        details = [row['evidence'] for row in result['assessment']['findings'] if 'evidence' in row]
+        self.assertEqual(next(row for row in details if 'staleThresholdMs' in row)['staleThresholdMs'], 604800000)
+        self.assertEqual(next(row for row in details if 'thresholdMs' in row)['thresholdMs'], 86400000)
+        observability = next(row for row in details if 'files' in row)
+        self.assertEqual(observability['files'], 0)
+        self.assertFalse(observability['available'])
 
     def test_missing_identity_does_not_publish_health_as_a_new_diagnostic(self):
         self.reviewer('Synthetic private published health error')
