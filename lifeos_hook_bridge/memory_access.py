@@ -172,7 +172,7 @@ class NativeMemory:
             return False
         return record["category"] != "project" or "*" in scope.projects or record["project"] in scope.projects
 
-    def _content(self, record: sqlite3.Row) -> str:
+    def _content(self, record: sqlite3.Row, hot_entries: dict[Path, list[str]] | None = None) -> str:
         path = self._path(record["path"])
         if not path.is_file():
             raise MemoryUnavailable("The referenced native memory file is missing")
@@ -187,7 +187,12 @@ class NativeMemory:
             if section == candidate and _digest(candidate) == record["digest"]:
                 return candidate
         if record["category"] != "project":
-            entries = self._native("read_hot", path=str(path)).get("entries", [])
+            if hot_entries is None:
+                entries = self._native("read_hot", path=str(path)).get("entries", [])
+            else:
+                if path not in hot_entries:
+                    hot_entries[path] = self._native("read_hot", path=str(path)).get("entries", [])
+                entries = hot_entries[path]
             matches = [entry for entry in entries if _digest(entry) == record["digest"]]
             if len(matches) == 1:
                 return matches[0]
@@ -613,10 +618,12 @@ class NativeMemory:
     def _corpus(self, connection: sqlite3.Connection, scope: MemoryScope) -> tuple[dict[str, Any], list[dict[str, Any]]]:
         records = {}
         corpus = []
+        hot_entries = {}
         for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
             if not self._allowed(scope, row):
                 continue
-            content = self._content(row)
+            # Reuse native parsing inside this locked retrieval, keeping each reference's digest check.
+            content = self._content(row, hot_entries)
             records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
                                   "content": content, "category": row["category"], "project": row["project"],
                                   "writer": row["writer"], "status": 'historical' if row['source_kind']=='learning' else row["status"],

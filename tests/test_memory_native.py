@@ -342,6 +342,49 @@ memory.correct(OWNER, REFERENCE, "RULE: synthetic orphan correction", "orphan")
                 process.kill()
                 process.wait(timeout=5)
 
+    def test_hot_corpus_reuses_real_native_reads_and_respects_category_grants(self):
+        from dataclasses import replace
+        for category in ('principal', 'assistant'):
+            for index in range(2):
+                saved = self.remember(f'RULE: Synthetic measured corpus {category} number {index}',
+                                      category + str(index), category)
+                self.assertEqual(saved['status'], 'committed', saved)
+        observed = []
+        original = self.memory._native
+        def observe(action, **values):
+            if action == 'read_hot':
+                observed.append(values['path'])
+            return original(action, **values)
+        self.memory._native = observe
+        facts = self.memory.recall(OWNER, 'Synthetic measured corpus')
+        self.assertEqual(len(facts), 4)
+        self.assertEqual(len(observed), 2, 'Retrieval reparses each fact instead of each native file')
+        observed.clear()
+        facts = self.memory.recall(replace(OWNER, read=('principal',)), 'Synthetic measured corpus')
+        self.assertEqual(len(facts), 2)
+        self.assertTrue(all(fact['category'] == 'principal' for fact in facts))
+        self.assertEqual(len(observed), 1)
+        observed.clear()
+        self.assertEqual(self.memory.recall(READER, 'Synthetic measured corpus'), [])
+        self.assertEqual(observed, [])
+
+    def test_hot_corpus_cache_preserves_changes_and_native_duplicate_normalization(self):
+        from lifeos_hook_bridge.memory_access import HOT_FILES, MemoryConflict
+        content = 'RULE: Synthetic validated corpus control'
+        saved = self.remember(content, 'control', 'principal')
+        path = self.root / HOT_FILES['principal']
+        original = path.read_text()
+        self.assertEqual(len(self.memory.recall(OWNER, 'validated corpus')), 1)
+        path.write_text(original.replace('validated corpus control', 'changed corpus control'))
+        with self.assertRaises(MemoryConflict):
+            self.memory.recall(OWNER, 'validated corpus')
+        path.write_text(original.replace('<!-- END ENTRIES -->', content + '\n<!-- END ENTRIES -->'))
+        duplicate = self.memory.recall(OWNER, 'validated corpus')
+        self.assertEqual(len(duplicate), 1)
+        self.assertEqual(duplicate[0]['reference'], saved['reference'])
+        path.write_text(original)
+        self.assertEqual(len(self.memory.recall(OWNER, 'validated corpus')), 1)
+
     def test_native_ranking_uses_only_the_authorized_corpus(self):
         self.remember("RULE: synthetic forbidden lab preference", "private", "principal")
         first = self.remember("The synthetic lab uses port 9123.", "original")
