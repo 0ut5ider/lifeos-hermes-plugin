@@ -1,0 +1,1446 @@
+{
+  "same_file_mutations": [
+    {
+      "operation": "correct",
+      "category": "principal",
+      "drift": "none",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "d4bf3bf448a44839944f371009c97a19",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "d33f14bdea5746d18f43eba47cb75037",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "7222753f34ea4c8dbea90e12fad3b030",
+          "revision": 1
+        },
+        "supersedes": {
+          "id": "d4bf3bf448a44839944f371009c97a19",
+          "revision": 1
+        },
+        "writer": "local:owner",
+        "request_id": "neighbor-correct"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "result": {
+          "entries": [
+            "RULE: Synthetic replacement fact",
+            "RULE: Synthetic neighboring fact"
+          ],
+          "count": 2,
+          "chars_used": 64,
+          "cap_entries": 48,
+          "cap_chars": 12288,
+          "dropped_invalid": [],
+          "revision": "6ad4bb5a5bc61cd1e9d1fe336d91c138122691331d07a0246f20febad1532a05"
+        }
+      },
+      "rows": [
+        {
+          "id": "d4bf3bf448a44839944f371009c97a19",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "superseded",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:05.849827+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "d33f14bdea5746d18f43eba47cb75037",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:05.578234+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        },
+        {
+          "id": "7222753f34ea4c8dbea90e12fad3b030",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "7b99bd9e09f670894abd43abe4a74c18ca1c90f45f0528a2ce33ba2e130f7af0",
+          "chars": 32,
+          "position": 99,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "correction",
+          "updated": "2026-10-01T12:19:05.849607+00:00",
+          "claim_digest": "48c509b1977fb120ee0f22b09530ef05f2186247f42cfa1b8a5cb64e606f8959",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:05.496Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:05.843Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic replacement fact\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "correct",
+      "category": "principal",
+      "drift": "overlength",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "7a489fb5af33426e9b24253e081287e7",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "0ce30431a4434830bf156cc0cc176574",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "151ae0f9fa5d4f24b9b9236bdc645e0c",
+          "revision": 1
+        },
+        "supersedes": {
+          "id": "7a489fb5af33426e9b24253e081287e7",
+          "revision": 1
+        },
+        "writer": "local:owner",
+        "request_id": "neighbor-correct"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "7a489fb5af33426e9b24253e081287e7",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "superseded",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:07.435393+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "0ce30431a4434830bf156cc0cc176574",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:07.168661+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        },
+        {
+          "id": "151ae0f9fa5d4f24b9b9236bdc645e0c",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "7b99bd9e09f670894abd43abe4a74c18ca1c90f45f0528a2ce33ba2e130f7af0",
+          "chars": 32,
+          "position": 99,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "correction",
+          "updated": "2026-10-01T12:19:07.435228+00:00",
+          "claim_digest": "48c509b1977fb120ee0f22b09530ef05f2186247f42cfa1b8a5cb64e606f8959",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:07.093Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:07.427Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic replacement fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "correct",
+      "category": "principal",
+      "drift": "valid_addition",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "4ead79f0cd284e5381ab0cb1cec4f7c7",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "4879de436ccb45e3b00e0a260f0b9654",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "1e791129311f4ec19ef8698ae84ab7b3",
+          "revision": 1
+        },
+        "supersedes": {
+          "id": "4ead79f0cd284e5381ab0cb1cec4f7c7",
+          "revision": 1
+        },
+        "writer": "local:owner",
+        "request_id": "neighbor-correct"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": true,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "4ead79f0cd284e5381ab0cb1cec4f7c7",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "superseded",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:09.036908+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "4879de436ccb45e3b00e0a260f0b9654",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:08.769939+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        },
+        {
+          "id": "1e791129311f4ec19ef8698ae84ab7b3",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "7b99bd9e09f670894abd43abe4a74c18ca1c90f45f0528a2ce33ba2e130f7af0",
+          "chars": 32,
+          "position": 99,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "correction",
+          "updated": "2026-10-01T12:19:09.036710+00:00",
+          "claim_digest": "48c509b1977fb120ee0f22b09530ef05f2186247f42cfa1b8a5cb64e606f8959",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:08.695Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:09.030Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic replacement fact\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "correct",
+      "category": "assistant",
+      "drift": "none",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "43bfe55848f74a48980a82feaa91720f",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "848ce6c6e59b49e3a65d29149a3ae1c9",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "e883a59b5a2446e0b6e2746cc3bd38e6",
+          "revision": 1
+        },
+        "supersedes": {
+          "id": "43bfe55848f74a48980a82feaa91720f",
+          "revision": 1
+        },
+        "writer": "local:owner",
+        "request_id": "neighbor-correct"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "result": {
+          "entries": [
+            "RULE: Synthetic replacement fact",
+            "RULE: Synthetic neighboring fact"
+          ],
+          "count": 2,
+          "chars_used": 64,
+          "cap_entries": 48,
+          "cap_chars": 12288,
+          "dropped_invalid": [],
+          "revision": "1d9bdf632ebcab9d7b335cbece7269ef4022c06daee6523998e24cb37f074b36"
+        }
+      },
+      "rows": [
+        {
+          "id": "43bfe55848f74a48980a82feaa91720f",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "superseded",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:10.594708+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "848ce6c6e59b49e3a65d29149a3ae1c9",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:10.334072+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        },
+        {
+          "id": "e883a59b5a2446e0b6e2746cc3bd38e6",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "7b99bd9e09f670894abd43abe4a74c18ca1c90f45f0528a2ce33ba2e130f7af0",
+          "chars": 32,
+          "position": 99,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "correction",
+          "updated": "2026-10-01T12:19:10.594515+00:00",
+          "claim_digest": "48c509b1977fb120ee0f22b09530ef05f2186247f42cfa1b8a5cb64e606f8959",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:10.266Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:10.588Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic replacement fact\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "correct",
+      "category": "assistant",
+      "drift": "overlength",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "22d58e871fa24bf58f508088fc16fb22",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "46059e0036eb4545996a9b0cfe60d721",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "a62379f022ad445eb7a205ca1baa6f19",
+          "revision": 1
+        },
+        "supersedes": {
+          "id": "22d58e871fa24bf58f508088fc16fb22",
+          "revision": 1
+        },
+        "writer": "local:owner",
+        "request_id": "neighbor-correct"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "22d58e871fa24bf58f508088fc16fb22",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "superseded",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:12.196889+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "46059e0036eb4545996a9b0cfe60d721",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:11.916316+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        },
+        {
+          "id": "a62379f022ad445eb7a205ca1baa6f19",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "7b99bd9e09f670894abd43abe4a74c18ca1c90f45f0528a2ce33ba2e130f7af0",
+          "chars": 32,
+          "position": 99,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "correction",
+          "updated": "2026-10-01T12:19:12.196657+00:00",
+          "claim_digest": "48c509b1977fb120ee0f22b09530ef05f2186247f42cfa1b8a5cb64e606f8959",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:11.845Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:12.190Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic replacement fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "correct",
+      "category": "assistant",
+      "drift": "valid_addition",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "4da092a9cf544bff9094588850b0f794",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "f0622c627e6445428543ae05303ceda6",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "8a0b91db18974d5592e7b0ed193823a7",
+          "revision": 1
+        },
+        "supersedes": {
+          "id": "4da092a9cf544bff9094588850b0f794",
+          "revision": 1
+        },
+        "writer": "local:owner",
+        "request_id": "neighbor-correct"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": true,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "4da092a9cf544bff9094588850b0f794",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "superseded",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:13.823428+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "f0622c627e6445428543ae05303ceda6",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:13.561573+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        },
+        {
+          "id": "8a0b91db18974d5592e7b0ed193823a7",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "7b99bd9e09f670894abd43abe4a74c18ca1c90f45f0528a2ce33ba2e130f7af0",
+          "chars": 32,
+          "position": 99,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "correction",
+          "updated": "2026-10-01T12:19:13.823268+00:00",
+          "claim_digest": "48c509b1977fb120ee0f22b09530ef05f2186247f42cfa1b8a5cb64e606f8959",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:13.489Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:13.817Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic replacement fact\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "category": "principal",
+      "drift": "none",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "59e056dd914a4ad38b7cd187067d42f7",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "d3eb2cdc7d8b4f91a4559a4df9f8d4c7",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "59e056dd914a4ad38b7cd187067d42f7",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "local:owner",
+        "request_id": "neighbor-forget"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "result": {
+          "entries": [
+            "RULE: Synthetic neighboring fact"
+          ],
+          "count": 1,
+          "chars_used": 32,
+          "cap_entries": 48,
+          "cap_chars": 12288,
+          "dropped_invalid": [],
+          "revision": "a6e6095458d6fb976bf83b2c8b7ffd2e709cfd9cc05396818b5426360ad1067d"
+        }
+      },
+      "rows": [
+        {
+          "id": "59e056dd914a4ad38b7cd187067d42f7",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "forgotten",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:15.464488+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "d3eb2cdc7d8b4f91a4559a4df9f8d4c7",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:15.231633+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:15.141Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:15.458Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "category": "principal",
+      "drift": "overlength",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "f1973b188ff042f6a70214c11459d2c0",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "34eac442bbdf4a46b408066e99362c2b",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "f1973b188ff042f6a70214c11459d2c0",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "local:owner",
+        "request_id": "neighbor-forget"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "f1973b188ff042f6a70214c11459d2c0",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "forgotten",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:17.001356+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "34eac442bbdf4a46b408066e99362c2b",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:16.796246+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:16.719Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:16.995Z\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "category": "principal",
+      "drift": "valid_addition",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "fce52a6c6ce3428687c005e87ef901b2",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "c67fa90197304a1a9de2f5cde6c1c65b",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "fce52a6c6ce3428687c005e87ef901b2",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "local:owner",
+        "request_id": "neighbor-forget"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": true,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "fce52a6c6ce3428687c005e87ef901b2",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "forgotten",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:18.545483+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "c67fa90197304a1a9de2f5cde6c1c65b",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "category": "principal",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:18.347418+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:18.278Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:18.538Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "category": "assistant",
+      "drift": "none",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "e6a55d837ba14e759223d0745b2f8013",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "5352bf9fd6e543418006aa319844d02f",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "e6a55d837ba14e759223d0745b2f8013",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "local:owner",
+        "request_id": "neighbor-forget"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "result": {
+          "entries": [
+            "RULE: Synthetic neighboring fact"
+          ],
+          "count": 1,
+          "chars_used": 32,
+          "cap_entries": 48,
+          "cap_chars": 12288,
+          "dropped_invalid": [],
+          "revision": "ff187ee56f13ac43e34aed8fafdb2b7cb810e4eaf8e5333f75fa8d545b1d69cc"
+        }
+      },
+      "rows": [
+        {
+          "id": "e6a55d837ba14e759223d0745b2f8013",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "forgotten",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:20.147261+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "5352bf9fd6e543418006aa319844d02f",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:19.941806+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:19.857Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:20.141Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic neighboring fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "category": "assistant",
+      "drift": "overlength",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "c77c03b0a92d4387a72a2366baa9ea69",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "db862cc0d2954a78938f3de0311f8f25",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "c77c03b0a92d4387a72a2366baa9ea69",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "local:owner",
+        "request_id": "neighbor-forget"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": false,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "c77c03b0a92d4387a72a2366baa9ea69",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "forgotten",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:21.727724+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "db862cc0d2954a78938f3de0311f8f25",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:21.517356+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:21.439Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:21.721Z\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "category": "assistant",
+      "drift": "valid_addition",
+      "first": {
+        "status": "committed",
+        "reference": {
+          "id": "922c2ee1f4044701b10c94a6b3201a79",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "first"
+      },
+      "second": {
+        "status": "committed",
+        "reference": {
+          "id": "1cb5b14c11f643339a3eb1f67134ff77",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "second"
+      },
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "922c2ee1f4044701b10c94a6b3201a79",
+          "revision": 2
+        },
+        "retained": [
+          "native history",
+          "audit evidence",
+          "backups",
+          "conversation history",
+          "development logs"
+        ],
+        "writer": "local:owner",
+        "request_id": "neighbor-forget"
+      },
+      "bytes_changed": true,
+      "neighbor_present_after": true,
+      "governed_read": {
+        "error_type": "MemoryConflict",
+        "error": "Native hot memory changed outside governed publication; review it before adoption"
+      },
+      "rows": [
+        {
+          "id": "922c2ee1f4044701b10c94a6b3201a79",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "d22a227c76ad627dffbf16bbb9927c36d269d1ce8f3f0794712b22a557932aac",
+          "chars": 27,
+          "position": 99,
+          "revision": 2,
+          "status": "forgotten",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:23.405337+00:00",
+          "claim_digest": "04317e62636992813a3cac7ebb8b198916016dac85f8d9ccf30646a0a996c9df",
+          "claim_words": 3
+        },
+        {
+          "id": "1cb5b14c11f643339a3eb1f67134ff77",
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "category": "assistant",
+          "project": "",
+          "digest": "a81b157838b89f05d389af83d6d3faa3820a2d798408d8f47ab76d591942ac63",
+          "chars": 32,
+          "position": 127,
+          "revision": 1,
+          "status": "active",
+          "writer": "local:owner",
+          "source_session": "",
+          "source_kind": "explicit",
+          "updated": "2026-10-01T12:19:23.194362+00:00",
+          "claim_digest": "26f27f3d61cd5b41fa4820caefa0e906d0cd88ac7bf09b05342fe1fd2e3072ef",
+          "claim_words": 3
+        }
+      ],
+      "before": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:23.124Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic target fact\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T12:19:23.399Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic neighboring fact\nRULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->\n"
+    }
+  ],
+  "native_source_provenance": {
+    "hot": [
+      {
+        "category": "principal",
+        "receipt": {
+          "ok": true,
+          "type": "memory",
+          "path": "/tmp/native-memory-t15s8c5c/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic native source principal"
+            ]
+          },
+          "receipt": {
+            "status": "committed",
+            "references": [
+              {
+                "id": "86ee9d8251fd43bd9c863c5141f8b489",
+                "revision": 1
+              }
+            ],
+            "detail": {
+              "ok": true,
+              "accepted": 1,
+              "dropped_malformed": 0,
+              "dropped_overlength": 0,
+              "dropped_duplicates": 0,
+              "prior_count": 0,
+              "new_count": 1,
+              "evictions": [],
+              "additions": [
+                "RULE: Synthetic native source principal"
+              ]
+            },
+            "writer": "local:owner",
+            "request_id": "native-source-principal"
+          }
+        },
+        "recall": [
+          {
+            "reference": {
+              "id": "86ee9d8251fd43bd9c863c5141f8b489",
+              "revision": 1
+            },
+            "content": "RULE: Synthetic native source principal",
+            "category": "principal",
+            "project": "",
+            "writer": "local:owner",
+            "status": "active",
+            "source": {
+              "kind": "native-curation",
+              "session": "",
+              "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+            },
+            "score": 14
+          }
+        ]
+      },
+      {
+        "category": "assistant",
+        "receipt": {
+          "ok": true,
+          "type": "memory",
+          "path": "/tmp/native-memory-t15s8c5c/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic native source assistant"
+            ]
+          },
+          "receipt": {
+            "status": "committed",
+            "references": [
+              {
+                "id": "b0531cda5bf34955930e06b130f01f90",
+                "revision": 1
+              }
+            ],
+            "detail": {
+              "ok": true,
+              "accepted": 1,
+              "dropped_malformed": 0,
+              "dropped_overlength": 0,
+              "dropped_duplicates": 0,
+              "prior_count": 0,
+              "new_count": 1,
+              "evictions": [],
+              "additions": [
+                "RULE: Synthetic native source assistant"
+              ]
+            },
+            "writer": "local:owner",
+            "request_id": "native-source-assistant"
+          }
+        },
+        "recall": [
+          {
+            "reference": {
+              "id": "b0531cda5bf34955930e06b130f01f90",
+              "revision": 1
+            },
+            "content": "RULE: Synthetic native source assistant",
+            "category": "assistant",
+            "project": "",
+            "writer": "local:owner",
+            "status": "active",
+            "source": {
+              "kind": "native-curation",
+              "session": "",
+              "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md"
+            },
+            "score": 14
+          },
+          {
+            "reference": {
+              "id": "86ee9d8251fd43bd9c863c5141f8b489",
+              "revision": 1
+            },
+            "content": "RULE: Synthetic native source principal",
+            "category": "principal",
+            "project": "",
+            "writer": "local:owner",
+            "status": "active",
+            "source": {
+              "kind": "native-curation",
+              "session": "",
+              "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+            },
+            "score": 3
+          }
+        ]
+      }
+    ],
+    "project_control": {
+      "receipt": {
+        "ok": true,
+        "type": "knowledge",
+        "path": "/tmp/native-memory-t15s8c5c/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-native-project.md",
+        "detail": {
+          "bytes_written": 326,
+          "created_or_appended": "created",
+          "related_links": 0
+        },
+        "receipt": {
+          "status": "committed",
+          "reference": {
+            "id": "7f776353a0ea49188f729a3b369e53b8",
+            "revision": 1
+          },
+          "detail": {
+            "bytes_written": 326,
+            "created_or_appended": "created",
+            "related_links": 0
+          },
+          "writer": "local:owner",
+          "request_id": "native-source-project"
+        }
+      },
+      "recall": [
+        {
+          "reference": {
+            "id": "7f776353a0ea49188f729a3b369e53b8",
+            "revision": 1
+          },
+          "content": "Synthetic native project source",
+          "category": "project",
+          "project": "lab",
+          "writer": "local:owner",
+          "status": "active",
+          "source": {
+            "kind": "native",
+            "session": "synthetic-source-session",
+            "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-native-project.md"
+          },
+          "score": 4.2748091603053435
+        },
+        {
+          "reference": {
+            "id": "b0531cda5bf34955930e06b130f01f90",
+            "revision": 1
+          },
+          "content": "RULE: Synthetic native source assistant",
+          "category": "assistant",
+          "project": "",
+          "writer": "local:owner",
+          "status": "active",
+          "source": {
+            "kind": "native-curation",
+            "session": "",
+            "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md"
+          },
+          "score": 2.906574394463668
+        },
+        {
+          "reference": {
+            "id": "86ee9d8251fd43bd9c863c5141f8b489",
+            "revision": 1
+          },
+          "content": "RULE: Synthetic native source principal",
+          "category": "principal",
+          "project": "",
+          "writer": "local:owner",
+          "status": "active",
+          "source": {
+            "kind": "native-curation",
+            "session": "",
+            "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+          },
+          "score": 2.906574394463668
+        }
+      ]
+    }
+  }
+}

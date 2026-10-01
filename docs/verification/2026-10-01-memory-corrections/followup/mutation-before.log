@@ -1,0 +1,137 @@
+test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) ... 
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='overlength', operation='correct') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='overlength', operation='forget') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='valid_addition', operation='correct') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='valid_addition', operation='forget') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='overlength', operation='correct') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='overlength', operation='forget') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='valid_addition', operation='correct') ... FAIL
+  test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='valid_addition', operation='forget') ... FAIL
+test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) ... 
+  test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='principal', operation='correct') ... FAIL
+  test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='principal', operation='forget') ... FAIL
+  test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='assistant', operation='correct') ... FAIL
+  test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='assistant', operation='forget') ... FAIL
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='overlength', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 56, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertIn(receipt['status'], ('conflict', 'rejected'), receipt)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'committed' not found in ('conflict', 'rejected') : {'status': 'committed', 'reference': {'id': 'c3087da45722423aa12df243142f0256', 'revision': 1}, 'supersedes': {'id': 'd93f99f939124c9eb3374cd3591b85aa', 'revision': 1}, 'writer': 'local:owner', 'request_id': 'drift-correct'}
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='overlength', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 57, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertEqual(path.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'---[59 chars]:20:41.050Z\n---\n<!-- BEGIN ENTRIES -->\nRULE[48 chars]->\n' != b'---[59 chars]:20:40.722Z\n---\n<!-- BEGIN ENTRIES -->\nRULE[351 chars]->\n'
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='valid_addition', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 56, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertIn(receipt['status'], ('conflict', 'rejected'), receipt)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'committed' not found in ('conflict', 'rejected') : {'status': 'committed', 'reference': {'id': '93724cf28cca42eeb7dabbcebb097fb5', 'revision': 1}, 'supersedes': {'id': '194c6ada15e74dd6b6829e589c378ee3', 'revision': 1}, 'writer': 'local:owner', 'request_id': 'drift-correct'}
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='principal', drift='valid_addition', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 57, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertEqual(path.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'---[61 chars]0:42.597Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: [116 chars]->\n' != b'---[61 chars]0:42.257Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: [111 chars]->\n'
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='overlength', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 56, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertIn(receipt['status'], ('conflict', 'rejected'), receipt)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'committed' not found in ('conflict', 'rejected') : {'status': 'committed', 'reference': {'id': '9603e018618a4a67921d4a31fa7b7369', 'revision': 1}, 'supersedes': {'id': '721aae2080df46d6aefef8b7f9a2d756', 'revision': 1}, 'writer': 'local:owner', 'request_id': 'drift-correct'}
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='overlength', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 57, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertEqual(path.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'---[59 chars]:20:44.122Z\n---\n<!-- BEGIN ENTRIES -->\nRULE[48 chars]->\n' != b'---[59 chars]:20:43.788Z\n---\n<!-- BEGIN ENTRIES -->\nRULE[351 chars]->\n'
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='valid_addition', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 56, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertIn(receipt['status'], ('conflict', 'rejected'), receipt)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'committed' not found in ('conflict', 'rejected') : {'status': 'committed', 'reference': {'id': '2d77ac8a6e334e64a2b35dfe170017e6', 'revision': 1}, 'supersedes': {'id': 'c3403b383e0146bba78c7e01620b5bb0', 'revision': 1}, 'writer': 'local:owner', 'request_id': 'drift-correct'}
+
+======================================================================
+FAIL: test_hot_mutations_refuse_neighbor_drift_without_retiring_records (test_memory_curation.MemoryCurationTests.test_hot_mutations_refuse_neighbor_drift_without_retiring_records) (category='assistant', drift='valid_addition', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 57, in test_hot_mutations_refuse_neighbor_drift_without_retiring_records
+    self.assertEqual(path.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'---[61 chars]0:45.633Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: [116 chars]->\n' != b'---[61 chars]0:45.305Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: [111 chars]->\n'
+
+======================================================================
+FAIL: test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='principal', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 77, in test_hot_correct_and_forget_require_read_before_opening_the_whole_file
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(path.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'---[14 chars]_by: synthetic:blind-writer\nlast_updated: 202[105 chars]->\n' != b'---[14 chars]_by: local:owner\nlast_updated: 2026-10-01T12:[97 chars]->\n'
+
+======================================================================
+FAIL: test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='principal', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 78, in test_hot_correct_and_forget_require_read_before_opening_the_whole_file
+    self.assertEqual(result['status'], 'rejected', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'conflict' != 'rejected'
+- conflict
++ rejected
+ : {'status': 'conflict', 'reason': 'The referenced revision is no longer current', 'writer': 'synthetic:blind-writer', 'request_id': 'blind-forget-principal'}
+
+======================================================================
+FAIL: test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='assistant', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 77, in test_hot_correct_and_forget_require_read_before_opening_the_whole_file
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(path.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'---[14 chars]_by: synthetic:blind-writer\nlast_updated: 202[105 chars]->\n' != b'---[14 chars]_by: local:owner\nlast_updated: 2026-10-01T12:[97 chars]->\n'
+
+======================================================================
+FAIL: test_hot_correct_and_forget_require_read_before_opening_the_whole_file (test_memory_authorization.MemoryAuthorizationTests.test_hot_correct_and_forget_require_read_before_opening_the_whole_file) (category='assistant', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 78, in test_hot_correct_and_forget_require_read_before_opening_the_whole_file
+    self.assertEqual(result['status'], 'rejected', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'conflict' != 'rejected'
+- conflict
++ rejected
+ : {'status': 'conflict', 'reason': 'The referenced revision is no longer current', 'writer': 'synthetic:blind-writer', 'request_id': 'blind-forget-assistant'}
+
+----------------------------------------------------------------------
+Ran 2 tests in 7.888s
+
+FAILED (failures=12)

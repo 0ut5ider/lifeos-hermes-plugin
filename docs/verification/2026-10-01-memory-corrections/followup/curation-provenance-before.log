@@ -1,0 +1,54 @@
+test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) ... 
+  test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='set', category='principal') ... FAIL
+  test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='set', category='assistant') ... FAIL
+  test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='add', category='principal') ... FAIL
+  test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='add', category='assistant') ... FAIL
+
+======================================================================
+FAIL: test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='set', category='principal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 92, in test_native_full_curation_preserves_session_for_new_facts
+    self.assertEqual(fact['source']['session'], self.context.session_id)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != 'native-session'
++ native-session
+
+
+======================================================================
+FAIL: test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='set', category='assistant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 92, in test_native_full_curation_preserves_session_for_new_facts
+    self.assertEqual(fact['source']['session'], self.context.session_id)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != 'native-session'
++ native-session
+
+
+======================================================================
+FAIL: test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='add', category='principal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 92, in test_native_full_curation_preserves_session_for_new_facts
+    self.assertEqual(fact['source']['session'], self.context.session_id)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != 'native-session'
++ native-session
+
+
+======================================================================
+FAIL: test_native_full_curation_preserves_session_for_new_facts (test_memory_delegation.MemoryDelegationTests.test_native_full_curation_preserves_session_for_new_facts) (mode='add', category='assistant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 92, in test_native_full_curation_preserves_session_for_new_facts
+    self.assertEqual(fact['source']['session'], self.context.session_id)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '' != 'native-session'
++ native-session
+
+
+----------------------------------------------------------------------
+Ran 1 test in 4.224s
+
+FAILED (failures=4)

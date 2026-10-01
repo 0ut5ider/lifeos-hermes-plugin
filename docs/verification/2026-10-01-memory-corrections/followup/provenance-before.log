@@ -1,0 +1,32 @@
+test_native_hot_additions_preserve_authenticated_source_session (test_memory_delegation.MemoryDelegationTests.test_native_hot_additions_preserve_authenticated_source_session) ... 
+  test_native_hot_additions_preserve_authenticated_source_session (test_memory_delegation.MemoryDelegationTests.test_native_hot_additions_preserve_authenticated_source_session) (category='principal') ... FAIL
+  test_native_hot_additions_preserve_authenticated_source_session (test_memory_delegation.MemoryDelegationTests.test_native_hot_additions_preserve_authenticated_source_session) (category='assistant') ... FAIL
+
+======================================================================
+FAIL: test_native_hot_additions_preserve_authenticated_source_session (test_memory_delegation.MemoryDelegationTests.test_native_hot_additions_preserve_authenticated_source_session) (category='principal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 66, in test_native_hot_additions_preserve_authenticated_source_session
+    self.assertEqual(fact['source']['kind'], 'native')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'native-curation' != 'native'
+- native-curation
++ native
+
+
+======================================================================
+FAIL: test_native_hot_additions_preserve_authenticated_source_session (test_memory_delegation.MemoryDelegationTests.test_native_hot_additions_preserve_authenticated_source_session) (category='assistant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 66, in test_native_hot_additions_preserve_authenticated_source_session
+    self.assertEqual(fact['source']['kind'], 'native')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'native-curation' != 'native'
+- native-curation
++ native
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.088s
+
+FAILED (failures=2)
