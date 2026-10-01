@@ -28,6 +28,8 @@ Display names come from a separate native configuration loader. Managed calls re
 
 The combined distributed gate passes 61 cases in 70.270 seconds without skips, failures, or errors. It includes eighteen native context cases, retained-source and native-delegation cases, child cases, seven actual Hermes provider cases, and five source-preparation and patch-bundle cases.
 
+The detached broader gate at revision `6663d50` also completes with exit status zero. It tests the memory modules discovered at start, followed by the actual Hermes provider and source-preparation suites. `regression.txt` preserves the commands and full output. Wiki renderer fixtures created later are a separate gate, not part of this result.
+
 Prepared inputs use Hermes `758ad514eb0e800547e015edf05aa18f78b78d82` and LifeOS `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. The existing LifeOS memory patch now changes 23 files. The nine Hermes patch groups and ten LifeOS patch groups remain unchanged.
 
 ## Limits
