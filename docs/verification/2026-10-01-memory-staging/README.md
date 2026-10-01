@@ -46,3 +46,5 @@ These results establish governed index generation during promotion. They do not 
 Pinned source bases remain Hermes `758ad514eb0e800547e015edf05aa18f78b78d82` and LifeOS `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`. Ownership setup and complete backup/restore remain open. Restricted prompts, delivery, lifecycle, and the full release gate remain open.
 
 The distributed focused gate passes 65 cases in 72.749 seconds without skips, failures, or errors. It includes 20 staging cases, 18 recovery cases, 17 canonical cases, and ten Knowledge-query cases. The 50-note preview and process-death recovery use actual subprocesses and native files.
+
+The detached complete memory regression at revision `39e7bae` passes 432 cases in 567.440 seconds. `regression.txt` records the raw output. `regression.done` records exit status zero. The separate actual Hermes memory-provider suite passes seven cases in 2.637 seconds. Both runs have no skips, failures, or errors. These are regression results for implemented behavior. The open inventory and activation gates remain open.
