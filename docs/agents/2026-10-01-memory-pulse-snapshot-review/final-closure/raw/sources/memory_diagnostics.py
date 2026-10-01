@@ -40,8 +40,8 @@ RUN_FIELDS = {'runId', 'ts', 'itemsTotal', 'itemsOk', 'itemsFailed', 'byType', '
 
 def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
     # Declared operational field names carry schema, while dynamic names carry content.
-    if view == 'state':
-        return not path and key in STATE_FIELDS
+    if view == 'state' and not path:
+        return key in STATE_FIELDS
     if view == 'snapshot':
         if not path:
             return key in {'ts', 'derivedState', 'cadenceConfig', 'reviewState', 'health', 'lastFireCount',
@@ -51,9 +51,6 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
             return key in STATE_FIELDS
         if path == ('cadenceConfig',):
             return key in {'turn_threshold', 'min_minutes_between', 'idle_threshold', 'confidence_threshold'}
-        if len(path) == 2 and path[0] == 'proposalsRecent' and isinstance(path[1], int):
-            return key in {'id', 'ts', 'status', 'type', 'target_kind', 'target_file', 'edit', 'confidence',
-                          'rationale', 'source_session', 'observed_across_sessions'}
         if path[0] == 'recentRuns':
             return _structural_field(path[1:], key, 'runs')
         if path[0] != 'health':
@@ -68,19 +65,9 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
                 and isinstance(path[2], int)):
             return key in {'type', 'file'}
         return False
-    if path == ('evidence',):
-        return key in {'nowMs', 'thresholds', 'reviewer', 'retrieval', 'proposals', 'observability', 'index'}
-    evidence_field = _evidence_field(path)
-    if path and path[0] == 'evidence' and len(path) > 1:
-        path = path[1:]
     if not path:
-        return key in CLOCK_FIELDS | {'nowMs', 'overall', 'counts', 'findings', 'thresholds',
-                      'reviewer', 'retrieval', 'index', 'proposals', 'observability', 'evidence',
-                      'dropped_invalid', 'ok_summary'}
-    if path == ('proposals',):
-        return key in {'pending', 'evidence', 'available', 'malformedLines'}
-    if path == ('observability',):
-        return key in {'bytes', 'oldestMs', 'evidence', 'files', 'available'}
+        return key in {'ts', 'timestamp', 'nowMs', 'overall', 'counts', 'findings', 'thresholds',
+                      'reviewer', 'retrieval', 'index', 'evidence', 'dropped_invalid'}
     if path == ('counts',):
         return key in {'ok', 'warn', 'critical'}
     if path == ('thresholds',):
@@ -88,7 +75,7 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
                       'observabilityMaxAgeMs', 'reviewerRunGraceMs', 'indexStaleMs'}
     if len(path) == 2 and path[0] == 'findings' and isinstance(path[1], int):
         return key in {'id', 'severity', 'message', 'evidence', 'detail'}
-    if evidence_field:
+    if _evidence_field(path):
         return key in {'status', 'ts', 'runId', 'evidence', 'priorSuccesses', 'error', 'queryHash',
                       'returnedCount', 'durationMs', 'malformedLines', 'manifest', 'policy', 'measuredAt',
                       'canonicalHash', 'manifestCanonicalHash', 'indexHash', 'manifestIndexHash',
@@ -270,7 +257,7 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str, *, v
         report = json.loads(content)
     except RecursionError as error:
         raise ValueError('Diagnostic reports require bounded materialized content') from error
-    strings, invalid, field_names = set(), set(), set()
+    strings, invalid = set(), set()
     def collect(text):
         strings.add(text)
         return False
@@ -291,7 +278,6 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str, *, v
                 raise ValueError('Diagnostic fields need supported structural names')
             for key, item in value.items():
                 collect(key)
-                field_names.add(key)
                 inspect(item, depth + 1)
     inspect(report)
     items = [{'type': 'idea', 'title': 'Native diagnostic text', 'content': text} for text in sorted(strings) if text]
@@ -300,10 +286,6 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str, *, v
         excluded = invalid | {item['content'] for item, check in zip(items, checked, strict=True)
                     if (not check.get('ok') or check.get('item') != item
                         or memory._filter_history(connection, scope, item['content'], timestamp)['excluded'])}
-        # Field names are matched against retired claims, not the age of their report values.
-        field_timestamp = datetime.now(timezone.utc).isoformat()
-        excluded_fields = {key for key in field_names
-            if memory._filter_history(connection, scope, key, field_timestamp)['excluded']}
         def project(value, path=()):
             if isinstance(value, str):
                 metadata = _metadata_path(path, view)
@@ -338,7 +320,7 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str, *, v
                 return [project(item, (*path, index)) for index, item in enumerate(value)]
             if isinstance(value, dict):
                 return {key: project(item, (*path, key)) for key, item in value.items()
-                        if _structural_field(path, key, view) or key not in excluded_fields}
+                        if _structural_field(path, key, view) or key not in excluded}
             return value
         response = {'ok': True, 'content': json.dumps(project(report))}
         if len((json.dumps(response) + '\n').encode()) > 3 * 1024 * 1024:

@@ -1,0 +1,27 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-01-memory-pulse-http/probe_native_routes.py", line 42, in observe
+    port = json.loads(server.stdout.readline())['port']
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-01-memory-pulse-http/probe_native_routes.py", line 63, in <module>
+    observe(label, ambient_owner=owner, broken_connector=broken)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-01-memory-pulse-http/probe_native_routes.py", line 57, in observe
+    assert stderr == '', stderr
+           ^^^^^^^^^^^^
+AssertionError: error: Cannot find module '/tmp/native-memory-fea29uw8/.claude/LIFEOS/PULSE/modules/memory.ts' from '/tmp/native-memory-fea29uw8/.claude/[eval]'
+
+Bun v1.3.14 (Linux x64)
+

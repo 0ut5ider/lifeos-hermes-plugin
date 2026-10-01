@@ -1,0 +1,119 @@
+diff --git a/lifeos_hook_bridge/memory_diagnostics.py b/lifeos_hook_bridge/memory_diagnostics.py
+index d8d6f28..0b5892b 100644
+--- a/lifeos_hook_bridge/memory_diagnostics.py
++++ b/lifeos_hook_bridge/memory_diagnostics.py
+@@ -52,6 +52,26 @@ def _clock(path: tuple[str | int, ...], value: str) -> bool:
+         and _timestamp(value))
+ 
+ 
++def _metadata_path(path: tuple[str | int, ...], view: str) -> tuple[str | int, ...]:
++    if view == 'health':
++        return path
++    if view == 'snapshot':
++        if path and path[0] == 'health':
++            return path[1:]
++        if path == ('ts',):
++            return path
++        if len(path) == 2 and path[0] == 'reviewState' and path[1] in ('last_review_at', 'last_message_at'):
++            return (path[1],)
++        if (len(path) == 3 and path[0] in ('recentRuns', 'recentFires', 'proposalsRecent')
++                and isinstance(path[1], int) and path[2] == 'ts'):
++            return ('ts',)
++    if view == 'state' and path in (('last_review_at',), ('last_message_at',)):
++        return path
++    if view == 'runs' and len(path) == 2 and isinstance(path[0], int) and path[1] == 'ts':
++        return ('ts',)
++    return ()
++
++
+ def _timestamp(value: Any) -> bool:
+     if not isinstance(value, str):
+         return False
+@@ -178,8 +198,10 @@ def diagnose_hot(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
+     return {'ok': True, **json.loads(filtered['content'])}
+ 
+ 
+-def filter_report(memory, scope: MemoryScope, content: str, timestamp: str) -> dict[str, Any]:
++def filter_report(memory, scope: MemoryScope, content: str, timestamp: str, *, view: str = 'health') -> dict[str, Any]:
+     authorize(scope)
++    if view not in ('snapshot', 'state', 'health', 'runs'):
++        raise ValueError('Unsupported native diagnostic view')
+     if not isinstance(content, str) or not _timestamp(timestamp):
+         raise ValueError('A diagnostic report and explicit timestamp are required')
+     try:
+@@ -216,20 +238,28 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str) -> d
+                         or memory._filter_history(connection, scope, item['content'], timestamp)['excluded'])}
+         def project(value, path=()):
+             if isinstance(value, str):
+-                key = path[-1] if path else ''
+-                if _clock(path, value):
++                metadata = _metadata_path(path, view)
++                key = metadata[-1] if metadata else ''
++                if _clock(metadata, value):
+                     return value
+-                severity = (path == ('overall',) or
+-                    (len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and key == 'severity'))
++                severity = (metadata == ('overall',) or
++                    (len(metadata) == 3 and metadata[0] == 'findings' and isinstance(metadata[1], int) and key == 'severity'))
+                 if severity and value in ('ok', 'warn', 'critical'):
+                     return value
+-                if key == 'status' and _evidence_field(path[:-1]) and value in ('ok', 'skipped', 'failed', 'parse-failed', 'timed-out',
++                if key == 'status' and _evidence_field(metadata[:-1]) and value in ('ok', 'skipped', 'failed', 'parse-failed', 'timed-out',
+                                                 'missing', 'invalid', 'absent', 'no-index-v1', 'mismatch'):
+                     return value
+-                reason = ((len(path) == 3 and path[0] == 'dropped_invalid' and isinstance(path[1], int)) or
+-                          (len(path) == 6 and _finding_detail(path[:3]) and path[3] == 'dropped' and isinstance(path[4], int)))
++                reason = ((len(metadata) == 3 and metadata[0] == 'dropped_invalid' and isinstance(metadata[1], int)) or
++                          (len(metadata) == 6 and _finding_detail(metadata[:3]) and metadata[3] == 'dropped' and isinstance(metadata[4], int)))
+                 if key == 'reason' and reason and value in ('malformed', 'overlength'):
+                     return value
++                if view == 'snapshot':
++                    if path == ('derivedState',) and value in ('cold', 'unhealthy_critical', 'unhealthy_warn',
++                                                              'pending', 'waiting', 'building', 'idle_warm'):
++                        return value
++                    if (len(path) == 3 and path[0] == 'proposalsRecent' and isinstance(path[1], int)
++                            and path[2] == 'status' and value in PROPOSAL_STATUSES):
++                        return value
+                 if value in excluded:
+                     return 'Memory diagnostic details are unavailable under the current policy.'
+                 try:
+diff --git a/lifeos_hook_bridge/memory_native.ts b/lifeos_hook_bridge/memory_native.ts
+index 52d9b7c..a574452 100644
+--- a/lifeos_hook_bridge/memory_native.ts
++++ b/lifeos_hook_bridge/memory_native.ts
+@@ -26,7 +26,18 @@ async function main(): Promise<void> {
+     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
+   }
+   let result: unknown;
+-  if (input.action === "discover") {
++  if (input.action === "pulse_snapshot") {
++    const paths = new Map([["snapshot", "/api/memory"], ["state", "/api/memory/state"],
++                           ["health", "/api/memory/health"], ["runs", "/api/memory/runs"]]);
++    const route = typeof input.view === "string" ? paths.get(input.view) : undefined;
++    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/memory.ts")).href);
++    if (!route || !object(module) || typeof module.handleRequest !== "function") {
++      throw new Error("The native PULSE snapshot is unavailable");
++    }
++    const response: unknown = await module.handleRequest(new Request("http://localhost" + route), route);
++    if (!(response instanceof Response) || response.status !== 200) throw new Error("The native PULSE snapshot failed");
++    result = {snapshot: await response.json()};
++  } else if (input.action === "discover") {
+     const retriever: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryRetriever.ts")).href);
+     if (!object(retriever) || typeof retriever.discoverAllItems !== "function") throw new Error("Native memory discovery is unavailable");
+     result = {notes: retriever.discoverAllItems(null)};
+diff --git a/lifeos_hook_bridge/memory_preferences.py b/lifeos_hook_bridge/memory_preferences.py
+index 1186277..822b16f 100644
+--- a/lifeos_hook_bridge/memory_preferences.py
++++ b/lifeos_hook_bridge/memory_preferences.py
+@@ -68,6 +68,11 @@ class MemoryPreferences:
+         config = self._configuration()
+         return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
+ 
++    def pulse_snapshot(self, view: str):
++        from .memory_pulse import snapshot
++        config = self._configuration()
++        return snapshot(NativeMemory(self.root), self._owner_scope(config), view)
++
+     def preview_adoption(self) -> dict[str, Any]:
+         config = self._configuration()
+         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))

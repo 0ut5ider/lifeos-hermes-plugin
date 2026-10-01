@@ -1,0 +1,31 @@
+2026-10-01 Bounded source-only review command record
+
+Working project: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Git HEAD read: 8970c41d321f7c7b57a5b702d521853994d95db2
+
+Read docs/memory-implementation-plan.md and the reviewed design contract section in notes/2026-09-30-memory-design.md.
+Read memory_preferences.py, memory_policy.py, memory_service.py (MemoryConfiguration and MemoryService), memory_sharing.py, dashboard/plugin_api.py, and selected dashboard/dist/index.js client calls.
+
+Owned native source root:
+/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-cortex-closure/lifeos/LifeOS/install/LIFEOS/PULSE
+
+Read pulse.ts listener and route dispatch; modules/memory.ts full snapshot and route implementation.
+rg --files and rg searches located frontend source in Observability/src, rather than a nonexistent frontend directory.
+Read Observability/src/lib/local-api.ts, src/app/memory/page.tsx, and the /api/memory/graph caller in src/app/memory/graph/page.tsx.
+Searched Observability/src for principalMemory, daMemory, cadenceConfig, proposalsRecent, recentRuns, and /api/memory. No four-snapshot source UI consumer appeared in the searched source.
+
+The initial broad native /api/memory search included generated out assets and confirmed the graph request in compiled output; generated minified data was not used as the main source proof.
+
+Read source-only archived Hermes authentication integration observations with rg in:
+docs/agents/2026-09-30-memory-context-revocation-review/raw/host-hermes_cli__dashboard_auth__middleware.py
+.../host-hermes_cli__web_server_dashboard.py
+.../host-hermes_cli__dashboard_auth__public_paths.py
+These are archived source artifacts. No fresh runtime or current host session guarantee is inferred from them.
+
+Two guessed source paths failed without side effects:
+lifeos_hook_bridge/memory_configuration.py (class is in memory_service.py)
+PULSE/frontend/ (actual frontend is Observability/src/)
+
+Full copied code/doc bytes and exact source paths/hashes are preserved in sources.json and numbered raw files. Python -S standard library performed only artifact copying, hashing, and authored report writing.
+
+No runtime import, package/build command, server launch, SSH, live bootstrap, model call, configuration edit, dependency change, memory/journal call, or implementation mutation occurred. No acceptance tests ran.

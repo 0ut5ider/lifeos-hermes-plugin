@@ -1,0 +1,83 @@
+{
+  "old": {
+    "status": "committed",
+    "reference": {
+      "id": "c2d525a5b1294e7589d1b158e8b10b40",
+      "revision": 1
+    },
+    "source": {
+      "kind": "explicit",
+      "session": ""
+    },
+    "writer": "local:owner",
+    "request_id": "old"
+  },
+  "new": {
+    "status": "committed",
+    "reference": {
+      "id": "b8a4b75c5f6842ba890a934688e2f124",
+      "revision": 1
+    },
+    "supersedes": {
+      "id": "c2d525a5b1294e7589d1b158e8b10b40",
+      "revision": 1
+    },
+    "writer": "local:owner",
+    "request_id": "new"
+  },
+  "current": {
+    "status": "ok",
+    "reference": {
+      "id": "b8a4b75c5f6842ba890a934688e2f124",
+      "revision": 1
+    },
+    "content": "RULE: Synthetic PULSE baseline setting now revised",
+    "category": "principal",
+    "project": "",
+    "writer": "local:owner",
+    "source": {
+      "session": "",
+      "kind": "correction"
+    }
+  },
+  "snapshot": {
+    "ts": "2026-10-01T04:26:49.631Z",
+    "derivedState": "cold",
+    "cadenceConfig": {
+      "turn_threshold": 8,
+      "min_minutes_between": 30,
+      "idle_threshold": 2,
+      "confidence_threshold": 0.7
+    },
+    "reviewState": {
+      "turn_count_since_last_review": 0,
+      "last_review_at": null,
+      "last_message_at": null,
+      "pending_review": false
+    },
+    "health": null,
+    "lastFireCount": 0,
+    "recentFires": [],
+    "pendingProposals": 0,
+    "autoAppliedProposals": 0,
+    "proposalsRecent": [],
+    "principalMemory": {
+      "entries": [
+        "Memory diagnostic details are unavailable under the current policy."
+      ],
+      "count": 1,
+      "charsUsed": 50
+    },
+    "daMemory": {
+      "entries": [],
+      "count": 0,
+      "charsUsed": 0
+    },
+    "recentRuns": []
+  }
+}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-01-memory-pulse-snapshot-review/raw/probe_current.py", line 12, in <module>
+    assert snapshot['principalMemory']['entries']==[current['content']]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

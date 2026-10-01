@@ -68,11 +68,6 @@ class MemoryPreferences:
         config = self._configuration()
         return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
 
-    def pulse_snapshot(self, view: str):
-        from .memory_pulse import snapshot
-        config = self._configuration()
-        return snapshot(NativeMemory(self.root), self._owner_scope(config), view)
-
     def preview_adoption(self) -> dict[str, Any]:
         config = self._configuration()
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))

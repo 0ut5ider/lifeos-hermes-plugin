@@ -1,0 +1,19 @@
+--- prior/memory_diagnostics.py
++++ reviewed/memory_diagnostics.py
+@@ -70,6 +70,7 @@
+         return False
+     if path == ('evidence',):
+         return key in {'nowMs', 'thresholds', 'reviewer', 'retrieval', 'proposals', 'observability', 'index'}
++    evidence_field = _evidence_field(path)
+     if path and path[0] == 'evidence' and len(path) > 1:
+         path = path[1:]
+     if not path:
+@@ -87,7 +88,7 @@
+                       'observabilityMaxAgeMs', 'reviewerRunGraceMs', 'indexStaleMs'}
+     if len(path) == 2 and path[0] == 'findings' and isinstance(path[1], int):
+         return key in {'id', 'severity', 'message', 'evidence', 'detail'}
+-    if _evidence_field(path):
++    if evidence_field:
+         return key in {'status', 'ts', 'runId', 'evidence', 'priorSuccesses', 'error', 'queryHash',
+                       'returnedCount', 'durationMs', 'malformedLines', 'manifest', 'policy', 'measuredAt',
+                       'canonicalHash', 'manifestCanonicalHash', 'indexHash', 'manifestIndexHash',

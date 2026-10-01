@@ -70,7 +70,6 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
         return False
     if path == ('evidence',):
         return key in {'nowMs', 'thresholds', 'reviewer', 'retrieval', 'proposals', 'observability', 'index'}
-    evidence_field = _evidence_field(path)
     if path and path[0] == 'evidence' and len(path) > 1:
         path = path[1:]
     if not path:
@@ -88,7 +87,7 @@ def _structural_field(path: tuple[str | int, ...], key: str, view: str) -> bool:
                       'observabilityMaxAgeMs', 'reviewerRunGraceMs', 'indexStaleMs'}
     if len(path) == 2 and path[0] == 'findings' and isinstance(path[1], int):
         return key in {'id', 'severity', 'message', 'evidence', 'detail'}
-    if evidence_field:
+    if _evidence_field(path):
         return key in {'status', 'ts', 'runId', 'evidence', 'priorSuccesses', 'error', 'queryHash',
                       'returnedCount', 'durationMs', 'malformedLines', 'manifest', 'policy', 'measuredAt',
                       'canonicalHash', 'manifestCanonicalHash', 'indexHash', 'manifestIndexHash',
