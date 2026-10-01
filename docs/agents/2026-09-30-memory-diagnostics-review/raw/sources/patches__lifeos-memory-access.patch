@@ -95,7 +95,7 @@ index fb6dffa..599a563 100644
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
-index 9ad9d6a..b507429 100644
+index 9ad9d6a..aba2b15 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
 @@ -1,4 +1,6 @@
@@ -131,18 +131,7 @@ index 9ad9d6a..b507429 100644
    const now = Date.now();
    const sinceMs = now - days * 86400 * 1000;
  
-@@ -200,6 +204,10 @@ function main(): void {
-     out.push("");
-     out.push("  Recent samples:");
-     for (const p of samples) {
-+      if (p.details_available === false) {
-+        out.push("    Proposal details are unavailable under the current memory policy.");
-+        continue;
-+      }
-       const edit = (p.edit || "").slice(0, 80);
-       const ellipsis = (p.edit || "").length > 80 ? "…" : "";
-       out.push(`    • ${p.target_file || "?"} — ${edit}${ellipsis}`);
-@@ -232,4 +240,8 @@ function main(): void {
+@@ -232,4 +236,8 @@ function main(): void {
    console.log(out.join("\n"));
  }
  

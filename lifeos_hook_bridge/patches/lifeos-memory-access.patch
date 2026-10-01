@@ -94,6 +94,64 @@ index fb6dffa..599a563 100644
 +  if (found.row.confidence < confidenceThreshold) return { ok: false, reason: "proposal is below its confidence threshold" };
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
+index 9ad9d6a..b507429 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Summarizes memory activity over the selected native time window.
++// ABOUTME: Preserves operational counts and filters managed proposal samples before display.
+ /**
+  * MemoryInsights — `memory insights` CLI for autonomic memory delta view.
+  *
+@@ -23,6 +25,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { getDAName } from "../../hooks/lib/identity"
++import { canReadMemorySources, readMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ const ROOT = pathResolve(homedir(), ".claude");
+ const OBS = pathResolve(ROOT, "LIFEOS/MEMORY/OBSERVABILITY");
+@@ -53,8 +56,8 @@ function parseArgs(): Args {
+ 
+ function readJsonlSince<T = any>(path: string, sinceMs: number): T[] {
+   if (!existsSync(path)) return [];
++  const raw = readMemoryDiagnostic(path);
+   try {
+-    const raw = readFileSync(path, "utf8");
+     const out: T[] = [];
+     for (const line of raw.split("\n")) {
+       const t = line.trim();
+@@ -105,6 +108,7 @@ function deriveVerdict(opts: {
+ 
+ function main(): void {
+   const { days } = parseArgs();
++  if (!canReadMemorySources()) throw new Error("Memory diagnostics are unavailable under the current policy");
+   const now = Date.now();
+   const sinceMs = now - days * 86400 * 1000;
+ 
+@@ -200,6 +204,10 @@ function main(): void {
+     out.push("");
+     out.push("  Recent samples:");
+     for (const p of samples) {
++      if (p.details_available === false) {
++        out.push("    Proposal details are unavailable under the current memory policy.");
++        continue;
++      }
+       const edit = (p.edit || "").slice(0, 80);
+       const ellipsis = (p.edit || "").length > 80 ? "…" : "";
+       out.push(`    • ${p.target_file || "?"} — ${edit}${ellipsis}`);
+@@ -232,4 +240,8 @@ function main(): void {
+   console.log(out.join("\n"));
+ }
+ 
+-main();
++try {
++  main();
++} catch {
++  console.log("Memory diagnostics are unavailable under the current policy.");
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
 index dcc185e..ef2bb3a 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
@@ -237,6 +295,80 @@ index d350d27..c8bfcaa 100755
          const proposalId = (result.detail?.id as string | undefined) ?? null;
          // Pin the APPLY target the same way the queue write already does
          // (public PR #1563, @anikinsasha). Without this, the queue row recorded
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts
+index c82729a..f8146bb 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reports native memory activity, capacity, and current review state.
++// ABOUTME: Requires source authority and projects managed diagnostics before display.
+ /**
+  * MemoryStatus — read-only viewer for LifeOS's memory subsystem.
+  *
+@@ -33,6 +35,7 @@ import {
+   PENDING_PROPOSALS_PATH,
+ } from "./MemoryTypes";
+ import { read as readMemory } from "./MemoryWriter";
++import { canReadMemorySources, readMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const LIFEOS_DIR = pathJoin(CLAUDE_ROOT, "LIFEOS");
+@@ -151,8 +154,8 @@ function corpusStats(dir: string): CorpusStats {
+ function proposalQueueStats(): ProposalQueueStats {
+   const empty: ProposalQueueStats = { pending: 0, total_observed: 0, most_recent_ids: [], pending_by_kind: {} };
+   if (!existsSync(PENDING_PROPOSALS_PATH)) return empty;
++  const raw = readMemoryDiagnostic(PENDING_PROPOSALS_PATH);
+   try {
+-    const raw = readFileSync(PENDING_PROPOSALS_PATH, "utf8");
+     const lines = raw.split("\n").filter((l) => l.trim().length > 0);
+     let pending = 0;
+     const recent: string[] = [];
+@@ -184,8 +187,9 @@ function proposalQueueStats(): ProposalQueueStats {
+ 
+ function reviewStateSnapshot(): ReviewStateSnapshot | null {
+   if (!existsSync(REVIEW_STATE_PATH)) return null;
++  const content = readMemoryDiagnostic(REVIEW_STATE_PATH);
+   try {
+-    const raw = JSON.parse(readFileSync(REVIEW_STATE_PATH, "utf8"));
++    const raw = JSON.parse(content);
+     const now = Date.now();
+     const parseIso = (s: string | null): number | null => {
+       if (!s) return null;
+@@ -209,8 +213,8 @@ function reviewStateSnapshot(): ReviewStateSnapshot | null {
+ 
+ function lastJsonlRow<T>(path: string): T | null {
+   if (!existsSync(path)) return null;
++  const raw = readMemoryDiagnostic(path);
+   try {
+-    const raw = readFileSync(path, "utf8");
+     const lines = raw.split("\n").filter((l) => l.trim().length > 0);
+     if (lines.length === 0) return null;
+     return JSON.parse(lines[lines.length - 1]!) as T;
+@@ -220,6 +224,7 @@ function lastJsonlRow<T>(path: string): T | null {
+ }
+ 
+ function buildReport(): StatusReport {
++  if (!canReadMemorySources()) throw new Error("Memory diagnostics are unavailable under the current policy");
+   return {
+     generated_at: new Date().toISOString(),
+     memory_files: {
+@@ -322,7 +327,14 @@ function renderText(r: StatusReport): string {
+ function main(): void {
+   const args = process.argv.slice(2);
+   const wantJson = args.includes("--json");
+-  const report = buildReport();
++  let report: StatusReport;
++  try {
++    report = buildReport();
++  } catch {
++    process.stdout.write(wantJson ? JSON.stringify({unavailable: "Memory diagnostics are unavailable under the current policy"}) + "\n"
++      : "Memory diagnostics are unavailable under the current policy.\n");
++    process.exit(1);
++  }
+   if (wantJson) {
+     process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+   } else {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts b/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
 index b57c7aa..7edf2e9 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
@@ -353,10 +485,10 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..8a53a49
+index 0000000..70a8dae
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,96 @@
+@@ -0,0 +1,106 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -423,6 +555,16 @@ index 0000000..8a53a49
 +  if (governed === undefined) return readFileSync(path, "utf8");
 +  if (governed.ok !== true || typeof governed.content !== "string" || governed.excluded !== false) {
 +    throw new Error("The retained native source is excluded or unavailable");
++  }
++  return governed.content;
++}
++
++export function readMemoryDiagnostic(path: string): string {
++  const governed = memoryAccess("read_diagnostic", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return readFileSync(path, "utf8");
++  if (governed.ok !== true || typeof governed.content !== "string" || governed.excluded !== false) {
++    throw new Error("Memory diagnostics are unavailable under the current policy");
 +  }
 +  return governed.content;
 +}

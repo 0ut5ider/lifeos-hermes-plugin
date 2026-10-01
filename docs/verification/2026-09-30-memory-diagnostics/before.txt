@@ -1,0 +1,91 @@
+test_diagnostic_file_redirect_refuses_secret_and_preserves_unavailable_state (test_memory_diagnostics.MemoryDiagnosticTests.test_diagnostic_file_redirect_refuses_secret_and_preserves_unavailable_state) ... FAIL
+test_insights_retains_full_requested_window_beyond_delta_tail (test_memory_diagnostics.MemoryDiagnosticTests.test_insights_retains_full_requested_window_beyond_delta_tail) ... ok
+test_invalid_connector_refuses_diagnostics_without_raw_fallback (test_memory_diagnostics.MemoryDiagnosticTests.test_invalid_connector_refuses_diagnostics_without_raw_fallback) ... FAIL
+test_latest_invalid_reviewer_row_does_not_replay_previous_success (test_memory_diagnostics.MemoryDiagnosticTests.test_latest_invalid_reviewer_row_does_not_replay_previous_success) ... FAIL
+test_missing_context_refuses_diagnostics_and_reports_unavailability (test_memory_diagnostics.MemoryDiagnosticTests.test_missing_context_refuses_diagnostics_and_reports_unavailability) ... 
+  test_missing_context_refuses_diagnostics_and_reports_unavailability (test_memory_diagnostics.MemoryDiagnosticTests.test_missing_context_refuses_diagnostics_and_reports_unavailability) (tool='MemoryStatus.ts') ... FAIL
+  test_missing_context_refuses_diagnostics_and_reports_unavailability (test_memory_diagnostics.MemoryDiagnosticTests.test_missing_context_refuses_diagnostics_and_reports_unavailability) (tool='MemoryInsights.ts') ... FAIL
+test_owner_insights_preserves_latency_counts_and_current_sample (test_memory_diagnostics.MemoryDiagnosticTests.test_owner_insights_preserves_latency_counts_and_current_sample) ... ok
+test_owner_status_preserves_current_operational_fields (test_memory_diagnostics.MemoryDiagnosticTests.test_owner_status_preserves_current_operational_fields) ... ok
+test_restricted_or_changed_context_cannot_read_diagnostic_counts (test_memory_diagnostics.MemoryDiagnosticTests.test_restricted_or_changed_context_cannot_read_diagnostic_counts) ... FAIL
+test_retired_diagnostic_text_is_excluded_but_failure_count_remains (test_memory_diagnostics.MemoryDiagnosticTests.test_retired_diagnostic_text_is_excluded_but_failure_count_remains) ... FAIL
+test_retired_proposal_samples_do_not_remove_queue_statistics (test_memory_diagnostics.MemoryDiagnosticTests.test_retired_proposal_samples_do_not_remove_queue_statistics) ... FAIL
+test_unmanaged_insights_keeps_native_proposal_sample (test_memory_diagnostics.MemoryDiagnosticTests.test_unmanaged_insights_keeps_native_proposal_sample) ... ok
+test_unmanaged_status_keeps_native_raw_diagnostic_behavior (test_memory_diagnostics.MemoryDiagnosticTests.test_unmanaged_status_keeps_native_raw_diagnostic_behavior) ... ok
+
+======================================================================
+FAIL: test_diagnostic_file_redirect_refuses_secret_and_preserves_unavailable_state (test_memory_diagnostics.MemoryDiagnosticTests.test_diagnostic_file_redirect_refuses_secret_and_preserves_unavailable_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 141, in test_diagnostic_file_redirect_refuses_secret_and_preserves_unavailable_state
+    self.assertIn('unavailable', result.stdout.lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' not found in '{\n  "generated_at": "2026-10-01t02:52:07.425z",\n  "memory_files": {\n    "principal": {\n      "path": "/tmp/native-memory-lxmfzi00/.claude/lifeos/user/principal/principal_memory.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 48,\n      "cap_chars_total": 12288\n    },\n    "da": {\n      "path": "/tmp/native-memory-lxmfzi00/.claude/lifeos/user/digital_assistant/da_memory.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 48,\n      "cap_chars_total": 12288\n    }\n  },\n  "corpus": {\n    "ideas": {\n      "dir": "/tmp/native-memory-lxmfzi00/.claude/lifeos/memory/ideas",\n      "exists": false,\n      "file_count": 0\n    },\n    "knowledge": {\n      "dir": "/tmp/native-memory-lxmfzi00/.claude/lifeos/memory/knowledge",\n      "exists": false,\n      "file_count": 0\n    }\n  },\n  "proposals": {\n    "pending": 0,\n    "total_observed": 0,\n    "most_recent_ids": [],\n    "pending_by_kind": {}\n  },\n  "review_state": null,\n  "last_reviewer_run": {\n    "ts": "2026-10-01t02:52:07.373959+00:00",\n    "ok": false,\n    "duration_ms": 37,\n    "items_total": 2,\n    "inference_duration_ms": 41,\n    "content": "synthetic configuration secret"\n  },\n  "last_retrieval": null\n}\n'
+
+======================================================================
+FAIL: test_invalid_connector_refuses_diagnostics_without_raw_fallback (test_memory_diagnostics.MemoryDiagnosticTests.test_invalid_connector_refuses_diagnostics_without_raw_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 119, in test_invalid_connector_refuses_diagnostics_without_raw_fallback
+    self.assertIn('unavailable', result.stdout.lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' not found in 'memory insights — last 1 day(s)\n════════════════════════════════════════════════════════════\nwindow: 2026-09-30 02:52 → 2026-10-01 02:52\n\nmemory growth:\n  principal_memory.md   +0 entries (mtime: 2026-10-01 02:52)\n  da_memory.md          +0 entries (mtime: 2026-10-01 02:52)\n\nknowledge / ideas:\n  knowledge notes added  0\n  idea notes added       0\n\nproposals (1 total in window):\n  pending        1\n\n  recent samples:\n    • lifeos/user/principal/principal_identity.md — synthetic invalid connector claim\n\nreviewer runs (0 total):\n  succeeded   0\n  failed      0\n\nhealth:\n  (no health snapshot in window)\n\nverdict: stale\n'
+
+======================================================================
+FAIL: test_latest_invalid_reviewer_row_does_not_replay_previous_success (test_memory_diagnostics.MemoryDiagnosticTests.test_latest_invalid_reviewer_row_does_not_replay_previous_success)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 155, in test_latest_invalid_reviewer_row_does_not_replay_previous_success
+    self.assertNotIn('Synthetic invalid row content', result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic invalid row content' unexpectedly found in '{\n  "generated_at": "2026-10-01T02:52:07.862Z",\n  "memory_files": {\n    "principal": {\n      "path": "/tmp/native-memory-we4xsgp7/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 48,\n      "cap_chars_total": 12288\n    },\n    "da": {\n      "path": "/tmp/native-memory-we4xsgp7/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 48,\n      "cap_chars_total": 12288\n    }\n  },\n  "corpus": {\n    "ideas": {\n      "dir": "/tmp/native-memory-we4xsgp7/.claude/LIFEOS/MEMORY/IDEAS",\n      "exists": false,\n      "file_count": 0\n    },\n    "knowledge": {\n      "dir": "/tmp/native-memory-we4xsgp7/.claude/LIFEOS/MEMORY/KNOWLEDGE",\n      "exists": false,\n      "file_count": 0\n    }\n  },\n  "proposals": {\n    "pending": 0,\n    "total_observed": 0,\n    "most_recent_ids": [],\n    "pending_by_kind": {}\n  },\n  "review_state": null,\n  "last_reviewer_run": {\n    "ts": "2026-10-01T02:52:07.813414+00:00",\n    "ok": "true",\n    "content": "Synthetic invalid row content"\n  },\n  "last_retrieval": null\n}\n'
+
+======================================================================
+FAIL: test_missing_context_refuses_diagnostics_and_reports_unavailability (test_memory_diagnostics.MemoryDiagnosticTests.test_missing_context_refuses_diagnostics_and_reports_unavailability) (tool='MemoryStatus.ts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 90, in test_missing_context_refuses_diagnostics_and_reports_unavailability
+    self.assertIn('unavailable', result.stdout.lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' not found in '{\n  "generated_at": "2026-10-01t02:52:08.246z",\n  "memory_files": {\n    "principal": {\n      "path": "/tmp/native-memory-z60i_gg3/.claude/lifeos/user/principal/principal_memory.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 0,\n      "cap_chars_total": 0\n    },\n    "da": {\n      "path": "/tmp/native-memory-z60i_gg3/.claude/lifeos/user/digital_assistant/da_memory.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 0,\n      "cap_chars_total": 0\n    }\n  },\n  "corpus": {\n    "ideas": {\n      "dir": "/tmp/native-memory-z60i_gg3/.claude/lifeos/memory/ideas",\n      "exists": false,\n      "file_count": 0\n    },\n    "knowledge": {\n      "dir": "/tmp/native-memory-z60i_gg3/.claude/lifeos/memory/knowledge",\n      "exists": false,\n      "file_count": 0\n    }\n  },\n  "proposals": {\n    "pending": 1,\n    "total_observed": 1,\n    "most_recent_ids": [\n      "synthetic-proposal"\n    ],\n    "pending_by_kind": {\n      "identity": 1\n    }\n  },\n  "review_state": null,\n  "last_reviewer_run": {\n    "ts": "2026-10-01t02:52:08.195864+00:00",\n    "ok": false,\n    "duration_ms": 37,\n    "items_total": 2,\n    "inference_duration_ms": 41,\n    "error": "synthetic private diagnostic marker"\n  },\n  "last_retrieval": null\n}\n'
+
+======================================================================
+FAIL: test_missing_context_refuses_diagnostics_and_reports_unavailability (test_memory_diagnostics.MemoryDiagnosticTests.test_missing_context_refuses_diagnostics_and_reports_unavailability) (tool='MemoryInsights.ts')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 90, in test_missing_context_refuses_diagnostics_and_reports_unavailability
+    self.assertIn('unavailable', result.stdout.lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' not found in 'memory insights — last 1 day(s)\n════════════════════════════════════════════════════════════\nwindow: 2026-09-30 02:52 → 2026-10-01 02:52\n\nmemory growth:\n  principal_memory.md   +0 entries (mtime: 2026-10-01 02:52)\n  da_memory.md          +0 entries (mtime: 2026-10-01 02:52)\n\nknowledge / ideas:\n  knowledge notes added  0\n  idea notes added       0\n\nproposals (1 total in window):\n  pending        1\n\n  recent samples:\n    • lifeos/user/principal/principal_identity.md — synthetic private diagnostic marker\n\nreviewer runs (1 total):\n  succeeded   0\n  failed      1\n  p50 latency 41ms\n  p95 latency 41ms\n\nhealth:\n  (no health snapshot in window)\n\nverdict: degraded\n'
+
+======================================================================
+FAIL: test_restricted_or_changed_context_cannot_read_diagnostic_counts (test_memory_diagnostics.MemoryDiagnosticTests.test_restricted_or_changed_context_cannot_read_diagnostic_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 128, in test_restricted_or_changed_context_cannot_read_diagnostic_counts
+    self.assertIn('unavailable', result.stdout.lower())
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' not found in '{\n  "generated_at": "2026-10-01t02:52:08.890z",\n  "memory_files": {\n    "principal": {\n      "path": "/tmp/native-memory-yf_9ji4f/.claude/lifeos/user/principal/principal_memory.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 0,\n      "cap_chars_total": 0\n    },\n    "da": {\n      "path": "/tmp/native-memory-yf_9ji4f/.claude/lifeos/user/digital_assistant/da_memory.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 0,\n      "cap_chars_total": 0\n    }\n  },\n  "corpus": {\n    "ideas": {\n      "dir": "/tmp/native-memory-yf_9ji4f/.claude/lifeos/memory/ideas",\n      "exists": false,\n      "file_count": 0\n    },\n    "knowledge": {\n      "dir": "/tmp/native-memory-yf_9ji4f/.claude/lifeos/memory/knowledge",\n      "exists": false,\n      "file_count": 0\n    }\n  },\n  "proposals": {\n    "pending": 0,\n    "total_observed": 0,\n    "most_recent_ids": [],\n    "pending_by_kind": {}\n  },\n  "review_state": null,\n  "last_reviewer_run": {\n    "ts": "2026-10-01t02:52:08.836288+00:00",\n    "ok": false,\n    "duration_ms": 37,\n    "items_total": 2,\n    "inference_duration_ms": 41\n  },\n  "last_retrieval": null\n}\n'
+
+======================================================================
+FAIL: test_retired_diagnostic_text_is_excluded_but_failure_count_remains (test_memory_diagnostics.MemoryDiagnosticTests.test_retired_diagnostic_text_is_excluded_but_failure_count_remains)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 101, in test_retired_diagnostic_text_is_excluded_but_failure_count_remains
+    self.assertNotIn('Synthetic retired diagnostic claim', result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic retired diagnostic claim' unexpectedly found in '{\n  "generated_at": "2026-10-01T02:52:09.722Z",\n  "memory_files": {\n    "principal": {\n      "path": "/tmp/native-memory-dg5rfr7y/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 48,\n      "cap_chars_total": 12288\n    },\n    "da": {\n      "path": "/tmp/native-memory-dg5rfr7y/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",\n      "exists": true,\n      "count": 0,\n      "chars_used": 0,\n      "cap_entries": 48,\n      "cap_chars_total": 12288\n    }\n  },\n  "corpus": {\n    "ideas": {\n      "dir": "/tmp/native-memory-dg5rfr7y/.claude/LIFEOS/MEMORY/IDEAS",\n      "exists": false,\n      "file_count": 0\n    },\n    "knowledge": {\n      "dir": "/tmp/native-memory-dg5rfr7y/.claude/LIFEOS/MEMORY/KNOWLEDGE",\n      "exists": false,\n      "file_count": 0\n    }\n  },\n  "proposals": {\n    "pending": 0,\n    "total_observed": 0,\n    "most_recent_ids": [],\n    "pending_by_kind": {}\n  },\n  "review_state": null,\n  "last_reviewer_run": {\n    "ts": "2026-10-01T02:52:09.668438+00:00",\n    "ok": false,\n    "duration_ms": 37,\n    "items_total": 2,\n    "inference_duration_ms": 41,\n    "error": "Synthetic retired diagnostic claim",\n    "content": "Synthetic retired diagnostic claim"\n  },\n  "last_retrieval": null\n}\n'
+
+======================================================================
+FAIL: test_retired_proposal_samples_do_not_remove_queue_statistics (test_memory_diagnostics.MemoryDiagnosticTests.test_retired_proposal_samples_do_not_remove_queue_statistics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 111, in test_retired_proposal_samples_do_not_remove_queue_statistics
+    self.assertNotIn('Synthetic retired proposal claim', result.stdout)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic retired proposal claim' unexpectedly found in 'memory insights — last 1 day(s)\n════════════════════════════════════════════════════════════\nwindow: 2026-09-30 02:52 → 2026-10-01 02:52\n\nMemory growth:\n  PRINCIPAL_MEMORY.md   +0 entries (mtime: 2026-10-01 02:52)\n  DA_MEMORY.md          +0 entries (mtime: 2026-10-01 02:52)\n\nKnowledge / Ideas:\n  knowledge notes added  0\n  idea notes added       0\n\nProposals (2 total in window):\n  pending        2\n\n  Recent samples:\n    • LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md — Synthetic retired proposal claim\n    • LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md — Synthetic current proposal control\n\nReviewer runs (0 total):\n  succeeded   0\n  failed      0\n\nHealth:\n  (no health snapshot in window)\n\nVerdict: stale\n'
+
+----------------------------------------------------------------------
+Ran 12 tests in 3.479s
+
+FAILED (failures=8)

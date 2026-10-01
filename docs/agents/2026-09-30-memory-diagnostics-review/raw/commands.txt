@@ -1,0 +1,12 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Snapshot: git rev-parse HEAD; git status --short
+Source reads: memory_diagnostics.py, memory_sources.py, memory_service.py, memory_rpc.py, memory_access.py _native/_filter_history, memory_native.ts validation action; prepared native MemoryStatus.ts, MemoryInsights.ts, lib/MemoryAccess.ts, MemorySystem.ts sanitizer, MemoryTypes.ts proposal enums; tests/test_memory_diagnostics.py and fixture setup in test_memory_delegation.py, test_memory_native.py, test_memory_proposals.py.
+Tests: setsid bash docs/agents/2026-09-30-memory-diagnostics-review/raw/run_tests.sh (exact environment and unittest argv preserved in that file).
+Probe environment: PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-diagnostics/lifeos/LifeOS/install
+Interpreter: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+Probe argv (each with the environment/interpreter above):
+ docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_limits.py > raw/limits.txt 2>&1
+ docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_controls.py > raw/controls.txt 2>&1
+ docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_long_control.py > raw/long-control.txt 2>&1
+All three probe exit codes: 0. Expected OverflowError captured by probe_limits and preserved in its output.
+Initial source search tried nonexistent LIFEOS/TOOLS/lib/MemorySanitizer.ts, received file-not-found, then correctly located sanitizer in LIFEOS/TOOLS/MemorySystem.ts. No production operation was affected.

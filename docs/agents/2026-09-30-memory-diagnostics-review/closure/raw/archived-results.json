@@ -1,0 +1,29 @@
+[
+  {
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_limits.py"
+    ],
+    "sha256": "11d2a79bb07e932df454b8612b2a0f573683cd766954b034bc549e5cb8920a3f",
+    "returncode": 0,
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_controls.py"
+    ],
+    "sha256": "7f44fe5ca773bb0f03ac897b6db4c085f549934cbf9e9e0983ae7cba287dcb4e",
+    "returncode": 0,
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_long_control.py"
+    ],
+    "sha256": "6b208830b90df6a5e749423e4727d842983c5a922583521061903bffab8b3ab9",
+    "returncode": 1,
+    "stderr": "Traceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_long_control.py\", line 23, in <module>\n    assert 'Synthetic long authorized proposal marker' not in managed and 'Synthetic long authorized proposal marker' in unmanaged\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError\n"
+  }
+]

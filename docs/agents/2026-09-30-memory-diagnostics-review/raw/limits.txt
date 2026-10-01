@@ -1,0 +1,20 @@
+{"case": "long", "receipt": {"ok": true, "type": "proposal", "path": "/tmp/native-memory-n5ucjker/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl", "detail": {"id": "muoy4ah5-fj3io9", "status": "queued"}, "receipt": {"status": "pending", "proposal_reference": {"id": "muoy4ah5-fj3io9", "revision": 1}, "destination": "/tmp/native-memory-n5ucjker/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl", "source": {"kind": "native-proposal", "session": "synthetic"}, "detail": {"id": "muoy4ah5-fj3io9", "status": "queued"}, "writer": "local:owner", "request_id": "probe-long"}}, "edit_chars": 40043}
+{"case": "long-diagnostic", "projection": {"ok": true, "content": "{\"ts\": \"2026-10-01T02:59:35.563Z\", \"status\": \"pending\", \"target_kind\": \"operational-rule\"}", "excluded": false}, "stdout": "memory insights \u2014 last 1 day(s)\n\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\nwindow: 2026-09-30 02:59 \u2192 2026-10-01 02:59\n\nMemory growth:\n  PRINCIPAL_MEMORY.md   +0 entries (mtime: 2026-10-01 02:59)\n  DA_MEMORY.md          +0 entries (mtime: 2026-10-01 02:59)\n\nKnowledge / Ideas:\n  knowledge notes added  0\n  idea notes added       0\n\nProposals (1 total in window):\n  pending        1\n\n  Recent samples:\n    \u2022 ? \u2014 \n\nReviewer runs (0 total):\n  succeeded   0\n  failed      0\n\nHealth:\n  (no health snapshot in window)\n\nVerdict: stale\n", "exit": 0}
+{"case": "escaped", "receipt": {"ok": true, "type": "proposal", "path": "/tmp/native-memory-n5ucjker/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl", "detail": {"id": "muoy4auf-wx1pdi", "status": "queued"}, "receipt": {"status": "pending", "proposal_reference": {"id": "muoy4auf-wx1pdi", "revision": 1}, "destination": "/tmp/native-memory-n5ucjker/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl", "source": {"kind": "native-proposal", "session": "synthetic"}, "detail": {"id": "muoy4auf-wx1pdi", "status": "queued"}, "writer": "local:owner", "request_id": "probe-escaped"}}, "edit_chars": 5028}
+{"case": "escaped-volume", "service_ok": true, "projected_bytes": 2357499, "wire_bytes": 4663294, "stdout": "Memory diagnostics are unavailable under the current policy.\n", "exit": 0}
+{"case": "large-number", "exception": "OverflowError", "message": "int too large to convert to float"}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-diagnostics-review/raw/probe_limits.py", line 37, in <module>
+    result=service.native(case.fixture.context,'read_diagnostic',{'path':str(case.obs/'reviewer-runs.jsonl')})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 197, in native
+    return read(memory,scope,arguments['path'])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_diagnostics.py", line 96, in read
+    result = _project(row, name)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_diagnostics.py", line 48, in _project
+    result: dict[str, Any] = _numbers(row, NUMBER_FIELDS.get(name, ()))
+                             ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_diagnostics.py", line 44, in _numbers
+    and math.isfinite(row[key]) and row[key] >= 0}
+        ~~~~~~~~~~~~~^^^^^^^^^^
+OverflowError: int too large to convert to float
+{"case": "large-number-native", "stdout": "{\"unavailable\":\"Memory diagnostics are unavailable under the current policy\"}\n"}
