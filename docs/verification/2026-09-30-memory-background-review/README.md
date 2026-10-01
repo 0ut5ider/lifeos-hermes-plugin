@@ -46,3 +46,9 @@ The next fix rebinds only the new worker proof in primary execution, with identi
 `rerun_archived_continuation.py` runs the reviewer's unchanged archived child against the current plugin. The original probe constructs its child from the current shared helper. That helper now contains follow-up support, so regenerating the child would duplicate its follow-up. Running the archived child preserves the original reproduction.
 
 `full-before-continuation-fix.txt` executes 617 cases: 540 pass and 77 skip. It starts before the continuation fix, with its cases already collected before the continuation tests were added. It is not closure evidence for that fix.
+
+## Final closure and complete regression
+
+The primary closure passes 81 cases in 199.815 seconds. The independent closure passes the same 81 cases in 195.043 seconds. The primary reruns all ten independent handoff guards successfully. `wire-closure.json` records all seven current real-agent cases. The final review finds no further material defect in the bounded review and ordinary continuation paths.
+
+The complete plugin regression on the committed implementation executes 622 cases in 284.041 seconds. Of these, 545 pass and 77 skip. There are no failures or errors. The output is `full-regression.txt`. The remaining fixture-dependent skips do not pass the release gate.

@@ -128,3 +128,8 @@ Both primary and independent closure pass 81 cases without skips. The unchanged 
 These results verify actual review fork execution, not every automatic cadence, idle queue, cancellation, or model judgment. Stale generated review history can still be refused; automatic rebuilding remains open. Resume, changed SOUL reconstruction, compression rotation, Responses repair, restricted prompts, delivery, ownership transactions, and the release gate remain open. No running installation changes.
 
 The next source inventory scan records 132 candidate files and 555 reference lines in `docs/verification/2026-09-30-memory-native-inventory/`. Text references are candidates, not coverage proof. Native diagnostics and PULSE consumers require actual read and publication-path checks.
+
+
+## Background review complete regression
+
+The committed background review and continuation implementation executes 622 plugin cases against the owned prepared sources. Of these, 545 pass and 77 skip. No test fails or errors. The raw log is `docs/verification/2026-09-30-memory-background-review/full-regression.txt`. The skips require separate native, browser, SSH, Docker, or installation fixtures and remain release requirements. The source and writer audit now continues against the pinned public source. Ownership stays disabled.
