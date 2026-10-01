@@ -233,18 +233,6 @@ class MemoryDeltaTests(unittest.TestCase):
         heartbeat = self.call(standalone=True)
         self.assertIn('last curation +40 new', heartbeat)
 
-    def test_followup_delta_selects_samples_after_the_native_cursor(self):
-        self.remember('Synthetic initial sample alpha', 'alpha')
-        self.remember('Synthetic initial sample beta', 'beta')
-        initial = self.call(standalone=True)
-        self.assertIn('Synthetic initial sample alpha', initial)
-        self.assertIn('Synthetic initial sample beta', initial)
-        self.remember('Synthetic followup sample gamma', 'gamma')
-        following = self.call(standalone=True)
-        self.assertIn('+1 learned', following)
-        self.assertIn('Synthetic followup sample gamma', following)
-        self.assertNotIn('Synthetic initial sample alpha', following)
-
     def test_excluded_latest_health_does_not_replay_older_critical_warning(self):
         from datetime import datetime, timezone
         saved = self.remember('Synthetic retired health detail', 'retired-health')

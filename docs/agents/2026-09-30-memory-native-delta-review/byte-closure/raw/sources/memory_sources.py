@@ -98,6 +98,7 @@ def _read_log(memory, connection, scope: MemoryScope, relative: str, content: st
         return ''
     checked = memory._native('validate_batch',items=items)['results']
     rows = []
+    learned_samples, dropped_samples = 0, 0
     for (line,row,text),item,result in zip(candidates,items,checked,strict=True):
         row_timestamp = row.get('ts') if isinstance(row.get('ts'),str) else timestamp
         if (result.get('ok') and result.get('item') == item
@@ -108,8 +109,12 @@ def _read_log(memory, connection, scope: MemoryScope, relative: str, content: st
                 additions, evictions = row.get('additions',[]), row.get('evictions',[])
                 if any(re.search(r'SmokeTest|smoke-test',entry,re.IGNORECASE) for entry in additions):
                     continue
+                adds = additions[:2-learned_samples]
+                drops = evictions[:1-dropped_samples]
+                learned_samples += len(adds)
+                dropped_samples += len(drops)
                 rows.append(json.dumps({'ts':row['ts'], 'file':row['file'], 'updated_by':row['updated_by'],
-                                        'additions':additions[:2], 'evictions':evictions[:1],
+                                        'additions':adds, 'evictions':drops,
                                         'additions_count':len(additions), 'evictions_count':len(evictions)}))
         elif health:
             rows.append(_health_status(row))

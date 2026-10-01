@@ -577,7 +577,7 @@ index 12af0c6..1412a55 100755
    try {
      // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice
 diff --git a/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts b/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
-index ebcbb89..ae2c998 100755
+index ebcbb89..64ea902 100755
 --- a/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
 +++ b/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
 @@ -35,6 +35,8 @@ import { resolve as pathResolve, dirname } from "node:path";
@@ -589,7 +589,16 @@ index ebcbb89..ae2c998 100755
  const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
  const WRITES_LOG = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl");
  const CURSOR = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-delta-cursor.json");
-@@ -119,7 +121,7 @@ function freshnessSegment(): string {
+@@ -54,6 +56,8 @@ interface WriteRow {
+   accepted?: number;
+   additions?: string[];
+   evictions?: string[];
++  additions_count?: number;
++  evictions_count?: number;
+ }
+ 
+ function readCursor(): string {
+@@ -119,7 +123,7 @@ function freshnessSegment(): string {
    try {
      if (!existsSync(FRESHNESS_CACHE)) return "freshness: no data";
      const age = Date.now() - statSync(FRESHNESS_CACHE).mtimeMs;
@@ -598,7 +607,7 @@ index ebcbb89..ae2c998 100755
      const grade = f.overall_grade ?? "?";
      const fresh = f.fresh_count ?? "?";
      const total = f.total ?? "?";
-@@ -132,7 +134,7 @@ function freshnessSegment(): string {
+@@ -132,7 +136,7 @@ function freshnessSegment(): string {
  
  function stalestSegment(): string {
    try {
@@ -607,7 +616,7 @@ index ebcbb89..ae2c998 100755
      const ms = f.most_stale;
      if (!ms?.name || (!ms.stale && ms.grade !== "F")) return "";
      const why = ms.why ? ` (${ms.why})` : "";
-@@ -146,7 +148,7 @@ function stalestSegment(): string {
+@@ -146,7 +150,7 @@ function stalestSegment(): string {
  function criticalHealthLine(): string | null {
    try {
      if (!existsSync(HEALTH_LOG)) return null;
@@ -616,7 +625,7 @@ index ebcbb89..ae2c998 100755
      const last = JSON.parse(lines[lines.length - 1]);
      if (last?.overall !== "critical") return null;
      const blockers = (last.findings ?? [])
-@@ -161,6 +163,7 @@ function criticalHealthLine(): string | null {
+@@ -161,6 +165,7 @@ function criticalHealthLine(): string | null {
  
  /** Returns the <lifeos-memory-health>? + <lifeos-memory-delta> blocks, or null. Pure — no exit. */
  export function run(): string | null {
@@ -624,7 +633,7 @@ index ebcbb89..ae2c998 100755
    let out = "";
    try {
      touchHeartbeat(); // liveness guard: MemoryHealthCheck flags a dead surface
-@@ -176,7 +179,7 @@ export function run(): string | null {
+@@ -176,7 +181,7 @@ export function run(): string | null {
      if (existsSync(WRITES_LOG)) {
        // Tail-bounded scan: rows are append-only chronological; cursor advances
        // every prompt, so only the tail can hold unsurfaced rows.
@@ -633,6 +642,26 @@ index ebcbb89..ae2c998 100755
        for (const line of allLines.slice(-500)) {
          let row: WriteRow;
          try { row = JSON.parse(line); } catch { continue; }
+@@ -189,8 +194,8 @@ export function run(): string | null {
+         if (cursor && row.ts <= cursor) continue; // already surfaced
+         const adds = row.additions ?? [];
+         const evs = row.evictions ?? [];
+-        learned += adds.length;
+-        dropped += evs.length;
++        learned += row.additions_count ?? adds.length;
++        dropped += row.evictions_count ?? evs.length;
+         for (const a of adds) if (learnedSamples.length < 2) learnedSamples.push(`${fileLabel(row.file)}: ${short(a)}`);
+         for (const e of evs) if (droppedSamples.length < 1) droppedSamples.push(short(e));
+       }
+@@ -227,7 +232,7 @@ export function run(): string | null {
+         const age = ageStr(Date.now() - Date.parse(lastAutonomic.ts));
+         // additions[] is NET-new entries; `accepted` is the post-overwrite total
+         // (set-overwrite semantics) and would overstate. Only claim +N for real news.
+-        const n = (lastAutonomic.additions ?? []).length;
++        const n = lastAutonomic.additions_count ?? (lastAutonomic.additions ?? []).length;
+         const what = n > 0 ? `+${n} new → ` : "ran → ";
+         segs.push(`last curation ${what}${fileLabel(lastAutonomic.file)} ${age}`);
+       } else {
 diff --git a/LifeOS/install/hooks/MemoryTurnStart.hook.ts b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
 index 1e73f45..1c96139 100755
 --- a/LifeOS/install/hooks/MemoryTurnStart.hook.ts
