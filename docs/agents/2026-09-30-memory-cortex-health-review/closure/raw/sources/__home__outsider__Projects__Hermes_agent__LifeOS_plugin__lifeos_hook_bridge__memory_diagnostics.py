@@ -35,19 +35,9 @@ BOOLEAN_FIELDS = {
 CLOCK_FIELDS = {'ts', 'timestamp', 'created_at', 'last_review_at', 'last_message_at'}
 
 
-def _finding_detail(path: tuple[str | int, ...]) -> bool:
-    return len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and path[2] == 'detail'
-
-
-def _evidence_field(path: tuple[str | int, ...]) -> bool:
-    return path in (('reviewer',), ('retrieval',), ('index',),
-                    ('evidence', 'reviewer'), ('evidence', 'retrieval'), ('evidence', 'index')) or _finding_detail(path)
-
-
-def _clock(path: tuple[str | int, ...], value: str) -> bool:
+def _clock(key: str, value: str) -> bool:
     # Valid structural clocks are operational evidence, like counts and severity.
-    return (bool(path) and path[-1] in CLOCK_FIELDS
-        and (len(path) == 1 or _evidence_field(path[:-1])) and re.fullmatch(
+    return (key in CLOCK_FIELDS and re.fullmatch(
         r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})', value) is not None
         and _timestamp(value))
 
@@ -214,21 +204,16 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str) -> d
         excluded = invalid | {item['content'] for item, check in zip(items, checked, strict=True)
                     if (not check.get('ok') or check.get('item') != item
                         or memory._filter_history(connection, scope, item['content'], timestamp)['excluded'])}
-        def project(value, path=()):
+        def project(value, key=''):
             if isinstance(value, str):
-                key = path[-1] if path else ''
-                if _clock(path, value):
+                if _clock(key, value):
                     return value
-                severity = (path == ('overall',) or
-                    (len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and key == 'severity'))
-                if severity and value in ('ok', 'warn', 'critical'):
+                if key in ('overall', 'severity') and value in ('ok', 'warn', 'critical'):
                     return value
-                if key == 'status' and _evidence_field(path[:-1]) and value in ('ok', 'skipped', 'failed', 'parse-failed', 'timed-out',
+                if key == 'status' and value in ('ok', 'skipped', 'failed', 'parse-failed', 'timed-out',
                                                 'missing', 'invalid', 'absent', 'no-index-v1', 'mismatch'):
                     return value
-                reason = ((len(path) == 3 and path[0] == 'dropped_invalid' and isinstance(path[1], int)) or
-                          (len(path) == 6 and _finding_detail(path[:3]) and path[3] == 'dropped' and isinstance(path[4], int)))
-                if key == 'reason' and reason and value in ('malformed', 'overlength'):
+                if key == 'reason' and value in ('malformed', 'overlength'):
                     return value
                 if value in excluded:
                     return 'Memory diagnostic details are unavailable under the current policy.'
@@ -237,9 +222,9 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str) -> d
                 except ValueError:
                     return 'Memory diagnostic details are unavailable under the current policy.'
             if isinstance(value, list):
-                return [project(item, (*path, index)) for index, item in enumerate(value)]
+                return [project(item) for item in value]
             if isinstance(value, dict):
-                return {key: project(item, (*path, key)) for key, item in value.items()}
+                return {key: project(item, key) for key, item in value.items()}
             return value
         response = {'ok': True, 'content': json.dumps(project(report))}
         if len((json.dumps(response) + '\n').encode()) > 3 * 1024 * 1024:

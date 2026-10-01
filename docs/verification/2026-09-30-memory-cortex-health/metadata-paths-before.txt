@@ -1,0 +1,38 @@
+test_nested_clock_fields_inside_native_errors_remain_filtered (test_memory_cortex_health.MemoryCortexHealthTests.test_nested_clock_fields_inside_native_errors_remain_filtered) ... FAIL
+test_enum_exemption_does_not_apply_inside_error_or_detail_content (test_memory_cortex_health.MemoryCortexHealthTests.test_enum_exemption_does_not_apply_inside_error_or_detail_content) ... FAIL
+test_unmanaged_invalid_clock_retains_native_exception_semantics (test_memory_cortex_health.MemoryCortexHealthTests.test_unmanaged_invalid_clock_retains_native_exception_semantics) ... FAIL
+
+======================================================================
+FAIL: test_nested_clock_fields_inside_native_errors_remain_filtered (test_memory_cortex_health.MemoryCortexHealthTests.test_nested_clock_fields_inside_native_errors_remain_filtered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 366, in test_nested_clock_fields_inside_native_errors_remain_filtered
+    self.assertNotIn(stamp, json.dumps(evidence['error']))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '2026-10-01T04:04:09.293060+00:00' unexpectedly found in '{"ts": "2026-10-01T04:04:09.293060+00:00", "message": "Memory diagnostic details are unavailable under the current policy.", "content": {"timestamp": "2026-10-01T04:04:09.293060+00:00"}}'
+
+======================================================================
+FAIL: test_enum_exemption_does_not_apply_inside_error_or_detail_content (test_memory_cortex_health.MemoryCortexHealthTests.test_enum_exemption_does_not_apply_inside_error_or_detail_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 384, in test_enum_exemption_does_not_apply_inside_error_or_detail_content
+    self.assertNotIn('critical', json.dumps(report['error']))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'critical' unexpectedly found in '{"overall": "critical", "severity": "critical"}'
+
+======================================================================
+FAIL: test_unmanaged_invalid_clock_retains_native_exception_semantics (test_memory_cortex_health.MemoryCortexHealthTests.test_unmanaged_invalid_clock_retains_native_exception_semantics)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 390, in test_unmanaged_invalid_clock_retains_native_exception_semantics
+    result, report = self.health(context=False, clock='invalid-synthetic-clock', expected_error='RangeError')
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 129, in health
+    self.assertIn(expected_error, result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'RangeError' not found in ''
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.065s
+
+FAILED (failures=3)

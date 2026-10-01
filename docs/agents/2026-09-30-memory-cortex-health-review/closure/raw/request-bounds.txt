@@ -1,0 +1,5 @@
+{"operation": "check_sources", "bytes": 131072, "response": {"ok": true}}
+{"operation": "check_sources", "bytes": 131073, "response": {"ok": false, "code": "EWRITE_FAILED", "message": "The native memory request exceeds the input limit"}}
+{"operation": "filter_diagnostic", "bytes": 3145728, "response": {"ok": true, "content": "{}"}}
+{"operation": "filter_diagnostic", "bytes": 3145729, "response": {"ok": false, "code": "EWRITE_FAILED", "message": "The native memory request exceeds the input limit"}}
+{"case": "multibyte", "bytes": 140109, "characters": 70109, "response": {"ok": false, "code": "EWRITE_FAILED", "message": "The native memory request exceeds the input limit"}}

@@ -1,0 +1,40 @@
+test_explicit_other_root_cannot_bypass_managed_memory (test_memory_cortex_health.MemoryCortexHealthTests.test_explicit_other_root_cannot_bypass_managed_memory) ... ok
+test_final_health_report_excludes_retired_state_strings_before_writing (test_memory_cortex_health.MemoryCortexHealthTests.test_final_health_report_excludes_retired_state_strings_before_writing) ... ok
+test_final_health_report_filters_retired_invalid_entry_without_losing_warning (test_memory_cortex_health.MemoryCortexHealthTests.test_final_health_report_filters_retired_invalid_entry_without_losing_warning) ... ok
+test_index_directory_redirect_cannot_become_memory_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_index_directory_redirect_cannot_become_memory_evidence) ... ok
+test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery (test_memory_cortex_health.MemoryCortexHealthTests.test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery) ... ok
+test_large_invalid_hot_report_preserves_all_native_warnings_under_deadline (test_memory_cortex_health.MemoryCortexHealthTests.test_large_invalid_hot_report_preserves_all_native_warnings_under_deadline) ... ok
+test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure (test_memory_cortex_health.MemoryCortexHealthTests.test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure) ... ok
+test_malformed_reviewer_preserves_parse_failure_and_line_numbers (test_memory_cortex_health.MemoryCortexHealthTests.test_malformed_reviewer_preserves_parse_failure_and_line_numbers) ... ok
+test_missing_context_refuses_all_cortex_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_missing_context_refuses_all_cortex_evidence) ... ok
+test_missing_identity_does_not_publish_health_as_a_new_diagnostic (test_memory_cortex_health.MemoryCortexHealthTests.test_missing_identity_does_not_publish_health_as_a_new_diagnostic) ... ok
+test_optional_report_cannot_overwrite_configuration_or_publish_a_log (test_memory_cortex_health.MemoryCortexHealthTests.test_optional_report_cannot_overwrite_configuration_or_publish_a_log) ... ok
+test_optional_report_in_diagnostic_directory_matches_stdout_and_log (test_memory_cortex_health.MemoryCortexHealthTests.test_optional_report_in_diagnostic_directory_matches_stdout_and_log) ... ok
+test_optional_report_redirect_cannot_overwrite_configuration (test_memory_cortex_health.MemoryCortexHealthTests.test_optional_report_redirect_cannot_overwrite_configuration) ... ok
+test_owner_failed_reviewer_remains_critical_and_preserves_current_error (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_failed_reviewer_remains_critical_and_preserves_current_error) ... ok
+test_owner_health_report_finishes_under_native_gate_deadline (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_health_report_finishes_under_native_gate_deadline) ... ok
+test_owner_health_report_keeps_current_failure_and_native_publication (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_health_report_keeps_current_failure_and_native_publication) ... ok
+test_owner_missing_hot_file_remains_an_explicit_critical_finding (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_missing_hot_file_remains_an_explicit_critical_finding) ... ok
+test_redirected_health_output_does_not_change_configuration (test_memory_cortex_health.MemoryCortexHealthTests.test_redirected_health_output_does_not_change_configuration) ... ok
+test_retired_clock_text_in_error_is_still_filtered (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_clock_text_in_error_is_still_filtered) ... ok
+test_retired_error_is_excluded_without_losing_critical_status (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_error_is_excluded_without_losing_critical_status) ... ok
+test_retired_operational_clock_does_not_change_reviewer_assessment (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_operational_clock_does_not_change_reviewer_assessment) ... FAIL
+test_reviewer_directory_redirect_cannot_become_memory_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_reviewer_directory_redirect_cannot_become_memory_evidence) ... ok
+test_reviewer_redirect_cannot_read_configuration (test_memory_cortex_health.MemoryCortexHealthTests.test_reviewer_redirect_cannot_read_configuration) ... ok
+test_unmanaged_optional_report_keeps_native_destination_behavior (test_memory_cortex_health.MemoryCortexHealthTests.test_unmanaged_optional_report_keeps_native_destination_behavior) ... ok
+test_unmanaged_reviewer_retains_native_error (test_memory_cortex_health.MemoryCortexHealthTests.test_unmanaged_reviewer_retains_native_error) ... ok
+
+======================================================================
+FAIL: test_retired_operational_clock_does_not_change_reviewer_assessment (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_operational_clock_does_not_change_reviewer_assessment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 256, in test_retired_operational_clock_does_not_change_reviewer_assessment
+    self.assertEqual(managed['assessment'], unmanaged['assessment'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'ove[901 chars]826938994}}], 'thresholds': {'reviewerStaleMs'[191 chars]000}} != {'ove[901 chars]826939460}}], 'thresholds': {'reviewerStaleMs'[191 chars]000}}
+Diff is 1896 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 25 tests in 19.636s
+
+FAILED (failures=1)

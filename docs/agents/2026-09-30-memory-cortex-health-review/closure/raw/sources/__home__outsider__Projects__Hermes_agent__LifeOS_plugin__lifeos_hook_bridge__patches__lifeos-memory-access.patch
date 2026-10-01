@@ -147,7 +147,7 @@ index 58270db..68741d7 100644
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
-index a46c7b2..5b31fc2 100755
+index a46c7b2..4a4ac38 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
 @@ -1,4 +1,6 @@
@@ -165,12 +165,11 @@ index a46c7b2..5b31fc2 100755
  
  // CLI script, not a library: the checks below run at module top level and end in
  // process.exit. Spawn it (MemoryHealthGate does); never import it.
-@@ -36,6 +39,39 @@ if (!import.meta.main) {
+@@ -36,6 +39,38 @@ if (!import.meta.main) {
  
  const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
  const CLAUDE = process.env.CORTEX_HEALTH_ROOT || join(HOME, ".claude");
 +function requireDiagnostics<T>(collect: () => T): T {
-+  if (!hasMemoryAccess()) return collect();
 +  try {
 +    return collect();
 +  } catch {
@@ -205,7 +204,7 @@ index a46c7b2..5b31fc2 100755
  const HOOKS_DIR = join(CLAUDE, "hooks");
  const TOOLS_DIR = join(CLAUDE, "LIFEOS/TOOLS");
  const OBS_DIR = join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY");
-@@ -291,7 +327,7 @@ for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as co
+@@ -291,7 +326,7 @@ for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as co
  for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as const) {
    if (!existsSync(path)) continue;
    try {
@@ -214,7 +213,7 @@ index a46c7b2..5b31fc2 100755
      if ("code" in r) continue;
      if (r.dropped_invalid.length > 0) {
        add(
-@@ -355,10 +391,10 @@ const retrievalStaleMs = cortexThresholdEnv("CORTEX_RETRIEVAL_STALE_MS");
+@@ -355,10 +390,10 @@ const retrievalStaleMs = cortexThresholdEnv("CORTEX_RETRIEVAL_STALE_MS");
  const proposalBacklog = cortexThresholdEnv("CORTEX_PROPOSAL_BACKLOG");
  const observabilityMaxBytes = cortexThresholdEnv("CORTEX_OBSERVABILITY_MAX_BYTES");
  const observabilityMaxAgeMs = cortexThresholdEnv("CORTEX_OBSERVABILITY_MAX_AGE_MS");
@@ -227,7 +226,7 @@ index a46c7b2..5b31fc2 100755
  const cortexAssessment = assessCortexEvidence(cortexEvidence);
  for (const finding of cortexAssessment.findings) add(finding.id, finding.severity, finding.message, finding.evidence);
  
-@@ -369,7 +405,7 @@ const oks = findings.filter(f => f.severity === "ok");
+@@ -369,7 +404,7 @@ const oks = findings.filter(f => f.severity === "ok");
  
  const overall: Severity = criticals.length > 0 ? "critical" : warns.length > 0 ? "warn" : "ok";
  
@@ -236,7 +235,7 @@ index a46c7b2..5b31fc2 100755
    ts: new Date().toISOString(),
    overall,
    counts: { critical: criticals.length, warn: warns.length, ok: oks.length },
-@@ -377,7 +413,7 @@ const report = {
+@@ -377,7 +412,7 @@ const report = {
    evidence: cortexEvidence,
    findings: findings.filter(f => f.severity !== "ok"),
    ok_summary: oks.map(o => o.id),

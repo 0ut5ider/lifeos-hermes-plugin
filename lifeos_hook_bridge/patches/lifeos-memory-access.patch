@@ -94,6 +94,157 @@ index fb6dffa..599a563 100644
 +  if (found.row.confidence < confidenceThreshold) return { ok: false, reason: "proposal is below its confidence threshold" };
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts b/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
+index 58270db..68741d7 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
+@@ -1,7 +1,10 @@
++// ABOUTME: Collects and assesses native Cortex health evidence with configured thresholds.
++// ABOUTME: Requires managed source authority and filters retained diagnostic text before publication.
+ import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
+ import { dirname, join, resolve, sep } from "node:path";
+ import { createHash } from "node:crypto";
+ import { loadCanonicalRecords } from "./Cortex";
++import { canReadMemoryDiagnostics, hasMemoryAccess, checkMemoryDiagnostic, filterMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ export type Severity = "ok" | "warn" | "critical";
+ export interface HealthFinding { id: string; severity: Severity; message: string; evidence?: any; }
+@@ -101,6 +104,7 @@ export function assessCortexEvidence(input: CortexEvidence): CortexAssessment {
+ }
+ 
+ function readJsonl(path: string): { rows: any[]; malformedLines: number[]; exists: boolean } {
++  checkMemoryDiagnostic(path);
+   if (!existsSync(path)) return { rows: [], malformedLines: [], exists: false };
+   const rows: any[] = [], malformedLines: number[] = [];
+   readFileSync(path, "utf8").split(/\r?\n/).forEach((line, index) => { if (!line.trim()) return; try { rows.push(JSON.parse(line)); } catch { malformedLines.push(index + 1); } });
+@@ -118,6 +122,7 @@ function reviewerEvidence(obs: string, nowMs: number, thresholds: CortexThreshol
+   const latest = parsed.rows.at(-1);
+   if (parsed.malformedLines.length) return { status: "parse-failed", evidence: log, error: `malformed JSONL lines: ${parsed.malformedLines.join(",")}` };
+   const runsDir = join(obs, "reviewer-runs");
++  checkMemoryDiagnostic(runsDir);
+   const dirs = existsSync(runsDir) ? readdirSync(runsDir, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name).sort() : [];
+   const latestDir = dirs.at(-1);
+   const latestDirMs = runMs(latestDir);
+@@ -200,13 +205,19 @@ function validatedThresholds(overrides: Partial<CortexThresholds> = {}): CortexT
+ 
+ export interface CollectCortexOptions { root: string; nowMs?: number; thresholds?: Partial<CortexThresholds>; indexManifest?: string; }
+ export function collectCortexEvidence(options: CollectCortexOptions): CortexEvidence {
++  if (!canReadMemoryDiagnostics(options.root)) throw new Error("Memory diagnostics are unavailable under the current policy");
+   const nowMs = options.nowMs ?? Date.now();
+   const thresholds = validatedThresholds(options.thresholds);
+   const memoryRoot = join(options.root, "LIFEOS/MEMORY"), obs = join(memoryRoot, "OBSERVABILITY");
+   const retrievalLog = join(obs, "memory-retrievals.jsonl"), retrieval = readJsonl(retrievalLog), retrievalLast = retrieval.rows.at(-1);
+   const proposalLog = join(obs, "pending-proposals.jsonl"), proposals = readJsonl(proposalLog);
+   const manifest = options.indexManifest ?? join(memoryRoot, "INDEX/index-manifest.json");
+-  return { nowMs, thresholds, reviewer: reviewerEvidence(obs, nowMs, thresholds),
++  if (hasMemoryAccess() && resolve(dirname(manifest)) !== resolve(memoryRoot, "INDEX")) {
++    throw new Error("Cortex diagnostics require an installed memory index manifest");
++  }
++  checkMemoryDiagnostic(join(memoryRoot, "INDEX"));
++  const evidence: CortexEvidence = { nowMs, thresholds, reviewer: reviewerEvidence(obs, nowMs, thresholds),
+     retrieval: retrieval.malformedLines.length ? { status: "invalid", evidence: retrievalLog, malformedLines: retrieval.malformedLines } : validRetrievalRow(retrievalLast) ? { status: "ok", ts: retrievalLast.ts as string, queryHash: retrievalLast.query_hash as string, returnedCount: retrievalLast.returned_count as number, durationMs: retrievalLast.duration_ms as number, evidence: `${retrievalLog}:latest` } : retrievalLast ? { status: "invalid", evidence: `${retrievalLog}:latest` } : { status: "missing", evidence: retrievalLog },
+     proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
++  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
+ }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
+index a46c7b2..5b31fc2 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Checks native memory lifecycle, structural integrity, and health evidence.
++// ABOUTME: Requires managed source authority and filters diagnostics before publication.
+ /**
+  * MemoryHealthCheck.ts — Autonomic memory subsystem health check.
+  *
+@@ -27,6 +29,7 @@ import { parseMemoryContent, read as memoryRead, BEGIN_MARKER, END_MARKER } from
+ import { assessCortexEvidence, collectCortexEvidence } from "./CortexHealth";
+ import { atomicWriteJSON } from "../PULSE/lib/atomic-write";
+ import { homedir } from "node:os";
++import { canReadMemoryDiagnostics, hasMemoryAccess, checkMemoryDiagnostic, diagnoseMemoryFile, filterMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ // CLI script, not a library: the checks below run at module top level and end in
+ // process.exit. Spawn it (MemoryHealthGate does); never import it.
+@@ -36,6 +39,39 @@ if (!import.meta.main) {
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const CLAUDE = process.env.CORTEX_HEALTH_ROOT || join(HOME, ".claude");
++function requireDiagnostics<T>(collect: () => T): T {
++  if (!hasMemoryAccess()) return collect();
++  try {
++    return collect();
++  } catch {
++    console.log(JSON.stringify({unavailable: "Memory diagnostics are unavailable under the current policy"}));
++    process.exit(2);
++  }
++}
++const hotDiagnostics = new Map<string, ReturnType<typeof diagnoseMemoryFile>>();
++let diagnosticsAvailable = canReadMemoryDiagnostics(CLAUDE);
++try {
++  if (diagnosticsAvailable && hasMemoryAccess()) {
++    for (const name of ["review-state.json", "memory-writes.jsonl", "memory-health.jsonl"]) {
++      checkMemoryDiagnostic(join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY", name));
++    }
++    checkMemoryDiagnostic(join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"));
++    checkMemoryDiagnostic(join(CLAUDE, "LIFEOS/MEMORY/INDEX"));
++    if (process.env.CORTEX_HEALTH_REPORT_PATH) {
++      checkMemoryDiagnostic(process.env.CORTEX_HEALTH_REPORT_PATH, true);
++    }
++    for (const [label, file] of [["PRINCIPAL", "PRINCIPAL_MEMORY.md"], ["DIGITAL_ASSISTANT", "DA_MEMORY.md"]]) {
++      const path = join(CLAUDE, "LIFEOS/USER", label, file);
++      hotDiagnostics.set(path, diagnoseMemoryFile(path));
++    }
++  }
++} catch {
++  diagnosticsAvailable = false;
++}
++if (!diagnosticsAvailable) {
++  await Bun.write(Bun.stdout, JSON.stringify({unavailable: "Memory diagnostics are unavailable under the current policy"}) + "\n");
++  process.exit(2);
++}
+ const HOOKS_DIR = join(CLAUDE, "hooks");
+ const TOOLS_DIR = join(CLAUDE, "LIFEOS/TOOLS");
+ const OBS_DIR = join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY");
+@@ -291,7 +327,7 @@ for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as co
+ for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as const) {
+   if (!existsSync(path)) continue;
+   try {
+-    const r = memoryRead(path);
++    const r = hotDiagnostics.get(path) ?? memoryRead(path);
+     if ("code" in r) continue;
+     if (r.dropped_invalid.length > 0) {
+       add(
+@@ -355,10 +391,10 @@ const retrievalStaleMs = cortexThresholdEnv("CORTEX_RETRIEVAL_STALE_MS");
+ const proposalBacklog = cortexThresholdEnv("CORTEX_PROPOSAL_BACKLOG");
+ const observabilityMaxBytes = cortexThresholdEnv("CORTEX_OBSERVABILITY_MAX_BYTES");
+ const observabilityMaxAgeMs = cortexThresholdEnv("CORTEX_OBSERVABILITY_MAX_AGE_MS");
+-const cortexEvidence = collectCortexEvidence({ root: CLAUDE, nowMs: process.env.CORTEX_HEALTH_NOW ? Date.parse(process.env.CORTEX_HEALTH_NOW) : Date.now(), thresholds: {
++const cortexEvidence = requireDiagnostics(() => collectCortexEvidence({ root: CLAUDE, nowMs: process.env.CORTEX_HEALTH_NOW ? Date.parse(process.env.CORTEX_HEALTH_NOW) : Date.now(), thresholds: {
+   ...(retrievalStaleMs === undefined ? {} : { retrievalStaleMs }), ...(proposalBacklog === undefined ? {} : { proposalBacklog }),
+   ...(observabilityMaxBytes === undefined ? {} : { observabilityMaxBytes }), ...(observabilityMaxAgeMs === undefined ? {} : { observabilityMaxAgeMs }),
+-}, indexManifest: process.env.CORTEX_INDEX_MANIFEST });
++}, indexManifest: process.env.CORTEX_INDEX_MANIFEST }));
+ const cortexAssessment = assessCortexEvidence(cortexEvidence);
+ for (const finding of cortexAssessment.findings) add(finding.id, finding.severity, finding.message, finding.evidence);
+ 
+@@ -369,7 +405,7 @@ const oks = findings.filter(f => f.severity === "ok");
+ 
+ const overall: Severity = criticals.length > 0 ? "critical" : warns.length > 0 ? "warn" : "ok";
+ 
+-const report = {
++const report = requireDiagnostics(() => filterMemoryDiagnostic({
+   ts: new Date().toISOString(),
+   overall,
+   counts: { critical: criticals.length, warn: warns.length, ok: oks.length },
+@@ -377,7 +413,7 @@ const report = {
+   evidence: cortexEvidence,
+   findings: findings.filter(f => f.severity !== "ok"),
+   ok_summary: oks.map(o => o.id),
+-};
++}, new Date().toISOString()));
+ 
+ // Append to observability log
+ try {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
 index 9ad9d6a..b507429 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
@@ -485,14 +636,14 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..70a8dae
+index 0000000..6eb6446
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,106 @@
+@@ -0,0 +1,165 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
-+import { lstatSync, readFileSync } from "node:fs";
++import { lstatSync, readFileSync, realpathSync } from "node:fs";
 +import { homedir } from "node:os";
 +import { isAbsolute, resolve } from "node:path";
 +import { spawnSync } from "node:child_process";
@@ -567,6 +718,65 @@ index 0000000..70a8dae
 +    throw new Error("Memory diagnostics are unavailable under the current policy");
 +  }
 +  return governed.content;
++}
++
++export function checkMemoryDiagnostic(path: string, report = false): void {
++  const governed = memoryAccess(report ? "check_diagnostic_report" : "check_diagnostic", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined && governed.ok !== true) {
++    throw new Error("Memory diagnostics are unavailable under the current policy");
++  }
++}
++
++export function canReadMemoryDiagnostics(root: string): boolean {
++  try {
++    if (!canReadMemorySources()) return false;
++    return !hasMemoryAccess() || realpathSync(root) === realpathSync(resolve(homedir(), ".claude"));
++  } catch {
++    return false;
++  }
++}
++
++interface HotMemoryDiagnostic {
++  dropped_invalid: Array<{entry: string; reason: "malformed" | "overlength"}>;
++}
++
++export function diagnoseMemoryFile(path: string): HotMemoryDiagnostic | undefined {
++  const response = memoryAccess("diagnose_hot", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (response === undefined) return undefined;
++  const valid = (value: unknown): value is HotMemoryDiagnostic => memoryObject(value)
++    && Array.isArray(value.dropped_invalid) && value.dropped_invalid.every(row => memoryObject(row)
++      && typeof row.entry === "string" && (row.reason === "malformed" || row.reason === "overlength"));
++  if (response.ok !== true || !valid(response)) throw new Error("Hot-memory diagnostics are unavailable under the current policy");
++  return response;
++}
++
++function sameDiagnosticShape(value: unknown, source: unknown): boolean {
++  if (Array.isArray(source)) {
++    return Array.isArray(value) && value.length === source.length
++      && source.every((item, index) => sameDiagnosticShape(value[index], item));
++  }
++  if (memoryObject(source)) {
++    return memoryObject(value) && Object.keys(value).length === Object.keys(source).length
++      && Object.entries(source).every(([key, item]) => Object.hasOwn(value, key) && sameDiagnosticShape(value[key], item));
++  }
++  return source === null ? value === null : typeof value === typeof source;
++}
++
++export function filterMemoryDiagnostic<T>(report: T, timestamp: string): T {
++  const content = JSON.stringify(report);
++  const governed = memoryAccess("filter_diagnostic", {content, timestamp},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return report;
++  if (governed.ok !== true || typeof governed.content !== "string") {
++    throw new Error("Memory diagnostic details are unavailable under the current policy");
++  }
++  const filtered: unknown = JSON.parse(governed.content);
++  const source: unknown = JSON.parse(content);
++  const valid = (value: unknown): value is T => sameDiagnosticShape(value, source);
++  if (!valid(filtered)) throw new Error("The native diagnostic service returned an invalid result");
++  return filtered;
 +}
 +
 +

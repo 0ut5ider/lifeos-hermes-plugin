@@ -34,9 +34,7 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     if diagnostic:
         from .memory_diagnostics import DIAGNOSTIC_FILES, DIAGNOSTIC_DIRECTORIES
         directory = not require_file and relative in DIAGNOSTIC_DIRECTORIES
-        report = not require_file and re.fullmatch(
-            r'LIFEOS/MEMORY/OBSERVABILITY/reports/[A-Za-z0-9][A-Za-z0-9_-]*\.json', relative)
-        permitted = relative in DIAGNOSTIC_FILES or directory or report
+        permitted = relative in DIAGNOSTIC_FILES or directory
     else:
         directory = False
         permitted = relative in FILES | LOG_FILES | CACHE_FILES or relative.startswith(PREFIXES)

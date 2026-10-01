@@ -198,9 +198,6 @@ class MemoryService:
             if operation == "check_diagnostic" and set(arguments) == {"path"}:
                 from .memory_diagnostics import check
                 return check(memory,scope,arguments['path'])
-            if operation == "check_diagnostic_report" and set(arguments) == {"path"}:
-                from .memory_diagnostics import check
-                return check(memory,scope,arguments['path'],report=True)
             if operation == "filter_diagnostic" and set(arguments) == {"content", "timestamp"}:
                 from .memory_diagnostics import filter_report
                 return filter_report(memory,scope,**arguments)

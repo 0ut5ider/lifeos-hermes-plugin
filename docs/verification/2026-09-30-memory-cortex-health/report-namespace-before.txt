@@ -1,0 +1,16 @@
+test_optional_report_cannot_replace_an_existing_diagnostic_input (test_memory_cortex_health.MemoryCortexHealthTests.test_optional_report_cannot_replace_an_existing_diagnostic_input) ... FAIL
+
+======================================================================
+FAIL: test_optional_report_cannot_replace_an_existing_diagnostic_input (test_memory_cortex_health.MemoryCortexHealthTests.test_optional_report_cannot_replace_an_existing_diagnostic_input)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 337, in test_optional_report_cannot_replace_an_existing_diagnostic_input
+    self.assertEqual(target.read_text(), sentinel)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '{\n  "ts": "2026-10-01T03:57:55.604Z",\n  [5613 chars]n}\n' != '{"pending_review": true, "turn_count_since[13 chars]: 4}'
+Diff is 5889 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 1 test in 1.512s
+
+FAILED (failures=1)

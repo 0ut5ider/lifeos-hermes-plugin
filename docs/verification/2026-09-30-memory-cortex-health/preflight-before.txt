@@ -1,0 +1,18 @@
+test_redirected_health_output_does_not_change_configuration (test_memory_cortex_health.MemoryCortexHealthTests.test_redirected_health_output_does_not_change_configuration) ... FAIL
+test_owner_missing_hot_file_remains_an_explicit_critical_finding (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_missing_hot_file_remains_an_explicit_critical_finding) ... ok
+test_owner_health_report_finishes_under_native_gate_deadline (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_health_report_finishes_under_native_gate_deadline) ... ok
+
+======================================================================
+FAIL: test_redirected_health_output_does_not_change_configuration (test_memory_cortex_health.MemoryCortexHealthTests.test_redirected_health_output_does_not_change_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 176, in test_redirected_health_output_does_not_change_configuration
+    self.assertEqual(report, {'unavailable': 'Memory diagnostics are unavailable under the current policy'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'ts': '2026-10-01T03:32:25.490Z', 'overall[4645 chars]da']} != {'unavailable': 'Memory diagnostics are una[30 chars]icy'}
+Diff is 7306 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.841s
+
+FAILED (failures=1)

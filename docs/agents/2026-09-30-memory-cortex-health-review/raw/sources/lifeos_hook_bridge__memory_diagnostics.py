@@ -4,7 +4,6 @@
 from datetime import datetime, timezone
 import json
 import math
-import re
 from typing import Any
 
 from .memory_policy import MemoryScope
@@ -32,24 +31,6 @@ BOOLEAN_FIELDS = {
     'format-gate.jsonl': ('heartbeat_present',),
     'review-state.json': ('pending_review',),
 }
-CLOCK_FIELDS = {'ts', 'timestamp', 'created_at', 'last_review_at', 'last_message_at'}
-
-
-def _finding_detail(path: tuple[str | int, ...]) -> bool:
-    return len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and path[2] == 'detail'
-
-
-def _evidence_field(path: tuple[str | int, ...]) -> bool:
-    return path in (('reviewer',), ('retrieval',), ('index',),
-                    ('evidence', 'reviewer'), ('evidence', 'retrieval'), ('evidence', 'index')) or _finding_detail(path)
-
-
-def _clock(path: tuple[str | int, ...], value: str) -> bool:
-    # Valid structural clocks are operational evidence, like counts and severity.
-    return (bool(path) and path[-1] in CLOCK_FIELDS
-        and (len(path) == 1 or _evidence_field(path[:-1])) and re.fullmatch(
-        r'\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})', value) is not None
-        and _timestamp(value))
 
 
 def _timestamp(value: Any) -> bool:
@@ -149,12 +130,9 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
         return response
 
 
-def check(memory, scope: MemoryScope, path: str, *, report: bool = False) -> dict[str, Any]:
+def check(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
     with memory._transaction():
-        _, relative = _source_path(memory, scope, path, diagnostic=True, require_file=False)
-        if report and not re.fullmatch(
-                r'LIFEOS/MEMORY/OBSERVABILITY/reports/[A-Za-z0-9][A-Za-z0-9_-]*\.json', relative):
-            raise MemoryUnavailable('Diagnostic reports need their dedicated publication directory')
+        _source_path(memory, scope, path, diagnostic=True, require_file=False)
     return {'ok': True}
 
 
@@ -214,21 +192,14 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str) -> d
         excluded = invalid | {item['content'] for item, check in zip(items, checked, strict=True)
                     if (not check.get('ok') or check.get('item') != item
                         or memory._filter_history(connection, scope, item['content'], timestamp)['excluded'])}
-        def project(value, path=()):
+        def project(value, key=''):
             if isinstance(value, str):
-                key = path[-1] if path else ''
-                if _clock(path, value):
+                if key in ('overall', 'severity') and value in ('ok', 'warn', 'critical'):
                     return value
-                severity = (path == ('overall',) or
-                    (len(path) == 3 and path[0] == 'findings' and isinstance(path[1], int) and key == 'severity'))
-                if severity and value in ('ok', 'warn', 'critical'):
-                    return value
-                if key == 'status' and _evidence_field(path[:-1]) and value in ('ok', 'skipped', 'failed', 'parse-failed', 'timed-out',
+                if key == 'status' and value in ('ok', 'skipped', 'failed', 'parse-failed', 'timed-out',
                                                 'missing', 'invalid', 'absent', 'no-index-v1', 'mismatch'):
                     return value
-                reason = ((len(path) == 3 and path[0] == 'dropped_invalid' and isinstance(path[1], int)) or
-                          (len(path) == 6 and _finding_detail(path[:3]) and path[3] == 'dropped' and isinstance(path[4], int)))
-                if key == 'reason' and reason and value in ('malformed', 'overlength'):
+                if key == 'reason' and value in ('malformed', 'overlength'):
                     return value
                 if value in excluded:
                     return 'Memory diagnostic details are unavailable under the current policy.'
@@ -237,11 +208,8 @@ def filter_report(memory, scope: MemoryScope, content: str, timestamp: str) -> d
                 except ValueError:
                     return 'Memory diagnostic details are unavailable under the current policy.'
             if isinstance(value, list):
-                return [project(item, (*path, index)) for index, item in enumerate(value)]
+                return [project(item) for item in value]
             if isinstance(value, dict):
-                return {key: project(item, (*path, key)) for key, item in value.items()}
+                return {key: project(item, key) for key, item in value.items()}
             return value
-        response = {'ok': True, 'content': json.dumps(project(report))}
-        if len((json.dumps(response) + '\n').encode()) > 3 * 1024 * 1024:
-            raise ValueError('The diagnostic projection exceeds the native response limit')
-        return response
+        return {'ok': True, 'content': json.dumps(project(report))}
