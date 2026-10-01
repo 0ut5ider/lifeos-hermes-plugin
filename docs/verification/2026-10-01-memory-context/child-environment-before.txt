@@ -1,0 +1,25 @@
+test_native_subprocess_receives_the_current_context_after_import (test_memory_context_builder.MemoryContextBuilderTests.test_native_subprocess_receives_the_current_context_after_import) ... FAIL
+test_native_subprocess_does_not_retain_its_initial_owner_context (test_memory_context_builder.MemoryContextBuilderTests.test_native_subprocess_does_not_retain_its_initial_owner_context) ... FAIL
+
+======================================================================
+FAIL: test_native_subprocess_receives_the_current_context_after_import (test_memory_context_builder.MemoryContextBuilderTests.test_native_subprocess_receives_the_current_context_after_import)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 90, in test_native_subprocess_receives_the_current_context_after_import
+    self.assertTrue(self.call(probe=True)['access'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_native_subprocess_does_not_retain_its_initial_owner_context (test_memory_context_builder.MemoryContextBuilderTests.test_native_subprocess_does_not_retain_its_initial_owner_context)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 97, in test_native_subprocess_does_not_retain_its_initial_owner_context
+    self.assertFalse(self.call(context=False, probe=True)['access'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.538s
+
+FAILED (failures=2)

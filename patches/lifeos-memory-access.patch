@@ -1,3 +1,125 @@
+diff --git a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
+index a65dfb3..0a7f66c 100644
+--- a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
++++ b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Builds per-turn identity, memory, goal, and active-session context.
++// ABOUTME: Governs managed source reads and caches only standalone context.
+ /**
+  * lifeos-context — the per-turn LifeOS context block for SDK-backed channels.
+  *
+@@ -14,6 +16,7 @@ import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
+ import { read as readMemory, type ReadResult as MemoryReadResult } from "../../TOOLS/MemoryWriter"
+ import { getRelevantContext } from "../../TOOLS/MemoryRetriever"
+ import { homedir } from "node:os";
++import { canReadMemorySources, filterMemorySource, hasMemoryAccess, hasManagedMemoryHTTP, readMemorySource } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()
+ const LIFEOS_DIR = join(HOME, ".claude", "LIFEOS")
+@@ -23,18 +26,23 @@ const LIFEOS_DIR = join(HOME, ".claude", "LIFEOS")
+ // (ISA ISC-29; worst case ~50k under ISC-30).
+ const CONTEXT_BLOCK_MAX_CHARS = 60_000
+ 
+-// DA display name from LifeosConfig ([da].name); "LifeOS" fallback (PR #1457).
+-const DA_NAME = ((): string => {
+-  try { const n = loadLifeosConfig().da.name; if (n && typeof n === "string" && n.length > 0) return n } catch { /* default */ }
+-  return "LifeOS"
+-})()
+-
+-// Principal display name from LifeosConfig ([principal].name); generic fallback
+-// keeps a not-yet-configured install functional (public issue #1143).
+-const PRINCIPAL_NAME = ((): string => {
+-  try { const n = loadLifeosConfig().principal.name; if (n && typeof n === "string" && n.length > 0) return n } catch { /* default */ }
+-  return "Principal"
+-})()
++// LifeosConfig supplies display names. Generic fallbacks keep an unconfigured
++// install functional (PR #1457 and public issue #1143).
++function displayNames(managed: boolean): { da: string; principal: string } {
++  let da = "LifeOS";
++  let principal = "Principal";
++  try {
++    const configuration = loadLifeosConfig({ force: managed });
++    if (configuration.da.name) da = configuration.da.name;
++    if (configuration.principal.name) principal = configuration.principal.name;
++  } catch { /* default */ }
++  if (managed) {
++    const timestamp = new Date().toISOString();
++    da = filterMemorySource(da, timestamp) ?? "LifeOS";
++    principal = filterMemorySource(principal, timestamp) ?? "Principal";
++  }
++  return { da, principal };
++}
+ 
+ function log(level: "info" | "warn" | "error", msg: string, data?: unknown) {
+   console.log(JSON.stringify({
+@@ -88,6 +96,14 @@ function formatMemoryBlock(title: string, r: MemoryReadResult): string {
+  * blowing up the whole turn.
+  */
+ export async function buildLifeosContextBlock(query?: string): Promise<string> {
++  const managed = hasManagedMemoryHTTP();
++  const authorize = (): void => {
++    if (managed && (!hasMemoryAccess() || !canReadMemorySources())) {
++      throw new Error("LifeOS context is unavailable under the current memory policy");
++    }
++  };
++  authorize();
++  const names = displayNames(managed);
+   const { stat } = await import("fs/promises")
+ 
+   // Cheap mtime probe to decide if the cache is still valid. Both the four
+@@ -111,7 +127,7 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+   // When a query is provided, the relevant-memory injection makes the block
+   // query-dependent — skip the static cache. The MemoryRetriever has its own
+   // per-query cache that absorbs repeated calls within a turn cluster.
+-  if (cachedContext && !query) {
++  if (cachedContext && !query && !managed) {
+     const age = Date.now() - cachedContext.builtAt
+     const mtimesUnchanged = Object.entries(mtimes)
+       .every(([k, v]) => cachedContext!.mtimes[k] === v)
+@@ -122,7 +138,7 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+ 
+   const readSafe = async (rel: string, label: string): Promise<string> => {
+     try {
+-      const raw = await readFile(join(LIFEOS_DIR, rel), "utf8")
++      const raw = managed ? readMemorySource(join(LIFEOS_DIR, rel)) : await readFile(join(LIFEOS_DIR, rel), "utf8")
+       return raw.trim()
+     } catch (err) {
+       log("warn", "context-block: file unavailable", { rel, error: String(err).slice(0, 120) })
+@@ -191,10 +207,10 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+     "",
+     `**Today:** ${today} (America/Los_Angeles)`,
+     "",
+-    `### About you (${DA_NAME})`,
++    `### About you (${names.da})`,
+     daIdentity,
+     "",
+-    `### About ${PRINCIPAL_NAME}`,
++    `### About ${names.principal}`,
+     principalIdentity,
+     "",
+     memoryBlocks[0],
+@@ -202,7 +218,7 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+     memoryBlocks[1],
+     ...(relevantMemoryBlock ? ["", relevantMemoryBlock] : []),
+     "",
+-    `### ${PRINCIPAL_NAME}'s TELOS`,
++    `### ${names.principal}'s TELOS`,
+     principalTelos,
+     "",
+     "### Active sessions / in-flight work",
+@@ -216,8 +232,10 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+       "\n\n…[context truncated to fit per-turn budget — Read the source files directly if you need more]"
+   }
+ 
+-  // Only cache the query-free baseline. Query-driven blocks are per-turn.
+-  if (!query) {
++  // Only standalone query-free context uses the file-mtime cache. Managed
++  // callers require current policy and registry decisions for every turn.
++  authorize();
++  if (!query && !managed) {
+     cachedContext = { text: block, builtAt: Date.now(), mtimes }
+   }
+   return block
 diff --git a/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts b/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts
 index fb6dffa..599a563 100644
 --- a/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts
@@ -1127,10 +1249,10 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..d3323d1
+index 0000000..2072558
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,204 @@
+@@ -0,0 +1,205 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -1180,6 +1302,7 @@ index 0000000..d3323d1
 +  const executable = command.shift();
 +  if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
 +  const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
++                                               env: {...process.env},
 +                                               encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
 +  if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
 +  const response: unknown = JSON.parse(result.stdout);

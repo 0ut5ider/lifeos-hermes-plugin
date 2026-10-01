@@ -243,6 +243,12 @@ The owner previews a staged note or a bounded 50-note batch. Native validation a
 
 The renderer consumes declared current sources. It preserves native parsers and templates without scanning unregistered or retired notes. Current registered notes remain visible. A clock regression closes arbitrary text in harvest metadata. An equal-width ID probe reproduces search/export selecting different notes under one native ID. Canonical and staged corpus checks now reject duplicate native identifiers. The [staging evidence](verification/2026-10-01-memory-staging/README.md) preserves failures, source-age controls, real process-death recovery, source identity, and limits.
 
+## Native PULSE context and current subprocess metadata
+
+Managed PULSE context requires current unrestricted owner recall, governed identity sources, and current native hot facts. It does not reuse the standalone process cache. It refreshes configured display names and excludes invalid or retired labels. Source redirects, unavailable connectors, missing caller context, and policy revocation refuse access. Standalone context retains its native behavior.
+
+The native connector now passes its current environment explicitly to the Python subprocess. Real probes establish that Bun otherwise retains its initial environment after caller context changes. The [context evidence](verification/2026-10-01-memory-context/README.md) preserves both failing probes and valid native controls. The existing native memory patch changes 23 files and adds no Hermes patch group. Siri credential mapping, restricted context, final delivery, other caches, and lifecycle remain open.
+
 This unit expands the existing native memory patch to 22 files and adds no Hermes patch group. It governs promotion and its derived index generation. Harvester collection, review, rejection, other derived readers, complete source inventory, restricted prompts, lifecycle, ownership setup, coherent backup, and the full release gate remain open. Ownership remains disabled on running installations.
 
 The distributed staging, recovery, canonical, and Knowledge-query gate passes 65 cases in 72.749 seconds without skips, failures, or errors. The broader memory regression follows this source revision. This result does not pass the full release gate.

@@ -17,6 +17,9 @@ FILES = {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-n
 LOG_FILES = {'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl',
              'LIFEOS/MEMORY/OBSERVABILITY/memory-health.jsonl'}
 CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
+CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+                 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
+                 'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'LIFEOS/USER/PROJECTS.md'}
 
 
 def authorize(scope: MemoryScope) -> dict[str, Any]:
@@ -39,12 +42,12 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = relative in FILES | LOG_FILES | CACHE_FILES or relative.startswith(PREFIXES)
+        permitted = relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES or relative.startswith(PREFIXES)
     if not permitted:
         raise MemoryUnavailable('This is not a supported native history or context source')
     source = memory._path(relative)
     physical = memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
-        'LIFEOS/USER' if relative in CACHE_FILES else 'LIFEOS')
+        'LIFEOS/USER' if relative in CACHE_FILES | CONTEXT_FILES else 'LIFEOS')
     if (source.resolve() != physical.absolute() or (require_file and not source.is_file())
             or (not require_file and source.exists() and not (source.is_dir() if directory else source.is_file()))):
         raise MemoryUnavailable('The native source is missing or changes its permitted physical path')
@@ -144,7 +147,11 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
     rejected = {'ok':False, 'content':'', 'excluded':True}
     with memory._transaction() as connection:
         source, relative = _source_path(memory,scope,path)
+        if relative in CONTEXT_FILES and source.stat().st_size > 256 * 1024:
+            raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
         content = source.read_text(encoding='utf-8')
+        if relative in CONTEXT_FILES and len(content.encode('utf-8')) > 256 * 1024:
+            raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
         timestamp = datetime.fromtimestamp(source.stat().st_mtime,timezone.utc).isoformat()
         if relative in LOG_FILES:
             return {'ok':True, 'content':_read_log(memory,connection,scope,relative,content,timestamp),
