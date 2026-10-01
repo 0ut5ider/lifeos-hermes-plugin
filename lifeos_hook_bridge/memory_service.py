@@ -187,6 +187,13 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
+                from .memory_staging import preview
+                return {'ok':True,**preview(memory,scope,**arguments)}
+            if operation == 'staged_promote' and set(arguments) == {'target','all','project','signature','request_id'}:
+                from .memory_staging import promote
+                receipt=promote(memory,scope,**arguments,source_session=context.session_id)
+                return {'ok':receipt['status'] in ('committed','unchanged'),'receipt':receipt}
             if operation == 'restore_list' and set(arguments) == {'category'}:
                 from .memory_restore import list_snapshots
                 return list_snapshots(memory,scope,arguments['category'])

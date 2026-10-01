@@ -1,0 +1,88 @@
+test_changed_staging_preview_cannot_publish_different_bytes (test_memory_staging.MemoryStagingTests.test_changed_staging_preview_cannot_publish_different_bytes) ... ERROR
+test_derived_indexes_exclude_unregistered_and_forgotten_notes (test_memory_staging.MemoryStagingTests.test_derived_indexes_exclude_unregistered_and_forgotten_notes) ... ERROR
+test_destination_collision_preserves_existing_note_and_staging (test_memory_staging.MemoryStagingTests.test_destination_collision_preserves_existing_note_and_staging) ... ERROR
+test_forgotten_claim_cannot_be_promoted_from_staging (test_memory_staging.MemoryStagingTests.test_forgotten_claim_cannot_be_promoted_from_staging) ... ERROR
+test_restricted_context_cannot_read_staged_unclassified_content (test_memory_staging.MemoryStagingTests.test_restricted_context_cannot_read_staged_unclassified_content) ... ERROR
+test_reviewed_promotion_preserves_native_note_and_registers_project_reference (test_memory_staging.MemoryStagingTests.test_reviewed_promotion_preserves_native_note_and_registers_project_reference) ... ERROR
+test_staged_path_cannot_select_outside_files_or_symlinks (test_memory_staging.MemoryStagingTests.test_staged_path_cannot_select_outside_files_or_symlinks) ... ERROR
+test_standalone_native_promotion_retains_original_content_and_indexes (test_memory_staging.MemoryStagingTests.test_standalone_native_promotion_retains_original_content_and_indexes) ... ok
+test_unbound_native_promotion_cannot_publish_or_remove_staging (test_memory_staging.MemoryStagingTests.test_unbound_native_promotion_cannot_publish_or_remove_staging) ... FAIL
+test_unclassified_promotion_stays_private_from_project_reader (test_memory_staging.MemoryStagingTests.test_unclassified_promotion_stays_private_from_project_reader) ... ERROR
+
+======================================================================
+ERROR: test_changed_staging_preview_cannot_publish_different_bytes (test_memory_staging.MemoryStagingTests.test_changed_staging_preview_cannot_publish_different_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 78, in test_changed_staging_preview_cannot_publish_different_bytes
+    from lifeos_hook_bridge.memory_staging import preview, promote
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_derived_indexes_exclude_unregistered_and_forgotten_notes (test_memory_staging.MemoryStagingTests.test_derived_indexes_exclude_unregistered_and_forgotten_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 117, in test_derived_indexes_exclude_unregistered_and_forgotten_notes
+    from lifeos_hook_bridge.memory_staging import preview, promote
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_destination_collision_preserves_existing_note_and_staging (test_memory_staging.MemoryStagingTests.test_destination_collision_preserves_existing_note_and_staging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 86, in test_destination_collision_preserves_existing_note_and_staging
+    from lifeos_hook_bridge.memory_staging import preview, promote
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_forgotten_claim_cannot_be_promoted_from_staging (test_memory_staging.MemoryStagingTests.test_forgotten_claim_cannot_be_promoted_from_staging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 95, in test_forgotten_claim_cannot_be_promoted_from_staging
+    from lifeos_hook_bridge.memory_staging import preview
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_restricted_context_cannot_read_staged_unclassified_content (test_memory_staging.MemoryStagingTests.test_restricted_context_cannot_read_staged_unclassified_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 103, in test_restricted_context_cannot_read_staged_unclassified_content
+    from lifeos_hook_bridge.memory_staging import preview
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_reviewed_promotion_preserves_native_note_and_registers_project_reference (test_memory_staging.MemoryStagingTests.test_reviewed_promotion_preserves_native_note_and_registers_project_reference)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 56, in test_reviewed_promotion_preserves_native_note_and_registers_project_reference
+    from lifeos_hook_bridge.memory_staging import preview, promote
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_staged_path_cannot_select_outside_files_or_symlinks (test_memory_staging.MemoryStagingTests.test_staged_path_cannot_select_outside_files_or_symlinks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 108, in test_staged_path_cannot_select_outside_files_or_symlinks
+    from lifeos_hook_bridge.memory_staging import preview
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+ERROR: test_unclassified_promotion_stays_private_from_project_reader (test_memory_staging.MemoryStagingTests.test_unclassified_promotion_stays_private_from_project_reader)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 71, in test_unclassified_promotion_stays_private_from_project_reader
+    from lifeos_hook_bridge.memory_staging import preview, promote
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_staging'
+
+======================================================================
+FAIL: test_unbound_native_promotion_cannot_publish_or_remove_staging (test_memory_staging.MemoryStagingTests.test_unbound_native_promotion_cannot_publish_or_remove_staging)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 41, in test_unbound_native_promotion_cannot_publish_or_remove_staging
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.081s
+
+FAILED (failures=1, errors=8)

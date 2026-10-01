@@ -1,0 +1,15 @@
+test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora (test_memory_canonical.MemoryCanonicalTests.test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora) ... FAIL
+
+======================================================================
+FAIL: test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora (test_memory_canonical.MemoryCanonicalTests.test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 175, in test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora
+    self.assertFalse(managed['status']['envelope']['ok'],managed)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'status': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'search', 'data': {'items': [{'id': 'kb_6d73b75b136a', 'type': 'research', 'created': '2026-10-01T16:55:47.170Z', 'updated': '2026-10-01T16:55:47.170Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 0.693147, 'est_tokens': 74}], 'total': 1, 'page': 1, 'page_size': 10}, 'error': None}}, 'result': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'export', 'data': {'format': 'lifeos-cortex-export/v1', 'items': [{'id': 'kb_6d73b75b136a', 'type': 'research', 'title': 'Synthetic second canonical', 'created': '2026-10-01T16:55:47.591Z', 'updated': '2026-10-01T16:55:47.591Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-second-canonical.md'}, 'content': '---\nid: kb_6d73b75b136a\ntype: research\ntitle: "Synthetic second canonical"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T16:55:47.591Z\nupdated: 2026-10-01T16:55:47.591Z\nrelated: []\nconvention: kb-v3\n---\n\nSyntheticCanonicalSecondMarker', 'related': [], 'valid_from': None, 'valid_until': None}]}, 'error': None}}}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.178s
+
+FAILED (failures=1)

@@ -1,6 +1,7 @@
 # ABOUTME: Supplies registered current native notes to the alternate Cortex reader.
 # ABOUTME: Authorizes roots and filters canonical metadata without admitting raw history.
 from datetime import datetime, timezone
+from contextlib import nullcontext
 import json
 from pathlib import Path
 import re
@@ -12,11 +13,11 @@ from .memory_sources import authorize, _strings
 RESPONSE_LIMIT = 3 * 1024 * 1024
 
 
-def corpus(memory, scope, root: str) -> dict:
+def corpus(memory, scope, root: str, *, connection=None) -> dict:
     authorize(scope)
     if not isinstance(root,str) or not Path(root).is_absolute():
         raise MemoryUnavailable('Canonical recall needs the installed memory root')
-    with memory._transaction() as connection:
+    with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
         physical=memory.root.parent/'.config/LIFEOS/USER/MEMORY'
         requested=Path(root).resolve()
         if requested not in (physical,physical/'KNOWLEDGE'):
@@ -53,6 +54,8 @@ def corpus(memory, scope, root: str) -> dict:
         parsed=memory._native('canonical_records',root=str(requested),sources=sources)
         if len(parsed['records'])!=len(sources) or len(parsed['metadata'])!=len(sources):
             raise MemoryUnavailable('Native canonical parsing changed its declared sources')
+        if len({record['id'] for record in parsed['records']})!=len(parsed['records']):
+            raise MemoryUnavailable('The canonical source declares duplicate native record identifiers')
         for source,record,metadata in zip(sources,parsed['records'],parsed['metadata'],strict=True):
             if record['content']!=source['content']:
                 raise MemoryUnavailable('Native canonical parsing changes the declared source text')

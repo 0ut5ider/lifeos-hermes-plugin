@@ -330,6 +330,9 @@ class NativeMemory:
         if payload['operation'] == 'restore':
             from .memory_restore import publication_paths
             return publication_paths(self,connection,scope,payload)
+        if payload['operation'] == 'staged_promote':
+            from .memory_staging import publication_paths
+            return publication_paths(self,connection,scope,payload)
         if payload["operation"] == "proposal_decision":
             from .memory_proposals import _permitted
             permission = 'auto_apply' if payload['decision'] == 'auto_apply' else 'approve'

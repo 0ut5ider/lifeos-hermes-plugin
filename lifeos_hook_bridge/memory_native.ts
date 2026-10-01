@@ -40,6 +40,22 @@ async function main(): Promise<void> {
       metadata.push(module.canonicalMetadata(source.content,source.path,input.root));
     }
     result = {records, metadata};
+  } else if (input.action === "knowledge_indexes") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeIndexes !== "function" || !Array.isArray(input.sources)
+        || !object(input.state) || typeof input.state.lastHarvest !== "string"
+        || typeof input.state.totalHarvested !== "number" || !Number.isSafeInteger(input.state.totalHarvested)
+        || !Array.isArray(input.state.harvestedPaths) || !input.state.harvestedPaths.every(value => typeof value === "string")) {
+      throw new Error("Native Knowledge rendering needs its declared corpus and state");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge rendering needs declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = {writes: module.renderKnowledgeIndexes(sources,input.state)};
   } else if (input.action === "pulse_snapshot") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/memory.ts")).href);
     if (typeof input.view !== "string" || !object(module) || typeof module.readMemoryView !== "function") {

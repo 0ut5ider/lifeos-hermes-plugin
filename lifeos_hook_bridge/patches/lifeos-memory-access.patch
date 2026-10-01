@@ -150,7 +150,7 @@ index ea4d80b..68a149f 100644
  
    if (pathname === "/api/memory" || pathname === "/api/memory/") {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
-index 390808e..f2f0f26 100644
+index 390808e..2baccc7 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
 @@ -1,8 +1,12 @@
@@ -195,7 +195,7 @@ index 390808e..f2f0f26 100644
    const preliminary = fieldsFromMarkdown(raw);
    const content = sanitizeContent(raw, preliminary);
    const fields = fieldsFromMarkdown(content);
-@@ -157,7 +181,34 @@ function canonicalFiles(root: string): string[] {
+@@ -157,7 +181,36 @@ function canonicalFiles(root: string): string[] {
    if (existsSync(nested)) return filesUnder(nested, root);
    return filesUnder(root, root);
  }
@@ -216,13 +216,15 @@ index 390808e..f2f0f26 100644
 +    if (governed.ok !== true || typeof governed.root !== "string"
 +        || !Array.isArray(governed.files) || !Array.isArray(governed.records)
 +        || governed.files.length !== governed.records.length) integrity("The governed canonical corpus is unavailable");
-+    const files: string[] = [], records: CortexRecord[] = [];
++    const files: string[] = [], records: CortexRecord[] = [], ids = new Set<string>();
 +    for (const file of governed.files) {
 +      if (typeof file !== "string") integrity("The governed canonical source is invalid");
 +      files.push(file);
 +    }
 +    for (const record of governed.records) {
 +      if (!canonicalRecord(record)) integrity("The governed canonical record is invalid");
++      if (ids.has(record.id)) integrity("The governed canonical corpus declares duplicate record identifiers");
++      ids.add(record.id);
 +      records.push(validateRecord(record));
 +    }
 +    return {root:governed.root,files,records};
@@ -282,6 +284,218 @@ index 58270db..68741d7 100644
      proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
+index 0975c2f..0c15cb8 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Stages native Knowledge notes and delegates managed promotion to reviewed publication.
++// ABOUTME: Renders native indexes from declared current sources without a second fact store.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -37,6 +39,8 @@ import { parseArgs } from "util";
+ import * as fs from "fs";
+ import * as path from "path";
+ import { homedir } from "node:os";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -74,8 +78,21 @@ const PROJECTS_DIR = path.join(HOME, ".claude", "projects");
+  * ranking; seedling expiry branches only on > 0, now keyed to REAL inbound
+  * note-links rather than MOC self-listing).
+  */
+-function computeBacklinks(): Map<string, number> {
++interface KnowledgeSource { path: string; content: string }
++type EmitIndex = (path: string, content: string) => void;
++
++function computeBacklinks(corpus?: readonly KnowledgeSource[]): Map<string, number> {
+   const sources = new Map<string, Set<string>>();
++  const recordLinks = (full: string, content: string): void => {
++    const sourceSlug = path.basename(full).replace(/\.md$/, "").toLowerCase();
++    for (const match of content.matchAll(/\[\[([^\]]+?)\]\]/g)) {
++      // [[target]], [[target|alias]], [[domain/target#anchor]] -> bare slug
++      const target = match[1].split("|")[0].split("#")[0].trim().toLowerCase().split("/").pop() || "";
++      if (!target || target === sourceSlug) continue; // self-links never count
++      if (!sources.has(target)) sources.set(target, new Set());
++      sources.get(target)?.add(full);
++    }
++  };
+   const walk = (dir: string): void => {
+     let entries: fs.Dirent[];
+     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+@@ -84,19 +101,13 @@ function computeBacklinks(): Map<string, number> {
+       const full = path.join(dir, entry.name);
+       if (entry.isDirectory()) { walk(full); continue; }
+       if (!entry.name.endsWith(".md")) continue;
+-      const sourceSlug = entry.name.replace(/\.md$/, "").toLowerCase();
+       let content = "";
+       try { content = fs.readFileSync(full, "utf-8"); } catch { continue; }
+-      for (const m of content.matchAll(/\[\[([^\]]+?)\]\]/g)) {
+-        // [[target]], [[target|alias]], [[domain/target#anchor]] -> bare slug
+-        const target = m[1].split("|")[0].split("#")[0].trim().toLowerCase().split("/").pop() || "";
+-        if (!target || target === sourceSlug) continue; // self-links never count
+-        if (!sources.has(target)) sources.set(target, new Set());
+-        sources.get(target)!.add(full);
+-      }
++      recordLinks(full, content);
+     }
+   };
+-  walk(KNOWLEDGE_DIR);
++  if (corpus) for (const source of corpus) recordLinks(source.path, source.content);
++  else walk(KNOWLEDGE_DIR);
+   const counts = new Map<string, number>();
+   for (const [target, srcs] of sources) counts.set(target, srcs.size);
+   return counts;
+@@ -646,16 +657,19 @@ function matchStaged(staged: StagedNote[], target: string): StagedNote[] {
+ // MOC Dashboard Generation
+ // ============================================================================
+ 
+-function regenerateMOC(domain: string, backlinks: Map<string, number>): void {
++function regenerateMOC(domain: string, backlinks: Map<string, number>, corpus?: readonly KnowledgeSource[],
++                       emit: EmitIndex = (file, content) => fs.writeFileSync(file, content)): void {
+   const domainDir = path.join(KNOWLEDGE_DIR, domain);
+-  if (!fs.existsSync(domainDir)) return;
++  if (!corpus && !fs.existsSync(domainDir)) return;
+ 
+   const notes: Array<{ slug: string; title: string; quality: number; tags: string[]; updated: string; backlinkCount: number }> = [];
+ 
+-  for (const file of fs.readdirSync(domainDir)) {
+-    if (file === "_index.md" || !file.endsWith(".md")) continue;
+-    const content = fs.readFileSync(path.join(domainDir, file), "utf-8");
+-    const fm = parseFrontmatter(content);
++  const inputs = corpus ? corpus.filter(source => path.dirname(source.path) === domainDir)
++    : fs.readdirSync(domainDir).filter(file => file !== "_index.md" && file.endsWith(".md"))
++      .map(file => ({path: path.join(domainDir, file), content: fs.readFileSync(path.join(domainDir, file), "utf-8")}));
++  for (const source of inputs) {
++    const file = path.basename(source.path);
++    const fm = parseFrontmatter(source.content);
+     const slug = file.replace(/\.md$/, "");
+ 
+     // O(1) lookup in the single-pass index (public PR #1574, @asdf8675309)
+@@ -738,24 +752,27 @@ ${sections.join("\n")}
+ *Auto-generated by KnowledgeHarvester. ${notes.length} note${notes.length !== 1 ? "s" : ""} in domain.*
+ `;
+ 
+-  fs.writeFileSync(path.join(domainDir, "_index.md"), moc);
++  emit(path.join(domainDir, "_index.md"), moc);
+ }
+ 
+-function regenerateMasterMOC(): void {
++function regenerateMasterMOC(corpus?: readonly KnowledgeSource[], state?: HarvestState,
++                             emit: EmitIndex = (file, content) => fs.writeFileSync(file, content)): void {
+   const today = new Date().toISOString().split("T")[0];
+   const domainStats: Array<{ name: string; count: number }> = [];
+   const recentNotes: Array<{ slug: string; domain: string; title: string; updated: string }> = [];
+ 
+   for (const domain of DOMAINS) {
+     const domainDir = path.join(KNOWLEDGE_DIR, domain);
+-    if (!fs.existsSync(domainDir)) { domainStats.push({ name: domain, count: 0 }); continue; }
++    if (!corpus && !fs.existsSync(domainDir)) { domainStats.push({ name: domain, count: 0 }); continue; }
+ 
+     let count = 0;
+-    for (const file of fs.readdirSync(domainDir)) {
+-      if (file === "_index.md" || !file.endsWith(".md")) continue;
++    const inputs = corpus ? corpus.filter(source => path.dirname(source.path) === domainDir)
++      : fs.readdirSync(domainDir).filter(file => file !== "_index.md" && file.endsWith(".md"))
++        .map(file => ({path: path.join(domainDir, file), content: fs.readFileSync(path.join(domainDir, file), "utf-8")}));
++    for (const source of inputs) {
++      const file = path.basename(source.path);
+       count++;
+-      const content = fs.readFileSync(path.join(domainDir, file), "utf-8");
+-      const fm = parseFrontmatter(content);
++      const fm = parseFrontmatter(source.content);
+       recentNotes.push({
+         slug: `${domain.toLowerCase()}/${file.replace(/\.md$/, "")}`,
+         domain: domain.toLowerCase(),
+@@ -769,7 +786,7 @@ function regenerateMasterMOC(): void {
+   const totalNotes = domainStats.reduce((acc, d) => acc + d.count, 0);
+   const recent = recentNotes.sort((a, b) => b.updated.localeCompare(a.updated)).slice(0, 10);
+ 
+-  const state = loadHarvestState();
++  const currentState = state ?? loadHarvestState();
+ 
+   const domainTable = domainStats.map(d =>
+     `| [[${d.name.toLowerCase()}/_index\\|${d.name}]] | ${d.count} |`
+@@ -801,14 +818,14 @@ ${recentList || "- (none yet)"}
+ 
+ ## Archive Health
+ - **Total notes:** ${totalNotes}
+-- **Last harvest:** ${state.lastHarvest !== "1970-01-01T00:00:00Z" ? state.lastHarvest.split("T")[0] : "never"}
+-- **Total harvested:** ${state.totalHarvested}
++- **Last harvest:** ${currentState.lastHarvest !== "1970-01-01T00:00:00Z" ? currentState.lastHarvest.split("T")[0] : "never"}
++- **Total harvested:** ${currentState.totalHarvested}
+ 
+ ---
+ *Schema: [[_schema]]*
+ `;
+ 
+-  fs.writeFileSync(path.join(KNOWLEDGE_DIR, "_index.md"), moc);
++  emit(path.join(KNOWLEDGE_DIR, "_index.md"), moc);
+ }
+ 
+ // ============================================================================
+@@ -1262,6 +1279,16 @@ function cmdIndex(): void {
+ // CLI Entry Point
+ // ============================================================================
+ 
++export function renderKnowledgeIndexes(corpus: readonly KnowledgeSource[], state: HarvestState): Array<KnowledgeSource> {
++  const writes: KnowledgeSource[] = [];
++  const emit: EmitIndex = (file, content) => writes.push({path: file, content});
++  const backlinks = computeBacklinks(corpus);
++  for (const domain of DOMAINS) regenerateMOC(domain, backlinks, corpus, emit);
++  regenerateMasterMOC(corpus, state, emit);
++  return writes;
++}
++
++function main(): void {
+ const { values, positionals } = parseArgs({
+   args: process.argv.slice(2),
+   options: {
+@@ -1271,6 +1298,9 @@ const { values, positionals } = parseArgs({
+     limit: { type: "string", short: "n" },
+     all: { type: "boolean" },
+     help: { type: "boolean", short: "h" },
++    project: { type: "string" },
++    signature: { type: "string" },
++    "request-id": { type: "string" },
+   },
+   allowPositionals: true,
+   strict: false,
+@@ -1323,7 +1353,15 @@ switch (command) {
+     cmdReview();
+     break;
+   case "promote":
+-    cmdPromote(positionals[1] ?? null, !!values.all);
++    if (hasMemoryAccess()) {
++      const arguments_: Record<string, unknown> = {target: positionals[1] ?? null, all: !!values.all,
++                                                  project: values.project ?? ""};
++      if (values.signature) Object.assign(arguments_, {signature: values.signature,
++                                                       request_id: values["request-id"] ?? randomUUID()});
++      const result = memoryAccess(values.signature ? "staged_promote" : "staged_preview", arguments_, memoryObject);
++      if (!result || result.ok !== true) throw new Error("Managed staged publication is unavailable");
++      console.log(JSON.stringify(result));
++    } else cmdPromote(positionals[1] ?? null, !!values.all);
+     break;
+   case "reject":
+     cmdReject(positionals[1] ?? null, !!values.all);
+@@ -1341,3 +1379,13 @@ switch (command) {
+     console.error(`Unknown command: ${command}. Use --help for usage.`);
+     process.exit(1);
+ }
++
++}
++if (import.meta.main) {
++  try { main(); }
++  catch (error: unknown) {
++    if (!hasMemoryAccess()) throw error;
++    console.error("Managed staged publication is unavailable. Check authority and review a current staged preview.");
++    process.exitCode = 1;
++  }
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
 index ecfbbeb..4809978 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts

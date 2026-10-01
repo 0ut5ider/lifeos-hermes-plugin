@@ -162,5 +162,20 @@ class MemoryCanonicalTests(unittest.TestCase):
         with self.assertRaisesRegex(MemoryUnavailable,'native file limit'):
             corpus(self.native.memory,OWNER,str(self.root))
 
+    def test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora(self):
+        import re
+        self.native.memory.remember(OWNER,category='project',content='SyntheticCanonicalSecondMarker',
+                                    title='Synthetic second canonical',project='lab',request_id='canonical-second')
+        sources=list((self.root/'KNOWLEDGE/Research').glob('*.md'))
+        identifier=re.search(r'^id:.*$',sources[0].read_text(),flags=re.MULTILINE).group()
+        for source in sources:
+            self.assertEqual(len(re.search(r'^id:.*$',source.read_text(),flags=re.MULTILINE).group()),len(identifier))
+            source.write_text(re.sub(r'^id:.*$',identifier,source.read_text(),flags=re.MULTILINE))
+        managed=self.call()
+        self.assertFalse(managed['status']['envelope']['ok'],managed)
+        (self.fixture.root/'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+        standalone=self.call(context=False)
+        self.assertFalse(standalone['status']['envelope']['ok'],standalone)
+
 
 if __name__=='__main__':unittest.main()
