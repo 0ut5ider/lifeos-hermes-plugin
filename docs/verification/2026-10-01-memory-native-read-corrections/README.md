@@ -29,6 +29,8 @@ The correction changes two plugin modules and their corpus tests. Distributed na
 
 The [fresh Astra closure](../../agents/2026-10-01-memory-native-read-closure/memory-native-read-closure.md) independently passes 66 tests in 47.903 seconds and ten isolated probe cases. It closes both findings and confirms no additional material defect in the reviewed paths. The primary gate includes all 66 test cases, and the primary separately reruns all ten final probes. [root-closure-probes.txt](root-closure-probes.txt) and [raw/closure-probes.json](raw/closure-probes.json) preserve that rerun. Source hashes match the independent snapshot.
 
+Product code, tests, and written documentation pass the Git whitespace check. Adding raw diff artifacts produces whitespace warnings on their single-space context lines, including the diff embedded in `gate.txt`. These are required unified-diff prefixes. The artifacts retain their exact captured bytes; no whitespace rule or hook is disabled.
+
 ## Limits
 
 The discovery limit now includes entries that do not become wiki pages. A large hidden or unrelated population can therefore make the wiki unavailable. This refusal is deliberate and bounded. It does not establish whole-operation latency under contention or an atomic snapshot against outside filesystem writers.
