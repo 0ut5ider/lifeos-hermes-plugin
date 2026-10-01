@@ -53,6 +53,44 @@ class MemoryDelegationTests(unittest.TestCase):
         self.assertIn("native delegated fact", results[1]["markdownBlock"])
         self.assertEqual(len(self.fixture.memory.recall(native_fixture.OWNER, "delegated fact")), 1)
 
+    def test_native_hot_additions_preserve_authenticated_source_session(self):
+        for category in ('principal', 'assistant'):
+            with self.subTest(category=category):
+                content = 'RULE: Synthetic native session fact ' + category
+                saved = self.call([{'name': 'add', 'item': {'type': 'memory', 'actor': category,
+                    'content': content}}])[0]
+                self.assertTrue(saved['ok'], saved)
+                facts = self.fixture.memory.recall(native_fixture.OWNER, 'Synthetic native session fact ' + category)
+                fact = next(row for row in facts if row['category'] == category)
+                self.assertEqual(fact['writer'], 'chat-a:100')
+                self.assertEqual(fact['source']['kind'], 'native')
+                self.assertEqual(fact['source']['session'], self.context.session_id)
+                reference = fact['reference']
+                repeated = self.call([{'name': 'add', 'item': {'type': 'memory', 'actor': category,
+                    'content': content}}])[0]
+                self.assertTrue(repeated['ok'], repeated)
+                current = self.fixture.memory.get(native_fixture.OWNER, reference)
+                self.assertEqual(current['source'], {'kind': 'native', 'session': self.context.session_id})
+
+    def test_native_full_curation_preserves_session_for_new_facts(self):
+        for mode in ('set', 'add'):
+            for category in ('principal', 'assistant'):
+                with self.subTest(mode=mode, category=category):
+                    from lifeos_hook_bridge.memory_access import HOT_FILES
+                    path = str(self.root / HOT_FILES[category])
+                    entries = self.fixture.memory.read_hot(native_fixture.OWNER, category)['entries']
+                    content = 'RULE: Synthetic curated session ' + mode + ' ' + category
+                    operation = ({'name': 'set', 'path': path, 'entries': [*entries, content]} if mode == 'set'
+                                 else {'name': 'add', 'item': {'type': 'memory', 'actor': category,
+                                     'op': 'set', 'entries': [*entries, content]}})
+                    result = self.call([{'name': 'read', 'path': path}, operation])
+                    self.assertTrue(result[1]['ok'], result)
+                    fact = next(row for row in self.fixture.memory.recall(native_fixture.OWNER, content)
+                                if row['content'] == content)
+                    self.assertEqual(fact['writer'], 'chat-a:100')
+                    self.assertEqual(fact['source']['kind'], 'native-curation')
+                    self.assertEqual(fact['source']['session'], self.context.session_id)
+
     def test_missing_context_cannot_write_or_recall_private_memory(self):
         self.fixture.remember("RULE: private marker", "private", "principal")
         results = self.call([{"name": "add", "item": {"type": "memory", "actor": "principal", "content": "RULE: unauthorized"}},

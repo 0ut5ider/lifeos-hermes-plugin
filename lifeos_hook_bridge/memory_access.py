@@ -452,15 +452,16 @@ class NativeMemory:
         return {"status": "committed", "references": references, "detail": result}
 
     def native_set(self, scope: MemoryScope, category: str, entries: list[str], request_id: str,
-                   observed_revision: str, *, allow_drastic: bool = False) -> dict[str, Any]:
+                   observed_revision: str, *, allow_drastic: bool = False, source_session: str = '') -> dict[str, Any]:
         if category not in HOT_FILES or category not in scope.read or category not in scope.write:
             return {"ok": False, "code": "EINVAL_PATH", "message": "Native curation needs read and write grants for the whole file"}
         if not isinstance(entries, list) or any(not isinstance(entry, str) for entry in entries) or type(allow_drastic) is not bool:
             return {"ok": False, "code": "EINVAL_ITEM", "message": "Native curation requires a validated entry list"}
         payload = {"operation": "native_set", "category": category, "entries": entries,
-                   "observed_revision": observed_revision, "allow_drastic": allow_drastic}
+                   "observed_revision": observed_revision, "allow_drastic": allow_drastic, 'source_session': source_session}
         receipt = self._operation(scope, request_id, payload, lambda connection:
-                                  self._curate_hot(connection, scope, category, entries, observed_revision, allow_drastic=allow_drastic))
+                                  self._curate_hot(connection, scope, category, entries, observed_revision, allow_drastic=allow_drastic,
+                                                   source={'kind': 'native-curation', 'session': source_session}))
         result = self._native_receipt(receipt, category=category, path=self._path(HOT_FILES[category]))
         return {**receipt["detail"], "receipt": receipt} if result["ok"] else {**result, "code": "EWRITE_FAILED"}
 
@@ -507,7 +508,8 @@ class NativeMemory:
         if not checked.get("ok") or checked["item"] != item:
             return {"ok": False, "code": "EINVAL_ITEM", "message": checked.get("message", "Native validation changed the requested item")}
         if category != "project" and item.get("op") == "set":
-            result = self.native_set(scope, category, item.get("entries"), request_id, observed_revision)
+            result = self.native_set(scope, category, item.get("entries"), request_id, observed_revision,
+                                     source_session=source_session)
             if not result.get("ok"):
                 return result
             return {"ok": True, "type": "memory", "path": str(self._path(HOT_FILES[category])), "detail": result, "receipt": result["receipt"]}
@@ -522,7 +524,7 @@ class NativeMemory:
             if category != "project":
                 snapshot = self._hot_snapshot(connection, category)
                 return self._curate_hot(connection, scope, category, [*snapshot["entries"], content], snapshot["revision"],
-                                        native_writer='MemorySystem.add')
+                                        native_writer='MemorySystem.add', source={'kind': 'native', 'session': source_session})
             if self._blocked(connection, content):
                 return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
             result = self._archive_write(connection, item)

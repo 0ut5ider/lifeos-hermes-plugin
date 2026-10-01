@@ -241,7 +241,8 @@ class MemoryService:
                 if operation == "read" and set(arguments) == {"path"}:
                     return memory.read_hot(scope, category)
                 if operation == "set" and set(arguments) == {"path", "entries", "request_id", "observed_revision", "allow_drastic"}:
-                    return memory.native_set(scope, category, **{key: value for key, value in arguments.items() if key != "path"})
+                    return memory.native_set(scope, category, source_session=context.session_id,
+                                             **{key: value for key, value in arguments.items() if key != "path"})
             if operation == "add" and set(arguments) == {"item", "request_id", "project", "observed_revision"}:
                 return memory.native_add(scope, **arguments, source_session=context.session_id)
             raise ValueError("Unsupported native memory operation or arguments")

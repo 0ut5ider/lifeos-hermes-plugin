@@ -31,7 +31,7 @@ class MemoryCurationTests(unittest.TestCase):
 
     def test_hot_mutations_refuse_neighbor_drift_without_retiring_records(self):
         for category in ('principal', 'assistant'):
-            for drift in ('overlength', 'valid_addition'):
+            for drift in ('overlength', 'valid_addition', 'valid_change'):
                 fixture = native_fixture.NativeMemoryTests()
                 fixture.setUp()
                 try:
@@ -39,9 +39,13 @@ class MemoryCurationTests(unittest.TestCase):
                     fixture.remember('RULE: Synthetic neighboring fact', 'second', category)
                     path = fixture.root / HOT_FILES[category]
                     text = path.read_text()
-                    text = (text.replace('RULE: Synthetic neighboring fact', 'RULE: ' + 'x' * 300)
-                            if drift == 'overlength' else text.replace('<!-- END ENTRIES -->',
-                                'RULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->'))
+                    if drift == 'overlength':
+                        text = text.replace('RULE: Synthetic neighboring fact', 'RULE: ' + 'x' * 300)
+                    elif drift == 'valid_change':
+                        text = text.replace('RULE: Synthetic neighboring fact', 'RULE: Synthetic changed neighbor')
+                    else:
+                        text = text.replace('<!-- END ENTRIES -->',
+                            'RULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->')
                     path.write_text(text)
                     before = path.read_bytes()
                     with fixture.memory._transaction() as connection:
