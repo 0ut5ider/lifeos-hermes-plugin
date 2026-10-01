@@ -187,6 +187,16 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'restore_list' and set(arguments) == {'category'}:
+                from .memory_restore import list_snapshots
+                return list_snapshots(memory,scope,arguments['category'])
+            if operation == 'restore_preview' and set(arguments) == {'snapshot'}:
+                from .memory_restore import preview
+                return {'ok':True,**preview(memory,scope,arguments['snapshot'])}
+            if operation == 'restore' and set(arguments) == {'snapshot','signature','request_id'}:
+                from .memory_restore import restore
+                receipt=restore(memory,scope,**arguments)
+                return {'ok':receipt['status'] in ('committed','unchanged'),'receipt':receipt}
             if operation == 'canonical_corpus' and set(arguments) == {'root'}:
                 from .memory_canonical import corpus
                 return corpus(memory,scope,arguments['root'])

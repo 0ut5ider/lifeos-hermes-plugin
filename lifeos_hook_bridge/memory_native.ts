@@ -86,6 +86,11 @@ async function main(): Promise<void> {
     const checked: unknown = system.sanitizeTypedItemForPersistence(input.item);
     if (!object(checked) || checked.ok !== true || input.action === "validate") result = checked;
     else result = system.add(checked.item);
+  } else if (input.action === "parse_hot") {
+    if (typeof input.content !== "string" || typeof writer.parseMemoryContent !== "function") {
+      throw new Error("Native recovery requires declared hot content");
+    }
+    result = writer.parseMemoryContent(input.content);
   } else if (input.action === "read_hot") {
     if (typeof writer.read !== "function" || typeof input.path !== "string") throw new Error("Invalid hot-memory read");
     result = writer.read(input.path);

@@ -495,6 +495,91 @@ index 9ad9d6a..b507429 100644
 +} catch {
 +  console.log("Memory diagnostics are unavailable under the current policy.");
 +}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts
+index 5b1d05f..ae208c9 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Previews and applies governed recovery of current native hot facts.
++// ABOUTME: Preserves standalone snapshot copies when no memory service is installed.
+ /**
+  * MemoryRestore — recover a hot-layer memory file from the per-write snapshot
+  * ring that MemoryWriter maintains. set-overwrite has a whole-file blast radius;
+@@ -8,14 +10,16 @@
+  *   bun MemoryRestore.ts restore <snapshot-file>  — byte-exact restore to target
+  *   bun MemoryRestore.ts latest principal         — restore the newest snapshot
+  *
+- * Restore is a raw byte copy (frontmatter + entries + markers), so it cannot
+- * itself trip the curation guards — it's a recovery path, not a curation write.
++ * Standalone restore copies snapshot bytes. Managed recovery requires a current
++ * preview and preserves registered current facts through the publication service.
+  */
+ 
+ import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { parseMemoryContent } from "./MemoryWriter";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const SNAPSHOT_DIR = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-snapshots");
+@@ -41,6 +45,43 @@ function countEntries(content: string): number {
+ 
+ function main(): void {
+   const [cmd, arg] = process.argv.slice(2);
++  if (hasMemoryAccess()) {
++    const category = arg === "da" ? "assistant" : arg;
++    const read = (operation: string, arguments_: Record<string, unknown>): Record<string, unknown> => {
++      const result = memoryAccess(operation, arguments_, memoryObject);
++      if (!result || result.ok !== true) throw new Error("Managed native recovery is unavailable");
++      return result;
++    };
++    const listing = (): string[] => {
++      const result = read("restore_list", {category: cmd === "restore" ? null : category ?? null});
++      if (!Array.isArray(result.snapshots) || !result.snapshots.every(value => typeof value === "string")) {
++        throw new Error("Managed native snapshot references are unavailable");
++      }
++      return result.snapshots;
++    };
++    if (cmd === "list") {
++      console.log(JSON.stringify({ok: true, snapshots: listing()}));
++      return;
++    }
++    if ((cmd !== "restore" && cmd !== "latest") || !arg) throw new Error("Choose a native recovery snapshot");
++    const snapshot = cmd === "latest" ? listing().at(-1) : arg;
++    if (!snapshot) throw new Error("No native recovery snapshot exists");
++    const flags = process.argv.slice(4);
++    const values = new Map<string, string>();
++    for (let index = 0; index < flags.length; index += 2) {
++      const flag = flags[index], value = flags[index + 1];
++      if ((flag !== "--signature" && flag !== "--request-id") || !value || values.has(flag)) {
++        throw new Error("Managed recovery needs the reviewed signature and request identifier");
++      }
++      values.set(flag, value);
++    }
++    const signature = values.get("--signature");
++    const result = signature
++      ? read("restore", {snapshot, signature, request_id: values.get("--request-id") ?? randomUUID()})
++      : read("restore_preview", {snapshot});
++    console.log(JSON.stringify(result));
++    return;
++  }
+ 
+   if (cmd === "list") {
+     for (const which of arg ? [arg] : ["principal", "da"]) {
+@@ -78,4 +119,9 @@ function main(): void {
+   process.exit(2);
+ }
+ 
+-main();
++try { main(); }
++catch (error: unknown) {
++  if (!hasMemoryAccess()) throw error;
++  console.error("Managed native recovery is unavailable. Check authority and review a current snapshot preview.");
++  process.exitCode = 1;
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
 index dcc185e..ef2bb3a 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts

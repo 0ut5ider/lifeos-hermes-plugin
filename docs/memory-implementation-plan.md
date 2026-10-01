@@ -228,3 +228,11 @@ All 16 focused native cases pass without skips. The [inventory evidence](verific
 The preceding relay regression passes 351 cases in 399.814 seconds without skips, failures, or errors. Its raw output and completion marker are stored with the relay evidence. This regression predates the canonical corpus unit.
 
 Native KnowledgeQuery now consumes the governed current-note corpus. Its native parser and filters preserve owner query output. Ten new cases reproduce and close metadata admission, forgetting, unregistered sources, retired titles, and directory traversal. The combined Knowledge-query and Cortex gate passes 26 cases without skips. This expands the existing native memory patch to 20 files. It does not close derived indexes or the complete consumer inventory.
+
+## Managed current-fact recovery
+
+Managed MemoryRestore now previews an exact native snapshot and applies its signature through the cooperating publication transaction. Recovery reconstructs registered current hot facts and preserves later acknowledged facts, references, revisions, and source metadata. Forgotten, superseded, and unknown snapshot entries remain excluded. Unregistered current facts require adoption review. The owner must review a fresh preview after an intervening write or source change.
+
+Native parsing and validation retain the writer's locks, caps, guards, snapshots, and audit events. Recovery results contain counts and preserved references without quoting excluded eviction text. Genuine process-death tests check both sides of the operation commit. The [recovery evidence](verification/2026-10-01-memory-restore/README.md) records raw failures, controls, source preparation, and focused verification. The native snapshot ring remains best-effort evidence. Complete backup restoration and ownership transactions remain separate gates. This unit adds MemoryRestore to the existing native memory patch, for 21 native files, and adds no Hermes patch group.
+
+The distributed recovery gate passes 66 cases in 148.415 seconds without skips, failures, or errors. It includes 18 recovery cases and neighboring curation, publication, and delegation controls. This focused result does not close the staged publication or complete ownership gates.

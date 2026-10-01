@@ -1,0 +1,79 @@
+test_concurrent_later_write_invalidates_preview_without_losing_facts (test_memory_restore.MemoryRestoreTests.test_concurrent_later_write_invalidates_preview_without_losing_facts) ... ERROR
+test_native_unbound_restore_cannot_republish_forgotten_fact (test_memory_restore.MemoryRestoreTests.test_native_unbound_restore_cannot_republish_forgotten_fact) ... FAIL
+test_recovery_never_reactivates_retired_snapshot_fact (test_memory_restore.MemoryRestoreTests.test_recovery_never_reactivates_retired_snapshot_fact) ... ERROR
+test_restricted_reader_cannot_preview_native_recovery (test_memory_restore.MemoryRestoreTests.test_restricted_reader_cannot_preview_native_recovery) ... ERROR
+test_reviewed_recovery_repairs_missing_active_fact_and_preserves_later_fact (test_memory_restore.MemoryRestoreTests.test_reviewed_recovery_repairs_missing_active_fact_and_preserves_later_fact) ... ERROR
+test_snapshot_change_invalidates_reviewed_recovery (test_memory_restore.MemoryRestoreTests.test_snapshot_change_invalidates_reviewed_recovery) ... ERROR
+test_snapshot_reference_cannot_select_another_path_or_symlink (test_memory_restore.MemoryRestoreTests.test_snapshot_reference_cannot_select_another_path_or_symlink) ... ERROR
+test_unmanaged_native_restore_keeps_byte_copy_control (test_memory_restore.MemoryRestoreTests.test_unmanaged_native_restore_keeps_byte_copy_control) ... ok
+test_unregistered_snapshot_fact_is_not_implicitly_adopted (test_memory_restore.MemoryRestoreTests.test_unregistered_snapshot_fact_is_not_implicitly_adopted) ... ERROR
+
+======================================================================
+ERROR: test_concurrent_later_write_invalidates_preview_without_losing_facts (test_memory_restore.MemoryRestoreTests.test_concurrent_later_write_invalidates_preview_without_losing_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 74, in test_concurrent_later_write_invalidates_preview_without_losing_facts
+    from lifeos_hook_bridge.memory_restore import preview, restore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+ERROR: test_recovery_never_reactivates_retired_snapshot_fact (test_memory_restore.MemoryRestoreTests.test_recovery_never_reactivates_retired_snapshot_fact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 64, in test_recovery_never_reactivates_retired_snapshot_fact
+    from lifeos_hook_bridge.memory_restore import preview, restore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+ERROR: test_restricted_reader_cannot_preview_native_recovery (test_memory_restore.MemoryRestoreTests.test_restricted_reader_cannot_preview_native_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 93, in test_restricted_reader_cannot_preview_native_recovery
+    from lifeos_hook_bridge.memory_restore import preview
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+ERROR: test_reviewed_recovery_repairs_missing_active_fact_and_preserves_later_fact (test_memory_restore.MemoryRestoreTests.test_reviewed_recovery_repairs_missing_active_fact_and_preserves_later_fact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 50, in test_reviewed_recovery_repairs_missing_active_fact_and_preserves_later_fact
+    from lifeos_hook_bridge.memory_restore import preview, restore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+ERROR: test_snapshot_change_invalidates_reviewed_recovery (test_memory_restore.MemoryRestoreTests.test_snapshot_change_invalidates_reviewed_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 84, in test_snapshot_change_invalidates_reviewed_recovery
+    from lifeos_hook_bridge.memory_restore import preview, restore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+ERROR: test_snapshot_reference_cannot_select_another_path_or_symlink (test_memory_restore.MemoryRestoreTests.test_snapshot_reference_cannot_select_another_path_or_symlink)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 99, in test_snapshot_reference_cannot_select_another_path_or_symlink
+    from lifeos_hook_bridge.memory_restore import preview
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+ERROR: test_unregistered_snapshot_fact_is_not_implicitly_adopted (test_memory_restore.MemoryRestoreTests.test_unregistered_snapshot_fact_is_not_implicitly_adopted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 108, in test_unregistered_snapshot_fact_is_not_implicitly_adopted
+    from lifeos_hook_bridge.memory_restore import preview, restore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_restore'
+
+======================================================================
+FAIL: test_native_unbound_restore_cannot_republish_forgotten_fact (test_memory_restore.MemoryRestoreTests.test_native_unbound_restore_cannot_republish_forgotten_fact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_restore.py", line 40, in test_native_unbound_restore_cannot_republish_forgotten_fact
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 9 tests in 13.100s
+
+FAILED (failures=1, errors=7)
