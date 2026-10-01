@@ -388,7 +388,7 @@ class NativeMemory:
 
     def _curate_hot(self, connection: sqlite3.Connection, scope: MemoryScope, category: str,
                     entries: list[str], observed_revision: str, *, allow_drastic: bool = False,
-                    source: dict[str, str] | None = None) -> dict[str, Any]:
+                    source: dict[str, str] | None = None, native_writer: str | None = None) -> dict[str, Any]:
         current = self._hot_snapshot(connection, category)
         if not observed_revision or observed_revision != current["revision"]:
             return {"status": "conflict", "reason": "The native memory revision changed after the reviewer read it"}
@@ -420,7 +420,9 @@ class NativeMemory:
                 preserved.add(row["id"])
             assignments.append(row)
         path = self._path(HOT_FILES[category])
-        result = self._native("set_hot", path=str(path), entries=desired, writer=scope.writer, allowDrastic=allow_drastic)
+        # Native summaries recognize the addition label; registry authorship stays in scope.writer.
+        result = self._native("set_hot", path=str(path), entries=desired,
+                              writer=native_writer or scope.writer, allowDrastic=allow_drastic)
         if not result.get("ok"):
             return {"status": "rejected", "reason": result.get("message", "Native curation rejected the update")}
         if result.get("dropped_malformed") or result.get("dropped_overlength"):
@@ -519,7 +521,8 @@ class NativeMemory:
                 return {"status": "rejected", "reason": invalid}
             if category != "project":
                 snapshot = self._hot_snapshot(connection, category)
-                return self._curate_hot(connection, scope, category, [*snapshot["entries"], content], snapshot["revision"])
+                return self._curate_hot(connection, scope, category, [*snapshot["entries"], content], snapshot["revision"],
+                                        native_writer='MemorySystem.add')
             if self._blocked(connection, content):
                 return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
             result = self._archive_write(connection, item)
@@ -570,7 +573,7 @@ class NativeMemory:
                 return {"status": "unchanged", "reference": {"id": existing["id"], "revision": existing["revision"]}, "source": source}
             if snapshot is not None:
                 result = self._curate_hot(connection, scope, category, [*snapshot['entries'], content],
-                                          snapshot['revision'], source=source)
+                                          snapshot['revision'], source=source, native_writer='MemorySystem.add')
                 if result['status'] != 'committed':
                     return result
                 return {'status': 'committed', 'reference': result['references'][-1], 'source': source}
