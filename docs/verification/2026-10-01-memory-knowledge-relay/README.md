@@ -11,6 +11,7 @@ Date: 2026-10-01. This unit governs the native Observability Knowledge index and
 - [Distributed focused gate](focused.txt): 139 cases pass in 129.944 seconds without skips, errors, or failures. The gate includes native renderer and HTTP cases, existing wiki and retained-source cases, current canonical reads, authentication, source preparation, and both bundled patch copies.
 - [Completion marker](focused.done): exit status 0. The [runner](run_gate.py) records exact commands and source paths.
 - [Ordered preparation](preparation.txt): a new source tree receives every bundled patch. Hermes uses base `758ad514eb0e800547e015edf05aa18f78b78d82`; LifeOS uses base `5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c`.
+- [Complete memory regression](regression.txt): commit `b6fd86a51510cd3a101b2fe49b90652021e873e5` passes 514 memory cases in 711.738 seconds. It also passes 12 neighboring Hermes provider, preparation, and patch cases in 8.447 seconds. There are no skips, errors, or failures. The [regression marker](regression.done) records exit status 0. This verifies the implemented behavior and does not pass the full release gate.
 
 The test HTTP server captures peer resets only for an intentionally oversized response. Cleanup asserts the cause and error type. Unexpected resets still fail the fixture. The final focused output is clean.
 
@@ -27,3 +28,5 @@ Managed note PUT returns 405 because it does not have reviewed current reference
 Managed `lastHarvest` remains null. The raw `_index.md` cannot establish current managed harvest metadata. The direct raw graph cache returns 404 until governed graph publication exists. Other Observability source routes remain outside this unit.
 
 The actual mount renderer, sidecar editing and backup readers, derived publication, complete reader inventory, restricted delivery, lifecycle, recoverable ownership setup, and full release review remain open. This unit does not activate ownership, deploy, push, or modify `.211`, `.212`, or `.213`.
+
+The [caller follow-up](reader-followup.md) records the current read-only Knowledge page, the reachable legacy PUT handler, actual mount and update callers, and the remaining documentation source limits. The shipped Knowledge page uses the wiki routes and has no note-save call.
