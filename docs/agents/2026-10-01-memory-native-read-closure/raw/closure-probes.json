@@ -1,0 +1,309 @@
+[
+  {
+    "case": "visible-overflow",
+    "population": 6000,
+    "consumed": 2049,
+    "selected": null,
+    "error": "The wiki directory exceeds its traversal count limit"
+  },
+  {
+    "case": "hidden-overflow",
+    "population": 3000,
+    "consumed": 2049,
+    "selected": null,
+    "error": "The wiki directory exceeds its traversal count limit"
+  },
+  {
+    "case": "exact-boundary",
+    "population": 2048,
+    "consumed": 2048,
+    "selected": [],
+    "error": null
+  },
+  {
+    "case": "next-entry-refusal",
+    "population": 2049,
+    "consumed": 2049,
+    "selected": null,
+    "error": "The wiki directory exceeds its traversal count limit"
+  },
+  {
+    "case": "work-nonsources",
+    "populations": [
+      [
+        "MEMORY/WORK",
+        3000
+      ]
+    ],
+    "consumed": 2049,
+    "by_directory": {
+      "/tmp/native-memory-hcd1uh05/.claude/LIFEOS/MEMORY/WORK": 2049
+    },
+    "error": "The wiki directory exceeds its traversal count limit"
+  },
+  {
+    "case": "shared-roots",
+    "populations": [
+      [
+        "DOCUMENTATION",
+        1100
+      ],
+      [
+        "ALGORITHM",
+        1100
+      ],
+      [
+        "MEMORY/WORK",
+        1100
+      ]
+    ],
+    "consumed": 2049,
+    "by_directory": {
+      "/tmp/native-memory-vktklucb/.claude/LIFEOS/ALGORITHM": 949,
+      "/tmp/native-memory-vktklucb/.claude/LIFEOS/DOCUMENTATION": 1100
+    },
+    "error": "The wiki directory exceeds its traversal count limit"
+  },
+  {
+    "case": "metadata-native-routes",
+    "denied_sources": [
+      "DOCUMENTATION/<private>ClosureFilename.md",
+      "DOCUMENTATION/<pr\u200bivate>ClosureGroup/public.md",
+      "MEMORY/WORK/<\uff50\uff52\uff49\uff56\uff41\uff54\uff45>ClosureWork/ISA.md",
+      "MEMORY/WISDOM/FRAMES/Closure\u0085Control.md",
+      "MEMORY/RESEARCH/Closure\u007fDelete.md",
+      "ALGORITHM/<private ClosureMalformed.md"
+    ],
+    "targets": [
+      "/api/wiki",
+      "/api/wiki/graph",
+      "/api/wiki/search?q=Safe",
+      "/api/wiki/doc/Public%20Group__closure-public",
+      "/api/wiki/backlinks/closure-target",
+      "/api/wiki/backlinks/unpublished-target",
+      "/api/wiki/backlinks/absent-target"
+    ],
+    "responses": [
+      {
+        "status": 200,
+        "body": {
+          "tree": [
+            {
+              "label": "Documentation",
+              "children": [
+                {
+                  "label": "Public Group",
+                  "count": 1,
+                  "children": [
+                    {
+                      "label": "closure-public",
+                      "slug": "Public Group__closure-public",
+                      "category": "system-doc"
+                    }
+                  ]
+                }
+              ],
+              "count": 1
+            },
+            {
+              "label": "People",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Companies",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Ideas",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Blogs",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Books",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Research",
+              "count": 1,
+              "children": [
+                {
+                  "label": "Closure public target",
+                  "slug": "closure-target",
+                  "category": "research"
+                }
+              ]
+            },
+            {
+              "label": "ISAs",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Lessons",
+              "count": 0,
+              "children": []
+            },
+            {
+              "label": "Wisdom",
+              "count": 0,
+              "children": []
+            }
+          ],
+          "recentChanges": [
+            {
+              "slug": "Public Group__closure-public",
+              "title": "closure-public",
+              "category": "system-doc",
+              "tags": [],
+              "quality": null,
+              "lastModified": "2026-10-01T20:27:28.018562+00:00",
+              "wordCount": 5,
+              "wikilinks": [
+                "closure-target",
+                "unpublished-target"
+              ],
+              "filePath": "/tmp/native-memory-1gpl18yl/.claude/LIFEOS/DOCUMENTATION/Public Group/closure-public.md",
+              "group": "Public Group",
+              "related": []
+            },
+            {
+              "slug": "closure-target",
+              "title": "Closure public target",
+              "category": "research",
+              "tags": [],
+              "quality": null,
+              "lastModified": "2026-10-01T20:27:28.018637+00:00",
+              "wordCount": 6,
+              "wikilinks": [],
+              "filePath": "/tmp/native-memory-1gpl18yl/.claude/LIFEOS/MEMORY/RESEARCH/closure-target.md",
+              "related": []
+            }
+          ],
+          "stats": {
+            "totalPages": 2,
+            "totalSystem": 1,
+            "totalPeople": 0,
+            "totalCompanies": 0,
+            "totalIdeas": 0,
+            "totalBlogs": 0,
+            "totalBooks": 0,
+            "totalResearch": 1,
+            "totalIsas": 0,
+            "totalLessons": 0,
+            "totalWisdom": 0
+          },
+          "lastIndexedAt": "2026-10-01T20:27:28.344Z"
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "nodes": [
+            {
+              "id": "Public Group__closure-public",
+              "title": "closure-public",
+              "category": "system-doc",
+              "quality": null,
+              "backlinkCount": 0
+            },
+            {
+              "id": "closure-target",
+              "title": "Closure public target",
+              "category": "research",
+              "quality": null,
+              "backlinkCount": 1
+            }
+          ],
+          "edges": [
+            {
+              "source": "Public Group__closure-public",
+              "target": "closure-target"
+            }
+          ]
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "results": [
+            {
+              "slug": "Public Group__closure-public",
+              "title": "closure-public",
+              "category": "system-doc",
+              "excerpt": "Safe ordinary content [[closure-target]] [[unpublished-target]]",
+              "score": 1.0199434735685067
+            }
+          ]
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "slug": "Public Group__closure-public",
+          "title": "closure-public",
+          "category": "system-doc",
+          "content": "Safe ordinary content [[closure-target]] [[unpublished-target]]\n",
+          "wordCount": 5,
+          "lastModified": "2026-10-01T20:27:28.018562+00:00",
+          "group": "Public Group",
+          "backlinks": [],
+          "wikilinks": [
+            "closure-target",
+            "unpublished-target"
+          ]
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "backlinks": [
+            {
+              "slug": "Public Group__closure-public",
+              "title": "closure-public",
+              "category": "system-doc"
+            }
+          ]
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "backlinks": [
+            {
+              "slug": "Public Group__closure-public",
+              "title": "closure-public",
+              "category": "system-doc"
+            }
+          ]
+        }
+      },
+      {
+        "status": 200,
+        "body": {
+          "backlinks": []
+        }
+      }
+    ],
+    "raw_sources_unchanged": true
+  },
+  {
+    "case": "work-isa-link",
+    "error": "Native memory reference leaves the user boundary"
+  },
+  {
+    "case": "nested-documentation-link",
+    "error": "The wiki source changes its permitted physical path"
+  },
+  {
+    "case": "parent-traversal",
+    "error": "The native source cannot leave its installed root"
+  }
+]

@@ -1,0 +1,199 @@
+diff --git a/lifeos_hook_bridge/memory_sources.py b/lifeos_hook_bridge/memory_sources.py
+index 47cc32a..4b7fef4 100644
+--- a/lifeos_hook_bridge/memory_sources.py
++++ b/lifeos_hook_bridge/memory_sources.py
+@@ -98,7 +98,8 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
+             sources.append({'path': path, 'relative': relative, 'content': content, 'lastModified': timestamp})
+         if not sources:
+             return []
+-        checked = memory._native('validate_source_batch', contents=[source['content'] for source in sources])['accepted']
++        checked = memory._native('validate_source_batch',
++            contents=[source['content'] + '\n' + source['path'] for source in sources])['accepted']
+         admitted = []
+         for source, accepted in zip(sources, checked, strict=True):
+             if accepted is not True:
+diff --git a/lifeos_hook_bridge/memory_wiki.py b/lifeos_hook_bridge/memory_wiki.py
+index edc2685..fe7d523 100644
+--- a/lifeos_hook_bridge/memory_wiki.py
++++ b/lifeos_hook_bridge/memory_wiki.py
+@@ -1,9 +1,12 @@
+ # ABOUTME: Selects current native notes, retained silos, and documentation for authenticated wiki views.
+ # ABOUTME: Validates fixed routes and renders each request in an isolated native worker.
+ from datetime import datetime, timezone
++from itertools import count
+ import json
++import os
+ from pathlib import Path
+ import re
++from typing import Iterator
+ from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit
+ 
+ from .memory_access import MemoryUnavailable
+@@ -14,22 +17,30 @@ DOMAINS = {'People': 'person', 'Companies': 'company', 'Ideas': 'idea',
+            'Blogs': 'blog', 'Books': 'book', 'Research': 'research'}
+ 
+ 
+-def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True) -> list[Path]:
++def _directory_entries(directory: Path, visits: Iterator[int]) -> list[Path]:
++    paths = []
++    with os.scandir(directory) as entries:
++        for entry in entries:
++            if next(visits) > SOURCE_COUNT_LIMIT:
++                raise MemoryUnavailable('The wiki directory exceeds its traversal count limit')
++            paths.append(Path(entry.path))
++    return sorted(paths)
++
++
++def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True,
++           visits: Iterator[int] | None = None) -> list[Path]:
+     if directory.is_symlink():
+         raise MemoryUnavailable('The wiki directory changes its permitted physical path')
+     if not directory.exists():
+         return []
+     result = []
+     pending = [directory]
+-    visited = 0
++    visits = count(1) if visits is None else visits
+     while pending:
+         parent = pending.pop()
+-        for path in sorted(parent.iterdir()):
++        for path in _directory_entries(parent, visits):
+             if path.name.startswith('.') or (hide_metadata and path.name.startswith('_')):
+                 continue
+-            visited += 1
+-            if visited > SOURCE_COUNT_LIMIT:
+-                raise MemoryUnavailable('The wiki directory exceeds its source count limit')
+             if path.is_symlink():
+                 raise MemoryUnavailable('The wiki source changes its permitted physical path')
+             if path.is_dir() and recursive:
+@@ -42,6 +53,7 @@ def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = Tru
+ def _retained_sources(memory, scope, connection) -> list[dict]:
+     root = memory.root / 'LIFEOS'
+     selected = {}
++    visits = count(1)
+ 
+     def add(path, category, slug, group=None):
+         selected[str(path)] = {'category': category, 'slug': slug, **({'group': group} if group else {})}
+@@ -52,17 +64,17 @@ def _retained_sources(memory, scope, connection) -> list[dict]:
+     if prompt.exists() or prompt.is_symlink():
+         add(prompt, 'system-doc', 'LIFEOS_SYSTEM_PROMPT', 'Overview')
+     documentation = root / 'DOCUMENTATION'
+-    for path in _files(documentation):
++    for path in _files(documentation, visits=visits):
+         relative = path.relative_to(documentation)
+         group = 'Overview' if len(relative.parts) == 1 else path.parent.name
+         add(path, 'system-doc', path.stem if len(relative.parts) == 1 else group + '__' + path.stem, group)
+-    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False):
++    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False, visits=visits):
+         add(path, 'system-doc', 'Algorithm__' + path.stem, 'Algorithm')
+     work = root / 'MEMORY/WORK'
+     if work.is_symlink():
+         raise MemoryUnavailable('The wiki work directory changes its permitted physical path')
+     if work.exists():
+-        for directory in sorted(work.iterdir()):
++        for directory in _directory_entries(work, visits):
+             if directory.name.startswith(('.', '_')):
+                 continue
+             if directory.is_symlink():
+@@ -74,11 +86,11 @@ def _retained_sources(memory, scope, connection) -> list[dict]:
+             ('WISDOM', ('FRAMES', 'PRINCIPLES', 'META'), 'wisdom')):
+         for sub in subdirectories:
+             directory = root / 'MEMORY' / silo / sub
+-            for path in _files(directory):
++            for path in _files(directory, visits=visits):
+                 slug = sub + '--' + path.relative_to(directory).with_suffix('').as_posix().replace('/', '--')
+                 add(path, category, slug, sub.capitalize())
+     directory = root / 'MEMORY/RESEARCH'
+-    for path in _files(directory):
++    for path in _files(directory, visits=visits):
+         add(path, 'research', path.relative_to(directory).with_suffix('').as_posix().replace('/', '--'))
+     return [{key: source[key] for key in ('path', 'content', 'lastModified')} | selected[source['path']]
+             for source in read_markdown(memory, scope, list(selected), connection=connection)]
+diff --git a/tests/test_memory_wiki_corpus.py b/tests/test_memory_wiki_corpus.py
+index 2b771c0..ff730e4 100644
+--- a/tests/test_memory_wiki_corpus.py
++++ b/tests/test_memory_wiki_corpus.py
+@@ -1,14 +1,16 @@
+ # ABOUTME: Verifies governed native wiki collection across memory silos and documentation.
+ # ABOUTME: Pairs standalone native output with current access, retirement, and physical source tests.
+ from dataclasses import replace
++from contextlib import contextmanager
+ from datetime import datetime, timezone
+ import json
+ import os
+ from pathlib import Path
+ import unittest
++from unittest.mock import patch
+ 
+ from lifeos_hook_bridge.memory_access import MemoryUnavailable
+-from lifeos_hook_bridge.memory_wiki import view
++from lifeos_hook_bridge.memory_wiki import _files, view
+ from test_memory_native import OWNER, READER
+ import test_memory_wiki_render as render_fixture
+ 
+@@ -203,6 +205,65 @@ class MemoryWikiCorpusTests(unittest.TestCase):
+         self.assertNotIn('SyntheticPrivate', json.dumps(response))
+         self.assertNotIn('SyntheticControl', json.dumps(response))
+ 
++    def test_private_source_names_and_groups_cannot_supply_page_metadata(self):
++        paths = ('DOCUMENTATION/<private>SyntheticPrivateFilename.md',
++                 'DOCUMENTATION/<private>SyntheticPrivateGroup/safe.md',
++                 'MEMORY/WORK/<pr\u200bivate>SyntheticPrivateWork/ISA.md',
++                 'MEMORY/WISDOM/FRAMES/Synthetic\u0085ControlFilename.md')
++        for relative in paths:
++            self.source(relative, 'Safe body without a title\n')
++        result = json.dumps(view(self.memory, OWNER, '/api/wiki'))
++        self.assertNotIn('SyntheticPrivate', result)
++        self.assertNotIn('ControlFilename', result)
++        self.assertTrue(all((self.root / 'LIFEOS' / relative).exists() for relative in paths))
++
++    def test_hidden_population_counts_toward_directory_scan_limit(self):
++        directory = self.root / 'LIFEOS/DOCUMENTATION'
++        directory.mkdir()
++        for index in range(2049):
++            (directory / f'.hidden-{index}').touch()
++        with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++            view(self.memory, OWNER, '/api/wiki')
++
++    def test_non_source_work_population_counts_toward_directory_scan_limit(self):
++        directory = self.root / 'LIFEOS/MEMORY/WORK'
++        directory.mkdir()
++        for index in range(2049):
++            (directory / f'unrelated-{index}.txt').touch()
++        with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++            view(self.memory, OWNER, '/api/wiki')
++
++    def test_directory_scan_stops_before_materializing_oversized_population(self):
++        directory = self.root / 'LIFEOS/DOCUMENTATION'
++        directory.mkdir()
++        for index in range(4096):
++            (directory / f'unrelated-{index}.txt').touch()
++        original = os.scandir
++        consumed = []
++
++        @contextmanager
++        def observed(path):
++            with original(path) as entries:
++                def counted():
++                    for entry in entries:
++                        consumed.append(entry.name)
++                        yield entry
++                yield counted()
++
++        with patch.object(os, 'scandir', observed):
++            with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++                _files(directory)
++        self.assertEqual(len(consumed), 2049)
++
++    def test_directory_scan_budget_is_shared_between_retained_silos(self):
++        for relative in ('DOCUMENTATION', 'MEMORY/WORK'):
++            directory = self.root / 'LIFEOS' / relative
++            directory.mkdir()
++            for index in range(1025):
++                (directory / f'unrelated-{index}.txt').touch()
++        with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++            view(self.memory, OWNER, '/api/wiki')
++
+ 
+ if __name__ == '__main__':
+     unittest.main()

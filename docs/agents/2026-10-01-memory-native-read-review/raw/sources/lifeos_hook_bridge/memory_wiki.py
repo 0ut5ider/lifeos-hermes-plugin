@@ -1,12 +1,9 @@
 # ABOUTME: Selects current native notes, retained silos, and documentation for authenticated wiki views.
 # ABOUTME: Validates fixed routes and renders each request in an isolated native worker.
 from datetime import datetime, timezone
-from itertools import count
 import json
-import os
 from pathlib import Path
 import re
-from typing import Iterator
 from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit
 
 from .memory_access import MemoryUnavailable
@@ -17,30 +14,22 @@ DOMAINS = {'People': 'person', 'Companies': 'company', 'Ideas': 'idea',
            'Blogs': 'blog', 'Books': 'book', 'Research': 'research'}
 
 
-def _directory_entries(directory: Path, visits: Iterator[int]) -> list[Path]:
-    paths = []
-    with os.scandir(directory) as entries:
-        for entry in entries:
-            if next(visits) > SOURCE_COUNT_LIMIT:
-                raise MemoryUnavailable('The wiki directory exceeds its traversal count limit')
-            paths.append(Path(entry.path))
-    return sorted(paths)
-
-
-def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True,
-           visits: Iterator[int] | None = None) -> list[Path]:
+def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True) -> list[Path]:
     if directory.is_symlink():
         raise MemoryUnavailable('The wiki directory changes its permitted physical path')
     if not directory.exists():
         return []
     result = []
     pending = [directory]
-    visits = count(1) if visits is None else visits
+    visited = 0
     while pending:
         parent = pending.pop()
-        for path in _directory_entries(parent, visits):
+        for path in sorted(parent.iterdir()):
             if path.name.startswith('.') or (hide_metadata and path.name.startswith('_')):
                 continue
+            visited += 1
+            if visited > SOURCE_COUNT_LIMIT:
+                raise MemoryUnavailable('The wiki directory exceeds its source count limit')
             if path.is_symlink():
                 raise MemoryUnavailable('The wiki source changes its permitted physical path')
             if path.is_dir() and recursive:
@@ -53,7 +42,6 @@ def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = Tru
 def _retained_sources(memory, scope, connection) -> list[dict]:
     root = memory.root / 'LIFEOS'
     selected = {}
-    visits = count(1)
 
     def add(path, category, slug, group=None):
         selected[str(path)] = {'category': category, 'slug': slug, **({'group': group} if group else {})}
@@ -64,17 +52,17 @@ def _retained_sources(memory, scope, connection) -> list[dict]:
     if prompt.exists() or prompt.is_symlink():
         add(prompt, 'system-doc', 'LIFEOS_SYSTEM_PROMPT', 'Overview')
     documentation = root / 'DOCUMENTATION'
-    for path in _files(documentation, visits=visits):
+    for path in _files(documentation):
         relative = path.relative_to(documentation)
         group = 'Overview' if len(relative.parts) == 1 else path.parent.name
         add(path, 'system-doc', path.stem if len(relative.parts) == 1 else group + '__' + path.stem, group)
-    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False, visits=visits):
+    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False):
         add(path, 'system-doc', 'Algorithm__' + path.stem, 'Algorithm')
     work = root / 'MEMORY/WORK'
     if work.is_symlink():
         raise MemoryUnavailable('The wiki work directory changes its permitted physical path')
     if work.exists():
-        for directory in _directory_entries(work, visits):
+        for directory in sorted(work.iterdir()):
             if directory.name.startswith(('.', '_')):
                 continue
             if directory.is_symlink():
@@ -86,11 +74,11 @@ def _retained_sources(memory, scope, connection) -> list[dict]:
             ('WISDOM', ('FRAMES', 'PRINCIPLES', 'META'), 'wisdom')):
         for sub in subdirectories:
             directory = root / 'MEMORY' / silo / sub
-            for path in _files(directory, visits=visits):
+            for path in _files(directory):
                 slug = sub + '--' + path.relative_to(directory).with_suffix('').as_posix().replace('/', '--')
                 add(path, category, slug, sub.capitalize())
     directory = root / 'MEMORY/RESEARCH'
-    for path in _files(directory, visits=visits):
+    for path in _files(directory):
         add(path, 'research', path.relative_to(directory).with_suffix('').as_posix().replace('/', '--'))
     return [{key: source[key] for key in ('path', 'content', 'lastModified')} | selected[source['path']]
             for source in read_markdown(memory, scope, list(selected), connection=connection)]

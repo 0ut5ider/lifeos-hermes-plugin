@@ -98,8 +98,7 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
             sources.append({'path': path, 'relative': relative, 'content': content, 'lastModified': timestamp})
         if not sources:
             return []
-        checked = memory._native('validate_source_batch',
-            contents=[source['content'] + '\n' + source['path'] for source in sources])['accepted']
+        checked = memory._native('validate_source_batch', contents=[source['content'] for source in sources])['accepted']
         admitted = []
         for source, accepted in zip(sources, checked, strict=True):
             if accepted is not True:
