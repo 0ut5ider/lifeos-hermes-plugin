@@ -1,0 +1,98 @@
+{
+  "implementation": "d8b4ae5",
+  "method": "Independent read and AST inspection; no runtime tests or implementation changes",
+  "sources": {
+    "category_project_access": {
+      "path": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py",
+      "sha256": "59886f1d1b07f070c7fede2864cd02a2dfcee92b4d191959b3593aeaff36a8b6",
+      "functions": {
+        "_allowed": {
+          "start": 165,
+          "end": 173
+        },
+        "_record": {
+          "start": 271,
+          "end": 287
+        },
+        "_duplicate": {
+          "start": 261,
+          "end": 269
+        },
+        "_blocked": {
+          "start": 212,
+          "end": 217
+        },
+        "remember": {
+          "start": 563,
+          "end": 604
+        },
+        "_transaction": {
+          "start": 114,
+          "end": 128
+        },
+        "adopt": {
+          "start": 503,
+          "end": 505
+        }
+      }
+    },
+    "memory_policy": {
+      "path": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_policy.py",
+      "sha256": "7d73b82e876580991a765d8a8aa760e3d74ab869463b2e4167d7becdae38161b",
+      "functions": {
+        "resolve": {
+          "start": 80,
+          "end": 105
+        }
+      }
+    },
+    "source_adoption": {
+      "path": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_adoption.py",
+      "sha256": "a41ce788972a8ae534b1153bb83b20bec76c2ad40e1b336231c96d4a22d8a297",
+      "functions": {
+        "preview": {
+          "start": 162,
+          "end": 166
+        },
+        "adopt": {
+          "start": 169,
+          "end": 201
+        }
+      }
+    },
+    "host_store": {
+      "path": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-cortex-final/hermes/tools/memory_tool_store.py",
+      "sha256": "2a44cc0ea35066a4320395d63997f26011525c9ffe04183e562e16575837f488",
+      "functions": {
+        "_mutate": {
+          "start": 245,
+          "end": 274
+        },
+        "_parse_entries": {
+          "start": 510,
+          "end": 512
+        }
+      }
+    },
+    "host_graph_reader": {
+      "path": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-cortex-final/hermes/agent/learning_graph.py",
+      "sha256": "bd2feae68a2f8b2bc6f395579e634d103ad2b821809009733b56046d171dd4b0",
+      "functions": {
+        "_memory_cards": {
+          "start": 148,
+          "end": 172
+        }
+      }
+    },
+    "host_graph_writer": {
+      "path": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-cortex-final/hermes/agent/learning_mutations.py",
+      "sha256": "744d4683b6d5019ca254c27bd1a56626fabf2a476cd8b59c1084056d0d0f1efa",
+      "functions": {
+        "_mutate_memory": {
+          "start": 85,
+          "end": 119
+        }
+      }
+    }
+  }
+}
