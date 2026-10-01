@@ -382,7 +382,8 @@ class NativeMemory:
             return self._hot_snapshot(connection, category)
 
     def _curate_hot(self, connection: sqlite3.Connection, scope: MemoryScope, category: str,
-                    entries: list[str], observed_revision: str, *, allow_drastic: bool = False) -> dict[str, Any]:
+                    entries: list[str], observed_revision: str, *, allow_drastic: bool = False,
+                    source: dict[str, str] | None = None) -> dict[str, Any]:
         current = self._hot_snapshot(connection, category)
         if not observed_revision or observed_revision != current["revision"]:
             return {"status": "conflict", "reason": "The native memory revision changed after the reviewer read it"}
@@ -428,7 +429,8 @@ class NativeMemory:
                 connection.execute("UPDATE records SET status='superseded',revision=revision+1,updated=? WHERE id=?", (_now(), row["id"]))
         for entry, row in zip(desired, assignments):
             if row is None:
-                references.append(self._record(connection, scope, path, entry, category, "", {"kind": "native-curation"}))
+                references.append(self._record(connection, scope, path, entry, category, "",
+                                               source if source is not None else {"kind": "native-curation"}))
             elif row["digest"] == _digest(entry):
                 references.append({"id": row["id"], "revision": row["revision"]})
             else:
@@ -539,6 +541,8 @@ class NativeMemory:
             return {"status": "rejected", "reason": "The fact or write permission is invalid"}
         if category == "project" and (not project or ("*" not in scope.projects and project not in scope.projects)):
             return {"status": "rejected", "reason": "The project has no write grant"}
+        if category in HOT_FILES and category not in scope.read:
+            return {"status": "rejected", "reason": "Hot-memory publication requires a read grant for the current file"}
         if category != "project":
             project = ""
         content = content.strip()
@@ -552,13 +556,20 @@ class NativeMemory:
             invalid = self._validate(item, content, category)
             if invalid:
                 return {"status": "rejected", "reason": invalid}
+            snapshot = self._hot_snapshot(connection, category) if category in HOT_FILES else None
             if self._blocked(connection, content):
                 return {"status": "rejected", "reason": "This fact needs explicit reactivation after correction or forgetting"}
             destination = Path(self._native("route", item=item)["path"]).relative_to(self.root).as_posix()
             existing = self._duplicate(connection, scope, content, category, project, destination)
             if existing:
                 return {"status": "unchanged", "reference": {"id": existing["id"], "revision": existing["revision"]}, "source": source}
-            result = self._archive_write(connection, item) if category == "project" else self._native("add", item=item)
+            if snapshot is not None:
+                result = self._curate_hot(connection, scope, category, [*snapshot['entries'], content],
+                                          snapshot['revision'], source=source)
+                if result['status'] != 'committed':
+                    return result
+                return {'status': 'committed', 'reference': result['references'][-1], 'source': source}
+            result = self._archive_write(connection, item)
             if not result.get("ok"):
                 return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
             reference = self._record(connection, scope, Path(result["path"]), content, category, project, source)

@@ -17,3 +17,9 @@ The correction adds no Hermes or LifeOS patch. Memory ownership remains disabled
 Publication path selection uses the mutation scope. A fact reference must have the required write grant, active status, and current revision before the journal receives its source path. Proposal decisions require their approval grant and current pending revision. A denied or stale callback can still record its refusal receipt, but its empty publication set opens no source file.
 
 Two regressions use actual Python file-open audit events. Before the correction, eight category, project, and stale-reference subcases open forbidden or obsolete sources. After the correction, all refuse without source access or byte changes. The complete native, proposal, and authorization gate passes 40 tests in 25.041 seconds, including publication interruption, retry, and recovery controls. The files `source-authorization-before.log` and `source-authorization-after.log` retain both results.
+
+## Explicit hot-memory publication
+
+Explicit hot remember requires read and write grants for the current file. It verifies the whole native snapshot before duplicate detection or publication. It uses the existing verified curation operation, with the explicit writer's source metadata. Adoption remains a separate reviewed action. Project-note publication retains its native archive path.
+
+The before run fails six subcases across unadopted principal and assistant entries, outside additions, changed recorded entries, and a missing read grant. The corrected native, curation, adoption, and authorization gate passes 48 tests in 49.989 seconds. The controls verify byte preservation on refusal, existing references, explicit provenance, duplicate and retry behavior, and a usable governed read after adoption. Evidence is `hot-publication-before.log` and `hot-publication-after.log`.
