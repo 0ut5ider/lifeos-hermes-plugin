@@ -95,6 +95,13 @@ class MemoryConfiguration:
         self.path = Path(path)
 
     @staticmethod
+    def check_owner(configuration: dict[str, Any], account: str | None) -> None:
+        # Internal owner helpers have no HTTP account; HTTP callers supply a verified qualified account.
+        if account is not None and (not isinstance(account, str)
+                or configuration.get('accounts', {}).get(account) != configuration['principal']):
+            raise PermissionError('This dashboard account has no installation owner binding')
+
+    @staticmethod
     def validate(configuration: Any) -> None:
         if not isinstance(configuration, dict) or type(configuration.get("version")) is not int or configuration["version"] != 1:
             raise ValueError("Unsupported memory configuration")

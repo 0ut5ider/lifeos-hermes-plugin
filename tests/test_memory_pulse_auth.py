@@ -17,16 +17,19 @@ from fastapi.testclient import TestClient
 from hermes_cli.dashboard_auth.cookies import SESSION_AT_COOKIE
 from hermes_cli.dashboard_auth.middleware import gated_auth_middleware
 from hermes_cli.dashboard_auth.registry import register_global_provider, restore_registration, snapshot_registration
-from hermes_cli.dashboard_auth.routes import router as auth_router
+from hermes_cli.dashboard_auth.routes import router as auth_router, _reset_password_rate_limit
 from plugins.dashboard_auth.basic import BasicAuthProvider, hash_password
 from lifeos_hook_bridge.memory_service import MemoryConfiguration
 import test_memory_pulse as pulse_fixture
+from test_memory_sharing import public_key
 
 
 class MemoryPulseAuthTests(unittest.TestCase):
     endpoint = '/api/plugins/lifeos-hook-bridge/memory/pulse/'
 
     def setUp(self):
+        _reset_password_rate_limit()
+        self.addCleanup(_reset_password_rate_limit)
         self.fixture = pulse_fixture.MemoryPulseTests()
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
@@ -65,6 +68,61 @@ class MemoryPulseAuthTests(unittest.TestCase):
             'username': 'synthetic-owner', 'password': 'synthetic-password'})
         self.assertEqual(response.status_code, 200, response.text)
         return self.client.cookies.get(SESSION_AT_COOKIE)
+
+    def memory_requests(self):
+        base = '/api/plugins/lifeos-hook-bridge/memory'
+        return [(method, base + path, body) for method, path, body in (
+            ('GET', '', None), ('POST', '/review', {'tool': 'lifeos_memory_search',
+                'arguments': {'query': 'authenticated PULSE'}}),
+            ('POST', '/adoption/preview', {}),
+            ('POST', '/adoption', {'signature': 'synthetic-preview', 'projects': {}, 'request_id': 'denied-adopt'}),
+            ('POST', '/sharing', {'enabled': True}),
+            ('POST', '/connections', {'client': 'denied-client', 'public_key': public_key(90),
+                'projects': ['lab'], 'model_route': 'unknown'}),
+            ('DELETE', '/connections/absent-client', None),
+            ('GET', '/pulse/snapshot', None))]
+
+    def assert_memory_routes_deny(self, status):
+        before = self.configuration.path.read_bytes()
+        for method, endpoint, body in self.memory_requests():
+            with self.subTest(method=method, endpoint=endpoint):
+                response = self.client.request(method, endpoint, json=body)
+                self.assertEqual(response.status_code, status, response.text)
+                self.assertEqual(response.headers.get('cache-control'), 'no-store')
+                self.assertNotIn('Synthetic authenticated PULSE fact', response.text)
+        self.assertEqual(self.configuration.path.read_bytes(), before)
+
+    def test_every_memory_route_requires_a_verified_session_when_host_gate_is_disabled(self):
+        self.app.state.auth_required = False
+        self.assert_memory_routes_deny(401)
+
+    def test_every_memory_route_rechecks_revoked_account_binding(self):
+        self.login()
+        self.configuration.update(lambda config: config['accounts'].pop('dashboard:basic:synthetic-owner'))
+        self.assert_memory_routes_deny(403)
+
+    def test_distinct_authenticated_account_without_binding_cannot_read_or_change_memory(self):
+        other = BasicAuthProvider(username='synthetic-other', password_hash=hash_password('synthetic-other-password'),
+                                  secret=secrets.token_bytes(32))
+        register_global_provider(other)
+        self.addCleanup(restore_registration, 'basic', other, self.provider)
+        response = self.client.post('/auth/password-login', json={'provider': 'basic',
+            'username': 'synthetic-other', 'password': 'synthetic-other-password'})
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assert_memory_routes_deny(403)
+
+    def test_revoked_owner_cannot_forget_a_native_fact(self):
+        self.login()
+        base = '/api/plugins/lifeos-hook-bridge/memory'
+        result = self.client.post(base + '/review', json={'tool': 'lifeos_memory_search',
+            'arguments': {'query': 'authenticated PULSE'}}).json()
+        reference = result['results'][0]['reference']
+        self.configuration.update(lambda config: config['accounts'].pop('dashboard:basic:synthetic-owner'))
+        response = self.client.post(base + '/review', json={'tool': 'lifeos_memory_forget',
+            'arguments': {'reference': reference, 'request_id': 'revoked-owner-forget'}})
+        self.assertEqual(response.status_code, 403, response.text)
+        from test_memory_native import OWNER
+        self.assertEqual(self.fixture.fixture.fixture.fixture.memory.get(OWNER, reference)['status'], 'ok')
 
     def test_password_login_preserves_all_four_governed_views(self):
         self.login()

@@ -1,5 +1,7 @@
 # ABOUTME: Exercises memory preferences through actual FastAPI requests and native records.
 # ABOUTME: Verifies strict owner actions and sharing controls in a disposable profile.
+from contextlib import contextmanager
+import secrets
 import importlib.util
 import os
 from pathlib import Path
@@ -12,7 +14,35 @@ sys.path.insert(0,str(HOST))
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from lifeos_hook_bridge.memory_service import MemoryConfiguration
+from hermes_cli.dashboard_auth.middleware import gated_auth_middleware
+from hermes_cli.dashboard_auth.routes import router as auth_router, _reset_password_rate_limit
+from hermes_cli.dashboard_auth.registry import register_global_provider, restore_registration, snapshot_registration
+from plugins.dashboard_auth.basic import BasicAuthProvider, hash_password
 import test_memory_sharing as sharing_fixture
+
+
+@contextmanager
+def owner_client(app, profile):
+    _reset_password_rate_limit()
+    configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
+    configuration.update(lambda value: value['accounts'].update({'dashboard:basic:synthetic-owner': value['principal']}))
+    provider = BasicAuthProvider(username='synthetic-owner', password_hash=hash_password('synthetic-password'),
+                                 secret=secrets.token_bytes(32))
+    previous = snapshot_registration('basic')
+    register_global_provider(provider)
+    app.state.auth_required = True
+    app.middleware('http')(gated_auth_middleware)
+    app.include_router(auth_router)
+    try:
+        with TestClient(app) as client:
+            response = client.post('/auth/password-login', json={'provider': 'basic',
+                'username': 'synthetic-owner', 'password': 'synthetic-password'})
+            if response.status_code != 200:
+                raise AssertionError(response.text)
+            yield client
+    finally:
+        restore_registration('basic', provider, previous)
+        _reset_password_rate_limit()
 
 
 class MemoryDashboardTests(unittest.TestCase):
@@ -30,7 +60,7 @@ class MemoryDashboardTests(unittest.TestCase):
             spec = importlib.util.spec_from_file_location('memory_dashboard_adoption_http',api_path)
             module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
             app = FastAPI(); app.include_router(module.router,prefix='/api/plugins/lifeos-hook-bridge')
-            with TestClient(app) as client:
+            with owner_client(app, profile) as client:
                 endpoint = '/api/plugins/lifeos-hook-bridge/memory/adoption'
                 response = client.post(endpoint+'/preview',json={})
                 self.assertEqual(response.status_code,200,response.text)
@@ -57,7 +87,7 @@ class MemoryDashboardTests(unittest.TestCase):
             module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
             app = FastAPI(); app.include_router(module.router,prefix='/api/plugins/lifeos-hook-bridge')
             saved = fixture.enqueue()
-            with TestClient(app) as client:
+            with owner_client(app, profile) as client:
                 endpoint = '/api/plugins/lifeos-hook-bridge/memory/review'
                 response = client.post(endpoint,json={'tool':'lifeos_memory_proposals','arguments':{}})
                 self.assertEqual(response.status_code,200,response.text)
@@ -84,7 +114,7 @@ class MemoryDashboardTests(unittest.TestCase):
             module = importlib.util.module_from_spec(spec); spec.loader.exec_module(module)
             app = FastAPI(); app.include_router(module.router,prefix='/api/plugins/lifeos-hook-bridge')
             saved = fixture.fixture.fixture.remember()
-            with TestClient(app) as client:
+            with owner_client(app, profile) as client:
                 endpoint = '/api/plugins/lifeos-hook-bridge/memory'
                 response = client.get(endpoint)
                 self.assertEqual(response.status_code,200,response.text)

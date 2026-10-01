@@ -69,9 +69,10 @@ class MemorySharing:
         if any(not path.is_absolute() for path in (configuration, authorized_keys, interpreter, program)):
             raise ValueError('Memory connection paths must be absolute')
 
-    def _check_installation(self, config: dict[str, Any]) -> None:
+    def _check_installation(self, config: dict[str, Any], account: str | None = None) -> None:
         if self.installed_root is not None and Path(config['root']).absolute() != self.installed_root:
             raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+        self.configuration.check_owner(config, account)
 
     def _keys(self) -> str:
         parent = self.authorized_keys.parent
@@ -115,7 +116,8 @@ class MemorySharing:
         return f'restrict,command="{escaped}" {key} lifeos-memory:{identifier}\n'
 
     def enroll(self, identifier: str, public_key: str, *, projects: list[str], model_route: str,
-               read: list[str] | None = None, write_project: bool = False) -> dict[str, Any]:
+               read: list[str] | None = None, write_project: bool = False,
+               account: str | None = None) -> dict[str, Any]:
         if not isinstance(identifier, str) or not re.fullmatch(r'[a-z0-9][a-z0-9_-]{0,63}', identifier):
             raise ValueError('Use a new connection name with letters, digits, underscores, or hyphens')
         if type(write_project) is not bool:
@@ -132,7 +134,7 @@ class MemorySharing:
                      'write': ['project'] if write_project else [], 'projects': projects, 'model_route': model_route,
                      'credential_fingerprint': key_fingerprint(key)}
             def activate(config):
-                self._check_installation(config)
+                self._check_installation(config, account)
                 if identifier in config.get('clients', {}):
                     raise ValueError('This connection name already exists; use a new name after revocation')
                 config.setdefault('clients', {})[identifier] = grant
@@ -151,11 +153,11 @@ class MemorySharing:
         return {'status': 'enrolled', 'client': identifier, 'permissions': grant,
                 'transport': 'SSH process', 'command': 'lifeos-memory'}
 
-    def revoke(self, identifier: str) -> dict[str, Any]:
+    def revoke(self, identifier: str, *, account: str | None = None) -> dict[str, Any]:
         with self._lock():
             previous = self._keys()
             def disable(config):
-                self._check_installation(config)
+                self._check_installation(config, account)
                 grant = config.get('clients', {}).get(identifier)
                 if grant is None:
                     raise ValueError('This memory connection does not exist')

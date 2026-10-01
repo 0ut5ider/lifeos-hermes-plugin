@@ -1,0 +1,68 @@
+test_account_binding_and_principal_are_rechecked_on_same_connection (test_memory_pulse_auth.MemoryPulseAuthTests.test_account_binding_and_principal_are_rechecked_on_same_connection) ... ok
+test_anonymous_or_fabricated_identity_never_admits_owner (test_memory_pulse_auth.MemoryPulseAuthTests.test_anonymous_or_fabricated_identity_never_admits_owner) ... ok
+test_bad_bearer_does_not_fall_back_to_valid_cookie (test_memory_pulse_auth.MemoryPulseAuthTests.test_bad_bearer_does_not_fall_back_to_valid_cookie) ... ok
+test_browser_logout_removes_cookie_authority (test_memory_pulse_auth.MemoryPulseAuthTests.test_browser_logout_removes_cookie_authority) ... ok
+test_changed_installation_binding_refuses_private_snapshot (test_memory_pulse_auth.MemoryPulseAuthTests.test_changed_installation_binding_refuses_private_snapshot) ... ok
+test_corrupt_registry_returns_sanitized_unavailable_response (test_memory_pulse_auth.MemoryPulseAuthTests.test_corrupt_registry_returns_sanitized_unavailable_response) ... ok
+test_disabled_host_gate_does_not_mint_an_owner_scope (test_memory_pulse_auth.MemoryPulseAuthTests.test_disabled_host_gate_does_not_mint_an_owner_scope) ... ok
+test_distinct_authenticated_account_without_binding_cannot_read_or_change_memory (test_memory_pulse_auth.MemoryPulseAuthTests.test_distinct_authenticated_account_without_binding_cannot_read_or_change_memory) ... ok
+test_every_memory_route_rechecks_revoked_account_binding (test_memory_pulse_auth.MemoryPulseAuthTests.test_every_memory_route_rechecks_revoked_account_binding) ... ok
+test_every_memory_route_requires_a_verified_session_when_host_gate_is_disabled (test_memory_pulse_auth.MemoryPulseAuthTests.test_every_memory_route_requires_a_verified_session_when_host_gate_is_disabled) ... ok
+test_host_and_framework_denials_always_disable_response_storage (test_memory_pulse_auth.MemoryPulseAuthTests.test_host_and_framework_denials_always_disable_response_storage) ... ok
+test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) ... ok
+test_private_response_headers_leave_unrelated_routes_unchanged (test_memory_pulse_auth.MemoryPulseAuthTests.test_private_response_headers_leave_unrelated_routes_unchanged) ... ok
+test_read_only_routes_ignore_no_caller_scope_or_source_arguments (test_memory_pulse_auth.MemoryPulseAuthTests.test_read_only_routes_ignore_no_caller_scope_or_source_arguments) ... ok
+test_revoked_owner_cannot_forget_a_native_fact (test_memory_pulse_auth.MemoryPulseAuthTests.test_revoked_owner_cannot_forget_a_native_fact) ... FAIL
+test_configuration_for_another_installation_is_refused (test_memory_preferences.MemoryPreferencesTests.test_configuration_for_another_installation_is_refused) ... ok
+test_enrollment_and_revocation_recheck_installation_inside_configuration_update (test_memory_preferences.MemoryPreferencesTests.test_enrollment_and_revocation_recheck_installation_inside_configuration_update) ... 
+  test_enrollment_and_revocation_recheck_installation_inside_configuration_update (test_memory_preferences.MemoryPreferencesTests.test_enrollment_and_revocation_recheck_installation_inside_configuration_update) (action='enroll') ... FAIL
+  test_enrollment_and_revocation_recheck_installation_inside_configuration_update (test_memory_preferences.MemoryPreferencesTests.test_enrollment_and_revocation_recheck_installation_inside_configuration_update) (action='revoke') ... FAIL
+test_health_reports_native_recall_without_enabling_ownership (test_memory_preferences.MemoryPreferencesTests.test_health_reports_native_recall_without_enabling_ownership) ... ok
+test_missing_configuration_and_partial_setup_are_not_reported_active (test_memory_preferences.MemoryPreferencesTests.test_missing_configuration_and_partial_setup_are_not_reported_active) ... ok
+test_owner_can_review_and_decide_pending_native_proposals (test_memory_preferences.MemoryPreferencesTests.test_owner_can_review_and_decide_pending_native_proposals) ... ok
+test_owner_previews_and_adopts_native_sources_without_enabling_ownership (test_memory_preferences.MemoryPreferencesTests.test_owner_previews_and_adopts_native_sources_without_enabling_ownership) ... ok
+test_owner_review_uses_current_native_records_and_strict_tool_arguments (test_memory_preferences.MemoryPreferencesTests.test_owner_review_uses_current_native_records_and_strict_tool_arguments) ... ok
+test_sharing_disable_revokes_services_without_deleting_grants_or_facts (test_memory_preferences.MemoryPreferencesTests.test_sharing_disable_revokes_services_without_deleting_grants_or_facts) ... ok
+test_concurrent_enrollment_preserves_both_grants_and_keys (test_memory_sharing.MemorySharingTests.test_concurrent_enrollment_preserves_both_grants_and_keys) ... ok
+test_failed_publication_disables_its_own_grant (test_memory_sharing.MemorySharingTests.test_failed_publication_disables_its_own_grant) ... ok
+test_failed_publication_does_not_disable_a_replacement_grant (test_memory_sharing.MemorySharingTests.test_failed_publication_does_not_disable_a_replacement_grant) ... ok
+test_id_key_permissions_and_command_injection_are_rejected (test_memory_sharing.MemorySharingTests.test_id_key_permissions_and_command_injection_are_rejected) ... ok
+test_keys_file_symlink_does_not_receive_an_enrollment (test_memory_sharing.MemorySharingTests.test_keys_file_symlink_does_not_receive_an_enrollment) ... ok
+test_new_key_binds_fixed_client_and_starts_project_read_only (test_memory_sharing.MemorySharingTests.test_new_key_binds_fixed_client_and_starts_project_read_only) ... ok
+test_revoke_denies_an_open_service_and_preserves_other_keys (test_memory_sharing.MemorySharingTests.test_revoke_denies_an_open_service_and_preserves_other_keys) ... ok
+test_revoke_preserves_an_unrelated_key_with_the_same_comment (test_memory_sharing.MemorySharingTests.test_revoke_preserves_an_unrelated_key_with_the_same_comment) ... ok
+
+======================================================================
+FAIL: test_revoked_owner_cannot_forget_a_native_fact (test_memory_pulse_auth.MemoryPulseAuthTests.test_revoked_owner_cannot_forget_a_native_fact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 113, in test_revoked_owner_cannot_forget_a_native_fact
+    self.login()
+    ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 67, in login
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 429 != 200 : {"detail":"Too many login attempts. Try again shortly."}
+
+======================================================================
+FAIL: test_enrollment_and_revocation_recheck_installation_inside_configuration_update (test_memory_preferences.MemoryPreferencesTests.test_enrollment_and_revocation_recheck_installation_inside_configuration_update) (action='enroll')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_preferences.py", line 132, in test_enrollment_and_revocation_recheck_installation_inside_configuration_update
+    self.assertTrue(checked.wait(10))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_enrollment_and_revocation_recheck_installation_inside_configuration_update (test_memory_preferences.MemoryPreferencesTests.test_enrollment_and_revocation_recheck_installation_inside_configuration_update) (action='revoke')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_preferences.py", line 132, in test_enrollment_and_revocation_recheck_installation_inside_configuration_update
+    self.assertTrue(checked.wait(10))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 31 tests in 30.138s
+
+FAILED (failures=3)

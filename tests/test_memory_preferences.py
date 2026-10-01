@@ -115,8 +115,8 @@ class MemoryPreferencesTests(unittest.TestCase):
                                              'projects':['lab'],'model_route':'unknown'})
                 checked, proceed = threading.Event(), threading.Event()
                 class ObservedPreferences(MemoryPreferences):
-                    def _configuration(instance):
-                        result = super()._configuration(); checked.set()
+                    def _configuration(instance, *, account=None):
+                        result = super()._configuration(account=account); checked.set()
                         if not proceed.wait(10):
                             raise RuntimeError('Preference test barrier timed out')
                         return result
@@ -137,6 +137,44 @@ class MemoryPreferencesTests(unittest.TestCase):
                         pending.result(timeout=10)
                 self.assertEqual(config.load(),before)
                 self.assertEqual(self.fixture.keys.read_text(),keys)
+
+    def test_configuration_mutations_recheck_owner_after_initial_authorization(self):
+        account = 'dashboard:basic:synthetic-owner'
+        for action in ('sharing', 'enroll', 'revoke'):
+            with self.subTest(action=action):
+                config = MemoryConfiguration(self.fixture.fixture.config)
+                config.update(lambda value: value['accounts'].update({account: value['principal']}))
+                identifier = 'owner-race-' + action
+                if action == 'revoke':
+                    self.preferences.enroll({'client': identifier, 'public_key': sharing_fixture.public_key(81),
+                        'projects': ['lab'], 'model_route': 'unknown'}, account=account)
+                checked, proceed = threading.Event(), threading.Event()
+                class ObservedPreferences(MemoryPreferences):
+                    def _configuration(instance, *, account=None):
+                        result = super()._configuration(account=account)
+                        checked.set()
+                        if not proceed.wait(10):
+                            raise RuntimeError('Owner authorization test barrier timed out')
+                        return result
+                observed = ObservedPreferences(config.path, self.preferences.root, self.fixture.keys,
+                    Path('/usr/bin/python3'), Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
+                def operation():
+                    if action == 'sharing':
+                        return observed.sharing(True, account=account)
+                    if action == 'revoke':
+                        return observed.revoke(identifier, account=account)
+                    return observed.enroll({'client': identifier, 'public_key': sharing_fixture.public_key(82),
+                        'projects': ['lab'], 'model_route': 'unknown'}, account=account)
+                with ThreadPoolExecutor(max_workers=1) as pool:
+                    pending = pool.submit(operation)
+                    self.assertTrue(checked.wait(10))
+                    config.update(lambda value: value['accounts'].pop(account))
+                    before, keys = config.load(), self.fixture.keys.read_text()
+                    proceed.set()
+                    with self.assertRaises(PermissionError):
+                        pending.result(timeout=10)
+                self.assertEqual(config.load(), before)
+                self.assertEqual(self.fixture.keys.read_text(), keys)
 
 
 if __name__ == '__main__':

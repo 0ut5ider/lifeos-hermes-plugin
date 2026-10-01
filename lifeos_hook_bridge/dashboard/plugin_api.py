@@ -14,7 +14,7 @@ import types
 from typing import Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, FastAPI, HTTPException, Request
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
 
@@ -69,7 +69,8 @@ class MemoryResponseHeaders:
         root = scope.get('root_path', '')
         if root and path.startswith(root + '/'):
             path = path[len(root):]
-        if scope['type'] != 'http' or not path.startswith('/api/plugins/lifeos-hook-bridge/memory/pulse/'):
+        prefix = '/api/plugins/lifeos-hook-bridge/memory'
+        if scope['type'] != 'http' or (path != prefix and not path.startswith(prefix + '/')):
             return await self.app(scope, receive, send)
 
         async def send_private(message):
@@ -109,29 +110,36 @@ def _memory_preferences():
 def _memory_action(action):
     try:
         return action(_memory_preferences())
-    except (ValueError, OSError, RuntimeError) as error:
-        raise HTTPException(status_code=409, detail=str(error)) from error
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='This dashboard account has no installation owner binding') from error
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired) as error:
+        raise HTTPException(status_code=409, detail='Memory is unavailable under the current installation policy') from error
+
+
+def _memory_account(request: Request) -> str:
+    try:
+        from hermes_cli.dashboard_auth.base import Session
+    except ImportError as error:
+        raise HTTPException(status_code=503, detail='Memory request authentication is unavailable') from error
+    session = getattr(request.state, 'session', None)
+    if not isinstance(session, Session):
+        raise HTTPException(status_code=401, detail='An authenticated dashboard session is required')
+    return f'dashboard:{session.provider}:{session.user_id}'
 
 
 @router.get('/memory')
-def get_memory():
-    return _memory_action(lambda preferences:preferences.status())
+def get_memory(account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences:preferences.status(account=account))
 
 
 @router.get('/memory/pulse/{view}')
-def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], request: Request):
+def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], request: Request,
+                     account: str = Depends(_memory_account)):
     headers = {'Cache-Control': 'no-store'}
-    try:
-        from hermes_cli.dashboard_auth.base import Session
-    except ImportError:
-        return JSONResponse({'error': 'Memory request authentication is unavailable'}, status_code=503, headers=headers)
-    session = getattr(request.state, 'session', None)
-    if not isinstance(session, Session):
-        return JSONResponse({'error': 'An authenticated dashboard session is required'}, status_code=401, headers=headers)
     if request.query_params:
         return JSONResponse({'error': 'Memory views use the installed owner configuration'}, status_code=400, headers=headers)
     try:
-        result = _memory_preferences().pulse_snapshot(view, account=f'dashboard:{session.provider}:{session.user_id}')
+        result = _memory_preferences().pulse_snapshot(view, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'},
                             status_code=403, headers=headers)
@@ -142,41 +150,41 @@ def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], reque
 
 
 @router.post('/memory/review')
-def review_memory(request: dict):
+def review_memory(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'tool','arguments'} or not isinstance(request['tool'], str) or not isinstance(request['arguments'], dict):
         raise HTTPException(status_code=400, detail='Choose a memory action and its arguments')
-    return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments']))
+    return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments'], account=account))
 
 
 @router.post('/memory/adoption/preview')
-def preview_memory_adoption(request: dict):
+def preview_memory_adoption(request: dict, account: str = Depends(_memory_account)):
     if request:
         raise HTTPException(status_code=400, detail='Source preview uses the installed LifeOS configuration')
-    return _memory_action(lambda preferences:preferences.preview_adoption())
+    return _memory_action(lambda preferences:preferences.preview_adoption(account=account))
 
 
 @router.post('/memory/adoption')
-def adopt_memory_sources(request: dict):
+def adopt_memory_sources(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'signature','projects','request_id'}:
         raise HTTPException(status_code=400, detail='Provide the reviewed source preview, project assignments, and request identifier')
-    return _memory_action(lambda preferences:preferences.adopt(request))
+    return _memory_action(lambda preferences:preferences.adopt(request, account=account))
 
 
 @router.post('/memory/sharing')
-def set_memory_sharing(request: dict):
+def set_memory_sharing(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'enabled'} or type(request['enabled']) is not bool:
         raise HTTPException(status_code=400, detail='Choose whether memory sharing is enabled')
-    return _memory_action(lambda preferences:preferences.sharing(request['enabled']))
+    return _memory_action(lambda preferences:preferences.sharing(request['enabled'], account=account))
 
 
 @router.post('/memory/connections')
-def enroll_memory_connection(request: dict):
-    return _memory_action(lambda preferences:preferences.enroll(request))
+def enroll_memory_connection(request: dict, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences:preferences.enroll(request, account=account))
 
 
 @router.delete('/memory/connections/{client}')
-def revoke_memory_connection(client: str):
-    return _memory_action(lambda preferences:preferences.revoke(client))
+def revoke_memory_connection(client: str, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences:preferences.revoke(client, account=account))
 
 
 def _host_source():
