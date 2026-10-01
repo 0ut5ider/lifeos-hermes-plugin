@@ -282,6 +282,62 @@ index 58270db..68741d7 100644
      proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
+index ecfbbeb..4809978 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Queries native Knowledge metadata from the permitted current note corpus.
++// ABOUTME: Preserves native filters and output formats under managed caller authority.
+ /**
+  * KnowledgeQuery — the `kb query` surface over the Knowledge Archive.
+  *
+@@ -37,9 +39,11 @@
+  */
+ 
+ import { readdirSync, readFileSync, existsSync } from "node:fs";
+-import { resolve as pathResolve, join as pathJoin } from "node:path";
++import { resolve as pathResolve, join as pathJoin, relative } from "node:path";
+ import { homedir } from "node:os";
+ import { parseNote, slugFromPath, ALL_DIRS, type ParsedNote } from "./KnowledgeSchema";
++import { hasMemoryAccess } from "./lib/MemoryAccess";
++import { enumerateCanonicalCorpus } from "./Cortex";
+ 
+ const KNOWLEDGE_DIR = pathResolve(homedir(), ".claude/LIFEOS/MEMORY/KNOWLEDGE");
+ const DIRS = ALL_DIRS;
+@@ -75,8 +79,8 @@ function parseTags(parsed: ParsedNote): string[] {
+   return [...f.raw.matchAll(/^\s+-\s+(.+)$/gm)].map((mm) => deq(mm[1])).filter(Boolean);
+ }
+ 
+-function readRec(path: string, dir: string): Rec | null {
+-  const parsed = parseNote(readFileSync(path, "utf8"));
++function readRec(path: string, dir: string, content?: string): Rec | null {
++  const parsed = parseNote(content ?? readFileSync(path, "utf8"));
+   if (!parsed.hadFrontmatter) return null;
+   const q = scalar(parsed, "quality");
+   const rel = parsed.fields.find((x) => x.key === "related");
+@@ -134,7 +138,19 @@ function main() {
+ 
+   const dirs = onlyDir ? [onlyDir] : [...DIRS];
+   const recs: Rec[] = [];
+-  for (const dir of dirs) {
++  if (hasMemoryAccess()) {
++    const corpus = enumerateCanonicalCorpus(KNOWLEDGE_DIR);
++    for (const [index, record] of corpus.records.entries()) {
++      const path = corpus.files[index];
++      if (path === undefined) throw new Error("The managed Knowledge source is missing");
++      const parts = relative(corpus.root, path).split("/");
++      const [dir, file] = parts;
++      if (parts.length !== 2 || !dir || !file || !dirs.includes(dir)
++          || !file.endsWith(".md") || file.startsWith("_") || file === "README.md") continue;
++      const parsed = readRec(path, dir, record.content);
++      if (parsed) recs.push(parsed);
++    }
++  } else for (const dir of dirs) {
+     const abs = pathJoin(KNOWLEDGE_DIR, dir);
+     if (!existsSync(abs)) continue;
+     for (const f of readdirSync(abs)) {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
 index a46c7b2..5b31fc2 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts

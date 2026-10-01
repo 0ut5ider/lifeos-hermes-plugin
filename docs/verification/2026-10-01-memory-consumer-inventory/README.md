@@ -27,3 +27,11 @@ Pinned sources: Hermes `758ad514eb0e800547e015edf05aa18f78b78d82`; LifeOS `5e2f2
 The canonical connector has a 3 MiB transport limit. This is smaller than Cortex's 128 MiB whole-corpus limit. Excess data receives an explicit unavailable result. This result does not establish maximum-size corpus parity. The alternate reader requires unrestricted owner recall because native note metadata has no project classification. Restricted project tools remain separate.
 
 The candidate inventory contains 132 files. This unit does not close that inventory. Graph caches, wiki indexes, Knowledge queries, native dashboard file routes, restore, staged publication, and derived context still require their own checks. A source trace is not a live access test. Full PULSE UI and secure LAN browser tests remain separate from the localhost relay evidence.
+
+## Native Knowledge query
+
+`knowledge-query-before.txt` records seven failures in ten real native cases. The native query returns metadata to an unbound or revoked caller, retains forgotten notes, exposes unregistered notes, and follows a directory argument outside Knowledge. Owner filters and standalone output pass as controls.
+
+The managed query now consumes the governed current-note corpus. Its native metadata parser, filters, counts, slugs, and table formats remain in use. The managed directory filter compares declared note directories rather than constructing another filesystem destination. The same source authority and retirement checks apply before metadata reaches the query.
+
+`knowledge-query-final.txt` passes all 26 Knowledge-query and Cortex cases in 21.232 seconds without skips. `preparation-knowledge-query.txt` records preparation of the actual distributed source. The existing native memory patch now changes 20 files. This adds no Hermes patch group. Derived indexes, graph output, dashboard file routes, and the remaining inventory remain open.
