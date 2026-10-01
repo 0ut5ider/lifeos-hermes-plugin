@@ -86,3 +86,9 @@ Three independent reviews found and closed request representation gaps. The fina
 The managed startup hook now uses source authorization for remote conversations. Two independently configured synthetic apps receive approved relationship context. Missing context, unknown authors, restricted grants, and broken connectors expose no retained markers. Unmanaged remote startup retains native isolation. These results do not establish restricted static-prompt filtering or final delivery.
 
 Evidence is in `docs/verification/2026-09-30-memory-rendered-prompts/`. The final report is `docs/agents/2026-09-30-memory-rendered-prompts/third-closure/memory-generated-input-closure.md`. Complete agent invocation, compression rotation, the full route inventory, ownership transactions, browser behavior, and release gates remain open. Ownership is still disabled on running installations.
+
+## Built-in ownership configuration characterization
+
+The real Hermes constructor confirms that provider selection alone preserves both built-in stores. The ownership transaction must select `lifeos-hook-bridge` and explicitly disable `memory.memory_enabled` and `memory.user_profile_enabled`. Four tests verify prompt exclusion, failed writes through direct and freshly loaded built-in tools, exact file preservation, skill-tool availability, unavailable-provider behavior, and restoration in fresh processes.
+
+These tests establish the required target configuration without a new host patch. They do not implement the ownership transaction or prove a live session switch, automatic skill learning, or every file mutation path. Filesystem access by the same operating-system identity remains possible. The earlier 582-test full run predates this four-test addition. Ownership activation stays disabled.

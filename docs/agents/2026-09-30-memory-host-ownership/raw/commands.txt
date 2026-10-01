@@ -1,0 +1,16 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+Independent test command:
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_host.py -v > docs/agents/2026-09-30-memory-host-ownership/raw/tests.txt 2>&1
+
+Read-only inspection:
+cat tests/test_memory_host.py tests/memory_host_calls.py
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+rg -n "memory_enabled|user_profile_enabled|_memory_store|_memory_manager|skill_nudge" run_agent.py agent/system_prompt.py tools/memory_tool.py
+sed -n '1260,1388p' agent/agent_init.py
+sed -n '90,164p' tools/memory_tool_store.py
+sed -n '250,326p' tools/memory_tool_store.py
+sed -n '510,548p' agent/system_prompt.py
+
+Host commands ran in the owned app-startup/hermes fixture. An initial call-site search used the plugin working directory and returned missing paths; it was repeated in the host source. No implementation state changed.
+Hashes: SHA-256 of exact bytes, recorded in source-hashes.json and checked again after testing.
