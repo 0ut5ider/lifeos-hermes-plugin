@@ -1,6 +1,7 @@
 # ABOUTME: Governs retained native source reads before startup summaries reach a model.
 # ABOUTME: Excludes restricted, invalid, forgotten, and superseded source text without copying files.
 from datetime import datetime, timezone
+from contextlib import nullcontext
 import json
 from pathlib import Path
 import re
@@ -11,6 +12,7 @@ from .memory_policy import CATEGORIES, MemoryScope
 
 
 PREFIXES = ('LIFEOS/MEMORY/LEARNING/', 'LIFEOS/MEMORY/WISDOM/FRAMES/',
+            'LIFEOS/MEMORY/WISDOM/PRINCIPLES/', 'LIFEOS/MEMORY/WISDOM/META/', 'LIFEOS/MEMORY/RESEARCH/',
             'LIFEOS/MEMORY/RELATIONSHIP/', 'LIFEOS/MEMORY/WORK/', 'LIFEOS/MEMORY/STATE/progress/')
 FILES = {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
          'LIFEOS/MEMORY/STATE/events.jsonl'}
@@ -20,6 +22,11 @@ CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
 CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
                  'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
                  'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'LIFEOS/USER/PROJECTS.md'}
+SYSTEM_PREFIXES = ('LIFEOS/DOCUMENTATION/', 'LIFEOS/ALGORITHM/')
+SYSTEM_FILES = {'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'}
+SOURCE_LIMIT = 256 * 1024
+CORPUS_LIMIT = 3 * 1024 * 1024
+SOURCE_COUNT_LIMIT = 2048
 
 
 def authorize(scope: MemoryScope) -> dict[str, Any]:
@@ -34,6 +41,9 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     if not isinstance(path,str):
         raise MemoryUnavailable('A supported native source path is required')
     relative = Path(path).relative_to(memory.root).as_posix()
+    if '..' in Path(relative).parts:
+        raise MemoryUnavailable('The native source cannot leave its installed root')
+    system = relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
     if diagnostic:
         from .memory_diagnostics import DIAGNOSTIC_FILES, DIAGNOSTIC_DIRECTORIES
         directory = not require_file and relative in DIAGNOSTIC_DIRECTORIES
@@ -42,16 +52,63 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES or relative.startswith(PREFIXES)
+        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES
+                     or relative.startswith(PREFIXES) or system)
     if not permitted:
         raise MemoryUnavailable('This is not a supported native history or context source')
-    source = memory._path(relative)
-    physical = memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
+    source = memory.root / relative if system else memory._path(relative)
+    physical = source.absolute() if system else memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
         'LIFEOS/USER' if relative in CACHE_FILES | CONTEXT_FILES else 'LIFEOS')
     if (source.resolve() != physical.absolute() or (require_file and not source.is_file())
             or (not require_file and source.exists() and not (source.is_dir() if directory else source.is_file()))):
         raise MemoryUnavailable('The native source is missing or changes its permitted physical path')
     return source, relative
+
+
+def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
+    authorize(scope)
+    if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
+        raise MemoryUnavailable('The declared native sources exceed their count limit or repeat a path')
+    with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
+        sources = []
+        total = 0
+        for path in paths:
+            source, relative = _source_path(memory, scope, path)
+            if source.suffix != '.md':
+                raise MemoryUnavailable('The declared wiki source must be native Markdown')
+            before = source.stat()
+            if before.st_size > SOURCE_LIMIT:
+                raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
+            try:
+                content = source.read_text(encoding='utf-8')
+            except UnicodeError as error:
+                raise MemoryUnavailable('The native wiki source is not valid UTF-8') from error
+            after = source.stat()
+            if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+                    != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
+                raise MemoryUnavailable('The native wiki source changed during collection')
+            _source_path(memory, scope, path)
+            size = len(content.encode())
+            if size > SOURCE_LIMIT:
+                raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
+            total += size
+            if total > CORPUS_LIMIT:
+                raise MemoryUnavailable('The declared native wiki sources exceed their transport limit')
+            timestamp = datetime.fromtimestamp(after.st_mtime, timezone.utc).isoformat()
+            sources.append({'path': path, 'relative': relative, 'content': content, 'lastModified': timestamp})
+        if not sources:
+            return []
+        checked = memory._native('validate_source_batch', contents=[source['content'] for source in sources])['accepted']
+        admitted = []
+        for source, accepted in zip(sources, checked, strict=True):
+            if accepted is not True:
+                continue
+            relative = source['relative']
+            labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
+            if not memory._filter_history(connection, scope,
+                    '\n'.join((source['content'], relative, labels)), source['lastModified'])['excluded']:
+                admitted.append(source)
+        return admitted
 
 
 def check(memory, scope: MemoryScope, path: str) -> dict[str, Any]:

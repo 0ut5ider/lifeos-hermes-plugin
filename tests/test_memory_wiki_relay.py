@@ -20,6 +20,47 @@ class MemoryWikiRelayTests(unittest.TestCase):
     stop_pulse = relay_fixture.MemoryPulseRelayTests.stop_pulse
     login = relay_fixture.MemoryPulseRelayTests.login
 
+    def test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback(self):
+        sources = [('DOCUMENTATION/Overview.md', 'Overview'),
+                   ('MEMORY/LEARNING/SYSTEM/synthetic.md', 'SYSTEM--synthetic'),
+                   ('MEMORY/WISDOM/META/synthetic.md', 'META--synthetic'),
+                   ('MEMORY/RESEARCH/synthetic-output.md', 'synthetic-output'),
+                   ('MEMORY/WORK/synthetic-work/ISA.md', 'synthetic-work')]
+        for relative, slug in sources:
+            path = self.root / 'LIFEOS' / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('# SyntheticCorpusTitle' + slug + '\nSyntheticCorpusBody' + slug + '\n')
+        with httpx.Client(timeout=20) as client:
+            self.assertEqual(client.get(self.native + '/api/wiki/doc/Overview').status_code, 401)
+            self.login(client)
+            for _, slug in sources:
+                response = client.get(self.native + '/api/wiki/doc/' + slug)
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertIn('SyntheticCorpusBody' + slug, response.text)
+                self.assertEqual(response.headers['cache-control'], 'no-store')
+            self.fixture.configuration.update(lambda config: config['accounts'].pop('dashboard:basic:synthetic-owner'))
+            response = client.get(self.native + '/api/wiki')
+            self.assertEqual(response.status_code, 403, response.text)
+            self.assertNotIn('SyntheticCorpus', response.text)
+
+    def test_authenticated_documentation_excludes_forget_in_body_search_and_graph(self):
+        memory = self.fixture.fixture.fixture.fixture.fixture.memory
+        saved = memory.remember(OWNER, category='principal', content='RULE: SyntheticCorpusForgottenMarker',
+            title='', project='', request_id='wiki-corpus-retirement')
+        path = self.root / 'LIFEOS/DOCUMENTATION/synthetic-forgotten.md'
+        path.parent.mkdir(parents=True)
+        path.write_text('# SyntheticCorpusTitle\nSyntheticCorpusForgottenMarker\n')
+        with httpx.Client(timeout=20) as client:
+            self.login(client)
+            self.assertEqual(client.get(self.native + '/api/wiki/doc/synthetic-forgotten').status_code, 200)
+            self.assertEqual(memory.forget(OWNER, saved['reference'], 'wiki-corpus-forgotten')['status'], 'committed')
+            self.assertEqual(client.get(self.native + '/api/wiki/doc/synthetic-forgotten').status_code, 404)
+            for route in ('/api/wiki', '/api/wiki/graph', '/api/wiki/search?q=SyntheticCorpus'):
+                response = client.get(self.native + route)
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertNotIn('SyntheticCorpus', response.text)
+            self.assertIn('SyntheticCorpusForgottenMarker', path.read_text())
+
     def note(self):
         native = self.fixture.fixture.fixture.fixture.fixture
         saved = native.remember('SyntheticWikiCurrentMarker', 'wiki-current')

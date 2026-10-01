@@ -1,0 +1,39 @@
+test_correction_retires_older_sources_and_forgotten_claims_in_current_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_correction_retires_older_sources_and_forgotten_claims_in_current_files) ... ok
+test_every_corpus_requires_unrestricted_current_owner_scope (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_every_corpus_requires_unrestricted_current_owner_scope) ... ok
+test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles) ... ok
+test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent) ... ok
+test_invalid_utf8_source_refuses_without_partial_index (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_invalid_utf8_source_refuses_without_partial_index) ... ok
+test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone) ... FAIL
+test_oversized_source_refuses_before_native_publication (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_oversized_source_refuses_before_native_publication) ... ok
+test_private_markup_sources_are_excluded_without_changing_raw_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_markup_sources_are_excluded_without_changing_raw_files) ... ok
+test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks) ... ok
+test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) ... ok
+
+======================================================================
+FAIL: test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 51, in test_managed_categories_slugs_and_groups_match_native_standalone
+    self.assertEqual(result, control)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: {'sta[213 chars]4.122981+00:00', 'group': 'Overview', 'backlin[21 chars] []}} != {'sta[213 chars]4.122Z', 'group': 'Overview', 'backlinks': [],[13 chars] []}}
+  {'body': {'backlinks': [],
+            'category': 'system-doc',
+            'content': '# SyntheticPage0\nSyntheticCorpusMarker0\n',
+            'group': 'Overview',
+-           'lastModified': '2026-10-01T19:20:14.122981+00:00',
+?                                                   ^^^^^^^^^
+
++           'lastModified': '2026-10-01T19:20:14.122Z',
+?                                                   ^
+
+            'slug': 'LIFEOS_SYSTEM_PROMPT',
+            'title': 'SyntheticPage0',
+            'wikilinks': [],
+            'wordCount': 3},
+   'status': 200}
+
+----------------------------------------------------------------------
+Ran 10 tests in 7.398s
+
+FAILED (failures=1)

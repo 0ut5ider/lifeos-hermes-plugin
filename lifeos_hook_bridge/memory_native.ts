@@ -44,13 +44,15 @@ async function main(): Promise<void> {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/wiki.ts")).href);
     if (!object(module) || typeof module.renderWikiView !== "function" || typeof input.target !== "string"
         || !Array.isArray(input.sources)) throw new Error("Native wiki rendering needs declared source text");
-    const sources: Array<{path: string; content: string; lastModified: string; category: string; slug: string}> = [];
+    const sources: Array<{path: string; content: string; lastModified: string; category: string; slug: string; group?: string}> = [];
     for (const source of input.sources) {
       if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
           || typeof source.lastModified !== "string" || typeof source.category !== "string"
-          || typeof source.slug !== "string") throw new Error("Native wiki sources are unavailable");
+          || typeof source.slug !== "string" || (source.group !== undefined && typeof source.group !== "string")) {
+        throw new Error("Native wiki sources are unavailable");
+      }
       sources.push({path: source.path, content: source.content, lastModified: source.lastModified,
-        category: source.category, slug: source.slug});
+        category: source.category, slug: source.slug, ...(typeof source.group === "string" ? {group: source.group} : {})});
     }
     const request = new Request("http://127.0.0.1" + input.target);
     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
@@ -85,6 +87,19 @@ async function main(): Promise<void> {
   } else if (input.action === "validate_batch") {
     if (!Array.isArray(input.items) || typeof system.sanitizeTypedItemForPersistence !== "function") throw new Error("Invalid native validation batch");
     result = {results: input.items.map((item: unknown) => system.sanitizeTypedItemForPersistence(item))};
+  } else if (input.action === "validate_source_batch") {
+    const capture: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/CaptureEnvelope.ts")).href);
+    if (!object(capture) || typeof capture.stripPrivateContent !== "function" || !Array.isArray(input.contents)) {
+      throw new Error("Native retained source validation is unavailable");
+    }
+    const accepted: boolean[] = [];
+    for (const content of input.contents) {
+      if (typeof content !== "string") throw new Error("Native retained sources require declared text");
+      // The canonical text boundary permits Markdown metadata and comments, unlike a new fact write.
+      accepted.push(!/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/u.test(content)
+        && !/[\uD800-\uDFFF]/u.test(content) && capture.stripPrivateContent(content) === content);
+    }
+    result = {accepted};
   } else if (input.action === "rank") {
     const retriever: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryRetriever.ts")).href);
     if (!object(retriever) || retriever.SUPPLIED_CORPUS_API_VERSION !== 1 || typeof retriever.getRelevantContext !== "function") {
