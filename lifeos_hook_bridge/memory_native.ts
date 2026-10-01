@@ -26,7 +26,21 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "pulse_snapshot") {
+  if (input.action === "canonical_records") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/Cortex.ts")).href);
+    if (!object(module) || typeof module.parseCanonicalMarkdown !== "function"
+        || typeof module.canonicalMetadata !== "function" || typeof input.root !== "string"
+        || !Array.isArray(input.sources)) throw new Error("Canonical source parsing is unavailable");
+    const records: unknown[] = [], metadata: unknown[] = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Canonical parsing requires declared source text");
+      }
+      records.push(module.parseCanonicalMarkdown(source.content, source.path, input.root));
+      metadata.push(module.canonicalMetadata(source.content,source.path,input.root));
+    }
+    result = {records, metadata};
+  } else if (input.action === "pulse_snapshot") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/memory.ts")).href);
     if (typeof input.view !== "string" || !object(module) || typeof module.readMemoryView !== "function") {
       throw new Error("The native PULSE snapshot is unavailable");

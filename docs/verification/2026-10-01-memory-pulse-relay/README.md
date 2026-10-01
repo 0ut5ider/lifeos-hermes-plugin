@@ -38,3 +38,5 @@ Sources: Hermes base `758ad514eb0e800547e015edf05aa18f78b78d82`; LifeOS base `5e
 The native network fixture loads the actual distributed `modules/memory.ts` on a disposable Bun listener. It does not start all PULSE modules or validate graph and wiki interfaces. Chromium verifies the four JSON views through separate localhost ports and host cookies with the root cookie path. Secure transport, a LAN browser, a reverse-proxy prefix, and a full PULSE UI are not established by that result. Unsupported managed `/api/memory/` routes currently refuse explicitly.
 
 The full source inventory must govern derived readers before ownership activation. Managed restore, staged publication, restricted prompt and final delivery cases, lifecycle coverage, and recoverable setup remain open. The broader memory regression follows this focused unit. That regression is not the final release gate.
+
+The expanded relay regression passes 351 cases in 399.814 seconds without skips, failures, or errors. `regression.txt` contains the raw output. `regression.done` contains exit status 0. This is the memory regression for the relay revision, not the full release gate.

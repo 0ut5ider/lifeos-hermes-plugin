@@ -1,0 +1,26 @@
+test_changed_binding_revokes_native_canonical_reads (test_memory_canonical.MemoryCanonicalTests.test_changed_binding_revokes_native_canonical_reads) ... ok
+test_changed_native_fact_cannot_be_admitted_under_an_old_reference (test_memory_canonical.MemoryCanonicalTests.test_changed_native_fact_cannot_be_admitted_under_an_old_reference) ... ok
+test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section) ... ok
+test_fixed_native_metadata_names_are_not_retired_facts (test_memory_canonical.MemoryCanonicalTests.test_fixed_native_metadata_names_are_not_retired_facts) ... FAIL
+test_forgotten_archive_fact_is_not_exported_from_retained_file (test_memory_canonical.MemoryCanonicalTests.test_forgotten_archive_fact_is_not_exported_from_retained_file) ... ok
+test_missing_caller_context_cannot_read_managed_canonical_records (test_memory_canonical.MemoryCanonicalTests.test_missing_caller_context_cannot_read_managed_canonical_records) ... ok
+test_native_root_option_does_not_grant_foreign_source_authority (test_memory_canonical.MemoryCanonicalTests.test_native_root_option_does_not_grant_foreign_source_authority) ... ok
+test_owner_preserves_native_canonical_identity_and_content (test_memory_canonical.MemoryCanonicalTests.test_owner_preserves_native_canonical_identity_and_content) ... ok
+test_project_only_context_cannot_collect_unclassified_canonical_metadata (test_memory_canonical.MemoryCanonicalTests.test_project_only_context_cannot_collect_unclassified_canonical_metadata) ... ok
+test_retired_dynamic_title_remains_excluded (test_memory_canonical.MemoryCanonicalTests.test_retired_dynamic_title_remains_excluded) ... ok
+test_unmanaged_control_retains_native_read_behavior (test_memory_canonical.MemoryCanonicalTests.test_unmanaged_control_retains_native_read_behavior) ... ok
+test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted) ... ok
+
+======================================================================
+FAIL: test_fixed_native_metadata_names_are_not_retired_facts (test_memory_canonical.MemoryCanonicalTests.test_fixed_native_metadata_names_are_not_retired_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 92, in test_fixed_native_metadata_names_are_not_retired_facts
+    self.assertTrue(result['result']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'status': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'search', 'data': None, 'error': {'code': 'integrity_error', 'message': 'The governed canonical corpus is unavailable'}}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+----------------------------------------------------------------------
+Ran 12 tests in 9.941s
+
+FAILED (failures=1)

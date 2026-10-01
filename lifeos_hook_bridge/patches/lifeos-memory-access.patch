@@ -149,6 +149,87 @@ index ea4d80b..68a149f 100644
    if (req.method !== "GET") return null;
  
    if (pathname === "/api/memory" || pathname === "/api/memory/") {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
+index 390808e..f2f0f26 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
+@@ -1,8 +1,12 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reads canonical memory records through governed access in managed profiles.
++// ABOUTME: Preserves native query and export contracts for authorized current notes.
+ import { existsSync, lstatSync, opendirSync, readFileSync, realpathSync } from "node:fs";
+ import { join, relative, resolve, sep } from "node:path";
+ import { homedir } from "node:os";
+ import { createHash } from "node:crypto";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { ALL_DIRS, ENVELOPE, SCHEMA_VERSION as KNOWLEDGE_SCHEMA_VERSION } from "./KnowledgeSchema";
+ import { createCaptureEnvelope, isEnvelopeValidAt } from "./CaptureEnvelope";
+ 
+ export const SCHEMA = "lifeos-cortex/v1" as const;
+@@ -124,7 +128,27 @@ function sanitizeContent(content: string, fields: Record<string, string>): strin
+   return createCaptureEnvelope({ source: fields.source_kind || fields.source || "canonical", channel: "canonical", timestamps: { captured_at: fields.created || fields.date || fields.ts || new Date(0).toISOString() }, valid_from: fields.valid_from || null, valid_until: fields.valid_until || null, session_id: fields.source_session || null, content }).content;
+ }
+ function parseMarkdown(path: string, root: string): CortexRecord {
+-  const raw = readCanonicalUtf8(path, relative(root, path));
++  return parseCanonicalMarkdown(readCanonicalUtf8(path, relative(root, path)),path,root);
++}
++export function canonicalMetadata(raw: string, path: string, root: string): string[] {
++  const declared = new Map(ENVELOPE.map(field => [field.key,field]));
++  const labels: string[] = [];
++  for (const [key,value] of Object.entries(fieldsFromMarkdown(raw))) {
++    const field = declared.get(key);
++    if (!field) labels.push(key);
++    if (field?.format === "select" && field.values?.includes(value)) continue;
++    if (field?.format === "number" && value.trim() && Number.isFinite(Number(value))) continue;
++    if (field?.format === "date" && validTimestamp(value)) continue;
++    if (key === "convention" && value === KNOWLEDGE_SCHEMA_VERSION) continue;
++    labels.push(value);
++  }
++  for (const part of relative(root,path).split(sep)) {
++    if (part !== "KNOWLEDGE" && !ALL_DIRS.includes(part)) labels.push(part.replace(/\.md$/, ""));
++  }
++  return labels;
++}
++export function parseCanonicalMarkdown(raw: string, path: string, root: string): CortexRecord {
++  assertCanonicalText(raw,relative(root,path));
+   const preliminary = fieldsFromMarkdown(raw);
+   const content = sanitizeContent(raw, preliminary);
+   const fields = fieldsFromMarkdown(content);
+@@ -157,7 +181,34 @@ function canonicalFiles(root: string): string[] {
+   if (existsSync(nested)) return filesUnder(nested, root);
+   return filesUnder(root, root);
+ }
++function canonicalRecord(value: unknown): value is CortexRecord {
++  return memoryObject(value) && typeof value.id === "string" && typeof value.type === "string"
++    && typeof value.title === "string" && typeof value.created === "string" && typeof value.updated === "string"
++    && typeof value.content === "string" && memoryObject(value.provenance)
++    && typeof value.provenance.source === "string" && typeof value.provenance.path === "string"
++    && (value.provenance.session === null || typeof value.provenance.session === "string")
++    && Array.isArray(value.related) && value.related.every(item => typeof item === "string")
++    && (value.valid_from === null || typeof value.valid_from === "string")
++    && (value.valid_until === null || typeof value.valid_until === "string");
++}
++
+ export function enumerateCanonicalCorpus(root: string): { root: string; files: string[]; records: CortexRecord[] } {
++  const governed = memoryAccess("canonical_corpus",{root},memoryObject);
++  if (governed !== undefined) {
++    if (governed.ok !== true || typeof governed.root !== "string"
++        || !Array.isArray(governed.files) || !Array.isArray(governed.records)
++        || governed.files.length !== governed.records.length) integrity("The governed canonical corpus is unavailable");
++    const files: string[] = [], records: CortexRecord[] = [];
++    for (const file of governed.files) {
++      if (typeof file !== "string") integrity("The governed canonical source is invalid");
++      files.push(file);
++    }
++    for (const record of governed.records) {
++      if (!canonicalRecord(record)) integrity("The governed canonical record is invalid");
++      records.push(validateRecord(record));
++    }
++    return {root:governed.root,files,records};
++  }
+   const canonicalRoot = pinCanonicalRoot(root);
+   const files = canonicalFiles(canonicalRoot), records: CortexRecord[] = [], ids = new Map<string, string>();
+   if (files.length > CANONICAL_CORPUS_LIMITS.MAX_FILES) integrity(`Canonical corpus exceeds file count limit (${CANONICAL_CORPUS_LIMITS.MAX_FILES})`);
 diff --git a/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts b/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
 index 58270db..68741d7 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts

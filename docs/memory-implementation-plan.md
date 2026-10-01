@@ -218,3 +218,11 @@ The native module delegates four exact read views to the authenticated owner end
 The [relay evidence](verification/2026-10-01-memory-pulse-relay/README.md) records failing regressions, corrected results, and source preparation. A real Chromium session uses the existing Hermes sign-in form, reads four native views across localhost ports, rejects cross-origin reads, and loses access after logout. This proves the root cookie path on localhost. It does not prove the full native UI, graph/wiki readers, Secure LAN deployment, or prefixed browser cookies. The ownership transaction must create the private relay configuration and managed marker.
 
 Continue with the native source and derived-reader inventory, then managed restore and staged publication. Ownership remains disabled on running installations.
+
+## Governed alternate Cortex corpus
+
+A live synthetic probe reproduces an unbound native canonical read. The corrected reader authorizes the caller and root before collection, verifies current registered facts, and delegates canonical parsing to Cortex. Current projections exclude retained retired sections without rewriting native files. Native fixed metadata keys and type directories remain operational values. Dynamic metadata still receives retirement filtering.
+
+All 16 focused native cases pass without skips. The [inventory evidence](verification/2026-10-01-memory-consumer-inventory/README.md) preserves failed hypotheses, controls, passing results, source identity, and limits. The canonical transport limit is 3 MiB, below the native whole-corpus maximum. Unregistered notes require adoption. This unit adds Cortex to the existing LifeOS memory patch, for 19 native files, and adds no Hermes patch group. The complete consumer inventory, derived readers, managed restore, staged publication, restricted prompts, lifecycle, ownership, and release gate remain open.
+
+The preceding relay regression passes 351 cases in 399.814 seconds without skips, failures, or errors. Its raw output and completion marker are stored with the relay evidence. This regression predates the canonical corpus unit.

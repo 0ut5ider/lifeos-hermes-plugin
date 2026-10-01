@@ -1,0 +1,39 @@
+test_changed_binding_revokes_native_canonical_reads (test_memory_canonical.MemoryCanonicalTests.test_changed_binding_revokes_native_canonical_reads) ... ok
+test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section) ... FAIL
+test_missing_caller_context_cannot_read_managed_canonical_records (test_memory_canonical.MemoryCanonicalTests.test_missing_caller_context_cannot_read_managed_canonical_records) ... ok
+test_native_root_option_does_not_grant_foreign_source_authority (test_memory_canonical.MemoryCanonicalTests.test_native_root_option_does_not_grant_foreign_source_authority) ... ok
+test_owner_preserves_native_canonical_identity_and_content (test_memory_canonical.MemoryCanonicalTests.test_owner_preserves_native_canonical_identity_and_content) ... FAIL
+test_unmanaged_control_retains_native_read_behavior (test_memory_canonical.MemoryCanonicalTests.test_unmanaged_control_retains_native_read_behavior) ... ok
+test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted) ... FAIL
+
+======================================================================
+FAIL: test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 56, in test_correction_exports_current_fact_without_retired_native_section
+    self.assertTrue(result['result']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'status': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'search', 'data': None, 'error': {'code': 'integrity_error', 'message': 'The governed canonical corpus is unavailable'}}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+======================================================================
+FAIL: test_owner_preserves_native_canonical_identity_and_content (test_memory_canonical.MemoryCanonicalTests.test_owner_preserves_native_canonical_identity_and_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 45, in test_owner_preserves_native_canonical_identity_and_content
+    self.assertTrue(result['result']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'status': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'search', 'data': None, 'error': {'code': 'integrity_error', 'message': 'The governed canonical corpus is unavailable'}}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+======================================================================
+FAIL: test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 65, in test_unregistered_native_fact_is_not_silently_admitted
+    self.assertTrue(result['status']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'status': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'search', 'data': None, 'error': {'code': 'integrity_error', 'message': 'The governed canonical corpus is unavailable'}}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+----------------------------------------------------------------------
+Ran 7 tests in 4.383s
+
+FAILED (failures=3)

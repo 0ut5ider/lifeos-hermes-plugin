@@ -187,6 +187,9 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'canonical_corpus' and set(arguments) == {'root'}:
+                from .memory_canonical import corpus
+                return corpus(memory,scope,arguments['root'])
             if operation == "check_sources" and not arguments:
                 from .memory_sources import authorize
                 return authorize(scope)
