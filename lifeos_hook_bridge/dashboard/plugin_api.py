@@ -139,14 +139,14 @@ def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], reque
     if request.query_params:
         return JSONResponse({'error': 'Memory views use the installed owner configuration'}, status_code=400, headers=headers)
     try:
-        result = _memory_preferences().pulse_snapshot(view, account=account)
+        result, binding = _memory_preferences().pulse_response(view, account=account)
     except PermissionError:
         return JSONResponse({'error': 'This dashboard account has no installation owner binding'},
                             status_code=403, headers=headers)
     except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
         return JSONResponse({'error': 'Memory is unavailable under the current installation policy'},
                             status_code=503, headers=headers)
-    return JSONResponse(result, headers=headers)
+    return JSONResponse(result, headers={**headers,'X-LifeOS-Memory-Installation':binding})
 
 
 @router.post('/memory/review')

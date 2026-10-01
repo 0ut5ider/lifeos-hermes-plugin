@@ -1,0 +1,49 @@
+test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) ... ok
+test_cross_origin_read_and_unavailable_configuration_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_cross_origin_read_and_unavailable_configuration_refuse) ... ok
+test_invalid_bearer_does_not_borrow_valid_cookies_and_logout_stops_reads (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_bearer_does_not_borrow_valid_cookies_and_logout_stops_reads) ... ok
+test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) ... 
+  test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) (view=[]) ... ERROR
+  test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) (view={}) ... ERROR
+test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) ... ERROR
+test_missing_connector_stays_managed_and_never_reads_raw_memory (test_memory_pulse_relay.MemoryPulseRelayTests.test_missing_connector_stays_managed_and_never_reads_raw_memory) ... ok
+test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) ... ok
+test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) ... ok
+
+======================================================================
+ERROR: test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) (view=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 146, in test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes
+    result=relay(self.fixture.configuration,{'view':view,'authorization':'','cookie':''})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_http.py", line 45, in relay
+    if set(arguments)!={'view','authorization','cookie'} or arguments['view'] not in VIEWS:
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot use 'list' as a set element (unhashable type: 'list')
+
+======================================================================
+ERROR: test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes) (view={})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 146, in test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes
+    result=relay(self.fixture.configuration,{'view':view,'authorization':'','cookie':''})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_http.py", line 45, in relay
+    if set(arguments)!={'view','authorization','cookie'} or arguments['view'] not in VIEWS:
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+
+======================================================================
+ERROR: test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes (test_memory_pulse_relay.MemoryPulseRelayTests.test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 149, in test_invalid_view_and_missing_configuration_return_sanitized_http_envelopes
+    result=relay(self.fixture.configuration,{'view':'state','authorization':'Bearer synthetic','cookie':''})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_http.py", line 64, in relay
+    config=configuration.load()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 137, in load
+    raise MemoryUnavailable("Memory setup is unavailable")
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Memory setup is unavailable
+
+----------------------------------------------------------------------
+Ran 7 tests in 9.155s
+
+FAILED (errors=3)

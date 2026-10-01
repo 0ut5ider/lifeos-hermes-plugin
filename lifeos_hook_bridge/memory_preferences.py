@@ -72,9 +72,14 @@ class MemoryPreferences:
         return MemoryService(self.configuration)._call(config, self._owner_scope(config), name, arguments)
 
     def pulse_snapshot(self, view: str, *, account: str | None = None):
+        return self.pulse_response(view,account=account)[0]
+
+    def pulse_response(self, view: str, *, account: str | None = None):
         from .memory_pulse import snapshot
+        from .memory_http import installation_binding
         config = self._configuration(account=account)
-        return snapshot(NativeMemory(self.root), self._owner_scope(config), view)
+        return (snapshot(NativeMemory(self.root), self._owner_scope(config), view),
+                installation_binding(config,self.configuration.path))
 
     def preview_adoption(self, *, account: str | None = None) -> dict[str, Any]:
         config = self._configuration(account=account)

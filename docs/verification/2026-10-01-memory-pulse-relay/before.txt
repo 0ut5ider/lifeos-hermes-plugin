@@ -1,0 +1,287 @@
+test_account_binding_and_principal_are_rechecked_on_same_connection (test_memory_pulse_auth.MemoryPulseAuthTests.test_account_binding_and_principal_are_rechecked_on_same_connection) ... ok
+test_anonymous_or_fabricated_identity_never_admits_owner (test_memory_pulse_auth.MemoryPulseAuthTests.test_anonymous_or_fabricated_identity_never_admits_owner) ... ok
+test_bad_bearer_does_not_fall_back_to_valid_cookie (test_memory_pulse_auth.MemoryPulseAuthTests.test_bad_bearer_does_not_fall_back_to_valid_cookie) ... ok
+test_browser_logout_removes_cookie_authority (test_memory_pulse_auth.MemoryPulseAuthTests.test_browser_logout_removes_cookie_authority) ... ok
+test_changed_installation_binding_refuses_private_snapshot (test_memory_pulse_auth.MemoryPulseAuthTests.test_changed_installation_binding_refuses_private_snapshot) ... ok
+test_corrupt_registry_returns_sanitized_unavailable_response (test_memory_pulse_auth.MemoryPulseAuthTests.test_corrupt_registry_returns_sanitized_unavailable_response) ... ok
+test_disabled_host_gate_does_not_mint_an_owner_scope (test_memory_pulse_auth.MemoryPulseAuthTests.test_disabled_host_gate_does_not_mint_an_owner_scope) ... ok
+test_distinct_authenticated_account_without_binding_cannot_read_or_change_memory (test_memory_pulse_auth.MemoryPulseAuthTests.test_distinct_authenticated_account_without_binding_cannot_read_or_change_memory) ... ok
+test_every_memory_route_rechecks_revoked_account_binding (test_memory_pulse_auth.MemoryPulseAuthTests.test_every_memory_route_rechecks_revoked_account_binding) ... ok
+test_every_memory_route_requires_a_verified_session_when_host_gate_is_disabled (test_memory_pulse_auth.MemoryPulseAuthTests.test_every_memory_route_requires_a_verified_session_when_host_gate_is_disabled) ... ok
+test_host_and_framework_denials_always_disable_response_storage (test_memory_pulse_auth.MemoryPulseAuthTests.test_host_and_framework_denials_always_disable_response_storage) ... ok
+test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) ... ok
+test_private_response_headers_leave_unrelated_routes_unchanged (test_memory_pulse_auth.MemoryPulseAuthTests.test_private_response_headers_leave_unrelated_routes_unchanged) ... ok
+test_read_only_routes_ignore_no_caller_scope_or_source_arguments (test_memory_pulse_auth.MemoryPulseAuthTests.test_read_only_routes_ignore_no_caller_scope_or_source_arguments) ... ok
+test_revoked_owner_cannot_forget_a_native_fact (test_memory_pulse_auth.MemoryPulseAuthTests.test_revoked_owner_cannot_forget_a_native_fact) ... ok
+test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) ... 
+  test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='') ... FAIL
+  test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='/state') ... FAIL
+  test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='/health') ... FAIL
+  test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='/runs') ... FAIL
+test_missing_connector_stays_managed_and_never_reads_raw_memory (test_memory_pulse_relay.MemoryPulseRelayTests.test_missing_connector_stays_managed_and_never_reads_raw_memory) ... FAIL
+test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) ... 
+  test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) (method='POST', path='/api/memory') ... FAIL
+  test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) (method='GET', path='/api/memory?owner=other') ... FAIL
+  test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) (method='GET', path='/api/memory/graph') ... FAIL
+test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) ... 
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='') ... FAIL
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/state') ... FAIL
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/health') ... FAIL
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/runs') ... FAIL
+test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) ... FAIL
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 76, in test_ambient_owner_and_internal_flags_cannot_authorize_native_http
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {
+  "ts": "2026-10-01T14:53:22.757Z",
+  "derivedState": "cold",
+  "cadenceConfig": {
+    "turn_threshold": 8,
+    "min_minutes_between": 30,
+    "idle_threshold": 2,
+    "confidence_threshold": 0.7
+  },
+  "reviewState": {
+    "turn_count_since_last_review": 0,
+    "last_review_at": null,
+    "last_message_at": null,
+    "pending_review": false
+  },
+  "health": null,
+  "lastFireCount": 0,
+  "recentFires": [],
+  "pendingProposals": 0,
+  "autoAppliedProposals": 0,
+  "proposalsRecent": [],
+  "principalMemory": {
+    "entries": [
+      "RULE: Synthetic authenticated PULSE fact"
+    ],
+    "count": 1,
+    "charsUsed": 40
+  },
+  "daMemory": {
+    "entries": [],
+    "count": 0,
+    "charsUsed": 0
+  },
+  "recentRuns": []
+}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='/state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 76, in test_ambient_owner_and_internal_flags_cannot_authorize_native_http
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : {}
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 76, in test_ambient_owner_and_internal_flags_cannot_authorize_native_http
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : null
+
+======================================================================
+FAIL: test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) (path='/runs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 76, in test_ambient_owner_and_internal_flags_cannot_authorize_native_http
+    self.assertEqual(response.status_code,401,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 401 : []
+
+======================================================================
+FAIL: test_missing_connector_stays_managed_and_never_reads_raw_memory (test_memory_pulse_relay.MemoryPulseRelayTests.test_missing_connector_stays_managed_and_never_reads_raw_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 104, in test_missing_connector_stays_managed_and_never_reads_raw_memory
+    self.assertEqual(response.status_code,503,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503 : {
+  "ts": "2026-10-01T14:53:23.742Z",
+  "derivedState": "cold",
+  "cadenceConfig": {
+    "turn_threshold": 8,
+    "min_minutes_between": 30,
+    "idle_threshold": 2,
+    "confidence_threshold": 0.7
+  },
+  "reviewState": {
+    "turn_count_since_last_review": 0,
+    "last_review_at": null,
+    "last_message_at": null,
+    "pending_review": false
+  },
+  "health": null,
+  "lastFireCount": 0,
+  "recentFires": [],
+  "pendingProposals": 0,
+  "autoAppliedProposals": 0,
+  "proposalsRecent": [],
+  "principalMemory": {
+    "entries": [
+      "RULE: Synthetic authenticated PULSE fact"
+    ],
+    "count": 1,
+    "charsUsed": 40
+  },
+  "daMemory": {
+    "entries": [],
+    "count": 0,
+    "charsUsed": 0
+  },
+  "recentRuns": []
+}
+
+======================================================================
+FAIL: test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) (method='POST', path='/api/memory')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 114, in test_nonread_query_and_unsupported_native_memory_routes_refuse
+    self.assertEqual(response.status_code,status,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405 : not found
+
+======================================================================
+FAIL: test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) (method='GET', path='/api/memory?owner=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 114, in test_nonread_query_and_unsupported_native_memory_routes_refuse
+    self.assertEqual(response.status_code,status,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 400 : {
+  "ts": "2026-10-01T14:53:24.694Z",
+  "derivedState": "cold",
+  "cadenceConfig": {
+    "turn_threshold": 8,
+    "min_minutes_between": 30,
+    "idle_threshold": 2,
+    "confidence_threshold": 0.7
+  },
+  "reviewState": {
+    "turn_count_since_last_review": 0,
+    "last_review_at": null,
+    "last_message_at": null,
+    "pending_review": false
+  },
+  "health": null,
+  "lastFireCount": 0,
+  "recentFires": [],
+  "pendingProposals": 0,
+  "autoAppliedProposals": 0,
+  "proposalsRecent": [],
+  "principalMemory": {
+    "entries": [
+      "RULE: Synthetic authenticated PULSE fact"
+    ],
+    "count": 1,
+    "charsUsed": 40
+  },
+  "daMemory": {
+    "entries": [],
+    "count": 0,
+    "charsUsed": 0
+  },
+  "recentRuns": []
+}
+
+======================================================================
+FAIL: test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) (method='GET', path='/api/memory/graph')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 115, in test_nonread_query_and_unsupported_native_memory_routes_refuse
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 87, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 87, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 87, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/runs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 87, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.headers.get('cache-control'),'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 97, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.status_code,403,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {
+  "ts": "2026-10-01T14:53:26.126Z",
+  "derivedState": "cold",
+  "cadenceConfig": {
+    "turn_threshold": 8,
+    "min_minutes_between": 30,
+    "idle_threshold": 2,
+    "confidence_threshold": 0.7
+  },
+  "reviewState": {
+    "turn_count_since_last_review": 0,
+    "last_review_at": null,
+    "last_message_at": null,
+    "pending_review": false
+  },
+  "health": null,
+  "lastFireCount": 0,
+  "recentFires": [],
+  "pendingProposals": 0,
+  "autoAppliedProposals": 0,
+  "proposalsRecent": [],
+  "principalMemory": {
+    "entries": [],
+    "count": 0,
+    "charsUsed": 0
+  },
+  "daMemory": {
+    "entries": [],
+    "count": 0,
+    "charsUsed": 0
+  },
+  "recentRuns": []
+}
+
+----------------------------------------------------------------------
+Ran 19 tests in 16.582s
+
+FAILED (failures=13)

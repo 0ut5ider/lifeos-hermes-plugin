@@ -27,16 +27,11 @@ async function main(): Promise<void> {
   }
   let result: unknown;
   if (input.action === "pulse_snapshot") {
-    const paths = new Map([["snapshot", "/api/memory"], ["state", "/api/memory/state"],
-                           ["health", "/api/memory/health"], ["runs", "/api/memory/runs"]]);
-    const route = typeof input.view === "string" ? paths.get(input.view) : undefined;
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/memory.ts")).href);
-    if (!route || !object(module) || typeof module.handleRequest !== "function") {
+    if (typeof input.view !== "string" || !object(module) || typeof module.readMemoryView !== "function") {
       throw new Error("The native PULSE snapshot is unavailable");
     }
-    const response: unknown = await module.handleRequest(new Request("http://localhost" + route), route);
-    if (!(response instanceof Response) || response.status !== 200) throw new Error("The native PULSE snapshot failed");
-    result = {snapshot: await response.json()};
+    result = {snapshot: module.readMemoryView(input.view)};
   } else if (input.action === "discover") {
     const retriever: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryRetriever.ts")).href);
     if (!object(retriever) || typeof retriever.discoverAllItems !== "function") throw new Error("Native memory discovery is unavailable");

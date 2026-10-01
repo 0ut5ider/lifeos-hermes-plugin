@@ -1,0 +1,59 @@
+test_ambient_owner_and_internal_flags_cannot_authorize_native_http (test_memory_pulse_relay.MemoryPulseRelayTests.test_ambient_owner_and_internal_flags_cannot_authorize_native_http) ... ok
+test_missing_connector_stays_managed_and_never_reads_raw_memory (test_memory_pulse_relay.MemoryPulseRelayTests.test_missing_connector_stays_managed_and_never_reads_raw_memory) ... ok
+test_nonread_query_and_unsupported_native_memory_routes_refuse (test_memory_pulse_relay.MemoryPulseRelayTests.test_nonread_query_and_unsupported_native_memory_routes_refuse) ... ok
+test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) ... 
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='') ... FAIL
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/state') ... FAIL
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/health') ... FAIL
+  test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/runs') ... FAIL
+test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) ... ERROR
+
+======================================================================
+ERROR: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 94, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(snapshot['principalMemory']['entries'],['RULE: Synthetic authenticated PULSE fact'])
+                     ~~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'principalMemory'
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 90, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.status_code,200,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 90, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.status_code,200,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 90, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.status_code,200,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+======================================================================
+FAIL: test_request_cookies_preserve_governed_owner_views_and_current_revocation (test_memory_pulse_relay.MemoryPulseRelayTests.test_request_cookies_preserve_governed_owner_views_and_current_revocation) (path='/runs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_relay.py", line 90, in test_request_cookies_preserve_governed_owner_views_and_current_revocation
+    self.assertEqual(response.status_code,200,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 4 tests in 2.585s
+
+FAILED (failures=4, errors=1)

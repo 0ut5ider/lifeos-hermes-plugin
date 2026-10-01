@@ -210,3 +210,11 @@ Date: 2026-10-01. Adrian asks to document existing-user import and resume the ou
 5. Implement recoverable fresh ownership setup and run the full release gate. Verify supported installation/update/backup/restore/rollback paths before enabling ownership in a disposable acceptance installation.
 
 Work uses owned prepared sources and synthetic profiles. Working `.211` and `.213` servers remain unchanged. No live memory import, ownership activation, or deployment follows from documenting the deferred migration.
+
+## Managed native PULSE relay
+
+The native module delegates four exact read views to the authenticated owner endpoint. Successful responses bind the configured Hermes profile, LifeOS root, and principal. Incoming request credentials supply authentication. Internal agent flags do not grant HTTP authority. Missing connectors, invalid configuration, stopped endpoints, redirects, malformed responses, and wrong installation responses refuse without native fallback. A persistent managed marker preserves this behavior across connector loss and restart.
+
+The [relay evidence](verification/2026-10-01-memory-pulse-relay/README.md) records failing regressions, corrected results, and source preparation. A real Chromium session uses the existing Hermes sign-in form, reads four native views across localhost ports, rejects cross-origin reads, and loses access after logout. This proves the root cookie path on localhost. It does not prove the full native UI, graph/wiki readers, Secure LAN deployment, or prefixed browser cookies. The ownership transaction must create the private relay configuration and managed marker.
+
+Continue with the native source and derived-reader inventory, then managed restore and staged publication. Ownership remains disabled on running installations.

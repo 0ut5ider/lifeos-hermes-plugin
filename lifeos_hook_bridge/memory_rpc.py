@@ -41,8 +41,12 @@ def main() -> None:
         operation = request["operation"]
         if operation != 'filter_diagnostic' and len(wire) > REQUEST_LIMIT:
             raise ValueError('The native memory request exceeds the input limit')
-        context = parse_context(json.loads(os.environ.get("LIFEOS_MEMORY_CONTEXT", "{}")))
-        result = MemoryService(MemoryConfiguration(options.configuration)).native(context, request["operation"], request["arguments"])
+        if operation == 'pulse_http':
+            http = importlib.import_module((__package__ or 'lifeos_memory_plugin') + '.memory_http')
+            result = http.relay(MemoryConfiguration(options.configuration), request['arguments'])
+        else:
+            context = parse_context(json.loads(os.environ.get("LIFEOS_MEMORY_CONTEXT", "{}")))
+            result = MemoryService(MemoryConfiguration(options.configuration)).native(context, request["operation"], request["arguments"])
     except (ValueError, OSError) as error:
         result = ({"results": [], "markdownBlock": "", "totalSearched": 0, "cached": False, "unavailable": str(error)}
                   if operation == "retrieve" else {"ok": False, "code": "EINVAL_PATH" if operation == "read" else "EWRITE_FAILED", "message": str(error)})
