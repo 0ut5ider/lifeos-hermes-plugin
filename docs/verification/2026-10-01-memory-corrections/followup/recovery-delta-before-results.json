@@ -1,0 +1,96 @@
+[
+  {
+    "interrupted": false,
+    "exit": null,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed recovery control",
+        "RULE: Synthetic aborted recovery candidate"
+      ],
+      "count": 2,
+      "chars_used": 84,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "fd5cae172c4f4c6e9925bff62851de0645ffebce7642467152595e6570527ace"
+    },
+    "ordinary_recall": [
+      {
+        "reference": {
+          "id": "361b4014ea6b451aa3129daf60aac032",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic aborted recovery candidate",
+        "category": "principal",
+        "project": "",
+        "writer": "local:owner",
+        "status": "active",
+        "source": {
+          "kind": "explicit",
+          "session": "",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 1
+      },
+      {
+        "reference": {
+          "id": "a5ae80cf1c004bc6af3ad510558da4da",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic committed recovery control",
+        "category": "principal",
+        "project": "",
+        "writer": "local:owner",
+        "status": "active",
+        "source": {
+          "kind": "explicit",
+          "session": "",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 1
+      }
+    ],
+    "log": "{\"ts\":\"2026-10-01T12:35:28.306Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed recovery control\"]}\n{\"ts\":\"2026-10-01T12:35:28.966Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic aborted recovery candidate\"]}\n",
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [2/48 entries \u00b7 84/12288 chars]\nRULE: Synthetic committed recovery control\nRULE: Synthetic aborted recovery candidate\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +2 learned \u2014 \"principal: RULE: Synthetic committed recovery control\", \"principal: RULE: Synthetic aborted recovery candidate\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "aborted_marker_in_current": true,
+    "aborted_marker_in_output": true
+  },
+  {
+    "interrupted": true,
+    "exit": 73,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed recovery control"
+      ],
+      "count": 1,
+      "chars_used": 42,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "6cda0dc9e61be368812d731646a792bf7ade9a5daa9b64145633db744c03f6ec"
+    },
+    "ordinary_recall": [
+      {
+        "reference": {
+          "id": "91f65fddc6944198b3571d570ba2b373",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic committed recovery control",
+        "category": "principal",
+        "project": "",
+        "writer": "local:owner",
+        "status": "active",
+        "source": {
+          "kind": "explicit",
+          "session": "",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 1
+      }
+    ],
+    "log": "{\"ts\":\"2026-10-01T12:35:30.645Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed recovery control\"]}\n{\"ts\":\"2026-10-01T12:35:31.329Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic aborted recovery candidate\"]}\n",
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 42/12288 chars]\nRULE: Synthetic committed recovery control\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +2 learned \u2014 \"principal: RULE: Synthetic committed recovery control\", \"principal: RULE: Synthetic aborted recovery candidate\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "aborted_marker_in_current": false,
+    "aborted_marker_in_output": true
+  }
+]

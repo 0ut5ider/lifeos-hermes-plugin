@@ -1,0 +1,239 @@
+{
+  "source_head": "040079496cb227cf3dabfc701524eed856170af7",
+  "seconds": 1.1062423879629932,
+  "counts": {
+    "read/read_hot": 2,
+    "read_source/validate_batch": 1,
+    "read_source/read_hot": 2,
+    "retrieve/read_hot": 2,
+    "retrieve/rank": 1
+  },
+  "read_hot_seconds": 0.4103663260466419,
+  "calls": [
+    {
+      "operation": "read",
+      "action": "read_hot",
+      "seconds": 0.0639242859906517,
+      "path": "/tmp/native-memory-0c_o5gpm/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 242,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read_hot",
+          "line": 403,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 390,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "read",
+      "action": "read_hot",
+      "seconds": 0.07165126601466909,
+      "path": "/tmp/native-memory-0c_o5gpm/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 242,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read_hot",
+          "line": 403,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 390,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "read_source",
+      "action": "validate_batch",
+      "seconds": 0.06569549301639199,
+      "path": null,
+      "callers": [
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 201,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read",
+          "line": 150,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_read_log",
+          "line": 110,
+          "file": "memory_sources.py"
+        }
+      ]
+    },
+    {
+      "operation": "read_source",
+      "action": "read_hot",
+      "seconds": 0.06628917902708054,
+      "path": "/tmp/native-memory-0c_o5gpm/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 201,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read",
+          "line": 150,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_read_log",
+          "line": 128,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 390,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "read_source",
+      "action": "read_hot",
+      "seconds": 0.06799255701480433,
+      "path": "/tmp/native-memory-0c_o5gpm/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 201,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read",
+          "line": 150,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_read_log",
+          "line": 128,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 390,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0768196220160462,
+      "path": "/tmp/native-memory-0c_o5gpm/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 650,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 626,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 194,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06368941598339006,
+      "path": "/tmp/native-memory-0c_o5gpm/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 650,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 626,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 194,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "rank",
+      "seconds": 0.06704335199901834,
+      "path": null,
+      "callers": [
+        {
+          "function": "<module>",
+          "line": 30,
+          "file": "instrument_native_rpc.py"
+        },
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 651,
+          "file": "memory_access.py"
+        }
+      ]
+    }
+  ],
+  "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [48/48 entries \u00b7 2198/12288 chars]\nRULE: Synthetic instrumented principal fact 0\nRULE: Synthetic instrumented principal fact 1\nRULE: Synthetic instrumented principal fact 2\nRULE: Synthetic instrumented principal fact 3\nRULE: Synthetic instrumented principal fact 4\nRULE: Synthetic instrumented principal fact 5\nRULE: Synthetic instrumented principal fact 6\nRULE: Synthetic instrumented principal fact 7\nRULE: Synthetic instrumented principal fact 8\nRULE: Synthetic instrumented principal fact 9\nRULE: Synthetic instrumented principal fact 10\nRULE: Synthetic instrumented principal fact 11\nRULE: Synthetic instrumented principal fact 12\nRULE: Synthetic instrumented principal fact 13\nRULE: Synthetic instrumented principal fact 14\nRULE: Synthetic instrumented principal fact 15\nRULE: Synthetic instrumented principal fact 16\nRULE: Synthetic instrumented principal fact 17\nRULE: Synthetic instrumented principal fact 18\nRULE: Synthetic instrumented principal fact 19\nRULE: Synthetic instrumented principal fact 20\nRULE: Synthetic instrumented principal fact 21\nRULE: Synthetic instrumented principal fact 22\nRULE: Synthetic instrumented principal fact 23\nRULE: Synthetic instrumented principal fact 24\nRULE: Synthetic instrumented principal fact 25\nRULE: Synthetic instrumented principal fact 26\nRULE: Synthetic instrumented principal fact 27\nRULE: Synthetic instrumented principal fact 28\nRULE: Synthetic instrumented principal fact 29\nRULE: Synthetic instrumented principal fact 30\nRULE: Synthetic instrumented principal fact 31\nRULE: Synthetic instrumented principal fact 32\nRULE: Synthetic instrumented principal fact 33\nRULE: Synthetic instrumented principal fact 34\nRULE: Synthetic instrumented principal fact 35\nRULE: Synthetic instrumented principal fact 36\nRULE: Synthetic instrumented principal fact 37\nRULE: Synthetic instrumented principal fact 38\nRULE: Synthetic instrumented principal fact 39\nRULE: Synthetic instrumented principal fact 40\nRULE: Synthetic instrumented principal fact 41\nRULE: Synthetic instrumented principal fact 42\nRULE: Synthetic instrumented principal fact 43\nRULE: Synthetic instrumented principal fact 44\nRULE: Synthetic instrumented principal fact 45\nRULE: Synthetic instrumented principal fact 46\nRULE: Synthetic instrumented principal fact 47\n\n## DA MEMORY [48/48 entries \u00b7 2198/12288 chars]\nRULE: Synthetic instrumented assistant fact 0\nRULE: Synthetic instrumented assistant fact 1\nRULE: Synthetic instrumented assistant fact 2\nRULE: Synthetic instrumented assistant fact 3\nRULE: Synthetic instrumented assistant fact 4\nRULE: Synthetic instrumented assistant fact 5\nRULE: Synthetic instrumented assistant fact 6\nRULE: Synthetic instrumented assistant fact 7\nRULE: Synthetic instrumented assistant fact 8\nRULE: Synthetic instrumented assistant fact 9\nRULE: Synthetic instrumented assistant fact 10\nRULE: Synthetic instrumented assistant fact 11\nRULE: Synthetic instrumented assistant fact 12\nRULE: Synthetic instrumented assistant fact 13\nRULE: Synthetic instrumented assistant fact 14\nRULE: Synthetic instrumented assistant fact 15\nRULE: Synthetic instrumented assistant fact 16\nRULE: Synthetic instrumented assistant fact 17\nRULE: Synthetic instrumented assistant fact 18\nRULE: Synthetic instrumented assistant fact 19\nRULE: Synthetic instrumented assistant fact 20\nRULE: Synthetic instrumented assistant fact 21\nRULE: Synthetic instrumented assistant fact 22\nRULE: Synthetic instrumented assistant fact 23\nRULE: Synthetic instrumented assistant fact 24\nRULE: Synthetic instrumented assistant fact 25\nRULE: Synthetic instrumented assistant fact 26\nRULE: Synthetic instrumented assistant fact 27\nRULE: Synthetic instrumented assistant fact 28\nRULE: Synthetic instrumented assistant fact 29\nRULE: Synthetic instrumented assistant fact 30\nRULE: Synthetic instrumented assistant fact 31\nRULE: Synthetic instrumented assistant fact 32\nRULE: Synthetic instrumented assistant fact 33\nRULE: Synthetic instrumented assistant fact 34\nRULE: Synthetic instrumented assistant fact 35\nRULE: Synthetic instrumented assistant fact 36\nRULE: Synthetic instrumented assistant fact 37\nRULE: Synthetic instrumented assistant fact 38\nRULE: Synthetic instrumented assistant fact 39\nRULE: Synthetic instrumented assistant fact 40\nRULE: Synthetic instrumented assistant fact 41\nRULE: Synthetic instrumented assistant fact 42\nRULE: Synthetic instrumented assistant fact 43\nRULE: Synthetic instrumented assistant fact 44\nRULE: Synthetic instrumented assistant fact 45\nRULE: Synthetic instrumented assistant fact 46\nRULE: Synthetic instrumented assistant fact 47\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +96 learned \u2014 \"principal: RULE: Synthetic instrumented principal fact 0\", \"principal: RULE: Synthetic instrumented principal fact 1\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n"
+}

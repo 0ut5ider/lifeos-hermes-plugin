@@ -1,0 +1,2871 @@
+{
+  "source_head": "0913b3044816968199eeb753a722f07ebca4a20d",
+  "seconds": 7.210093218018301,
+  "counts": {
+    "read/read_hot": 2,
+    "read_source/validate_batch": 1,
+    "read_source/read_hot": 2,
+    "retrieve/read_hot": 96,
+    "retrieve/rank": 1
+  },
+  "read_hot_seconds": 6.459867649944499,
+  "calls": [
+    {
+      "operation": "read",
+      "action": "read_hot",
+      "seconds": 0.0697728319792077,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 242,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read_hot",
+          "line": 398,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 385,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "read",
+      "action": "read_hot",
+      "seconds": 0.06862010498298332,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 242,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read_hot",
+          "line": 398,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 385,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "read_source",
+      "action": "validate_batch",
+      "seconds": 0.0654380889609456,
+      "path": null,
+      "callers": [
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 201,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read",
+          "line": 150,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_read_log",
+          "line": 110,
+          "file": "memory_sources.py"
+        }
+      ]
+    },
+    {
+      "operation": "read_source",
+      "action": "read_hot",
+      "seconds": 0.06336400203872472,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 201,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read",
+          "line": 150,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_read_log",
+          "line": 128,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 385,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "read_source",
+      "action": "read_hot",
+      "seconds": 0.06410260498523712,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 201,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "read",
+          "line": 150,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_read_log",
+          "line": 128,
+          "file": "memory_sources.py"
+        },
+        {
+          "function": "_hot_snapshot",
+          "line": 385,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06879888899857178,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06692255800589919,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06729230604832992,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06454461999237537,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06734791200142354,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0644257829990238,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06514272402273491,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06479070096975192,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06631225196179003,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06372027297038585,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06361260800622404,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0648775480221957,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.061580720997881144,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0638192140031606,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06103903497569263,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06440010300138965,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06534495099913329,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06356855301419273,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06163805100368336,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06542465300299227,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06373807700583711,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06548384902998805,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06239536899374798,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06341980898287147,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.064562733983621,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06362945900764316,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06165105599211529,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06260203500278294,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06401933502638713,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06169466796563938,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06335449399193749,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06109825900057331,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06190340901957825,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06547333701746538,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06568733701715246,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06599167798412964,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06286938599077985,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06518803094513714,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06499236699892208,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06441956100752577,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06306976801715791,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0633111210190691,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.08336426800815389,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06711989600444213,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06525284599047154,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06586482597049326,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06209426297573373,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06744359596632421,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06499818799784407,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06414791202405468,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06260815600398928,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06465793697861955,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06774688500445336,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06344309297855943,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06285801401827484,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0625659259967506,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06404904299415648,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06172684003831819,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0609535209950991,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06393692799611017,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06231142801698297,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06406220700591803,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06669412198243663,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0657444050302729,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06505981599912047,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.061310934950597584,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06216050998773426,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06314653600566089,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06564861198421568,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06672408897429705,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.07022849202621728,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06460107798920944,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06382073601707816,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06309365498600528,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0652597289881669,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06448504695435986,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0632566370186396,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0657924980041571,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06501835701055825,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06241986597888172,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06272375804837793,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0662690990138799,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06426535604987293,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06728523300262168,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0644747270271182,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06550839397823438,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0649198479950428,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06586064799921587,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06234591401880607,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06567544396966696,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06357712997123599,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06397123396163806,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.0631245449767448,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06452759902458638,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06379527703393251,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "read_hot",
+      "seconds": 0.06485441303811967,
+      "path": "/tmp/native-memory-kbx11ing/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+      "callers": [
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 643,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_corpus",
+          "line": 619,
+          "file": "memory_access.py"
+        },
+        {
+          "function": "_content",
+          "line": 190,
+          "file": "memory_access.py"
+        }
+      ]
+    },
+    {
+      "operation": "retrieve",
+      "action": "rank",
+      "seconds": 0.06408714700955898,
+      "path": null,
+      "callers": [
+        {
+          "function": "<module>",
+          "line": 31,
+          "file": "instrument_native_rpc.py"
+        },
+        {
+          "function": "main",
+          "line": 45,
+          "file": "memory_rpc.py"
+        },
+        {
+          "function": "native",
+          "line": 231,
+          "file": "memory_service.py"
+        },
+        {
+          "function": "relevant_context",
+          "line": 644,
+          "file": "memory_access.py"
+        }
+      ]
+    }
+  ],
+  "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [48/48 entries \u00b7 2198/12288 chars]\nRULE: Synthetic instrumented principal fact 0\nRULE: Synthetic instrumented principal fact 1\nRULE: Synthetic instrumented principal fact 2\nRULE: Synthetic instrumented principal fact 3\nRULE: Synthetic instrumented principal fact 4\nRULE: Synthetic instrumented principal fact 5\nRULE: Synthetic instrumented principal fact 6\nRULE: Synthetic instrumented principal fact 7\nRULE: Synthetic instrumented principal fact 8\nRULE: Synthetic instrumented principal fact 9\nRULE: Synthetic instrumented principal fact 10\nRULE: Synthetic instrumented principal fact 11\nRULE: Synthetic instrumented principal fact 12\nRULE: Synthetic instrumented principal fact 13\nRULE: Synthetic instrumented principal fact 14\nRULE: Synthetic instrumented principal fact 15\nRULE: Synthetic instrumented principal fact 16\nRULE: Synthetic instrumented principal fact 17\nRULE: Synthetic instrumented principal fact 18\nRULE: Synthetic instrumented principal fact 19\nRULE: Synthetic instrumented principal fact 20\nRULE: Synthetic instrumented principal fact 21\nRULE: Synthetic instrumented principal fact 22\nRULE: Synthetic instrumented principal fact 23\nRULE: Synthetic instrumented principal fact 24\nRULE: Synthetic instrumented principal fact 25\nRULE: Synthetic instrumented principal fact 26\nRULE: Synthetic instrumented principal fact 27\nRULE: Synthetic instrumented principal fact 28\nRULE: Synthetic instrumented principal fact 29\nRULE: Synthetic instrumented principal fact 30\nRULE: Synthetic instrumented principal fact 31\nRULE: Synthetic instrumented principal fact 32\nRULE: Synthetic instrumented principal fact 33\nRULE: Synthetic instrumented principal fact 34\nRULE: Synthetic instrumented principal fact 35\nRULE: Synthetic instrumented principal fact 36\nRULE: Synthetic instrumented principal fact 37\nRULE: Synthetic instrumented principal fact 38\nRULE: Synthetic instrumented principal fact 39\nRULE: Synthetic instrumented principal fact 40\nRULE: Synthetic instrumented principal fact 41\nRULE: Synthetic instrumented principal fact 42\nRULE: Synthetic instrumented principal fact 43\nRULE: Synthetic instrumented principal fact 44\nRULE: Synthetic instrumented principal fact 45\nRULE: Synthetic instrumented principal fact 46\nRULE: Synthetic instrumented principal fact 47\n\n## DA MEMORY [48/48 entries \u00b7 2198/12288 chars]\nRULE: Synthetic instrumented assistant fact 0\nRULE: Synthetic instrumented assistant fact 1\nRULE: Synthetic instrumented assistant fact 2\nRULE: Synthetic instrumented assistant fact 3\nRULE: Synthetic instrumented assistant fact 4\nRULE: Synthetic instrumented assistant fact 5\nRULE: Synthetic instrumented assistant fact 6\nRULE: Synthetic instrumented assistant fact 7\nRULE: Synthetic instrumented assistant fact 8\nRULE: Synthetic instrumented assistant fact 9\nRULE: Synthetic instrumented assistant fact 10\nRULE: Synthetic instrumented assistant fact 11\nRULE: Synthetic instrumented assistant fact 12\nRULE: Synthetic instrumented assistant fact 13\nRULE: Synthetic instrumented assistant fact 14\nRULE: Synthetic instrumented assistant fact 15\nRULE: Synthetic instrumented assistant fact 16\nRULE: Synthetic instrumented assistant fact 17\nRULE: Synthetic instrumented assistant fact 18\nRULE: Synthetic instrumented assistant fact 19\nRULE: Synthetic instrumented assistant fact 20\nRULE: Synthetic instrumented assistant fact 21\nRULE: Synthetic instrumented assistant fact 22\nRULE: Synthetic instrumented assistant fact 23\nRULE: Synthetic instrumented assistant fact 24\nRULE: Synthetic instrumented assistant fact 25\nRULE: Synthetic instrumented assistant fact 26\nRULE: Synthetic instrumented assistant fact 27\nRULE: Synthetic instrumented assistant fact 28\nRULE: Synthetic instrumented assistant fact 29\nRULE: Synthetic instrumented assistant fact 30\nRULE: Synthetic instrumented assistant fact 31\nRULE: Synthetic instrumented assistant fact 32\nRULE: Synthetic instrumented assistant fact 33\nRULE: Synthetic instrumented assistant fact 34\nRULE: Synthetic instrumented assistant fact 35\nRULE: Synthetic instrumented assistant fact 36\nRULE: Synthetic instrumented assistant fact 37\nRULE: Synthetic instrumented assistant fact 38\nRULE: Synthetic instrumented assistant fact 39\nRULE: Synthetic instrumented assistant fact 40\nRULE: Synthetic instrumented assistant fact 41\nRULE: Synthetic instrumented assistant fact 42\nRULE: Synthetic instrumented assistant fact 43\nRULE: Synthetic instrumented assistant fact 44\nRULE: Synthetic instrumented assistant fact 45\nRULE: Synthetic instrumented assistant fact 46\nRULE: Synthetic instrumented assistant fact 47\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +96 learned \u2014 \"principal: RULE: Synthetic instrumented principal fact 0\", \"principal: RULE: Synthetic instrumented principal fact 1\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n"
+}

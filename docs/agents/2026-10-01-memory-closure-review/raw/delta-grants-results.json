@@ -1,0 +1,80 @@
+{
+  "delta": [
+    {
+      "control_label": false,
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "45841e109da84195bbd96f1e423073df",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "saved"
+      },
+      "original_log": "{\"ts\":\"2026-10-01T12:33:42.343Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic current delta review marker\"]}\n",
+      "observed_log": "{\"ts\":\"2026-10-01T12:33:42.343Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic current delta review marker\"]}\n",
+      "output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 43/12288 chars]\nRULE: Synthetic current delta review marker\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +1 learned \u2014 \"principal: RULE: Synthetic current delta review marker\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+      "learned_present": true
+    },
+    {
+      "control_label": true,
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "21b3a12c65934f14846686849fcfd9c9",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": ""
+        },
+        "writer": "local:owner",
+        "request_id": "saved"
+      },
+      "original_log": "{\"ts\":\"2026-10-01T12:33:43.909Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic current delta review marker\"]}\n",
+      "observed_log": "{\"ts\": \"2026-10-01T12:33:43.909Z\", \"file\": \"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\", \"updated_by\": \"MemorySystem.add\", \"rejected\": false, \"prior_count\": 0, \"new_count\": 1, \"accepted\": 1, \"dropped_malformed\": 0, \"dropped_overlength\": 0, \"dropped_duplicates\": 0, \"evictions\": [], \"additions\": [\"RULE: Synthetic current delta review marker\"]}\n",
+      "output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 43/12288 chars]\nRULE: Synthetic current delta review marker\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +1 learned \u2014 \"principal: RULE: Synthetic current delta review marker\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+      "learned_present": true
+    }
+  ],
+  "write_only_mutations": [
+    {
+      "operation": "correct",
+      "read_grant": [],
+      "write_grant": [
+        "assistant",
+        "principal",
+        "project"
+      ],
+      "receipt": {
+        "status": "rejected",
+        "reason": "Hot-memory correction requires read and write grants",
+        "writer": "synthetic:blind-writer",
+        "request_id": "blind-correct"
+      },
+      "before": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T12:33:46.181Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic write-only target\nRULE: Synthetic neighboring private fact\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T12:33:46.181Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic write-only target\nRULE: Synthetic neighboring private fact\n<!-- END ENTRIES -->\n"
+    },
+    {
+      "operation": "forget",
+      "read_grant": [],
+      "write_grant": [
+        "assistant",
+        "principal",
+        "project"
+      ],
+      "receipt": {
+        "status": "rejected",
+        "reason": "Hot-memory forgetting requires read and write grants",
+        "writer": "synthetic:blind-writer",
+        "request_id": "blind-forget"
+      },
+      "before": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T12:33:47.574Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic write-only target\nRULE: Synthetic neighboring private fact\n<!-- END ENTRIES -->\n",
+      "after": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T12:33:47.574Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic write-only target\nRULE: Synthetic neighboring private fact\n<!-- END ENTRIES -->\n"
+    }
+  ]
+}

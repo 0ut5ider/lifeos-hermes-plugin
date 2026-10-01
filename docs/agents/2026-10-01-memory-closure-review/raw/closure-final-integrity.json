@@ -1,0 +1,1143 @@
+{
+  "review_initial_revision": "d1a919e28ebcf43ea68163424aa1faa841b60bd2",
+  "review_final_implementation_revision": "040079496cb227cf3dabfc701524eed856170af7",
+  "current_head": "040079496cb227cf3dabfc701524eed856170af7",
+  "source_paths_checked": 186,
+  "source_paths_all_match": true,
+  "public_source_paths_checked": 26,
+  "public_source_paths_all_match": true,
+  "independent_test_count": 144,
+  "independent_test_seconds": 229.294,
+  "independent_test_failures": 0,
+  "independent_test_errors": 0,
+  "independent_test_skips": 0,
+  "done_markers": {
+    "closure-0400794-recovery_delta.done": "0",
+    "closure-0400794-recovery_contracts.done": "0",
+    "closure-0400794-distinct_delta_latency.done": "0",
+    "closure-0400794-corpus_instrumentation.done": "0",
+    "closure-0400794-explicit_context_provenance.done": "0",
+    "closure-0400794-agent_source_session.done": "0",
+    "closure-0400794-isolated-cap.done": "0",
+    "closure-0400794-targeted.done": "0",
+    "closure-0400794.done": "0"
+  },
+  "source_checks": [
+    {
+      "path": "lifeos_hook_bridge/__init__.py",
+      "expected": "e57d608592a09e1a15bf3a4351e5b152cab8d085d2f5003b258c9674512244c6",
+      "actual": "e57d608592a09e1a15bf3a4351e5b152cab8d085d2f5003b258c9674512244c6",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bash_permissions.py",
+      "expected": "915eb5c32b3ff779e83279d0d82aad9d23d173af918b74473b37f3f291275795",
+      "actual": "915eb5c32b3ff779e83279d0d82aad9d23d173af918b74473b37f3f291275795",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bin/claude",
+      "expected": "f332d9fdd35867368daa0e68d9f41e9892e9db507fa7bad8a99e2447fe403f23",
+      "actual": "f332d9fdd35867368daa0e68d9f41e9892e9db507fa7bad8a99e2447fe403f23",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bin/claude_direct.py",
+      "expected": "4dd1f55553ef07c1d4faf7d0dca58b08543eee480e785b82696f9c177dc6d104",
+      "actual": "4dd1f55553ef07c1d4faf7d0dca58b08543eee480e785b82696f9c177dc6d104",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bin/git",
+      "expected": "a514847318e094eeae115b17166c42a1625466dd3b46f43f597a4649560bf9b9",
+      "actual": "a514847318e094eeae115b17166c42a1625466dd3b46f43f597a4649560bf9b9",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bin/hook_runner.py",
+      "expected": "1b18a694c54a417279b7321edf8c5b1e4d9f4da7bd847f4d79ca0c8528ee0680",
+      "actual": "1b18a694c54a417279b7321edf8c5b1e4d9f4da7bd847f4d79ca0c8528ee0680",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bin/version-drift-baseline",
+      "expected": "e7fc1983beaabb872fcbef2eee0289d1989413da27b2bb994b0f390b0b13f4cb",
+      "actual": "e7fc1983beaabb872fcbef2eee0289d1989413da27b2bb994b0f390b0b13f4cb",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/bridge.py",
+      "expected": "a570fdb6d34414404859ecead46946be5c897ff88111caff5690d19d7709d9b7",
+      "actual": "a570fdb6d34414404859ecead46946be5c897ff88111caff5690d19d7709d9b7",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/carrier_probe.py",
+      "expected": "786ade6e0bc324fd227384d87386eda2503531e900ed378441d934cf3c180e7c",
+      "actual": "786ade6e0bc324fd227384d87386eda2503531e900ed378441d934cf3c180e7c",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/cli.py",
+      "expected": "20bf0e8d94132fd3f85f585b0f74dcd0d62a16c530cc07e5c7591303ca6eefa7",
+      "actual": "20bf0e8d94132fd3f85f585b0f74dcd0d62a16c530cc07e5c7591303ca6eefa7",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/dashboard/dist/index.js",
+      "expected": "f4250efc3fafb48b50fec4d8564882e6c1c2ee445459ad1a97c7dbcd508511a2",
+      "actual": "f4250efc3fafb48b50fec4d8564882e6c1c2ee445459ad1a97c7dbcd508511a2",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/dashboard/manifest.json",
+      "expected": "4c0204592f835f1de70737466be189bd358cbfcc6939f108e865398de480cb5d",
+      "actual": "4c0204592f835f1de70737466be189bd358cbfcc6939f108e865398de480cb5d",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/dashboard/plugin_api.py",
+      "expected": "a0a69eba73f6717200589df31f1f67bbd574638af26885f5abce5c8a1b9326b0",
+      "actual": "a0a69eba73f6717200589df31f1f67bbd574638af26885f5abce5c8a1b9326b0",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/file_permissions.py",
+      "expected": "abbf27fa8b52852a32ed9ebe1eac0fbbf5061ffc85972e36a2bb2ddde52b52c9",
+      "actual": "abbf27fa8b52852a32ed9ebe1eac0fbbf5061ffc85972e36a2bb2ddde52b52c9",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/install_source.py",
+      "expected": "16afcba3e9f94fdc1e141e3b1faba2239ff044dd67e071115741a3423778d83a",
+      "actual": "16afcba3e9f94fdc1e141e3b1faba2239ff044dd67e071115741a3423778d83a",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_access.py",
+      "expected": "59886f1d1b07f070c7fede2864cd02a2dfcee92b4d191959b3593aeaff36a8b6",
+      "actual": "59886f1d1b07f070c7fede2864cd02a2dfcee92b4d191959b3593aeaff36a8b6",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_adoption.py",
+      "expected": "a41ce788972a8ae534b1153bb83b20bec76c2ad40e1b336231c96d4a22d8a297",
+      "actual": "a41ce788972a8ae534b1153bb83b20bec76c2ad40e1b336231c96d4a22d8a297",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_context.py",
+      "expected": "a8ebc7293d1647e977c6348a537da6975c4517c6affdea28d1cc7c4baafcd9f4",
+      "actual": "a8ebc7293d1647e977c6348a537da6975c4517c6affdea28d1cc7c4baafcd9f4",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_diagnostics.py",
+      "expected": "249b2b2a585a41cfdc2b9b7826a249d3181f250547dd74b56114467e01633844",
+      "actual": "249b2b2a585a41cfdc2b9b7826a249d3181f250547dd74b56114467e01633844",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_history.py",
+      "expected": "3d4214ca98577fb133c46d06b4d2d69f7add4bb102fa6ab2f4b96db00d3369b2",
+      "actual": "3d4214ca98577fb133c46d06b4d2d69f7add4bb102fa6ab2f4b96db00d3369b2",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_mcp.py",
+      "expected": "53ce3967dcc45f8d4bee9d9ea480cda19c14b91940c289a846328250762a4901",
+      "actual": "53ce3967dcc45f8d4bee9d9ea480cda19c14b91940c289a846328250762a4901",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_native.ts",
+      "expected": "f3e561beaf5f00becc596eac2062345e9eee11a14bb9aadc4ae80733b4ab79f3",
+      "actual": "f3e561beaf5f00becc596eac2062345e9eee11a14bb9aadc4ae80733b4ab79f3",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_policy.py",
+      "expected": "7d73b82e876580991a765d8a8aa760e3d74ab869463b2e4167d7becdae38161b",
+      "actual": "7d73b82e876580991a765d8a8aa760e3d74ab869463b2e4167d7becdae38161b",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_preferences.py",
+      "expected": "c1480728f4e095a8c52a82980a6d9f5703d63235a8823a997d9843a03b3ab530",
+      "actual": "c1480728f4e095a8c52a82980a6d9f5703d63235a8823a997d9843a03b3ab530",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_proposals.py",
+      "expected": "ee86c510a3309ae16127d34c865a9024792c6391730d1671916d7d09c773ae78",
+      "actual": "ee86c510a3309ae16127d34c865a9024792c6391730d1671916d7d09c773ae78",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_provider.py",
+      "expected": "64c50962a3e920420f53f2ccb6852466583bb9220f90385771b0d3db8e90aca3",
+      "actual": "64c50962a3e920420f53f2ccb6852466583bb9220f90385771b0d3db8e90aca3",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_publication.ts",
+      "expected": "bb0ffc9a027754f9701764ef707c18adad86d32034b3e6a1364705da90bc3c8f",
+      "actual": "bb0ffc9a027754f9701764ef707c18adad86d32034b3e6a1364705da90bc3c8f",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_pulse.py",
+      "expected": "634953117fd3b30acd27fb3b486b34101408c38d48cc9dbb797a0902c457c7ae",
+      "actual": "634953117fd3b30acd27fb3b486b34101408c38d48cc9dbb797a0902c457c7ae",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_rpc.py",
+      "expected": "91960f96929697a9c3e0e2e155456ed7d121fa162ed379049639d55cf2068587",
+      "actual": "91960f96929697a9c3e0e2e155456ed7d121fa162ed379049639d55cf2068587",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_runtime.py",
+      "expected": "65c34a391eb073231e05b359d281c04df86321946e4df864699793a411f62564",
+      "actual": "65c34a391eb073231e05b359d281c04df86321946e4df864699793a411f62564",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_service.py",
+      "expected": "df88374dbe9618bc5d5a84381d6f81476ba38ffcf805fdcdb9dcfb8f864a3eb1",
+      "actual": "df88374dbe9618bc5d5a84381d6f81476ba38ffcf805fdcdb9dcfb8f864a3eb1",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_sharing.py",
+      "expected": "a8d84bcb30f0f066e15f9e3f6497676338102489517f7a58cfdd6de2945f6eb0",
+      "actual": "a8d84bcb30f0f066e15f9e3f6497676338102489517f7a58cfdd6de2945f6eb0",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_sources.py",
+      "expected": "94d423259ad0b829deed01e971f51c21c3efceb4d76d36b3177d6915e042fcfc",
+      "actual": "94d423259ad0b829deed01e971f51c21c3efceb4d76d36b3177d6915e042fcfc",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/memory_transaction.py",
+      "expected": "c9d6d41c8234708fa441085eea58f476aaf6bc8c92919b959c559fd81b7aa882",
+      "actual": "c9d6d41c8234708fa441085eea58f476aaf6bc8c92919b959c559fd81b7aa882",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/model_tiers.py",
+      "expected": "0a1e10be52efddb30fbcf071f9078caaf3597611224d3200fec832eea3e7b18e",
+      "actual": "0a1e10be52efddb30fbcf071f9078caaf3597611224d3200fec832eea3e7b18e",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/native_capabilities.json",
+      "expected": "cdd2a33d92112c7a33538be78df92401d7aed2f2e464e9ee8de93eb09ebfcedf",
+      "actual": "cdd2a33d92112c7a33538be78df92401d7aed2f2e464e9ee8de93eb09ebfcedf",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/native_capabilities.py",
+      "expected": "73fbfd823fffad8d59b5716acbf8f1bbee125efb1528b0fe43c359ddba3c7ff9",
+      "actual": "73fbfd823fffad8d59b5716acbf8f1bbee125efb1528b0fe43c359ddba3c7ff9",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-child-routing.patch",
+      "expected": "7787bc952ad801d80a1e8754724f4b457302add1bf306596f976363189634145",
+      "actual": "7787bc952ad801d80a1e8754724f4b457302add1bf306596f976363189634145",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-command-policy.patch",
+      "expected": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d",
+      "actual": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-cron-bootstrap.patch",
+      "expected": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445",
+      "actual": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-plugin-events.patch",
+      "expected": "d0b0296ac50df4a962979af5974a298d565f1c06513b8c031b9d0a8968ca13fa",
+      "actual": "d0b0296ac50df4a962979af5974a298d565f1c06513b8c031b9d0a8968ca13fa",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-remote-files.patch",
+      "expected": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85",
+      "actual": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-required-middleware.patch",
+      "expected": "184ca3e0c5823f0279338621bf5af4f00b3c79d1c833741bbb536ef9c3fbcec4",
+      "actual": "184ca3e0c5823f0279338621bf5af4f00b3c79d1c833741bbb536ef9c3fbcec4",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-session-lifecycle.patch",
+      "expected": "d1fd475a0abfacb432165b901bed62bfcd7966ef8de8f2eed9f243791420cc9d",
+      "actual": "d1fd475a0abfacb432165b901bed62bfcd7966ef8de8f2eed9f243791420cc9d",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-strict-inference.patch",
+      "expected": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c",
+      "actual": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/hermes-turn-gates.patch",
+      "expected": "e56f46bd0c9c2aa8cf18edd7b3a02f8ac5da8733aa4e0a96ca118a42e7b6e976",
+      "actual": "e56f46bd0c9c2aa8cf18edd7b3a02f8ac5da8733aa4e0a96ca118a42e7b6e976",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-agent-watchdog.patch",
+      "expected": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808",
+      "actual": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-checkpoint-verification.patch",
+      "expected": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f",
+      "actual": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-failure-capture.patch",
+      "expected": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e",
+      "actual": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-hermes-carrier-probe.patch",
+      "expected": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae",
+      "actual": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-memory-access.patch",
+      "expected": "4eff592aa53a6bcb7a528060f05b6dd3a776240bb626a488a8020f16b773bbfe",
+      "actual": "4eff592aa53a6bcb7a528060f05b6dd3a776240bb626a488a8020f16b773bbfe",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-model-rung-effort.patch",
+      "expected": "5fe5987146d76f667cc878beb6be704ef25e5601ac80c81b6f9fe5d67ed72dc9",
+      "actual": "5fe5987146d76f667cc878beb6be704ef25e5601ac80c81b6f9fe5d67ed72dc9",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-remote-desktop-gate.patch",
+      "expected": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038",
+      "actual": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-remote-isa-view.patch",
+      "expected": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b",
+      "actual": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-task-governance.patch",
+      "expected": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798",
+      "actual": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/patches/lifeos-terminal-audit.patch",
+      "expected": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886",
+      "actual": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/plugin.yaml",
+      "expected": "97e404a69ddd56076af86ff4b3be666139e3931cc98a2d448eddfcd2fc0ae6c8",
+      "actual": "97e404a69ddd56076af86ff4b3be666139e3931cc98a2d448eddfcd2fc0ae6c8",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/remote_hooks.py",
+      "expected": "7335cb146664da7ec588c5b09d5f836cef0b4da4cb72d8ec06d99a93bf5923cc",
+      "actual": "7335cb146664da7ec588c5b09d5f836cef0b4da4cb72d8ec06d99a93bf5923cc",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/update_dependencies.py",
+      "expected": "5740c7754b458e2bebfa301cdf9a50a3050e7210c92407724ce058675fd6c7ee",
+      "actual": "5740c7754b458e2bebfa301cdf9a50a3050e7210c92407724ce058675fd6c7ee",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/update_hooks.py",
+      "expected": "c5b411e4980c7eb6adc825b416ab8eb35282233e90780e06cc26652a43755d06",
+      "actual": "c5b411e4980c7eb6adc825b416ab8eb35282233e90780e06cc26652a43755d06",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/update_plan.py",
+      "expected": "63388cb1e373b325b0d9752d7b7fa7f2cf92702accb15d309e113767f3d61465",
+      "actual": "63388cb1e373b325b0d9752d7b7fa7f2cf92702accb15d309e113767f3d61465",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/update_transaction.py",
+      "expected": "63865873e6ac45b59a35d1d11971b9838111d8d881a22a1667b7b8475d8734cd",
+      "actual": "63865873e6ac45b59a35d1d11971b9838111d8d881a22a1667b7b8475d8734cd",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/update_worker.py",
+      "expected": "38fcba8388c1c4e061c823051cd1a14e252ae7ad81cde5afa7d215dd757fffdb",
+      "actual": "38fcba8388c1c4e061c823051cd1a14e252ae7ad81cde5afa7d215dd757fffdb",
+      "matches": true
+    },
+    {
+      "path": "lifeos_hook_bridge/version_drift.py",
+      "expected": "6ef6b315788da1629ca55823e3124781ad95930450214ff17e5cafb7141ad749",
+      "actual": "6ef6b315788da1629ca55823e3124781ad95930450214ff17e5cafb7141ad749",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-child-routing.patch",
+      "expected": "7787bc952ad801d80a1e8754724f4b457302add1bf306596f976363189634145",
+      "actual": "7787bc952ad801d80a1e8754724f4b457302add1bf306596f976363189634145",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-command-policy.patch",
+      "expected": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d",
+      "actual": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-cron-bootstrap.patch",
+      "expected": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445",
+      "actual": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-plugin-events.patch",
+      "expected": "d0b0296ac50df4a962979af5974a298d565f1c06513b8c031b9d0a8968ca13fa",
+      "actual": "d0b0296ac50df4a962979af5974a298d565f1c06513b8c031b9d0a8968ca13fa",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-remote-files.patch",
+      "expected": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85",
+      "actual": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-required-middleware.patch",
+      "expected": "184ca3e0c5823f0279338621bf5af4f00b3c79d1c833741bbb536ef9c3fbcec4",
+      "actual": "184ca3e0c5823f0279338621bf5af4f00b3c79d1c833741bbb536ef9c3fbcec4",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-session-lifecycle.patch",
+      "expected": "d1fd475a0abfacb432165b901bed62bfcd7966ef8de8f2eed9f243791420cc9d",
+      "actual": "d1fd475a0abfacb432165b901bed62bfcd7966ef8de8f2eed9f243791420cc9d",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-strict-inference.patch",
+      "expected": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c",
+      "actual": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c",
+      "matches": true
+    },
+    {
+      "path": "patches/hermes-turn-gates.patch",
+      "expected": "e56f46bd0c9c2aa8cf18edd7b3a02f8ac5da8733aa4e0a96ca118a42e7b6e976",
+      "actual": "e56f46bd0c9c2aa8cf18edd7b3a02f8ac5da8733aa4e0a96ca118a42e7b6e976",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-agent-watchdog.patch",
+      "expected": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808",
+      "actual": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-checkpoint-verification.patch",
+      "expected": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f",
+      "actual": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-failure-capture.patch",
+      "expected": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e",
+      "actual": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-hermes-carrier-probe.patch",
+      "expected": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae",
+      "actual": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-memory-access.patch",
+      "expected": "4eff592aa53a6bcb7a528060f05b6dd3a776240bb626a488a8020f16b773bbfe",
+      "actual": "4eff592aa53a6bcb7a528060f05b6dd3a776240bb626a488a8020f16b773bbfe",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-model-rung-effort.patch",
+      "expected": "5fe5987146d76f667cc878beb6be704ef25e5601ac80c81b6f9fe5d67ed72dc9",
+      "actual": "5fe5987146d76f667cc878beb6be704ef25e5601ac80c81b6f9fe5d67ed72dc9",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-remote-desktop-gate.patch",
+      "expected": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038",
+      "actual": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-remote-isa-view.patch",
+      "expected": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b",
+      "actual": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-task-governance.patch",
+      "expected": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798",
+      "actual": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798",
+      "matches": true
+    },
+    {
+      "path": "patches/lifeos-terminal-audit.patch",
+      "expected": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886",
+      "actual": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886",
+      "matches": true
+    },
+    {
+      "path": "tests/memory_host_calls.py",
+      "expected": "7112842372105067919614d1b2ca3dd7ffe292c639d368c385c82e343f827788",
+      "actual": "7112842372105067919614d1b2ca3dd7ffe292c639d368c385c82e343f827788",
+      "matches": true
+    },
+    {
+      "path": "tests/memory_model_calls.py",
+      "expected": "17a85f53d3409cfa50ba76f099e3cb61dd910134f720e1f980543399c605599c",
+      "actual": "17a85f53d3409cfa50ba76f099e3cb61dd910134f720e1f980543399c605599c",
+      "matches": true
+    },
+    {
+      "path": "tests/native_memory_calls.ts",
+      "expected": "d0d420e5799c96bae4150aeded6fe59a3b3602a206fa3a9b51a18e39da282880",
+      "actual": "d0d420e5799c96bae4150aeded6fe59a3b3602a206fa3a9b51a18e39da282880",
+      "matches": true
+    },
+    {
+      "path": "tests/test_bridge.py",
+      "expected": "1047723bbfc5993b11bbd1a0ed17d76b135f8f7e8604146c37c7bfe64c46cd26",
+      "actual": "1047723bbfc5993b11bbd1a0ed17d76b135f8f7e8604146c37c7bfe64c46cd26",
+      "matches": true
+    },
+    {
+      "path": "tests/test_carrier_probe.py",
+      "expected": "055c704b0d4786373623b8076a55093582f460b04143b87e2954aebd7dc05029",
+      "actual": "055c704b0d4786373623b8076a55093582f460b04143b87e2954aebd7dc05029",
+      "matches": true
+    },
+    {
+      "path": "tests/test_checkpoint_verification.py",
+      "expected": "a991848eb595fc64600bc572e62397bea3999d77f51583582b6cd8cd8fdd4d9c",
+      "actual": "a991848eb595fc64600bc572e62397bea3999d77f51583582b6cd8cd8fdd4d9c",
+      "matches": true
+    },
+    {
+      "path": "tests/test_claude_adapter.py",
+      "expected": "1e685cdf1a591a1521282a6832a5171e02c078b64e1bcb447d15c58f015a6e20",
+      "actual": "1e685cdf1a591a1521282a6832a5171e02c078b64e1bcb447d15c58f015a6e20",
+      "matches": true
+    },
+    {
+      "path": "tests/test_claude_reference_adapter.py",
+      "expected": "b284e40665deae3d04d4cf40b54371cbbd616fae076665712a5ea47266425b8d",
+      "actual": "b284e40665deae3d04d4cf40b54371cbbd616fae076665712a5ea47266425b8d",
+      "matches": true
+    },
+    {
+      "path": "tests/test_compare_parity.py",
+      "expected": "a9f6b49c3b9748ff968faabe89d0fc5779516b1e1d8e027caeb9ba9da2c9578d",
+      "actual": "a9f6b49c3b9748ff968faabe89d0fc5779516b1e1d8e027caeb9ba9da2c9578d",
+      "matches": true
+    },
+    {
+      "path": "tests/test_core_stop_effort.py",
+      "expected": "fd4522882ea058fc9dd48ae40c9642e169e8293f26175b459ba5283979c56efe",
+      "actual": "fd4522882ea058fc9dd48ae40c9642e169e8293f26175b459ba5283979c56efe",
+      "matches": true
+    },
+    {
+      "path": "tests/test_dashboard_api.py",
+      "expected": "65a13fe7552828c33a5cf10090d748d9c94bffeb3c9aa7761a167b11bd07627b",
+      "actual": "65a13fe7552828c33a5cf10090d748d9c94bffeb3c9aa7761a167b11bd07627b",
+      "matches": true
+    },
+    {
+      "path": "tests/test_dashboard_ui.cjs",
+      "expected": "a5773d5f7b37ff7b64b70cbc1309dbc0669a655379893243ec26e57722ca4513",
+      "actual": "a5773d5f7b37ff7b64b70cbc1309dbc0669a655379893243ec26e57722ca4513",
+      "matches": true
+    },
+    {
+      "path": "tests/test_delegate_model_route.py",
+      "expected": "1f9112d0e79b33f138a63be68678db46e931a4911304a56a85f3de759b9549cf",
+      "actual": "1f9112d0e79b33f138a63be68678db46e931a4911304a56a85f3de759b9549cf",
+      "matches": true
+    },
+    {
+      "path": "tests/test_file_permissions.py",
+      "expected": "7128cf38fa768a4d7c5d0434720362428477d2aa62d365c2993dbc13f8c3efb4",
+      "actual": "7128cf38fa768a4d7c5d0434720362428477d2aa62d365c2993dbc13f8c3efb4",
+      "matches": true
+    },
+    {
+      "path": "tests/test_footprint_contracts.py",
+      "expected": "00587770090b04918fa0a59624144dd9867c4f0026a63fc27c74287119935998",
+      "actual": "00587770090b04918fa0a59624144dd9867c4f0026a63fc27c74287119935998",
+      "matches": true
+    },
+    {
+      "path": "tests/test_hermes_install_source.py",
+      "expected": "6e0f052ec1108bc80167946a056dbc8a91a2ceb7a8ed57f853eebbe2f4eadcce",
+      "actual": "6e0f052ec1108bc80167946a056dbc8a91a2ceb7a8ed57f853eebbe2f4eadcce",
+      "matches": true
+    },
+    {
+      "path": "tests/test_hermes_memory_provider.py",
+      "expected": "106a03f58f7a07a4407aa3feb9c81f56bd998ce937d9fe709e4bf2302c6e4276",
+      "actual": "106a03f58f7a07a4407aa3feb9c81f56bd998ce937d9fe709e4bf2302c6e4276",
+      "matches": true
+    },
+    {
+      "path": "tests/test_hermes_patch_regeneration.py",
+      "expected": "0ea2a2799f83d84373c89ec21cf83adb954df1b1915e09d92e43b512a030a9f2",
+      "actual": "0ea2a2799f83d84373c89ec21cf83adb954df1b1915e09d92e43b512a030a9f2",
+      "matches": true
+    },
+    {
+      "path": "tests/test_hook_inventory.py",
+      "expected": "a5095918f1c0a76f26206eaa246b95527422773487e4d46333814129848e8ff5",
+      "actual": "a5095918f1c0a76f26206eaa246b95527422773487e4d46333814129848e8ff5",
+      "matches": true
+    },
+    {
+      "path": "tests/test_host_command_policy.py",
+      "expected": "5f2355e1c38323899aa0aae92869cf51915a16f60ee3d933e071bb709e60ece8",
+      "actual": "5f2355e1c38323899aa0aae92869cf51915a16f60ee3d933e071bb709e60ece8",
+      "matches": true
+    },
+    {
+      "path": "tests/test_installed_plugin_commands.py",
+      "expected": "d10b31cd40b52995af058c08cbf7ab66bb295e209fb178f8b1eb366b1d0d9d20",
+      "actual": "d10b31cd40b52995af058c08cbf7ab66bb295e209fb178f8b1eb366b1d0d9d20",
+      "matches": true
+    },
+    {
+      "path": "tests/test_lifeos_install_source.py",
+      "expected": "2dfc9e0e49cce1f26852a4902706256ef8a2d9c677b5da39ac3057f31ce8b679",
+      "actual": "2dfc9e0e49cce1f26852a4902706256ef8a2d9c677b5da39ac3057f31ce8b679",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_browser_result_safety.py",
+      "expected": "4f08e348ae3db4ac898c90d58dc07c46f1723fc9fe1c437872bd475ddfd05887",
+      "actual": "4f08e348ae3db4ac898c90d58dc07c46f1723fc9fe1c437872bd475ddfd05887",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_container_command_policy.py",
+      "expected": "33e02b68e4fb6ecf4118a5bc31543dd4e6cd25cf2c5d7c21e70e4207ce3d89a7",
+      "actual": "33e02b68e4fb6ecf4118a5bc31543dd4e6cd25cf2c5d7c21e70e4207ce3d89a7",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_container_file_hooks.py",
+      "expected": "d6fcd8791b4c70d1517d17230bae4dd3274389dccdff0572678e52d30b5ea8d8",
+      "actual": "d6fcd8791b4c70d1517d17230bae4dd3274389dccdff0572678e52d30b5ea8d8",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_container_isa.py",
+      "expected": "e7ff955b845dd357d55439068affbc05a5f5539f0f69e08ad107d107d603e534",
+      "actual": "e7ff955b845dd357d55439068affbc05a5f5539f0f69e08ad107d107d603e534",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_container_project_hooks.py",
+      "expected": "2e8ffc388ee492c288eb1a64c860d44c80dc2339bc7f2e9539d44d5695f4a14e",
+      "actual": "2e8ffc388ee492c288eb1a64c860d44c80dc2339bc7f2e9539d44d5695f4a14e",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_nested_ssh_hooks.py",
+      "expected": "458a89fc4d2f5a0d4169025e5df1c1526744a4af86b207959c4bee6c351b8ddf",
+      "actual": "458a89fc4d2f5a0d4169025e5df1c1526744a4af86b207959c4bee6c351b8ddf",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_project_hook_transport.py",
+      "expected": "c59ac94772b1ad2c7fe62d30b783613e2b4691dcfcc26f2b37b5fe14b228847f",
+      "actual": "c59ac94772b1ad2c7fe62d30b783613e2b4691dcfcc26f2b37b5fe14b228847f",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_remote_isa.py",
+      "expected": "38a9a931e3c69afdbf042b01f308dc7963f5bdd9b5d8bbe8305b0752f09eb138",
+      "actual": "38a9a931e3c69afdbf042b01f308dc7963f5bdd9b5d8bbe8305b0752f09eb138",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_remote_project_hooks.py",
+      "expected": "9fe40e4db493ef0bbf1e9f10fd9d5b913e05561f9a68d7ce61058d85bb689472",
+      "actual": "9fe40e4db493ef0bbf1e9f10fd9d5b913e05561f9a68d7ce61058d85bb689472",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_ssh_command_policy.py",
+      "expected": "fc37702f250c911442205247869d34265b11014824d14ec29d08b8006b258892",
+      "actual": "fc37702f250c911442205247869d34265b11014824d14ec29d08b8006b258892",
+      "matches": true
+    },
+    {
+      "path": "tests/test_live_ssh_web_cache.py",
+      "expected": "2aa1359773aa1168e192eb16bdb880d00128fd10273473328c8153445b808ffc",
+      "actual": "2aa1359773aa1168e192eb16bdb880d00128fd10273473328c8153445b808ffc",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_adoption.py",
+      "expected": "f1be1589b54187de9b34c03674b65299764a80a32cf260d3e033b5f173276221",
+      "actual": "f1be1589b54187de9b34c03674b65299764a80a32cf260d3e033b5f173276221",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_agent.py",
+      "expected": "df1940d306f0db90f8d7b4969a9f3dd9620bab8a74449483ddaa26906636c7c6",
+      "actual": "df1940d306f0db90f8d7b4969a9f3dd9620bab8a74449483ddaa26906636c7c6",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_archive.py",
+      "expected": "67ad4b8afafd9cf85fc13b2b286a4257c539eabbc6c87ec5d5ec2b0b1133e4e7",
+      "actual": "67ad4b8afafd9cf85fc13b2b286a4257c539eabbc6c87ec5d5ec2b0b1133e4e7",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_authorization.py",
+      "expected": "f5531c0760922ecc5f6650a29737026af834da6a9a41f739259c009d6b6cb014",
+      "actual": "f5531c0760922ecc5f6650a29737026af834da6a9a41f739259c009d6b6cb014",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_children.py",
+      "expected": "452e8351ef4cc7d33bef68c5fd038804c51829f6c7cd01e2ca510e08f8362815",
+      "actual": "452e8351ef4cc7d33bef68c5fd038804c51829f6c7cd01e2ca510e08f8362815",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_context.py",
+      "expected": "119307c0ba7738b25ecbf6d57df68dd2afa129b399d3c42da46448cb4f55e2e1",
+      "actual": "119307c0ba7738b25ecbf6d57df68dd2afa129b399d3c42da46448cb4f55e2e1",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_cortex_health.py",
+      "expected": "4ac3bfc5fc3617cc16f558ad9480f679960ed4d24c6b3531407edca9c4e4013d",
+      "actual": "4ac3bfc5fc3617cc16f558ad9480f679960ed4d24c6b3531407edca9c4e4013d",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_curation.py",
+      "expected": "a3fd4b7ff170ba2a3358396b79da0cc24e1e2efcd6948ab0f22e49373f9391f9",
+      "actual": "a3fd4b7ff170ba2a3358396b79da0cc24e1e2efcd6948ab0f22e49373f9391f9",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_dashboard.py",
+      "expected": "b99ef952621252581bf74232bda95ebcd2ce06c8db90868e1f06d57b8bb92e73",
+      "actual": "b99ef952621252581bf74232bda95ebcd2ce06c8db90868e1f06d57b8bb92e73",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_dashboard_ui.cjs",
+      "expected": "0974fe263d2f84714fc23b1727f879fa25771b629043c388762686568a3b12f1",
+      "actual": "0974fe263d2f84714fc23b1727f879fa25771b629043c388762686568a3b12f1",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_delegation.py",
+      "expected": "ffddefb8d77404ff63696fc9b9f9504cebc55dc442bcc116daf049c7818af0e8",
+      "actual": "ffddefb8d77404ff63696fc9b9f9504cebc55dc442bcc116daf049c7818af0e8",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_delta.py",
+      "expected": "8e0d2663bab5460e9036d727545b3d41d2f0308d597ccae6e319cd3038459a7e",
+      "actual": "8e0d2663bab5460e9036d727545b3d41d2f0308d597ccae6e319cd3038459a7e",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_diagnostics.py",
+      "expected": "fb4d4286cad40f85bcfe1b83cadc52bf13b7dd9fc0a1239d4ec61990d496cacf",
+      "actual": "fb4d4286cad40f85bcfe1b83cadc52bf13b7dd9fc0a1239d4ec61990d496cacf",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_history.py",
+      "expected": "3a0cc9d142f2203a480657bb3e8b8c576bc5693f158a05f03c0ba55ed2de82da",
+      "actual": "3a0cc9d142f2203a480657bb3e8b8c576bc5693f158a05f03c0ba55ed2de82da",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_host.py",
+      "expected": "42994ffc867647105e810555c0ad6b229aa259f6ca2fe56f415bcd9d28c921ea",
+      "actual": "42994ffc867647105e810555c0ad6b229aa259f6ca2fe56f415bcd9d28c921ea",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_mcp.py",
+      "expected": "7147fe9819b708bb13d93d6b149e0c38bf481cbb5bd75d72fb81345c8df241cd",
+      "actual": "7147fe9819b708bb13d93d6b149e0c38bf481cbb5bd75d72fb81345c8df241cd",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_model_calls.py",
+      "expected": "03136f25761dcc9f60005a720793217d773968b6b8c288bfa1be7a766aa8409a",
+      "actual": "03136f25761dcc9f60005a720793217d773968b6b8c288bfa1be7a766aa8409a",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_native.py",
+      "expected": "4595444e4ea5b2c77e4be1b5749943cfb4271dfea2246f1ba737d1e8b4cd7922",
+      "actual": "4595444e4ea5b2c77e4be1b5749943cfb4271dfea2246f1ba737d1e8b4cd7922",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_policy.py",
+      "expected": "6abe724b38249fb29e0e7b3def5727d3f659ecd648a47b49dda38d3801152228",
+      "actual": "6abe724b38249fb29e0e7b3def5727d3f659ecd648a47b49dda38d3801152228",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_preferences.py",
+      "expected": "d21b742a9924934628e630592d427ae8419a8c345a5cdc2a5bc62c4475192d8c",
+      "actual": "d21b742a9924934628e630592d427ae8419a8c345a5cdc2a5bc62c4475192d8c",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_proposal_delegation.py",
+      "expected": "5c8edfb30e906f3d6f7338773b21fd06678214d266eea6699ae9b2752d89cf9c",
+      "actual": "5c8edfb30e906f3d6f7338773b21fd06678214d266eea6699ae9b2752d89cf9c",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_proposals.py",
+      "expected": "44bd49febc9f2c60d12ad7c2423d49d17d963c7b889e4711697340498697bb3b",
+      "actual": "44bd49febc9f2c60d12ad7c2423d49d17d963c7b889e4711697340498697bb3b",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_pulse.py",
+      "expected": "db1879faf1ec42d4daa35d3f7f10b210fab34e6a155d25d7afabd94b8e58f9f9",
+      "actual": "db1879faf1ec42d4daa35d3f7f10b210fab34e6a155d25d7afabd94b8e58f9f9",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_pulse_auth.py",
+      "expected": "ea921260887bea5dadb6faef3a31fffe84040c655b9ae63eda0d63ae1e5f4d2f",
+      "actual": "ea921260887bea5dadb6faef3a31fffe84040c655b9ae63eda0d63ae1e5f4d2f",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_review.py",
+      "expected": "32e2022274f105c1fe449d2d7e3bcda1b00e6e0599dbbe0fddbae2240f9ae443",
+      "actual": "32e2022274f105c1fe449d2d7e3bcda1b00e6e0599dbbe0fddbae2240f9ae443",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_runtime.py",
+      "expected": "c3c9ecaaa617c1c4a326509babb21a7dd0dc1297e2f036ee0bb9c20a8851787a",
+      "actual": "c3c9ecaaa617c1c4a326509babb21a7dd0dc1297e2f036ee0bb9c20a8851787a",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_service.py",
+      "expected": "6c2b8e2b0331a9d8e447f394bd35b1eac8cdb998a50fb85ce192876a6bf9aaf0",
+      "actual": "6c2b8e2b0331a9d8e447f394bd35b1eac8cdb998a50fb85ce192876a6bf9aaf0",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_sharing.py",
+      "expected": "7ea31a0bcf6baf4cba9860f9b4fccb5da88543b5f983782e286dc3c5c7d9066e",
+      "actual": "7ea31a0bcf6baf4cba9860f9b4fccb5da88543b5f983782e286dc3c5c7d9066e",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_sources.py",
+      "expected": "217151b52dad95ffbcfd3226b7f48505e154acf8d7d45ab5d8ba5835d48e96e8",
+      "actual": "217151b52dad95ffbcfd3226b7f48505e154acf8d7d45ab5d8ba5835d48e96e8",
+      "matches": true
+    },
+    {
+      "path": "tests/test_memory_ssh.py",
+      "expected": "63818e5175c6bf1ce8785fb1c560efd70420c774446117e8beac5a3c01cad017",
+      "actual": "63818e5175c6bf1ce8785fb1c560efd70420c774446117e8beac5a3c01cad017",
+      "matches": true
+    },
+    {
+      "path": "tests/test_model_tiers.py",
+      "expected": "2cb09e67293e32857a3a7a59a9b5bcfe628d695218df6658f497c656fac51b30",
+      "actual": "2cb09e67293e32857a3a7a59a9b5bcfe628d695218df6658f497c656fac51b30",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_algorithm_nudge.py",
+      "expected": "f3ee6a20645cea463c7784a3b1e5697dd6e2b9b2550674222955ec81939541b2",
+      "actual": "f3ee6a20645cea463c7784a3b1e5697dd6e2b9b2550674222955ec81939541b2",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_checkpoint.py",
+      "expected": "e23135b86edb5029e5ca8183c1a27a542ec4b5017b0ba022866ecbcadc41abef",
+      "actual": "e23135b86edb5029e5ca8183c1a27a542ec4b5017b0ba022866ecbcadc41abef",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_drift_reminder.py",
+      "expected": "d85f34811102e7b3bb08698d76b300acf2bf63d82c3bac4519b6cadbbe5a7ffc",
+      "actual": "d85f34811102e7b3bb08698d76b300acf2bf63d82c3bac4519b6cadbbe5a7ffc",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_event_logger.py",
+      "expected": "5170afe18e6a0e840f2aa7a3e481eb542ed5f6adba3aa06026883a632141bbce",
+      "actual": "5170afe18e6a0e840f2aa7a3e481eb542ed5f6adba3aa06026883a632141bbce",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_failure_capture.py",
+      "expected": "62b2bc23456815570669163dd6f859f236c53361297c667c3681670695cd6ea8",
+      "actual": "62b2bc23456815570669163dd6f859f236c53361297c667c3681670695cd6ea8",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_freshness_cache.py",
+      "expected": "9cf2c7c2f01cfd2f1fffebd57d1aa4e891200ab98a4e081c6d5bc420b1c6f07f",
+      "actual": "9cf2c7c2f01cfd2f1fffebd57d1aa4e891200ab98a4e081c6d5bc420b1c6f07f",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_hook_healer.py",
+      "expected": "22d08993547cdbdbd7f03b71cf8adb4b959387ffda49912a1a1338c0344d71c5",
+      "actual": "22d08993547cdbdbd7f03b71cf8adb4b959387ffda49912a1a1338c0344d71c5",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_isa_gate.py",
+      "expected": "63be5d66a9eb6c2ffae2dca950c9146614c3dd1e7c091f77a7ef6cc7250e5e6b",
+      "actual": "63be5d66a9eb6c2ffae2dca950c9146614c3dd1e7c091f77a7ef6cc7250e5e6b",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_kitty_channel.py",
+      "expected": "b8847205cabae639799aef9af15c601dccb768b7ff58b6d5b12d98e788ceb7d0",
+      "actual": "b8847205cabae639799aef9af15c601dccb768b7ff58b6d5b12d98e788ceb7d0",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_loop_detector.py",
+      "expected": "e2422592fb8244f85faf7e9e82865e51bc05e16f8a743807054a08e46bf8f4a6",
+      "actual": "e2422592fb8244f85faf7e9e82865e51bc05e16f8a743807054a08e46bf8f4a6",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_model_rung_guard.py",
+      "expected": "79923807707da69aa188e4b1fe1967a5248f08a32e12ffc33b4c21297b4751c8",
+      "actual": "79923807707da69aa188e4b1fe1967a5248f08a32e12ffc33b4c21297b4751c8",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_partial_patch.py",
+      "expected": "6029b168e31500935213c52e27228741f3893365ae5b8840ab2bfae72bb5c622",
+      "actual": "6029b168e31500935213c52e27228741f3893365ae5b8840ab2bfae72bb5c622",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_prompt_processing.py",
+      "expected": "d5c82ad4ce08cc19c971416196d32a40f365bfaa378b4d4a61ef99f2564fb11c",
+      "actual": "d5c82ad4ce08cc19c971416196d32a40f365bfaa378b4d4a61ef99f2564fb11c",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_reminder_router.py",
+      "expected": "95bb26c44aea77e1a1cf8adc4c6a006cfacc66b3ea2d0302584b29456ca17c34",
+      "actual": "95bb26c44aea77e1a1cf8adc4c6a006cfacc66b3ea2d0302584b29456ca17c34",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_remote_isa.py",
+      "expected": "c451a5c4a19c0c4b15dac220670504cac5a9184479fd3ee23d48a92749831e21",
+      "actual": "c451a5c4a19c0c4b15dac220670504cac5a9184479fd3ee23d48a92749831e21",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_session_end_all.py",
+      "expected": "60bb487ab82308d00d30f8be0e6a7fd2196673eb5607c7244fba38133e593d4c",
+      "actual": "60bb487ab82308d00d30f8be0e6a7fd2196673eb5607c7244fba38133e593d4c",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_session_end_learning.py",
+      "expected": "18e5616d7b2634e81f79ce95be7a293e0b4f8b4676b89924664fdbbdf917bdc6",
+      "actual": "18e5616d7b2634e81f79ce95be7a293e0b4f8b4676b89924664fdbbdf917bdc6",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_settings_merge.py",
+      "expected": "27a13c6f6084b314f414cb0b487e28ccae0d0e2d1e8b48d32f8c86ea7321f6fb",
+      "actual": "27a13c6f6084b314f414cb0b487e28ccae0d0e2d1e8b48d32f8c86ea7321f6fb",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_task_hook.py",
+      "expected": "720e56b35efe611dba7abd27ed42a328fe996c03d0e37f942f19868e1b8844cc",
+      "actual": "720e56b35efe611dba7abd27ed42a328fe996c03d0e37f942f19868e1b8844cc",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_version_drift.py",
+      "expected": "e1e099d46b724a9e68edd9e4718a815f0d22d3d8bd81bb4f25d64d3a1c551277",
+      "actual": "e1e099d46b724a9e68edd9e4718a815f0d22d3d8bd81bb4f25d64d3a1c551277",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_voice_gate.py",
+      "expected": "86f1d7a6f42a2d20c91149add896ce7bcace894edfa1eaeb6da5d2a91bfad54c",
+      "actual": "86f1d7a6f42a2d20c91149add896ce7bcace894edfa1eaeb6da5d2a91bfad54c",
+      "matches": true
+    },
+    {
+      "path": "tests/test_native_watchdog.py",
+      "expected": "b872fc14aec45a4903cc5aceb0b19fbf083aed77575a6d79154c8766305a3347",
+      "actual": "b872fc14aec45a4903cc5aceb0b19fbf083aed77575a6d79154c8766305a3347",
+      "matches": true
+    },
+    {
+      "path": "tests/test_paired_coverage.py",
+      "expected": "d5384c7bede5a5c6d1a8fd25d90f52f48aa6432637a76ecadd6e8228642a09af",
+      "actual": "d5384c7bede5a5c6d1a8fd25d90f52f48aa6432637a76ecadd6e8228642a09af",
+      "matches": true
+    },
+    {
+      "path": "tests/test_paired_hook_trace.py",
+      "expected": "af75d998de6385dac8a24ce8cffd20292061e7f4e818ceab1f384a5bc1854945",
+      "actual": "af75d998de6385dac8a24ce8cffd20292061e7f4e818ceab1f384a5bc1854945",
+      "matches": true
+    },
+    {
+      "path": "tests/test_paired_http_trace.py",
+      "expected": "0610157802203ac376aab7ac8a6455c96e6e892be7ed626ec40250449e796cef",
+      "actual": "0610157802203ac376aab7ac8a6455c96e6e892be7ed626ec40250449e796cef",
+      "matches": true
+    },
+    {
+      "path": "tests/test_paired_mcp_server.py",
+      "expected": "eee01f33cda14cd224a83ed31ddb947e38f005684b209e0d786fa5db1472059b",
+      "actual": "eee01f33cda14cd224a83ed31ddb947e38f005684b209e0d786fa5db1472059b",
+      "matches": true
+    },
+    {
+      "path": "tests/test_paired_model_alias_proxy.py",
+      "expected": "de5d2fd7dcc81538da5eaf7930d254ee3011b14752b451a5c9b4f61a1d43b99b",
+      "actual": "de5d2fd7dcc81538da5eaf7930d254ee3011b14752b451a5c9b4f61a1d43b99b",
+      "matches": true
+    },
+    {
+      "path": "tests/test_patch_bundle.py",
+      "expected": "42aa7f3b5145f1224f4c23d5da434ce1c942d28c8225e09246cf45e7b49e7af9",
+      "actual": "42aa7f3b5145f1224f4c23d5da434ce1c942d28c8225e09246cf45e7b49e7af9",
+      "matches": true
+    },
+    {
+      "path": "tests/test_plugin_lifecycle.py",
+      "expected": "ae7f9c52b0688fad2b2ac07ccda9dfcbc5a6313c283ed09b1fa179c13c049d20",
+      "actual": "ae7f9c52b0688fad2b2ac07ccda9dfcbc5a6313c283ed09b1fa179c13c049d20",
+      "matches": true
+    },
+    {
+      "path": "tests/test_prepare_sources.py",
+      "expected": "3d477cb2028f36779139d6075007c88e3e4277e29750d06a8e957e4e6de92ddb",
+      "actual": "3d477cb2028f36779139d6075007c88e3e4277e29750d06a8e957e4e6de92ddb",
+      "matches": true
+    },
+    {
+      "path": "tests/test_release_transaction.py",
+      "expected": "34150cd85b694c9b2885626bb1a910adca20c8e609e932384ae130ec00a5587f",
+      "actual": "34150cd85b694c9b2885626bb1a910adca20c8e609e932384ae130ec00a5587f",
+      "matches": true
+    },
+    {
+      "path": "tests/test_stop_cap_policy.py",
+      "expected": "a751387c719813653a3ca4e0c98baf4bee39764e0fa899407315bd2da9484f56",
+      "actual": "a751387c719813653a3ca4e0c98baf4bee39764e0fa899407315bd2da9484f56",
+      "matches": true
+    },
+    {
+      "path": "tests/test_system_overlay_snapshot.py",
+      "expected": "42c6521ff1bc1d3334cb94270e4cc8009d274107d08a367c81e2ae325e44deb9",
+      "actual": "42c6521ff1bc1d3334cb94270e4cc8009d274107d08a367c81e2ae325e44deb9",
+      "matches": true
+    },
+    {
+      "path": "tests/test_update_dependencies.py",
+      "expected": "2cc5c6c9cb85d28a0cc61e8a75dbe4dadc73a966abe899e5d65fbc29eb5ab448",
+      "actual": "2cc5c6c9cb85d28a0cc61e8a75dbe4dadc73a966abe899e5d65fbc29eb5ab448",
+      "matches": true
+    },
+    {
+      "path": "tests/test_update_hooks.py",
+      "expected": "2f79e609b98568bdee96a512a02334e133b82a5c9e24b8e22834e6abc54c9a84",
+      "actual": "2f79e609b98568bdee96a512a02334e133b82a5c9e24b8e22834e6abc54c9a84",
+      "matches": true
+    },
+    {
+      "path": "tests/test_update_plan.py",
+      "expected": "e91f8d7b3040e5357cf5eb83a0707344805705133039be19833d0e88d13d2abd",
+      "actual": "e91f8d7b3040e5357cf5eb83a0707344805705133039be19833d0e88d13d2abd",
+      "matches": true
+    },
+    {
+      "path": "tests/test_update_transaction.py",
+      "expected": "731216c4a3a45070226c202455ee90bd743e19fb9e14ecb50795a61dc1e62c2e",
+      "actual": "731216c4a3a45070226c202455ee90bd743e19fb9e14ecb50795a61dc1e62c2e",
+      "matches": true
+    },
+    {
+      "path": "tests/test_update_worker.py",
+      "expected": "863ce42c8f6d9e844f14534f8277b64b0ee63764929c704b917eaa78ad307627",
+      "actual": "863ce42c8f6d9e844f14534f8277b64b0ee63764929c704b917eaa78ad307627",
+      "matches": true
+    },
+    {
+      "path": "tests/test_version_drift_baseline.py",
+      "expected": "8cdfecfb3216af2348b6ad4b7130c75b30fe90ec3b3529deebc6ccb3e94ceb65",
+      "actual": "8cdfecfb3216af2348b6ad4b7130c75b30fe90ec3b3529deebc6ccb3e94ceb65",
+      "matches": true
+    }
+  ]
+}

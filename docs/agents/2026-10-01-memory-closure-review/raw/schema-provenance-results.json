@@ -1,0 +1,819 @@
+{
+  "schema": [
+    {
+      "retired": null,
+      "unmanaged": false,
+      "exit": 2,
+      "stdout": "{\n  \"ts\": \"2026-10-01T12:32:28.905Z\",\n  \"overall\": \"critical\",\n  \"counts\": {\n    \"critical\": 1,\n    \"warn\": 9,\n    \"ok\": 19\n  },\n  \"thresholds\": {\n    \"reviewerStaleMs\": 604800000,\n    \"retrievalStaleMs\": 86400000,\n    \"proposalBacklog\": 10,\n    \"observabilityMaxBytes\": 268435456,\n    \"observabilityMaxAgeMs\": 2592000000,\n    \"reviewerRunGraceMs\": 600000,\n    \"indexStaleMs\": 604800000\n  },\n  \"evidence\": {\n    \"nowMs\": 1790857948327,\n    \"thresholds\": {\n      \"reviewerStaleMs\": 604800000,\n      \"retrievalStaleMs\": 86400000,\n      \"proposalBacklog\": 10,\n      \"observabilityMaxBytes\": 268435456,\n      \"observabilityMaxAgeMs\": 2592000000,\n      \"reviewerRunGraceMs\": 600000,\n      \"indexStaleMs\": 604800000\n    },\n    \"reviewer\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"\n    },\n    \"retrieval\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"\n    },\n    \"proposals\": {\n      \"pending\": 0,\n      \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n      \"available\": false,\n      \"malformedLines\": []\n    },\n    \"observability\": {\n      \"bytes\": 0,\n      \"oldestMs\": null,\n      \"files\": 0,\n      \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\n      \"available\": false\n    },\n    \"index\": {\n      \"status\": \"absent\",\n      \"manifest\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n      \"policy\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n      \"measuredAt\": 1790857948327\n    }\n  },\n  \"findings\": [\n    {\n      \"id\": \"settings-hook-missing:MemoryTurnStart.hook.ts\",\n      \"severity\": \"critical\",\n      \"message\": \"MemoryTurnStart.hook.ts is in settings.system.json but NOT in the effective settings.json \u2014 de-registered from the live runtime. Regression source.\",\n      \"detail\": {\n        \"system\": \"/tmp/native-memory-k_hg0ila/.claude/settings.system.json\",\n        \"live\": \"/tmp/native-memory-k_hg0ila/.claude/settings.json\",\n        \"hook\": \"MemoryTurnStart.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryReviewFire.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryReviewFire.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryHealthGate.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryHealthGate.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"state-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"review-state.json does not exist yet \u2014 reviewer never fired.\"\n    },\n    {\n      \"id\": \"no-runs-dir\",\n      \"severity\": \"warn\",\n      \"message\": \"reviewer-runs/ directory does not exist yet.\"\n    },\n    {\n      \"id\": \"reviewer-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No latest reviewer evidence is available.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\n        \"staleThresholdMs\": 604800000\n      }\n    },\n    {\n      \"id\": \"retrieval-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No retrieval evidence within 86400000ms freshness window.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\n        \"thresholdMs\": 86400000\n      }\n    },\n    {\n      \"id\": \"proposal-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Proposal evidence is absent.\",\n      \"detail\": {\n        \"pending\": 0,\n        \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n        \"available\": false,\n        \"malformedLines\": []\n      }\n    },\n    {\n      \"id\": \"observability-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Observability evidence is absent.\",\n      \"detail\": {\n        \"bytes\": 0,\n        \"oldestMs\": null,\n        \"files\": 0,\n        \"evidence\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\n        \"available\": false\n      }\n    },\n    {\n      \"id\": \"index-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Index state is ambiguous.\",\n      \"detail\": {\n        \"status\": \"absent\",\n        \"manifest\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n        \"policy\": \"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n        \"measuredAt\": 1790857948327\n      }\n    }\n  ],\n  \"ok_summary\": [\n    \"hook-file-present:MemoryTurnStart.hook.ts\",\n    \"hook-file-present:LoadMemory.hook.ts\",\n    \"hook-file-present:MemoryDeltaSurface.hook.ts\",\n    \"hook-file-present:MemoryReviewFire.hook.ts\",\n    \"hook-file-present:MemoryHealthGate.hook.ts\",\n    \"tool-file-present:MemorySystem.ts\",\n    \"tool-file-present:MemoryReviewer.ts\",\n    \"tool-file-present:MemoryWriter.ts\",\n    \"tool-file-present:MemoryRetriever.ts\",\n    \"tool-file-present:MemoryTypes.ts\",\n    \"tool-file-present:MemoryStatus.ts\",\n    \"tool-file-present:MemoryHealthCheck.ts\",\n    \"tool-file-present:MutationTier.ts\",\n    \"principal-memory-present\",\n    \"da-memory-present\",\n    \"markers-ok:principal\",\n    \"markers-ok:da\",\n    \"cap-ok:principal\",\n    \"cap-ok:da\"\n  ]\n}\n",
+      "stderr": "",
+      "report": {
+        "ts": "2026-10-01T12:32:28.905Z",
+        "overall": "critical",
+        "counts": {
+          "critical": 1,
+          "warn": 9,
+          "ok": 19
+        },
+        "thresholds": {
+          "reviewerStaleMs": 604800000,
+          "retrievalStaleMs": 86400000,
+          "proposalBacklog": 10,
+          "observabilityMaxBytes": 268435456,
+          "observabilityMaxAgeMs": 2592000000,
+          "reviewerRunGraceMs": 600000,
+          "indexStaleMs": 604800000
+        },
+        "evidence": {
+          "nowMs": 1790857948327,
+          "thresholds": {
+            "reviewerStaleMs": 604800000,
+            "retrievalStaleMs": 86400000,
+            "proposalBacklog": 10,
+            "observabilityMaxBytes": 268435456,
+            "observabilityMaxAgeMs": 2592000000,
+            "reviewerRunGraceMs": 600000,
+            "indexStaleMs": 604800000
+          },
+          "reviewer": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"
+          },
+          "retrieval": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl"
+          },
+          "proposals": {
+            "pending": 0,
+            "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+            "available": false,
+            "malformedLines": []
+          },
+          "observability": {
+            "bytes": 0,
+            "oldestMs": null,
+            "files": 0,
+            "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+            "available": false
+          },
+          "index": {
+            "status": "absent",
+            "manifest": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+            "policy": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+            "measuredAt": 1790857948327
+          }
+        },
+        "findings": [
+          {
+            "id": "settings-hook-missing:MemoryTurnStart.hook.ts",
+            "severity": "critical",
+            "message": "MemoryTurnStart.hook.ts is in settings.system.json but NOT in the effective settings.json \u2014 de-registered from the live runtime. Regression source.",
+            "detail": {
+              "system": "/tmp/native-memory-k_hg0ila/.claude/settings.system.json",
+              "live": "/tmp/native-memory-k_hg0ila/.claude/settings.json",
+              "hook": "MemoryTurnStart.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryReviewFire.hook.ts",
+            "severity": "warn",
+            "message": "MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryReviewFire.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryHealthGate.hook.ts",
+            "severity": "warn",
+            "message": "MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryHealthGate.hook.ts"
+            }
+          },
+          {
+            "id": "state-missing",
+            "severity": "warn",
+            "message": "review-state.json does not exist yet \u2014 reviewer never fired."
+          },
+          {
+            "id": "no-runs-dir",
+            "severity": "warn",
+            "message": "reviewer-runs/ directory does not exist yet."
+          },
+          {
+            "id": "reviewer-evidence-missing",
+            "severity": "warn",
+            "message": "No latest reviewer evidence is available.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs",
+              "staleThresholdMs": 604800000
+            }
+          },
+          {
+            "id": "retrieval-missing",
+            "severity": "warn",
+            "message": "No retrieval evidence within 86400000ms freshness window.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl",
+              "thresholdMs": 86400000
+            }
+          },
+          {
+            "id": "proposal-evidence-missing",
+            "severity": "warn",
+            "message": "Proposal evidence is absent.",
+            "detail": {
+              "pending": 0,
+              "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+              "available": false,
+              "malformedLines": []
+            }
+          },
+          {
+            "id": "observability-evidence-missing",
+            "severity": "warn",
+            "message": "Observability evidence is absent.",
+            "detail": {
+              "bytes": 0,
+              "oldestMs": null,
+              "files": 0,
+              "evidence": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+              "available": false
+            }
+          },
+          {
+            "id": "index-evidence-missing",
+            "severity": "warn",
+            "message": "Index state is ambiguous.",
+            "detail": {
+              "status": "absent",
+              "manifest": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+              "policy": "/tmp/native-memory-k_hg0ila/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+              "measuredAt": 1790857948327
+            }
+          }
+        ],
+        "ok_summary": [
+          "hook-file-present:MemoryTurnStart.hook.ts",
+          "hook-file-present:LoadMemory.hook.ts",
+          "hook-file-present:MemoryDeltaSurface.hook.ts",
+          "hook-file-present:MemoryReviewFire.hook.ts",
+          "hook-file-present:MemoryHealthGate.hook.ts",
+          "tool-file-present:MemorySystem.ts",
+          "tool-file-present:MemoryReviewer.ts",
+          "tool-file-present:MemoryWriter.ts",
+          "tool-file-present:MemoryRetriever.ts",
+          "tool-file-present:MemoryTypes.ts",
+          "tool-file-present:MemoryStatus.ts",
+          "tool-file-present:MemoryHealthCheck.ts",
+          "tool-file-present:MutationTier.ts",
+          "principal-memory-present",
+          "da-memory-present",
+          "markers-ok:principal",
+          "markers-ok:da",
+          "cap-ok:principal",
+          "cap-ok:da"
+        ]
+      },
+      "published": true,
+      "publication": "{\"ts\":\"2026-10-01T12:32:28.905Z\",\"overall\":\"critical\",\"counts\":{\"critical\":1,\"warn\":9,\"ok\":19},\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"evidence\":{\"nowMs\":1790857948327,\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"reviewer\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"},\"retrieval\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"},\"proposals\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]},\"observability\":{\"bytes\":0,\"oldestMs\":null,\"files\":0,\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\"available\":false},\"index\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857948327}},\"findings\":[{\"id\":\"settings-hook-missing:MemoryTurnStart.hook.ts\",\"severity\":\"critical\",\"message\":\"MemoryTurnStart.hook.ts is in settings.system.json but NOT in the effective settings.json \u2014 de-registered from the live runtime. Regression source.\",\"detail\":{\"system\":\"/tmp/native-memory-k_hg0ila/.claude/settings.system.json\",\"live\":\"/tmp/native-memory-k_hg0ila/.claude/settings.json\",\"hook\":\"MemoryTurnStart.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryReviewFire.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryReviewFire.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryHealthGate.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryHealthGate.hook.ts\"}},{\"id\":\"state-missing\",\"severity\":\"warn\",\"message\":\"review-state.json does not exist yet \u2014 reviewer never fired.\"},{\"id\":\"no-runs-dir\",\"severity\":\"warn\",\"message\":\"reviewer-runs/ directory does not exist yet.\"},{\"id\":\"reviewer-evidence-missing\",\"severity\":\"warn\",\"message\":\"No latest reviewer evidence is available.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\"staleThresholdMs\":604800000}},{\"id\":\"retrieval-missing\",\"severity\":\"warn\",\"message\":\"No retrieval evidence within 86400000ms freshness window.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\"thresholdMs\":86400000}},{\"id\":\"proposal-evidence-missing\",\"severity\":\"warn\",\"message\":\"Proposal evidence is absent.\",\"detail\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]}},{\"id\":\"observability-evidence-missing\",\"severity\":\"warn\",\"message\":\"Observability evidence is absent.\",\"detail\":{\"bytes\":0,\"oldestMs\":null,\"files\":0,\"evidence\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\"available\":false}},{\"id\":\"index-evidence-missing\",\"severity\":\"warn\",\"message\":\"Index state is ambiguous.\",\"detail\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-k_hg0ila/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857948327}}],\"ok_summary\":[\"hook-file-present:MemoryTurnStart.hook.ts\",\"hook-file-present:LoadMemory.hook.ts\",\"hook-file-present:MemoryDeltaSurface.hook.ts\",\"hook-file-present:MemoryReviewFire.hook.ts\",\"hook-file-present:MemoryHealthGate.hook.ts\",\"tool-file-present:MemorySystem.ts\",\"tool-file-present:MemoryReviewer.ts\",\"tool-file-present:MemoryWriter.ts\",\"tool-file-present:MemoryRetriever.ts\",\"tool-file-present:MemoryTypes.ts\",\"tool-file-present:MemoryStatus.ts\",\"tool-file-present:MemoryHealthCheck.ts\",\"tool-file-present:MutationTier.ts\",\"principal-memory-present\",\"da-memory-present\",\"markers-ok:principal\",\"markers-ok:da\",\"cap-ok:principal\",\"cap-ok:da\"]}\n"
+    },
+    {
+      "retired": "system",
+      "unmanaged": false,
+      "exit": 2,
+      "stdout": "{\n  \"ts\": \"2026-10-01T12:32:31.275Z\",\n  \"overall\": \"critical\",\n  \"counts\": {\n    \"critical\": 2,\n    \"warn\": 8,\n    \"ok\": 19\n  },\n  \"thresholds\": {\n    \"reviewerStaleMs\": 604800000,\n    \"retrievalStaleMs\": 86400000,\n    \"proposalBacklog\": 10,\n    \"observabilityMaxBytes\": 268435456,\n    \"observabilityMaxAgeMs\": 2592000000,\n    \"reviewerRunGraceMs\": 600000,\n    \"indexStaleMs\": 604800000\n  },\n  \"evidence\": {\n    \"nowMs\": 1790857950727,\n    \"thresholds\": {\n      \"reviewerStaleMs\": 604800000,\n      \"retrievalStaleMs\": 86400000,\n      \"proposalBacklog\": 10,\n      \"observabilityMaxBytes\": 268435456,\n      \"observabilityMaxAgeMs\": 2592000000,\n      \"reviewerRunGraceMs\": 600000,\n      \"indexStaleMs\": 604800000\n    },\n    \"reviewer\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"\n    },\n    \"retrieval\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"\n    },\n    \"proposals\": {\n      \"pending\": 0,\n      \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n      \"available\": false,\n      \"malformedLines\": []\n    },\n    \"observability\": {\n      \"bytes\": 573,\n      \"oldestMs\": 1790857949901.1182,\n      \"files\": 1,\n      \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\n      \"available\": true\n    },\n    \"index\": {\n      \"status\": \"absent\",\n      \"manifest\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n      \"policy\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n      \"measuredAt\": 1790857950727\n    }\n  },\n  \"findings\": [\n    {\n      \"id\": \"settings-hook-missing:MemoryTurnStart.hook.ts\",\n      \"severity\": \"critical\",\n      \"message\": \"Memory diagnostic details are unavailable under the current policy.\",\n      \"detail\": {\n        \"system\": \"Memory diagnostic details are unavailable under the current policy.\",\n        \"live\": \"/tmp/native-memory-qtoo2qwx/.claude/settings.json\",\n        \"hook\": \"MemoryTurnStart.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryReviewFire.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryReviewFire.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryHealthGate.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryHealthGate.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"delta-surface-dead\",\n      \"severity\": \"critical\",\n      \"message\": \"Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).\",\n      \"detail\": {\n        \"lastWrite\": \"2026-10-01T12:32:29.572Z\",\n        \"heartbeat\": \"never\"\n      }\n    },\n    {\n      \"id\": \"state-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"review-state.json does not exist yet \u2014 reviewer never fired.\"\n    },\n    {\n      \"id\": \"no-runs-dir\",\n      \"severity\": \"warn\",\n      \"message\": \"reviewer-runs/ directory does not exist yet.\"\n    },\n    {\n      \"id\": \"reviewer-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No latest reviewer evidence is available.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\n        \"staleThresholdMs\": 604800000\n      }\n    },\n    {\n      \"id\": \"retrieval-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No retrieval evidence within 86400000ms freshness window.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\n        \"thresholdMs\": 86400000\n      }\n    },\n    {\n      \"id\": \"proposal-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Proposal evidence is absent.\",\n      \"detail\": {\n        \"pending\": 0,\n        \"evidence\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n        \"available\": false,\n        \"malformedLines\": []\n      }\n    },\n    {\n      \"id\": \"index-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Index state is ambiguous.\",\n      \"detail\": {\n        \"status\": \"absent\",\n        \"manifest\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n        \"policy\": \"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n        \"measuredAt\": 1790857950727\n      }\n    }\n  ],\n  \"ok_summary\": [\n    \"hook-file-present:MemoryTurnStart.hook.ts\",\n    \"hook-file-present:LoadMemory.hook.ts\",\n    \"hook-file-present:MemoryDeltaSurface.hook.ts\",\n    \"hook-file-present:MemoryReviewFire.hook.ts\",\n    \"hook-file-present:MemoryHealthGate.hook.ts\",\n    \"tool-file-present:MemorySystem.ts\",\n    \"tool-file-present:MemoryReviewer.ts\",\n    \"tool-file-present:MemoryWriter.ts\",\n    \"tool-file-present:MemoryRetriever.ts\",\n    \"tool-file-present:MemoryTypes.ts\",\n    \"tool-file-present:MemoryStatus.ts\",\n    \"tool-file-present:MemoryHealthCheck.ts\",\n    \"tool-file-present:MutationTier.ts\",\n    \"principal-memory-present\",\n    \"da-memory-present\",\n    \"markers-ok:principal\",\n    \"markers-ok:da\",\n    \"cap-ok:principal\",\n    \"cap-ok:da\"\n  ]\n}\n",
+      "stderr": "",
+      "report": {
+        "ts": "2026-10-01T12:32:31.275Z",
+        "overall": "critical",
+        "counts": {
+          "critical": 2,
+          "warn": 8,
+          "ok": 19
+        },
+        "thresholds": {
+          "reviewerStaleMs": 604800000,
+          "retrievalStaleMs": 86400000,
+          "proposalBacklog": 10,
+          "observabilityMaxBytes": 268435456,
+          "observabilityMaxAgeMs": 2592000000,
+          "reviewerRunGraceMs": 600000,
+          "indexStaleMs": 604800000
+        },
+        "evidence": {
+          "nowMs": 1790857950727,
+          "thresholds": {
+            "reviewerStaleMs": 604800000,
+            "retrievalStaleMs": 86400000,
+            "proposalBacklog": 10,
+            "observabilityMaxBytes": 268435456,
+            "observabilityMaxAgeMs": 2592000000,
+            "reviewerRunGraceMs": 600000,
+            "indexStaleMs": 604800000
+          },
+          "reviewer": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"
+          },
+          "retrieval": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl"
+          },
+          "proposals": {
+            "pending": 0,
+            "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+            "available": false,
+            "malformedLines": []
+          },
+          "observability": {
+            "bytes": 573,
+            "oldestMs": 1790857949901.1182,
+            "files": 1,
+            "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+            "available": true
+          },
+          "index": {
+            "status": "absent",
+            "manifest": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+            "policy": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+            "measuredAt": 1790857950727
+          }
+        },
+        "findings": [
+          {
+            "id": "settings-hook-missing:MemoryTurnStart.hook.ts",
+            "severity": "critical",
+            "message": "Memory diagnostic details are unavailable under the current policy.",
+            "detail": {
+              "system": "Memory diagnostic details are unavailable under the current policy.",
+              "live": "/tmp/native-memory-qtoo2qwx/.claude/settings.json",
+              "hook": "MemoryTurnStart.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryReviewFire.hook.ts",
+            "severity": "warn",
+            "message": "MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryReviewFire.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryHealthGate.hook.ts",
+            "severity": "warn",
+            "message": "MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryHealthGate.hook.ts"
+            }
+          },
+          {
+            "id": "delta-surface-dead",
+            "severity": "critical",
+            "message": "Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).",
+            "detail": {
+              "lastWrite": "2026-10-01T12:32:29.572Z",
+              "heartbeat": "never"
+            }
+          },
+          {
+            "id": "state-missing",
+            "severity": "warn",
+            "message": "review-state.json does not exist yet \u2014 reviewer never fired."
+          },
+          {
+            "id": "no-runs-dir",
+            "severity": "warn",
+            "message": "reviewer-runs/ directory does not exist yet."
+          },
+          {
+            "id": "reviewer-evidence-missing",
+            "severity": "warn",
+            "message": "No latest reviewer evidence is available.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs",
+              "staleThresholdMs": 604800000
+            }
+          },
+          {
+            "id": "retrieval-missing",
+            "severity": "warn",
+            "message": "No retrieval evidence within 86400000ms freshness window.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl",
+              "thresholdMs": 86400000
+            }
+          },
+          {
+            "id": "proposal-evidence-missing",
+            "severity": "warn",
+            "message": "Proposal evidence is absent.",
+            "detail": {
+              "pending": 0,
+              "evidence": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+              "available": false,
+              "malformedLines": []
+            }
+          },
+          {
+            "id": "index-evidence-missing",
+            "severity": "warn",
+            "message": "Index state is ambiguous.",
+            "detail": {
+              "status": "absent",
+              "manifest": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+              "policy": "/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+              "measuredAt": 1790857950727
+            }
+          }
+        ],
+        "ok_summary": [
+          "hook-file-present:MemoryTurnStart.hook.ts",
+          "hook-file-present:LoadMemory.hook.ts",
+          "hook-file-present:MemoryDeltaSurface.hook.ts",
+          "hook-file-present:MemoryReviewFire.hook.ts",
+          "hook-file-present:MemoryHealthGate.hook.ts",
+          "tool-file-present:MemorySystem.ts",
+          "tool-file-present:MemoryReviewer.ts",
+          "tool-file-present:MemoryWriter.ts",
+          "tool-file-present:MemoryRetriever.ts",
+          "tool-file-present:MemoryTypes.ts",
+          "tool-file-present:MemoryStatus.ts",
+          "tool-file-present:MemoryHealthCheck.ts",
+          "tool-file-present:MutationTier.ts",
+          "principal-memory-present",
+          "da-memory-present",
+          "markers-ok:principal",
+          "markers-ok:da",
+          "cap-ok:principal",
+          "cap-ok:da"
+        ]
+      },
+      "published": true,
+      "publication": "{\"ts\":\"2026-10-01T12:32:31.275Z\",\"overall\":\"critical\",\"counts\":{\"critical\":2,\"warn\":8,\"ok\":19},\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"evidence\":{\"nowMs\":1790857950727,\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"reviewer\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"},\"retrieval\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"},\"proposals\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]},\"observability\":{\"bytes\":573,\"oldestMs\":1790857949901.1182,\"files\":1,\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\"available\":true},\"index\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857950727}},\"findings\":[{\"id\":\"settings-hook-missing:MemoryTurnStart.hook.ts\",\"severity\":\"critical\",\"message\":\"Memory diagnostic details are unavailable under the current policy.\",\"detail\":{\"system\":\"Memory diagnostic details are unavailable under the current policy.\",\"live\":\"/tmp/native-memory-qtoo2qwx/.claude/settings.json\",\"hook\":\"MemoryTurnStart.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryReviewFire.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryReviewFire.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryHealthGate.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryHealthGate.hook.ts\"}},{\"id\":\"delta-surface-dead\",\"severity\":\"critical\",\"message\":\"Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).\",\"detail\":{\"lastWrite\":\"2026-10-01T12:32:29.572Z\",\"heartbeat\":\"never\"}},{\"id\":\"state-missing\",\"severity\":\"warn\",\"message\":\"review-state.json does not exist yet \u2014 reviewer never fired.\"},{\"id\":\"no-runs-dir\",\"severity\":\"warn\",\"message\":\"reviewer-runs/ directory does not exist yet.\"},{\"id\":\"reviewer-evidence-missing\",\"severity\":\"warn\",\"message\":\"No latest reviewer evidence is available.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\"staleThresholdMs\":604800000}},{\"id\":\"retrieval-missing\",\"severity\":\"warn\",\"message\":\"No retrieval evidence within 86400000ms freshness window.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\"thresholdMs\":86400000}},{\"id\":\"proposal-evidence-missing\",\"severity\":\"warn\",\"message\":\"Proposal evidence is absent.\",\"detail\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]}},{\"id\":\"index-evidence-missing\",\"severity\":\"warn\",\"message\":\"Index state is ambiguous.\",\"detail\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-qtoo2qwx/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857950727}}],\"ok_summary\":[\"hook-file-present:MemoryTurnStart.hook.ts\",\"hook-file-present:LoadMemory.hook.ts\",\"hook-file-present:MemoryDeltaSurface.hook.ts\",\"hook-file-present:MemoryReviewFire.hook.ts\",\"hook-file-present:MemoryHealthGate.hook.ts\",\"tool-file-present:MemorySystem.ts\",\"tool-file-present:MemoryReviewer.ts\",\"tool-file-present:MemoryWriter.ts\",\"tool-file-present:MemoryRetriever.ts\",\"tool-file-present:MemoryTypes.ts\",\"tool-file-present:MemoryStatus.ts\",\"tool-file-present:MemoryHealthCheck.ts\",\"tool-file-present:MutationTier.ts\",\"principal-memory-present\",\"da-memory-present\",\"markers-ok:principal\",\"markers-ok:da\",\"cap-ok:principal\",\"cap-ok:da\"]}\n"
+    },
+    {
+      "retired": "live",
+      "unmanaged": false,
+      "exit": 2,
+      "stdout": "{\n  \"ts\": \"2026-10-01T12:32:33.871Z\",\n  \"overall\": \"critical\",\n  \"counts\": {\n    \"critical\": 2,\n    \"warn\": 8,\n    \"ok\": 19\n  },\n  \"thresholds\": {\n    \"reviewerStaleMs\": 604800000,\n    \"retrievalStaleMs\": 86400000,\n    \"proposalBacklog\": 10,\n    \"observabilityMaxBytes\": 268435456,\n    \"observabilityMaxAgeMs\": 2592000000,\n    \"reviewerRunGraceMs\": 600000,\n    \"indexStaleMs\": 604800000\n  },\n  \"evidence\": {\n    \"nowMs\": 1790857953310,\n    \"thresholds\": {\n      \"reviewerStaleMs\": 604800000,\n      \"retrievalStaleMs\": 86400000,\n      \"proposalBacklog\": 10,\n      \"observabilityMaxBytes\": 268435456,\n      \"observabilityMaxAgeMs\": 2592000000,\n      \"reviewerRunGraceMs\": 600000,\n      \"indexStaleMs\": 604800000\n    },\n    \"reviewer\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"\n    },\n    \"retrieval\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"\n    },\n    \"proposals\": {\n      \"pending\": 0,\n      \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n      \"available\": false,\n      \"malformedLines\": []\n    },\n    \"observability\": {\n      \"bytes\": 569,\n      \"oldestMs\": 1790857952370.2104,\n      \"files\": 1,\n      \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\n      \"available\": true\n    },\n    \"index\": {\n      \"status\": \"absent\",\n      \"manifest\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n      \"policy\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n      \"measuredAt\": 1790857953310\n    }\n  },\n  \"findings\": [\n    {\n      \"id\": \"settings-hook-missing:MemoryTurnStart.hook.ts\",\n      \"severity\": \"critical\",\n      \"message\": \"Memory diagnostic details are unavailable under the current policy.\",\n      \"detail\": {\n        \"system\": \"/tmp/native-memory-j6fw8x2o/.claude/settings.system.json\",\n        \"live\": \"/tmp/native-memory-j6fw8x2o/.claude/settings.json\",\n        \"hook\": \"MemoryTurnStart.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryReviewFire.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryReviewFire.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryHealthGate.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryHealthGate.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"delta-surface-dead\",\n      \"severity\": \"critical\",\n      \"message\": \"Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).\",\n      \"detail\": {\n        \"lastWrite\": \"2026-10-01T12:32:31.991Z\",\n        \"heartbeat\": \"never\"\n      }\n    },\n    {\n      \"id\": \"state-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"review-state.json does not exist yet \u2014 reviewer never fired.\"\n    },\n    {\n      \"id\": \"no-runs-dir\",\n      \"severity\": \"warn\",\n      \"message\": \"reviewer-runs/ directory does not exist yet.\"\n    },\n    {\n      \"id\": \"reviewer-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No latest reviewer evidence is available.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\n        \"staleThresholdMs\": 604800000\n      }\n    },\n    {\n      \"id\": \"retrieval-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No retrieval evidence within 86400000ms freshness window.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\n        \"thresholdMs\": 86400000\n      }\n    },\n    {\n      \"id\": \"proposal-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Proposal evidence is absent.\",\n      \"detail\": {\n        \"pending\": 0,\n        \"evidence\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n        \"available\": false,\n        \"malformedLines\": []\n      }\n    },\n    {\n      \"id\": \"index-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Index state is ambiguous.\",\n      \"detail\": {\n        \"status\": \"absent\",\n        \"manifest\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n        \"policy\": \"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n        \"measuredAt\": 1790857953310\n      }\n    }\n  ],\n  \"ok_summary\": [\n    \"hook-file-present:MemoryTurnStart.hook.ts\",\n    \"hook-file-present:LoadMemory.hook.ts\",\n    \"hook-file-present:MemoryDeltaSurface.hook.ts\",\n    \"hook-file-present:MemoryReviewFire.hook.ts\",\n    \"hook-file-present:MemoryHealthGate.hook.ts\",\n    \"tool-file-present:MemorySystem.ts\",\n    \"tool-file-present:MemoryReviewer.ts\",\n    \"tool-file-present:MemoryWriter.ts\",\n    \"tool-file-present:MemoryRetriever.ts\",\n    \"tool-file-present:MemoryTypes.ts\",\n    \"tool-file-present:MemoryStatus.ts\",\n    \"tool-file-present:MemoryHealthCheck.ts\",\n    \"tool-file-present:MutationTier.ts\",\n    \"principal-memory-present\",\n    \"da-memory-present\",\n    \"markers-ok:principal\",\n    \"markers-ok:da\",\n    \"cap-ok:principal\",\n    \"cap-ok:da\"\n  ]\n}\n",
+      "stderr": "",
+      "report": {
+        "ts": "2026-10-01T12:32:33.871Z",
+        "overall": "critical",
+        "counts": {
+          "critical": 2,
+          "warn": 8,
+          "ok": 19
+        },
+        "thresholds": {
+          "reviewerStaleMs": 604800000,
+          "retrievalStaleMs": 86400000,
+          "proposalBacklog": 10,
+          "observabilityMaxBytes": 268435456,
+          "observabilityMaxAgeMs": 2592000000,
+          "reviewerRunGraceMs": 600000,
+          "indexStaleMs": 604800000
+        },
+        "evidence": {
+          "nowMs": 1790857953310,
+          "thresholds": {
+            "reviewerStaleMs": 604800000,
+            "retrievalStaleMs": 86400000,
+            "proposalBacklog": 10,
+            "observabilityMaxBytes": 268435456,
+            "observabilityMaxAgeMs": 2592000000,
+            "reviewerRunGraceMs": 600000,
+            "indexStaleMs": 604800000
+          },
+          "reviewer": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"
+          },
+          "retrieval": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl"
+          },
+          "proposals": {
+            "pending": 0,
+            "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+            "available": false,
+            "malformedLines": []
+          },
+          "observability": {
+            "bytes": 569,
+            "oldestMs": 1790857952370.2104,
+            "files": 1,
+            "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+            "available": true
+          },
+          "index": {
+            "status": "absent",
+            "manifest": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+            "policy": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+            "measuredAt": 1790857953310
+          }
+        },
+        "findings": [
+          {
+            "id": "settings-hook-missing:MemoryTurnStart.hook.ts",
+            "severity": "critical",
+            "message": "Memory diagnostic details are unavailable under the current policy.",
+            "detail": {
+              "system": "/tmp/native-memory-j6fw8x2o/.claude/settings.system.json",
+              "live": "/tmp/native-memory-j6fw8x2o/.claude/settings.json",
+              "hook": "MemoryTurnStart.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryReviewFire.hook.ts",
+            "severity": "warn",
+            "message": "MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryReviewFire.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryHealthGate.hook.ts",
+            "severity": "warn",
+            "message": "MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryHealthGate.hook.ts"
+            }
+          },
+          {
+            "id": "delta-surface-dead",
+            "severity": "critical",
+            "message": "Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).",
+            "detail": {
+              "lastWrite": "2026-10-01T12:32:31.991Z",
+              "heartbeat": "never"
+            }
+          },
+          {
+            "id": "state-missing",
+            "severity": "warn",
+            "message": "review-state.json does not exist yet \u2014 reviewer never fired."
+          },
+          {
+            "id": "no-runs-dir",
+            "severity": "warn",
+            "message": "reviewer-runs/ directory does not exist yet."
+          },
+          {
+            "id": "reviewer-evidence-missing",
+            "severity": "warn",
+            "message": "No latest reviewer evidence is available.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs",
+              "staleThresholdMs": 604800000
+            }
+          },
+          {
+            "id": "retrieval-missing",
+            "severity": "warn",
+            "message": "No retrieval evidence within 86400000ms freshness window.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl",
+              "thresholdMs": 86400000
+            }
+          },
+          {
+            "id": "proposal-evidence-missing",
+            "severity": "warn",
+            "message": "Proposal evidence is absent.",
+            "detail": {
+              "pending": 0,
+              "evidence": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+              "available": false,
+              "malformedLines": []
+            }
+          },
+          {
+            "id": "index-evidence-missing",
+            "severity": "warn",
+            "message": "Index state is ambiguous.",
+            "detail": {
+              "status": "absent",
+              "manifest": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+              "policy": "/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+              "measuredAt": 1790857953310
+            }
+          }
+        ],
+        "ok_summary": [
+          "hook-file-present:MemoryTurnStart.hook.ts",
+          "hook-file-present:LoadMemory.hook.ts",
+          "hook-file-present:MemoryDeltaSurface.hook.ts",
+          "hook-file-present:MemoryReviewFire.hook.ts",
+          "hook-file-present:MemoryHealthGate.hook.ts",
+          "tool-file-present:MemorySystem.ts",
+          "tool-file-present:MemoryReviewer.ts",
+          "tool-file-present:MemoryWriter.ts",
+          "tool-file-present:MemoryRetriever.ts",
+          "tool-file-present:MemoryTypes.ts",
+          "tool-file-present:MemoryStatus.ts",
+          "tool-file-present:MemoryHealthCheck.ts",
+          "tool-file-present:MutationTier.ts",
+          "principal-memory-present",
+          "da-memory-present",
+          "markers-ok:principal",
+          "markers-ok:da",
+          "cap-ok:principal",
+          "cap-ok:da"
+        ]
+      },
+      "published": true,
+      "publication": "{\"ts\":\"2026-10-01T12:32:33.871Z\",\"overall\":\"critical\",\"counts\":{\"critical\":2,\"warn\":8,\"ok\":19},\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"evidence\":{\"nowMs\":1790857953310,\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"reviewer\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"},\"retrieval\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"},\"proposals\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]},\"observability\":{\"bytes\":569,\"oldestMs\":1790857952370.2104,\"files\":1,\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\"available\":true},\"index\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857953310}},\"findings\":[{\"id\":\"settings-hook-missing:MemoryTurnStart.hook.ts\",\"severity\":\"critical\",\"message\":\"Memory diagnostic details are unavailable under the current policy.\",\"detail\":{\"system\":\"/tmp/native-memory-j6fw8x2o/.claude/settings.system.json\",\"live\":\"/tmp/native-memory-j6fw8x2o/.claude/settings.json\",\"hook\":\"MemoryTurnStart.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryReviewFire.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryReviewFire.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryHealthGate.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryHealthGate.hook.ts\"}},{\"id\":\"delta-surface-dead\",\"severity\":\"critical\",\"message\":\"Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).\",\"detail\":{\"lastWrite\":\"2026-10-01T12:32:31.991Z\",\"heartbeat\":\"never\"}},{\"id\":\"state-missing\",\"severity\":\"warn\",\"message\":\"review-state.json does not exist yet \u2014 reviewer never fired.\"},{\"id\":\"no-runs-dir\",\"severity\":\"warn\",\"message\":\"reviewer-runs/ directory does not exist yet.\"},{\"id\":\"reviewer-evidence-missing\",\"severity\":\"warn\",\"message\":\"No latest reviewer evidence is available.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\"staleThresholdMs\":604800000}},{\"id\":\"retrieval-missing\",\"severity\":\"warn\",\"message\":\"No retrieval evidence within 86400000ms freshness window.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\"thresholdMs\":86400000}},{\"id\":\"proposal-evidence-missing\",\"severity\":\"warn\",\"message\":\"Proposal evidence is absent.\",\"detail\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]}},{\"id\":\"index-evidence-missing\",\"severity\":\"warn\",\"message\":\"Index state is ambiguous.\",\"detail\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-j6fw8x2o/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857953310}}],\"ok_summary\":[\"hook-file-present:MemoryTurnStart.hook.ts\",\"hook-file-present:LoadMemory.hook.ts\",\"hook-file-present:MemoryDeltaSurface.hook.ts\",\"hook-file-present:MemoryReviewFire.hook.ts\",\"hook-file-present:MemoryHealthGate.hook.ts\",\"tool-file-present:MemorySystem.ts\",\"tool-file-present:MemoryReviewer.ts\",\"tool-file-present:MemoryWriter.ts\",\"tool-file-present:MemoryRetriever.ts\",\"tool-file-present:MemoryTypes.ts\",\"tool-file-present:MemoryStatus.ts\",\"tool-file-present:MemoryHealthCheck.ts\",\"tool-file-present:MutationTier.ts\",\"principal-memory-present\",\"da-memory-present\",\"markers-ok:principal\",\"markers-ok:da\",\"cap-ok:principal\",\"cap-ok:da\"]}\n"
+    },
+    {
+      "retired": "system",
+      "unmanaged": true,
+      "exit": 2,
+      "stdout": "{\n  \"ts\": \"2026-10-01T12:32:34.984Z\",\n  \"overall\": \"critical\",\n  \"counts\": {\n    \"critical\": 2,\n    \"warn\": 8,\n    \"ok\": 19\n  },\n  \"thresholds\": {\n    \"reviewerStaleMs\": 604800000,\n    \"retrievalStaleMs\": 86400000,\n    \"proposalBacklog\": 10,\n    \"observabilityMaxBytes\": 268435456,\n    \"observabilityMaxAgeMs\": 2592000000,\n    \"reviewerRunGraceMs\": 600000,\n    \"indexStaleMs\": 604800000\n  },\n  \"evidence\": {\n    \"nowMs\": 1790857954983,\n    \"thresholds\": {\n      \"reviewerStaleMs\": 604800000,\n      \"retrievalStaleMs\": 86400000,\n      \"proposalBacklog\": 10,\n      \"observabilityMaxBytes\": 268435456,\n      \"observabilityMaxAgeMs\": 2592000000,\n      \"reviewerRunGraceMs\": 600000,\n      \"indexStaleMs\": 604800000\n    },\n    \"reviewer\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"\n    },\n    \"retrieval\": {\n      \"status\": \"missing\",\n      \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"\n    },\n    \"proposals\": {\n      \"pending\": 0,\n      \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n      \"available\": false,\n      \"malformedLines\": []\n    },\n    \"observability\": {\n      \"bytes\": 573,\n      \"oldestMs\": 1790857954942.3066,\n      \"files\": 1,\n      \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\n      \"available\": true\n    },\n    \"index\": {\n      \"status\": \"absent\",\n      \"manifest\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n      \"policy\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n      \"measuredAt\": 1790857954983\n    }\n  },\n  \"findings\": [\n    {\n      \"id\": \"settings-hook-missing:MemoryTurnStart.hook.ts\",\n      \"severity\": \"critical\",\n      \"message\": \"MemoryTurnStart.hook.ts is in settings.system.json but NOT in the effective settings.json \u2014 de-registered from the live runtime. Regression source.\",\n      \"detail\": {\n        \"system\": \"/tmp/native-memory-88jeic_u/.claude/settings.system.json\",\n        \"live\": \"/tmp/native-memory-88jeic_u/.claude/settings.json\",\n        \"hook\": \"MemoryTurnStart.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryReviewFire.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryReviewFire.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"settings-hook-absent:MemoryHealthGate.hook.ts\",\n      \"severity\": \"warn\",\n      \"message\": \"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\n      \"detail\": {\n        \"hook\": \"MemoryHealthGate.hook.ts\"\n      }\n    },\n    {\n      \"id\": \"delta-surface-dead\",\n      \"severity\": \"critical\",\n      \"message\": \"Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).\",\n      \"detail\": {\n        \"lastWrite\": \"2026-10-01T12:32:34.587Z\",\n        \"heartbeat\": \"never\"\n      }\n    },\n    {\n      \"id\": \"state-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"review-state.json does not exist yet \u2014 reviewer never fired.\"\n    },\n    {\n      \"id\": \"no-runs-dir\",\n      \"severity\": \"warn\",\n      \"message\": \"reviewer-runs/ directory does not exist yet.\"\n    },\n    {\n      \"id\": \"reviewer-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No latest reviewer evidence is available.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\n        \"staleThresholdMs\": 604800000\n      }\n    },\n    {\n      \"id\": \"retrieval-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"No retrieval evidence within 86400000ms freshness window.\",\n      \"detail\": {\n        \"status\": \"missing\",\n        \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\n        \"thresholdMs\": 86400000\n      }\n    },\n    {\n      \"id\": \"proposal-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Proposal evidence is absent.\",\n      \"detail\": {\n        \"pending\": 0,\n        \"evidence\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\n        \"available\": false,\n        \"malformedLines\": []\n      }\n    },\n    {\n      \"id\": \"index-evidence-missing\",\n      \"severity\": \"warn\",\n      \"message\": \"Index state is ambiguous.\",\n      \"detail\": {\n        \"status\": \"absent\",\n        \"manifest\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\n        \"policy\": \"/tmp/native-memory-88jeic_u/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\n        \"measuredAt\": 1790857954983\n      }\n    }\n  ],\n  \"ok_summary\": [\n    \"hook-file-present:MemoryTurnStart.hook.ts\",\n    \"hook-file-present:LoadMemory.hook.ts\",\n    \"hook-file-present:MemoryDeltaSurface.hook.ts\",\n    \"hook-file-present:MemoryReviewFire.hook.ts\",\n    \"hook-file-present:MemoryHealthGate.hook.ts\",\n    \"tool-file-present:MemorySystem.ts\",\n    \"tool-file-present:MemoryReviewer.ts\",\n    \"tool-file-present:MemoryWriter.ts\",\n    \"tool-file-present:MemoryRetriever.ts\",\n    \"tool-file-present:MemoryTypes.ts\",\n    \"tool-file-present:MemoryStatus.ts\",\n    \"tool-file-present:MemoryHealthCheck.ts\",\n    \"tool-file-present:MutationTier.ts\",\n    \"principal-memory-present\",\n    \"da-memory-present\",\n    \"markers-ok:principal\",\n    \"markers-ok:da\",\n    \"cap-ok:principal\",\n    \"cap-ok:da\"\n  ]\n}\n",
+      "stderr": "",
+      "report": {
+        "ts": "2026-10-01T12:32:34.984Z",
+        "overall": "critical",
+        "counts": {
+          "critical": 2,
+          "warn": 8,
+          "ok": 19
+        },
+        "thresholds": {
+          "reviewerStaleMs": 604800000,
+          "retrievalStaleMs": 86400000,
+          "proposalBacklog": 10,
+          "observabilityMaxBytes": 268435456,
+          "observabilityMaxAgeMs": 2592000000,
+          "reviewerRunGraceMs": 600000,
+          "indexStaleMs": 604800000
+        },
+        "evidence": {
+          "nowMs": 1790857954983,
+          "thresholds": {
+            "reviewerStaleMs": 604800000,
+            "retrievalStaleMs": 86400000,
+            "proposalBacklog": 10,
+            "observabilityMaxBytes": 268435456,
+            "observabilityMaxAgeMs": 2592000000,
+            "reviewerRunGraceMs": 600000,
+            "indexStaleMs": 604800000
+          },
+          "reviewer": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"
+          },
+          "retrieval": {
+            "status": "missing",
+            "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl"
+          },
+          "proposals": {
+            "pending": 0,
+            "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+            "available": false,
+            "malformedLines": []
+          },
+          "observability": {
+            "bytes": 573,
+            "oldestMs": 1790857954942.3066,
+            "files": 1,
+            "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY",
+            "available": true
+          },
+          "index": {
+            "status": "absent",
+            "manifest": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+            "policy": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+            "measuredAt": 1790857954983
+          }
+        },
+        "findings": [
+          {
+            "id": "settings-hook-missing:MemoryTurnStart.hook.ts",
+            "severity": "critical",
+            "message": "MemoryTurnStart.hook.ts is in settings.system.json but NOT in the effective settings.json \u2014 de-registered from the live runtime. Regression source.",
+            "detail": {
+              "system": "/tmp/native-memory-88jeic_u/.claude/settings.system.json",
+              "live": "/tmp/native-memory-88jeic_u/.claude/settings.json",
+              "hook": "MemoryTurnStart.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryReviewFire.hook.ts",
+            "severity": "warn",
+            "message": "MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryReviewFire.hook.ts"
+            }
+          },
+          {
+            "id": "settings-hook-absent:MemoryHealthGate.hook.ts",
+            "severity": "warn",
+            "message": "MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.",
+            "detail": {
+              "hook": "MemoryHealthGate.hook.ts"
+            }
+          },
+          {
+            "id": "delta-surface-dead",
+            "severity": "critical",
+            "message": "Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).",
+            "detail": {
+              "lastWrite": "2026-10-01T12:32:34.587Z",
+              "heartbeat": "never"
+            }
+          },
+          {
+            "id": "state-missing",
+            "severity": "warn",
+            "message": "review-state.json does not exist yet \u2014 reviewer never fired."
+          },
+          {
+            "id": "no-runs-dir",
+            "severity": "warn",
+            "message": "reviewer-runs/ directory does not exist yet."
+          },
+          {
+            "id": "reviewer-evidence-missing",
+            "severity": "warn",
+            "message": "No latest reviewer evidence is available.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs",
+              "staleThresholdMs": 604800000
+            }
+          },
+          {
+            "id": "retrieval-missing",
+            "severity": "warn",
+            "message": "No retrieval evidence within 86400000ms freshness window.",
+            "detail": {
+              "status": "missing",
+              "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl",
+              "thresholdMs": 86400000
+            }
+          },
+          {
+            "id": "proposal-evidence-missing",
+            "severity": "warn",
+            "message": "Proposal evidence is absent.",
+            "detail": {
+              "pending": 0,
+              "evidence": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+              "available": false,
+              "malformedLines": []
+            }
+          },
+          {
+            "id": "index-evidence-missing",
+            "severity": "warn",
+            "message": "Index state is ambiguous.",
+            "detail": {
+              "status": "absent",
+              "manifest": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json",
+              "policy": "/tmp/native-memory-88jeic_u/.claude/LIFEOS/CORTEX_INDEX_POLICY.json",
+              "measuredAt": 1790857954983
+            }
+          }
+        ],
+        "ok_summary": [
+          "hook-file-present:MemoryTurnStart.hook.ts",
+          "hook-file-present:LoadMemory.hook.ts",
+          "hook-file-present:MemoryDeltaSurface.hook.ts",
+          "hook-file-present:MemoryReviewFire.hook.ts",
+          "hook-file-present:MemoryHealthGate.hook.ts",
+          "tool-file-present:MemorySystem.ts",
+          "tool-file-present:MemoryReviewer.ts",
+          "tool-file-present:MemoryWriter.ts",
+          "tool-file-present:MemoryRetriever.ts",
+          "tool-file-present:MemoryTypes.ts",
+          "tool-file-present:MemoryStatus.ts",
+          "tool-file-present:MemoryHealthCheck.ts",
+          "tool-file-present:MutationTier.ts",
+          "principal-memory-present",
+          "da-memory-present",
+          "markers-ok:principal",
+          "markers-ok:da",
+          "cap-ok:principal",
+          "cap-ok:da"
+        ]
+      },
+      "published": true,
+      "publication": "{\"ts\":\"2026-10-01T12:32:34.984Z\",\"overall\":\"critical\",\"counts\":{\"critical\":2,\"warn\":8,\"ok\":19},\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"evidence\":{\"nowMs\":1790857954983,\"thresholds\":{\"reviewerStaleMs\":604800000,\"retrievalStaleMs\":86400000,\"proposalBacklog\":10,\"observabilityMaxBytes\":268435456,\"observabilityMaxAgeMs\":2592000000,\"reviewerRunGraceMs\":600000,\"indexStaleMs\":604800000},\"reviewer\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\"},\"retrieval\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\"},\"proposals\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]},\"observability\":{\"bytes\":573,\"oldestMs\":1790857954942.3066,\"files\":1,\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY\",\"available\":true},\"index\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857954983}},\"findings\":[{\"id\":\"settings-hook-missing:MemoryTurnStart.hook.ts\",\"severity\":\"critical\",\"message\":\"MemoryTurnStart.hook.ts is in settings.system.json but NOT in the effective settings.json \u2014 de-registered from the live runtime. Regression source.\",\"detail\":{\"system\":\"/tmp/native-memory-88jeic_u/.claude/settings.system.json\",\"live\":\"/tmp/native-memory-88jeic_u/.claude/settings.json\",\"hook\":\"MemoryTurnStart.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryReviewFire.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryReviewFire.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryReviewFire.hook.ts\"}},{\"id\":\"settings-hook-absent:MemoryHealthGate.hook.ts\",\"severity\":\"warn\",\"message\":\"MemoryHealthGate.hook.ts is not registered in any settings layer \u2014 autonomic memory loop not enabled on this install.\",\"detail\":{\"hook\":\"MemoryHealthGate.hook.ts\"}},{\"id\":\"delta-surface-dead\",\"severity\":\"critical\",\"message\":\"Curation is writing memory but MemoryDeltaSurface has not surfaced anything in >24h \u2014 chat visibility is dead (check settings registration).\",\"detail\":{\"lastWrite\":\"2026-10-01T12:32:34.587Z\",\"heartbeat\":\"never\"}},{\"id\":\"state-missing\",\"severity\":\"warn\",\"message\":\"review-state.json does not exist yet \u2014 reviewer never fired.\"},{\"id\":\"no-runs-dir\",\"severity\":\"warn\",\"message\":\"reviewer-runs/ directory does not exist yet.\"},{\"id\":\"reviewer-evidence-missing\",\"severity\":\"warn\",\"message\":\"No latest reviewer evidence is available.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl and /tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs\",\"staleThresholdMs\":604800000}},{\"id\":\"retrieval-missing\",\"severity\":\"warn\",\"message\":\"No retrieval evidence within 86400000ms freshness window.\",\"detail\":{\"status\":\"missing\",\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-retrievals.jsonl\",\"thresholdMs\":86400000}},{\"id\":\"proposal-evidence-missing\",\"severity\":\"warn\",\"message\":\"Proposal evidence is absent.\",\"detail\":{\"pending\":0,\"evidence\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl\",\"available\":false,\"malformedLines\":[]}},{\"id\":\"index-evidence-missing\",\"severity\":\"warn\",\"message\":\"Index state is ambiguous.\",\"detail\":{\"status\":\"absent\",\"manifest\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/MEMORY/INDEX/index-manifest.json\",\"policy\":\"/tmp/native-memory-88jeic_u/.claude/LIFEOS/CORTEX_INDEX_POLICY.json\",\"measuredAt\":1790857954983}}],\"ok_summary\":[\"hook-file-present:MemoryTurnStart.hook.ts\",\"hook-file-present:LoadMemory.hook.ts\",\"hook-file-present:MemoryDeltaSurface.hook.ts\",\"hook-file-present:MemoryReviewFire.hook.ts\",\"hook-file-present:MemoryHealthGate.hook.ts\",\"tool-file-present:MemorySystem.ts\",\"tool-file-present:MemoryReviewer.ts\",\"tool-file-present:MemoryWriter.ts\",\"tool-file-present:MemoryRetriever.ts\",\"tool-file-present:MemoryTypes.ts\",\"tool-file-present:MemoryStatus.ts\",\"tool-file-present:MemoryHealthCheck.ts\",\"tool-file-present:MutationTier.ts\",\"principal-memory-present\",\"da-memory-present\",\"markers-ok:principal\",\"markers-ok:da\",\"cap-ok:principal\",\"cap-ok:da\"]}\n"
+    }
+  ],
+  "delegated_provenance": {
+    "context_session": "native-session",
+    "context_writer": "chat-a:100",
+    "native": [
+      {
+        "ok": true,
+        "type": "memory",
+        "path": "/tmp/native-memory-rwqp0u7b/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+        "detail": {
+          "ok": true,
+          "accepted": 1,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 0,
+          "new_count": 1,
+          "evictions": [],
+          "additions": [
+            "RULE: Synthetic delegated provenance"
+          ]
+        },
+        "receipt": {
+          "status": "committed",
+          "references": [
+            {
+              "id": "ce59a67a70d243bea928ad7abdac679e",
+              "revision": 1
+            }
+          ],
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic delegated provenance"
+            ]
+          },
+          "writer": "chat-a:100",
+          "request_id": "1f585b99-fcad-44b0-be59-9dc5dd57f3fc"
+        }
+      },
+      {
+        "ok": true,
+        "type": "knowledge",
+        "path": "/tmp/native-memory-rwqp0u7b/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-delegated-provenance.md",
+        "detail": {
+          "bytes_written": 337,
+          "created_or_appended": "created",
+          "related_links": 0
+        },
+        "receipt": {
+          "status": "committed",
+          "reference": {
+            "id": "724ce1ca83ae4c8fb0327cc21b791b48",
+            "revision": 1
+          },
+          "detail": {
+            "bytes_written": 337,
+            "created_or_appended": "created",
+            "related_links": 0
+          },
+          "writer": "chat-a:100",
+          "request_id": "be1dab32-28fc-47d9-ace5-ddaad71e8506"
+        }
+      }
+    ],
+    "recall": [
+      {
+        "reference": {
+          "id": "724ce1ca83ae4c8fb0327cc21b791b48",
+          "revision": 1
+        },
+        "content": "Synthetic delegated provenance",
+        "category": "project",
+        "project": "general",
+        "writer": "chat-a:100",
+        "status": "active",
+        "source": {
+          "kind": "native",
+          "session": "native-session",
+          "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-delegated-provenance.md"
+        },
+        "score": 3.2061068702290076
+      },
+      {
+        "reference": {
+          "id": "ce59a67a70d243bea928ad7abdac679e",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic delegated provenance",
+        "category": "principal",
+        "project": "",
+        "writer": "chat-a:100",
+        "status": "active",
+        "source": {
+          "kind": "native",
+          "session": "native-session",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 2.818791946308725
+      }
+    ]
+  }
+}

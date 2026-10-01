@@ -1,0 +1,168 @@
+{
+  "schema": [
+    {
+      "retired": null,
+      "unmanaged": false,
+      "exit": 2,
+      "published": true,
+      "unavailable": false,
+      "clobber_details": [
+        {
+          "system": "/tmp/native-memory-k_hg0ila/.claude/settings.system.json",
+          "live": "/tmp/native-memory-k_hg0ila/.claude/settings.json",
+          "hook": "MemoryTurnStart.hook.ts"
+        }
+      ]
+    },
+    {
+      "retired": "system",
+      "unmanaged": false,
+      "exit": 2,
+      "published": true,
+      "unavailable": false,
+      "clobber_details": [
+        {
+          "system": "Memory diagnostic details are unavailable under the current policy.",
+          "live": "/tmp/native-memory-qtoo2qwx/.claude/settings.json",
+          "hook": "MemoryTurnStart.hook.ts"
+        }
+      ]
+    },
+    {
+      "retired": "live",
+      "unmanaged": false,
+      "exit": 2,
+      "published": true,
+      "unavailable": false,
+      "clobber_details": [
+        {
+          "system": "/tmp/native-memory-j6fw8x2o/.claude/settings.system.json",
+          "live": "/tmp/native-memory-j6fw8x2o/.claude/settings.json",
+          "hook": "MemoryTurnStart.hook.ts"
+        }
+      ]
+    },
+    {
+      "retired": "system",
+      "unmanaged": true,
+      "exit": 2,
+      "published": true,
+      "unavailable": false,
+      "clobber_details": [
+        {
+          "system": "/tmp/native-memory-88jeic_u/.claude/settings.system.json",
+          "live": "/tmp/native-memory-88jeic_u/.claude/settings.json",
+          "hook": "MemoryTurnStart.hook.ts"
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "context_session": "native-session",
+    "context_writer": "chat-a:100",
+    "native": [
+      {
+        "ok": true,
+        "type": "memory",
+        "path": "/tmp/native-memory-rwqp0u7b/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+        "detail": {
+          "ok": true,
+          "accepted": 1,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 0,
+          "new_count": 1,
+          "evictions": [],
+          "additions": [
+            "RULE: Synthetic delegated provenance"
+          ]
+        },
+        "receipt": {
+          "status": "committed",
+          "references": [
+            {
+              "id": "ce59a67a70d243bea928ad7abdac679e",
+              "revision": 1
+            }
+          ],
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic delegated provenance"
+            ]
+          },
+          "writer": "chat-a:100",
+          "request_id": "1f585b99-fcad-44b0-be59-9dc5dd57f3fc"
+        }
+      },
+      {
+        "ok": true,
+        "type": "knowledge",
+        "path": "/tmp/native-memory-rwqp0u7b/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-delegated-provenance.md",
+        "detail": {
+          "bytes_written": 337,
+          "created_or_appended": "created",
+          "related_links": 0
+        },
+        "receipt": {
+          "status": "committed",
+          "reference": {
+            "id": "724ce1ca83ae4c8fb0327cc21b791b48",
+            "revision": 1
+          },
+          "detail": {
+            "bytes_written": 337,
+            "created_or_appended": "created",
+            "related_links": 0
+          },
+          "writer": "chat-a:100",
+          "request_id": "be1dab32-28fc-47d9-ace5-ddaad71e8506"
+        }
+      }
+    ],
+    "recall": [
+      {
+        "reference": {
+          "id": "724ce1ca83ae4c8fb0327cc21b791b48",
+          "revision": 1
+        },
+        "content": "Synthetic delegated provenance",
+        "category": "project",
+        "project": "general",
+        "writer": "chat-a:100",
+        "status": "active",
+        "source": {
+          "kind": "native",
+          "session": "native-session",
+          "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-delegated-provenance.md"
+        },
+        "score": 3.2061068702290076
+      },
+      {
+        "reference": {
+          "id": "ce59a67a70d243bea928ad7abdac679e",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic delegated provenance",
+        "category": "principal",
+        "project": "",
+        "writer": "chat-a:100",
+        "status": "active",
+        "source": {
+          "kind": "native",
+          "session": "native-session",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 2.818791946308725
+      }
+    ]
+  }
+}

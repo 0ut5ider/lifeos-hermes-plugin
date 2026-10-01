@@ -1,0 +1,552 @@
+[
+  {
+    "category": "principal",
+    "operation": "correct",
+    "child_exit": 73,
+    "before_hot": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:05:28.571Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction target\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+    "before_log": "{\"ts\":\"2026-10-01T13:05:27.890Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:28.571Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n",
+    "interrupted": {
+      "hot": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T13:05:29.126Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction replacement\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+      "log": "{\"ts\":\"2026-10-01T13:05:27.890Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:28.571Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n{\"ts\":\"2026-10-01T13:05:29.126Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"local:owner\",\"rejected\":false,\"prior_count\":2,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[\"RULE: Synthetic transaction target\"],\"additions\":[\"RULE: Synthetic transaction replacement\"]}\n",
+      "journal": {
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation",
+        "copies": [
+          {
+            "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+            "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MjcuODkwWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9QUklOQ0lQQUwvUFJJTkNJUEFMX01FTU9SWS5tZCIsInVwZGF0ZWRfYnkiOiJNZW1vcnlTeXN0ZW0uYWRkIiwicmVqZWN0ZWQiOmZhbHNlLCJwcmlvcl9jb3VudCI6MCwibmV3X2NvdW50IjoxLCJhY2NlcHRlZCI6MSwiZHJvcHBlZF9tYWxmb3JtZWQiOjAsImRyb3BwZWRfb3Zlcmxlbmd0aCI6MCwiZHJvcHBlZF9kdXBsaWNhdGVzIjowLCJldmljdGlvbnMiOltdLCJhZGRpdGlvbnMiOlsiUlVMRTogU3ludGhldGljIHRyYW5zYWN0aW9uIHRhcmdldCJdfQp7InRzIjoiMjAyNi0xMC0wMVQxMzowNToyOC41NzFaIiwiZmlsZSI6IkxJRkVPUy9VU0VSL1BSSU5DSVBBTC9QUklOQ0lQQUxfTUVNT1JZLm1kIiwidXBkYXRlZF9ieSI6Ik1lbW9yeVN5c3RlbS5hZGQiLCJyZWplY3RlZCI6ZmFsc2UsInByaW9yX2NvdW50IjoxLCJuZXdfY291bnQiOjIsImFjY2VwdGVkIjoyLCJkcm9wcGVkX21hbGZvcm1lZCI6MCwiZHJvcHBlZF9vdmVybGVuZ3RoIjowLCJkcm9wcGVkX2R1cGxpY2F0ZXMiOjAsImV2aWN0aW9ucyI6W10sImFkZGl0aW9ucyI6WyJSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gbmVpZ2hib3IiXX0K"
+          },
+          {
+            "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+            "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTM6MDU6MjguNTcxWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gdGFyZ2V0ClJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvcgo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+          }
+        ]
+      }
+    },
+    "restored": {
+      "entries": [
+        "RULE: Synthetic transaction target",
+        "RULE: Synthetic transaction neighbor"
+      ],
+      "count": 2,
+      "chars_used": 70,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "3e7ae8305926d8674bb032d36997a01602e17a1b480151062613c516916e8d0c"
+    },
+    "audit_prefix_restored": true,
+    "receipt": {
+      "status": "committed",
+      "reference": {
+        "id": "b753806b91d346c5aab4c93cdd3f8e7a",
+        "revision": 1
+      },
+      "supersedes": {
+        "id": "710424780f32427f803c08930722fc4c",
+        "revision": 1
+      },
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    },
+    "retry": {
+      "status": "committed",
+      "reference": {
+        "id": "b753806b91d346c5aab4c93cdd3f8e7a",
+        "revision": 1
+      },
+      "supersedes": {
+        "id": "710424780f32427f803c08930722fc4c",
+        "revision": 1
+      },
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    }
+  },
+  {
+    "category": "principal",
+    "operation": "forget",
+    "child_exit": 73,
+    "before_hot": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:05:31.020Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction target\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+    "before_log": "{\"ts\":\"2026-10-01T13:05:30.360Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:31.021Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n",
+    "interrupted": {
+      "hot": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T13:05:31.597Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+      "log": "{\"ts\":\"2026-10-01T13:05:30.360Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:31.021Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n{\"ts\":\"2026-10-01T13:05:31.597Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"local:owner\",\"rejected\":false,\"prior_count\":2,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[\"RULE: Synthetic transaction target\"],\"additions\":[]}\n",
+      "journal": {
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation",
+        "copies": [
+          {
+            "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+            "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MzAuMzYwWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9QUklOQ0lQQUwvUFJJTkNJUEFMX01FTU9SWS5tZCIsInVwZGF0ZWRfYnkiOiJNZW1vcnlTeXN0ZW0uYWRkIiwicmVqZWN0ZWQiOmZhbHNlLCJwcmlvcl9jb3VudCI6MCwibmV3X2NvdW50IjoxLCJhY2NlcHRlZCI6MSwiZHJvcHBlZF9tYWxmb3JtZWQiOjAsImRyb3BwZWRfb3Zlcmxlbmd0aCI6MCwiZHJvcHBlZF9kdXBsaWNhdGVzIjowLCJldmljdGlvbnMiOltdLCJhZGRpdGlvbnMiOlsiUlVMRTogU3ludGhldGljIHRyYW5zYWN0aW9uIHRhcmdldCJdfQp7InRzIjoiMjAyNi0xMC0wMVQxMzowNTozMS4wMjFaIiwiZmlsZSI6IkxJRkVPUy9VU0VSL1BSSU5DSVBBTC9QUklOQ0lQQUxfTUVNT1JZLm1kIiwidXBkYXRlZF9ieSI6Ik1lbW9yeVN5c3RlbS5hZGQiLCJyZWplY3RlZCI6ZmFsc2UsInByaW9yX2NvdW50IjoxLCJuZXdfY291bnQiOjIsImFjY2VwdGVkIjoyLCJkcm9wcGVkX21hbGZvcm1lZCI6MCwiZHJvcHBlZF9vdmVybGVuZ3RoIjowLCJkcm9wcGVkX2R1cGxpY2F0ZXMiOjAsImV2aWN0aW9ucyI6W10sImFkZGl0aW9ucyI6WyJSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gbmVpZ2hib3IiXX0K"
+          },
+          {
+            "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+            "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTM6MDU6MzEuMDIwWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gdGFyZ2V0ClJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvcgo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+          }
+        ]
+      }
+    },
+    "restored": {
+      "entries": [
+        "RULE: Synthetic transaction target",
+        "RULE: Synthetic transaction neighbor"
+      ],
+      "count": 2,
+      "chars_used": 70,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "c9960360fc294f3704eb0154869cb6d92356e385855ff3d3a91fcc5a0ea1dd7e"
+    },
+    "audit_prefix_restored": true,
+    "receipt": {
+      "status": "committed",
+      "reference": {
+        "id": "f8441675a1534ccdb8e867123b050ece",
+        "revision": 2
+      },
+      "retained": [
+        "native history",
+        "audit evidence",
+        "backups",
+        "conversation history",
+        "development logs"
+      ],
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    },
+    "retry": {
+      "status": "committed",
+      "reference": {
+        "id": "f8441675a1534ccdb8e867123b050ece",
+        "revision": 2
+      },
+      "retained": [
+        "native history",
+        "audit evidence",
+        "backups",
+        "conversation history",
+        "development logs"
+      ],
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    }
+  },
+  {
+    "category": "principal",
+    "operation": "native_set",
+    "child_exit": 73,
+    "before_hot": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:05:33.464Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction target\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+    "before_log": "{\"ts\":\"2026-10-01T13:05:32.751Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:33.464Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n",
+    "interrupted": {
+      "hot": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T13:05:33.965Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction replacement\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+      "log": "{\"ts\":\"2026-10-01T13:05:32.751Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:33.464Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n{\"ts\":\"2026-10-01T13:05:33.965Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"local:owner\",\"rejected\":false,\"prior_count\":2,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[\"RULE: Synthetic transaction target\"],\"additions\":[\"RULE: Synthetic transaction replacement\"]}\n",
+      "journal": {
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation",
+        "copies": [
+          {
+            "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+            "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MzIuNzUxWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9QUklOQ0lQQUwvUFJJTkNJUEFMX01FTU9SWS5tZCIsInVwZGF0ZWRfYnkiOiJNZW1vcnlTeXN0ZW0uYWRkIiwicmVqZWN0ZWQiOmZhbHNlLCJwcmlvcl9jb3VudCI6MCwibmV3X2NvdW50IjoxLCJhY2NlcHRlZCI6MSwiZHJvcHBlZF9tYWxmb3JtZWQiOjAsImRyb3BwZWRfb3Zlcmxlbmd0aCI6MCwiZHJvcHBlZF9kdXBsaWNhdGVzIjowLCJldmljdGlvbnMiOltdLCJhZGRpdGlvbnMiOlsiUlVMRTogU3ludGhldGljIHRyYW5zYWN0aW9uIHRhcmdldCJdfQp7InRzIjoiMjAyNi0xMC0wMVQxMzowNTozMy40NjRaIiwiZmlsZSI6IkxJRkVPUy9VU0VSL1BSSU5DSVBBTC9QUklOQ0lQQUxfTUVNT1JZLm1kIiwidXBkYXRlZF9ieSI6Ik1lbW9yeVN5c3RlbS5hZGQiLCJyZWplY3RlZCI6ZmFsc2UsInByaW9yX2NvdW50IjoxLCJuZXdfY291bnQiOjIsImFjY2VwdGVkIjoyLCJkcm9wcGVkX21hbGZvcm1lZCI6MCwiZHJvcHBlZF9vdmVybGVuZ3RoIjowLCJkcm9wcGVkX2R1cGxpY2F0ZXMiOjAsImV2aWN0aW9ucyI6W10sImFkZGl0aW9ucyI6WyJSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gbmVpZ2hib3IiXX0K"
+          },
+          {
+            "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+            "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTM6MDU6MzMuNDY0WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gdGFyZ2V0ClJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvcgo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+          }
+        ]
+      }
+    },
+    "restored": {
+      "entries": [
+        "RULE: Synthetic transaction target",
+        "RULE: Synthetic transaction neighbor"
+      ],
+      "count": 2,
+      "chars_used": 70,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "993482f73dc64d5f7aca44f1fba162595448d693f971221b297be940cc073893"
+    },
+    "audit_prefix_restored": true,
+    "receipt": {
+      "ok": true,
+      "accepted": 2,
+      "dropped_malformed": 0,
+      "dropped_overlength": 0,
+      "dropped_duplicates": 0,
+      "prior_count": 2,
+      "new_count": 2,
+      "evictions": [
+        "RULE: Synthetic transaction target"
+      ],
+      "additions": [
+        "RULE: Synthetic transaction replacement"
+      ],
+      "receipt": {
+        "status": "committed",
+        "references": [
+          {
+            "id": "d7cf42ec70884fe58280e0b5b07007fc",
+            "revision": 1
+          },
+          {
+            "id": "3a198d11d13540d1900a618a96e38f50",
+            "revision": 1
+          }
+        ],
+        "detail": {
+          "ok": true,
+          "accepted": 2,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 2,
+          "new_count": 2,
+          "evictions": [
+            "RULE: Synthetic transaction target"
+          ],
+          "additions": [
+            "RULE: Synthetic transaction replacement"
+          ]
+        },
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation"
+      }
+    },
+    "retry": {
+      "ok": true,
+      "accepted": 2,
+      "dropped_malformed": 0,
+      "dropped_overlength": 0,
+      "dropped_duplicates": 0,
+      "prior_count": 2,
+      "new_count": 2,
+      "evictions": [
+        "RULE: Synthetic transaction target"
+      ],
+      "additions": [
+        "RULE: Synthetic transaction replacement"
+      ],
+      "receipt": {
+        "status": "committed",
+        "references": [
+          {
+            "id": "d7cf42ec70884fe58280e0b5b07007fc",
+            "revision": 1
+          },
+          {
+            "id": "3a198d11d13540d1900a618a96e38f50",
+            "revision": 1
+          }
+        ],
+        "detail": {
+          "ok": true,
+          "accepted": 2,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 2,
+          "new_count": 2,
+          "evictions": [
+            "RULE: Synthetic transaction target"
+          ],
+          "additions": [
+            "RULE: Synthetic transaction replacement"
+          ]
+        },
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation"
+      }
+    }
+  },
+  {
+    "category": "assistant",
+    "operation": "correct",
+    "child_exit": 73,
+    "before_hot": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:05:35.721Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction target\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+    "before_log": "{\"ts\":\"2026-10-01T13:05:35.051Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:35.722Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n",
+    "interrupted": {
+      "hot": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T13:05:36.297Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction replacement\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+      "log": "{\"ts\":\"2026-10-01T13:05:35.051Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:35.722Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n{\"ts\":\"2026-10-01T13:05:36.297Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"local:owner\",\"rejected\":false,\"prior_count\":2,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[\"RULE: Synthetic transaction target\"],\"additions\":[\"RULE: Synthetic transaction replacement\"]}\n",
+      "journal": {
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation",
+        "copies": [
+          {
+            "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+            "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MzUuMDUxWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjAsIm5ld19jb3VudCI6MSwiYWNjZXB0ZWQiOjEsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiB0YXJnZXQiXX0KeyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MzUuNzIyWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjEsIm5ld19jb3VudCI6MiwiYWNjZXB0ZWQiOjIsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvciJdfQo="
+          },
+          {
+            "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+            "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTM6MDU6MzUuNzIxWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gdGFyZ2V0ClJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvcgo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+          }
+        ]
+      }
+    },
+    "restored": {
+      "entries": [
+        "RULE: Synthetic transaction target",
+        "RULE: Synthetic transaction neighbor"
+      ],
+      "count": 2,
+      "chars_used": 70,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "e0cdc494c24026346aa0eb8eff227804d116b166f22175341d24166e078b6872"
+    },
+    "audit_prefix_restored": true,
+    "receipt": {
+      "status": "committed",
+      "reference": {
+        "id": "37f226fa29814c6da0dffb72675d1092",
+        "revision": 1
+      },
+      "supersedes": {
+        "id": "2909deb87e3b4fb4816c5926d4eabb06",
+        "revision": 1
+      },
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    },
+    "retry": {
+      "status": "committed",
+      "reference": {
+        "id": "37f226fa29814c6da0dffb72675d1092",
+        "revision": 1
+      },
+      "supersedes": {
+        "id": "2909deb87e3b4fb4816c5926d4eabb06",
+        "revision": 1
+      },
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    }
+  },
+  {
+    "category": "assistant",
+    "operation": "forget",
+    "child_exit": 73,
+    "before_hot": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:05:38.258Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction target\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+    "before_log": "{\"ts\":\"2026-10-01T13:05:37.558Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:38.258Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n",
+    "interrupted": {
+      "hot": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T13:05:38.948Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+      "log": "{\"ts\":\"2026-10-01T13:05:37.558Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:38.258Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n{\"ts\":\"2026-10-01T13:05:38.949Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"local:owner\",\"rejected\":false,\"prior_count\":2,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[\"RULE: Synthetic transaction target\"],\"additions\":[]}\n",
+      "journal": {
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation",
+        "copies": [
+          {
+            "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+            "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MzcuNTU4WiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjAsIm5ld19jb3VudCI6MSwiYWNjZXB0ZWQiOjEsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiB0YXJnZXQiXX0KeyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6MzguMjU4WiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjEsIm5ld19jb3VudCI6MiwiYWNjZXB0ZWQiOjIsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvciJdfQo="
+          },
+          {
+            "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+            "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTM6MDU6MzguMjU4WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gdGFyZ2V0ClJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvcgo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+          }
+        ]
+      }
+    },
+    "restored": {
+      "entries": [
+        "RULE: Synthetic transaction target",
+        "RULE: Synthetic transaction neighbor"
+      ],
+      "count": 2,
+      "chars_used": 70,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "703f835eb17722166545636d9ce4dd9800f1090ef7bb9a86d1b9022efb9a5faf"
+    },
+    "audit_prefix_restored": true,
+    "receipt": {
+      "status": "committed",
+      "reference": {
+        "id": "5583d1e977a04f03a1b8ea513e3d9459",
+        "revision": 2
+      },
+      "retained": [
+        "native history",
+        "audit evidence",
+        "backups",
+        "conversation history",
+        "development logs"
+      ],
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    },
+    "retry": {
+      "status": "committed",
+      "reference": {
+        "id": "5583d1e977a04f03a1b8ea513e3d9459",
+        "revision": 2
+      },
+      "retained": [
+        "native history",
+        "audit evidence",
+        "backups",
+        "conversation history",
+        "development logs"
+      ],
+      "writer": "local:owner",
+      "request_id": "interrupted-mutation"
+    }
+  },
+  {
+    "category": "assistant",
+    "operation": "native_set",
+    "child_exit": 73,
+    "before_hot": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:05:41.049Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction target\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+    "before_log": "{\"ts\":\"2026-10-01T13:05:40.332Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:41.050Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n",
+    "interrupted": {
+      "hot": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-01T13:05:41.579Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic transaction replacement\nRULE: Synthetic transaction neighbor\n<!-- END ENTRIES -->\n",
+      "log": "{\"ts\":\"2026-10-01T13:05:40.332Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction target\"]}\n{\"ts\":\"2026-10-01T13:05:41.050Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic transaction neighbor\"]}\n{\"ts\":\"2026-10-01T13:05:41.579Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"local:owner\",\"rejected\":false,\"prior_count\":2,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[\"RULE: Synthetic transaction target\"],\"additions\":[\"RULE: Synthetic transaction replacement\"]}\n",
+      "journal": {
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation",
+        "copies": [
+          {
+            "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+            "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6NDAuMzMyWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjAsIm5ld19jb3VudCI6MSwiYWNjZXB0ZWQiOjEsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiB0YXJnZXQiXX0KeyJ0cyI6IjIwMjYtMTAtMDFUMTM6MDU6NDEuMDUwWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjEsIm5ld19jb3VudCI6MiwiYWNjZXB0ZWQiOjIsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvciJdfQo="
+          },
+          {
+            "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+            "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTM6MDU6NDEuMDQ5WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgdHJhbnNhY3Rpb24gdGFyZ2V0ClJVTEU6IFN5bnRoZXRpYyB0cmFuc2FjdGlvbiBuZWlnaGJvcgo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+          }
+        ]
+      }
+    },
+    "restored": {
+      "entries": [
+        "RULE: Synthetic transaction target",
+        "RULE: Synthetic transaction neighbor"
+      ],
+      "count": 2,
+      "chars_used": 70,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "5b29771d7646b4ffe6f8212195e57db5eb9afb8d01f3a8339c5f2209952dedf6"
+    },
+    "audit_prefix_restored": true,
+    "receipt": {
+      "ok": true,
+      "accepted": 2,
+      "dropped_malformed": 0,
+      "dropped_overlength": 0,
+      "dropped_duplicates": 0,
+      "prior_count": 2,
+      "new_count": 2,
+      "evictions": [
+        "RULE: Synthetic transaction target"
+      ],
+      "additions": [
+        "RULE: Synthetic transaction replacement"
+      ],
+      "receipt": {
+        "status": "committed",
+        "references": [
+          {
+            "id": "28211637608f449d8951b8790a79a631",
+            "revision": 1
+          },
+          {
+            "id": "12c9bf18e95f4b62ac9f509fce7839cf",
+            "revision": 1
+          }
+        ],
+        "detail": {
+          "ok": true,
+          "accepted": 2,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 2,
+          "new_count": 2,
+          "evictions": [
+            "RULE: Synthetic transaction target"
+          ],
+          "additions": [
+            "RULE: Synthetic transaction replacement"
+          ]
+        },
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation"
+      }
+    },
+    "retry": {
+      "ok": true,
+      "accepted": 2,
+      "dropped_malformed": 0,
+      "dropped_overlength": 0,
+      "dropped_duplicates": 0,
+      "prior_count": 2,
+      "new_count": 2,
+      "evictions": [
+        "RULE: Synthetic transaction target"
+      ],
+      "additions": [
+        "RULE: Synthetic transaction replacement"
+      ],
+      "receipt": {
+        "status": "committed",
+        "references": [
+          {
+            "id": "28211637608f449d8951b8790a79a631",
+            "revision": 1
+          },
+          {
+            "id": "12c9bf18e95f4b62ac9f509fce7839cf",
+            "revision": 1
+          }
+        ],
+        "detail": {
+          "ok": true,
+          "accepted": 2,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 2,
+          "new_count": 2,
+          "evictions": [
+            "RULE: Synthetic transaction target"
+          ],
+          "additions": [
+            "RULE: Synthetic transaction replacement"
+          ]
+        },
+        "writer": "local:owner",
+        "request_id": "interrupted-mutation"
+      }
+    }
+  },
+  {
+    "operation": "missing-log-recovery",
+    "restored": {
+      "entries": [],
+      "count": 0,
+      "chars_used": 0,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "4da834b535c20c1af35b924ab7d7734294c37e96357eb9bc02c4fd7c7596620f"
+    },
+    "audit_absent_after_recovery": true,
+    "saved": {
+      "status": "committed",
+      "reference": {
+        "id": "deb29a5460704f748b2503db4fd201c3",
+        "revision": 1
+      },
+      "source": {
+        "kind": "explicit",
+        "session": ""
+      },
+      "writer": "local:owner",
+      "request_id": "first-interrupted"
+    }
+  }
+]
