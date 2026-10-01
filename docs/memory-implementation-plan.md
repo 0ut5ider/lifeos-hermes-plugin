@@ -92,3 +92,11 @@ Evidence is in `docs/verification/2026-09-30-memory-rendered-prompts/`. The fina
 The real Hermes constructor confirms that provider selection alone preserves both built-in stores. The ownership transaction must select `lifeos-hook-bridge` and explicitly disable `memory.memory_enabled` and `memory.user_profile_enabled`. Four tests verify prompt exclusion, failed writes through direct and freshly loaded built-in tools, exact file preservation, skill-tool availability, unavailable-provider behavior, and restoration in fresh processes.
 
 These tests establish the required target configuration without a new host patch. They do not implement the ownership transaction or prove a live session switch, automatic skill learning, or every file mutation path. Filesystem access by the same operating-system identity remains possible. The earlier 582-test full run predates this four-test addition. Ownership activation stays disabled.
+
+## Complete explicit agent turn
+
+A real Hermes `AIAgent.run_conversation` turn now verifies explicit native persistence and receipt propagation. The local model endpoint requests a remember tool call and returns the actual tool receipt on its second response. The saved native record contains the authenticated writer, project, category, and exact content. Neither disabled built-in memory marker reaches either HTTP request. An unknown author stops before any model call or native save.
+
+Independent review passes 16 relevant tests and finds no material issue. This includes the two complete turns, four ownership cases, and ten SDK cases because their shared endpoint fixture changed. The primary agent reruns the native-writer probe. These results do not close native automatic recall, all agent and route contexts, background review, compression rotation, history repair, delivery, or activation. The model endpoint is deterministic, so no real-model reasoning result is claimed.
+
+Evidence is in `docs/verification/2026-09-30-memory-agent-turn/`. The report is `docs/agents/2026-09-30-memory-agent-turn/memory-agent-turn-review.md`. The earlier full regression predates these two complete-turn tests. No running server or memory ownership configuration changes.

@@ -1,0 +1,17 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-agent-turn/raw/run_review.py > docs/agents/2026-09-30-memory-agent-turn/raw/tests.txt 2>&1
+
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-agent-turn/raw/probe_persisted_writer.py > docs/agents/2026-09-30-memory-agent-turn/raw/persisted-writer.txt 2>&1
+
+The first driver loads the three actual unittest modules without changing their test methods. Its TextTestResult subclass saves completed agent outcomes and observed HTTP requests. The second driver repeats the allowed test and reads the persisted native record before fixture cleanup, asserting writer, category and project.
+
+Inspection commands included:
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+git diff -- tests/memory_host_calls.py tests/test_memory_host.py tests/test_memory_model_calls.py
+cat tests/test_memory_agent.py
+rg -n "prompt_blocked|run_pre_prompt|llm_admission|run_llm_execution_middleware" agent run_agent.py hermes_cli
+sed -n '1530,1585p' agent/conversation_loop.py
+sed -n '100,155p' agent/turn_api_call.py
+sed -n '1650,1673p' agent/tool_executor.py
+Host reads used only the owned app-startup/hermes source.
