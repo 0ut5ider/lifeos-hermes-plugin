@@ -198,3 +198,15 @@ The next whole-design review finds aborted hot publication in learned summaries.
 Follow-up capacity timing remains marginal until actual call instrumentation identifies 96 repeated reads in the existing retrieval path. Transaction-local per-file parsed entries retain native reference checks and category grants. The unchanged 96-fact composer then takes 0.948 seconds. The final gate and independent closure use this corrected source rather than the earlier marginal revision.
 
 Final correction closure at `0400794` passes 330 primary cases in 371.570 seconds, without skips. The independent reviewer passes 144 cases in 229.294 seconds and finds no further material defect in the reviewed implemented paths. Its unchanged 96-fact observation takes 0.979 seconds. Primary instrumentation independently confirms two retrieval hot reads and six total hot reads. The whole-design report and correction evidence preserve the failed revisions, measured root causes, controls, source identities, and remaining activation gates. Memory ownership stays disabled, and no running installation changes.
+
+## Resumed fresh-install completion
+
+Date: 2026-10-01. Adrian asks to document existing-user import and resume the outstanding implementation. The [deferred import plan](memory-import-plan.md) preserves the original workflow, review findings, revised plan, and acceptance requirements. It is separate from these active gates.
+
+1. Complete the exact managed native PULSE HTTP relay and authenticated browser path. Use current Hermes owner authentication. Preserve governed response shapes, per-request authorization, no raw fallback, and no-store behavior. Verify actual network and browser requests.
+2. Finish the native memory-reader inventory, including alternate and derived readers. Record every candidate's active entry point, source policy, and result. Govern supported consumers and explicitly refuse unsupported managed paths.
+3. Govern managed restore and staged publication. Preserve current records, permissions, retirement state, source identities, and pending operations through interruption and retry. Do not roll back unrelated later writes.
+4. Close restricted prompt, final delivery, retained-session, compression, child, scheduled, and lifecycle cases. Apply the same identity and access contract to every connected messaging adapter.
+5. Implement recoverable fresh ownership setup and run the full release gate. Verify supported installation/update/backup/restore/rollback paths before enabling ownership in a disposable acceptance installation.
+
+Work uses owned prepared sources and synthetic profiles. Working `.211` and `.213` servers remain unchanged. No live memory import, ownership activation, or deployment follows from documenting the deferred migration.
