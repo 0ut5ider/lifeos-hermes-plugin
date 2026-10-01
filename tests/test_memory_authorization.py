@@ -2,6 +2,7 @@
 # ABOUTME: Uses synthetic native files to verify authorization before recovery copies.
 import sys
 import unittest
+from dataclasses import replace
 
 from lifeos_hook_bridge.memory_policy import MemoryScope
 import test_memory_native as native
@@ -62,3 +63,16 @@ class MemoryAuthorizationTests(unittest.TestCase):
                 arguments.append('stale-' + operation)
                 result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
                 self.assertEqual(result['status'], 'conflict', result)
+
+    def test_hot_correct_and_forget_require_read_before_opening_the_whole_file(self):
+        blind = replace(native.OWNER, read=(), writer='synthetic:blind-writer')
+        for category in ('principal', 'assistant'):
+            saved = self.fixture.remember('RULE: Synthetic unreadable ' + category, category, category)
+            for operation in ('correct', 'forget'):
+                with self.subTest(category=category, operation=operation):
+                    arguments = [blind, saved['reference']]
+                    if operation == 'correct':
+                        arguments.append('RULE: Synthetic blind replacement')
+                    arguments.append('blind-' + operation + '-' + category)
+                    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+                    self.assertEqual(result['status'], 'rejected', result)

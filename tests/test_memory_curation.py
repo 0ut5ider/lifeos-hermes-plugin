@@ -29,6 +29,38 @@ class MemoryCurationTests(unittest.TestCase):
         self.assertEqual(self.memory.get(self.scope, first["reference"])["status"], "ok")
         self.assertEqual(len(self.memory.recall(self.scope, "native fact")), 2)
 
+    def test_hot_mutations_refuse_neighbor_drift_without_retiring_records(self):
+        for category in ('principal', 'assistant'):
+            for drift in ('overlength', 'valid_addition'):
+                fixture = native_fixture.NativeMemoryTests()
+                fixture.setUp()
+                try:
+                    first = fixture.remember('RULE: Synthetic target fact', 'first', category)
+                    fixture.remember('RULE: Synthetic neighboring fact', 'second', category)
+                    path = fixture.root / HOT_FILES[category]
+                    text = path.read_text()
+                    text = (text.replace('RULE: Synthetic neighboring fact', 'RULE: ' + 'x' * 300)
+                            if drift == 'overlength' else text.replace('<!-- END ENTRIES -->',
+                                'RULE: Synthetic unmanaged neighbor\n<!-- END ENTRIES -->'))
+                    path.write_text(text)
+                    before = path.read_bytes()
+                    with fixture.memory._transaction() as connection:
+                        records = [dict(row) for row in connection.execute('SELECT * FROM records ORDER BY id')]
+                    for operation in ('correct', 'forget'):
+                        with self.subTest(category=category, drift=drift, operation=operation):
+                            arguments = [self.scope, first['reference']]
+                            if operation == 'correct':
+                                arguments.append('RULE: Synthetic replacement fact')
+                            arguments.append('drift-' + operation)
+                            receipt = getattr(fixture.memory, operation)(*arguments)
+                            self.assertIn(receipt['status'], ('conflict', 'rejected'), receipt)
+                            self.assertEqual(path.read_bytes(), before)
+                            with fixture.memory._transaction() as connection:
+                                actual = [dict(row) for row in connection.execute('SELECT * FROM records ORDER BY id')]
+                            self.assertEqual(actual, records)
+                finally:
+                    fixture.doCleanups()
+
     def test_stale_native_reviewer_cannot_overwrite_an_acknowledged_fact(self):
         self.fixture.remember("RULE: original native fact", "first", "principal")
         observed = self.memory.read_hot(self.scope, "principal")

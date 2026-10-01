@@ -346,6 +346,11 @@ class NativeMemory:
         row = self._target(connection, scope, reference)
         if row is None or row['status'] != 'active' or row['revision'] != reference['revision']:
             return []
+        if row['category'] in HOT_FILES:
+            if row['category'] not in scope.read:
+                return []
+            # Refuse drift before the recovery journal copies the whole source file.
+            self._hot_snapshot(connection, row['category'])
         paths = [row['path']]
         if payload['operation'] == 'correct' and row['category'] == 'project' and isinstance(payload['content'],str):
             item = self._archive_item(self._path(row['path']),payload['content'],row['source_session'])
@@ -685,8 +690,11 @@ class NativeMemory:
                 return {"status": "rejected", "reason": "The memory reference is unavailable or has no write grant"}
             if row["status"] != "active" or row["revision"] != reference["revision"]:
                 return {"status": "conflict", "reason": "The referenced revision is no longer current"}
+            if row['category'] in HOT_FILES and row['category'] not in scope.read:
+                return {'status': 'rejected', 'reason': 'Hot-memory correction requires read and write grants'}
             if not isinstance(content, str) or not content.strip():
                 return {"status": "rejected", "reason": "A replacement fact is required"}
+            current = self._hot_snapshot(connection, row['category']) if row['category'] in HOT_FILES else None
             old = self._content(row)
             replacement = content.strip()
             path = self._path(row["path"])
@@ -712,8 +720,7 @@ class NativeMemory:
                     return {"status": "rejected", "reason": result.get("message", "Native correction rejected")}
                 path = Path(result["path"])
             elif row["category"] != "project":
-                current = self._native("read_hot", path=str(path))
-                entries = current.get("entries", [])
+                entries = current['entries']
                 if old not in entries:
                     return {"status": "conflict", "reason": "The native fact changed before correction"}
                 updated = [value for value in entries if value != old] if existing else [replacement if value == old else value for value in entries]
@@ -735,9 +742,11 @@ class NativeMemory:
             if row["status"] != "active" or row["revision"] != reference["revision"]:
                 return {"status": "conflict", "reason": "The referenced revision is no longer current"}
             if row["category"] != "project":
+                if row['category'] not in scope.read:
+                    return {'status': 'rejected', 'reason': 'Hot-memory forgetting requires read and write grants'}
+                current = self._hot_snapshot(connection, row['category'])
                 content = self._content(row)
                 path = self._path(row["path"])
-                current = self._native("read_hot", path=str(path))
                 if content not in current.get("entries", []):
                     return {"status": "conflict", "reason": "The native fact changed before forgetting"}
                 result = self._native("set_hot", path=str(path), entries=[value for value in current["entries"] if value != content],
