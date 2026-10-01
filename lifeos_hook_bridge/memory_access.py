@@ -296,7 +296,7 @@ class NativeMemory:
                     return json.loads(prior["receipt"])
                 unknown = {"status": "unknown", "reason": "The operation outcome needs recovery before retry",
                            "writer": scope.writer, "request_id": request_id}
-                paths = self._publication_paths(connection, payload)
+                paths = self._publication_paths(connection, scope, payload)
                 self.transaction.prepare(scope.writer, request_id, paths)
                 connection.execute("INSERT INTO operations VALUES (?,?,?,?)",
                                    (scope.writer, request_id, payload_digest, json.dumps(unknown)))
@@ -319,11 +319,17 @@ class NativeMemory:
             return {"status": "unknown" if reserved else "rejected",
                     "reason": str(error), "writer": scope.writer, "request_id": request_id}
 
-    def _publication_paths(self, connection: sqlite3.Connection, payload: dict[str, Any]) -> list[str]:
+    def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
+                           payload: dict[str, Any]) -> list[str]:
         if payload["operation"] == "proposal_decision":
+            from .memory_proposals import _permitted
+            permission = 'auto_apply' if payload['decision'] == 'auto_apply' else 'approve'
+            if not _permitted(scope, permission):
+                return []
             row = connection.execute("SELECT * FROM proposals WHERE id=?", (payload['reference']['id'],)).fetchone()
-            return [] if row is None else [row['path'], row['target'],
-                                          "LIFEOS/MEMORY/OBSERVABILITY/identity-proposals.jsonl"]
+            if row is None or row['status'] != 'pending' or row['revision'] != payload['reference']['revision']:
+                return []
+            return [row['path'], row['target'], "LIFEOS/MEMORY/OBSERVABILITY/identity-proposals.jsonl"]
         if payload["operation"] == "native_proposal":
             return ["LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl"]
         if payload["operation"] == "native_set":
@@ -337,8 +343,8 @@ class NativeMemory:
         reference = payload.get("reference")
         if not isinstance(reference, dict) or not isinstance(reference.get("id"), str):
             return []
-        row = connection.execute("SELECT * FROM records WHERE id=?", (reference["id"],)).fetchone()
-        if row is None:
+        row = self._target(connection, scope, reference)
+        if row is None or row['status'] != 'active' or row['revision'] != reference['revision']:
             return []
         paths = [row['path']]
         if payload['operation'] == 'correct' and row['category'] == 'project' and isinstance(payload['content'],str):

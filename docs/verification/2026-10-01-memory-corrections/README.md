@@ -11,3 +11,9 @@ Four regression cases fail before the correction. They cover disabled host authe
 `dashboard-after.log` preserves the intermediate failed run. Two failures come from a fixture override that needs the added account argument. The third comes from the host's shared password-login rate limit. The corrected fixtures preserve real authentication and use the host's test-only reset to isolate rate-limit state between tests. `dashboard-final.log` and `dashboard-owner-race.log` contain the passing results.
 
 The correction adds no Hermes or LifeOS patch. Memory ownership remains disabled. The broader native coverage, relay, lifecycle, installation, and release requirements remain open.
+
+## Reference authorization before recovery reads
+
+Publication path selection uses the mutation scope. A fact reference must have the required write grant, active status, and current revision before the journal receives its source path. Proposal decisions require their approval grant and current pending revision. A denied or stale callback can still record its refusal receipt, but its empty publication set opens no source file.
+
+Two regressions use actual Python file-open audit events. Before the correction, eight category, project, and stale-reference subcases open forbidden or obsolete sources. After the correction, all refuse without source access or byte changes. The complete native, proposal, and authorization gate passes 40 tests in 25.041 seconds, including publication interruption, retry, and recovery controls. The files `source-authorization-before.log` and `source-authorization-after.log` retain both results.

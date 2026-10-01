@@ -111,7 +111,7 @@ class MemoryProposalTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'synthetic interruption'):
             with self.memory._transaction() as connection:
                 payload = {'operation':'native_proposal', 'item':item}
-                paths = self.memory._publication_paths(connection, payload)
+                paths = self.memory._publication_paths(connection, self.scope, payload)
                 self.memory.transaction.prepare(self.scope.writer, 'interrupted', paths)
                 connection.execute('INSERT INTO operations VALUES (?,?,?,?)',
                                    (self.scope.writer, 'interrupted', 'synthetic', json.dumps({'status':'unknown'})))
