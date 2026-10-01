@@ -280,7 +280,7 @@ class MemoryService:
             scope = MemoryPolicy(configuration).resolve(context)
         except (MemoryUnavailable, ValueError, OSError) as error:
             return {"status": "unavailable", "reason": str(error)}
-        return self._call(configuration, scope, name, arguments)
+        return self._call(configuration, scope, name, arguments, source_session=context.session_id)
 
     def call(self, scope: MemoryScope, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         try:
@@ -289,7 +289,8 @@ class MemoryService:
             return {"status": "unavailable", "reason": str(error)}
         return self._call(configuration, scope, name, arguments)
 
-    def _call(self, configuration: dict[str, Any], scope: MemoryScope, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    def _call(self, configuration: dict[str, Any], scope: MemoryScope, name: str, arguments: dict[str, Any],
+              *, source_session: str = '') -> dict[str, Any]:
         try:
             _validate_arguments(name, arguments)
         except ValueError as error:
@@ -299,7 +300,8 @@ class MemoryService:
             if not scope.read and not scope.write and not scope.proposals:
                 return {"status": "rejected", "reason": scope.reason or "This context has no memory grant"}
             if name == "lifeos_memory_propose":
-                result = memory.native_add(scope, arguments["proposal"], request_id=arguments["request_id"], project="")
+                result = memory.native_add(scope, arguments["proposal"], request_id=arguments["request_id"], project="",
+                                           source_session=source_session)
                 return result.get("receipt", {"status":"rejected", "reason":result.get("message", "Native proposal failed")})
             if name == "lifeos_memory_proposals":
                 return {"status":"ok", "results":memory.review_proposals(scope)}
@@ -310,7 +312,7 @@ class MemoryService:
             if name == "lifeos_memory_get":
                 return memory.get(scope, arguments["reference"])
             if name == "lifeos_memory_remember":
-                return memory.remember(scope, **arguments)
+                return memory.remember(scope, **arguments, source={'kind': 'explicit', 'session': source_session})
             if name == "lifeos_memory_correct":
                 return memory.correct(scope, **arguments)
             if name == "lifeos_memory_forget":

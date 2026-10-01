@@ -76,6 +76,18 @@ console.log(JSON.stringify(result));
         self.assertEqual(retry['status'],'conflict',retry)
         self.assertIn(self.fixture.item()['edit'], self.fixture.target.read_text())
 
+    def test_explicit_context_proposal_records_its_authenticated_source_session(self):
+        from lifeos_hook_bridge.memory_service import MemoryService
+        service = MemoryService(MemoryConfiguration(self.config))
+        arguments = {'proposal': self.fixture.item(), 'request_id': 'explicit-context-proposal'}
+        result = service.call_context(self.context, 'lifeos_memory_propose', arguments)
+        self.assertEqual(result['status'], 'pending', result)
+        self.assertEqual(service.call_context(self.context, 'lifeos_memory_propose', arguments), result)
+        with self.fixture.memory._transaction() as connection:
+            row = connection.execute('SELECT writer,source_session FROM proposals WHERE id=?',
+                                     (result['proposal_reference']['id'],)).fetchone()
+        self.assertEqual(dict(row), {'writer': 'chat-a:100', 'source_session': self.context.session_id})
+
     def test_native_queue_read_and_decision_obey_revocation(self):
         saved = self.fixture.enqueue()
         self.assertEqual(len(self.call('list')),1)

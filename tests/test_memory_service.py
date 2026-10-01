@@ -61,6 +61,7 @@ class MemoryServiceTests(unittest.TestCase):
         saved = self.service.call_client("research", "lifeos_memory_remember", arguments)
         self.assertEqual(saved["status"], "committed", saved)
         self.assertEqual(self.fixture.memory.recall(OWNER, "shared finding")[0]["reference"], saved["reference"])
+        self.assertEqual(self.fixture.memory.get(OWNER, saved['reference'])['source'], {'kind': 'explicit', 'session': ''})
 
     def test_get_obeys_current_revision_and_category_grants(self):
         saved = self.fixture.remember()

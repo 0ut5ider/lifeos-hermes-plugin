@@ -37,6 +37,7 @@ class MemoryAgentTests(unittest.TestCase):
         self.assertEqual(receipt['writer'],'chat-a:100')
         native = self.fixture.fixture.fixture.fixture.memory.get(OWNER,receipt['reference'])
         self.assertEqual(native['content'],marker)
+        self.assertEqual(native['source'], {'kind': 'explicit', 'session': 'session'})
         calls = [request for request in self.fixture.fixture.received if request['path']=='/v1/chat/completions']
         self.assertEqual(len(calls),2)
         self.assertTrue(any(message.get('role')=='tool' for message in calls[-1]['body']['messages']))

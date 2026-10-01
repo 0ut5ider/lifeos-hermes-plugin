@@ -11,7 +11,7 @@ import unittest
 from datetime import datetime, timezone
 
 from lifeos_hook_bridge.memory_policy import SessionContext
-from lifeos_hook_bridge.memory_service import MemoryConfiguration
+from lifeos_hook_bridge.memory_service import MemoryConfiguration, MemoryService
 import test_memory_native as native_fixture
 
 
@@ -71,6 +71,23 @@ class MemoryDelegationTests(unittest.TestCase):
                 self.assertTrue(repeated['ok'], repeated)
                 current = self.fixture.memory.get(native_fixture.OWNER, reference)
                 self.assertEqual(current['source'], {'kind': 'native', 'session': self.context.session_id})
+
+    def test_explicit_context_saves_preserve_source_session_and_retries(self):
+        service = MemoryService(self.configuration)
+        for category in ('principal', 'assistant', 'project'):
+            with self.subTest(category=category):
+                arguments = {'category': category, 'content': 'RULE: Synthetic explicit session ' + category,
+                    'title': 'Synthetic explicit session', 'project': 'general', 'request_id': 'explicit-' + category}
+                saved = service.call_context(self.context, 'lifeos_memory_remember', arguments)
+                self.assertEqual(saved['status'], 'committed', saved)
+                self.assertEqual(service.call_context(self.context, 'lifeos_memory_remember', arguments), saved)
+                fact = self.fixture.memory.get(native_fixture.OWNER, saved['reference'])
+                self.assertEqual(fact['writer'], 'chat-a:100')
+                self.assertEqual(fact['source'], {'kind': 'explicit', 'session': self.context.session_id})
+                other = service.call_context(self.context, 'lifeos_memory_remember',
+                                             {**arguments, 'request_id': 'duplicate-' + category})
+                self.assertEqual(other['status'], 'unchanged', other)
+                self.assertEqual(self.fixture.memory.get(native_fixture.OWNER, saved['reference'])['source'], fact['source'])
 
     def test_native_full_curation_preserves_session_for_new_facts(self):
         for mode in ('set', 'add'):
