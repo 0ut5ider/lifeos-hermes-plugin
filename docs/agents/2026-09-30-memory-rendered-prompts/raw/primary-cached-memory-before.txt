@@ -1,0 +1,75 @@
+test_actual_endpoint_and_request_model_cannot_borrow_parent_approval (test_memory_runtime.MemoryRuntimeTests.test_actual_endpoint_and_request_model_cannot_borrow_parent_approval) ... ok
+test_applied_identity_proposal_invalidates_retained_context (test_memory_runtime.MemoryRuntimeTests.test_applied_identity_proposal_invalidates_retained_context) ... ok
+test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) ... 
+  test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'messages': [{'role': 'system', 'content': 'Synthetic removed system prompt marker'}]}) ... FAIL
+  test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'messages': [{'role': 'developer', 'content': [{'type': 'text', 'text': 'Synthetic removed system prompt marker'}]}]}) ... FAIL
+  test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'system': [{'type': 'text', 'text': 'Synthetic removed system prompt marker'}]}) ... FAIL
+  test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'instructions': 'Synthetic removed system prompt marker'}) ... FAIL
+  test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'input': [{'role': 'system', 'content': [{'type': 'input_text', 'text': 'Synthetic removed system prompt marker'}]}]}) ... FAIL
+test_changed_author_cannot_use_a_previous_worker_admission (test_memory_runtime.MemoryRuntimeTests.test_changed_author_cannot_use_a_previous_worker_admission) ... ok
+test_different_apps_bind_their_authenticated_authors (test_memory_runtime.MemoryRuntimeTests.test_different_apps_bind_their_authenticated_authors) ... ok
+test_disable_or_remove_configuration_cannot_release_retained_private_context (test_memory_runtime.MemoryRuntimeTests.test_disable_or_remove_configuration_cannot_release_retained_private_context) ... ok
+test_disabled_or_removed_configuration_keeps_retained_lineage_restricted (test_memory_runtime.MemoryRuntimeTests.test_disabled_or_removed_configuration_keeps_retained_lineage_restricted) ... ok
+test_forgetting_invalidates_existing_context_across_restart (test_memory_runtime.MemoryRuntimeTests.test_forgetting_invalidates_existing_context_across_restart) ... ok
+test_inactive_admission_accepts_a_host_without_new_route_metadata (test_memory_runtime.MemoryRuntimeTests.test_inactive_admission_accepts_a_host_without_new_route_metadata) ... ok
+test_inactive_configuration_does_not_restrict_existing_memory_setup (test_memory_runtime.MemoryRuntimeTests.test_inactive_configuration_does_not_restrict_existing_memory_setup) ... ok
+test_native_hook_environment_replaces_untrusted_context_and_recursion_flag (test_memory_runtime.MemoryRuntimeTests.test_native_hook_environment_replaces_untrusted_context_and_recursion_flag) ... ok
+test_rendered_prompt_changes_invalidate_retained_context_across_restart (test_memory_runtime.MemoryRuntimeTests.test_rendered_prompt_changes_invalidate_retained_context_across_restart) ... ok
+test_rendered_prompt_symlinks_are_rejected_before_admission (test_memory_runtime.MemoryRuntimeTests.test_rendered_prompt_symlinks_are_rejected_before_admission) ... ok
+test_rendered_soul_cannot_restore_forgotten_native_memory_in_a_fresh_session (test_memory_runtime.MemoryRuntimeTests.test_rendered_soul_cannot_restore_forgotten_native_memory_in_a_fresh_session) ... ok
+test_resumed_history_needs_a_recorded_matching_admission (test_memory_runtime.MemoryRuntimeTests.test_resumed_history_needs_a_recorded_matching_admission) ... ok
+test_revocation_changes_the_current_grant (test_memory_runtime.MemoryRuntimeTests.test_revocation_changes_the_current_grant) ... ok
+test_separate_hook_process_rebinds_only_a_recorded_current_context (test_memory_runtime.MemoryRuntimeTests.test_separate_hook_process_rebinds_only_a_recorded_current_context) ... ok
+test_terminal_platform_comes_from_host_when_gateway_metadata_is_empty (test_memory_runtime.MemoryRuntimeTests.test_terminal_platform_comes_from_host_when_gateway_metadata_is_empty) ... ok
+test_unknown_host_route_cannot_be_approved_as_private (test_memory_runtime.MemoryRuntimeTests.test_unknown_host_route_cannot_be_approved_as_private) ... ok
+test_unknown_shared_author_and_schedule_are_blocked_before_hooks (test_memory_runtime.MemoryRuntimeTests.test_unknown_shared_author_and_schedule_are_blocked_before_hooks) ... ok
+
+======================================================================
+FAIL: test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'messages': [{'role': 'system', 'content': 'Synthetic removed system prompt marker'}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 109, in test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh
+    with self.subTest(request=request),self.assertRaisesRegex(MemoryAdmissionError,'model system prompt'):
+                                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'messages': [{'role': 'developer', 'content': [{'type': 'text', 'text': 'Synthetic removed system prompt marker'}]}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 109, in test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh
+    with self.subTest(request=request),self.assertRaisesRegex(MemoryAdmissionError,'model system prompt'):
+                                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'system': [{'type': 'text', 'text': 'Synthetic removed system prompt marker'}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 109, in test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh
+    with self.subTest(request=request),self.assertRaisesRegex(MemoryAdmissionError,'model system prompt'):
+                                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'instructions': 'Synthetic removed system prompt marker'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 109, in test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh
+    with self.subTest(request=request),self.assertRaisesRegex(MemoryAdmissionError,'model system prompt'):
+                                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh (test_memory_runtime.MemoryRuntimeTests.test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh) (request={'input': [{'role': 'system', 'content': [{'type': 'input_text', 'text': 'Synthetic removed system prompt marker'}]}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 109, in test_cached_system_prompt_cannot_restore_a_removed_claim_after_refresh
+    with self.subTest(request=request),self.assertRaisesRegex(MemoryAdmissionError,'model system prompt'):
+                                       ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+----------------------------------------------------------------------
+Ran 20 tests in 2.709s
+
+FAILED (failures=5)

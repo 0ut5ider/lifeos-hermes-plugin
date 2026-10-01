@@ -74,3 +74,15 @@ Independent review found three output paths that the first 11 tests missed. Nati
 The closure review passes 14 tests without skips and finds no further material defect in these bounded paths. The complete plugin run executes 561 tests: 484 pass and 77 skip. There are no failures or errors. The earlier 547-test run had one fixture error because prepared Hermes test additions were untracked during patch regeneration. Marking those existing fixture files for inclusion in Git diffs resolves the error without changing their contents.
 
 Evidence is in `docs/verification/2026-09-30-memory-retained-sources/`. Review closure is in `docs/agents/2026-09-30-memory-retained-sources/closure/`. These results do not enable ownership. Restricted prompts, complete host and source coverage, lifecycle, browser behavior, ownership transactions, and the full release gate remain open. Separate path attestation and reading do not protect against a hostile process with the same operating-system identity replacing files between those operations.
+
+## Rendered prompts and generated model inputs
+
+Memory admission now binds the installed SOUL contents to the conversation. A changed prompt invalidates retained admission. A prompt that contains an excluded exact claim cannot start a fresh admitted conversation. Model-request checks inspect the effective body after supported SDK overrides. Materialized tuple inputs work, while lazy inputs that cannot be inspected are refused without consumption.
+
+Trusted compression inputs receive a separate generated-content check. It covers string Responses input, structured tool outputs, function arguments, and decoded JSON values. Ordinary primary user quotes keep their exception. The actual host compressor refuses the excluded input and returns no summary. Automatic history rebuilding remains open.
+
+Three independent reviews found and closed request representation gaps. The final review passes 52 focused tests and finds no further material issue in this bounded unit. Its unchanged SDK and compression probes send zero requests for excluded claims. The complete plugin regression executes 582 tests: 505 pass and 77 skip. One additional nesting and lazy-input test was added after that run collected its cases. It passes in the subsequent focused closure suite.
+
+The managed startup hook now uses source authorization for remote conversations. Two independently configured synthetic apps receive approved relationship context. Missing context, unknown authors, restricted grants, and broken connectors expose no retained markers. Unmanaged remote startup retains native isolation. These results do not establish restricted static-prompt filtering or final delivery.
+
+Evidence is in `docs/verification/2026-09-30-memory-rendered-prompts/`. The final report is `docs/agents/2026-09-30-memory-rendered-prompts/third-closure/memory-generated-input-closure.md`. Complete agent invocation, compression rotation, the full route inventory, ownership transactions, browser behavior, and release gates remain open. Ownership is still disabled on running installations.

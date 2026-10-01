@@ -73,28 +73,6 @@ def _system_text(request: dict[str, Any]) -> str:
     return '\n'.join(part for part in parts if part)
 
 
-def _generated_text(value: Any, depth: int = 0) -> list[str]:
-    if depth > 32:
-        raise MemoryAdmissionError('Memory admission requires bounded generated input')
-    if isinstance(value,str):
-        # Tool results and arguments can contain JSON with escaped claim text.
-        try:
-            decoded = json.loads(value)
-        except RecursionError as error:
-            raise MemoryAdmissionError('Memory admission requires bounded generated input') from error
-        except ValueError:
-            return [value]
-        return [value,*_generated_text(decoded,depth+1)]
-    if isinstance(value,ContentMapping):
-        return [text for key,item in value.items() for part in (key,item)
-                for text in _generated_text(part,depth+1)]
-    if isinstance(value,(list,tuple)):
-        return [text for item in value for text in _generated_text(item,depth+1)]
-    if value is None or isinstance(value,(bool,int,float)):
-        return []
-    raise MemoryAdmissionError('Memory admission requires materialized generated input')
-
-
 class MemoryRuntime:
     def __init__(self, configuration: Path):
         self.configuration = MemoryConfiguration(configuration)
@@ -269,8 +247,7 @@ class MemoryRuntime:
                                                   datetime.now(timezone.utc).isoformat())['excluded']:
                 raise MemoryAdmissionError('The model system prompt contains a removed or superseded claim. Refresh the LifeOS prompt and start a new conversation.')
             if kwargs.get('aux_task') == 'compression':
-                content = '\n'.join(text for key in ('messages','input')
-                                    for text in _generated_text(body.get(key)))
+                content = '\n'.join(_prompt_text(message.get('content')) for message in _messages(body))
                 if content and memory._filter_history(connection,self._scope(configuration,context),content,
                                                       datetime.now(timezone.utc).isoformat())['excluded']:
                     raise MemoryAdmissionError('The compression prompt contains a removed or superseded claim. Rebuild the conversation before compressing it.')

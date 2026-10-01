@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 from contextvars import ContextVar
-from collections.abc import Mapping as ContentMapping
 from dataclasses import asdict, replace
 from datetime import datetime, timezone
 import hashlib
@@ -34,65 +33,22 @@ _BOUND = _binding.context
 
 
 def _prompt_text(value: Any) -> str:
-    if value is None:
-        return ''
     if isinstance(value,str):
         return value
-    if isinstance(value,(list,tuple)):
-        if any(not isinstance(block,ContentMapping) for block in value):
-            raise MemoryAdmissionError('Memory admission requires materialized prompt blocks')
+    if isinstance(value,list):
         return '\n'.join(block['text'] for block in value
-                         if isinstance(block.get('text'),str))
-    raise MemoryAdmissionError('Memory admission requires materialized prompt text')
-
-
-def _request_body(request: dict[str, Any]) -> dict[str, Any]:
-    extra = request.get('extra_body')
-    if extra is None:
-        return request
-    if not isinstance(extra,ContentMapping):
-        raise MemoryAdmissionError('Memory admission requires a materialized request body')
-    # The supported SDK merges these fields after its typed request conversion.
-    return {**request,**extra}
-
-
-def _messages(request: dict[str, Any]):
-    for key in ('messages','input'):
-        messages = request.get(key)
-        if messages is None or isinstance(messages,str) and key == 'input':
-            continue
-        if not isinstance(messages,(list,tuple)) or any(not isinstance(message,ContentMapping) for message in messages):
-            raise MemoryAdmissionError('Memory admission requires materialized request messages')
-        yield from messages
+                         if isinstance(block,dict) and isinstance(block.get('text'),str))
+    return ''
 
 
 def _system_text(request: dict[str, Any]) -> str:
     parts = [_prompt_text(request.get(key)) for key in ('system','instructions')]
-    parts.extend(_prompt_text(message.get('content')) for message in _messages(request)
-                 if message.get('role') in ('system','developer'))
+    for key in ('messages','input'):
+        messages = request.get(key)
+        if isinstance(messages,list):
+            parts.extend(_prompt_text(message.get('content')) for message in messages
+                         if isinstance(message,dict) and message.get('role') in ('system','developer'))
     return '\n'.join(part for part in parts if part)
-
-
-def _generated_text(value: Any, depth: int = 0) -> list[str]:
-    if depth > 32:
-        raise MemoryAdmissionError('Memory admission requires bounded generated input')
-    if isinstance(value,str):
-        # Tool results and arguments can contain JSON with escaped claim text.
-        try:
-            decoded = json.loads(value)
-        except RecursionError as error:
-            raise MemoryAdmissionError('Memory admission requires bounded generated input') from error
-        except ValueError:
-            return [value]
-        return [value,*_generated_text(decoded,depth+1)]
-    if isinstance(value,ContentMapping):
-        return [text for key,item in value.items() for part in (key,item)
-                for text in _generated_text(part,depth+1)]
-    if isinstance(value,(list,tuple)):
-        return [text for item in value for text in _generated_text(item,depth+1)]
-    if value is None or isinstance(value,(bool,int,float)):
-        return []
-    raise MemoryAdmissionError('Memory admission requires materialized generated input')
 
 
 class MemoryRuntime:
@@ -256,22 +212,15 @@ class MemoryRuntime:
                                     hermes_home=str(self.configuration.path.parent))
             if asdict(observed) != asdict(context):
                 raise MemoryAdmissionError('The current author or destination differs from admission')
-        body = _request_body(request)
-        route = route_identity(provider, body.get('model',model), base_url, api_mode)
+        route = route_identity(provider, request.get('model') or model, base_url, api_mode)
         self._scope(configuration, replace(context, model_route=route))
         memory = NativeMemory(Path(configuration['root']))
         with memory._transaction() as connection:
             current = self._stamp(configuration, context, connection)
             if current != admitted or states.get(context.session_id) != admitted:
                 raise MemoryAdmissionError('The model call contains an invalidated memory context. Start a new conversation.')
-            content = _system_text(body)
+            content = _system_text(request)
             if content and memory._filter_history(connection,self._scope(configuration,context),content,
                                                   datetime.now(timezone.utc).isoformat())['excluded']:
                 raise MemoryAdmissionError('The model system prompt contains a removed or superseded claim. Refresh the LifeOS prompt and start a new conversation.')
-            if kwargs.get('aux_task') == 'compression':
-                content = '\n'.join(text for key in ('messages','input')
-                                    for text in _generated_text(body.get(key)))
-                if content and memory._filter_history(connection,self._scope(configuration,context),content,
-                                                      datetime.now(timezone.utc).isoformat())['excluded']:
-                    raise MemoryAdmissionError('The compression prompt contains a removed or superseded claim. Rebuild the conversation before compressing it.')
         _BOUND.set(bound)

@@ -115,49 +115,12 @@ class MemoryRuntimeTests(unittest.TestCase):
             self.runtime.check_call(request={'model':'synthetic-model','extra_body':{'model':'unapproved-model'}},
                                     **self.route,session_id='session')
 
-    def test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed(self):
-        marker = 'Synthetic removed Responses string marker'
-        saved = self.fixture.remember('RULE: '+marker,'responses-marker','principal')
-        self.fixture.memory.forget(native_fixture.OWNER,saved['reference'],'responses-forget')
-        self.admit()
-        for request in ({'input':marker}, {'input':'Synthetic public input','extra_body':{'input':marker}}):
-            with self.subTest(request=request):
-                self.runtime.check_call(request=request, **self.route,session_id='session')
-                with self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
-                    self.runtime.check_call(request=request, **self.route,session_id='session',aux_task='compression')
-
     def test_lazy_request_messages_are_rejected_without_consuming_them(self):
         self.admit()
         messages = ({'role':'user','content':str(index)} for index in range(2))
         with self.assertRaisesRegex(MemoryAdmissionError,'materialized'):
             self.runtime.check_call(request={'messages':messages}, **self.route,session_id='session')
         self.assertEqual(len(list(messages)),2)
-
-    def test_compression_checks_structured_tool_results_and_decoded_arguments(self):
-        marker = 'Synthetic forgotten generated tool marker'
-        saved = self.fixture.remember('RULE: '+marker,'generated-tool','principal')
-        self.fixture.memory.forget(native_fixture.OWNER,saved['reference'],'generated-tool-forget')
-        self.admit()
-        escaped = json.dumps({'result':marker.replace('forgotten ','forgotten\n')})
-        for item in ({'type':'function_call_output','call_id':'synthetic','output':marker},
-                     {'type':'function_call_output','call_id':'synthetic','output':escaped},
-                     {'type':'function_call','call_id':'synthetic','name':'synthetic','arguments':escaped},
-                     {'role':'assistant','content':None,'tool_calls':[{'type':'function','function':{'name':'synthetic','arguments':escaped}}]}):
-            for key in ('messages','input'):
-                with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
-                    self.runtime.check_call(request={key:[item]}, **self.route,session_id='session',aux_task='compression')
-
-    def test_compression_refuses_uninspectable_and_deep_generated_inputs(self):
-        self.admit()
-        output = (str(index) for index in range(2))
-        deep = 'Synthetic bounded generated marker'
-        for _ in range(34):
-            deep = [deep]
-        for value,reason in ((output,'materialized generated input'),(deep,'bounded generated input')):
-            with self.subTest(reason=reason),self.assertRaisesRegex(MemoryAdmissionError,reason):
-                self.runtime.check_call(request={'input':[{'type':'function_call_output','output':value}]},
-                                        **self.route,session_id='session',aux_task='compression')
-        self.assertEqual(list(output),['0','1'])
     def test_resumed_history_needs_a_recorded_matching_admission(self):
         with self.assertRaises(MemoryAdmissionError):
             self.runtime.admit(self.metadata(), **self.route, is_first_turn=False)

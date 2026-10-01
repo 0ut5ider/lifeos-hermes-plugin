@@ -442,7 +442,7 @@ index 0000000..b2c2e3d
 +  if (governed !== undefined && governed.ok !== true) throw new Error("The native source path is excluded or unavailable");
 +}
 diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
-index eb68d1d..5ec5c22 100755
+index eb68d1d..75a715a 100755
 --- a/LifeOS/install/hooks/LoadContext.hook.ts
 +++ b/LifeOS/install/hooks/LoadContext.hook.ts
 @@ -47,6 +47,7 @@ import { loadWisdomFrames } from './lib/learning-readback';
@@ -520,6 +520,24 @@ index eb68d1d..5ec5c22 100755
  
          interface ProgressFile {
            project: string;
+@@ -478,13 +479,10 @@ async function main() {
+     recordSessionStart();
+     console.error('⏱️ Session start time recorded');
+ 
+-    // Remote-channel sessions (iMessage, etc. — see lib/notification-channel.ts)
+-    // serve someone through a bot surface. Injecting the principal's
+-    // relationship notes, wisdom frames, advisory findings and active work
+-    // summary into that context is the same class of leak as a desktop /notify
+-    // fired from a remote turn. One guard here covers every loader below,
+-    // present and future.
+-    if (!isDesktopChannel()) {
++    // Unmanaged remote sessions cannot load private owner context. Managed
++    // sessions authorize each source through the authenticated memory policy.
++    // Desktop notification isolation remains in the notification hooks.
++    if (!isDesktopChannel() && !hasMemoryAccess()) {
+       console.error(`📵 Remote channel (${getNotificationChannel()}) - skipping dynamic context injection`);
+       console.log('\n✅ LifeOS session ready...');
+       process.exit(0);
 diff --git a/LifeOS/install/hooks/LoadMemory.hook.ts b/LifeOS/install/hooks/LoadMemory.hook.ts
 index 12af0c6..1412a55 100755
 --- a/LifeOS/install/hooks/LoadMemory.hook.ts
