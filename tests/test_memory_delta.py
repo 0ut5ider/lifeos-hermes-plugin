@@ -101,6 +101,20 @@ else:
         self.assertNotIn('Synthetic unregistered learning sample', output)
         self.assertEqual(log.read_bytes(), before)
 
+    def test_distinct_hot_capacity_finishes_within_registered_hook_timeout(self):
+        from lifeos_hook_bridge.memory_access import HOT_FILES
+        for category in ('principal', 'assistant'):
+            entries = [f'RULE: Synthetic current {category} fact number {index}' for index in range(48)]
+            saved = self.memory._native('set_hot', path=str(self.root / HOT_FILES[category]), entries=entries,
+                                        writer='MemorySystem.add', allowDrastic=False)
+            self.assertTrue(saved['ok'], saved)
+        preview = self.memory.preview_adoption(OWNER)
+        adopted = self.memory.adopt(OWNER, preview['signature'], {}, 'adopt-distinct-capacity')
+        self.assertEqual(adopted['status'], 'committed', adopted)
+        output = self.call(timeout=8)
+        self.assertIn('+96 learned', output)
+        self.assertIn('Synthetic current principal fact number 0', output)
+
     def test_unmanaged_turn_start_keeps_native_log_behavior(self):
         self.remember('Synthetic unmanaged delta marker', 'unmanaged')
         (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
