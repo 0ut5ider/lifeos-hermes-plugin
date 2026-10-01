@@ -165,6 +165,21 @@ class MemoryCortexHealthTests(unittest.TestCase):
         self.assertEqual(marker['detail'], {'begins': 1, 'ends': 2, 'inverted': False})
         self.assertEqual(json.loads((self.obs / 'memory-health.jsonl').read_text().splitlines()[-1]), report)
 
+    def test_retired_settings_field_names_preserve_native_missing_hook_report(self):
+        self.retire_fields(('system', 'live'))
+        (self.root / 'settings.system.json').write_text(json.dumps({'hooks': ['MemoryTurnStart.hook.ts']}))
+        result, report = self.health()
+        self.assertEqual(result.returncode, 2)
+        self.assertNotIn('unavailable', report)
+        finding = next(row for row in report['findings'] if row['id'].startswith('settings-hook-missing'))
+        self.assertEqual(finding['severity'], 'critical')
+        self.assertEqual(set(finding['detail']), {'system', 'live', 'hook'})
+        self.assertEqual(finding['detail']['live'], str(self.root / 'settings.json'))
+        self.assertEqual(finding['detail']['hook'], 'MemoryTurnStart.hook.ts')
+        self.assertIsInstance(finding['detail']['system'], str)
+        self.assertNotIn('settings.system.json', finding['detail']['system'])
+        self.assertEqual(json.loads((self.obs / 'memory-health.jsonl').read_text().splitlines()[-1]), report)
+
     def test_retired_state_and_cortex_field_names_preserve_native_report(self):
         self.retire_fields(('hook', 'turn_count', 'last_review_at', 'pending_review', 'age_days',
                             'staleThresholdMs', 'thresholdMs', 'files', 'bytes', 'available', 'maxBytes'))

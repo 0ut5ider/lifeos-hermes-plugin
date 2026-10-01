@@ -40,7 +40,7 @@ HEALTH_DETAIL_FIELDS = {
     'path', 'hook', 'lastWrite', 'heartbeat', 'turn_count', 'last_review_at', 'pending_review',
     'age_days', 'count', 'begins', 'ends', 'inverted', 'skips', 'runs', 'failed', 'name', 'value',
     'staleThresholdMs', 'thresholdMs', 'threshold', 'pending', 'bytes', 'oldestMs', 'files',
-    'available', 'maxBytes', 'maxAgeMs',
+    'available', 'maxBytes', 'maxAgeMs', 'system', 'live',
 }
 
 
