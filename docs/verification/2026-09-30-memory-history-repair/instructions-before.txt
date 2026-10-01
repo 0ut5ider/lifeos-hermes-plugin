@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_actual_responses_instructions_do_not_send_decoded_retired_claims (test_memory_model_calls.MemoryModelCallTests.test_actual_responses_instructions_do_not_send_decoded_retired_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_model_calls.py", line 123, in test_actual_responses_instructions_do_not_send_decoded_retired_claims
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 1 test in 2.221s
+
+FAILED (failures=1)

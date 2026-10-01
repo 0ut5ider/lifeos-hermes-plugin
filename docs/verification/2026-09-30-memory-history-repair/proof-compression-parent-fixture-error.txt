@@ -1,0 +1,7 @@
+The unchanged parent reproduction exits before it starts a model child:
+
+  File "probe_proof_compression.py", line 9, in <module>
+    assert needle in source
+AssertionError
+
+The parent searches for the earlier exact admission-call source text. The current helper adds an optional bind_input argument, so that source substitution no longer matches. This result is not model admission evidence. The archived model_calls_with_proof.py child remains unchanged. rerun_proof_compression.py executes that child and verifies both transport controls.

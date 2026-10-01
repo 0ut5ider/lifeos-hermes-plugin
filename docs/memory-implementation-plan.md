@@ -100,3 +100,13 @@ A real Hermes `AIAgent.run_conversation` turn now verifies explicit native persi
 Independent review passes 16 relevant tests and finds no material issue. This includes the two complete turns, four ownership cases, and ten SDK cases because their shared endpoint fixture changed. The primary agent reruns the native-writer probe. These results do not close native automatic recall, all agent and route contexts, background review, compression rotation, history repair, delivery, or activation. The model endpoint is deterministic, so no real-model reasoning result is claimed.
 
 Evidence is in `docs/verification/2026-09-30-memory-agent-turn/`. The report is `docs/agents/2026-09-30-memory-agent-turn/memory-agent-turn-review.md`. The earlier full regression predates these two complete-turn tests. No running server or memory ownership configuration changes.
+
+## Corrections and forgetting inside an owner turn
+
+Required plugin execution middleware now projects retained chat content before final admission. A fact-only generation change can refresh that admission. Identity, policy, destination, route, and installed prompt checks remain required. The projection preserves transcripts and tool identifiers. It removes exact excluded content from generated messages and decoded tool results while preserving the native mutation receipt.
+
+Six complete agent cases pass, including real LoadMemory recall through the governed native connector. The owner receives the actual committed correction or forget receipt in the final model response. The next model request excludes the earlier retrieved fact and appended hook recall. Admission stores only a hash, kind, and length of the original user input. It does not create another transcript store.
+
+Independent review exposed and drove fixes for concurrent registry publication, the current-user native recall exemption, and auxiliary original-input handling. Both primary and independent final closures pass 71 cases without skips. The final review finds no further material defect in this bounded unit. The primary reruns the archived reproductions and accepted controls. Auxiliary Responses string input and encoded instruction content now receive exact-claim checks. These changes add no Hermes or LifeOS patch files.
+
+Evidence is in `docs/verification/2026-09-30-memory-history-repair/`. Resume repair, changed installed prompt reconstruction, full compression rotation, Responses repair, restricted prompt delivery, complete source coverage, the ownership transaction, and the release gate remain open. The current complete-turn evidence uses a scripted local model endpoint. Ownership activation remains disabled on running installations.
