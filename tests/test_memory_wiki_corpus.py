@@ -40,7 +40,9 @@ class MemoryWikiCorpusTests(unittest.TestCase):
                 for index, path in enumerate(paths)]
 
     def test_managed_categories_slugs_and_groups_match_native_standalone(self):
-        paths = self.examples()
+        self.assert_native_sources(self.examples())
+
+    def assert_native_sources(self, paths):
         managed = view(self.memory, OWNER, '/api/wiki')
         graph = view(self.memory, OWNER, '/api/wiki/graph')
         self.assertEqual(len(graph['body']['nodes']), len(paths))
@@ -54,12 +56,21 @@ class MemoryWikiCorpusTests(unittest.TestCase):
         for result, control in zip(managed_bodies, native[1:], strict=True):
             actual_time = datetime.fromisoformat(result['body']['lastModified'])
             native_time = datetime.fromisoformat(control['body']['lastModified'].replace('Z', '+00:00'))
-            self.assertEqual(int(actual_time.timestamp() * 1000), int(native_time.timestamp() * 1000))
+            self.assertEqual(int(actual_time.timestamp() * 1000), int(native_time.timestamp() * 1000),
+                {'managed': result['body']['lastModified'], 'native': control['body']['lastModified'],
+                 'managed_float': actual_time.timestamp(), 'native_float': native_time.timestamp()})
             control['body']['lastModified'] = result['body']['lastModified']
             self.assertEqual(result, control)
         self.assertEqual(managed['body']['tree'], native[0]['body']['tree'])
         self.assertIn('Guides', json.dumps(managed))
         self.assertIn('System', json.dumps(managed))
+
+    def test_source_times_at_millisecond_boundaries_match_native_standalone(self):
+        paths = self.examples()
+        for index, path in enumerate(paths):
+            timestamp = 1790905907387999600 if index % 2 == 0 else 1790905907387999999
+            os.utime(path, ns=(timestamp, timestamp))
+        self.assert_native_sources(paths)
 
     def test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks(self):
         self.source('DOCUMENTATION/Overview.md', '# SyntheticDocTitle\nSyntheticDocBody [[FRAMES--synthetic-frame]]\n')

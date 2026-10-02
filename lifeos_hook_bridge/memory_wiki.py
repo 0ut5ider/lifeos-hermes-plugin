@@ -1,6 +1,5 @@
 # ABOUTME: Selects current native notes, retained silos, and documentation for authenticated wiki views.
 # ABOUTME: Validates fixed routes and renders each request in an isolated native worker.
-from datetime import datetime, timezone
 from itertools import count
 import json
 import os
@@ -11,7 +10,7 @@ from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit
 
 from .memory_access import MemoryUnavailable
 from .memory_canonical import corpus, RESPONSE_LIMIT
-from .memory_sources import read_markdown, SOURCE_COUNT_LIMIT
+from .memory_sources import read_markdown, SOURCE_COUNT_LIMIT, _source_time
 
 DOMAINS = {'People': 'person', 'Companies': 'company', 'Ideas': 'idea',
            'Blogs': 'blog', 'Books': 'book', 'Research': 'research'}
@@ -143,7 +142,7 @@ def view(memory, scope, target: str) -> dict:
             if str(path) not in current['files']:
                 raise MemoryUnavailable('The wiki source changes its declared canonical path')
             sources.append({'path': str(path), 'content': record['content'],
-                'lastModified': datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).isoformat(),
+                'lastModified': _source_time(path.stat(), milliseconds=True),
                 'category': DOMAINS[relative.parts[1]], 'slug': path.stem})
         if len(json.dumps(sources).encode()) > RESPONSE_LIMIT:
             raise MemoryUnavailable('The declared wiki sources exceed their transport limit')

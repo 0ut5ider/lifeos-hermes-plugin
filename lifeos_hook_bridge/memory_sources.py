@@ -1,6 +1,6 @@
 # ABOUTME: Governs retained native source reads before startup summaries reach a model.
 # ABOUTME: Excludes restricted, invalid, forgotten, and superseded source text without copying files.
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from contextlib import nullcontext
 import json
 from pathlib import Path
@@ -66,12 +66,19 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     return source, relative
 
 
+def _source_time(info, *, milliseconds: bool = False) -> str:
+    # Native Bun displays floating-point millisecond Dates. Admission preserves integer microseconds.
+    microseconds = (int(info.st_mtime_ns / 1_000_000) * 1000 if milliseconds else info.st_mtime_ns // 1000)
+    return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
+
+
 def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
     authorize(scope)
     if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
         raise MemoryUnavailable('The declared native sources exceed their count limit or repeat a path')
     with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
         sources = []
+        timestamps = {}
         total = 0
         for path in paths:
             source, relative = _source_path(memory, scope, path)
@@ -95,8 +102,9 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
             total += size
             if total > CORPUS_LIMIT:
                 raise MemoryUnavailable('The declared native wiki sources exceed their transport limit')
-            timestamp = datetime.fromtimestamp(after.st_mtime, timezone.utc).isoformat()
-            sources.append({'path': path, 'relative': relative, 'content': content, 'lastModified': timestamp})
+            timestamps[path] = _source_time(after)
+            sources.append({'path': path, 'relative': relative, 'content': content,
+                            'lastModified': _source_time(after, milliseconds=True)})
         if not sources:
             return []
         checked = memory._native('validate_source_batch',
@@ -108,7 +116,7 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
             relative = source['relative']
             labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
             if not memory._filter_history(connection, scope,
-                    '\n'.join((source['content'], relative, labels)), source['lastModified'])['excluded']:
+                    '\n'.join((source['content'], relative, labels)), timestamps[source['path']])['excluded']:
                 admitted.append(source)
         return admitted
 
@@ -211,7 +219,7 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
         content = source.read_text(encoding='utf-8')
         if relative in CONTEXT_FILES and len(content.encode('utf-8')) > 256 * 1024:
             raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
-        timestamp = datetime.fromtimestamp(source.stat().st_mtime,timezone.utc).isoformat()
+        timestamp = _source_time(source.stat())
         if relative in LOG_FILES:
             return {'ok':True, 'content':_read_log(memory,connection,scope,relative,content,timestamp),
                     'excluded':False, 'historical':True}

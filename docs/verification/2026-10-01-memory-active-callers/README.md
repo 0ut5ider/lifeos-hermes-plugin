@@ -74,7 +74,15 @@ Publication tests initially fail because the owner controls are absent. [publica
 
 The pinned public constitution produces the same governed and standalone bundle. [public-constitution.txt](public-constitution.txt) records that test.
 
-[gate-with-unrelated-host-tests.txt](gate-with-unrelated-host-tests.txt) records an initial 134-case run with two unrelated installed-hook tests skipped. The relevant gate excludes that host-only module. [gate-before-launcher-refusal.txt](gate-before-launcher-refusal.txt) records 133 passing cases before the last mount refusal. [gate-before-private-permissions.txt](gate-before-private-permissions.txt) records 134 passing cases before the last permission correction. [permissions-before.txt](permissions-before.txt) reproduces matching text retaining mode 0644. [permissions-after.txt](permissions-after.txt) verifies private publication. The final [gate.txt](gate.txt) and [gate.done](gate.done) record the current distributed result. [run_gate.sh](run_gate.sh) records its environment and command.
+[gate-with-unrelated-host-tests.txt](gate-with-unrelated-host-tests.txt) records an initial 134-case run with two unrelated installed-hook tests skipped. The relevant gate excludes that host-only module. [gate-before-launcher-refusal.txt](gate-before-launcher-refusal.txt) records 133 passing cases before the last mount refusal. [gate-before-private-permissions.txt](gate-before-private-permissions.txt) records 134 passing cases before the last permission correction. [permissions-before.txt](permissions-before.txt) reproduces matching text retaining mode 0644. [permissions-after.txt](permissions-after.txt) verifies private publication. The final [gate.txt](gate.txt) and [gate.done](gate.done) record the current distributed result: 136 cases pass in 100.784 seconds without skips, failures, errors, or warnings. [run_gate.sh](run_gate.sh) records its environment and command.
+
+## Source timestamp correction
+
+The final 135-case run finds an existing one-millisecond serialization difference in a wiki comparison. [gate-timestamp-failure.txt](gate-timestamp-failure.txt) preserves the failed gate. Fifty subsequent wall-clock repetitions pass, which does not close the defect.
+
+The controlled [rounding probe](timestamp-rounding-probe.txt) sets an exact file timestamp of `1790905907387999600` nanoseconds. Python converts it to `.388000` seconds. Bun displays `.387` seconds. The neighboring [boundary probe](timestamp-boundary-probe.txt) records the next rounding case. The [deterministic regression](timestamp-before.txt) fails before correction and [passes after correction](timestamp-after.txt).
+
+Source admission now uses integer microseconds. Wiki display uses the native floating-point millisecond Date contract. The distinction preserves retirement precision and native display behavior. The [clock probe](probe_source_clock.py) checks 160 exact timestamp cases against the actual Bun filesystem API. [source-clock-probe.json](source-clock-probe.json) records zero differences. Native patch groups remain unchanged.
 
 ## Source versions and limits
 
