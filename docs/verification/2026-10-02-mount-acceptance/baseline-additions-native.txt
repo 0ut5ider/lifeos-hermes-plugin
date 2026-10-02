@@ -1,0 +1,13 @@
+======================================================================
+ERROR: test_drift_nag_reaches_prompt_once (test_native_version_drift.NativeVersionDriftTests.test_drift_nag_reaches_prompt_once)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_version_drift.py", line 158, in test_drift_nag_reaches_prompt_once
+    self.assertIn("VERSION-DRIFT", first["context"])
+                                   ~~~~~^^^^^^^^^^^
+TypeError: 'NoneType' object is not subscriptable
+
+----------------------------------------------------------------------
+Ran 44 tests in 5.783s
+
+FAILED (errors=1)

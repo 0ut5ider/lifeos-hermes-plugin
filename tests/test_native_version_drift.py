@@ -4,6 +4,7 @@
 import json
 import os
 import shutil
+import shlex
 import subprocess
 import tempfile
 import time
@@ -126,7 +127,7 @@ class NativeVersionDriftTests(unittest.TestCase):
                 bridge.close()
 
     @unittest.skipUnless(TAGGED_REPO_PATH, "a tagged read-only Git repository is required")
-    def test_drift_nag_reaches_prompt_once(self):
+    def test_native_tagged_control_nags_once(self):
         repo = Path(TAGGED_REPO_PATH)
         tags = subprocess.check_output(
             ["git", "-C", str(repo), "tag", "-l", "v[0-9]*.[0-9]*.[0-9]*", "--sort=-v:refname"],
@@ -145,7 +146,7 @@ class NativeVersionDriftTests(unittest.TestCase):
             (root / "LIFEOS/VERSION").write_text(tags[0][1:] + "\n")
             settings = root / "settings.json"
             settings.write_text(json.dumps({"hooks": {"UserPromptSubmit": [{"hooks": [
-                {"type": "command", "command": f"bun {HOOK_PATH}"},
+                {"type": "command", "command": "env LIFEOS_VERSION_DRIFT_ROOT= LIFEOS_VERSION_DRIFT_BASELINE= bun " + shlex.quote(HOOK_PATH)},
             ]}]}}))
             bridge = HookBridge(settings, root)
             bridge.environment.update(HOME=str(home), GIT_DIR=git_dir, GIT_WORK_TREE=str(root))

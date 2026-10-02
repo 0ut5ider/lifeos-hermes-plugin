@@ -58,6 +58,20 @@ class VersionDriftBaselineTests(unittest.TestCase):
             "hooks/VersionDrift.hook.ts", "LIFEOS/TOOLS/Check.ts", "skills/research/SKILL.md",
         })
 
+    def test_baseline_tracks_plugin_added_source_files_and_preserves_edit_detection(self):
+        additions = ('LIFEOS/TOOLS/lib/MemoryAccess.ts', 'hooks/lifeos-bridge-capabilities.json')
+        for name in additions:
+            self._file(name, 'plugin source')
+        self._file('LIFEOS/TOOLS/unreviewed.ts', 'untracked source')
+        baseline = create_baseline(self.source, self.installed)
+        for name in additions:
+            self.assertIn(name, baseline['files'])
+        self.assertNotIn('LIFEOS/TOOLS/unreviewed.ts', baseline['files'])
+        self.assertEqual(changed_paths(baseline, self.installed), ['LIFEOS/TOOLS/unreviewed.ts'])
+        (self.installed / additions[0]).write_text('later edit')
+        (self.installed / additions[1]).unlink()
+        self.assertEqual(changed_paths(baseline, self.installed), sorted((*additions, 'LIFEOS/TOOLS/unreviewed.ts')))
+
     def test_changed_paths_include_edits_deletes_and_new_system_files(self):
         baseline = create_baseline(self.source, self.installed)
         (self.installed / "LIFEOS/TOOLS/Check.ts").write_text("changed")

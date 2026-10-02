@@ -22,6 +22,7 @@ SKIP_PARTS = frozenset({
     "dist", "build", ".next", ".bun", "coverage",
 })
 RUNTIME_PATHS = ("LIFEOS/PULSE/state/",)
+PLUGIN_SOURCE_FILES = ("LIFEOS/TOOLS/lib/MemoryAccess.ts", "hooks/lifeos-bridge-capabilities.json")
 NEW_FILE_SUFFIXES = frozenset({
     ".ts", ".tsx", ".js", ".mjs", ".cjs", ".py", ".sh", ".md",
     ".json", ".yaml", ".yml", ".toml", ".txt",
@@ -105,7 +106,9 @@ def create_baseline(source: Path, installed: Path) -> dict[str, Any]:
         raise ValueError("Source and installed LifeOS versions must match a semantic version")
     commit = _git(source, "rev-parse", "HEAD")
     files = {}
-    for name in _tracked_source_files(source, *CORE_PATHS):
+    source_files = set(_tracked_source_files(source, *CORE_PATHS))
+    source_files.update(name for name in PLUGIN_SOURCE_FILES if _installed_file(source, name) is not None)
+    for name in sorted(source_files):
         path = _installed_file(installed, name)
         if path is not None:
             files[name] = _digest(path)
