@@ -5,6 +5,9 @@ import json
 import os
 from pathlib import Path
 import secrets
+import signal
+import subprocess
+import sys
 import unittest
 from unittest.mock import patch
 
@@ -48,6 +51,9 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.api.INSTALL_CANDIDATE = self.fixture.candidate
         self.api.LIFEOS_UPDATE_ROOT = self.fixture.profile / 'state/updates'
         self.api.HOST_SOURCE = install_fixture.HOST
+        self.commands = patch.dict(os.environ, {'PATH': str(self.fixture.hermes.parent) + os.pathsep + os.environ['PATH']})
+        self.commands.start()
+        self.addCleanup(self.commands.stop)
         # The fixture supplies its exact source revision and patch list to the real validators.
         self.api.validate_prepared_lifeos = lambda candidate: self.api.install_module.validate_candidate(
             candidate, self.fixture.revision, self.fixture.patches, ('lifeos-test.patch',))
@@ -82,6 +88,58 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.assertTrue(response.json()['mounted'])
         self.assertTrue(self.fixture.baseline.exists())
         self.assertIn('SyntheticSafetyDoctrine', (self.fixture.profile / 'SOUL.md').read_text())
+        self.assertEqual(self.grants(), [])
+
+    def test_verified_owner_remounts_without_enabling_memory_ownership(self):
+        self.login()
+        response = self.client.post('/api/plugins/lifeos-hook-bridge/memory/remount')
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertTrue(response.json()['ok'])
+        self.assertEqual(response.headers['cache-control'], 'no-store')
+        self.assertIn('SyntheticSafetyDoctrine', (self.fixture.profile / 'SOUL.md').read_text())
+        self.assertEqual(self.grants(), [])
+        self.assertFalse(self.configuration.load().get('ownership_enabled', False))
+
+    def test_remount_refuses_anonymous_revoked_and_cross_origin_requests(self):
+        path = '/api/plugins/lifeos-hook-bridge/memory/remount'
+        self.app.state.auth_required = False
+        self.assertEqual(self.client.post(path).status_code, 401)
+        self.app.state.auth_required = True
+        self.login()
+        self.assertEqual(self.client.post(path, headers={'Origin':'https://other.invalid'}).status_code, 403)
+        self.assertEqual(self.client.post(path + '?home=other').status_code, 400)
+        self.assertEqual(self.client.post(path, json={'account':self.account}).status_code, 400)
+        self.configuration.update(lambda config:config['accounts'].pop(self.account))
+        self.assertEqual(self.client.post(path).status_code, 403)
+        self.assertFalse((self.fixture.profile / 'SOUL.md').exists())
+
+    def test_owner_recovers_a_process_killed_mount_through_dashboard(self):
+        administration = self.fixture.fixture.admin()
+        authorization = administration.issue(self.configuration, self.account)
+        self.addCleanup(administration.revoke, self.configuration, authorization)
+        environment = administration.mount_environment(self.fixture.root, self.fixture.profile, authorization)
+        program = ('import os,signal,sys\nfrom pathlib import Path\n'
+            'from lifeos_hook_bridge import mount_transaction as module\n'
+            'root,profile,baseline,bun,hermes=sys.argv[1:]\n'
+            'publish=module.publish\n'
+            'def interrupted(path,data):\n'
+            '    publish(path,data)\n'
+            '    if path==Path(profile)/"SOUL.md": os.kill(os.getpid(),signal.SIGKILL)\n'
+            'module.publish=interrupted\n'
+            'module.MountTransaction(root,profile,baseline).execute(dict(os.environ),bun,hermes)\n')
+        result = subprocess.run([sys.executable, '-c', program, str(self.fixture.root), str(self.fixture.profile),
+            str(self.fixture.baseline), self.fixture.fixture.fixture.memory.bun, str(self.fixture.hermes)],
+            env={**environment, 'PYTHONPATH':str(Path(__file__).parents[1])+os.pathsep+str(install_fixture.HOST)},
+            capture_output=True, text=True, timeout=60)
+        self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+        self.assertEqual(result.stderr, '')
+        administration.revoke(self.configuration, authorization)
+        self.login()
+        self.assertTrue(self.client.get(self.prefix).json()['mount']['recovery_required'])
+        response = self.post('/mount/recover')
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()['state'], 'rolled_back')
+        self.assertFalse((self.fixture.profile / 'SOUL.md').exists())
         self.assertEqual(self.grants(), [])
 
     def test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled(self):

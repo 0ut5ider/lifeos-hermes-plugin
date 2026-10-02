@@ -34,8 +34,12 @@ class MemoryHTTPTests(unittest.TestCase):
                     self.wfile.write(test.payload)
                 except (ConnectionResetError, BrokenPipeError) as error:
                     test.write_disconnects.append({'error': type(error).__name__, 'bytes': len(test.payload)})
+            def do_POST(self):
+                test.methods.append(self.command)
+                self.do_GET()
             def log_message(self,*args):pass
         self.server=http.server.ThreadingHTTPServer(('127.0.0.1',0),Handler)
+        self.methods = []
         self.thread=threading.Thread(target=self.server.serve_forever,daemon=True);self.thread.start()
         self.addCleanup(self.stop)
         self.base=f'http://127.0.0.1:{self.server.server_port}'
@@ -58,6 +62,14 @@ class MemoryHTTPTests(unittest.TestCase):
         self.assertEqual(self.seen,[{'path':'/hermes/api/plugins/lifeos-hook-bridge/memory/pulse/state',
             'authorization':'Bearer synthetic','cookie':'hermes_session_at=synthetic-at; __Secure-hermes_session_rt=synthetic-rt'}])
         self.assertEqual(dict(result['headers'])['cache-control'],'no-store')
+
+    def test_remount_uses_fixed_authenticated_post_without_caller_arguments(self):
+        arguments = {'view':'remount','authorization':'Bearer synthetic','cookie':''}
+        self.assertEqual(relay(self.configuration, arguments)['status'], 200)
+        self.assertEqual(self.methods, ['POST'])
+        self.assertEqual(self.seen[0]['path'], '/hermes/api/plugins/lifeos-hook-bridge/memory/remount')
+        self.assertEqual(relay(self.configuration, {**arguments, 'target':'/other'})['status'], 400)
+        self.assertEqual(len(self.seen), 1)
 
     def test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found(self):
         arguments = {'view':'knowledge', 'authorization':'Bearer synthetic', 'cookie':'',

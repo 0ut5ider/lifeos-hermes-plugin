@@ -179,12 +179,19 @@ class InstallSourceTests(unittest.TestCase):
             (installed / "LIFEOS/TOOLS").mkdir()
             (installed / "LIFEOS/TOOLS/Check.ts").write_text("export const checked = true;\n")
             (installed / "settings.json").write_text('{"hooks": {"Stop": [{}]}}')
-            (installed / "LIFEOS/HERMES/Mount.ts").write_text("fixture")
-            hermes_home.mkdir()
+            (installed / "LIFEOS/TOOLS").mkdir(exist_ok=True)
+            (installed / "LIFEOS/TOOLS/Check.ts").write_text("export const checked = true;\n")
+            (installed / "LIFEOS/HERMES/Mount.ts").write_text("LIFEOS_MOUNT_DESTINATION")
+            hermes_home.mkdir(mode=0o700)
             (hermes_home / "config.yaml").write_text("model:\n  default: local\n")
             bun = root / "bun"
-            bun.write_text("#!/bin/sh\nif [ \"$2\" = '--check' ]; then exit 0; fi\n"
-                           "printf 'mounted\\n' > \"$HERMES_HOME/SOUL.md\"\n")
+            bun.write_text("#!/usr/bin/env python3\nimport json, os\nfrom pathlib import Path\n"
+                "if '--check' not in __import__('sys').argv:\n"
+                "    stage=Path(os.environ['LIFEOS_MOUNT_DESTINATION'])\n"
+                "    files=['config.yaml','SOUL.md','.env','plugins/lifeos/__init__.py','plugins/lifeos/guard.py','plugins/lifeos/plugin.yaml','plugins/lifeos/policy.json']\n"
+                "    for name in files:\n"
+                "        path=stage/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('mounted\\n')\n"
+                "    (stage/'mount-plan.json').write_text(json.dumps(dict(version=1,home=os.environ['HERMES_HOME'],keepOutputFormat=False,signature=None,previous_digest=None)))\n")
             bun.chmod(0o755)
             hermes = root / "hermes"
             hermes.write_text("#!/bin/sh\ntest \"$1 $2\" = 'config check'\n")
@@ -208,14 +215,16 @@ class InstallSourceTests(unittest.TestCase):
             (installed / "LIFEOS/HERMES").mkdir(parents=True)
             (installed / "LIFEOS/VERSION").write_text("7.40.5\n")
             (installed / "settings.json").write_text('{"hooks": {"Stop": [{}]}}')
-            (installed / "LIFEOS/HERMES/Mount.ts").write_text("fixture")
+            (installed / "LIFEOS/TOOLS").mkdir(exist_ok=True)
+            (installed / "LIFEOS/TOOLS/Check.ts").write_text("export const checked = true;\n")
+            (installed / "LIFEOS/HERMES/Mount.ts").write_text("LIFEOS_MOUNT_DESTINATION")
             hermes_home = root / "home/.hermes"
-            hermes_home.mkdir()
+            hermes_home.mkdir(mode=0o700)
             (hermes_home / "config.yaml").write_text("model:\n  default: local\n")
             (hermes_home / "SOUL.md").write_text("previous soul\n")
             bun = root / "bun"
-            bun.write_text("#!/bin/sh\nprintf 'partial\\n' > \"$HERMES_HOME/SOUL.md\"\n"
-                           "printf 'changed\\n' > \"$HERMES_HOME/config.yaml\"\nexit 17\n")
+            bun.write_text("#!/bin/sh\nprintf 'partial\\n' > \"$LIFEOS_MOUNT_DESTINATION/SOUL.md\"\n"
+                           "printf 'changed\\n' > \"$LIFEOS_MOUNT_DESTINATION/config.yaml\"\nexit 17\n")
             bun.chmod(0o755)
             hermes = root / "hermes"
             hermes.write_text("#!/bin/sh\nexit 0\n")

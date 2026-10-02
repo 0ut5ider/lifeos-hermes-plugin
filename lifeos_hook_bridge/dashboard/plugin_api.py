@@ -16,6 +16,7 @@ from uuid import uuid4
 
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
+from starlette.concurrency import run_in_threadpool
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
 
 
@@ -130,6 +131,71 @@ def _memory_account(request: Request) -> str:
 @router.get('/memory')
 def get_memory(account: str = Depends(_memory_account)):
     return _memory_action(lambda preferences:preferences.status(account=account))
+
+
+def _mount_transaction():
+    return install_module.memory_module('mount_transaction').MountTransaction(
+        INSTALLED_ROOT, HERMES_HOME, BASELINE_PATH)
+
+
+def _mount_owner_action(account, action):
+    administration = install_module.memory_administration()
+    if administration.required(INSTALLED_ROOT, HERMES_HOME):
+        configuration = _memory_preferences().configuration
+        binding = {'action':'recover'} if action == 'recover' else None
+        with administration.lease(configuration, account, binding=binding) as authorization:
+            if action == 'recover':
+                administration.validate(configuration, authorization, purpose='recover', check_binding=True, binding=binding)
+                return _mount_transaction().recover()
+            environment = administration.mount_environment(INSTALLED_ROOT, HERMES_HOME, authorization)
+            return _execute_mount(environment)
+    if action == 'recover':
+        return _mount_transaction().recover()
+    return _execute_mount(administration.mount_environment(INSTALLED_ROOT, HERMES_HOME))
+
+
+def _execute_mount(environment):
+    bun, hermes = shutil.which('bun'), shutil.which('hermes')
+    if not bun or not hermes:
+        raise RuntimeError('Bun and the Hermes command are required to mount LifeOS')
+    return _mount_transaction().execute(environment, bun, hermes)
+
+
+async def _fixed_mount_request(request):
+    origin = request.headers.get('origin')
+    if origin and origin != request.url.scheme + '://' + request.url.netloc:
+        raise HTTPException(status_code=403, detail='Use the installed dashboard origin')
+    if request.query_params or await request.body():
+        raise HTTPException(status_code=400, detail='Mount requests use the installed owner configuration')
+
+
+@router.post('/memory/remount')
+async def remount_memory(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    headers = {'Cache-Control':'no-store'}
+    try:
+        result = await run_in_threadpool(_mount_owner_action, account, 'mount')
+        configuration = _memory_preferences().configuration
+        binding = install_module.memory_module('memory_http').installation_binding(configuration.load(), configuration.path)
+        return JSONResponse({'ok':True, 'exitCode':0, 'output':result['output'], 'error':None,
+                             'mount':{'state':result['state'], 'restart_required':True}},
+                            headers={**headers, 'X-LifeOS-Memory-Installation':binding})
+    except PermissionError:
+        return JSONResponse({'error':'The installation owner must authorize mounting'}, status_code=403, headers=headers)
+    except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired, sqlite3.Error):
+        return JSONResponse({'error':'Mounting is unavailable. Check setup and recovery in the LifeOS plugin.'},
+                            status_code=409, headers=headers)
+
+
+@router.post('/installation/mount/recover')
+async def recover_mount(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    try:
+        return await run_in_threadpool(_mount_owner_action, account, 'recover')
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='The installation owner must authorize recovery') from error
+    except (OSError, ValueError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail='Recovery cannot overwrite a later edit or invalid snapshot') from error
 
 
 @router.get('/memory/pulse/{view}')
@@ -299,7 +365,14 @@ def get_installation():
             host_candidate = validate_supported_hermes(HERMES_CANDIDATE)
         except (IncompatibleLifeOS, OSError) as error:
             host_candidate_error = str(error)
+    mount = {'state':'none', 'recovery_required':False}
+    if (HERMES_HOME / '.lifeos-mount').exists():
+        try:
+            mount = _mount_transaction().status()
+        except (ValueError, OSError, RuntimeError):
+            mount = {'state':'unavailable', 'recovery_required':False}
     return {
+        'mount': mount,
         "lifeos": lifeos,
         "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
         "hermes": hermes,

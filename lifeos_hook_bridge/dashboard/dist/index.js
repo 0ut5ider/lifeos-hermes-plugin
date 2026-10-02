@@ -451,6 +451,19 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function recoverLifeOSMount() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/mount/recover", { method: "POST" }).then(function () {
+        return SDK.fetchJSON(installationEndpoint).then(function (result) {
+          setInstallation(result);
+          setInstallationStatus("The previous Hermes files are restored. You can finish setup again.");
+        });
+      }).catch(function (error) {
+        setInstallationStatus("Could not restore the mount: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function prepareHermes() {
       setInstallationBusy(true);
       setInstallationStatus("");
@@ -631,6 +644,11 @@
             type: "button", disabled: installationBusy, onClick: recoverLifeOSUpdate,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, "Restore interrupted update") : null) : null,
+        installation?.mount?.recovery_required ? h("div", { className: "space-y-2 text-sm" },
+          h("p", { role: "status" }, "LifeOS setup was interrupted. Restore the previous Hermes files before mounting again. Recovery preserves later edits and stops if a file has changed."),
+          h("button", {type: "button", disabled: installationBusy, onClick: recoverLifeOSMount,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50"},
+            "Restore interrupted mount")) : null,
         installation?.lifeos === "installed" && !installation.setup_baseline_exists ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, installation.candidate_ready ?
             "Finish setup to mount LifeOS into Hermes and record the installed system files." :

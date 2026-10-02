@@ -126,10 +126,9 @@ def _runtime(request: dict, *, require_active: bool = True, job=None, action='ap
     original_pid = _gateway_pid(home) if require_active else None
 
     def mount():
-        native = installed / "LIFEOS/HERMES/Mount.ts"
-        _run([bun, native], home=home, environment=environment)
-        _run([bun, native, "--check"], home=home, environment=environment)
-        _run([hermes, "config", "check"], home=home)
+        from .mount_transaction import MountTransaction
+        MountTransaction(installed, hermes_home, baseline_path).execute(environment, bun, str(hermes),
+            binding=job_binding(job, request, action) if job is not None else None)
 
     def renew(current: Path, selected: Path):
         save_baseline(create_baseline(selected, current), baseline_path, renew=True)
@@ -178,6 +177,10 @@ def _execute_update_job(job: Path, action: str = "apply") -> dict:
         return result
     if action == "recover":
         _write_status(job, "recovering")
+        from .mount_transaction import MountTransaction
+        transaction = MountTransaction(installed, hermes_home, baseline_path)
+        if transaction.status()['recovery_required']:
+            transaction.recover()
         result = recover_update(snapshot, stop=runtime["stop"], start=runtime["start"],
                                 verify=runtime["verify_restored"])
         _write_status(job, result["state"])

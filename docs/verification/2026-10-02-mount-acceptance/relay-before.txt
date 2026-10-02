@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_remount_uses_fixed_authenticated_post_without_caller_arguments (test_memory_http.MemoryHTTPTests.test_remount_uses_fixed_authenticated_post_without_caller_arguments)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_http.py", line 68, in test_remount_uses_fixed_authenticated_post_without_caller_arguments
+    self.assertEqual(relay(self.configuration, arguments)['status'], 200)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 200
+
+----------------------------------------------------------------------
+Ran 1 test in 0.504s
+
+FAILED (failures=1)

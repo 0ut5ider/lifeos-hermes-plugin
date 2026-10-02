@@ -357,3 +357,12 @@ The expanded focused gate passes 57 cases with no skips or warnings. It includes
 This closes the administrative grant and caller integration contract for finalization and detached update mounting. It does not close live service acceptance, PULSE remount authentication, source provenance and page controls, complete mount crash recovery, schema rollback compatibility, remaining derivatives, restricted delivery, lifecycle, recoverable ownership setup, or the independent release gate. Installation, import, trial, and return-to-Hermes requirements remain in the overall plan. No running server changes and no ownership activation occur.
 
 The final bounded administration gate passes 250 tests in 204.384 seconds at `aa45912`, with no skips, failures, errors, or warnings. It includes the 57 focused cases and neighboring native, source-review, prompt, wiki, permission, provider, preparation, and patch contracts. This result does not establish live systemd acceptance or the full release gate.
+
+
+## 2026-10-02 staged mounting and remount admission
+
+The [mount acceptance record](verification/2026-10-02-mount-acceptance/README.md) connects native staging to plugin-owned publication. Installation finalization includes its VersionDrift baseline in the mount journal. Detached updates use their action-bound grant with the same mount transaction. Recovery handles an interrupted nested mount before it restores an update snapshot.
+
+Native PULSE remount uses the incoming authenticated session through the fixed local dashboard route. The authenticated plugin page exposes interrupted mount recovery. Process-kill cases verify restoration, permission restoration, and preservation of later edits.
+
+Continue with isolated `.212` service and browser acceptance. Full PULSE reader governance, remaining derivatives, restricted delivery, retained-session reconstruction, source-review page controls, schema rollback compatibility, ownership activation, installation trials and removal, and the independent release gate remain open. Do not activate lasting-memory ownership during this acceptance batch.

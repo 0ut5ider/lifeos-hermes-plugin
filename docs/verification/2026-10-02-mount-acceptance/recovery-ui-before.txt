@@ -1,0 +1,50 @@
+TAP version 13
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+  ---
+  duration_ms: 11.877788
+  type: 'test'
+  ...
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+  ---
+  duration_ms: 2.607818
+  type: 'test'
+  ...
+# Subtest: missing LifeOS shows preparation without active model settings
+not ok 3 - missing LifeOS shows preparation without active model settings
+  ---
+  duration_ms: 5.241496
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_ui.cjs:198:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+    
+      assert.ok(find(render(), (node) => node.type === "button" &&
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_ui.cjs:276:10)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+  ---
+  duration_ms: 3.584475
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 70.49473

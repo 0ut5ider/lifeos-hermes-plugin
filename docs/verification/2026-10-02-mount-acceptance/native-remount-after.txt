@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_remount_refuses_anonymous_revoked_and_cross_origin_requests (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_remount_refuses_anonymous_revoked_and_cross_origin_requests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 105, in test_remount_refuses_anonymous_revoked_and_cross_origin_requests
+    self.assertEqual(self.client.post(path, headers={'Origin':'https://other.invalid'}).status_code, 403)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 401 != 403
+
+----------------------------------------------------------------------
+Ran 27 tests in 33.018s
+
+FAILED (failures=1)

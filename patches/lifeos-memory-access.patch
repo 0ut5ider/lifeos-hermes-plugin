@@ -1,5 +1,5 @@
 diff --git a/LifeOS/install/LIFEOS/HERMES/Mount.ts b/LifeOS/install/LIFEOS/HERMES/Mount.ts
-index e245d9e..345e163 100644
+index e245d9e..6f22c9b 100644
 --- a/LifeOS/install/LIFEOS/HERMES/Mount.ts
 +++ b/LifeOS/install/LIFEOS/HERMES/Mount.ts
 @@ -1,4 +1,6 @@
@@ -9,7 +9,7 @@ index e245d9e..345e163 100644
  /**
   * Mount — install (or re-sync) the LifeOS sidecar into a Hermes install.
   *
-@@ -24,13 +26,14 @@
+@@ -24,19 +26,22 @@
   *   bun LIFEOS/HERMES/Mount.ts --keep-output-format
   */
  
@@ -26,7 +26,16 @@ index e245d9e..345e163 100644
  
  const HOME = homedir();
  const HERMES_HOME = process.env.HERMES_HOME || join(HOME, ".hermes");
-@@ -131,7 +134,7 @@ function ensureApprovals(yaml: string): { yaml: string; changed: boolean } {
++const MOUNT_DESTINATION = process.env.LIFEOS_MOUNT_DESTINATION ?? HERMES_HOME;
++const staged = MOUNT_DESTINATION !== HERMES_HOME;
+ const WORKSPACE = process.env.HERMES_WORKSPACE || join(HOME, "HermesWorkspace");
+ const PLUGIN_SRC = join(import.meta.dir, "plugin");
+-const PLUGIN_DEST = join(HERMES_HOME, "plugins", "lifeos");
++const PLUGIN_DEST = join(MOUNT_DESTINATION, "plugins", "lifeos");
+ 
+ /**
+  * Soul cap. The stock default (20,000) truncates silently, and the constitution
+@@ -131,7 +136,7 @@ function ensureApprovals(yaml: string): { yaml: string; changed: boolean } {
    return { yaml: `${yaml.replace(/\n*$/, "")}\n\n${MANAGED_BEGIN}\n${block}\n${MANAGED_END}\n`, changed: true };
  }
  
@@ -35,7 +44,7 @@ index e245d9e..345e163 100644
    const changes: Change[] = [];
    mkdirSync(PLUGIN_DEST, { recursive: true });
  
-@@ -147,7 +150,7 @@ function installPlugin(): Change[] {
+@@ -147,7 +152,7 @@ function installPlugin(): Change[] {
  
    const policyPath = join(PLUGIN_DEST, "policy.json");
    const beforePolicy = existsSync(policyPath) ? readFileSync(policyPath, "utf8") : null;
@@ -44,7 +53,7 @@ index e245d9e..345e163 100644
    if (beforePolicy !== readFileSync(policyPath, "utf8")) {
      changes.push({
        what: "plugins/lifeos/policy.json",
-@@ -221,7 +224,19 @@ function main(): void {
+@@ -221,7 +226,19 @@ function main(): void {
      throw new Error(`no Hermes install at ${scrubPaths(HERMES_HOME)} — install Hermes first`);
    }
  
@@ -65,25 +74,46 @@ index e245d9e..345e163 100644
    const soulPath = join(HERMES_HOME, "SOUL.md");
    const soulCurrent = existsSync(soulPath) ? readFileSync(soulPath, "utf8") : "";
    const soulDrifted = soulCurrent !== soul;
-@@ -251,9 +266,15 @@ function main(): void {
+@@ -251,26 +268,41 @@ function main(): void {
      process.exit(soulDrifted || configDrifted ? 1 : 0);
    }
  
 -  writeFileSync(soulPath, soul, "utf8");
-+  if (preview === undefined) writeFileSync(soulPath, soul, "utf8");
+-  if (configDrifted) writeFileSync(configPath, yaml, "utf8");
+-  const pluginChanges = [...installPlugin()];
++  if (staged || preview === undefined) writeFileSync(join(MOUNT_DESTINATION, "SOUL.md"), soul, "utf8");
 +  else {
 +    const receipt = memoryAccess("prompt_publish", {home: HERMES_HOME, keepOutputFormat,
 +      signature: preview.signature, previous_digest: preview.previous_digest},
 +      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
 +    if (receipt?.ok !== true) throw new Error("The reviewed LifeOS prompt changed before publication");
 +  }
-   if (configDrifted) writeFileSync(configPath, yaml, "utf8");
--  const pluginChanges = [...installPlugin()];
++  if (staged || configDrifted) writeFileSync(join(MOUNT_DESTINATION, "config.yaml"), yaml, "utf8");
 +  const pluginChanges = [...installPlugin(bundle.launcherName)];
  
-   mkdirSync(WORKSPACE, { recursive: true });
+-  mkdirSync(WORKSPACE, { recursive: true });
++  if (!staged) mkdirSync(WORKSPACE, { recursive: true });
    const envPath = join(HERMES_HOME, ".env");
-@@ -270,7 +291,7 @@ function main(): void {
+   const env = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+   if (!/^HERMES_WRITE_SAFE_ROOT=/m.test(env)) {
+     writeFileSync(
+-      envPath,
++      join(MOUNT_DESTINATION, ".env"),
+       `${env.replace(/\n*$/, "")}\n\n# Writes are hard-blocked outside these roots. The LifeOS tree is\n` +
+         `# READ-only to the sidecar; persistence goes through the memory API.\n` +
+         `HERMES_WRITE_SAFE_ROOT=${WORKSPACE}:${HERMES_HOME}\n`,
+       "utf8",
+     );
+     pluginChanges.push({ what: ".env", detail: "write-sandbox root set" });
++  } else if (staged) {
++    writeFileSync(join(MOUNT_DESTINATION, ".env"), env, "utf8");
++  }
++
++  if (staged) {
++    writeFileSync(join(MOUNT_DESTINATION, "mount-plan.json"), JSON.stringify({
++      version: 1, home: HERMES_HOME, keepOutputFormat,
++      signature: preview?.signature ?? null, previous_digest: preview?.previous_digest ?? null,
++    }) + "\n", "utf8");
    }
  
    console.log(`✓ SOUL.md            ${soul.length} chars (cap ${CONTEXT_FILE_MAX_CHARS}), digest ${digest}`);
@@ -656,6 +686,41 @@ index fb6dffa..599a563 100644
 +  if (found.row.confidence < confidenceThreshold) return { ok: false, reason: "proposal is below its confidence threshold" };
 +  return resolve(id, "auto-applied", { path, confidenceThreshold });
 +}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
+index 0259a78..583cb24 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
+@@ -35,6 +35,8 @@
+  * same rule the guard plugin enforces on the sidecar itself — a dashboard is not
+  * an exemption.
+  */
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess.ts";
++
+ import { spawn } from "node:child_process";
+ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
+@@ -418,6 +420,21 @@ function backup(f: CoreFile): string | null {
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+   const method = req.method;
++  if (pathname === "/api/hermes/remount" && method === "POST") {
++    try {
++      if (hasManagedMemoryHTTP()) {
++        const url = new URL(req.url);
++        const origin = req.headers.get("origin");
++        if (origin && origin !== url.origin) return Response.json({error: "Use the installed PULSE origin"},
++          {status: 403, headers: {"cache-control": "no-store"}});
++        if (url.search || (await req.text()).length) return Response.json({error: "Remount uses the installed owner configuration"},
++          {status: 400, headers: {"cache-control": "no-store"}});
++        return memoryHTTPResponse(req, "remount");
++      }
++    } catch {
++      return Response.json({error: "Authenticated mounting is unavailable"}, {status: 503, headers: {"cache-control": "no-store"}});
++    }
++  }
+ 
+   if (method === "GET" && (pathname === "/api/hermes" || pathname === "/api/hermes/")) {
+     let hermes: HermesHealth | null = null;
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/memory.ts b/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
 index ea4d80b..68a149f 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
@@ -1860,7 +1925,7 @@ index 30db06e..7c1ca94 100644
  }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..e2deddf
+index 0000000..f008c5d
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 @@ -0,0 +1,205 @@
@@ -2056,7 +2121,7 @@ index 0000000..e2deddf
 +
 +export function memoryHTTPResponse(request: Request, view: string, target?: string): Response {
 +  const valid = (value: unknown): value is MemoryHTTPResponse => memoryObject(value)
-+    && typeof value.status === "number" && [200, 400, 401, 403, 404, 503].includes(value.status)
++    && typeof value.status === "number" && [200, 400, 401, 403, 404, 409, 503].includes(value.status)
 +    && typeof value.body === "string" && Array.isArray(value.headers)
 +    && value.headers.every(header => Array.isArray(header) && header.length === 2
 +      && typeof header[0] === "string" && typeof header[1] === "string"

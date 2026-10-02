@@ -1,0 +1,22 @@
+======================================================================
+FAIL: test_verified_owner_remounts_without_enabling_memory_ownership (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_verified_owner_remounts_without_enabling_memory_ownership)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 93, in test_verified_owner_remounts_without_enabling_memory_ownership
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_remount_refuses_anonymous_revoked_and_cross_origin_requests (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_remount_refuses_anonymous_revoked_and_cross_origin_requests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 103, in test_remount_refuses_anonymous_revoked_and_cross_origin_requests
+    self.assertEqual(self.client.post(path).status_code, 401)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 401
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.288s
+
+FAILED (failures=2)

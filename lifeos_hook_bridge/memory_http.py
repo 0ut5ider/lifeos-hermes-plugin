@@ -1,4 +1,4 @@
-# ABOUTME: Relays native memory HTTP reads to a fixed authenticated local dashboard.
+# ABOUTME: Relays native memory HTTP requests to a fixed authenticated local dashboard.
 # ABOUTME: Uses only incoming session credentials and refuses redirects or raw fallback.
 from __future__ import annotations
 
@@ -67,9 +67,12 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     source_view = arguments.get('view') in ('wiki', 'knowledge')
     expected = {'view','authorization','cookie'} | ({'target'} if source_view else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view)):
+            or (arguments['view'] not in VIEWS and not source_view and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
+    remount = arguments['view'] == 'remount'
+    if remount:
+        route = '/memory/remount'
     if source_view:
         if arguments['view'] == 'wiki':
             from .memory_wiki import request_target
@@ -108,15 +111,16 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
         request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route,
-                                      headers=credentials,method='GET')
+                                      headers=credentials,method='POST' if remount else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         try:
-            response=opener.open(request,timeout=8)
+            response=opener.open(request,timeout=120 if remount else 8)
         except urllib.error.HTTPError as error:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,404} if source_view else {200,400,401,403}):
+            if status not in ({200,400,401,403,409} if remount else
+                              {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
             if (status in ({200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):

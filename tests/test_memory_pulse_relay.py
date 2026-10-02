@@ -19,7 +19,7 @@ from test_memory_native import OWNER
 
 class MemoryPulseRelayTests(unittest.TestCase):
     def setUp(self):
-        self.fixture = auth_fixture.MemoryPulseAuthTests()
+        self.fixture = self.create_fixture()
         self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
         self.listener = socket.socket()
@@ -51,6 +51,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
             'observability.ts': ('startObservability,handleObservabilityRequest', 'handleObservabilityRequest',
                                  'startObservability({enabled:true});\n'),
             'memory.ts': ('handleRequest', 'handleRequest', ''),
+            'hermes.ts': ('handleRequest', 'handleRequest', ''),
         }[self.native_module_name()]
         program.write_text('import {'+exports+'} from '+json.dumps(str(module))+';\n'+start+
             'const server=Bun.serve({hostname:"127.0.0.1",port:0,async fetch(request){\n'
@@ -66,6 +67,9 @@ class MemoryPulseRelayTests(unittest.TestCase):
 
     def native_module_name(self):
         return getattr(self, 'native_module', 'memory.ts')
+
+    def create_fixture(self):
+        return auth_fixture.MemoryPulseAuthTests()
 
     def stop_dashboard(self):
         self.server.should_exit = True

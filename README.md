@@ -12,6 +12,8 @@ The [installation and removal plan](docs/memory-implementation-plan.md#installat
 
 [Authenticated managed mounting](docs/verification/2026-10-02-memory-administration/README.md) connects installation finalization and detached updates to current dashboard owner authority. Short-lived grants bind the fixed profile, configuration, and update action. Separate recovery authority permits snapshot recovery when an interrupted swap leaves the installed directory absent. The bounded gate passes 250 tests with no skips. Live service acceptance, PULSE remount integration, and complete crash-recoverable ownership setup remain open.
 
+[Staged mount and authenticated remount](docs/verification/2026-10-02-mount-acceptance/README.md) adds journaled publication and recovery for installation, update mounting, and native PULSE remount. The plugin page exposes an authenticated recovery control. Live service and browser acceptance remains a separate gate. This change does not activate lasting-memory ownership.
+
 - Load LifeOS context and skills from a configurable installation path.
 - Map each LifeOS hook behavior to a Hermes lifecycle point and verify its effect, including blocks, approvals, context injection, and stop gates.
 - Keep the LifeOS installation unchanged where possible. Record any Hermes core extension needed for behavior the plugin API cannot express.

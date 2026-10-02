@@ -1,0 +1,34 @@
+======================================================================
+ERROR: test_process_death_during_restoration_can_resume_original_permissions (test_mount_transaction.MountTransactionTests.test_process_death_during_restoration_can_resume_original_permissions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 136, in test_process_death_during_restoration_can_resume_original_permissions
+    self.assertEqual(self.transaction().recover()['state'], 'rolled_back')
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 208, in recover
+    return self._restore(manifest)
+           ~~~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 168, in _restore
+    self._checks(manifest['entries'], ('before', 'after'))
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 163, in _checks
+    raise MountError('A mount target changed. Recovery will preserve the later edit.')
+lifeos_hook_bridge.mount_transaction.MountError: A mount target changed. Recovery will preserve the later edit.
+
+======================================================================
+FAIL: test_unfinished_mount_refuses_another_mount_until_recovery (test_mount_transaction.MountTransactionTests.test_unfinished_mount_refuses_another_mount_until_recovery)
+----------------------------------------------------------------------
+lifeos_hook_bridge.mount_transaction.MountError: Recover the interrupted mount before mounting again
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 113, in test_unfinished_mount_refuses_another_mount_until_recovery
+    with self.assertRaisesRegex(RuntimeError, 'recover'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "recover" does not match "Recover the interrupted mount before mounting again"
+
+----------------------------------------------------------------------
+Ran 8 tests in 10.644s
+
+FAILED (failures=1, errors=1)
