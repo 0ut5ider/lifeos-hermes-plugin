@@ -28,6 +28,8 @@ Finalization, LifeOS update, and update recovery require an authenticated Hermes
 
 The plugin issues a short-lived grant for the fixed installation and profile. The grant permits native prompt operations only. Update grants also bind the queued request and action. The worker checks authority before systemd operations. Recovery requires a fresh authenticated grant. A failed recovery launch restores the prior request and status so the owner can retry.
 
+Recovery authority is separate from mount authority. It permits snapshot recovery without exposing memory or prompt operations. A missing installed directory does not prevent owner-authorized recovery after an interrupted directory swap. The worker still checks the exact job, action, and current profile configuration.
+
 The [administration evidence](verification/2026-10-02-memory-administration/README.md) covers actual native mounting and authenticated finalization. Update launch and recovery tests use component fixtures for systemd operations. Live browser and service acceptance remain required. These controls do not select lasting-memory ownership, approve source contents, or import existing Hermes memory.
 
 ## Reduced mode with stock Hermes

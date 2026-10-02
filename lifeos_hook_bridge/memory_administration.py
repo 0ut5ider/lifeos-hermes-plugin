@@ -108,11 +108,13 @@ def issue(configuration, account, *, ttl=600, binding=None):
         raise PermissionError('An authenticated installation owner must authorize mounting')
     config = configuration.load()
     configuration.check_owner(config, account)
-    _connector(configuration, config)
     if type(ttl) is not int or not 0 < ttl <= MAX_TTL or binding is not None and not isinstance(binding, dict):
         raise ValueError('Choose a bounded administrative authorization lifetime and job binding')
+    purpose = 'recover' if binding is not None and binding.get('action') == 'recover' else 'mount'
+    if purpose == 'mount':
+        _connector(configuration, config)
     created = int(time.time())
-    payload = {'version': 1, 'purpose': 'mount', 'nonce': secrets.token_hex(16), 'account': account,
+    payload = {'version': 1, 'purpose': purpose, 'nonce': secrets.token_hex(16), 'account': account,
                'root': config['root'], 'profile': str(configuration.path.parent.absolute()),
                'configuration_digest': _digest(config), 'created': created, 'expires': created + ttl,
                'binding': binding}
@@ -125,7 +127,9 @@ def issue(configuration, account, *, ttl=600, binding=None):
     return path
 
 
-def validate(configuration, authorization, *, binding=None, check_binding=False):
+def validate(configuration, authorization, *, binding=None, check_binding=False, purpose='mount'):
+    if purpose not in ('mount', 'recover'):
+        raise ValueError('Choose a mount or recovery authorization')
     path = Path(authorization).absolute()
     if path.parent != _directory(configuration) or re.fullmatch(r'[0-9a-f]{32}\.json', path.name) is None:
         raise PermissionError('This authorization belongs to another administrative profile')
@@ -140,7 +144,7 @@ def validate(configuration, authorization, *, binding=None, check_binding=False)
     fields = {'version', 'purpose', 'nonce', 'account', 'root', 'profile', 'configuration_digest', 'created', 'expires', 'binding'}
     now = int(time.time())
     if (not isinstance(payload, dict) or set(payload) != fields or payload['version'] != 1
-            or payload['purpose'] != 'mount' or not isinstance(payload['nonce'], str)
+            or payload['purpose'] != purpose or not isinstance(payload['nonce'], str)
             or payload['nonce'] + '.json' != path.name or not isinstance(payload['account'], str)
             or not payload['account'].startswith('dashboard:')
             or type(payload['created']) is not int or type(payload['expires']) is not int
@@ -152,9 +156,11 @@ def validate(configuration, authorization, *, binding=None, check_binding=False)
             or payload['configuration_digest'] != _digest(config)
             or check_binding and payload['binding'] != binding):
         raise PermissionError('Administrative configuration or job binding changed')
-    _connector(configuration, config)
-    scope = MemoryScope(config['principal'], payload['account'], tuple(sorted(CATEGORIES)),
-                        tuple(sorted(CATEGORIES)), ('*',), payload['configuration_digest'])
+    categories = tuple(sorted(CATEGORIES)) if purpose == 'mount' else ()
+    if purpose == 'mount':
+        _connector(configuration, config)
+    scope = MemoryScope(config['principal'], payload['account'], categories,
+                        categories, ('*',) if categories else (), payload['configuration_digest'])
     return config, scope
 
 
@@ -174,10 +180,12 @@ def mount_environment(installed, profile, authorization=None, *, binding=None):
         if authorization is None:
             raise PermissionError('Managed mounting requires installation owner authorization')
         configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
-        config, _ = validate(configuration, authorization, binding=binding, check_binding=True)
+        purpose = 'recover' if binding is not None and binding.get('action') == 'recover' else 'mount'
+        config, _ = validate(configuration, authorization, binding=binding, check_binding=True, purpose=purpose)
         if Path(config['root']).absolute() != installed:
             raise PermissionError('This authorization belongs to another LifeOS installation')
-        environment[ENVIRONMENT] = str(Path(authorization).absolute())
+        if purpose == 'mount':
+            environment[ENVIRONMENT] = str(Path(authorization).absolute())
     elif authorization is not None:
         raise PermissionError('Administrative authorization requires configured managed memory')
     return environment

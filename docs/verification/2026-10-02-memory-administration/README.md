@@ -6,9 +6,9 @@ Date: 2026-10-02. Role: Cerebo, primary implementation and verification.
 
 A managed native mount needs explicit installation owner authority. A conversation identity cannot authorize installation. The dashboard uses the actual Hermes session and checks its current owner binding. The plugin issues a signed private grant for the fixed LifeOS installation and Hermes profile.
 
-The grant permits only prompt bundle, preview, and publication operations. It does not permit arbitrary recall, fact writes, source approval, or publication into another profile. Source validation and retirement checks remain required. Installation does not switch memory ownership.
+The mount grant permits only prompt bundle, preview, and publication operations. It does not permit arbitrary recall, fact writes, source approval, or publication into another profile. Source validation and retirement checks remain required. Installation does not switch memory ownership.
 
-The grant binds the current configuration, owner account, purpose, and expiration. A detached update also binds the job path, request digest, and action. A changed queued request requires fresh authorization. Recovery creates a fresh grant for the recovery action. An apply grant cannot authorize recovery.
+The grant binds the current configuration, owner account, purpose, and expiration. A detached update also binds the job path, request digest, and action. A changed queued request requires fresh authorization. Recovery creates a distinct grant for the recovery action. It has no memory read or write scope and cannot authorize prompt operations. An apply grant cannot authorize recovery.
 
 Finalization uses a ten-minute grant. Detached update and recovery use a one-hour grant. The plugin stores the signing key and grants under the private profile directory `.lifeos-memory-admin`. It checks owner permissions and refuses symlink grant files. The grant pathname is a bearer credential. Public status responses do not include it.
 
@@ -18,7 +18,9 @@ Native subprocesses receive the grant without conversation metadata or an intern
 
 `Finish LifeOS setup` uses the grant for the actual native mount and mount check. Hermes configuration validation and VersionDrift baseline creation remain required. A handled failure restores the existing mount snapshot. A managed configuration or connector without valid owner authorization refuses before mounting.
 
-The detached update worker checks the grant before systemd operations and uses it for mounting and verification. A tampered job cannot consume another valid grant. Accepted work revokes the grant when it finishes or raises an exception. An expired grant refuses before an update starts. A recovery request issues fresh action-bound authority.
+The detached update worker checks the grant before systemd operations and uses mount authority for mounting and verification. A tampered job cannot consume another valid grant. Accepted work revokes the grant when it finishes or raises an exception. An expired grant refuses before an update starts. A recovery request issues fresh action-bound authority.
+
+A process can die between directory renames and leave the installed LifeOS directory absent. Recovery authorization therefore checks the current profile configuration and owner binding without requiring native mounting capabilities. The recovery worker receives no administrative prompt environment. It restores the prior snapshot, verifies Hermes configuration, and revokes the recovery grant. Restoring the directory does not convert that grant into mount authority.
 
 If recovery cannot launch, the API revokes the new grant and restores the prior request and status. This preserves a retryable job. The update queue removes a new job and revokes its grant if launch fails.
 
@@ -33,6 +35,8 @@ Update queue and recovery cases use real authentication, private files, signatur
 Tests cover forged, expired, revoked, incorrectly encoded, and incorrectly permissioned grants. They cover changed configuration, connector loss, job and action substitution, another profile, missing owner accounts, anonymous requests, fabricated owner headers, and revoked dashboard bindings. A controlled interleaving revokes the grant after actual native rendering and verifies that publication preserves the prior prompt.
 
 The initial missing implementation is recorded in [before.txt](before.txt). [initial-failure.txt](initial-failure.txt) records fixture and sanitized-refusal corrections. [native-install.txt](native-install.txt) records an incorrect test exception assertion. [dashboard-before.txt](dashboard-before.txt) reproduces the recovery launch failure. [legacy-fixture-failure.txt](legacy-fixture-failure.txt) records an incomplete FastAPI substitute; the fixture now uses the real framework. [gate-selection-failure.txt](gate-selection-failure.txt) records an incorrect test-module name. The corrected selections retain all required assertions.
+
+The first bounded gate passes 248 tests at `86ea8d2`. [gate-before-missing-install.txt](gate-before-missing-install.txt) records that result. Subsequent code inspection identifies missing-directory recovery. [missing-install-before.txt](missing-install-before.txt) reproduces its refusal. The corrected implementation adds separate recovery authority and a real filesystem recovery test. The expanded focused gate passes 57 cases in 24.744 seconds with no skips or warnings. [recovery-after.txt](recovery-after.txt) records that result. Systemd operations remain component boundaries.
 
 [run_gate.sh](run_gate.sh) runs the bounded neighboring gate. Its final result is recorded after completion.
 

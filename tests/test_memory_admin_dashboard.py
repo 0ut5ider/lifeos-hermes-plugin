@@ -170,7 +170,7 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         authorization = Path(request['memory_authorization'])
         self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, authorization)
         self.fixture.fixture.admin().validate(self.configuration, authorization,
-            binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True)
+            binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True, purpose='recover')
         with self.assertRaises(PermissionError):
             self.fixture.fixture.admin().validate(self.configuration, authorization,
                 binding=self.fixture.fixture.admin().job_binding(job, request, 'apply'), check_binding=True)
@@ -199,6 +199,25 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.assertEqual(self.grants(), [])
         self.assertEqual((job / 'request.json').read_bytes(), before_request)
         self.assertEqual((job / 'status.json').read_bytes(), before_status)
+
+    def test_recovery_authorizes_a_missing_install_directory_without_prompt_access(self):
+        self.login()
+        job = self.interrupted_job()
+        prior = job / 'snapshot/live-prior'
+        self.fixture.root.rename(prior)
+        with patch.object(self.api, '_launch_lifeos_update') as launched:
+            response = self.post('/update/recover')
+        self.assertEqual(response.status_code, 200, response.text)
+        launched.assert_called_once_with(job, 'recover')
+        request = json.loads((job / 'request.json').read_text())
+        authorization = Path(request['memory_authorization'])
+        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, authorization)
+        self.assertEqual(json.loads(authorization.read_text())['payload']['purpose'], 'recover')
+        # Restoring the source directory does not convert recovery authority into mount authority.
+        prior.rename(self.fixture.root)
+        from lifeos_hook_bridge.memory_service import MemoryService
+        self.assertFalse(MemoryService(self.configuration).administrative(
+            authorization, 'prompt_bundle', {'keepOutputFormat': False})['ok'])
 
 
 if __name__ == '__main__':

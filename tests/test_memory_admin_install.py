@@ -121,6 +121,38 @@ class MemoryAdminInstallTests(unittest.TestCase):
                 update_worker.run_update_job(job)
         self.assertFalse(authorization.exists())
 
+    def test_recovery_restores_a_missing_install_directory_with_recovery_only_authority(self):
+        from lifeos_hook_bridge.update_transaction import _snapshot_mount
+        with self.fixture.admin().lease(self.fixture.configuration, 'dashboard:owner') as authorization:
+            self.finalize(authorization)
+        prior_prompt = (self.profile / 'SOUL.md').read_bytes()
+        job = self.profile / 'recovery-job'
+        snapshot = job / 'snapshot'
+        snapshot.mkdir(parents=True, mode=0o700)
+        _snapshot_mount(self.profile, snapshot, self.baseline)
+        (snapshot / 'manifest.json').write_text(json.dumps({'state': 'stopped',
+            'installed': str(self.root), 'hermes_home': str(self.profile), 'baseline': str(self.baseline)}))
+        self.root.rename(snapshot / 'live-prior')
+        (self.profile / 'SOUL.md').write_text('SyntheticInterruptedMount\n')
+        request = self.request()
+        authorization = self.fixture.issue(binding=self.fixture.admin().job_binding(job, request, 'recover'))
+        request['memory_authorization'] = str(authorization)
+        (job / 'request.json').write_text(json.dumps(request))
+        events = []
+
+        def service(action, home):
+            events.append(action)
+            return 'active' if action == 'is-active' else ''
+
+        # Directory recovery and configuration verification are real; systemd is a component boundary.
+        with patch.object(update_worker, '_check_gateway_launcher'), patch.object(update_worker, '_service', service):
+            result = update_worker.run_update_job(job, 'recover')
+        self.assertEqual(result['state'], 'rolled_back')
+        self.assertTrue(self.root.is_dir())
+        self.assertEqual((self.profile / 'SOUL.md').read_bytes(), prior_prompt)
+        self.assertEqual(events, ['stop', 'start', 'is-active'])
+        self.assertFalse(authorization.exists())
+
 
 if __name__ == '__main__':
     unittest.main()
