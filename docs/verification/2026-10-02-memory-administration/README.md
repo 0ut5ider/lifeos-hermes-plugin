@@ -38,7 +38,7 @@ The initial missing implementation is recorded in [before.txt](before.txt). [ini
 
 The first bounded gate passes 248 tests at `86ea8d2`. [gate-before-missing-install.txt](gate-before-missing-install.txt) records that result. Subsequent code inspection identifies missing-directory recovery. [missing-install-before.txt](missing-install-before.txt) reproduces its refusal. The corrected implementation adds separate recovery authority and a real filesystem recovery test. The expanded focused gate passes 57 cases in 24.744 seconds with no skips or warnings. [recovery-after.txt](recovery-after.txt) records that result. Systemd operations remain component boundaries.
 
-[run_gate.sh](run_gate.sh) runs the bounded neighboring gate. Its final result is recorded after completion.
+[run_gate.sh](run_gate.sh) runs the bounded neighboring gate. The final gate passes 250 tests in 204.384 seconds at `aa45912`, without skips, failures, errors, or warnings. [gate.txt](gate.txt) records the output. [gate.done](gate.done) records exit status 0. [verification.json](verification.json) records the implementation commit, source identity, file digests, results, and limits. This is primary verification, not independent release review.
 
 ## Limits
 

@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-02",
+  "implementation_commit": "aa45912f930d20a4fe911b4324a3c272097c07b7",
+  "source_manifest": "../2026-10-01-memory-active-callers/source-manifest.json",
+  "native_source": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-prompt-publication-release/lifeos/LifeOS/install",
+  "host_source": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-prompt-publication-release/hermes",
+  "files": {
+    "lifeos_hook_bridge/memory_administration.py": "0f3166ac9e67d970348b1c12c9f36666c33958c6ef08e108e77a879f638a3466",
+    "lifeos_hook_bridge/memory_service.py": "f8948dd40a98721969ea4589332d45adbf906c2b6301961f4e0842c9f47e89d7",
+    "lifeos_hook_bridge/memory_rpc.py": "9b32d66cfb8265e2e5dfd55d1c3c203ec7348b2cf4c3e61e8e17dc1f0feee9c6",
+    "lifeos_hook_bridge/memory_preferences.py": "e0520b880d6d2708597d88f60210169585600cf2ec3524ab889749d9c7072fff",
+    "lifeos_hook_bridge/install_source.py": "578ef979afbddde37d0b0c7de810ca2ec8acb3758282354861ac6071cb2b26b7",
+    "lifeos_hook_bridge/update_worker.py": "befd1d8f2dc6b4677db597798f61578988c513619cc82f353ea926260904f209",
+    "lifeos_hook_bridge/dashboard/plugin_api.py": "22063d0cacf0ff99eabf6a558fa540a82219c75dce4f2e6b8e36fcc16af0d232",
+    "tests/test_memory_administration.py": "c8a9e1ba51d8d7726851ee3bd12798137511aeca1e92662ab050704eca4f6f84",
+    "tests/test_memory_admin_install.py": "fcfb20698d5e390a9bd9c68385c0320f8b862543d16005eb1a3c48646523f724",
+    "tests/test_memory_admin_dashboard.py": "f5938e2d1f15164eb23d9e194154a0e94db2f6fe9f8ef5d7e15011a19ae4f5d2",
+    "tests/test_dashboard_api.py": "a19792e884b4b8ea3895bb4c0d455cc6db3314b5df825e021be7497a0bb6df2f"
+  },
+  "focused_gate": {
+    "tests": 57,
+    "seconds": 24.744,
+    "exit_code": 0,
+    "skips": 0
+  },
+  "gate": {
+    "tests": 250,
+    "seconds": 204.384,
+    "exit_code": 0,
+    "skips": 0,
+    "warnings": 0
+  },
+  "limits": [
+    "No ownership activation",
+    "No server deployment",
+    "No live systemd acceptance",
+    "No browser click",
+    "No complete mount crash recovery",
+    "No PULSE remount integration",
+    "No independent review",
+    "No full release gate"
+  ]
+}
