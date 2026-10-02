@@ -1,6 +1,11 @@
 # LifeOS plugin for Hermes
 
-This project connects an installed LifeOS hook set to Hermes through a separate plugin. The goal is to preserve LifeOS's hook behavior while keeping the integration outside the LifeOS repository.
+This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
+
+
+Naitive LifeOS uses Claude Code as it's harness, and hooks into many of Claude code's native hooks to achieve the wonderful user experience you get with LifeOS. 
+The goal is to preserve LifeOS's hook behavior while keeping the integration outside the LifeOS repository.
+This plugin is a translation layer that allows a full replacement of Claude code with Hermes agent so that you can use LifeOS from within Hermes agent.
 
 **Status:** Experimental test fixture. The bridge runs native LifeOS hooks at matching Hermes events. Full hook parity is not yet achieved. Do not use this repository as a replacement for a working LifeOS installation.
 
