@@ -8,6 +8,7 @@ import json
 import os
 from pathlib import Path
 import secrets
+import shutil
 import signal
 import subprocess
 import sys
@@ -93,6 +94,72 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.assertTrue(self.fixture.baseline.exists())
         self.assertIn('SyntheticSafetyDoctrine', (self.fixture.profile / 'SOUL.md').read_text())
         self.assertEqual(self.grants(), [])
+
+    def test_installation_actions_refuse_cross_origin_and_request_overrides(self):
+        self.login()
+        for action in ('finalize', 'update', 'prepare', 'apply', 'prepare-hermes', 'apply-hermes', 'restore-hermes'):
+            url = self.prefix + '/' + action
+            for endpoint, options, expected in (
+                    (url, {'headers': {'Origin': 'http://testserver:8081'}}, 403),
+                    (url + '?installed=other', {}, 400),
+                    (url, {'json': {'installed': 'other'}}, 400)):
+                with self.subTest(action=action, request=options or endpoint):
+                    response = self.client.post(endpoint, **options)
+                    self.assertEqual(response.status_code, expected, response.text)
+                    self.assertFalse(self.fixture.baseline.exists())
+                    self.assertEqual(self.grants(), [])
+
+    def test_other_mutations_refuse_cross_origin_before_payload_validation(self):
+        self.login()
+        for method, path in (('POST', '/memory/sharing'), ('PUT', '/settings'),
+                             ('POST', '/version-drift'), ('DELETE', '/memory/connections/synthetic')):
+            with self.subTest(method=method, path=path):
+                response = self.client.request(method, '/api/plugins/lifeos-hook-bridge' + path,
+                    headers={'Origin': 'http://testserver:8081'}, json={})
+                self.assertEqual(response.status_code, 403, response.text)
+
+    def test_concurrent_updates_cannot_both_admit_a_job(self):
+        self.prepare_baseline()
+        entered, release = threading.Event(), threading.Event()
+        original_status = self.api.get_lifeos_update_status
+
+        def status():
+            result = original_status()
+            if not entered.is_set():
+                entered.set()
+                release.wait(timeout=5)
+            return result
+
+        with patch.object(self.api, 'get_lifeos_update_status', side_effect=status), \
+                patch.object(self.api, '_launch_lifeos_update') as launched, ThreadPoolExecutor(max_workers=1) as pool:
+            first = pool.submit(self.post, '/update')
+            try:
+                self.assertTrue(entered.wait(timeout=5))
+                second = self.post('/update')
+                self.assertEqual(second.status_code, 409, second.text)
+            finally:
+                release.set()
+                result = first.result(timeout=10)
+                self.assertEqual(result.status_code, 200, result.text)
+                for grant in self.grants():
+                    self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, grant)
+            self.assertEqual(launched.call_count, 1)
+            self.assertEqual(len(list(self.api.LIFEOS_UPDATE_ROOT.glob('update-*'))), 1)
+
+    def test_shared_lock_refuses_update_mount_and_host_patch_actions(self):
+        self.login()
+        from lifeos_hook_bridge.installation_lock import installation_lock
+        with installation_lock(self.fixture.profile):
+            for path in ('/finalize', '/update', '/update/restore', '/update/recover',
+                         '/mount/recover', '/apply-hermes', '/restore-hermes'):
+                with self.subTest(path=path):
+                    response = self.post(path)
+                    self.assertEqual(response.status_code, 409, response.text)
+                    self.assertIn('Another installation operation', response.text)
+                    self.assertEqual(self.grants(), [])
+            response = self.client.post('/api/plugins/lifeos-hook-bridge/memory/remount')
+            self.assertEqual(response.status_code, 409, response.text)
+        self.assertFalse(self.fixture.baseline.exists())
 
     def test_verified_owner_remounts_without_enabling_memory_ownership(self):
         self.login()
@@ -271,10 +338,13 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         job = self.interrupted_job()
         (job / 'status.json').write_text(json.dumps({'state': 'applied'}) + '\n')
         transaction = self.api.install_module.memory_module('update_transaction')
+        shutil.copytree(self.fixture.root, job / 'snapshot/live-prior', symlinks=True)
+        bindings = transaction._external_user_data(self.fixture.root, excluded=(job / 'snapshot',))
         (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'applied',
             'installed': str(self.fixture.root), 'hermes_home': str(self.fixture.profile),
             'mount_state': transaction._mount_state(self.fixture.profile),
-            'user_data': transaction._memory_digest(self.fixture.root)}))
+            'user_data_links': bindings,
+            'user_data': transaction._memory_digest(self.fixture.root, bindings)}))
         return job
 
     def test_changed_profile_refuses_restore_without_changing_job(self):
@@ -408,6 +478,36 @@ class MemoryAdminDashboardTests(unittest.TestCase):
             response = self.post('/update/restore')
         self.assertEqual(response.status_code, 403, response.text)
         self.assertEqual(self.grants(), [])
+
+    def test_dashboard_remains_responsive_while_restore_launch_waits(self):
+        self.login()
+        job = self.applied_job()
+        entered, release, finished = threading.Event(), threading.Event(), threading.Event()
+
+        @self.app.get('/auth/login/restore-scheduling-probe')
+        async def probe():
+            return {'launch_finished': finished.is_set()}
+
+        def launch(selected, action):
+            self.assertEqual((selected, action), (job, 'restore'))
+            entered.set()
+            release.wait(timeout=2)
+            finished.set()
+
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=launch), ThreadPoolExecutor(max_workers=1) as pool:
+            pending = pool.submit(self.post, '/update/restore')
+            try:
+                self.assertTrue(entered.wait(timeout=5), 'Restore did not reach launch')
+                response = self.client.get('/auth/login/restore-scheduling-probe')
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertFalse(response.json()['launch_finished'], 'Restore launch blocked other dashboard requests')
+            finally:
+                release.set()
+                result = pending.result(timeout=10)
+                self.assertEqual(result.status_code, 200, result.text)
+                request = json.loads((job / 'request.json').read_text())
+                self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
+                                Path(request['memory_authorization']))
 
     def test_changed_user_data_refuses_restore_without_changing_job(self):
         self.login()

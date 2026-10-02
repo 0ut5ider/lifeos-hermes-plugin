@@ -44,7 +44,8 @@ class LifeOSMemoryProvider(MemoryProvider):
             return False
 
     def unavailable_reason(self) -> str:
-        return 'Set up LifeOS lasting memory in the plugin page and verify the required host extension first.'
+        return ('LifeOS memory ownership cannot be activated in this release. '
+                'Experimental ownership profiles also require the tested host extension.')
 
     def initialize(self, session_id: str, **kwargs) -> None:
         if kwargs.get('hermes_home') and Path(kwargs['hermes_home']).absolute() != self.configuration.path.parent.absolute():

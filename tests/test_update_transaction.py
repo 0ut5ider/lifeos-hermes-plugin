@@ -161,6 +161,74 @@ class UpdateTransactionTests(unittest.TestCase):
             self.assertEqual(baseline.read_bytes(), before)
             self.assertEqual(json.loads((snapshot / "manifest.json").read_text())["state"], "rolled_back")
 
+    def test_restore_preserves_external_memory_and_audit_changes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(root)
+            external = root / 'owner-data'
+            (external / 'MEMORY/OBSERVABILITY').mkdir(parents=True)
+            shutil.copy2(installed / 'LIFEOS/MEMORY/user.txt', external / 'MEMORY/user.txt')
+            shutil.rmtree(installed / 'LIFEOS/MEMORY')
+            (installed / 'LIFEOS/MEMORY').symlink_to(external / 'MEMORY', target_is_directory=True)
+            (installed / 'LIFEOS/USER').symlink_to(external, target_is_directory=True)
+            audit = external / 'MEMORY/OBSERVABILITY/config-changes.jsonl'
+            audit.write_text('{"event":"before-update"}\n')
+            _, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+            audit.write_text(audit.read_text() + '{"event":"after-update"}\n')
+            (external / 'MEMORY/user.txt').unlink()
+            (external / 'MEMORY/current.txt').write_text('Synthetic current fact')
+            before = audit.read_bytes()
+            result = restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+            self.assertEqual(result['state'], 'rolled_back')
+            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
+            self.assertEqual(audit.read_bytes(), before)
+            self.assertEqual((installed / 'LIFEOS/MEMORY/current.txt').read_text(), 'Synthetic current fact')
+            self.assertFalse((installed / 'LIFEOS/MEMORY/user.txt').exists())
+            self.assertEqual((installed / 'LIFEOS/MEMORY').resolve(), external / 'MEMORY')
+
+    def test_restore_refuses_embedded_memory_and_audit_changes(self):
+        for name in ('user.txt', 'OBSERVABILITY/config-changes.jsonl'):
+            with self.subTest(file=name), tempfile.TemporaryDirectory() as directory:
+                installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+                file = installed / 'LIFEOS/MEMORY' / name
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_text('Synthetic before update')
+                events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+                apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                             stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+                file.write_text('Synthetic after update')
+                with self.assertRaisesRegex(UpdateTransactionError, 'User data changed'):
+                    restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                self.assertEqual(file.read_text(), 'Synthetic after update')
+                self.assertEqual(events, ['stop', 'start', 'verify'])
+
+    def test_restore_refuses_replaced_external_data_bindings(self):
+        for mutation in ('link', 'target', 'prior-link'):
+            with self.subTest(mutation=mutation), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(root)
+                external = root / 'owner-memory'
+                shutil.move(installed / 'LIFEOS/MEMORY', external)
+                (installed / 'LIFEOS/MEMORY').symlink_to(external, target_is_directory=True)
+                events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+                apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                             stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+                substitute = root / 'substitute'
+                shutil.copytree(external, substitute)
+                if mutation == 'target':
+                    external.rename(root / 'retained-owner-memory')
+                    substitute.rename(external)
+                else:
+                    link = (snapshot / 'live-prior' if mutation == 'prior-link' else installed) / 'LIFEOS/MEMORY'
+                    link.unlink()
+                    link.symlink_to(substitute, target_is_directory=True)
+                with self.assertRaisesRegex(UpdateTransactionError, 'User data binding changed'):
+                    restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v2')
+                self.assertEqual(events, ['stop', 'start', 'verify'])
+
     def test_restore_preserves_later_profile_edits_and_modes(self):
         mutations = {
             'configuration': lambda home: (home / 'config.yaml').write_text('Synthetic later model choice'),

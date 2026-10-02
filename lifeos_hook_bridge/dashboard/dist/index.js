@@ -197,7 +197,9 @@
             h("p", { className: "whitespace-pre-wrap" }, record.content),
             h("p", { className: "text-xs" }, record.reference.id + ", revision " + record.reference.revision + ". Writer: " + record.writer + "."));
         }),
-        h("p", { className: "text-sm" }, "Ask your agent to correct or forget a fact using its reference. Forget removes ordinary recall; it does not erase conversation history, audits, or backups."),
+        h("p", { className: "text-sm" }, memory.ownership_enabled
+          ? "Ask your agent to correct or forget a fact using its reference. Forget removes ordinary recall; it does not erase conversation history, audits, or backups."
+          : "Agent corrections and forgetting are unavailable until LifeOS memory ownership is enabled. Ownership activation is not available in this version."),
         memory.proposal_review_available ? h("details", null,
           h("summary", { className: "cursor-pointer font-semibold" }, "Pending preference and rule changes"),
           h("div", { className: "space-y-3 pt-3" },
@@ -648,7 +650,7 @@
           }, installationBusy ? "Starting..." : "Apply prepared LifeOS update") : null,
           lifeosUpdate?.state === "applied" ? h("p", { role: "status" }, "LifeOS update applied and verified.") : null,
           lifeosUpdate?.state === "applied" ? h("div", { className: "space-y-2" },
-            h("p", null, "Restore the version saved before this update. Restore stops if LifeOS user data has changed since the update. Your conversations stay in Hermes."),
+            h("p", null, "Restore the program version saved before this update. Memory and audit data in the same external user directory stay current. Restore stops if its directory links, user data inside the program directory, or Hermes configuration have changed. Your conversations stay in Hermes."),
             h("button", { type: "button", disabled: installationBusy, onClick: restoreLifeOSUpdate,
               className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Restore previous LifeOS version")) : null,
           ["queued", "preparing", "applying", "restoring", "recovering"].includes(lifeosUpdate?.state) ? h("p", { role: "status" },

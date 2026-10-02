@@ -622,6 +622,12 @@ def _verify_gateway(snapshot: Path, prior_pid: str) -> None:
 
 
 def run_hermes_patch_job(snapshot: Path, action: str) -> dict:
+    manifest = _read_patch_state(snapshot)
+    with memory_module('installation_lock').installation_lock(Path(manifest['config']).parent, wait=True):
+        return _run_hermes_patch_job(snapshot, action)
+
+
+def _run_hermes_patch_job(snapshot: Path, action: str) -> dict:
     service = "hermes-gateway.service"
     manifest = _read_patch_state(snapshot)
     launcher = str(Path(manifest["current"]) / ".hermes/bin/hermes")

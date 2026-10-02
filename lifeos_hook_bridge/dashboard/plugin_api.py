@@ -58,7 +58,16 @@ HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"
 LIFEOS_UPDATE_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/updates"
 HOST_SOURCE = None
 PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
-router = APIRouter()
+
+
+async def _dashboard_origin(request: Request):
+    if request.method in {'POST', 'PUT', 'PATCH', 'DELETE'}:
+        origin = request.headers.get('origin')
+        if origin and origin != request.url.scheme + '://' + request.url.netloc:
+            raise HTTPException(status_code=403, detail='Use the installed dashboard origin')
+
+
+router = APIRouter(dependencies=[Depends(_dashboard_origin)])
 
 
 class MemoryResponseHeaders:
@@ -139,6 +148,22 @@ def _mount_transaction():
 
 
 def _mount_owner_action(account, action):
+    return _installation_action(lambda: _execute_mount_owner_action(account, action))
+
+
+def _installation_action(action, *, resume_update=False):
+    try:
+        with install_module.memory_module('installation_lock').installation_lock(HERMES_HOME):
+            if not resume_update and get_lifeos_update_status()['state'] in {
+                    'queued', 'preparing', 'applying', 'restoring', 'recovering',
+                    'interrupted', 'rollback_failed', 'error'}:
+                raise HTTPException(status_code=409, detail='A LifeOS update job already owns this installation')
+            return action()
+    except (OSError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+def _execute_mount_owner_action(account, action):
     administration = install_module.memory_administration()
     if administration.required(INSTALLED_ROOT, HERMES_HOME):
         configuration = _memory_preferences().configuration
@@ -161,10 +186,8 @@ def _execute_mount(environment):
     return _mount_transaction().execute(environment, bun, hermes)
 
 
-async def _fixed_mount_request(request):
-    origin = request.headers.get('origin')
-    if origin and origin != request.url.scheme + '://' + request.url.netloc:
-        raise HTTPException(status_code=403, detail='Use the installed dashboard origin')
+async def _fixed_mount_request(request: Request):
+    await _dashboard_origin(request)
     if request.query_params or await request.body():
         raise HTTPException(status_code=400, detail='Mount requests use the installed owner configuration')
 
@@ -393,7 +416,7 @@ def get_installation():
     }
 
 
-@router.post("/installation/prepare")
+@router.post("/installation/prepare", dependencies=[Depends(_fixed_mount_request)])
 def prepare_installation():
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         if (INSTALLED_ROOT.is_symlink() or not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file()
@@ -428,7 +451,7 @@ def prepare_installation():
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
-@router.post("/installation/apply")
+@router.post("/installation/apply", dependencies=[Depends(_fixed_mount_request)])
 def apply_installation():
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         raise HTTPException(status_code=409, detail="A .claude directory exists. The fresh installer will not overwrite it.")
@@ -441,8 +464,12 @@ def apply_installation():
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
-@router.post("/installation/finalize")
+@router.post("/installation/finalize", dependencies=[Depends(_memory_account), Depends(_fixed_mount_request)])
 def finalize_installation(account: str = Depends(_memory_account)):
+    return _installation_action(lambda: _finalize_installation(account))
+
+
+def _finalize_installation(account: str):
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before finishing setup")
     if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
@@ -464,7 +491,7 @@ def finalize_installation(account: str = Depends(_memory_account)):
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
-@router.post("/installation/prepare-hermes")
+@router.post("/installation/prepare-hermes", dependencies=[Depends(_fixed_mount_request)])
 def prepare_hermes_installation():
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before preparing the Hermes extension")
@@ -545,13 +572,19 @@ def _launch_lifeos_update(job: Path, action: str = "apply"):
         raise IncompatibleLifeOS(f"Could not start the LifeOS update worker: {launched.returncode}")
 
 
-@router.post("/installation/update")
+@router.post("/installation/update", dependencies=[Depends(_memory_account), Depends(_fixed_mount_request)])
 def apply_lifeos_update(account: str = Depends(_memory_account)):
+    return _installation_action(lambda: _apply_lifeos_update(account))
+
+
+def _apply_lifeos_update(account: str):
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not BASELINE_PATH.is_file():
         raise HTTPException(status_code=409, detail="An installed LifeOS and VersionDrift baseline are required")
     previous = get_lifeos_update_status()
-    if previous["state"] in {"queued", "preparing", "applying", "rollback_failed", "interrupted"}:
+    if previous["state"] in {"queued", "preparing", "applying", "restoring", "recovering", "rollback_failed", "interrupted", "error"}:
         raise HTTPException(status_code=409, detail="A LifeOS update job already owns this installation")
+    if get_host_patch_status()['state'] in {'staged', 'applying', 'restoring', 'restore_failed', 'rollback_failed', 'error'}:
+        raise HTTPException(status_code=409, detail='A Hermes patch job already owns this installation')
     try:
         selected_candidate = _candidate_path()
         candidate = validate_prepared_lifeos(selected_candidate)
@@ -599,6 +632,10 @@ async def recover_lifeos_update(request: Request, account: str = Depends(_memory
 
 
 def _recover_lifeos_update(account: str):
+    return _installation_action(lambda: _recover_lifeos_update_locked(account), resume_update=True)
+
+
+def _recover_lifeos_update_locked(account: str):
     previous = get_lifeos_update_status()
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
         "stopped", "swapped", "restoring", "rollback_failed"
@@ -610,6 +647,14 @@ def _recover_lifeos_update(account: str):
 @router.post("/installation/update/restore")
 async def restore_lifeos_update(request: Request, account: str = Depends(_memory_account)):
     await _fixed_mount_request(request)
+    return await run_in_threadpool(_restore_lifeos_update, account)
+
+
+def _restore_lifeos_update(account: str):
+    return _installation_action(lambda: _restore_lifeos_update_locked(account), resume_update=True)
+
+
+def _restore_lifeos_update_locked(account: str):
     previous = get_lifeos_update_status()
     if previous['state'] != 'applied' or previous.get('transaction_state') != 'applied':
         raise HTTPException(status_code=409, detail='There is no applied LifeOS update to restore')
@@ -680,8 +725,12 @@ def _launch_host_patch(snapshot: Path, action: str):
         raise IncompatibleLifeOS(f"Could not start the Hermes patch worker: {launched.returncode}")
 
 
-@router.post("/installation/apply-hermes")
+@router.post("/installation/apply-hermes", dependencies=[Depends(_fixed_mount_request)])
 def apply_hermes_installation():
+    return _installation_action(_apply_hermes_installation)
+
+
+def _apply_hermes_installation():
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before patching Hermes")
     previous = get_host_patch_status()
@@ -703,8 +752,12 @@ def apply_hermes_installation():
     return {"state": "staged", "snapshot": str(snapshot)}
 
 
-@router.post("/installation/restore-hermes")
+@router.post("/installation/restore-hermes", dependencies=[Depends(_fixed_mount_request)])
 def restore_hermes_installation():
+    return _installation_action(_restore_hermes_installation)
+
+
+def _restore_hermes_installation():
     previous = get_host_patch_status()
     if previous["state"] != "applied":
         raise HTTPException(status_code=409, detail="There is no applied Hermes patch to restore")

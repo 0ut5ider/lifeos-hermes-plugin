@@ -28,6 +28,7 @@ from .update_transaction import apply_update, recover_update, restore_update
 from .version_drift import changed_paths, create_baseline, load_baseline, save_baseline
 from .memory_administration import (mount_environment, job_binding, required, revoke)
 from .memory_service import MemoryConfiguration
+from .installation_lock import installation_lock
 
 
 def _digest(path: Path) -> str:
@@ -223,6 +224,14 @@ def run_update_job(job: Path, action: str = 'apply') -> dict:
         raise ValueError('LifeOS update job is missing')
     request = json.loads((job / 'request.json').read_text(encoding='utf-8'))
     installed, profile = Path(request['installed']), Path(request['hermes_home'])
+    with installation_lock(profile, wait=True):
+        return _run_authorized_update_job(job, action, installed, profile)
+
+
+def _run_authorized_update_job(job, action, installed, profile):
+    request = json.loads((job / 'request.json').read_text(encoding='utf-8'))
+    if Path(request['installed']) != installed or Path(request['hermes_home']) != profile:
+        raise ValueError('The update request changed its installation while waiting for the lock')
     managed = required(installed, profile)
     if managed:
         mount_environment(installed, profile, request.get('memory_authorization'),

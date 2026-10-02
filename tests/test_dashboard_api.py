@@ -243,6 +243,7 @@ class DashboardApiTests(unittest.TestCase):
             api.INSTALL_CANDIDATE.mkdir()
             api.HERMES_HOME = root / ".hermes"
             api.BASELINE_PATH = root / "baseline.json"
+            api.HERMES_HOME.mkdir()
             calls = []
 
             def finalize(*args):
@@ -300,6 +301,8 @@ class DashboardApiTests(unittest.TestCase):
         api = self.load_api(lambda *_: [], lambda *_: [])
         with tempfile.TemporaryDirectory() as directory:
             api.LIFEOS_UPDATE_ROOT = Path(directory)
+            api.HERMES_HOME = Path(directory) / 'profile'
+            api.HERMES_HOME.mkdir()
             job = api.LIFEOS_UPDATE_ROOT / "update-one"
             (job / "snapshot").mkdir(parents=True)
             (job / "request.json").write_text("{}")
@@ -310,7 +313,7 @@ class DashboardApiTests(unittest.TestCase):
             api._launch_lifeos_update = lambda path, action="apply": launched.append((path, action))
             with patch.object(api.subprocess, "run", return_value=types.SimpleNamespace(returncode=3, stdout="inactive")):
                 self.assertEqual(api.get_lifeos_update_status()["state"], "interrupted")
-                result = api.recover_lifeos_update()
+                result = api._recover_lifeos_update('dashboard:basic:synthetic-owner')
             self.assertEqual(result["state"], "recovering")
             self.assertEqual(launched, [(job, "recover")])
 

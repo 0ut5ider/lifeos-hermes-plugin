@@ -48,6 +48,17 @@ test('memory status names incomplete gates and does not offer activation',async(
   assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Check memory status')));
 });
 
+test('agent correction guidance requires active memory ownership',async()=>{
+  for(const ownership of [false,true]) {
+    const p=await panel({state:'prepared',ownership_enabled:ownership,remaining_gates:{}});
+    const guidance=find(p.render(),n=>n.type==='p'&&n.children.some(c=>
+      typeof c==='string'&&c.includes('Ask your agent to correct or forget')));
+    assert.equal(Boolean(guidance),ownership);
+    if(!ownership)assert.ok(find(p.render(),n=>n.type==='p'&&n.children.some(c=>
+      typeof c==='string'&&c.includes('Agent corrections and forgetting are unavailable'))));
+  }
+});
+
 test('pending changes show their target and exact revision for manual decisions',async()=>{
   const proposal={reference:{id:'pending-one',revision:2},edit:'Confirm before synthetic publication.',
     target_file:'/synthetic/OPERATIONAL_RULES.md',rationale:'Synthetic owner rule.',writer:'chat-a:100',

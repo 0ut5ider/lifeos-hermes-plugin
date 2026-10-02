@@ -20,6 +20,7 @@ from .update_plan import apply_system_plan, plan_system_files
 
 MOUNT_FILES = ("config.yaml", "SOUL.md", ".env")
 MOUNT_DIRS = ("plugins/lifeos",)
+USER_DATA_PATHS = ("LIFEOS/MEMORY", "LIFEOS/USER", "USER.md", "MEMORY.md")
 
 
 class UpdateTransactionError(RuntimeError):
@@ -163,9 +164,30 @@ def _mount_state(hermes_home: Path) -> dict:
     return states
 
 
-def _memory_digest(root: Path) -> dict[str, str]:
+def _external_user_data(root: Path, *, excluded: tuple[Path, ...] = ()) -> dict:
+    bindings = {}
+    for name in USER_DATA_PATHS:
+        path = root / name
+        if not path.is_symlink():
+            continue
+        target = path.resolve(strict=True)
+        if not target.is_dir() or any(target.is_relative_to(tree) or tree.is_relative_to(target)
+                                     for tree in (root.resolve(), *excluded)):
+            raise UpdateTransactionError('User data links require an external directory')
+        for file in target.rglob('*'):
+            if file.is_symlink() or not (file.is_file() or file.is_dir()):
+                raise UpdateTransactionError('External user data contains an unsupported file')
+        info = target.stat()
+        bindings[name] = {'link': os.readlink(path), 'target': str(target),
+                          'device': info.st_dev, 'inode': info.st_ino}
+    return bindings
+
+
+def _memory_digest(root: Path, external: dict | None = None) -> dict[str, str]:
     hashes = {}
-    for name in ("LIFEOS/MEMORY", "LIFEOS/USER", "USER.md", "MEMORY.md"):
+    for name in USER_DATA_PATHS:
+        if name in (external or {}):
+            continue
         path = root / name
         if path.is_file():
             hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -228,7 +250,8 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         verify()
         manifest["state"] = "applied"
         manifest["package_roots"] = dependency_report["package_roots"]
-        manifest["user_data"] = _memory_digest(installed)
+        manifest['user_data_links'] = _external_user_data(installed, excluded=(snapshot,))
+        manifest["user_data"] = _memory_digest(installed, manifest['user_data_links'])
         manifest['mount_state'] = _mount_state(hermes_home)
         _write_json(manifest_path, manifest)
         return manifest
@@ -266,7 +289,11 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
     target = Path(manifest['installed'])
     if installed is not None and target.absolute() != installed.absolute():
         raise UpdateTransactionError('The restore snapshot belongs to another installation')
-    if _memory_digest(target) != manifest["user_data"]:
+    external = _external_user_data(target, excluded=(snapshot,))
+    if external != manifest.get('user_data_links', {}) or external != _external_user_data(
+            snapshot / 'live-prior', excluded=(target, snapshot)):
+        raise UpdateTransactionError('User data binding changed after update; automatic restore refused')
+    if _memory_digest(target, external) != manifest["user_data"]:
         raise UpdateTransactionError("User data changed after update; automatic restore refused")
     if not isinstance(manifest.get('mount_state'), dict):
         raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
