@@ -2,6 +2,7 @@
 # ABOUTME: Uses isolated synthetic user data for retries, curation, permissions, and concurrency.
 
 from concurrent.futures import ThreadPoolExecutor
+from contextlib import closing
 import fcntl
 import json
 import os
@@ -52,10 +53,10 @@ class NativeMemoryTests(unittest.TestCase):
                                     title="Synthetic lab routing", project="lab", request_id=request)
 
     def test_opening_current_metadata_preserves_database_bytes(self):
-        with self.memory._connect() as connection:
+        with closing(self.memory._connect()) as connection:
             before_rows = list(connection.iterdump())
         before = self.memory.database.read_bytes()
-        with self.memory._connect() as connection:
+        with closing(self.memory._connect()) as connection:
             self.assertEqual(list(connection.iterdump()), before_rows)
         self.assertEqual(self.memory.database.read_bytes(), before)
 

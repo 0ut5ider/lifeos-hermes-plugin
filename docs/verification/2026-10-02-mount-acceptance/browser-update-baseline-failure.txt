@@ -1,0 +1,6 @@
+{"request": 200, "final": {"state": "rolled_back", "unit": "lifeos-bridge-update-8724e1b125a2471bb50b965ffb95365e", "error": "VersionDrift reported changed system files after update", "transaction_state": "rolled_back", "job": "/home/lifeos-plugin-install-probe/acceptance-20261002/.local/state/lifeos-hook-bridge/updates/update-ea4e38b75d2c485ba1965c41503df6b9"}}
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-plugin-memory/mount-acceptance-transfer-20261002/browser-update.py", line 40, in <module>
+    assert history[-1].get('state')=='applied','The actual update service did not complete'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: The actual update service did not complete
