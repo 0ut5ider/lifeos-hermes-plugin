@@ -1,0 +1,5 @@
+All tests run locally with synthetic fixtures. Scheduling captures launch with a bounded local Python subprocess, not real systemd. HTTP admission captures launch without running a worker. No remote services are contacted.
+Read-only source comparison: git diff befae76f1770282ab568bb1908b7d635d5f06a2f 2ef78f30305e891659086dd751962ea65e56c390
+AST comparison: prior recovery body after admission guard equals new synchronous helper body. Immediate admission/auth/status/resume functions unchanged.
+Detached validation commands are in run-validation.sh. Exit status files and validation.done show completion.
+Final verification: all three exit codes are 0; validation.done exists; HEAD unchanged; changed file SHA-256 hashes match initial pins. Saved installed Starlette concurrency source and existing dashboard recovery caller snippet. Report and data generated from saved measurements. No additional source reads or tests after completion.

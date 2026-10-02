@@ -1,0 +1,46 @@
+FFFF
+======================================================================
+FAIL: test_recovery_refuses_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_refuses_cross_origin_and_request_overrides) (request={'headers': {'Origin': 'https://other.invalid'}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 363, in test_recovery_refuses_cross_origin_and_request_overrides
+    self.assertEqual(self.client.post(url, **options).status_code, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 403
+
+======================================================================
+FAIL: test_recovery_refuses_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_refuses_cross_origin_and_request_overrides) (request='/api/plugins/lifeos-hook-bridge/installation/update/recover?job=other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 363, in test_recovery_refuses_cross_origin_and_request_overrides
+    self.assertEqual(self.client.post(url, **options).status_code, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 400
+
+======================================================================
+FAIL: test_recovery_refuses_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_refuses_cross_origin_and_request_overrides) (request={'json': {'job': 'other'}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 363, in test_recovery_refuses_cross_origin_and_request_overrides
+    self.assertEqual(self.client.post(url, **options).status_code, expected)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 400
+
+======================================================================
+FAIL: test_recovery_refuses_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_refuses_cross_origin_and_request_overrides)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 367, in test_recovery_refuses_cross_origin_and_request_overrides
+    launched.assert_not_called()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/unittest/mock.py", line 947, in assert_not_called
+    raise AssertionError(msg)
+AssertionError: Expected '_launch_lifeos_update' to not have been called. Called 3 times.
+Calls: [call(PosixPath('/tmp/native-memory-d6qrcj4e/state/updates/interrupted-synthetic-job'), 'recover'),
+ call(PosixPath('/tmp/native-memory-d6qrcj4e/state/updates/interrupted-synthetic-job'), 'recover'),
+ call(PosixPath('/tmp/native-memory-d6qrcj4e/state/updates/interrupted-synthetic-job'), 'recover')].
+
+----------------------------------------------------------------------
+Ran 1 test in 0.191s
+
+FAILED (failures=4)

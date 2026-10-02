@@ -1,0 +1,105 @@
+diff --git a/lifeos_hook_bridge/update_transaction.py b/lifeos_hook_bridge/update_transaction.py
+index 01a3245..af17302 100644
+--- a/lifeos_hook_bridge/update_transaction.py
++++ b/lifeos_hook_bridge/update_transaction.py
+@@ -9,6 +9,7 @@ import os
+ import shutil
+ import stat
+ import subprocess
++import tempfile
+ from pathlib import Path
+ from uuid import uuid4
+ 
+@@ -67,10 +68,16 @@ def _snapshot_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
+     _write_json(snapshot / "mount-manifest.json", {"present": present})
+ 
+ 
+-def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path, *, expected_state=None) -> Path:
+-    current = _mount_state(hermes_home)
+-    if expected_state is not None and current != expected_state:
+-        raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
++def _sync_directory(path: Path) -> None:
++    descriptor = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
++    try:
++        os.fsync(descriptor)
++    finally:
++        os.close(descriptor)
++
++
++def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> Path:
++    _mount_state(hermes_home)
+     if baseline.is_symlink() or baseline.exists() and not baseline.is_file():
+         raise UpdateTransactionError('The restore baseline must be a regular file')
+     present = set(json.loads((snapshot / "mount-manifest.json").read_text())["present"])
+@@ -81,14 +88,32 @@ def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path, *, expecte
+         raise UpdateTransactionError('Restore archives require a private owner directory')
+     archive = archives / uuid4().hex
+     archive.mkdir(mode=0o700)
++    containers = {}
++    targets = {}
++
++    def retain(destination, name):
++        if destination.parent.resolve() != destination.parent:
++            raise UpdateTransactionError('A restore target changes its physical path')
++        if destination.parent not in containers:
++            containers[destination.parent] = Path(tempfile.mkdtemp(
++                prefix='.lifeos-restore-', dir=destination.parent))
++            _sync_directory(destination.parent)
++        saved = containers[destination.parent] / destination.name
++        targets[name] = str(saved)
++        # The index survives process death between the archive rename and file restoration.
++        _write_json(archive / 'archive-manifest.json', {'targets': targets})
++        _sync_directory(archive)
++        _sync_directory(archives)
++        os.replace(destination, saved)
++        _sync_directory(destination.parent)
++        _sync_directory(saved.parent)
++
+     for name in (*MOUNT_FILES, *MOUNT_DIRS):
+         destination = hermes_home / name
+         if destination.is_symlink():
+             raise UpdateTransactionError(f"Hermes mount became a symbolic link: {name}")
+         if destination.exists():
+-            saved = archive / name
+-            saved.parent.mkdir(parents=True, exist_ok=True)
+-            os.replace(destination, saved)
++            retain(destination, name)
+         if name in present:
+             source = snapshot / "mount" / name
+             destination.parent.mkdir(parents=True, exist_ok=True)
+@@ -99,7 +124,7 @@ def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path, *, expecte
+     temporary = baseline.with_suffix(baseline.suffix + ".restore")
+     shutil.copy2(snapshot / "baseline.json", temporary)
+     if baseline.exists():
+-        os.replace(baseline, archive / 'baseline.json')
++        retain(baseline, 'baseline.json')
+     os.replace(temporary, baseline)
+     return archive
+ 
+@@ -264,8 +289,7 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+     _write_json(manifest_path, manifest)
+     os.replace(installed, snapshot / "restored-selected")
+     os.replace(snapshot / "live-prior", installed)
+-    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]),
+-                             expected_state=manifest['mount_state'])
++    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
+     manifest['profile_archive'] = str(archive)
+     start()
+     verify()
+diff --git a/lifeos_hook_bridge/update_worker.py b/lifeos_hook_bridge/update_worker.py
+index bb800a9..901ee5a 100644
+--- a/lifeos_hook_bridge/update_worker.py
++++ b/lifeos_hook_bridge/update_worker.py
+@@ -245,7 +245,11 @@ def _main() -> int:
+         try:
+             manifest = args.job / "snapshot/manifest.json"
+             state = json.loads(manifest.read_text())["state"] if manifest.is_file() else "failed"
+-            _write_status(args.job, state if state in {"rolled_back", "rollback_failed"} else "failed", str(error))
++            if state in {"stopped", "swapped", "restoring", "rollback_failed"}:
++                state = 'interrupted'
++            elif state not in {'applied', 'rolled_back'}:
++                state = 'failed'
++            _write_status(args.job, state, str(error))
+         except (OSError, ValueError, KeyError):
+             pass
+         print(f"LifeOS update {args.action} failed: {error}", file=sys.stderr)

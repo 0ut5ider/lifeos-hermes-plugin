@@ -1,0 +1,8 @@
+Review source commands: git status --short; git rev-parse HEAD; git diff 13337135d79245fc79eca427e595446a7ae96c76 befae76f1770282ab568bb1908b7d635d5f06a2f --
+Read applicable coding-rules and writing-clearly-and-concisely skills and ancestor AGENTS.md locations. No ancestor AGENTS.md files were present. User supplied AGENTS.md governs this run.
+Focused test command and environment: see run-validation.sh.
+Local HTTP command: same environment and interpreter as run-validation.sh, execute raw/probe_recovery_http.py.
+Scheduling command: same environment and interpreter as run-validation.sh, execute raw/probe_recovery_scheduling.py.
+Both probes run uvicorn bound to 127.0.0.1 at a random socket port. Their source scripts retain full request definitions.
+The initial HTTP probe used incorrect MemoryScope attribute names. The corrected probe uses scope.read and scope.write. Initial output and data remain under initial-http-probe*.
+Source reads cover changed API and tests, memory_administration.py, memory_preferences.py, MemoryConfiguration.check_owner, fixture setup, dashboard recovery caller, host middleware and SDK fetch implementation. Relevant full source snapshots are saved alongside this file.

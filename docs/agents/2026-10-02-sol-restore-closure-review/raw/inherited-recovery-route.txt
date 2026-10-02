@@ -1,0 +1,18 @@
+            raise HTTPException(status_code=403, detail='The installation owner must authorize managed updates') from error
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "queued", "job": str(job)}
+
+
+@router.post("/installation/update/recover")
+def recover_lifeos_update(account: str = Depends(_memory_account)):
+    previous = get_lifeos_update_status()
+    if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
+        "stopped", "swapped", "restoring", "rollback_failed"
+    }:
+        raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
+    return _resume_lifeos_update(previous, account, 'recover')
+
+
+@router.post("/installation/update/restore")
+async def restore_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)

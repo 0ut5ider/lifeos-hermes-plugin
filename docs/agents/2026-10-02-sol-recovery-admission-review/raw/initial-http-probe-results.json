@@ -1,0 +1,1365 @@
+[
+  {
+    "case": "anonymous_gate_enabled",
+    "method": "POST",
+    "status": 401,
+    "expected": 401,
+    "response": "{\"error\":\"unauthenticated\",\"detail\":\"Unauthorized\",\"reason\":\"no_cookie\",\"login_url\":\"/login\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "anonymous_fabricated_identity",
+    "method": "POST",
+    "status": 401,
+    "expected": 401,
+    "response": "{\"error\":\"unauthenticated\",\"detail\":\"Unauthorized\",\"reason\":\"no_cookie\",\"login_url\":\"/login\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "anonymous_gate_disabled",
+    "method": "POST",
+    "status": 401,
+    "expected": 401,
+    "response": "{\"detail\":\"An authenticated dashboard session is required\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "anonymous_gate_disabled_bad_origin_and_body",
+    "method": "POST",
+    "status": 401,
+    "expected": 401,
+    "response": "{\"detail\":\"An authenticated dashboard session is required\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "invalid_bearer_with_owner_cookie",
+    "method": "POST",
+    "status": 401,
+    "expected": 401,
+    "response": "{\"error\":\"session_expired\",\"detail\":\"Unauthorized\",\"reason\":\"invalid_or_expired_session\",\"login_url\":\"/login\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "different_origin",
+    "method": "POST",
+    "status": 403,
+    "expected": 403,
+    "response": "{\"detail\":\"Use the installed dashboard origin\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "null_origin",
+    "method": "POST",
+    "status": 403,
+    "expected": 403,
+    "response": "{\"detail\":\"Use the installed dashboard origin\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "different_scheme",
+    "method": "POST",
+    "status": 403,
+    "expected": 403,
+    "response": "{\"detail\":\"Use the installed dashboard origin\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "job_query",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "account_query",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "empty_query_value",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "bare_query_key",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "repeated_query",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "json_job",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "json_empty_object",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "json_null",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "malformed_json",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "whitespace",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "form_body",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "binary_body",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "chunked_body",
+    "method": "POST",
+    "status": 400,
+    "expected": 400,
+    "response": "{\"detail\":\"Mount requests use the installed owner configuration\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "method_get",
+    "method": "GET",
+    "status": 405,
+    "expected": 405,
+    "response": "{\"detail\":\"Method Not Allowed\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "method_head",
+    "method": "HEAD",
+    "status": 405,
+    "expected": 405,
+    "response": "",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "method_put",
+    "method": "PUT",
+    "status": 405,
+    "expected": 405,
+    "response": "{\"detail\":\"Method Not Allowed\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "method_patch",
+    "method": "PATCH",
+    "status": 405,
+    "expected": 405,
+    "response": "{\"detail\":\"Method Not Allowed\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "method_delete",
+    "method": "DELETE",
+    "status": 405,
+    "expected": 405,
+    "response": "{\"detail\":\"Method Not Allowed\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "method_options",
+    "method": "OPTIONS",
+    "status": 405,
+    "expected": 405,
+    "response": "{\"detail\":\"Method Not Allowed\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "revoked_owner",
+    "method": "POST",
+    "status": 403,
+    "expected": 403,
+    "response": "{\"detail\":\"The installation owner must authorize this update action\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "8b2554ad9437250c70253cd33865ca844e85f46277de4fde9e6d94fbc4a7b3e0",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "8b2554ad9437250c70253cd33865ca844e85f46277de4fde9e6d94fbc4a7b3e0",
+        "mode": 384
+      },
+      "grants": []
+    }
+  },
+  {
+    "case": "authenticated_unbound_account",
+    "method": "POST",
+    "status": 403,
+    "expected": 403,
+    "response": "{\"detail\":\"The installation owner must authorize this update action\"}",
+    "unchanged": true,
+    "new_launch_count": 0,
+    "state_before": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    },
+    "state_after": {
+      "state/updates/interrupted-synthetic-job/request.json": {
+        "sha256": "b910237c5b8e9bad07e9cb14abc34bff5d88299ac7c2f94599ed72505c485380",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/status.json": {
+        "sha256": "b25276c6e985f67f88b558bd9f26f6795e2baa7086a474f4ce9802c2d91b49e5",
+        "mode": 384
+      },
+      "state/updates/interrupted-synthetic-job/snapshot/manifest.json": {
+        "sha256": "b0a47c3cdb4e5f9cb847a19e0997890a92b5a1776955ae848d76ace46e0fe103",
+        "mode": 420
+      },
+      "lifeos-memory.json": {
+        "sha256": "eca1a1d44dffb7f3d9e04c3fc8dee4cd3300c2b0982803698bfc9c1d7bf64bc8",
+        "mode": 384
+      },
+      "grants": []
+    }
+  }
+]
