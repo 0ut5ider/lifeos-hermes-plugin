@@ -19,6 +19,8 @@ The [installation and removal plan](docs/memory-implementation-plan.md#installat
 
 [Staged mount and authenticated remount](docs/verification/2026-10-02-mount-acceptance/README.md) adds journaled publication and recovery for installation, update mounting, and native PULSE remount. The isolated `.212` browser installation verifies native setup, a same-revision service update, authenticated remount, process-kill recovery, and a private-model tool turn. The owner can request version restore from the page; changed user data refuses restoration before the job changes. The [browser acceptance guide](docs/browser-acceptance-212.md) gives the test entry point and limits. These checks do not activate lasting-memory ownership or establish the complete memory release gate.
 
+[PR review corrections](docs/verification/2026-10-02-opus-review-fixes/README.md) protect later Hermes settings during version restore and check complete direct child prompts. Temporary mount copies are removed after completed operations. Pending recovery copies remain available. The private development recorder retains environment names and filters values outside its diagnostic allowlist. These corrections do not enable memory ownership.
+
 - Load LifeOS context and skills from a configurable installation path.
 - Map each LifeOS hook behavior to a Hermes lifecycle point and verify its effect, including blocks, approvals, context injection, and stop gates.
 - Keep the LifeOS installation unchanged where possible. Record any Hermes core extension needed for behavior the plugin API cannot express.

@@ -6,6 +6,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import shutil
 import stat
 import subprocess
 import sys
@@ -105,7 +106,11 @@ class MountTransaction:
                 fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
             except BlockingIOError as error:
                 raise MountError('Another mount operation is running') from error
-            yield
+            self._prune_snapshots()
+            try:
+                yield
+            finally:
+                self._prune_snapshots()
         finally:
             os.close(descriptor)
 
@@ -122,12 +127,17 @@ class MountTransaction:
                 or value.get('state') not in PENDING | {'committed', 'rolled_back'}):
             raise MountError('The mount journal belongs to another installation or is invalid')
         directory = Path(value['snapshot'])
-        if (directory.parent != self.state or directory.resolve() != directory or not directory.is_dir()
+        if (directory.parent != self.state or directory.resolve() != directory or directory.is_symlink()
                 or len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)):
             raise MountError('The mount snapshot is invalid')
-        info = directory.stat()
-        if info.st_uid != os.getuid() or info.st_mode & 0o077:
-            raise MountError('The mount snapshot requires private owner permissions')
+        try:
+            info = directory.stat()
+        except FileNotFoundError:
+            if value['state'] in PENDING:
+                raise MountError('The mount recovery snapshot is missing')
+        else:
+            if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
+                raise MountError('The mount snapshot requires private owner permissions')
         allowed = {str(self.profile / name) for name in FILES}
         if self.baseline is not None:
             allowed.add(str(self.baseline))
@@ -154,6 +164,31 @@ class MountTransaction:
             raise MountError('The mount directory metadata is invalid')
         self._workspace(value.get('workspace'))
         return value
+
+    def _snapshot_identity(self):
+        return {'version': 1, 'profile': str(self.profile), 'installed': str(self.installed)}
+
+    def _prune_snapshots(self):
+        manifest = self._manifest()
+        active = Path(manifest['snapshot']) if manifest is not None else None
+        for directory in self.state.iterdir():
+            if (len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)
+                    or directory.is_symlink() or not directory.is_dir()):
+                continue
+            if directory == active and manifest['state'] in PENDING:
+                continue
+            info = directory.stat()
+            if info.st_uid != os.getuid() or info.st_mode & 0o077:
+                continue
+            if directory != active:
+                try:
+                    data, metadata = _read(directory / 'identity.json')
+                    if data is None or metadata['mode'] & 0o077 or json.loads(data) != self._snapshot_identity():
+                        continue
+                except (MountError, OSError, ValueError):
+                    continue
+            shutil.rmtree(directory)
+            _sync_directory(self.state)
 
     def _workspace(self, value):
         if not isinstance(value, str):
@@ -300,6 +335,7 @@ class MountTransaction:
             workspace = self._workspace(environment.get('HERMES_WORKSPACE', str(self.installed.parent / 'HermesWorkspace')))
             snapshot = self.state / uuid4().hex
             snapshot.mkdir(mode=0o700)
+            _json(snapshot / 'identity.json', self._snapshot_identity())
             stage = snapshot / 'stage'
             stage.mkdir(mode=0o700)
             (snapshot / 'previous').mkdir(mode=0o700)

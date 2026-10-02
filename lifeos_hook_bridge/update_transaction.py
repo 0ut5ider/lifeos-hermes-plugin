@@ -7,8 +7,10 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 import subprocess
 from pathlib import Path
+from uuid import uuid4
 
 from .update_dependencies import sync_dependencies
 from .update_hooks import replace_owned_hooks
@@ -65,16 +67,28 @@ def _snapshot_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
     _write_json(snapshot / "mount-manifest.json", {"present": present})
 
 
-def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
+def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path, *, expected_state=None) -> Path:
+    current = _mount_state(hermes_home)
+    if expected_state is not None and current != expected_state:
+        raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+    if baseline.is_symlink() or baseline.exists() and not baseline.is_file():
+        raise UpdateTransactionError('The restore baseline must be a regular file')
     present = set(json.loads((snapshot / "mount-manifest.json").read_text())["present"])
+    archives = snapshot / 'mount-before-restore'
+    archives.mkdir(mode=0o700, exist_ok=True)
+    info = archives.stat()
+    if archives.resolve() != archives or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise UpdateTransactionError('Restore archives require a private owner directory')
+    archive = archives / uuid4().hex
+    archive.mkdir(mode=0o700)
     for name in (*MOUNT_FILES, *MOUNT_DIRS):
         destination = hermes_home / name
         if destination.is_symlink():
             raise UpdateTransactionError(f"Hermes mount became a symbolic link: {name}")
-        if destination.is_dir():
-            shutil.rmtree(destination)
-        elif destination.exists():
-            destination.unlink()
+        if destination.exists():
+            saved = archive / name
+            saved.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(destination, saved)
         if name in present:
             source = snapshot / "mount" / name
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -84,12 +98,44 @@ def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
                 shutil.copy2(source, destination)
     temporary = baseline.with_suffix(baseline.suffix + ".restore")
     shutil.copy2(snapshot / "baseline.json", temporary)
+    if baseline.exists():
+        os.replace(baseline, archive / 'baseline.json')
     os.replace(temporary, baseline)
+    return archive
 
 
 def _source_hooks(source: Path) -> dict:
     manifest = json.loads((source / "hooks/hooks.json").read_text(encoding="utf-8"))
     return manifest["hooks"]
+
+
+def _mount_state(hermes_home: Path) -> dict:
+    states = {}
+
+    def collect(path):
+        if path.parent.resolve() != path.parent:
+            raise UpdateTransactionError('A Hermes profile target changes its physical path')
+        name = path.relative_to(hermes_home).as_posix()
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            states[name] = None
+            return
+        mode = stat.S_IMODE(info.st_mode)
+        if stat.S_ISDIR(info.st_mode):
+            states[name] = {'type': 'directory', 'mode': mode}
+            for child in sorted(path.iterdir()):
+                collect(child)
+        elif stat.S_ISREG(info.st_mode):
+            with path.open('rb') as stream:
+                digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+            states[name] = {'type': 'file', 'mode': mode, 'digest': digest}
+        else:
+            raise UpdateTransactionError('Hermes profile targets must be regular files or directories')
+
+    for name in (*MOUNT_FILES, *MOUNT_DIRS):
+        collect(hermes_home / name)
+    return states
 
 
 def _memory_digest(root: Path) -> dict[str, str]:
@@ -119,6 +165,7 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         raise UpdateTransactionError("Baseline is missing or update snapshot already exists")
     if installed.stat().st_dev != snapshot.parent.stat().st_dev:
         raise UpdateTransactionError("Update snapshot must be on the LifeOS filesystem")
+    _mount_state(hermes_home)
     baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
     plan = plan_system_files(installed, baseline, selected_source, reference)
     current_settings = json.loads((installed / "settings.json").read_text(encoding="utf-8"))
@@ -157,6 +204,7 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         manifest["state"] = "applied"
         manifest["package_roots"] = dependency_report["package_roots"]
         manifest["user_data"] = _memory_digest(installed)
+        manifest['mount_state'] = _mount_state(hermes_home)
         _write_json(manifest_path, manifest)
         return manifest
     except Exception as error:
@@ -195,6 +243,10 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
         raise UpdateTransactionError('The restore snapshot belongs to another installation')
     if _memory_digest(target) != manifest["user_data"]:
         raise UpdateTransactionError("User data changed after update; automatic restore refused")
+    if not isinstance(manifest.get('mount_state'), dict):
+        raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
+    if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
+        raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
     return manifest
 
 
@@ -202,12 +254,19 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
     manifest = validate_restore(snapshot)
     manifest_path = snapshot / "manifest.json"
     installed = Path(manifest['installed'])
+    stop()
+    try:
+        manifest = validate_restore(snapshot)
+    except Exception:
+        start()
+        raise
     manifest["state"] = "restoring"
     _write_json(manifest_path, manifest)
-    stop()
     os.replace(installed, snapshot / "restored-selected")
     os.replace(snapshot / "live-prior", installed)
-    _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
+    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]),
+                             expected_state=manifest['mount_state'])
+    manifest['profile_archive'] = str(archive)
     start()
     verify()
     manifest["state"] = "rolled_back"

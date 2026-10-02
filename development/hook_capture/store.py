@@ -23,6 +23,8 @@ SENSITIVE = re.compile(r"(^|[_-])(password|passwd|secret|token|api[_-]?key|(?:ac
 TOKEN_SHAPE = re.compile(r"(?i)(Bearer\s+)[A-Za-z0-9._~+/=-]+|-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----", re.S)
 JSON_FIELD = re.compile(r'("(?P<field>(?:\\.|[^"\\])*)"\s*:\s*)("(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?|true|false|null)')
 URL_SHAPE = re.compile(r"(?<![A-Za-z0-9+.-])[A-Za-z][A-Za-z0-9+.-]*://[^\s<>\"']+")
+ENVIRONMENT_VALUES = frozenset({'HOME', 'HERMES_HOME', 'PATH', 'PWD', 'LANG', 'LC_ALL', 'LC_CTYPE',
+                               'TZ', 'BUN_CONFIG_NO_AUTO_INSTALL', 'LIFEOS_CHILD_EFFORT'})
 
 
 def url_credentials(value):
@@ -116,8 +118,10 @@ def declared_secrets(value, seen=None, credential=False, key=""):
             return
         seen.add(context)
     if isinstance(value, dict):
-        for key, item in value.items():
-            yield from declared_secrets(item, seen, credential or bool(SENSITIVE.search(str(key))), str(key))
+        environment = str(key).casefold() in {'env', 'environment'}
+        for field, item in value.items():
+            hidden = environment and str(field) not in ENVIRONMENT_VALUES
+            yield from declared_secrets(item, seen, credential or hidden or bool(SENSITIVE.search(str(field))), str(field))
     elif isinstance(value, (list, tuple, set, frozenset)):
         for item in value:
             yield from declared_secrets(item, seen, credential, key)
@@ -127,6 +131,9 @@ def declared_secrets(value, seen=None, credential=False, key=""):
 
 
 def safe(value, secrets=(), key=""):
+    if isinstance(value, dict) and key.casefold() in {'env', 'environment'}:
+        return {str(name): safe(item, secrets, str(name)) if name in ENVIRONMENT_VALUES else '[REDACTED]'
+                for name, item in value.items()}
     if SENSITIVE.search(key) and key not in {"max_tokens", "input_tokens", "output_tokens", "total_tokens"}:
         return "[REDACTED]"
     if value is None or isinstance(value, (bool, int, float)):

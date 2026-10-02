@@ -22,6 +22,26 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_environment_values_and_unknown_credential_echoes_are_not_recorded(self):
+        from hook_capture.store import Recorder
+        environment = {'ANTHROPIC_KEY':'SYNTHETIC-KEY-311804', 'GH_PAT':'SYNTHETIC-PAT-311805',
+                       'SSH_PASSPHRASE':'SYNTHETIC-PHRASE-311806',
+                       'SLACK_WEBHOOK_URL':'https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807',
+                       'ORDINARY_CUSTOM_SETTING':'SYNTHETIC-UNKNOWN-311808', 'LANG':'C.UTF-8',
+                       'LIFEOS_CHILD_EFFORT':'medium'}
+        for name in ('env', 'environment'):
+            with self.subTest(field=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                recorder = Recorder(root, 'test-run')
+                ref = recorder.artifact({'options':{name:environment}, 'stdout':list(environment.values())[:5]})
+                raw = gzip.decompress((root / ref['path']).read_bytes()).decode()
+                for key in list(environment)[:5]:
+                    self.assertNotIn(environment[key], raw)
+                captured = json.loads(raw)['options'][name]
+                self.assertEqual(set(captured), set(environment))
+                self.assertEqual(captured['LANG'], 'C.UTF-8')
+                self.assertEqual(captured['LIFEOS_CHILD_EFFORT'], 'medium')
+
     def test_installed_recorder_captures_detached_hook_with_another_startup_home(self):
         from hook_capture import setup as capture_setup
         with tempfile.TemporaryDirectory() as temporary:
@@ -459,6 +479,30 @@ def run_credential_hook(bridge):
                 raw = gzip.decompress((root / "capture" / event["data_ref"]["path"]).read_bytes()).decode()
                 self.assertNotIn(secret, raw)
                 inspected.add(event["stage"])
+        self.assertEqual(inspected, stages)
+
+    def test_real_hook_unknown_environment_credential_echo_is_filtered(self):
+        secret = 'SYNTHETIC-UNKNOWN-ENV-CREDENTIAL-313819'
+        setup = """
+def run_environment_hook(bridge):
+    import os, sys
+    os.environ['CUSTOM_PROVIDER_VALUE'] = 'SYNTHETIC-UNKNOWN-ENV-CREDENTIAL-313819'
+    path = bridge.root / 'environment-hook.py'
+    path.write_text('import os, json\\nprint(json.dumps({"echo":os.environ["CUSTOM_PROVIDER_VALUE"]}))\\n')
+    bridge.hooks['PreToolUse'][0]['hooks'][0]['command'] = sys.executable + ' ' + str(path)
+    return bridge.pre_tool_call('terminal', {'command':'pwd'}, session_id='environment-echo')
+"""
+        hooks = {'PreToolUse':[{'hooks':[{'type':'command','command':'true'}]}]}
+        _, baseline, _ = self.run_bridge(hooks, 'run_environment_hook(bridge)', setup=setup, traced=False)
+        root, observed, events = self.run_bridge(hooks, 'run_environment_hook(bridge)', setup=setup)
+        self.assertEqual(observed, baseline)
+        stages = {'process.started', 'process.completed', 'run_command.returned', 'hook.completed'}
+        inspected = set()
+        for event in events:
+            if event['stage'] in stages:
+                raw = gzip.decompress((root / 'capture' / event['data_ref']['path']).read_bytes()).decode()
+                self.assertNotIn(secret, raw)
+                inspected.add(event['stage'])
         self.assertEqual(inspected, stages)
 
     def test_real_http_url_headers_and_response_credentials_are_filtered(self):

@@ -158,6 +158,67 @@ class MountTransactionTests(unittest.TestCase):
         self.execute()
         self.assertTrue((self.root.parent / 'HermesWorkspace').is_dir())
 
+    def test_completed_mounts_remove_credential_bearing_snapshots(self):
+        (self.profile / '.env').write_text('SYNTHETIC_PROVIDER_KEY=synthetic-mount-secret\n')
+        for _ in range(2):
+            result = self.execute()
+            self.assertEqual(self.transaction().status()['state'], 'committed')
+            self.assertFalse(Path(result['snapshot']).exists())
+            self.assertEqual(list(self.transaction().state.glob('*/stage/.env')), [])
+        self.assertIn('synthetic-mount-secret', (self.profile / '.env').read_text())
+
+    def test_pending_recovery_retains_copies_until_rollback_completes(self):
+        self.crash_after_soul()
+        manifest = json.loads(self.transaction().journal.read_text())
+        snapshot = Path(manifest['snapshot'])
+        self.assertTrue((snapshot / 'previous/0').is_file())
+        self.assertEqual(self.transaction().status()['state'], 'applying')
+        self.assertTrue(snapshot.exists())
+        self.assertEqual(self.transaction().recover()['state'], 'rolled_back')
+        self.assertFalse(snapshot.exists())
+        self.assertEqual(self.transaction().status()['state'], 'rolled_back')
+
+    def test_failed_validation_removes_unneeded_credential_copies(self):
+        self.hermes.write_text('#!/bin/sh\nexit 23\n')
+        # Prepared configuration validation uses the real runtime and passes before this check fails.
+        with self.assertRaisesRegex(RuntimeError, 'config check'):
+            self.execute()
+        self.assertEqual(self.transaction().status()['state'], 'rolled_back')
+        self.assertEqual([path for path in self.transaction().state.iterdir() if path.is_dir()], [])
+
+    def test_killed_preparation_cleans_owned_orphan_without_changing_live_files(self):
+        original = (self.profile / 'config.yaml').read_bytes()
+        program = self.profile / 'kill-preparation.py'
+        program.write_text('import os, signal, sys\nfrom pathlib import Path\n'
+            'from lifeos_hook_bridge import mount_transaction as module\n'
+            'root, profile, bun, hermes = sys.argv[1:]\n'
+            'def interrupted(*args): os.kill(os.getpid(), signal.SIGKILL)\n'
+            'module._check_prepared_config = interrupted\n'
+            'module.MountTransaction(Path(root), Path(profile)).execute(dict(os.environ), bun, hermes)\n')
+        result = subprocess.run([sys.executable, str(program), str(self.root), str(self.profile),
+            self.fixture.fixture.memory.bun, str(self.hermes)], env={**self.environment,
+                'PYTHONPATH': str(Path(__file__).parents[1]) + os.pathsep + str(HOST)},
+                text=True, capture_output=True, timeout=60)
+        self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+        self.assertEqual(result.stderr, '')
+        self.assertTrue(list(self.transaction().state.glob('*/stage/.env')))
+        self.assertEqual(self.transaction().status()['state'], 'none')
+        self.assertEqual([path for path in self.transaction().state.iterdir() if path.is_dir()], [])
+        self.assertEqual((self.profile / 'config.yaml').read_bytes(), original)
+
+    def test_snapshot_cleanup_preserves_unrecognized_directories_and_link_targets(self):
+        self.transaction().state.mkdir(mode=0o700)
+        unknown = self.transaction().state / ('b' * 32)
+        unknown.mkdir(mode=0o700)
+        (unknown / 'keep.txt').write_text('Synthetic unrelated data')
+        outside = self.profile / 'synthetic-outside'
+        outside.mkdir()
+        (outside / 'keep.txt').write_text('Synthetic link target')
+        (self.transaction().state / ('c' * 32)).symlink_to(outside)
+        self.execute()
+        self.assertEqual((unknown / 'keep.txt').read_text(), 'Synthetic unrelated data')
+        self.assertEqual((outside / 'keep.txt').read_text(), 'Synthetic link target')
+
 
 if __name__ == '__main__':
     unittest.main()

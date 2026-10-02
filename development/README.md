@@ -17,6 +17,8 @@ Small JSON Lines records contain schema version 1, UTC and monotonic time, proce
 
 Full inputs and outputs are compressed artifacts. Identical redacted content shares an artifact. Ordinary prompts and conversation content remain intact. Known account credentials, credential fields, bearer strings, private keys, and encoded credentials in the remote hook protocol are removed before hashing. Credential fields remain filtered when JSON appears inside stdin, stdout, or a partial text fragment. Each process also learns declared credential values from structured artifacts, so later output that repeats a value can be filtered. This filter cannot recognize every unknown credential in arbitrary prose or an unrelated encoding.
 
+Environment mappings retain variable names. Values are recorded only for `HOME`, `HERMES_HOME`, `PATH`, `PWD`, `LANG`, `LC_ALL`, `LC_CTYPE`, `TZ`, `BUN_CONFIG_NO_AUTO_INSTALL`, and `LIFEOS_CHILD_EFFORT`. Other values are replaced with `[REDACTED]` and learned for echo filtering before the artifact is encoded. The [PR review corrections](../docs/verification/2026-10-02-opus-review-fixes/README.md) include a real hook test for unknown credential names.
+
 Each process appends to its own daily file. A child runner retains its parent's invocation identity and records a different process UUID. SQLite is rebuilt offline. Capture does not write to SQLite during a conversation.
 
 The development observer forwards its own trace context through `ThreadPoolExecutor` jobs. It does not forward unrelated application context variables. This preserves correlation when Hermes executes a hook on a worker thread.

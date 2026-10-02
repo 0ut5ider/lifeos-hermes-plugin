@@ -144,11 +144,6 @@ def main(args: argparse.Namespace | None = None) -> int:
     token = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
     if not base_url or not token:
         raise ValueError("local gateway URL and bearer token are required")
-    try:
-        _memory_runtime().check_call(request={'model':args.model}, provider='lifeos-local-gateway',
-                                     model=args.model, base_url=base_url, api_mode='anthropic')
-    except RuntimeError as error:
-        raise ValueError(str(error)) from error
     request_body = {
         "model": args.model,
         "max_tokens": int(os.environ.get("LIFEOS_CHILD_MAX_TOKENS", "4096")),
@@ -156,6 +151,12 @@ def main(args: argparse.Namespace | None = None) -> int:
         "system": system_prompt,
         "messages": [{"role": "user", "content": content}],
     }
+    try:
+        _memory_runtime().check_call(request=request_body, provider='lifeos-local-gateway',
+                                     model=args.model, base_url=base_url, api_mode='anthropic',
+                                     aux_task='lifeos_child')
+    except RuntimeError as error:
+        raise ValueError(str(error)) from error
     endpoint = base_url + ("/messages" if base_url.endswith("/v1") else "/v1/messages")
     request = urllib.request.Request(
         endpoint,
