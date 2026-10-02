@@ -1,0 +1,30 @@
+{
+  "date": "2026-10-02",
+  "implementation_commit": "8b617efe37f03246f8bf14c5181f2c3a1f7ec9f7",
+  "source_manifest": "../2026-10-01-memory-active-callers/source-manifest.json",
+  "native_source": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-prompt-publication-release/lifeos/LifeOS/install",
+  "host_source": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-prompt-publication-release/hermes",
+  "files": {
+    "lifeos_hook_bridge/memory_access.py": "a8c92bd29d7811dfe23212070d066ab21099e842ad9f1dca8ac27028e49a6d9e",
+    "lifeos_hook_bridge/memory_source_review.py": "9513432eb6420d5b06a3012ec11e8b3b9e16bd34393c7f3b7ec267d7b7fce647",
+    "lifeos_hook_bridge/memory_sources.py": "e77a586851c7ef4433ac268524947266af28639acb515e22c89d699281ba7ce3",
+    "lifeos_hook_bridge/memory_preferences.py": "ff87646fe08d503ba247dae7351f9a37558f0e52c62b6b1cd3066e9666e8d8aa",
+    "lifeos_hook_bridge/dashboard/plugin_api.py": "1475c0e4415dac22a1c1ca04c314913ac1d86558ffb644d9007a4508130f3634",
+    "tests/test_memory_source_review.py": "5344b89d62c0abeece26961251844f3acce38e9b8eb75a7471a26a42f160a3cd"
+  },
+  "gate": {
+    "tests": 193,
+    "seconds": 159.282,
+    "exit_code": 0,
+    "skips": 0
+  },
+  "limits": [
+    "No ownership activation",
+    "No running server changes",
+    "No independent review",
+    "No full release gate",
+    "No automatic released-source provenance",
+    "No review page controls",
+    "Administrative mount integration remains open"
+  ]
+}

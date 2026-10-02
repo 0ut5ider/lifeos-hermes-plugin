@@ -333,3 +333,13 @@ This is an atomic SOUL publication, not a complete recoverable mount transaction
 
 
 The final distributed caller and prompt gate passes 136 cases in 100.784 seconds without skips, failures, errors, or warnings. A preceding run finds a one-millisecond wiki source serialization defect. Exact timestamp probes reproduce Python rounding across a millisecond boundary. The collector now keeps integer-microsecond admission and native millisecond display separately. The deterministic paired regression and 160 native filesystem clock cases pass. This result does not close the remaining publication or ownership gates.
+
+## Reviewed system and identity sources
+
+Date: 2026-10-02. The [owner source-review contract](verification/2026-10-02-memory-source-review/README.md) resolves the conservative age exclusion for exact owner-reviewed system and identity files. The review binds installation, principal, path, contents, current configuration, and retirement state. It records metadata without rewriting native files or storing another fact body. Every read still checks native validation, current access, and detected retired claims. Conversation contexts cannot approve source review.
+
+The initial eight cases fail because the operation is absent. The first prompt and source regression passes 49 cases. Fourteen expanded source-review cases pass, including real native formatting and mount, authenticated HTTP, changed-source and configuration conflicts, owner revocation, copied metadata, and schema upgrade preservation. The bounded combined gate is recorded separately. These changes add no native patch group.
+
+The combined primary gate passes 193 cases in 159.282 seconds without skips, failures, errors, or warnings. It includes the native fact and permission contracts, prompt and wiki paths, provider tests, preparation, and patch checks. It does not close the full release gate or independent review.
+
+Schema 4 preserves schema 3 records and operations during upgrade. Older plugin code cannot read schema 4. Supported update and rollback acceptance must include this constraint without discarding later facts. Automatic trusted-release classification, page controls, administrative mount integration, and the other activation gates remain open. Memory ownership stays disabled on running installations.
