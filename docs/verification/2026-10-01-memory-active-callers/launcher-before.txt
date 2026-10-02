@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_mount_cannot_remove_launcher_denial_when_identity_is_excluded (test_memory_prompt.MemoryPromptTests.test_mount_cannot_remove_launcher_denial_when_identity_is_excluded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_prompt.py", line 331, in test_mount_cannot_remove_launcher_denial_when_identity_is_excluded
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 1 test in 2.426s
+
+FAILED (failures=1)

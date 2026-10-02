@@ -81,6 +81,23 @@ class MemoryPreferences:
         return (snapshot(NativeMemory(self.root), self._owner_scope(config), view),
                 installation_binding(config,self.configuration.path))
 
+    def preview_prompt(self, *, keep_output_format: bool = False, account: str | None = None):
+        from .memory_prompt import preview
+        config = self._configuration(account=account)
+        return preview(NativeMemory(self.root), self._owner_scope(config), self.configuration.path.parent,
+                       keep_output_format=keep_output_format)
+
+    def publish_prompt(self, request: dict[str, Any], *, account: str | None = None):
+        from .memory_prompt import publish_prompt
+        if not isinstance(request, dict) or set(request) != {'signature', 'previous_digest', 'keep_output_format'}:
+            raise ValueError('Provide the reviewed prompt snapshot, installed prompt digest, and output format choice')
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changed during prompt publication')
+        return publish_prompt(NativeMemory(self.root), self._owner_scope(config), self.configuration.path.parent,
+                              **request, check_current=check_current)
+
     def preview_adoption(self, *, account: str | None = None) -> dict[str, Any]:
         config = self._configuration(account=account)
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))

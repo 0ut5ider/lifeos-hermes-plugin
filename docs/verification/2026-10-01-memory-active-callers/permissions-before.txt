@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_matching_prompt_with_public_permissions_is_published_privately (test_memory_prompt.MemoryPromptTests.test_matching_prompt_with_public_permissions_is_published_privately)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_prompt.py", line 343, in test_matching_prompt_with_public_permissions_is_published_privately
+    self.assertEqual(soul.stat().st_mode & 0o777, 0o600)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 420 != 384
+
+----------------------------------------------------------------------
+Ran 1 test in 3.677s
+
+FAILED (failures=1)

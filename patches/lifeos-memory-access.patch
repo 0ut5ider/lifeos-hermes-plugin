@@ -1,3 +1,305 @@
+diff --git a/LifeOS/install/LIFEOS/HERMES/Mount.ts b/LifeOS/install/LIFEOS/HERMES/Mount.ts
+index e245d9e..345e163 100644
+--- a/LifeOS/install/LIFEOS/HERMES/Mount.ts
++++ b/LifeOS/install/LIFEOS/HERMES/Mount.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Mounts native LifeOS services and a coherent admitted prompt into Hermes.
++// ABOUTME: Uses reviewed prompt publication when the memory connector is installed.
+ /**
+  * Mount — install (or re-sync) the LifeOS sidecar into a Hermes install.
+  *
+@@ -24,13 +26,14 @@
+  *   bun LIFEOS/HERMES/Mount.ts --keep-output-format
+  */
+ 
++
+ import { createHash } from "node:crypto";
+ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
+ import { emitPolicy, SHELL_DENY_GLOBS } from "./Policy.ts";
+-import { daName, skillIndex } from "./RenderSoul.ts";
+-import { INSTALL_ROOT, renderSoul, scrubPaths } from "./RenderSoul.ts";
++import { memoryAccess, memoryObject } from "../TOOLS/lib/MemoryAccess.ts";
++import { INSTALL_ROOT, renderSoulBundle, scrubPaths } from "./RenderSoul.ts";
+ 
+ const HOME = homedir();
+ const HERMES_HOME = process.env.HERMES_HOME || join(HOME, ".hermes");
+@@ -131,7 +134,7 @@ function ensureApprovals(yaml: string): { yaml: string; changed: boolean } {
+   return { yaml: `${yaml.replace(/\n*$/, "")}\n\n${MANAGED_BEGIN}\n${block}\n${MANAGED_END}\n`, changed: true };
+ }
+ 
+-function installPlugin(): Change[] {
++function installPlugin(launcherName: string): Change[] {
+   const changes: Change[] = [];
+   mkdirSync(PLUGIN_DEST, { recursive: true });
+ 
+@@ -147,7 +150,7 @@ function installPlugin(): Change[] {
+ 
+   const policyPath = join(PLUGIN_DEST, "policy.json");
+   const beforePolicy = existsSync(policyPath) ? readFileSync(policyPath, "utf8") : null;
+-  const policy = emitPolicy(policyPath, { launcherName: daName(), trustedEgressDomains: trustedEgressDomains() });
++  const policy = emitPolicy(policyPath, { launcherName, trustedEgressDomains: trustedEgressDomains() });
+   if (beforePolicy !== readFileSync(policyPath, "utf8")) {
+     changes.push({
+       what: "plugins/lifeos/policy.json",
+@@ -221,7 +224,19 @@ function main(): void {
+     throw new Error(`no Hermes install at ${scrubPaths(HERMES_HOME)} — install Hermes first`);
+   }
+ 
+-  const soul = renderSoul({ keepOutputFormat });
++  const preview = memoryAccess("prompt_preview", {home: HERMES_HOME, keepOutputFormat},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (preview !== undefined && (preview.ok !== true || !memoryObject(preview.bundle)
++      || typeof preview.signature !== "string" || typeof preview.previous_digest !== "string")) {
++    throw new Error("LifeOS prompt publication is unavailable under current memory policy");
++  }
++  const bundle = preview === undefined ? renderSoulBundle({keepOutputFormat}) : preview.bundle;
++  if (!memoryObject(bundle) || typeof bundle.soul !== "string" || typeof bundle.launcherName !== "string"
++      || !Array.isArray(bundle.skills)) throw new Error("The LifeOS prompt bundle is invalid");
++  if (preview !== undefined && bundle.launcherName.length === 0) {
++    throw new Error("The launcher policy requires current identity review before mounting");
++  }
++  const soul = bundle.soul;
+   const soulPath = join(HERMES_HOME, "SOUL.md");
+   const soulCurrent = existsSync(soulPath) ? readFileSync(soulPath, "utf8") : "";
+   const soulDrifted = soulCurrent !== soul;
+@@ -251,9 +266,15 @@ function main(): void {
+     process.exit(soulDrifted || configDrifted ? 1 : 0);
+   }
+ 
+-  writeFileSync(soulPath, soul, "utf8");
++  if (preview === undefined) writeFileSync(soulPath, soul, "utf8");
++  else {
++    const receipt = memoryAccess("prompt_publish", {home: HERMES_HOME, keepOutputFormat,
++      signature: preview.signature, previous_digest: preview.previous_digest},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (receipt?.ok !== true) throw new Error("The reviewed LifeOS prompt changed before publication");
++  }
+   if (configDrifted) writeFileSync(configPath, yaml, "utf8");
+-  const pluginChanges = [...installPlugin()];
++  const pluginChanges = [...installPlugin(bundle.launcherName)];
+ 
+   mkdirSync(WORKSPACE, { recursive: true });
+   const envPath = join(HERMES_HOME, ".env");
+@@ -270,7 +291,7 @@ function main(): void {
+   }
+ 
+   console.log(`✓ SOUL.md            ${soul.length} chars (cap ${CONTEXT_FILE_MAX_CHARS}), digest ${digest}`);
+-  console.log(`✓ skills mounted     ${scrubPaths(join(INSTALL_ROOT, "skills"))} (${skillIndex().length} indexed in soul — the default routing path)`);
++  console.log(`✓ skills mounted     ${scrubPaths(join(INSTALL_ROOT, "skills"))} (${bundle.skills.length} indexed in soul — the default routing path)`);
+   console.log(`✓ config.yaml        ${configDrifted ? "patched" : "already current"}`);
+   for (const c of pluginChanges) console.log(`✓ ${c.what.padEnd(18)} ${c.detail}`);
+   if (!pluginChanges.length) console.log("✓ plugin             already current");
+diff --git a/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts b/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts
+index 2341394..d3b3fe8 100644
+--- a/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts
++++ b/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Renders native identity, constitution, and skills from declared admitted sources.
++// ABOUTME: Uses governed memory admission for managed installations.
+ /**
+  * RenderSoul — build the identity and constitutional layer a mounted Hermes
+  * sidecar loads as its system prompt.
+@@ -23,6 +25,8 @@
+  * resolve from this file's own location, so it works in any LifeOS checkout.
+  */
+ 
++
++import { memoryAccess, memoryObject } from "../TOOLS/lib/MemoryAccess.ts";
+ import { existsSync, readFileSync, readdirSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
+@@ -44,6 +48,29 @@ const SRC = {
+   projects: join(USER, "PROJECTS.md"),
+ };
+ 
++export type SoulSources = Record<keyof typeof SRC, string>;
++export type SkillSource = { directory: string; content: string };
++export type SoulBundle = { soul: string; constitution: string; identity: string;
++  skillRouting: string; skills: Array<{ name: string; summary: string }>; launcherName: string };
++
++function governed(opts: { keepOutputFormat?: boolean } = {}): SoulBundle | undefined {
++  const result = memoryAccess("prompt_bundle", {keepOutputFormat: opts.keepOutputFormat === true},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (result === undefined) return undefined;
++  if (result.ok !== true || !memoryObject(result.bundle)) throw new Error("LifeOS prompt sources are unavailable under current memory policy");
++  const bundle = result.bundle;
++  if (!["soul", "constitution", "identity", "skillRouting", "launcherName"].every(key => typeof bundle[key] === "string")
++      || !Array.isArray(bundle.skills) || !bundle.skills.every(row => memoryObject(row)
++          && typeof row.name === "string" && typeof row.summary === "string")) {
++    throw new Error("The governed LifeOS prompt bundle is invalid");
++  }
++  return bundle as SoulBundle;
++}
++
++function source(name: keyof SoulSources, sources?: SoulSources): string {
++  return sources ? sources[name] : read(SRC[name]);
++}
++
+ const read = (p: string): string => {
+   if (!existsSync(p)) throw new Error(`soul source missing: ${p}`);
+   return readFileSync(p, "utf8");
+@@ -171,9 +198,13 @@ export function assertClean(text: string, what: string): void {
+  * this install's launcher, which is named after the DA. Read, never embedded —
+  * this file ships publicly with no instance literals.
+  */
+-export function daName(): string {
++export function daName(sources?: SoulSources): string {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.launcherName;
++  }
+   try {
+-    const m = read(SRC.daIdentity).match(/\*\*Name:\*\*\s*([A-Za-z0-9_-]+)/);
++    const m = source("daIdentity", sources).match(/\*\*Name:\*\*\s*([A-Za-z0-9_-]+)/);
+     return m?.[1] ?? "";
+   } catch {
+     return "";
+@@ -181,8 +212,12 @@ export function daName(): string {
+ }
+ 
+ /** Tier 1 — the install's constitution, minus CLI presentation. */
+-export function renderConstitution(opts: { keepOutputFormat?: boolean } = {}): string {
+-  let prompt = body(read(SRC.systemPrompt));
++export function renderConstitution(opts: { keepOutputFormat?: boolean } = {}, sources?: SoulSources): string {
++  if (!sources) {
++    const bundle = governed(opts);
++    if (bundle) return bundle.constitution;
++  }
++  let prompt = body(source("systemPrompt", sources));
+   if (!opts.keepOutputFormat) {
+     prompt = dropSection(prompt, "Output Format (CONSTITUTIONAL №1)");
+   }
+@@ -190,13 +225,17 @@ export function renderConstitution(opts: { keepOutputFormat?: boolean } = {}): s
+ }
+ 
+ /** Tier 2 — who I am, who they are, what they're building, what I know. */
+-export function renderIdentity(): string {
+-  const da = body(read(SRC.daIdentity));
+-  const principal = body(read(SRC.principal));
+-  const telos = body(read(SRC.telos));
++export function renderIdentity(sources?: SoulSources): string {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.identity;
++  }
++  const da = body(source("daIdentity", sources));
++  const principal = body(source("principal", sources));
++  const telos = body(source("telos", sources));
+ 
+   const daHeader = da.split(/^##\s/m)[0].trim();
+-  const projectNames = read(SRC.projects)
++  const projectNames = source("projects", sources)
+     .split("\n")
+     .filter((l) => /^\|\s*\*\*/.test(l))
+     .map((l) => {
+@@ -205,8 +244,8 @@ export function renderIdentity(): string {
+     })
+     .filter(Boolean);
+ 
+-  const pMem = dropPII(entries(read(SRC.principalMemory)));
+-  const dMem = dropPII(entries(read(SRC.daMemory)));
++  const pMem = dropPII(entries(source("principalMemory", sources)));
++  const dMem = dropPII(entries(source("daMemory", sources)));
+ 
+   return [
+     `${daHeader}`,
+@@ -238,13 +277,19 @@ const SKILLS_DIR = join(INSTALL_ROOT, "skills");
+  * before executing. Rendered at mount time, so a new skill appears on the next
+  * re-mount with no Hermes-side edit.
+  */
+-export function skillIndex(): Array<{ name: string; summary: string }> {
+-  if (!existsSync(SKILLS_DIR)) return [];
++export function skillIndex(sources?: SkillSource[]): Array<{ name: string; summary: string }> {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.skills;
++    if (!existsSync(SKILLS_DIR)) return [];
++    sources = readdirSync(SKILLS_DIR).sort().flatMap(directory => {
++      const path = join(SKILLS_DIR, directory, "SKILL.md");
++      return existsSync(path) ? [{directory, content: readFileSync(path, "utf8")}] : [];
++    });
++  }
+   const rows: Array<{ name: string; summary: string }> = [];
+-  for (const dir of readdirSync(SKILLS_DIR).sort()) {
+-    const path = join(SKILLS_DIR, dir, "SKILL.md");
+-    if (!existsSync(path)) continue;
+-    const fm = readFileSync(path, "utf8").match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
++  for (const {directory: dir, content} of sources) {
++    const fm = content.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
+     const name = fm.match(/^name:\s*"?([^"\n]+)"?\s*$/m)?.[1]?.trim() || dir;
+     const desc = fm.match(/^description:\s*"([^\n]*)"\s*$/m)?.[1] ?? fm.match(/^description:\s*(.+)$/m)?.[1] ?? "";
+     let summary = desc.split(/\s*USE WHEN/i)[0].trim().replace(/[.\s]+$/, "");
+@@ -255,8 +300,12 @@ export function skillIndex(): Array<{ name: string; summary: string }> {
+ }
+ 
+ /** Tier 3 — LifeOS skills are the default capability path on this door too. */
+-export function renderSkillRouting(): string {
+-  const rows = skillIndex().map((s) => `- **${s.name}** — ${s.summary}`);
++export function renderSkillRouting(sources?: SkillSource[]): string {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.skillRouting;
++  }
++  const rows = skillIndex(sources).map((s) => `- **${s.name}** — ${s.summary}`);
+   return `## Skills are the default path
+ 
+ Hermes is the channel; LifeOS is the system. A request arriving here is handled
+@@ -336,21 +385,46 @@ No response format applies here beyond writing like myself: lead with the answer
+ plain words, short, verified or explicitly not.`;
+ }
+ 
+-export function renderSoul(opts: { keepOutputFormat?: boolean } = {}): string {
++export function renderSoulFromSources(sources: SoulSources, skills: SkillSource[], opts: { keepOutputFormat?: boolean } = {}): SoulBundle {
++  if (!memoryObject(sources) || Object.keys(sources).length !== Object.keys(SRC).length
++      || !Object.keys(SRC).every(key => typeof sources[key as keyof SoulSources] === "string")
++      || !Array.isArray(skills) || !skills.every(row => memoryObject(row)
++          && typeof row.directory === "string" && typeof row.content === "string")) {
++    throw new Error("LifeOS prompt rendering needs complete declared sources");
++  }
++  const constitution = renderConstitution(opts, sources);
++  const identity = renderIdentity(sources);
++  const skillRouting = renderSkillRouting(skills);
+   const soul = [
+     `# ${"Constitution and identity for the LifeOS sidecar"}\n`,
+-    renderConstitution(opts),
++    constitution,
+     "\n---\n",
+-    renderIdentity(),
++    identity,
+     "\n---\n",
+-    renderSkillRouting(),
++    skillRouting,
+     "\n---\n",
+     renderFrontDoorNotes(),
+   ].join("\n");
+ 
+   const cleaned = scrubPaths(stripDeadPointers(opts.keepOutputFormat ? soul : stripFormatContract(soul)));
+   assertClean(cleaned, "SOUL.md");
+-  return cleaned + "\n";
++  return {soul: cleaned + "\n", constitution, identity, skillRouting,
++    skills: skillIndex(skills), launcherName: daName(sources)};
++}
++
++export function renderSoulBundle(opts: { keepOutputFormat?: boolean } = {}): SoulBundle {
++  const admitted = governed(opts);
++  if (admitted) return admitted;
++  const sources = Object.fromEntries(Object.keys(SRC).map(key => [key, read(SRC[key as keyof SoulSources])])) as SoulSources;
++  const skills = existsSync(SKILLS_DIR) ? readdirSync(SKILLS_DIR).sort().flatMap(directory => {
++    const path = join(SKILLS_DIR, directory, "SKILL.md");
++    return existsSync(path) ? [{directory, content: readFileSync(path, "utf8")}] : [];
++  }) : [];
++  return renderSoulFromSources(sources, skills, opts);
++}
++
++export function renderSoul(opts: { keepOutputFormat?: boolean } = {}): string {
++  return renderSoulBundle(opts).soul;
+ }
+ 
+ if (import.meta.main) {
 diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
 index 787cf28..0938faf 100644
 --- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts

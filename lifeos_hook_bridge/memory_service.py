@@ -187,6 +187,25 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'prompt_bundle' and set(arguments) == {'keepOutputFormat'}:
+                from .memory_prompt import bundle
+                return {'ok': True, 'bundle': bundle(memory, scope, keep_output_format=arguments['keepOutputFormat'])}
+            if operation in ('prompt_preview', 'prompt_publish'):
+                from .memory_prompt import preview, publish_prompt
+                if not isinstance(arguments.get('home'), str) or Path(arguments['home']).absolute() != self.configuration.path.parent.absolute():
+                    raise ValueError('Prompt publication requires the configured Hermes profile')
+                if operation == 'prompt_preview' and set(arguments) == {'home', 'keepOutputFormat'}:
+                    return {'ok': True, **preview(memory, scope, self.configuration.path.parent,
+                                                 keep_output_format=arguments['keepOutputFormat'])}
+                if operation == 'prompt_publish' and set(arguments) == {'home', 'keepOutputFormat', 'signature', 'previous_digest'}:
+                    def check_current():
+                        if self.configuration.load() != configuration:
+                            raise MemoryUnavailable('The memory configuration changed during prompt publication')
+                    receipt = publish_prompt(memory, scope, self.configuration.path.parent,
+                        arguments['signature'], arguments['previous_digest'],
+                        keep_output_format=arguments['keepOutputFormat'], check_current=check_current)
+                    return {'ok': receipt['status'] in ('committed', 'unchanged'), 'receipt': receipt}
+                raise ValueError('Choose a fixed prompt preview or publication action')
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}

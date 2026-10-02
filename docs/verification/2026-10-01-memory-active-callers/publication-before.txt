@@ -1,0 +1,14 @@
+E
+======================================================================
+ERROR: test_owner_publication_has_a_fixed_destination_and_idempotent_retry (test_memory_prompt.MemoryPromptTests.test_owner_publication_has_a_fixed_destination_and_idempotent_retry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_prompt.py", line 122, in test_owner_publication_has_a_fixed_destination_and_idempotent_retry
+    preview = preferences.preview_prompt(account='dashboard:owner')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'MemoryPreferences' object has no attribute 'preview_prompt'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.007s
+
+FAILED (errors=1)

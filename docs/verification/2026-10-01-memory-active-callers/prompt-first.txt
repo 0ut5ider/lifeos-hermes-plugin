@@ -1,0 +1,15 @@
+F.....
+======================================================================
+FAIL: test_current_owner_renderer_preserves_native_prompt_and_current_hot_facts (test_memory_prompt.MemoryPromptTests.test_current_owner_renderer_preserves_native_prompt_and_current_hot_facts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_prompt.py", line 93, in test_current_owner_renderer_preserves_native_prompt_and_current_hot_facts
+    self.assertEqual(governed, control)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: {'ok'[741 chars]pal\n- RULE: SyntheticCurrentHotFact\n\n### Ab[5985 chars]ant'} != {'ok'[741 chars]pal\nRULE: SyntheticCurrentHotFact\n\n### Abou[5981 chars]ant'}
+Diff is 11293 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 6 tests in 8.368s
+
+FAILED (failures=1)

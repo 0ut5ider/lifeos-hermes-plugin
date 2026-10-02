@@ -43,7 +43,8 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     relative = Path(path).relative_to(memory.root).as_posix()
     if '..' in Path(relative).parts:
         raise MemoryUnavailable('The native source cannot leave its installed root')
-    system = relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
+    system = (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
+              or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative) is not None)
     if diagnostic:
         from .memory_diagnostics import DIAGNOSTIC_FILES, DIAGNOSTIC_DIRECTORIES
         directory = not require_file and relative in DIAGNOSTIC_DIRECTORIES

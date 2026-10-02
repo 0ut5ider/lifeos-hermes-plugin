@@ -26,7 +26,13 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "canonical_records") {
+  if (input.action === "prompt_bundle") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/HERMES/RenderSoul.ts")).href);
+    if (!object(module) || typeof module.renderSoulFromSources !== "function") {
+      throw new Error("Native prompt rendering is unavailable");
+    }
+    result = {bundle: module.renderSoulFromSources(input.sources, input.skills, input.options)};
+  } else if (input.action === "canonical_records") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/Cortex.ts")).href);
     if (!object(module) || typeof module.parseCanonicalMarkdown !== "function"
         || typeof module.canonicalMetadata !== "function" || typeof input.root !== "string"

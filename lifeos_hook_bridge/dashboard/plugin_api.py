@@ -189,6 +189,18 @@ def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, ac
                         headers={**headers, 'X-LifeOS-Memory-Installation': binding})
 
 
+@router.post('/memory/prompt/preview')
+def preview_memory_prompt(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'keep_output_format'} or type(request['keep_output_format']) is not bool:
+        raise HTTPException(status_code=400, detail='Choose whether to retain the native output format')
+    return _memory_action(lambda preferences: preferences.preview_prompt(**request, account=account))
+
+
+@router.post('/memory/prompt')
+def publish_memory_prompt(request: dict, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences: preferences.publish_prompt(request, account=account))
+
+
 @router.post('/memory/adoption/preview')
 def preview_memory_adoption(request: dict, account: str = Depends(_memory_account)):
     if request:
