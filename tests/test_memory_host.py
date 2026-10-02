@@ -107,7 +107,7 @@ class MemoryHostTests(unittest.TestCase):
         from lifeos_hook_bridge.memory_service import MemoryConfiguration
         MemoryConfiguration(self.fixture.fixture.path).update(lambda configuration:configuration.update(ownership_enabled=False))
         result = self.initialize({'provider':'lifeos-hook-bridge','memory_enabled':False,'user_profile_enabled':False},
-                                 expected_warning='LifeOS lasting memory')
+                                 expected_warning='LifeOS memory ownership cannot be activated in this release.')
         self.assertEqual(result['providers'],[])
         self.assertFalse(result['has_builtin_store'])
         self.assertNotIn('memory',result['tools'])
