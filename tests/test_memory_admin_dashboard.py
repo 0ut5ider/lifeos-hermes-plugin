@@ -142,6 +142,14 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.assertFalse((self.fixture.profile / 'SOUL.md').exists())
         self.assertEqual(self.grants(), [])
 
+    def test_unconfigured_memory_remount_refuses_before_changing_profile(self):
+        self.login()
+        self.configuration.path.unlink()
+        (self.fixture.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+        response = self.client.post('/api/plugins/lifeos-hook-bridge/memory/remount')
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertFalse((self.fixture.profile / 'SOUL.md').exists())
+
     def test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled(self):
         self.app.state.auth_required = False
         for path in ('/finalize', '/update', '/update/recover'):

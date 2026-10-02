@@ -25,3 +25,11 @@ The plugin page shows `Restore interrupted mount` when the mount journal require
 The earlier combined selection contains two incorrect module names in `combined.txt`. The corrected selection passes 76 cases with one skipped native TaskGovernance case in `combined-corrected.txt`. The full gate sets the required native hook path and must execute that case.
 
 Live service and browser acceptance is the next gate. This document does not claim complete memory ownership setup, full PULSE interface governance, or the complete release gate. Ownership remains disabled on running installations.
+
+## Bounded regression
+
+The fresh source fixture initially lacks the existing PULSE search dependency. `gate-dependency-failure.txt` records 280 cases with 10 failures and 12 errors. Each failure identifies the missing `minisearch` package. The fixture now links the existing owned PULSE dependency directory.
+
+The corrected `gate.txt` passes all 280 cases in 211.886 seconds without skips, failures, errors, or warnings. `gate.done` records exit status 0.
+
+An additional boundary test finds that an unconfigured memory remount can publish files before response binding fails. `unconfigured-remount-before.txt` reproduces that write. The route now validates its configuration and owner binding before mounting. `unconfigured-remount-after.txt` passes all 17 authenticated dashboard and native remount cases.

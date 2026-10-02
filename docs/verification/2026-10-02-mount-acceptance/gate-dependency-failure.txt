@@ -1,0 +1,304 @@
+...........................................................................................................................................................................E...E.E.EEEF..EEE.EE..EFFFFFFFFF.............................................................................
+======================================================================
+ERROR: test_correction_retires_older_sources_and_forgotten_claims_in_current_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_correction_retires_older_sources_and_forgotten_claims_in_current_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 128, in test_correction_retires_older_sources_and_forgotten_claims_in_current_files
+    result = json.dumps(view(self.memory, OWNER, '/api/wiki'))
+                        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 140, in test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles
+    result = view(self.memory, OWNER, '/api/wiki')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 91, in test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent
+    result = view(self.memory, OWNER, '/api/wiki')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_malformed_private_openers_and_canonical_control_characters_are_excluded (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_malformed_private_openers_and_canonical_control_characters_are_excluded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 215, in test_malformed_private_openers_and_canonical_control_characters_are_excluded
+    response = view(self.memory, OWNER, '/api/wiki')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 43, in test_managed_categories_slugs_and_groups_match_native_standalone
+    self.assert_native_sources(self.examples())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 46, in assert_native_sources
+    managed = view(self.memory, OWNER, '/api/wiki')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_markdown_frontmatter_comments_and_rules_remain_native_read_content (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_markdown_frontmatter_comments_and_rules_remain_native_read_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 195, in test_markdown_frontmatter_comments_and_rules_remain_native_read_content
+    response = view(self.memory, OWNER, '/api/wiki/doc/synthetic-markdown')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_private_markup_sources_are_excluded_without_changing_raw_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_markup_sources_are_excluded_without_changing_raw_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 116, in test_private_markup_sources_are_excluded_without_changing_raw_files
+    result = view(self.memory, OWNER, '/api/wiki')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_private_source_names_and_groups_cannot_supply_page_metadata (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_source_names_and_groups_cannot_supply_page_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 226, in test_private_source_names_and_groups_cannot_supply_page_metadata
+    result = json.dumps(view(self.memory, OWNER, '/api/wiki'))
+                        ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_read_content_can_exceed_native_write_limit_without_changing_that_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_read_content_can_exceed_native_write_limit_without_changing_that_limit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 203, in test_read_content_can_exceed_native_write_limit_without_changing_that_limit
+    response = view(self.memory, OWNER, '/api/wiki/doc/synthetic-large-read')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 78, in test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks
+    search = view(self.memory, OWNER, '/api/wiki/search?q=SyntheticDocBody')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_retired_frontmatter_and_work_directory_labels_are_excluded (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retired_frontmatter_and_work_directory_labels_are_excluded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 189, in test_retired_frontmatter_and_work_directory_labels_are_excluded
+    self.assertNotIn('forgotten', json.dumps(view(self.memory, OWNER, '/api/wiki')))
+                                             ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+ERROR: test_source_times_at_millisecond_boundaries_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_times_at_millisecond_boundaries_match_native_standalone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 73, in test_source_times_at_millisecond_boundaries_match_native_standalone
+    self.assert_native_sources(paths)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 46, in assert_native_sources
+    managed = view(self.memory, OWNER, '/api/wiki')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_wiki.py", line 149, in view
+    result = memory._native('wiki_view', target=target, sources=sources)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 150, in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+======================================================================
+FAIL: test_native_duplicate_slug_between_silos_refuses_ambiguous_pages (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_native_duplicate_slug_between_silos_refuses_ambiguous_pages)
+----------------------------------------------------------------------
+lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 179, in test_native_duplicate_slug_between_silos_refuses_ambiguous_pages
+    with self.assertRaisesRegex(MemoryUnavailable, 'unique pages'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "unique pages" does not match "Native memory operation failed: ResolveMessage: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'"
+
+======================================================================
+FAIL: test_declared_renderer_does_not_scan_or_stat_another_physical_source (test_memory_wiki_render.MemoryWikiRenderTests.test_declared_renderer_does_not_scan_or_stat_another_physical_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 107, in test_declared_renderer_does_not_scan_or_stat_another_physical_source
+    result = self.call([self.request('/api/wiki/doc/' + self.current['slug'], [source])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_duplicate_page_slug_refuses_and_does_not_leave_partial_index (test_memory_wiki_render.MemoryWikiRenderTests.test_duplicate_page_slug_refuses_and_does_not_leave_partial_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 96, in test_duplicate_page_slug_refuses_and_does_not_leave_partial_index
+    result = self.call([self.request('/api/wiki', [self.current, duplicate]), self.request('/api/wiki/graph', [])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_duplicate_physical_source_refuses_distinct_slug_aliases (test_memory_wiki_render.MemoryWikiRenderTests.test_duplicate_physical_source_refuses_distinct_slug_aliases)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 102, in test_duplicate_physical_source_refuses_distinct_slug_aliases
+    result = self.call([self.request('/api/wiki', [self.current, alias])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_empty_later_corpus_cannot_reuse_previous_search_or_index (test_memory_wiki_render.MemoryWikiRenderTests.test_empty_later_corpus_cannot_reuse_previous_search_or_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 81, in test_empty_later_corpus_cannot_reuse_previous_search_or_index
+    result = self.call([self.request('/api/wiki/search?q=SyntheticDeclaredWikiBodyMarker'),
+        self.request('/api/wiki/search?q=SyntheticDeclaredWikiBodyMarker', []),
+        self.request('/api/wiki/graph', []), self.request('/api/wiki', [])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_missing_declared_note_has_native_not_found_result (test_memory_wiki_render.MemoryWikiRenderTests.test_missing_declared_note_has_native_not_found_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 90, in test_missing_declared_note_has_native_not_found_result
+    result = self.call([self.request('/api/wiki/knowledge/research/' + self.unknown.stem)])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_rendering_refuses_write_routes_and_unrelated_module_routes (test_memory_wiki_render.MemoryWikiRenderTests.test_rendering_refuses_write_routes_and_unrelated_module_routes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 112, in test_rendering_refuses_write_routes_and_unrelated_module_routes
+    result = self.call([{**self.request('/api/wiki/doc/' + self.current['slug']), 'method': 'PUT'},
+        self.request('/api/wiki/reindex'), self.request('/api/wiki/skills')])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_standalone_wiki_keeps_native_index_search_and_raw_note_control (test_memory_wiki_render.MemoryWikiRenderTests.test_standalone_wiki_keeps_native_index_search_and_raw_note_control)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 54, in test_standalone_wiki_keeps_native_index_search_and_raw_note_control
+    result = self.call([self.request('/api/wiki'), self.request('/api/wiki/search?q=SyntheticRawWikiBodyMarker'),
+        self.request('/api/wiki/knowledge/research/' + self.note.stem)], standalone=True)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 73, in test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources
+    result = self.call([self.request('/api/wiki'), self.request('/api/wiki/graph'),
+        self.request('/api/wiki/backlinks/' + self.linked['slug'])])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+======================================================================
+FAIL: test_supplied_native_note_body_search_and_excerpt_never_read_raw_body (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_native_note_body_search_and_excerpt_never_read_raw_body)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 61, in test_supplied_native_note_body_search_and_excerpt_never_read_raw_body
+    result = self.call([self.request('/api/wiki/knowledge/research/' + self.note.stem),
+        self.request('/api/wiki/doc/' + self.note.stem),
+        self.request('/api/wiki/search?q=SyntheticDeclaredWikiBodyMarker')])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_render.py", line 46, in call
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : error: Cannot find package 'minisearch' from '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts'
+
+Bun v1.3.14 (Linux x64)
+
+
+----------------------------------------------------------------------
+Ran 280 tests in 213.328s
+
+FAILED (failures=10, errors=12)

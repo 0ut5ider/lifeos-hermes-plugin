@@ -174,9 +174,11 @@ async def remount_memory(request: Request, account: str = Depends(_memory_accoun
     await _fixed_mount_request(request)
     headers = {'Cache-Control':'no-store'}
     try:
-        result = await run_in_threadpool(_mount_owner_action, account, 'mount')
         configuration = _memory_preferences().configuration
-        binding = install_module.memory_module('memory_http').installation_binding(configuration.load(), configuration.path)
+        configuration_value = configuration.load()
+        configuration.check_owner(configuration_value, account)
+        binding = install_module.memory_module('memory_http').installation_binding(configuration_value, configuration.path)
+        result = await run_in_threadpool(_mount_owner_action, account, 'mount')
         return JSONResponse({'ok':True, 'exitCode':0, 'output':result['output'], 'error':None,
                              'mount':{'state':result['state'], 'restart_required':True}},
                             headers={**headers, 'X-LifeOS-Memory-Installation':binding})
