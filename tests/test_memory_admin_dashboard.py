@@ -346,6 +346,26 @@ class MemoryAdminDashboardTests(unittest.TestCase):
             self.assertEqual(self.client.post(path, json={'job': 'other'}).status_code, 400)
         self.assertEqual(self.grants(), [])
 
+    def test_recovery_refuses_cross_origin_and_request_overrides(self):
+        self.login()
+        job = self.interrupted_job()
+        before_request = (job / 'request.json').read_bytes()
+        before_status = (job / 'status.json').read_bytes()
+        path = self.prefix + '/update/recover'
+        requests = (
+            (path, {'headers': {'Origin': 'https://other.invalid'}}, 403),
+            (path + '?job=other', {}, 400),
+            (path, {'json': {'job': 'other'}}, 400),
+        )
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=RuntimeError('Synthetic launch prevented')) as launched:
+            for url, options, expected in requests:
+                with self.subTest(request=options or url):
+                    self.assertEqual(self.client.post(url, **options).status_code, expected)
+                    self.assertEqual((job / 'request.json').read_bytes(), before_request)
+                    self.assertEqual((job / 'status.json').read_bytes(), before_status)
+                    self.assertEqual(self.grants(), [])
+            launched.assert_not_called()
+
     def test_restore_refuses_a_job_for_another_installation(self):
         self.login()
         job = self.applied_job()

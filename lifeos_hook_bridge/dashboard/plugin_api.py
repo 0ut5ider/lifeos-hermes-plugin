@@ -593,7 +593,8 @@ def apply_lifeos_update(account: str = Depends(_memory_account)):
 
 
 @router.post("/installation/update/recover")
-def recover_lifeos_update(account: str = Depends(_memory_account)):
+async def recover_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
     previous = get_lifeos_update_status()
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
         "stopped", "swapped", "restoring", "rollback_failed"
