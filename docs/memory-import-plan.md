@@ -54,6 +54,17 @@ The first supported handoff may require stopped profile processes. Per-item nati
 
 ## Acceptance and scope
 
+## Reversible evaluation and return to Hermes
+
+Date: 2026-10-02. Adrian requires installation and removal choices in the overall plan. A separate trial profile, import into the current profile, and activation without import are distinct choices. A dedicated fresh installation is the current acceptance target, not a permanent product restriction.
+
+Return to preserved Hermes memory restores its selected provider and supported files after review of known correction and forget conflicts. Facts learned only in LifeOS remain in retained LifeOS data. They are not copied automatically. Return with current LifeOS knowledge requires a separately reviewed reverse migration. Validate the supported Hermes format, capacity, destination identity, transformations, and every accepted item before switching. Preserve pending or excluded material without claiming it is active Hermes memory.
+
+An uninstall transaction drains writers, resolves unknown operations, checks current configuration, restores only owned changes, rebuilds affected agents, and verifies Hermes recall. Plugin-managed hook, prompt, guard, and program changes require verified removal. Shared program patches require an explicit scope explanation. Updated or edited code must not receive an unchecked reverse patch. Retained LifeOS data and private backups remain until the owner separately requests deletion.
+
+Add acceptance cases for interrupted removal, restore conflicts, changed patch bases, later memory writes, profile isolation, reverse-export limits, and known retired claims in preserved Hermes memory. Implement this work after the current fresh-install foundation. Do not advertise reversible established-installation support before those cases pass.
+
+
 The review defines [19 acceptance cases](agents/2026-10-01-memory-import-review/memory-import-review.md) for profiles, parsing, path substitution, duplicates, races, grants, unsupported destinations, capacity, retired claims, untrusted text, optional processing, interruptions, partial outcomes, sessions, old-file controls, restore, retained copies, and release compatibility.
 
 Run these with disposable profiles and synthetic facts when import implementation begins. Current native adoption registers existing LifeOS files in place. It does not import Hermes memory or establish this handoff.

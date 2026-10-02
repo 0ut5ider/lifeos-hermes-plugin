@@ -15,6 +15,8 @@ The current registration inventory is 74 hooks across 11 Claude Code events. A r
 
 ## Immediate work order
 
+The [installation, trial, and removal requirements](memory-implementation-plan.md#installation-trial-and-removal-requirements) extend the product release plan. A fresh installation remains the first acceptance target. Existing-user support also requires reviewed import, verified profile isolation, and a reversible return to Hermes. Complete the active memory foundation before those transitions. Do not claim established-installation support from fresh-install evidence.
+
 1. Capture the current registration inventory and make missing or changed registrations fail a check.
 2. Run native probes for `PreToolUse` ask and SessionStart and SessionEnd matchers. Reproduce the current Hermes outcomes with real child hooks.
 3. Implement the smallest bridge changes that satisfy those probes. Keep Hermes denial precedence and approval identity stable.

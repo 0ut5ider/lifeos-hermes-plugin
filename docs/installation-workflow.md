@@ -4,6 +4,11 @@ The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. The plugin must
 
 ## Requested page flow
 
+The [overall memory plan](memory-implementation-plan.md#installation-trial-and-removal-requirements) adds three planned evaluation choices: a separate trial profile, current-profile activation with reviewed memory import, and current-profile activation without import. Installing the plugin or LifeOS must not select memory ownership automatically. Profile isolation and shared Hermes code changes require separate acceptance evidence.
+
+The page must also offer a verified return to Hermes before removing the integration. It must distinguish restoring preserved Hermes memory from exporting selected current LifeOS facts. Data deletion is a separate owner action. These established-installation and removal workflows are planned, not implemented or verified by the fresh-install controls below.
+
+
 1. The page checks whether LifeOS is missing, partial, or installed.
 2. **Prepare latest LifeOS** reads the current commit of [Daniel Miessler's public repository](https://github.com/danielmiessler/LifeOS), clones that exact revision, applies the bundled LifeOS patches, and publishes a private candidate. It changes no running files.
 3. **Install prepared LifeOS** shows the exact commit and patch count before use. It validates the candidate again, creates a new private `~/.claude` directory, runs six LifeOS installation tools, and checks the version and hook settings. It refuses any existing `~/.claude` directory. If a tool fails, it moves the partial directory to a private `failed-install-*` directory for inspection. A separate `.212` account completed this path for LifeOS 7.40.4, with 11 hook event groups and 27 hook entries. The dashboard route and button have automated tests, but the click has not yet been exercised in a live browser.

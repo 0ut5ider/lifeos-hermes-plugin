@@ -13,6 +13,27 @@ Date: 2026-09-30. Adrian authorizes implementation of the reviewed memory design
 
 Native LifeOS files remain the authoritative facts. Integration metadata must not become a second editable fact store. Hooks retain automatic recall and review. Hermes retains history, compression, and skill learning.
 
+## Installation, trial, and removal requirements
+
+Date: 2026-10-02. Adrian adds reversible evaluation and removal to the product plan. A fresh installation remains the first acceptance target. It is not a permanent requirement for plugin use.
+
+Installing the plugin, installing LifeOS, and selecting lasting-memory ownership are separate actions. Plugin installation must not switch memory ownership. An unsuccessful activation preserves the previous effective configuration.
+
+| Installation choice | Required behavior | Acceptance status |
+| --- | --- | --- |
+| Try LifeOS in a separate Hermes profile | Preserve the existing profile. Import no memory automatically. Verify memory, configuration, processes, and plugin isolation. Explain any shared program patches. Offer a separate installation when profile isolation is insufficient. | Planned; isolation acceptance remains open. |
+| Activate LifeOS in the current profile with reviewed import | Preserve original bytes and settings. Account for all supported memory entries. Publish approved items, verify retrieval, and then switch ownership. | The reviewed import design exists; implementation remains open. |
+| Activate LifeOS in the current profile without import | Preserve existing Hermes memory files. Explain that they stop supplying lasting recall after activation. Do not erase an existing LifeOS store. | Activation acceptance remains open. |
+
+Removal distinguishes three operations: disable the integration, remove plugin-managed code and configuration, and delete retained LifeOS data. Removing the integration does not authorize data deletion.
+
+The return workflow offers restoration of preserved Hermes memory or reviewed export of selected current LifeOS knowledge. Restoration shows known corrections and forgotten claims that the old memory could revive. Export preserves source provenance, shows Hermes capacity limits, and reports excluded or pending material. Neither workflow silently summarizes or truncates data.
+
+Before switching back, drain affected writers and resolve pending outcomes. Restore only owned configuration changes with expected-current checks. Rebuild affected processes and verify Hermes recall. Preserve unrelated later changes. Reverse a Hermes patch only against a supported verified code state. Refuse an unsafe reversal and report the recovery procedure.
+
+Existing-user release acceptance requires import and return tests with large synthetic memory, concurrent writers, interrupted activation and removal, updated Hermes code, later user edits, correction/forget conflicts, and profile isolation. Fresh-install acceptance does not establish this support. Complete the current source, publication, lifecycle, and ownership gates first. Then implement import and reversible removal before advertising established-installation support. The [import plan](memory-import-plan.md) defines the migration contract. The [installation workflow](installation-workflow.md) records the page entry points.
+
+
 ## Current status
 
 Implementation started on `feature/lifeos-memory`. No running memory ownership switch or remote sharing activation has occurred. Test data is synthetic. The existing `.211` and `.213` installations remain unchanged.
