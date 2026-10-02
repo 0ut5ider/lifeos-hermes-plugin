@@ -152,7 +152,7 @@ class MemoryAdminDashboardTests(unittest.TestCase):
 
     def test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled(self):
         self.app.state.auth_required = False
-        for path in ('/finalize', '/update', '/update/recover'):
+        for path in ('/finalize', '/update', '/update/recover', '/update/restore'):
             with self.subTest(path=path):
                 response = self.client.post(self.prefix + path, json={'account': self.account},
                     headers={'X-LifeOS-Owner': 'owner', 'X-Forwarded-User': 'synthetic-owner'})
@@ -240,6 +240,78 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         with self.assertRaises(PermissionError):
             self.fixture.fixture.admin().validate(self.configuration, authorization,
                 binding=self.fixture.fixture.admin().job_binding(job, request, 'apply'), check_binding=True)
+
+    def applied_job(self):
+        job = self.interrupted_job()
+        (job / 'status.json').write_text(json.dumps({'state': 'applied'}) + '\n')
+        (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'applied'}))
+        return job
+
+    def test_restore_requires_fresh_action_bound_owner_authorization(self):
+        self.login()
+        job = self.applied_job()
+        with patch.object(self.api, '_launch_lifeos_update') as launched:
+            response = self.post('/update/restore')
+        self.assertEqual(response.status_code, 200, response.text)
+        launched.assert_called_once_with(job, 'restore')
+        request = json.loads((job / 'request.json').read_text())
+        authorization = Path(request['memory_authorization'])
+        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, authorization)
+        self.fixture.fixture.admin().validate(self.configuration, authorization,
+            binding=self.fixture.fixture.admin().job_binding(job, request, 'restore'), check_binding=True)
+        with self.assertRaises(PermissionError):
+            self.fixture.fixture.admin().validate(self.configuration, authorization,
+                binding=self.fixture.fixture.admin().job_binding(job, request, 'apply'), check_binding=True)
+
+    def test_failed_restore_launch_preserves_retryable_job_state(self):
+        self.login()
+        job = self.applied_job()
+        before_request = (job / 'request.json').read_bytes()
+        before_status = (job / 'status.json').read_bytes()
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=RuntimeError('Synthetic launch failure')):
+            response = self.post('/update/restore')
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertEqual(self.grants(), [])
+        self.assertEqual((job / 'request.json').read_bytes(), before_request)
+        self.assertEqual((job / 'status.json').read_bytes(), before_status)
+
+    def test_revoked_owner_cannot_restore_update(self):
+        self.login()
+        self.applied_job()
+        self.configuration.update(lambda config: config['accounts'].pop(self.account))
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Owner must be checked first')):
+            response = self.post('/update/restore')
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertEqual(self.grants(), [])
+
+    def test_restore_refuses_an_unapplied_update(self):
+        self.login()
+        self.interrupted_job()
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('State must be checked first')):
+            response = self.post('/update/restore')
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertEqual(self.grants(), [])
+
+    def test_restore_refuses_cross_origin_and_request_overrides(self):
+        self.login()
+        self.applied_job()
+        path = self.prefix + '/update/restore'
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Admission must run first')):
+            self.assertEqual(self.client.post(path, headers={'Origin': 'https://other.invalid'}).status_code, 403)
+            self.assertEqual(self.client.post(path + '?job=other').status_code, 400)
+            self.assertEqual(self.client.post(path, json={'job': 'other'}).status_code, 400)
+        self.assertEqual(self.grants(), [])
+
+    def test_restore_refuses_a_job_for_another_installation(self):
+        self.login()
+        job = self.applied_job()
+        request = json.loads((job / 'request.json').read_text())
+        request['hermes_home'] = str(self.fixture.profile.parent / 'other-profile')
+        (job / 'request.json').write_text(json.dumps(request))
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Binding must run first')):
+            response = self.post('/update/restore')
+        self.assertEqual(response.status_code, 403, response.text)
+        self.assertEqual(self.grants(), [])
 
     def test_failed_recovery_launch_preserves_retryable_job_state(self):
         self.login()

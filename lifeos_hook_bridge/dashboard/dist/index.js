@@ -555,6 +555,17 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function restoreLifeOSUpdate() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(lifeosUpdateEndpoint + "/restore", { method: "POST" }).then(function () {
+        setInstallationStatus("Restoring the previous LifeOS version. Hermes will restart.");
+        refreshLifeOSUpdate(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not restore LifeOS: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function renderTier(tier) {
       const label = tier.charAt(0).toUpperCase() + tier.slice(1);
       const modelKey = tier + "_model";
@@ -636,6 +647,10 @@
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Starting..." : "Apply prepared LifeOS update") : null,
           lifeosUpdate?.state === "applied" ? h("p", { role: "status" }, "LifeOS update applied and verified.") : null,
+          lifeosUpdate?.state === "applied" ? h("div", { className: "space-y-2" },
+            h("p", null, "Restore the version saved before this update. Restore stops if LifeOS user data has changed since the update. Your conversations stay in Hermes."),
+            h("button", { type: "button", disabled: installationBusy, onClick: restoreLifeOSUpdate,
+              className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Restore previous LifeOS version")) : null,
           ["queued", "preparing", "applying", "restoring", "recovering"].includes(lifeosUpdate?.state) ? h("p", { role: "status" },
             "LifeOS update: " + lifeosUpdate.state + ". The gateway may be unavailable during restart.") : null,
           ["failed", "rollback_failed", "rolled_back", "interrupted"].includes(lifeosUpdate?.state) ? h("p", { role: "status" },

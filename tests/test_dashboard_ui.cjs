@@ -374,6 +374,12 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
   await new Promise(setImmediate);
   await new Promise(setImmediate);
   assert.ok(calls.some((call) => call.url.endsWith("/installation/update") && call.init?.method === "POST"));
+  const restoreLifeOS = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Restore previous LifeOS version"));
+  assert.ok(restoreLifeOS);
+  restoreLifeOS.props.onClick();
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/update/restore") && call.init?.method === "POST"));
   const prepareHost = find(view, (node) => node.type === "button" &&
     node.children.includes("Prepare tested Hermes extension"));
   assert.ok(prepareHost);

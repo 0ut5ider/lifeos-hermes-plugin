@@ -15,6 +15,7 @@ import test_memory_pulse_relay as relay_fixture
 class MemoryWikiRelayTests(unittest.TestCase):
     native_module = 'wiki.ts'
     setUp = relay_fixture.MemoryPulseRelayTests.setUp
+    create_fixture = relay_fixture.MemoryPulseRelayTests.create_fixture
     native_module_name = relay_fixture.MemoryPulseRelayTests.native_module_name
     stop_dashboard = relay_fixture.MemoryPulseRelayTests.stop_dashboard
     stop_pulse = relay_fixture.MemoryPulseRelayTests.stop_pulse

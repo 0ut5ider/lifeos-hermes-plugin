@@ -13,6 +13,7 @@ import test_memory_wiki_relay as wiki_fixture
 class MemoryKnowledgeRelayTests(unittest.TestCase):
     native_module = 'observability.ts'
     setUp = relay_fixture.MemoryPulseRelayTests.setUp
+    create_fixture = relay_fixture.MemoryPulseRelayTests.create_fixture
     native_module_name = relay_fixture.MemoryPulseRelayTests.native_module_name
     stop_dashboard = relay_fixture.MemoryPulseRelayTests.stop_dashboard
     stop_pulse = relay_fixture.MemoryPulseRelayTests.stop_pulse

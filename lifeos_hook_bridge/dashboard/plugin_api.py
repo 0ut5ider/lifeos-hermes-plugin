@@ -599,6 +599,19 @@ def recover_lifeos_update(account: str = Depends(_memory_account)):
         "stopped", "swapped", "restoring", "rollback_failed"
     }:
         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
+    return _resume_lifeos_update(previous, account, 'recover')
+
+
+@router.post("/installation/update/restore")
+async def restore_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    previous = get_lifeos_update_status()
+    if previous['state'] != 'applied' or previous.get('transaction_state') != 'applied':
+        raise HTTPException(status_code=409, detail='There is no applied LifeOS update to restore')
+    return _resume_lifeos_update(previous, account, 'restore')
+
+
+def _resume_lifeos_update(previous: dict, account: str, action: str):
     job = Path(previous["job"])
     changed = False
     try:
@@ -610,15 +623,15 @@ def recover_lifeos_update(account: str = Depends(_memory_account)):
                 raise PermissionError('The update job belongs to another installation')
             preferences = _memory_preferences()
             authorization = preferences.authorize_mount(account=account, ttl=3600,
-                binding=install_module.memory_administration().job_binding(job, request, 'recover'))
+                binding=install_module.memory_administration().job_binding(job, request, action))
             request['memory_authorization'] = str(authorization)
             changed = True
             install_module.memory_administration().publish(job / 'request.json',
                 (json.dumps(request) + '\n').encode())
         changed = True
         install_module.memory_administration().publish(job / 'status.json',
-            (json.dumps({'state': 'recovering'}) + '\n').encode())
-        _launch_lifeos_update(job, "recover")
+            (json.dumps({'state': 'recovering' if action == 'recover' else 'restoring'}) + '\n').encode())
+        _launch_lifeos_update(job, action)
     except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, KeyError, subprocess.TimeoutExpired) as error:
         if 'authorization' in locals():
             preferences.revoke_mount(authorization)
@@ -626,9 +639,9 @@ def recover_lifeos_update(account: str = Depends(_memory_account)):
             install_module.memory_administration().publish(job / 'request.json', original_request)
             install_module.memory_administration().publish(job / 'status.json', original_status)
         if isinstance(error, PermissionError):
-            raise HTTPException(status_code=403, detail='The installation owner must authorize managed recovery') from error
+            raise HTTPException(status_code=403, detail='The installation owner must authorize this update action') from error
         raise HTTPException(status_code=409, detail=str(error)) from error
-    return {"state": "recovering", "job": str(job)}
+    return {"state": "recovering" if action == 'recover' else 'restoring', "job": str(job)}
 
 
 @router.get("/installation/host-patch")
