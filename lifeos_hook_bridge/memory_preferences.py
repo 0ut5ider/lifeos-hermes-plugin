@@ -88,6 +88,15 @@ class MemoryPreferences:
         return preview(NativeMemory(self.root), self._owner_scope(config), self.configuration.path.parent,
                        keep_output_format=keep_output_format)
 
+    def authorize_mount(self, *, account=None, ttl=600, binding=None):
+        from .memory_administration import issue
+        self._configuration(account=account)
+        return issue(self.configuration, account, ttl=ttl, binding=binding)
+
+    def revoke_mount(self, authorization):
+        from .memory_administration import revoke
+        revoke(self.configuration, authorization)
+
     def publish_prompt(self, request: dict[str, Any], *, account: str | None = None):
         from .memory_prompt import publish_prompt
         if not isinstance(request, dict) or set(request) != {'signature', 'previous_digest', 'keep_output_format'}:

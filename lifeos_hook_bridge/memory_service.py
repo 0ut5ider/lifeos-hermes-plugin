@@ -182,30 +182,53 @@ class MemoryService:
     def scope(self, context: SessionContext) -> MemoryScope:
         return MemoryPolicy(self.configuration.load()).resolve(context)
 
+    def _prompt(self, configuration, scope, operation, arguments, *, check_authority=None):
+        from .memory_prompt import bundle, preview, publish_prompt
+        memory = NativeMemory(Path(configuration['root']))
+        if operation == 'prompt_bundle' and set(arguments) == {'keepOutputFormat'}:
+            result = {'ok': True, 'bundle': bundle(memory, scope, keep_output_format=arguments['keepOutputFormat'])}
+        elif operation in ('prompt_preview', 'prompt_publish'):
+            if not isinstance(arguments.get('home'), str) or Path(arguments['home']).absolute() != self.configuration.path.parent.absolute():
+                raise ValueError('Prompt publication requires the configured Hermes profile')
+            if operation == 'prompt_preview' and set(arguments) == {'home', 'keepOutputFormat'}:
+                result = {'ok': True, **preview(memory, scope, self.configuration.path.parent,
+                                               keep_output_format=arguments['keepOutputFormat'])}
+            elif operation == 'prompt_publish' and set(arguments) == {'home', 'keepOutputFormat', 'signature', 'previous_digest'}:
+                def check_current():
+                    if self.configuration.load() != configuration:
+                        raise MemoryUnavailable('The memory configuration changed during prompt publication')
+                    if check_authority is not None:
+                        check_authority()
+                receipt = publish_prompt(memory, scope, self.configuration.path.parent,
+                    arguments['signature'], arguments['previous_digest'],
+                    keep_output_format=arguments['keepOutputFormat'], check_current=check_current)
+                result = {'ok': receipt['status'] in ('committed', 'unchanged'), 'receipt': receipt}
+            else:
+                raise ValueError('Choose a fixed prompt preview or publication action')
+        else:
+            raise ValueError('Choose a fixed prompt preview or publication action')
+        if check_authority is not None:
+            check_authority()
+        return result
+
+    def administrative(self, authorization, operation, arguments):
+        from .memory_administration import validate
+        try:
+            if operation not in ('prompt_bundle', 'prompt_preview', 'prompt_publish') or not isinstance(arguments, dict):
+                raise ValueError('Administrative authorization permits only prompt mount operations')
+            configuration, scope = validate(self.configuration, authorization)
+            return self._prompt(configuration, scope, operation, arguments,
+                                check_authority=lambda: validate(self.configuration, authorization))
+        except (MemoryUnavailable, PermissionError, ValueError, OSError, sqlite3.Error, subprocess.TimeoutExpired):
+            return {'ok': False, 'code': 'EWRITE_FAILED', 'message': 'Administrative prompt mounting is unavailable'}
+
     def native(self, context: SessionContext, operation: str, arguments: dict[str, Any]) -> dict[str, Any]:
         try:
             configuration = self.configuration.load()
             scope = MemoryPolicy(configuration).resolve(context)
             memory = NativeMemory(Path(configuration["root"]))
-            if operation == 'prompt_bundle' and set(arguments) == {'keepOutputFormat'}:
-                from .memory_prompt import bundle
-                return {'ok': True, 'bundle': bundle(memory, scope, keep_output_format=arguments['keepOutputFormat'])}
-            if operation in ('prompt_preview', 'prompt_publish'):
-                from .memory_prompt import preview, publish_prompt
-                if not isinstance(arguments.get('home'), str) or Path(arguments['home']).absolute() != self.configuration.path.parent.absolute():
-                    raise ValueError('Prompt publication requires the configured Hermes profile')
-                if operation == 'prompt_preview' and set(arguments) == {'home', 'keepOutputFormat'}:
-                    return {'ok': True, **preview(memory, scope, self.configuration.path.parent,
-                                                 keep_output_format=arguments['keepOutputFormat'])}
-                if operation == 'prompt_publish' and set(arguments) == {'home', 'keepOutputFormat', 'signature', 'previous_digest'}:
-                    def check_current():
-                        if self.configuration.load() != configuration:
-                            raise MemoryUnavailable('The memory configuration changed during prompt publication')
-                    receipt = publish_prompt(memory, scope, self.configuration.path.parent,
-                        arguments['signature'], arguments['previous_digest'],
-                        keep_output_format=arguments['keepOutputFormat'], check_current=check_current)
-                    return {'ok': receipt['status'] in ('committed', 'unchanged'), 'receipt': receipt}
-                raise ValueError('Choose a fixed prompt preview or publication action')
+            if operation in ('prompt_bundle', 'prompt_preview', 'prompt_publish'):
+                return self._prompt(configuration, scope, operation, arguments)
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}

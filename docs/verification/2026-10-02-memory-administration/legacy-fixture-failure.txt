@@ -1,0 +1,214 @@
+======================================================================
+ERROR: test_finalizes_installed_lifeos_from_prepared_candidate (test_dashboard_api.DashboardApiTests.test_finalizes_installed_lifeos_from_prepared_candidate)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 188, in test_finalizes_installed_lifeos_from_prepared_candidate
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_installation_status_distinguishes_missing_partial_and_installed (test_dashboard_api.DashboardApiTests.test_installation_status_distinguishes_missing_partial_and_installed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 20, in test_installation_status_distinguishes_missing_partial_and_installed
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_installs_validated_candidate_into_empty_home (test_dashboard_api.DashboardApiTests.test_installs_validated_candidate_into_empty_home)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 100, in test_installs_validated_candidate_into_empty_home
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_prepares_candidate_only_when_lifeos_is_missing (test_dashboard_api.DashboardApiTests.test_prepares_candidate_only_when_lifeos_is_missing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 46, in test_prepares_candidate_only_when_lifeos_is_missing
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_prepares_host_patch_only_for_supported_stock_source (test_dashboard_api.DashboardApiTests.test_prepares_host_patch_only_for_supported_stock_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 159, in test_prepares_host_patch_only_for_supported_stock_source
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_prepares_next_candidate_without_moving_baseline_source (test_dashboard_api.DashboardApiTests.test_prepares_next_candidate_without_moving_baseline_source)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 71, in test_prepares_next_candidate_without_moving_baseline_source
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_reads_declared_settings (test_dashboard_api.DashboardApiTests.test_reads_declared_settings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 330, in test_reads_declared_settings
+    api = self.load_api(lambda name, path: expected, lambda *_: None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_rejects_changed_candidate_and_existing_claude_home (test_dashboard_api.DashboardApiTests.test_rejects_changed_candidate_and_existing_claude_home)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 134, in test_rejects_changed_candidate_and_existing_claude_home
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_rejects_unknown_setting (test_dashboard_api.DashboardApiTests.test_rejects_unknown_setting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 334, in test_rejects_unknown_setting
+    api = self.load_api(lambda *_: [], lambda *_: (_ for _ in ()).throw(ValueError("unknown key")))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_reports_interrupted_update_and_launches_recovery (test_dashboard_api.DashboardApiTests.test_reports_interrupted_update_and_launches_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 253, in test_reports_interrupted_update_and_launches_recovery
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_saves_declared_setting (test_dashboard_api.DashboardApiTests.test_saves_declared_setting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 341, in test_saves_declared_setting
+    api = self.load_api(lambda *_: [], lambda name, path, values: saved.append((name, values)) or list(values))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_stages_host_patch_and_launches_detached_worker (test_dashboard_api.DashboardApiTests.test_stages_host_patch_and_launches_detached_worker)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 271, in test_stages_host_patch_and_launches_detached_worker
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_stages_lifeos_update_from_validated_candidate_and_baseline (test_dashboard_api.DashboardApiTests.test_stages_lifeos_update_from_validated_candidate_and_baseline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 215, in test_stages_lifeos_update_from_validated_candidate_and_baseline
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+======================================================================
+ERROR: test_version_baseline_requires_reviewed_file_list (test_dashboard_api.DashboardApiTests.test_version_baseline_requires_reviewed_file_list)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 346, in test_version_baseline_requires_reviewed_file_list
+    api = self.load_api(lambda *_: [], lambda *_: [])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 325, in load_api
+    spec.loader.exec_module(module)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 759, in exec_module
+  File "<frozen importlib._bootstrap>", line 491, in _call_with_frames_removed
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 17, in <module>
+    from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+ImportError: cannot import name 'Depends' from 'fastapi' (unknown location)
+
+----------------------------------------------------------------------
+Ran 63 tests in 36.555s
+
+FAILED (errors=14, skipped=1)

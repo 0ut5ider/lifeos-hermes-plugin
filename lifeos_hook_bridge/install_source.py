@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 import os
 import re
@@ -14,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import types
 from pathlib import Path
 from typing import Callable
 
@@ -291,7 +293,8 @@ def install_prepared_lifeos(candidate: Path, installed: Path, failed: Path) -> d
 
 def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baseline_path: Path,
                     bun: str, hermes: str, supported_revision: str, patches: Path,
-                    patch_names: tuple[str, ...], create_baseline, save_baseline) -> dict:
+                    patch_names: tuple[str, ...], create_baseline, save_baseline,
+                    *, memory_authorization=None) -> dict:
     manifest = validate_candidate(candidate, supported_revision, patches, patch_names)
     installed = installed.absolute()
     hermes_home = hermes_home.absolute()
@@ -312,6 +315,9 @@ def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baselin
     if not bun_executable or not hermes_executable:
         raise IncompatibleLifeOS("Bun and the Hermes command are required to finish setup")
 
+    environment = memory_administration().mount_environment(installed, hermes_home, memory_authorization)
+    environment['PATH'] = str(Path(bun_executable).parent) + os.pathsep + environment.get('PATH', '')
+
     targets = ("config.yaml", "SOUL.md", ".env", "plugins/lifeos")
     for relative in targets:
         if (hermes_home / relative).is_symlink():
@@ -331,8 +337,6 @@ def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baselin
             else:
                 shutil.copy2(path, backup)
 
-    environment = dict(os.environ, HERMES_HOME=str(hermes_home),
-                       PATH=str(Path(bun_executable).parent) + os.pathsep + os.environ.get("PATH", ""))
     mount = installed / "LIFEOS/HERMES/Mount.ts"
     try:
         for command, label in (
@@ -374,10 +378,22 @@ def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baselin
 
 
 def finalize_prepared_lifeos(candidate: Path, installed: Path, hermes_home: Path,
-                             baseline_path: Path, create_baseline, save_baseline) -> dict:
+                             baseline_path: Path, create_baseline, save_baseline,
+                             *, memory_authorization=None) -> dict:
     return finalize_lifeos(candidate, installed, hermes_home, baseline_path, "bun", "hermes",
                            SUPPORTED_LIFEOS_COMMIT, Path(__file__).parent / "patches", LIFEOS_PATCHES,
-                           create_baseline, save_baseline)
+                           create_baseline, save_baseline, memory_authorization=memory_authorization)
+
+
+def memory_administration():
+    if __package__:
+        return importlib.import_module(__package__ + '.memory_administration')
+    name = 'lifeos_install_memory'
+    if name not in sys.modules:
+        package = types.ModuleType(name)
+        package.__path__ = [str(Path(__file__).resolve().parent)]
+        sys.modules[name] = package
+    return importlib.import_module(name + '.memory_administration')
 
 
 def _patch_paths(candidate: Path) -> list[str]:

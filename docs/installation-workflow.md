@@ -22,6 +22,14 @@ The separate `.212` installation account completed the mount, a real Hermes conf
 
 The Hermes preparation and apply paths require an editable, clean source checkout at `758ad514eb0e800547e015edf05aa18f78b78d82` and a running `hermes-gateway.service` user service whose launcher points into that checkout. A packaged Hermes install or a later source revision will be refused. The host-only worker does not update plugin dependencies or LifeOS files. It keeps a private snapshot for recovery and rejects a source or config change between staging and apply.
 
+## Managed memory authorization
+
+Finalization, LifeOS update, and update recovery require an authenticated Hermes dashboard session. If the profile has managed memory configuration or a native connector, the account must also have a current installation owner binding. Missing or revoked bindings refuse managed mounting. Conversation metadata and fabricated owner headers cannot supply this authority.
+
+The plugin issues a short-lived grant for the fixed installation and profile. The grant permits native prompt operations only. Update grants also bind the queued request and action. The worker checks authority before systemd operations. Recovery requires a fresh authenticated grant. A failed recovery launch restores the prior request and status so the owner can retry.
+
+The [administration evidence](verification/2026-10-02-memory-administration/README.md) covers actual native mounting and authenticated finalization. Update launch and recovery tests use component fixtures for systemd operations. Live browser and service acceptance remain required. These controls do not select lasting-memory ownership, approve source contents, or import existing Hermes memory.
+
 ## Reduced mode with stock Hermes
 
 The runtime registers only hooks present in the pinned stock Hermes source. Its manifest validated without findings against that source on `.212`. The reduced path is an experimental integration and does not provide the LifeOS safety contract:

@@ -26,6 +26,8 @@ from .install_source import (LIFEOS_PATCHES, SUPPORTED_LIFEOS_COMMIT,
 from .update_hooks import replace_owned_hooks
 from .update_transaction import apply_update, recover_update, restore_update
 from .version_drift import changed_paths, create_baseline, load_baseline, save_baseline
+from .memory_administration import (mount_environment, job_binding, required, revoke)
+from .memory_service import MemoryConfiguration
 
 
 def _digest(path: Path) -> str:
@@ -76,9 +78,9 @@ def _write_status(job: Path, state: str, error: str | None = None) -> None:
     os.replace(temporary, target)
 
 
-def _run(command: list[str | Path], *, home: Path, timeout: int = 180) -> str:
+def _run(command: list[str | Path], *, home: Path, timeout: int = 180, environment=None) -> str:
     result = subprocess.run([str(item) for item in command], cwd=home,
-                            env=dict(os.environ, HOME=str(home)), capture_output=True,
+                            env=dict(os.environ, HOME=str(home)) if environment is None else environment, capture_output=True,
                             text=True, timeout=timeout)
     if result.returncode:
         raise RuntimeError(f"{Path(command[0]).name} exited with code {result.returncode}")
@@ -109,7 +111,7 @@ def _check_gateway_launcher(hermes: Path, home: Path, *, require_active: bool = 
         raise ValueError("A running Hermes gateway service is required")
 
 
-def _runtime(request: dict, *, require_active: bool = True):
+def _runtime(request: dict, *, require_active: bool = True, job=None, action='apply'):
     installed = Path(request["installed"])
     hermes_home = Path(request["hermes_home"])
     baseline_path = Path(request["baseline"])
@@ -118,13 +120,15 @@ def _runtime(request: dict, *, require_active: bool = True):
     hermes = Path(request["hermes_command"])
     if not Path(bun).is_file():
         raise ValueError("Bun is missing")
+    environment = mount_environment(installed, hermes_home, request.get('memory_authorization'),
+                                    binding=job_binding(job, request, action) if job is not None else None)
     _check_gateway_launcher(hermes, home, require_active=require_active)
     original_pid = _gateway_pid(home) if require_active else None
 
     def mount():
         native = installed / "LIFEOS/HERMES/Mount.ts"
-        _run([bun, native], home=home)
-        _run([bun, native, "--check"], home=home)
+        _run([bun, native], home=home, environment=environment)
+        _run([bun, native, "--check"], home=home, environment=environment)
         _run([hermes, "config", "check"], home=home)
 
     def renew(current: Path, selected: Path):
@@ -135,7 +139,7 @@ def _runtime(request: dict, *, require_active: bool = True):
         if _service("is-active", home) != "active" or _gateway_pid(home) == original_pid:
             raise RuntimeError("Hermes gateway did not restart")
         _run([bun, installed / "LIFEOS/TOOLS/Doctor.ts", "--hooks"], home=home)
-        _run([bun, installed / "LIFEOS/HERMES/Mount.ts", "--check"], home=home)
+        _run([bun, installed / "LIFEOS/HERMES/Mount.ts", "--check"], home=home, environment=environment)
         _run([hermes, "config", "check"], home=home)
         if changed_paths(load_baseline(baseline_path, installed), installed):
             raise RuntimeError("VersionDrift reported changed system files after update")
@@ -154,7 +158,7 @@ def _runtime(request: dict, *, require_active: bool = True):
             "renew": renew, "verify": verify, "verify_restored": verify_restored}
 
 
-def run_update_job(job: Path, action: str = "apply") -> dict:
+def _execute_update_job(job: Path, action: str = "apply") -> dict:
     if job.is_symlink() or not job.is_dir():
         raise ValueError("LifeOS update job is missing")
     request = json.loads((job / "request.json").read_text(encoding="utf-8"))
@@ -165,7 +169,7 @@ def run_update_job(job: Path, action: str = "apply") -> dict:
     prior_source = Path(request["prior_source"])
     snapshot = job / "snapshot"
     home = installed.parent
-    runtime = _runtime(request, require_active=action == "apply")
+    runtime = _runtime(request, require_active=action == "apply", job=job, action=action)
     if action == "restore":
         _write_status(job, "restoring")
         result = restore_update(snapshot, stop=runtime["stop"], start=runtime["start"],
@@ -209,6 +213,22 @@ def run_update_job(job: Path, action: str = "apply") -> dict:
     _write_status(job, result["state"])
     shutil.rmtree(reference_home)
     return result
+
+
+def run_update_job(job: Path, action: str = 'apply') -> dict:
+    if job.is_symlink() or not job.is_dir():
+        raise ValueError('LifeOS update job is missing')
+    request = json.loads((job / 'request.json').read_text(encoding='utf-8'))
+    installed, profile = Path(request['installed']), Path(request['hermes_home'])
+    managed = required(installed, profile)
+    if managed:
+        mount_environment(installed, profile, request.get('memory_authorization'),
+                          binding=job_binding(job, request, action))
+    try:
+        return _execute_update_job(job, action)
+    finally:
+        if managed:
+            revoke(MemoryConfiguration(profile / 'lifeos-memory.json'), request['memory_authorization'])
 
 
 def _main() -> int:

@@ -367,15 +367,25 @@ def apply_installation():
 
 
 @router.post("/installation/finalize")
-def finalize_installation():
+def finalize_installation(account: str = Depends(_memory_account)):
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before finishing setup")
     if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
         raise HTTPException(status_code=409, detail="A VersionDrift baseline already exists")
     try:
+        if install_module.memory_administration().required(INSTALLED_ROOT, HERMES_HOME):
+            preferences = _memory_preferences()
+            authorization = preferences.authorize_mount(account=account)
+            try:
+                return finalize_prepared_lifeos(_candidate_path(), INSTALLED_ROOT, HERMES_HOME,
+                    BASELINE_PATH, create_baseline, save_baseline, memory_authorization=authorization)
+            finally:
+                preferences.revoke_mount(authorization)
         return finalize_prepared_lifeos(_candidate_path(), INSTALLED_ROOT, HERMES_HOME,
                                         BASELINE_PATH, create_baseline, save_baseline)
-    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='The installation owner must authorize managed setup') from error
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
@@ -455,7 +465,7 @@ def _launch_lifeos_update(job: Path, action: str = "apply"):
 
 
 @router.post("/installation/update")
-def apply_lifeos_update():
+def apply_lifeos_update(account: str = Depends(_memory_account)):
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not BASELINE_PATH.is_file():
         raise HTTPException(status_code=409, detail="An installed LifeOS and VersionDrift baseline are required")
     previous = get_lifeos_update_status()
@@ -479,31 +489,63 @@ def apply_lifeos_update():
                    "baseline": str(BASELINE_PATH), "candidate": str(selected_candidate),
                    "prior_source": str(prior_source), "candidate_commit": candidate["upstream_commit"],
                    "hermes_command": str(_host_source() / ".hermes/bin/hermes")}
+        if install_module.memory_administration().required(INSTALLED_ROOT, HERMES_HOME):
+            preferences = _memory_preferences()
+            authorization = preferences.authorize_mount(account=account, ttl=3600,
+                binding=install_module.memory_administration().job_binding(job, request, 'apply'))
+            request['memory_authorization'] = str(authorization)
         for name, data in (("request.json", request), ("status.json", {"state": "queued"})):
             with (job / name).open("w", encoding="utf-8") as stream:
                 os.fchmod(stream.fileno(), 0o600)
                 json.dump(data, stream)
                 stream.write("\n")
         _launch_lifeos_update(job)
-    except (IncompatibleLifeOS, OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, KeyError, subprocess.TimeoutExpired) as error:
+        if 'authorization' in locals():
+            preferences.revoke_mount(authorization)
         if "job" in locals() and job.is_dir():
             shutil.rmtree(job)
+        if isinstance(error, PermissionError):
+            raise HTTPException(status_code=403, detail='The installation owner must authorize managed updates') from error
         raise HTTPException(status_code=409, detail=str(error)) from error
     return {"state": "queued", "job": str(job)}
 
 
 @router.post("/installation/update/recover")
-def recover_lifeos_update():
+def recover_lifeos_update(account: str = Depends(_memory_account)):
     previous = get_lifeos_update_status()
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
         "stopped", "swapped", "restoring", "rollback_failed"
     }:
         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
     job = Path(previous["job"])
+    changed = False
     try:
-        (job / "status.json").write_text(json.dumps({"state": "recovering"}) + "\n", encoding="utf-8")
+        original_request = (job / 'request.json').read_bytes()
+        original_status = (job / 'status.json').read_bytes()
+        if install_module.memory_administration().required(INSTALLED_ROOT, HERMES_HOME):
+            request = json.loads(original_request)
+            if Path(request['installed']).absolute() != INSTALLED_ROOT.absolute() or Path(request['hermes_home']).absolute() != HERMES_HOME.absolute():
+                raise PermissionError('The update job belongs to another installation')
+            preferences = _memory_preferences()
+            authorization = preferences.authorize_mount(account=account, ttl=3600,
+                binding=install_module.memory_administration().job_binding(job, request, 'recover'))
+            request['memory_authorization'] = str(authorization)
+            changed = True
+            install_module.memory_administration().publish(job / 'request.json',
+                (json.dumps(request) + '\n').encode())
+        changed = True
+        install_module.memory_administration().publish(job / 'status.json',
+            (json.dumps({'state': 'recovering'}) + '\n').encode())
         _launch_lifeos_update(job, "recover")
-    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, KeyError, subprocess.TimeoutExpired) as error:
+        if 'authorization' in locals():
+            preferences.revoke_mount(authorization)
+        if changed:
+            install_module.memory_administration().publish(job / 'request.json', original_request)
+            install_module.memory_administration().publish(job / 'status.json', original_status)
+        if isinstance(error, PermissionError):
+            raise HTTPException(status_code=403, detail='The installation owner must authorize managed recovery') from error
         raise HTTPException(status_code=409, detail=str(error)) from error
     return {"state": "recovering", "job": str(job)}
 

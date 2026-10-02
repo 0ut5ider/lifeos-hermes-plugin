@@ -343,3 +343,13 @@ The initial eight cases fail because the operation is absent. The first prompt a
 The combined primary gate passes 193 cases in 159.282 seconds without skips, failures, errors, or warnings. It includes the native fact and permission contracts, prompt and wiki paths, provider tests, preparation, and patch checks. It does not close the full release gate or independent review.
 
 Schema 4 preserves schema 3 records and operations during upgrade. Older plugin code cannot read schema 4. Supported update and rollback acceptance must include this constraint without discarding later facts. Automatic trusted-release classification, page controls, administrative mount integration, and the other activation gates remain open. Memory ownership stays disabled on running installations.
+
+## Authenticated administrative installation mounting
+
+Date: 2026-10-02. The [administration contract](verification/2026-10-02-memory-administration/README.md) connects actual native mounting to verified dashboard owner authority. Short-lived signed grants bind the installation, fixed profile, current configuration, and purpose. Detached work also binds the job, request digest, and action. Conversation metadata does not authorize administration.
+
+The finalizer refuses unmanaged authority substitution and missing managed authority before mounting. Native prompt publication rechecks the grant after rendering. The update worker validates authority before systemd operations and revokes accepted grants after completion or handled failure. Recovery requires fresh action-bound authority. A failed launch preserves the prior request and status.
+
+The focused gate passes 55 cases with no skips or warnings. It includes native Bun mount, real Hermes configuration validation, VersionDrift baseline creation, real password authentication, revoked bindings, changed requests, and handled rollback. Live systemd operations remain component boundaries in this gate. The implementation adds no dependency or native patch group.
+
+This closes the administrative grant and caller integration contract for finalization and detached update mounting. It does not close live service acceptance, PULSE remount authentication, source provenance and page controls, complete mount crash recovery, schema rollback compatibility, remaining derivatives, restricted delivery, lifecycle, recoverable ownership setup, or the independent release gate. Installation, import, trial, and return-to-Hermes requirements remain in the overall plan. No running server changes and no ownership activation occur.

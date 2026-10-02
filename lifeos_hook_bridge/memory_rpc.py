@@ -44,6 +44,9 @@ def main() -> None:
         if operation == 'pulse_http':
             http = importlib.import_module((__package__ or 'lifeos_memory_plugin') + '.memory_http')
             result = http.relay(MemoryConfiguration(options.configuration), request['arguments'])
+        elif 'LIFEOS_MEMORY_ADMINISTRATION' in os.environ:
+            result = MemoryService(MemoryConfiguration(options.configuration)).administrative(
+                os.environ['LIFEOS_MEMORY_ADMINISTRATION'], request['operation'], request['arguments'])
         else:
             context = parse_context(json.loads(os.environ.get("LIFEOS_MEMORY_CONTEXT", "{}")))
             result = MemoryService(MemoryConfiguration(options.configuration)).native(context, request["operation"], request["arguments"])

@@ -1,5 +1,5 @@
 # ABOUTME: Verifies the LifeOS dashboard reads and saves only declared plugin settings.
-# ABOUTME: Uses a fake Hermes settings service so the API boundary is testable locally.
+# ABOUTME: Uses real FastAPI routes with isolated settings delegation and installation fixtures.
 
 import importlib.util
 import json
@@ -302,24 +302,10 @@ class DashboardApiTests(unittest.TestCase):
             self.assertEqual(api.get_host_patch_status()["state"], "staged")
 
     def load_api(self, fields, save):
-        fastapi = types.ModuleType("fastapi")
-        fastapi.APIRouter = lambda: types.SimpleNamespace(
-            get=lambda _path: lambda handler: handler,
-            put=lambda _path: lambda handler: handler,
-            post=lambda _path: lambda handler: handler,
-            delete=lambda _path: lambda handler: handler,
-        )
-        class HTTPException(Exception):
-            def __init__(self, status_code, detail):
-                super().__init__(detail)
-                self.status_code = status_code
-                self.detail = detail
-
-        fastapi.HTTPException = HTTPException
         settings = types.ModuleType("hermes_cli.plugins_settings")
         settings.plugin_settings_fields = fields
         settings.save_plugin_settings = save
-        with patch.dict(sys.modules, {"fastapi": fastapi, "hermes_cli": types.ModuleType("hermes_cli"), "hermes_cli.plugins_settings": settings}):
+        with patch.dict(sys.modules, {"hermes_cli.plugins_settings": settings}):
             spec = importlib.util.spec_from_file_location("lifeos_dashboard_test", API_PATH)
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
