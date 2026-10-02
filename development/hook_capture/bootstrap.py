@@ -5,8 +5,9 @@ import os
 from pathlib import Path
 
 
-def start():
-    path=Path(os.environ.get("HERMES_HOOK_CAPTURE_CONFIG",str(Path.home()/".config/lifeos-development-capture/config.json")))
+def start(configuration=None):
+    path=Path(configuration if configuration is not None else os.environ.get(
+        "HERMES_HOOK_CAPTURE_CONFIG",str(Path.home()/".config/lifeos-development-capture/config.json")))
     if not path.is_file():
         return
     try:

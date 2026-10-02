@@ -22,6 +22,46 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_installed_recorder_captures_detached_hook_with_another_startup_home(self):
+        from hook_capture import setup as capture_setup
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            home = root / 'profile-home'
+            home.mkdir()
+            configuration = home / '.config/lifeos-development-capture/config.json'
+            host = root / 'host'
+            for name in capture_setup.HOST_FILES:
+                target = host / name
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_text('# Synthetic pinned host source\n')
+            environment = root / 'python'
+            venv.EnvBuilder(with_pip=False).create(environment)
+            python = environment / 'bin/python'
+            site = next((environment / 'lib').glob('python*/site-packages'))
+            installer = ('import sys\nfrom pathlib import Path\nfrom hook_capture.setup import install\n'
+                         'install(*map(Path,sys.argv[1:]))\n')
+            installed = subprocess.run([sys.executable, '-c', installer, str(PLUGIN), str(host),
+                str(root / 'capture'), str(configuration), str(site)],
+                env={**os.environ, 'HOME': str(home), 'PYTHONPATH': str(ROOT / 'development')},
+                capture_output=True, text=True, timeout=20)
+            self.assertEqual(installed.returncode, 0, installed.stderr)
+            spool = root / 'hook.json'
+            spool.write_text(json.dumps({'command': 'printf synthetic-detached-output',
+                'payload': {'hook_event_name': 'Stop'}, 'cwd': str(home),
+                'environment': {**os.environ, 'HOME': str(home)},
+                '_development_capture': {'invocation_id': 'synthetic-detached-id'}}))
+            spool.chmod(0o600)
+            env = {**os.environ, 'HOME': str(root / 'systemd-home')}
+            env.pop('HERMES_HOOK_CAPTURE_CONFIG', None)
+            result = subprocess.run([str(python), str(PLUGIN / 'bin/hook_runner.py'), str(spool)],
+                env=env, capture_output=True, text=True, timeout=20)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            events = [json.loads(line) for path in (root / 'capture').glob('runs/*/events/*/*.jsonl')
+                      for line in path.read_text().splitlines()]
+            completed = [event for event in events if event['stage'] == 'hook.completed']
+            self.assertEqual(len(completed), 1)
+            self.assertEqual(completed[0]['invocation_id'], 'synthetic-detached-id')
+
     def test_shared_container_declarations_are_learned_in_sensitive_context(self):
         from hook_capture.store import Recorder
         secret = "SYNTHETIC-ALIASED-CREDENTIAL-847261"

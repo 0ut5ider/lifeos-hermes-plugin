@@ -27,7 +27,7 @@ def install(plugin_root, host_root, root, configuration, site_directory):
     directory = Path(site_directory)
     startup = directory / "lifeos_development_capture.pth"
     overlay = Path(__file__).resolve().parents[1]
-    text = f"import sys; sys.path.insert(0, {str(overlay)!r}); from hook_capture.bootstrap import start; start()\n"
+    text = f"import sys; sys.path.insert(0, {str(overlay)!r}); from hook_capture.bootstrap import start; start({str(configuration)!r})\n"
     if startup.exists() and startup.read_text() != text:
         raise ValueError("An unrelated startup file already exists")
     configuration.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -54,7 +54,7 @@ def install(plugin_root, host_root, root, configuration, site_directory):
     with os.fdopen(fd, "w") as stream:
         json.dump(data, stream, indent=2)
     os.replace(temporary, configuration)
-    # The default configuration path also works under systemd without inherited environment.
+    # Detached systemd processes use the same private configuration as the parent recorder.
     startup.write_text(text)
     startup.chmod(0o600)
     return {"config": str(configuration), "startup": str(startup), "run_id": data["run_id"], "fingerprints": len(fingerprints)}
