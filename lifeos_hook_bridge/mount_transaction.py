@@ -8,6 +8,7 @@ import os
 from pathlib import Path
 import stat
 import subprocess
+import sys
 from uuid import uuid4
 
 from .memory_transaction import publish
@@ -64,6 +65,19 @@ def _run(command, installed, environment, label):
     if result.returncode:
         raise MountError(f'LifeOS {label} exited with code {result.returncode}')
     return result.stdout
+
+
+def _check_prepared_config(installed, environment, stage):
+    from hermes_cli import _launchers
+    source = Path(_launchers.__file__).resolve().parents[1]
+    # Bootstrap the installed dependency environment before selecting the prepared config.
+    code = ('from argparse import Namespace\n'
+            'from hermes_constants import set_hermes_home_override\n'
+            'set_hermes_home_override(sys.argv[1])\n'
+            'from hermes_cli.config import config_command\n'
+            'config_command(Namespace(config_command="check"))\n')
+    command = _launchers.runtime_command(source, [str(stage)], code=code, python=sys.executable)
+    return _run(command, installed, environment, 'Hermes prepared config check')
 
 
 class MountTransaction:
@@ -315,8 +329,7 @@ class MountTransaction:
                 entries.append({'target': str(target), 'before': before, 'after': {
                     'digest': hashlib.sha256(selected).hexdigest(), 'mode': 0o600}, 'copy': index})
             checker_environment = {key: value for key, value in environment.items() if key != ENVIRONMENT}
-            _run([hermes, 'config', 'check'], self.installed,
-                 {**checker_environment, 'HERMES_HOME': str(stage)}, 'Hermes config check')
+            _check_prepared_config(self.installed, checker_environment, stage)
             manifest = {'version': 1, 'installed': str(self.installed), 'profile': str(self.profile),
                 'baseline': str(self.baseline) if self.baseline is not None else None,
                 'snapshot': str(snapshot), 'state': 'prepared', 'entries': entries,

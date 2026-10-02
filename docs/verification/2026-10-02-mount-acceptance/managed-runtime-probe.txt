@@ -1,0 +1,87 @@
+Hermes prepared config check 1 Your settings file (/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/.lifeos-mount/5ba0a2dc1f1842b2818758a6bb022ef0/stage/config.yaml) has a formatting error at line 22. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 22, then run `hermes config check`. A copy of the broken file was saved to /home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/.lifeos-mount/5ba0a2dc1f1842b2818758a6bb022ef0/stage/backups/config/config.yaml.corrupt.20261002-125000. Details: expected '<document start>', but found ('<block mapping start>',)
+⚠️  hermes config: Your settings file (/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/.lifeos-mount/5ba0a2dc1f1842b2818758a6bb022ef0/stage/config.yaml) has a formatting error at line 22. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 22, then run `hermes config check`. A copy of the broken file was saved to /home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/.lifeos-mount/5ba0a2dc1f1842b2818758a6bb022ef0/stage/backups/config/config.yaml.corrupt.20261002-125000.
+    Details: expected '<document start>', but found ('<block mapping start>',)
+Traceback (most recent call last):
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_yaml.py", line 36, in safe_load
+    return _load(document, pure=False)
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_yaml.py", line 25, in _load
+    return yaml.load(document)
+           ~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/main.py", line 453, in load
+    return constructor.get_single_data()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/constructor.py", line 117, in get_single_data
+    node = self.composer.get_single_node()
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/composer.py", line 75, in get_single_node
+    if not self.parser.check_event(StreamEndEvent):
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/parser.py", line 141, in check_event
+    self.current_event = self.state()
+                         ~~~~~~~~~~^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/parser.py", line 211, in parse_document_start
+    raise ParserError(
+    ...<5 lines>...
+    )
+ruamel.yaml.parser.ParserError: expected '<document start>', but found ('<block mapping start>',)
+  in "<unicode string>", line 22, column 1:
+    context_file_max_chars: 100000
+    ^ (line: 22)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_cli/config.py", line 959, in _read_config_version_stamp
+    config = fast_safe_load(f)
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/utils.py", line 574, in fast_safe_load
+    return yaml.safe_load(stream)
+           ~~~~~~~~~~~~~~^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_yaml.py", line 38, in safe_load
+    return _load(document, pure=True)
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_yaml.py", line 25, in _load
+    return yaml.load(document)
+           ~~~~~~~~~^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/main.py", line 453, in load
+    return constructor.get_single_data()
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/constructor.py", line 117, in get_single_data
+    node = self.composer.get_single_node()
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/composer.py", line 75, in get_single_node
+    if not self.parser.check_event(StreamEndEvent):
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/parser.py", line 141, in check_event
+    self.current_event = self.state()
+                         ~~~~~~~~~~^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/installs/23b5609f4d3bffd5/environments/9a41b829de0f40bf92107846deafee59/venv/lib/python3.14/site-packages/ruamel/yaml/parser.py", line 211, in parse_document_start
+    raise ParserError(
+    ...<5 lines>...
+    )
+ruamel.yaml.parser.ParserError: expected '<document start>', but found ('<block mapping start>',)
+  in "<unicode string>", line 22, column 1:
+    context_file_max_chars: 100000
+    ^ (line: 22)
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import os, sys, runpy; os.environ.pop('PYTHONHOME', None); os.environ.pop('PYTHONPATH', None); os.environ.pop('VIRTUAL_ENV', None); sys.path.insert(0, '/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes'); os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(__import__('hermes_constants').get_default_hermes_root()); import hermes_bootstrap; exec('from argparse import Namespace\nfrom hermes_constants import set_hermes_home_override\nset_hermes_home_override(sys.argv[1])\nfrom hermes_cli.config import config_command\nconfig_command(Namespace(config_command="check"))\n')
+                                                                                                                                                                                                                                                                                                                                                                                           ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 5, in <module>
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_cli/config.py", line 3916, in config_command
+    handler(args)
+    ~~~~~~~^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_cli/config.py", line 3862, in _cmd_config_check
+    current_ver, latest_ver = check_config_version(raise_on_parse_error=True)
+                              ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_cli/config.py", line 992, in check_config_version
+    stamp, latest = _read_config_version_stamp(raise_on_parse_error=raise_on_parse_error)
+                    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/hermes/hermes_cli/config.py", line 963, in _read_config_version_stamp
+    raise InvalidUserConfigError(
+        f"Cannot inspect {config_path}: config.yaml is not valid YAML ({e})"
+    ) from e
+hermes_cli.config.InvalidUserConfigError: Cannot inspect /home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/.lifeos-mount/5ba0a2dc1f1842b2818758a6bb022ef0/stage/config.yaml: config.yaml is not valid YAML (expected '<document start>', but found ('<block mapping start>',)
+  in "<unicode string>", line 22, column 1:
+    context_file_max_chars: 100000
+    ^ (line: 22))
+

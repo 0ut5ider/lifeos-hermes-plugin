@@ -30,6 +30,14 @@ Live service and browser acceptance is the next gate. This document does not cla
 
 The fresh source fixture initially lacks the existing PULSE search dependency. `gate-dependency-failure.txt` records 280 cases with 10 failures and 12 errors. Each failure identifies the missing `minisearch` package. The fixture now links the existing owned PULSE dependency directory.
 
-The corrected `gate.txt` passes all 280 cases in 211.886 seconds without skips, failures, errors, or warnings. `gate.done` records exit status 0.
+The corrected `gate-280.txt` passes all 280 cases in 211.886 seconds without skips, failures, errors, or warnings. `gate.done` records exit status 0.
 
 An additional boundary test finds that an unconfigured memory remount can publish files before response binding fails. `unconfigured-remount-before.txt` reproduces that write. The route now validates its configuration and owner binding before mounting. `unconfigured-remount-after.txt` passes all 17 authenticated dashboard and native remount cases.
+
+## Managed runtime and browser installation
+
+The prepared configuration checker starts the installed Hermes dependency environment before it selects the staging directory. It preserves the active Python executable. The focused regression passes 43 cases in 42.315 seconds. The latest bounded `gate.txt` passes 281 cases in 210.250 seconds without skips, failures, errors, or warnings.
+
+An isolated `.212` profile runs its dashboard through a real user service. Chromium signs in through the password form. The browser installs native LifeOS 7.40.4 and completes setup through the plugin controls. The finalization response records a committed mount and a created VersionDrift baseline. Screenshots and response records accompany this document.
+
+The fixture needs two manual preparations. The native memory scaffold must reside under the governed user directory. The configuration must use block YAML because native Mount edits block YAML. The transaction refuses invalid prepared output before it changes live files. These results do not establish automatic ownership setup or complete browser acceptance.

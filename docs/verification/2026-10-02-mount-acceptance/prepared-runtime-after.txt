@@ -1,0 +1,188 @@
+======================================================================
+ERROR: test_success_creates_the_native_workspace (test_mount_transaction.MountTransactionTests.test_success_creates_the_native_workspace)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 158, in test_success_creates_the_native_workspace
+    self.execute()
+    ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 36, in execute
+    return self.transaction().execute(self.environment, self.fixture.fixture.memory.bun, str(self.hermes))
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+======================================================================
+ERROR: test_success_publishes_verified_native_files_and_commits_the_journal (test_mount_transaction.MountTransactionTests.test_success_publishes_verified_native_files_and_commits_the_journal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 72, in test_success_publishes_verified_native_files_and_commits_the_journal
+    result = self.execute()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 36, in execute
+    return self.transaction().execute(self.environment, self.fixture.fixture.memory.bun, str(self.hermes))
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+======================================================================
+ERROR: test_managed_finalization_runs_native_mount_and_real_config_check (test_memory_admin_install.MemoryAdminInstallTests.test_managed_finalization_runs_native_mount_and_real_config_check)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 328, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 55, in test_managed_finalization_runs_native_mount_and_real_config_check
+    result = self.finalize(authorization)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 49, in finalize
+    return finalize_lifeos(self.candidate, self.root, self.profile, self.baseline,
+        self.fixture.fixture.memory.bun, str(self.hermes), self.revision, self.patches,
+        ('lifeos-test.patch',), create_baseline, save_baseline, memory_authorization=authorization)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 331, in finalize_lifeos
+    raise IncompatibleLifeOS(str(error)) from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS Hermes prepared config check exited with code 1
+
+======================================================================
+ERROR: test_recovery_restores_a_missing_install_directory_with_recovery_only_authority (test_memory_admin_install.MemoryAdminInstallTests.test_recovery_restores_a_missing_install_directory_with_recovery_only_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 328, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 127, in test_recovery_restores_a_missing_install_directory_with_recovery_only_authority
+    self.finalize(authorization)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 49, in finalize
+    return finalize_lifeos(self.candidate, self.root, self.profile, self.baseline,
+        self.fixture.fixture.memory.bun, str(self.hermes), self.revision, self.patches,
+        ('lifeos-test.patch',), create_baseline, save_baseline, memory_authorization=authorization)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 331, in finalize_lifeos
+    raise IncompatibleLifeOS(str(error)) from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS Hermes prepared config check exited with code 1
+
+======================================================================
+ERROR: test_update_runtime_mounts_the_fixed_profile_with_bound_authority (test_memory_admin_install.MemoryAdminInstallTests.test_update_runtime_mounts_the_fixed_profile_with_bound_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 101, in test_update_runtime_mounts_the_fixed_profile_with_bound_authority
+    runtime['mount']()
+    ~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_worker.py", line 130, in mount
+    MountTransaction(installed, hermes_home, baseline_path).execute(environment, bun, str(hermes),
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        binding=job_binding(job, request, action) if job is not None else None)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+======================================================================
+ERROR: test_finalization_mounts_and_records_installed_system_files (test_lifeos_install_source.InstallSourceTests.test_finalization_mounts_and_records_installed_system_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 328, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_lifeos_install_source.py", line 200, in test_finalization_mounts_and_records_installed_system_files
+    result = finalize_lifeos(candidate, installed, hermes_home, baseline,
+                             str(bun), str(hermes), revision, patches,
+                             ("lifeos-test.patch",), create_baseline, save_baseline)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 331, in finalize_lifeos
+    raise IncompatibleLifeOS(str(error)) from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS Hermes prepared config check exited with code 1
+
+======================================================================
+FAIL: test_late_validation_failure_restores_existing_files (test_mount_transaction.MountTransactionTests.test_late_validation_failure_restores_existing_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 88, in test_late_validation_failure_restores_existing_files
+    self.assertEqual(self.transaction().status()['state'], 'rolled_back')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'none' != 'rolled_back'
+- none
++ rolled_back
+
+
+======================================================================
+FAIL: test_late_check_failure_restores_mount_files_and_revokes_authority (test_memory_admin_install.MemoryAdminInstallTests.test_late_check_failure_restores_mount_files_and_revokes_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 328, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 331, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 79, in _check_prepared_config
+    return _run(command, installed, environment, 'Hermes prepared config check')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 65, in _run
+    raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+lifeos_hook_bridge.mount_transaction.MountError: LifeOS Hermes prepared config check exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS Hermes prepared config check exited with code 1
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 77, in test_late_check_failure_restores_mount_files_and_revokes_authority
+    with self.assertRaisesRegex(IncompatibleLifeOS, 'Hermes config check'), \
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Hermes config check" does not match "LifeOS Hermes prepared config check exited with code 1"
+
+----------------------------------------------------------------------
+Ran 43 tests in 28.001s
+
+FAILED (failures=2, errors=6)

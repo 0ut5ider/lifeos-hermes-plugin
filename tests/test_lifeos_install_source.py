@@ -190,7 +190,7 @@ class InstallSourceTests(unittest.TestCase):
                 "    stage=Path(os.environ['LIFEOS_MOUNT_DESTINATION'])\n"
                 "    files=['config.yaml','SOUL.md','.env','plugins/lifeos/__init__.py','plugins/lifeos/guard.py','plugins/lifeos/plugin.yaml','plugins/lifeos/policy.json']\n"
                 "    for name in files:\n"
-                "        path=stage/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('mounted\\n')\n"
+                "        path=stage/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_text('model:\\n  default: local\\n' if name=='config.yaml' else 'mounted\\n')\n"
                 "    (stage/'mount-plan.json').write_text(json.dumps(dict(version=1,home=os.environ['HERMES_HOME'],keepOutputFormat=False,signature=None,previous_digest=None)))\n")
             bun.chmod(0o755)
             hermes = root / "hermes"
