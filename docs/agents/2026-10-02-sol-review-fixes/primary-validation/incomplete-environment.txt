@@ -1,0 +1,75 @@
+...................FF.........F...FFF
+======================================================================
+FAIL: test_owner_recovers_a_process_killed_mount_through_dashboard (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_owner_recovers_a_process_killed_mount_through_dashboard)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 136, in test_owner_recovers_a_process_killed_mount_through_dashboard
+    self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != -9 : Traceback (most recent call last):
+  File "<string>", line 10, in <module>
+    module.MountTransaction(root,profile,baseline).execute(dict(os.environ),bun,hermes)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 328, in execute
+    raise MountError('The installed native mount does not support prepared output')
+lifeos_hook_bridge.mount_transaction.MountError: The installed native mount does not support prepared output
+
+
+======================================================================
+FAIL: test_queue_launch_failure_revokes_grant_and_removes_job (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_queue_launch_failure_revokes_grant_and_removes_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 198, in test_queue_launch_failure_revokes_grant_and_removes_job
+    self.prepare_baseline()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 176, in prepare_baseline
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"The installed native mount does not support prepared output"}
+
+======================================================================
+FAIL: test_revoked_owner_cannot_queue_an_update (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_revoked_owner_cannot_queue_an_update)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 206, in test_revoked_owner_cannot_queue_an_update
+    self.prepare_baseline()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 176, in prepare_baseline
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"The installed native mount does not support prepared output"}
+
+======================================================================
+FAIL: test_update_queue_seals_private_job_with_current_verified_owner (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_update_queue_seals_private_job_with_current_verified_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 179, in test_update_queue_seals_private_job_with_current_verified_owner
+    self.prepare_baseline()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 176, in prepare_baseline
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"The installed native mount does not support prepared output"}
+
+======================================================================
+FAIL: test_verified_owner_finalizes_real_native_mount_and_revokes_grant (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_verified_owner_finalizes_real_native_mount_and_revokes_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 89, in test_verified_owner_finalizes_real_native_mount_and_revokes_grant
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"The installed native mount does not support prepared output"}
+
+======================================================================
+FAIL: test_verified_owner_remounts_without_enabling_memory_ownership (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_verified_owner_remounts_without_enabling_memory_ownership)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 98, in test_verified_owner_remounts_without_enabling_memory_ownership
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"error":"Mounting is unavailable. Check setup and recovery in the LifeOS plugin."}
+
+----------------------------------------------------------------------
+Ran 37 tests in 4.057s
+
+FAILED (failures=6)

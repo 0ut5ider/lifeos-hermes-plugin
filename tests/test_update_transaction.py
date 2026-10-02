@@ -4,6 +4,10 @@
 import hashlib
 import json
 import os
+import shutil
+import signal
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -230,7 +234,7 @@ class UpdateTransactionTests(unittest.TestCase):
                          stop=stop, start=start, mount=mount, renew=renew, verify=verify)
             original_replace = os.replace
             def write_during_move(source, destination):
-                if Path(source) == hermes / 'config.yaml' and Path(destination).is_relative_to(snapshot / 'mount-before-restore'):
+                if Path(source) == hermes / 'config.yaml' and Path(destination).parent.name.startswith('.lifeos-restore-'):
                     Path(source).write_text('Synthetic edit after the final check')
                 return original_replace(source, destination)
             with patch('lifeos_hook_bridge.update_transaction.os.replace', side_effect=write_during_move):
@@ -238,9 +242,121 @@ class UpdateTransactionTests(unittest.TestCase):
             self.assertEqual(restored['state'], 'rolled_back')
             archive = Path(restored['profile_archive'])
             self.assertEqual(archive.stat().st_mode & 0o777, 0o700)
-            self.assertEqual((archive / 'config.yaml').read_text(), 'Synthetic edit after the final check')
-            self.assertEqual((archive / 'baseline.json').read_text(), 'selected baseline')
+            targets = json.loads((archive / 'archive-manifest.json').read_text())['targets']
+            self.assertEqual(Path(targets['config.yaml']).read_text(), 'Synthetic edit after the final check')
+            self.assertEqual(Path(targets['baseline.json']).read_text(), 'selected baseline')
             self.assertEqual((hermes / 'config.yaml').read_text(), 'prior config')
+
+    def test_restore_retains_a_profile_edit_after_the_program_swap(self):
+        with tempfile.TemporaryDirectory() as directory:
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+            events.clear()
+            original_replace = os.replace
+            def edit_after_swap(source, destination):
+                result = original_replace(source, destination)
+                if Path(source) == installed and Path(destination) == snapshot / 'restored-selected':
+                    (hermes / 'config.yaml').write_text('Synthetic edit after program swap')
+                return result
+            with patch('lifeos_hook_bridge.update_transaction.os.replace', side_effect=edit_after_swap):
+                result = restore_update(snapshot, stop=stop, start=start, verify=lambda: events.append('verify'))
+            self.assertEqual(result['state'], 'rolled_back')
+            self.assertEqual(events, ['stop', 'start', 'verify'])
+            targets = json.loads((Path(result['profile_archive']) / 'archive-manifest.json').read_text())['targets']
+            self.assertEqual(Path(targets['config.yaml']).read_text(), 'Synthetic edit after program swap')
+            self.assertEqual((hermes / 'config.yaml').read_text(), 'prior config')
+
+    def test_profile_and_baseline_restore_across_filesystems(self):
+        # /dev/shm supplies a real second filesystem, so EXDEV is not simulated.
+        self.assertTrue(Path('/dev/shm').is_dir(), 'A second filesystem is required for this gate')
+        for action in ('restore', 'rollback', 'recover'):
+            with self.subTest(action=action), tempfile.TemporaryDirectory() as directory, \
+                    tempfile.TemporaryDirectory(dir='/dev/shm') as alternate:
+                installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+                remote = Path(alternate)
+                profile = remote / 'hermes'
+                shutil.copytree(hermes, profile)
+                moved_baseline = remote / 'state/baseline.json'
+                moved_baseline.parent.mkdir()
+                shutil.copy2(baseline, moved_baseline)
+                self.assertNotEqual(profile.stat().st_dev, snapshot.parent.stat().st_dev)
+                (profile / '.env').write_text('SYNTHETIC_KEY=private-value\n')
+                (profile / '.env').chmod(0o600)
+                (profile / 'plugins/lifeos').mkdir(parents=True)
+                (profile / 'plugins/lifeos/guard.py').write_text('Synthetic guard')
+                before = moved_baseline.read_bytes()
+                events, stop, start, mount, renew, verify = self.callbacks(profile, moved_baseline,
+                                                                           fail_verify=action == 'rollback')
+                options = dict(stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+                if action == 'rollback':
+                    with self.assertRaisesRegex(UpdateTransactionError, 'selected gateway failed'):
+                        apply_update(installed, profile, prior, selected, reference, moved_baseline, snapshot, **options)
+                else:
+                    apply_update(installed, profile, prior, selected, reference, moved_baseline, snapshot, **options)
+                    if action == 'recover':
+                        original_replace = os.replace
+                        def fail_baseline(source, destination):
+                            if Path(source).name == 'baseline.json.restore' and Path(destination) == moved_baseline:
+                                raise OSError('Synthetic interrupted baseline publication')
+                            return original_replace(source, destination)
+                        with patch('lifeos_hook_bridge.update_transaction.os.replace', side_effect=fail_baseline):
+                            with self.assertRaisesRegex(OSError, 'interrupted baseline'):
+                                restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                        recover_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                    else:
+                        restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
+                self.assertEqual((profile / 'config.yaml').read_text(), 'prior config')
+                self.assertEqual((profile / '.env').read_text(), 'SYNTHETIC_KEY=private-value\n')
+                self.assertEqual((profile / '.env').stat().st_mode & 0o777, 0o600)
+                self.assertEqual(moved_baseline.read_bytes(), before)
+                self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'rolled_back')
+                indexes = list(snapshot.glob('mount-before-restore/*/archive-manifest.json'))
+                self.assertTrue(indexes)
+                for index in indexes:
+                    for name, path in json.loads(index.read_text())['targets'].items():
+                        saved = Path(path)
+                        self.assertEqual(saved.parent.stat().st_mode & 0o777, 0o700)
+                        self.assertEqual(saved.stat().st_dev, remote.stat().st_dev)
+                        if name == '.env':
+                            self.assertEqual(saved.read_text(), 'SYNTHETIC_KEY=private-value\n')
+
+    def test_restore_archive_survives_process_death_before_profile_replacement(self):
+        with tempfile.TemporaryDirectory() as directory:
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+            _, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+            code = (
+                'import os, signal, sys\n'
+                'from pathlib import Path\n'
+                'from unittest.mock import patch\n'
+                'from lifeos_hook_bridge.update_transaction import restore_update\n'
+                'snapshot, profile = map(Path, sys.argv[1:])\n'
+                'original = os.replace\n'
+                'def interrupted(source, destination):\n'
+                '    original(source, destination)\n'
+                '    if Path(source) == profile / "config.yaml":\n'
+                '        os.kill(os.getpid(), signal.SIGKILL)\n'
+                'with patch("lifeos_hook_bridge.update_transaction.os.replace", side_effect=interrupted):\n'
+                '    restore_update(snapshot, stop=lambda: None, start=lambda: None, verify=lambda: None)\n'
+            )
+            process = subprocess.run([sys.executable, '-c', code, str(snapshot), str(hermes)],
+                                     capture_output=True, text=True, timeout=30)
+            self.assertEqual(process.returncode, -signal.SIGKILL, process.stderr)
+            self.assertEqual(process.stderr, '')
+            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restoring')
+            index, = snapshot.glob('mount-before-restore/*/archive-manifest.json')
+            archived = Path(json.loads(index.read_text())['targets']['config.yaml'])
+            self.assertEqual(archived.read_text(), 'selected config')
+            self.assertFalse((hermes / 'config.yaml').exists())
+            result = recover_update(snapshot, stop=stop, start=start, verify=lambda: None)
+            self.assertEqual(result['state'], 'rolled_back')
+            self.assertEqual(archived.read_text(), 'selected config')
+            self.assertEqual((hermes / 'config.yaml').read_text(), 'prior config')
+            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
 
     def test_second_directory_rename_failure_restores_installed_tree(self):
         with tempfile.TemporaryDirectory() as directory:

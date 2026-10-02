@@ -1,0 +1,13 @@
+{"case": "terminal", "error": null, "snapshot_exists": false, "status": {"recovery_required": false, "state": "committed"}}
+{"case": "pending_prepared", "error": null, "snapshot_exists": true, "status": {"recovery_required": true, "state": "prepared"}}
+{"case": "pending_applying", "error": null, "snapshot_exists": true, "status": {"recovery_required": true, "state": "applying"}}
+{"case": "pending_restoring", "error": null, "snapshot_exists": true, "status": {"recovery_required": true, "state": "restoring"}}
+{"case": "orphan", "error": null, "snapshot_exists": false, "status": {"recovery_required": false, "state": "none"}}
+{"case": "foreign_identity", "error": null, "snapshot_exists": true, "status": {"recovery_required": false, "state": "none"}}
+{"case": "missing_identity", "error": null, "snapshot_exists": true, "status": {"recovery_required": false, "state": "none"}}
+{"case": "identity_symlink", "error": null, "snapshot_exists": true, "status": {"recovery_required": false, "state": "none"}}
+{"case": "nested_symlink", "error": null, "snapshot_exists": false, "status": {"recovery_required": false, "state": "none"}}
+{"case": "malformed_journal", "error": "The mount journal belongs to another installation or is invalid", "snapshot_exists": true, "status": null}
+{"case": "missing_pending_snapshot", "error": "The mount recovery snapshot is missing", "snapshot_exists": false, "status": null}
+{"case": "missing_terminal_snapshot", "error": null, "snapshot_exists": false, "status": {"recovery_required": false, "state": "committed"}}
+{"case": "historical_terminal", "error": null, "snapshot_exists": false, "status": {"recovery_required": false, "state": "committed"}}

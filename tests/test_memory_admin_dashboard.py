@@ -1,6 +1,8 @@
 # ABOUTME: Exercises installation owner authorization through real Hermes password sessions.
 # ABOUTME: Runs native finalization and validates queued update grants without starting systemd services.
 import importlib.util
+import contextlib
+import io
 import json
 import os
 from pathlib import Path
@@ -240,6 +242,28 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         with self.assertRaises(PermissionError):
             self.fixture.fixture.admin().validate(self.configuration, authorization,
                 binding=self.fixture.fixture.admin().job_binding(job, request, 'apply'), check_binding=True)
+
+    def test_restore_worker_failure_keeps_authenticated_recovery_available(self):
+        from lifeos_hook_bridge import update_worker
+        self.login()
+        job = self.interrupted_job()
+        (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'restoring'}))
+        output = io.StringIO()
+        with patch.object(sys, 'argv', ['worker', str(job), '--action', 'restore']), \
+                patch.object(update_worker, 'run_update_job', side_effect=RuntimeError('Synthetic restore failure')), \
+                contextlib.redirect_stderr(output):
+            self.assertEqual(update_worker._main(), 1)
+        self.assertIn('Synthetic restore failure', output.getvalue())
+        self.assertEqual(self.api.get_lifeos_update_status()['state'], 'interrupted')
+        with patch.object(self.api, '_launch_lifeos_update') as launched:
+            response = self.post('/update/recover')
+        self.assertEqual(response.status_code, 200, response.text)
+        launched.assert_called_once_with(job, 'recover')
+        request = json.loads((job / 'request.json').read_text())
+        authorization = Path(request['memory_authorization'])
+        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, authorization)
+        self.fixture.fixture.admin().validate(self.configuration, authorization,
+            binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True, purpose='recover')
 
     def applied_job(self):
         job = self.interrupted_job()

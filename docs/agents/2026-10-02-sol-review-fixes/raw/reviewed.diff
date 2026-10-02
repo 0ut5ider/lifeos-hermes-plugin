@@ -1,0 +1,977 @@
+diff --git a/README.md b/README.md
+index 8e453a5..45800f5 100644
+--- a/README.md
++++ b/README.md
+@@ -19,6 +19,8 @@ The [installation and removal plan](docs/memory-implementation-plan.md#installat
+ 
+ [Staged mount and authenticated remount](docs/verification/2026-10-02-mount-acceptance/README.md) adds journaled publication and recovery for installation, update mounting, and native PULSE remount. The isolated `.212` browser installation verifies native setup, a same-revision service update, authenticated remount, process-kill recovery, and a private-model tool turn. The owner can request version restore from the page; changed user data refuses restoration before the job changes. The [browser acceptance guide](docs/browser-acceptance-212.md) gives the test entry point and limits. These checks do not activate lasting-memory ownership or establish the complete memory release gate.
+ 
++[PR review corrections](docs/verification/2026-10-02-opus-review-fixes/README.md) protect later Hermes settings during version restore and check complete direct child prompts. Temporary mount copies are removed after completed operations. Pending recovery copies remain available. The private development recorder retains environment names and filters values outside its diagnostic allowlist. These corrections do not enable memory ownership.
++
+ - Load LifeOS context and skills from a configurable installation path.
+ - Map each LifeOS hook behavior to a Hermes lifecycle point and verify its effect, including blocks, approvals, context injection, and stop gates.
+ - Keep the LifeOS installation unchanged where possible. Record any Hermes core extension needed for behavior the plugin API cannot express.
+diff --git a/development/README.md b/development/README.md
+index 736ade9..b19282a 100644
+--- a/development/README.md
++++ b/development/README.md
+@@ -17,6 +17,8 @@ Small JSON Lines records contain schema version 1, UTC and monotonic time, proce
+ 
+ Full inputs and outputs are compressed artifacts. Identical redacted content shares an artifact. Ordinary prompts and conversation content remain intact. Known account credentials, credential fields, bearer strings, private keys, and encoded credentials in the remote hook protocol are removed before hashing. Credential fields remain filtered when JSON appears inside stdin, stdout, or a partial text fragment. Each process also learns declared credential values from structured artifacts, so later output that repeats a value can be filtered. This filter cannot recognize every unknown credential in arbitrary prose or an unrelated encoding.
+ 
++Environment mappings retain variable names. Values are recorded only for `HOME`, `HERMES_HOME`, `PATH`, `PWD`, `LANG`, `LC_ALL`, `LC_CTYPE`, `TZ`, `BUN_CONFIG_NO_AUTO_INSTALL`, and `LIFEOS_CHILD_EFFORT`. Other values are replaced with `[REDACTED]` and learned for echo filtering before the artifact is encoded. The [PR review corrections](../docs/verification/2026-10-02-opus-review-fixes/README.md) include a real hook test for unknown credential names.
++
+ Each process appends to its own daily file. A child runner retains its parent's invocation identity and records a different process UUID. SQLite is rebuilt offline. Capture does not write to SQLite during a conversation.
+ 
+ The development observer forwards its own trace context through `ThreadPoolExecutor` jobs. It does not forward unrelated application context variables. This preserves correlation when Hermes executes a hook on a worker thread.
+diff --git a/development/hook_capture/store.py b/development/hook_capture/store.py
+index ef45e70..9c2bcb6 100644
+--- a/development/hook_capture/store.py
++++ b/development/hook_capture/store.py
+@@ -23,6 +23,8 @@ SENSITIVE = re.compile(r"(^|[_-])(password|passwd|secret|token|api[_-]?key|(?:ac
+ TOKEN_SHAPE = re.compile(r"(?i)(Bearer\s+)[A-Za-z0-9._~+/=-]+|-----BEGIN [^-]*PRIVATE KEY-----.*?-----END [^-]*PRIVATE KEY-----", re.S)
+ JSON_FIELD = re.compile(r'("(?P<field>(?:\\.|[^"\\])*)"\s*:\s*)("(?:\\.|[^"\\])*"|-?\d+(?:\.\d+)?|true|false|null)')
+ URL_SHAPE = re.compile(r"(?<![A-Za-z0-9+.-])[A-Za-z][A-Za-z0-9+.-]*://[^\s<>\"']+")
++ENVIRONMENT_VALUES = frozenset({'HOME', 'HERMES_HOME', 'PATH', 'PWD', 'LANG', 'LC_ALL', 'LC_CTYPE',
++                               'TZ', 'BUN_CONFIG_NO_AUTO_INSTALL', 'LIFEOS_CHILD_EFFORT'})
+ 
+ 
+ def url_credentials(value):
+@@ -116,8 +118,10 @@ def declared_secrets(value, seen=None, credential=False, key=""):
+             return
+         seen.add(context)
+     if isinstance(value, dict):
+-        for key, item in value.items():
+-            yield from declared_secrets(item, seen, credential or bool(SENSITIVE.search(str(key))), str(key))
++        environment = str(key).casefold() in {'env', 'environment'}
++        for field, item in value.items():
++            hidden = environment and str(field) not in ENVIRONMENT_VALUES
++            yield from declared_secrets(item, seen, credential or hidden or bool(SENSITIVE.search(str(field))), str(field))
+     elif isinstance(value, (list, tuple, set, frozenset)):
+         for item in value:
+             yield from declared_secrets(item, seen, credential, key)
+@@ -127,6 +131,9 @@ def declared_secrets(value, seen=None, credential=False, key=""):
+ 
+ 
+ def safe(value, secrets=(), key=""):
++    if isinstance(value, dict) and key.casefold() in {'env', 'environment'}:
++        return {str(name): safe(item, secrets, str(name)) if name in ENVIRONMENT_VALUES else '[REDACTED]'
++                for name, item in value.items()}
+     if SENSITIVE.search(key) and key not in {"max_tokens", "input_tokens", "output_tokens", "total_tokens"}:
+         return "[REDACTED]"
+     if value is None or isinstance(value, (bool, int, float)):
+diff --git a/development/tests/test_capture.py b/development/tests/test_capture.py
+index e3151dd..313287a 100644
+--- a/development/tests/test_capture.py
++++ b/development/tests/test_capture.py
+@@ -22,6 +22,26 @@ sys.path.insert(0, str(ROOT / "development"))
+ 
+ 
+ class EvidenceTests(unittest.TestCase):
++    def test_environment_values_and_unknown_credential_echoes_are_not_recorded(self):
++        from hook_capture.store import Recorder
++        environment = {'ANTHROPIC_KEY':'SYNTHETIC-KEY-311804', 'GH_PAT':'SYNTHETIC-PAT-311805',
++                       'SSH_PASSPHRASE':'SYNTHETIC-PHRASE-311806',
++                       'SLACK_WEBHOOK_URL':'https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807',
++                       'ORDINARY_CUSTOM_SETTING':'SYNTHETIC-UNKNOWN-311808', 'LANG':'C.UTF-8',
++                       'LIFEOS_CHILD_EFFORT':'medium'}
++        for name in ('env', 'environment'):
++            with self.subTest(field=name), tempfile.TemporaryDirectory() as temporary:
++                root = Path(temporary)
++                recorder = Recorder(root, 'test-run')
++                ref = recorder.artifact({'options':{name:environment}, 'stdout':list(environment.values())[:5]})
++                raw = gzip.decompress((root / ref['path']).read_bytes()).decode()
++                for key in list(environment)[:5]:
++                    self.assertNotIn(environment[key], raw)
++                captured = json.loads(raw)['options'][name]
++                self.assertEqual(set(captured), set(environment))
++                self.assertEqual(captured['LANG'], 'C.UTF-8')
++                self.assertEqual(captured['LIFEOS_CHILD_EFFORT'], 'medium')
++
+     def test_installed_recorder_captures_detached_hook_with_another_startup_home(self):
+         from hook_capture import setup as capture_setup
+         with tempfile.TemporaryDirectory() as temporary:
+@@ -461,6 +481,30 @@ def run_credential_hook(bridge):
+                 inspected.add(event["stage"])
+         self.assertEqual(inspected, stages)
+ 
++    def test_real_hook_unknown_environment_credential_echo_is_filtered(self):
++        secret = 'SYNTHETIC-UNKNOWN-ENV-CREDENTIAL-313819'
++        setup = """
++def run_environment_hook(bridge):
++    import os, sys
++    os.environ['CUSTOM_PROVIDER_VALUE'] = 'SYNTHETIC-UNKNOWN-ENV-CREDENTIAL-313819'
++    path = bridge.root / 'environment-hook.py'
++    path.write_text('import os, json\\nprint(json.dumps({"echo":os.environ["CUSTOM_PROVIDER_VALUE"]}))\\n')
++    bridge.hooks['PreToolUse'][0]['hooks'][0]['command'] = sys.executable + ' ' + str(path)
++    return bridge.pre_tool_call('terminal', {'command':'pwd'}, session_id='environment-echo')
++"""
++        hooks = {'PreToolUse':[{'hooks':[{'type':'command','command':'true'}]}]}
++        _, baseline, _ = self.run_bridge(hooks, 'run_environment_hook(bridge)', setup=setup, traced=False)
++        root, observed, events = self.run_bridge(hooks, 'run_environment_hook(bridge)', setup=setup)
++        self.assertEqual(observed, baseline)
++        stages = {'process.started', 'process.completed', 'run_command.returned', 'hook.completed'}
++        inspected = set()
++        for event in events:
++            if event['stage'] in stages:
++                raw = gzip.decompress((root / 'capture' / event['data_ref']['path']).read_bytes()).decode()
++                self.assertNotIn(secret, raw)
++                inspected.add(event['stage'])
++        self.assertEqual(inspected, stages)
++
+     def test_real_http_url_headers_and_response_credentials_are_filtered(self):
+         query_secret = "SYNTHETIC-QUERY-CREDENTIAL-928374"
+         response_secret = "SYNTHETIC-RESPONSE-CREDENTIAL-918273"
+diff --git a/docs/update-policy.md b/docs/update-policy.md
+index d83f15f..6bc9aff 100644
+--- a/docs/update-policy.md
++++ b/docs/update-policy.md
+@@ -25,6 +25,8 @@ The original `lifeos-hermes` account uses a shared root: `~/.claude` links to `~
+ 
+ The LifeOS settings page starts a detached update worker for a prepared candidate. The worker makes a fresh reference install, checks managed-file ownership, stages source files and dependencies, replaces exact LifeOS-owned hook registrations, and snapshots Hermes mount files and the VersionDrift baseline. It stops the gateway, swaps the staged tree, remounts LifeOS, renews the baseline, restarts the gateway, and checks the native hooks and running service. A failure after stop restores the prior tree, mount files, and baseline. An interrupted swap has a recovery action. The [service-backed update rehearsal](../notes/2026-09-29-lifeos-update-transaction.md) passed apply, restore, and forced-failure rollback on the pinned revision. A newer upstream revision and authenticated page click have not been tested.
+ 
++Version restore refuses later changes to Hermes mount files, directory contents, or permissions. It also refuses snapshots without a post-update profile record. The worker checks again after stopping the gateway. Replaced profile files and the baseline move into a private `mount-before-restore/` archive, which preserves writes that race with the final check. Temporary per-mount preparation copies are removed after commit or rollback. Pending mount recovery retains its copies. Unknown historical snapshot directories require operator inspection. See [the review correction record](verification/2026-10-02-opus-review-fixes/README.md).
++
+ The update worker keeps the prior candidate source because the baseline refers to it. A later supported candidate uses a new directory and a plugin-owned selection file. A changed `CLAUDE.template.md` or `settings.system.json` requires a reviewed migration before the worker will stop the gateway. A normal Hermes source update is separate from this LifeOS worker.
+ 
+ The older `scripts/release_transaction.py` stages Hermes code, bridge code, Hermes config, and LifeOS system files as one transaction. It does not install LifeOS dependencies, change hook registrations, or renew the VersionDrift baseline. Keep it for the Hermes and plugin release gate, with those limits. See the [system-file rehearsal](../notes/2026-09-28-overlay-rollback-rehearsal.md), [coordinated rehearsal](../notes/2026-09-28-release-transaction-rehearsal.md), and [service rehearsal](../notes/2026-09-29-service-release-rehearsal.md).
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/README.md b/docs/verification/2026-10-02-opus-review-fixes/README.md
+new file mode 100644
+index 0000000..ada3177
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/README.md
+@@ -0,0 +1,45 @@
++# Corrections to the Opus PR review
++
++Date: 2026-10-02
++
++The [Opus review](../../agents/2026-10-02-opus55-pr1-review/opus55-pr1-review.md) identifies two behavior defects and two development or retention concerns.
++
++## F1: Preserve later Hermes profile changes
++
++The update manifest records the contents, permissions, types, and file set of the Hermes mount targets after an update. The restore route checks that record before it changes the job. The worker checks it again after stopping the gateway and before it replaces profile files.
++
++A changed profile refuses automatic restoration. A refusal after the gateway stops starts the gateway again. An older snapshot without the profile record cannot establish safe restoration and is refused.
++
++The restore operation moves the current profile files and baseline into a private `mount-before-restore/<operation>/` archive before replacing them. This preserves a write that races with the final check. A successful version restore records the archive path in `profile_archive`. Update rollback and interrupted recovery also preserve the profile versions that they replace. These update archives remain part of the version transaction, separate from temporary mount preparation copies.
++
++Regression cases cover changed configuration, new environment files, removed prompts, plugin changes, empty directories, permissions, missing metadata, and a change while the gateway stops. A forced rename-boundary write verifies the private archive.
++
++## F2: Check the complete direct child request
++
++Direct child inference constructs the complete model request before admission. Admission checks the system prompt and generated user content as auxiliary input. The child sends no request when either contains a removed or superseded claim.
++
++The regression uses a real local HTTP endpoint and a genuine forget operation. The existing positive route test still covers an approved child call. No real model receives synthetic test content.
++
++## F3: Restrict environment capture
++
++The development recorder retains environment variable names. Values are recorded only for `HOME`, `HERMES_HOME`, `PATH`, `PWD`, `LANG`, `LC_ALL`, `LC_CTYPE`, `TZ`, `BUN_CONFIG_NO_AUTO_INSTALL`, and `LIFEOS_CHILD_EFFORT`.
++
++Other values become `[REDACTED]`. The recorder learns these hidden values before encoding the artifact and filters later echoes. Ordinary prompts remain intact. Arbitrary prose and unrelated encodings still have the documented filtering limits.
++
++A real hook test compares native and recorded behavior while the hook echoes an unknown environment credential. The recorder remains outside the public plugin installation.
++
++## F4: Remove unneeded mount preparation copies
++
++The mount lock protects snapshot cleanup. A committed or rolled-back mount removes its snapshot payload. The credential-free journal remains available for status. A pending publication or restoration retains its recovery copies.
++
++New snapshots have a private installation-bound identity record. A later operation can remove an abandoned preparation snapshot after process death. Cleanup preserves unknown directories, link targets, foreign identity records, and pending recovery snapshots. The current journal can also identify a completed snapshot created before the identity record existed. Unmarked historical directories that the journal does not identify require operator inspection.
++
++Process-kill tests cover a pending publication, interrupted restoration, and preparation before journal publication. Repeat mounts and failed validation verify cleanup after terminal outcomes.
++
++## Verification
++
++`before.txt` records seven tests with 16 expected failures before the corrections. `recorder-before.txt` records the environment-filter regression failing for both supported mapping names.
++
++The initial focused selection passes 47 cases. The initial recorder selection passes 31 cases. Later archive-race and real-hook regressions extend those selections. The detached regression selection and independent review record the final counts in their output files.
++
++The tests use disposable local data and pinned source fixtures. No server is deployed or modified. This correction batch does not activate memory ownership or establish complete memory or hook acceptance.
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/before.txt b/docs/verification/2026-10-02-opus-review-fixes/before.txt
+new file mode 100644
+index 0000000..89150e8
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/before.txt
+@@ -0,0 +1,158 @@
++FFFFFFFFFFFFFFFF
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='configuration')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='new environment')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='removed prompt')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='file permissions')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin edit')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin addition')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin removal')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin directory')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='directory permissions')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_requires_post_update_profile_metadata (test_update_transaction.UpdateTransactionTests.test_restore_requires_post_update_profile_metadata)
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 203, in test_restore_requires_post_update_profile_metadata
++    with self.assertRaisesRegex(UpdateTransactionError, 'profile restore metadata'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_restore_rechecks_profile_after_stopping_the_gateway (test_update_transaction.UpdateTransactionTests.test_restore_rechecks_profile_after_stopping_the_gateway)
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 218, in test_restore_rechecks_profile_after_stopping_the_gateway
++    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: UpdateTransactionError not raised
++
++======================================================================
++FAIL: test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content (test_memory_children.MemoryChildTests.test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content) (system='Synthetic forgotten direct child marker', content='Synthetic generated request')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_children.py", line 51, in test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content
++    self.assertNotEqual(result.returncode, 0, result.stdout)
++    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: 0 == 0 : {"result": "CHILD-OK", "is_error": false, "stop_reason": null, "modelUsage": {"child-model": {"outputTokens": 0}}}
++
++
++======================================================================
++FAIL: test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content (test_memory_children.MemoryChildTests.test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content) (system='Synthetic current system', content='Synthetic forgotten direct child marker')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_children.py", line 51, in test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content
++    self.assertNotEqual(result.returncode, 0, result.stdout)
++    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: 0 == 0 : {"result": "CHILD-OK", "is_error": false, "stop_reason": null, "modelUsage": {"child-model": {"outputTokens": 0}}}
++
++
++======================================================================
++FAIL: test_completed_mounts_remove_credential_bearing_snapshots (test_mount_transaction.MountTransactionTests.test_completed_mounts_remove_credential_bearing_snapshots)
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 166, in test_completed_mounts_remove_credential_bearing_snapshots
++    self.assertFalse(Path(result['snapshot']).exists())
++    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: True is not false
++
++======================================================================
++FAIL: test_pending_recovery_retains_copies_until_rollback_completes (test_mount_transaction.MountTransactionTests.test_pending_recovery_retains_copies_until_rollback_completes)
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 178, in test_pending_recovery_retains_copies_until_rollback_completes
++    self.assertFalse(snapshot.exists())
++    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
++AssertionError: True is not false
++
++======================================================================
++FAIL: test_failed_preparation_removes_unneeded_credential_copies (test_mount_transaction.MountTransactionTests.test_failed_preparation_removes_unneeded_credential_copies)
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 187, in test_failed_preparation_removes_unneeded_credential_copies
++    self.assertEqual([path for path in self.transaction().state.iterdir() if path.is_dir()], [])
++    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: Lists differ: [PosixPath('/tmp/native-memory-sq4tjwsf/.l[42 chars]7b')] != []
++
++First list contains 1 additional elements.
++First extra element 0:
++PosixPath('/tmp/native-memory-sq4tjwsf/.lifeos-mount/2af2b1e5cb9347b6a70574f89e68577b')
++
++- [PosixPath('/tmp/native-memory-sq4tjwsf/.lifeos-mount/2af2b1e5cb9347b6a70574f89e68577b')]
+++ []
++
++----------------------------------------------------------------------
++Ran 7 tests in 7.956s
++
++FAILED (failures=16)
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/focused.txt b/docs/verification/2026-10-02-opus-review-fixes/focused.txt
+new file mode 100644
+index 0000000..4043aa7
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/focused.txt
+@@ -0,0 +1,5 @@
++...............................................
++----------------------------------------------------------------------
++Ran 47 tests in 45.005s
++
++OK
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/recorder-before.txt b/docs/verification/2026-10-02-opus-review-fixes/recorder-before.txt
+new file mode 100644
+index 0000000..e32d79e
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/recorder-before.txt
+@@ -0,0 +1,23 @@
++FF
++======================================================================
++FAIL: test_environment_values_and_unknown_credential_echoes_are_not_recorded (test_capture.EvidenceTests.test_environment_values_and_unknown_credential_echoes_are_not_recorded) (field='env')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 39, in test_environment_values_and_unknown_credential_echoes_are_not_recorded
++    self.assertNotIn(environment[key], raw)
++    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: 'SYNTHETIC-KEY-311804' unexpectedly found in '{"options":{"env":{"ANTHROPIC_KEY":"SYNTHETIC-KEY-311804","GH_PAT":"SYNTHETIC-PAT-311805","LANG":"C.UTF-8","LIFEOS_CHILD_EFFORT":"medium","ORDINARY_CUSTOM_SETTING":"SYNTHETIC-UNKNOWN-311808","SLACK_WEBHOOK_URL":"https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SSH_PASSPHRASE":"SYNTHETIC-PHRASE-311806"}},"stdout":["SYNTHETIC-KEY-311804","SYNTHETIC-PAT-311805","SYNTHETIC-PHRASE-311806","https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SYNTHETIC-UNKNOWN-311808"]}'
++
++======================================================================
++FAIL: test_environment_values_and_unknown_credential_echoes_are_not_recorded (test_capture.EvidenceTests.test_environment_values_and_unknown_credential_echoes_are_not_recorded) (field='environment')
++----------------------------------------------------------------------
++Traceback (most recent call last):
++  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 39, in test_environment_values_and_unknown_credential_echoes_are_not_recorded
++    self.assertNotIn(environment[key], raw)
++    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
++AssertionError: 'SYNTHETIC-KEY-311804' unexpectedly found in '{"options":{"environment":{"ANTHROPIC_KEY":"SYNTHETIC-KEY-311804","GH_PAT":"SYNTHETIC-PAT-311805","LANG":"C.UTF-8","LIFEOS_CHILD_EFFORT":"medium","ORDINARY_CUSTOM_SETTING":"SYNTHETIC-UNKNOWN-311808","SLACK_WEBHOOK_URL":"https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SSH_PASSPHRASE":"SYNTHETIC-PHRASE-311806"}},"stdout":["SYNTHETIC-KEY-311804","SYNTHETIC-PAT-311805","SYNTHETIC-PHRASE-311806","https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SYNTHETIC-UNKNOWN-311808"]}'
++
++----------------------------------------------------------------------
++Ran 1 test in 0.008s
++
++FAILED (failures=2)
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/recorder-focused-final.txt b/docs/verification/2026-10-02-opus-review-fixes/recorder-focused-final.txt
+new file mode 100644
+index 0000000..63c9dad
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/recorder-focused-final.txt
+@@ -0,0 +1,5 @@
++................................
++----------------------------------------------------------------------
++Ran 32 tests in 7.380s
++
++OK
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/run-gate.sh b/docs/verification/2026-10-02-opus-review-fixes/run-gate.sh
+new file mode 100644
+index 0000000..f5dac29
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/run-gate.sh
+@@ -0,0 +1,32 @@
++#!/usr/bin/env bash
++# ABOUTME: Runs the regression selection for the four Opus review corrections.
++# ABOUTME: Saves each command status and marks detached verification complete.
++set -u
++verification_output=/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-02-opus-review-fixes
++cd /home/outsider/Projects/Hermes_agent/LifeOS_plugin || exit 1
++export LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install
++export LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes
++export LIFEOS_TASK_HOOK_PATH="$LIFEOS_MEMORY_SOURCE/hooks/TaskGovernance.hook.ts"
++export PYTHONPATH=".:tests:$LIFEOS_HERMES_SOURCE"
++export LIFEOS_PREPARE_HERMES_REPO=/home/outsider/Projects/Hermes_agent/upstream/final-gate-baseline
++export LIFEOS_PREPARE_LIFEOS_REPO=/home/outsider/.cache/lifeos-plugin-memory/managed-source
++export PYTHONDONTWRITEBYTECODE=1
++verification_python=/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
++"$verification_python" -W error::ResourceWarning -m unittest \
++  test_mount_transaction test_memory_http test_memory_remount_relay \
++  test_memory_administration test_memory_admin_install test_memory_admin_dashboard \
++  test_lifeos_install_source test_dashboard_api test_update_worker test_update_transaction \
++  test_memory_source_review test_memory_native test_memory_authorization test_memory_prompt \
++  test_memory_sources test_memory_wiki_corpus test_memory_wiki_render test_memory_delegation \
++  test_memory_runtime test_memory_preferences test_memory_dashboard test_memory_pulse_auth \
++  test_hermes_memory_provider test_prepare_sources test_patch_bundle test_memory_restore \
++  test_memory_mcp test_memory_sharing test_memory_service test_memory_policy test_memory_context \
++  test_memory_children > "$verification_output/gate.txt" 2>&1
++echo $? > "$verification_output/gate.exit"
++"$verification_python" -m unittest discover -s development/tests -p 'test_*.py' \
++  > "$verification_output/recorder.txt" 2>&1
++echo $? > "$verification_output/recorder.exit"
++node --test tests/test_dashboard_ui.cjs tests/test_memory_dashboard_ui.cjs \
++  > "$verification_output/dashboard.txt" 2>&1
++echo $? > "$verification_output/dashboard.exit"
++touch "$verification_output/.done"
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/update-final.txt b/docs/verification/2026-10-02-opus-review-fixes/update-final.txt
+new file mode 100644
+index 0000000..d6be5ac
+--- /dev/null
++++ b/docs/verification/2026-10-02-opus-review-fixes/update-final.txt
+@@ -0,0 +1,14 @@
++test_applies_update_and_immediate_restore (test_update_transaction.UpdateTransactionTests.test_applies_update_and_immediate_restore) ... ok
++test_capability_record_applies_and_restores_with_native_hook_files (test_update_transaction.UpdateTransactionTests.test_capability_record_applies_and_restores_with_native_hook_files) ... ok
++test_recovers_process_death_between_directory_renames (test_update_transaction.UpdateTransactionTests.test_recovers_process_death_between_directory_renames) ... ok
++test_restore_archives_a_write_that_races_with_profile_replacement (test_update_transaction.UpdateTransactionTests.test_restore_archives_a_write_that_races_with_profile_replacement) ... ok
++test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) ... ok
++test_restore_rechecks_profile_after_stopping_the_gateway (test_update_transaction.UpdateTransactionTests.test_restore_rechecks_profile_after_stopping_the_gateway) ... ok
++test_restore_requires_post_update_profile_metadata (test_update_transaction.UpdateTransactionTests.test_restore_requires_post_update_profile_metadata) ... ok
++test_second_directory_rename_failure_restores_installed_tree (test_update_transaction.UpdateTransactionTests.test_second_directory_rename_failure_restores_installed_tree) ... ok
++test_verification_failure_restores_all_prior_state (test_update_transaction.UpdateTransactionTests.test_verification_failure_restores_all_prior_state) ... ok
++
++----------------------------------------------------------------------
++Ran 9 tests in 0.289s
++
++OK
+diff --git a/lifeos_hook_bridge/bin/claude_direct.py b/lifeos_hook_bridge/bin/claude_direct.py
+index 79272b3..94abe12 100644
+--- a/lifeos_hook_bridge/bin/claude_direct.py
++++ b/lifeos_hook_bridge/bin/claude_direct.py
+@@ -144,11 +144,6 @@ def main(args: argparse.Namespace | None = None) -> int:
+     token = os.environ.get("ANTHROPIC_AUTH_TOKEN", "")
+     if not base_url or not token:
+         raise ValueError("local gateway URL and bearer token are required")
+-    try:
+-        _memory_runtime().check_call(request={'model':args.model}, provider='lifeos-local-gateway',
+-                                     model=args.model, base_url=base_url, api_mode='anthropic')
+-    except RuntimeError as error:
+-        raise ValueError(str(error)) from error
+     request_body = {
+         "model": args.model,
+         "max_tokens": int(os.environ.get("LIFEOS_CHILD_MAX_TOKENS", "4096")),
+@@ -156,6 +151,12 @@ def main(args: argparse.Namespace | None = None) -> int:
+         "system": system_prompt,
+         "messages": [{"role": "user", "content": content}],
+     }
++    try:
++        _memory_runtime().check_call(request=request_body, provider='lifeos-local-gateway',
++                                     model=args.model, base_url=base_url, api_mode='anthropic',
++                                     aux_task='lifeos_child')
++    except RuntimeError as error:
++        raise ValueError(str(error)) from error
+     endpoint = base_url + ("/messages" if base_url.endswith("/v1") else "/v1/messages")
+     request = urllib.request.Request(
+         endpoint,
+diff --git a/lifeos_hook_bridge/mount_transaction.py b/lifeos_hook_bridge/mount_transaction.py
+index 6091d95..ea825ea 100644
+--- a/lifeos_hook_bridge/mount_transaction.py
++++ b/lifeos_hook_bridge/mount_transaction.py
+@@ -6,6 +6,7 @@ import hashlib
+ import json
+ import os
+ from pathlib import Path
++import shutil
+ import stat
+ import subprocess
+ import sys
+@@ -105,7 +106,11 @@ class MountTransaction:
+                 fcntl.flock(descriptor, fcntl.LOCK_EX | fcntl.LOCK_NB)
+             except BlockingIOError as error:
+                 raise MountError('Another mount operation is running') from error
+-            yield
++            self._prune_snapshots()
++            try:
++                yield
++            finally:
++                self._prune_snapshots()
+         finally:
+             os.close(descriptor)
+ 
+@@ -122,12 +127,17 @@ class MountTransaction:
+                 or value.get('state') not in PENDING | {'committed', 'rolled_back'}):
+             raise MountError('The mount journal belongs to another installation or is invalid')
+         directory = Path(value['snapshot'])
+-        if (directory.parent != self.state or directory.resolve() != directory or not directory.is_dir()
++        if (directory.parent != self.state or directory.resolve() != directory or directory.is_symlink()
+                 or len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)):
+             raise MountError('The mount snapshot is invalid')
+-        info = directory.stat()
+-        if info.st_uid != os.getuid() or info.st_mode & 0o077:
+-            raise MountError('The mount snapshot requires private owner permissions')
++        try:
++            info = directory.stat()
++        except FileNotFoundError:
++            if value['state'] in PENDING:
++                raise MountError('The mount recovery snapshot is missing')
++        else:
++            if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid() or info.st_mode & 0o077:
++                raise MountError('The mount snapshot requires private owner permissions')
+         allowed = {str(self.profile / name) for name in FILES}
+         if self.baseline is not None:
+             allowed.add(str(self.baseline))
+@@ -155,6 +165,31 @@ class MountTransaction:
+         self._workspace(value.get('workspace'))
+         return value
+ 
++    def _snapshot_identity(self):
++        return {'version': 1, 'profile': str(self.profile), 'installed': str(self.installed)}
++
++    def _prune_snapshots(self):
++        manifest = self._manifest()
++        active = Path(manifest['snapshot']) if manifest is not None else None
++        for directory in self.state.iterdir():
++            if (len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)
++                    or directory.is_symlink() or not directory.is_dir()):
++                continue
++            if directory == active and manifest['state'] in PENDING:
++                continue
++            info = directory.stat()
++            if info.st_uid != os.getuid() or info.st_mode & 0o077:
++                continue
++            if directory != active:
++                try:
++                    data, metadata = _read(directory / 'identity.json')
++                    if data is None or metadata['mode'] & 0o077 or json.loads(data) != self._snapshot_identity():
++                        continue
++                except (MountError, OSError, ValueError):
++                    continue
++            shutil.rmtree(directory)
++            _sync_directory(self.state)
++
+     def _workspace(self, value):
+         if not isinstance(value, str):
+             raise MountError('The mount workspace is invalid')
+@@ -300,6 +335,7 @@ class MountTransaction:
+             workspace = self._workspace(environment.get('HERMES_WORKSPACE', str(self.installed.parent / 'HermesWorkspace')))
+             snapshot = self.state / uuid4().hex
+             snapshot.mkdir(mode=0o700)
++            _json(snapshot / 'identity.json', self._snapshot_identity())
+             stage = snapshot / 'stage'
+             stage.mkdir(mode=0o700)
+             (snapshot / 'previous').mkdir(mode=0o700)
+diff --git a/lifeos_hook_bridge/update_transaction.py b/lifeos_hook_bridge/update_transaction.py
+index 31357cd..01a3245 100644
+--- a/lifeos_hook_bridge/update_transaction.py
++++ b/lifeos_hook_bridge/update_transaction.py
+@@ -7,8 +7,10 @@ import hashlib
+ import json
+ import os
+ import shutil
++import stat
+ import subprocess
+ from pathlib import Path
++from uuid import uuid4
+ 
+ from .update_dependencies import sync_dependencies
+ from .update_hooks import replace_owned_hooks
+@@ -65,16 +67,28 @@ def _snapshot_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
+     _write_json(snapshot / "mount-manifest.json", {"present": present})
+ 
+ 
+-def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
++def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path, *, expected_state=None) -> Path:
++    current = _mount_state(hermes_home)
++    if expected_state is not None and current != expected_state:
++        raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
++    if baseline.is_symlink() or baseline.exists() and not baseline.is_file():
++        raise UpdateTransactionError('The restore baseline must be a regular file')
+     present = set(json.loads((snapshot / "mount-manifest.json").read_text())["present"])
++    archives = snapshot / 'mount-before-restore'
++    archives.mkdir(mode=0o700, exist_ok=True)
++    info = archives.stat()
++    if archives.resolve() != archives or info.st_uid != os.getuid() or info.st_mode & 0o077:
++        raise UpdateTransactionError('Restore archives require a private owner directory')
++    archive = archives / uuid4().hex
++    archive.mkdir(mode=0o700)
+     for name in (*MOUNT_FILES, *MOUNT_DIRS):
+         destination = hermes_home / name
+         if destination.is_symlink():
+             raise UpdateTransactionError(f"Hermes mount became a symbolic link: {name}")
+-        if destination.is_dir():
+-            shutil.rmtree(destination)
+-        elif destination.exists():
+-            destination.unlink()
++        if destination.exists():
++            saved = archive / name
++            saved.parent.mkdir(parents=True, exist_ok=True)
++            os.replace(destination, saved)
+         if name in present:
+             source = snapshot / "mount" / name
+             destination.parent.mkdir(parents=True, exist_ok=True)
+@@ -84,7 +98,10 @@ def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
+                 shutil.copy2(source, destination)
+     temporary = baseline.with_suffix(baseline.suffix + ".restore")
+     shutil.copy2(snapshot / "baseline.json", temporary)
++    if baseline.exists():
++        os.replace(baseline, archive / 'baseline.json')
+     os.replace(temporary, baseline)
++    return archive
+ 
+ 
+ def _source_hooks(source: Path) -> dict:
+@@ -92,6 +109,35 @@ def _source_hooks(source: Path) -> dict:
+     return manifest["hooks"]
+ 
+ 
++def _mount_state(hermes_home: Path) -> dict:
++    states = {}
++
++    def collect(path):
++        if path.parent.resolve() != path.parent:
++            raise UpdateTransactionError('A Hermes profile target changes its physical path')
++        name = path.relative_to(hermes_home).as_posix()
++        try:
++            info = path.lstat()
++        except FileNotFoundError:
++            states[name] = None
++            return
++        mode = stat.S_IMODE(info.st_mode)
++        if stat.S_ISDIR(info.st_mode):
++            states[name] = {'type': 'directory', 'mode': mode}
++            for child in sorted(path.iterdir()):
++                collect(child)
++        elif stat.S_ISREG(info.st_mode):
++            with path.open('rb') as stream:
++                digest = hashlib.file_digest(stream, 'sha256').hexdigest()
++            states[name] = {'type': 'file', 'mode': mode, 'digest': digest}
++        else:
++            raise UpdateTransactionError('Hermes profile targets must be regular files or directories')
++
++    for name in (*MOUNT_FILES, *MOUNT_DIRS):
++        collect(hermes_home / name)
++    return states
++
++
+ def _memory_digest(root: Path) -> dict[str, str]:
+     hashes = {}
+     for name in ("LIFEOS/MEMORY", "LIFEOS/USER", "USER.md", "MEMORY.md"):
+@@ -119,6 +165,7 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
+         raise UpdateTransactionError("Baseline is missing or update snapshot already exists")
+     if installed.stat().st_dev != snapshot.parent.stat().st_dev:
+         raise UpdateTransactionError("Update snapshot must be on the LifeOS filesystem")
++    _mount_state(hermes_home)
+     baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
+     plan = plan_system_files(installed, baseline, selected_source, reference)
+     current_settings = json.loads((installed / "settings.json").read_text(encoding="utf-8"))
+@@ -157,6 +204,7 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
+         manifest["state"] = "applied"
+         manifest["package_roots"] = dependency_report["package_roots"]
+         manifest["user_data"] = _memory_digest(installed)
++        manifest['mount_state'] = _mount_state(hermes_home)
+         _write_json(manifest_path, manifest)
+         return manifest
+     except Exception as error:
+@@ -195,6 +243,10 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
+         raise UpdateTransactionError('The restore snapshot belongs to another installation')
+     if _memory_digest(target) != manifest["user_data"]:
+         raise UpdateTransactionError("User data changed after update; automatic restore refused")
++    if not isinstance(manifest.get('mount_state'), dict):
++        raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
++    if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
++        raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+     return manifest
+ 
+ 
+@@ -202,12 +254,19 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+     manifest = validate_restore(snapshot)
+     manifest_path = snapshot / "manifest.json"
+     installed = Path(manifest['installed'])
++    stop()
++    try:
++        manifest = validate_restore(snapshot)
++    except Exception:
++        start()
++        raise
+     manifest["state"] = "restoring"
+     _write_json(manifest_path, manifest)
+-    stop()
+     os.replace(installed, snapshot / "restored-selected")
+     os.replace(snapshot / "live-prior", installed)
+-    _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
++    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]),
++                             expected_state=manifest['mount_state'])
++    manifest['profile_archive'] = str(archive)
+     start()
+     verify()
+     manifest["state"] = "rolled_back"
+diff --git a/tests/test_memory_admin_dashboard.py b/tests/test_memory_admin_dashboard.py
+index 4608c68..2eed4a1 100644
+--- a/tests/test_memory_admin_dashboard.py
++++ b/tests/test_memory_admin_dashboard.py
+@@ -246,9 +246,27 @@ class MemoryAdminDashboardTests(unittest.TestCase):
+         (job / 'status.json').write_text(json.dumps({'state': 'applied'}) + '\n')
+         transaction = self.api.install_module.memory_module('update_transaction')
+         (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'applied',
+-            'installed': str(self.fixture.root), 'user_data': transaction._memory_digest(self.fixture.root)}))
++            'installed': str(self.fixture.root), 'hermes_home': str(self.fixture.profile),
++            'mount_state': transaction._mount_state(self.fixture.profile),
++            'user_data': transaction._memory_digest(self.fixture.root)}))
+         return job
+ 
++    def test_changed_profile_refuses_restore_without_changing_job(self):
++        self.login()
++        job = self.applied_job()
++        before_request = (job / 'request.json').read_bytes()
++        before_status = (job / 'status.json').read_bytes()
++        target = self.fixture.profile / 'config.yaml'
++        target.write_text('Synthetic later model selection\n')
++        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Profile must be checked first')):
++            response = self.post('/update/restore')
++        self.assertEqual(response.status_code, 409, response.text)
++        self.assertIn('Hermes profile changed', response.text)
++        self.assertEqual(self.grants(), [])
++        self.assertEqual((job / 'request.json').read_bytes(), before_request)
++        self.assertEqual((job / 'status.json').read_bytes(), before_status)
++        self.assertEqual(target.read_text(), 'Synthetic later model selection\n')
++
+     def test_restore_requires_fresh_action_bound_owner_authorization(self):
+         self.login()
+         job = self.applied_job()
+diff --git a/tests/test_memory_children.py b/tests/test_memory_children.py
+index dfadee4..8885590 100644
+--- a/tests/test_memory_children.py
++++ b/tests/test_memory_children.py
+@@ -18,6 +18,40 @@ PROGRAM = Path(__file__).parents[1] / 'lifeos_hook_bridge/bin/claude_direct.py'
+ 
+ 
+ class MemoryChildTests(unittest.TestCase):
++    def test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content(self):
++        fixture = runtime_fixture.MemoryRuntimeTests(); fixture.setUp()
++        self.addCleanup(fixture.doCleanups)
++        received = []
++        class Gateway(BaseHTTPRequestHandler):
++            def do_POST(self):
++                received.append(json.loads(self.rfile.read(int(self.headers['Content-Length']))))
++                body = json.dumps({'type':'message','content':[{'type':'text','text':'CHILD-OK'}]}).encode()
++                self.send_response(200); self.send_header('Content-Length',str(len(body))); self.end_headers(); self.wfile.write(body)
++            def log_message(self, *_):
++                pass
++        server = ThreadingHTTPServer(('127.0.0.1', 0), Gateway)
++        threading.Thread(target=server.serve_forever, daemon=True).start()
++        self.addCleanup(server.server_close); self.addCleanup(server.shutdown)
++        base_url = f'http://127.0.0.1:{server.server_port}'
++        child = dict(provider='lifeos-local-gateway', model='child-model', base_url=base_url, api_mode='anthropic')
++        fixture.configuration['destinations']['chat-a:200']['model_routes'].append(route_identity(**child))
++        MemoryConfiguration(fixture.path).save(fixture.configuration)
++        marker = 'Synthetic forgotten direct child marker'
++        saved = fixture.fixture.remember('RULE: ' + marker, 'child-retired', 'principal')
++        fixture.fixture.memory.forget(__import__('test_memory_native').OWNER, saved['reference'], 'child-retired-forget')
++        fixture.admit(session='fresh-child-after-forget')
++        environment = {**os.environ, 'HOME':str(fixture.fixture.home), 'HERMES_HOME':str(fixture.home),
++                       'ANTHROPIC_BASE_URL':base_url, 'ANTHROPIC_AUTH_TOKEN':'synthetic-token', 'LIFEOS_CHILD_PROVIDER':'',
++                       'LIFEOS_MEMORY_CONTEXT':json.dumps(asdict(fixture.runtime.context()))}
++        for system, content in ((marker, 'Synthetic generated request'), ('Synthetic current system', marker)):
++            with self.subTest(system=system, content=content):
++                result = subprocess.run([sys.executable, str(PROGRAM), '--print', '--model', 'child-model',
++                    '--output-format', 'json', '--system-prompt', system], input=content, text=True,
++                    capture_output=True, env=environment, timeout=10)
++                self.assertNotEqual(result.returncode, 0, result.stdout)
++                self.assertIn('removed or superseded claim', result.stderr)
++                self.assertEqual(received, [])
++
+     def test_actual_gateway_checks_approved_route_and_invalidated_memory(self):
+         fixture = runtime_fixture.MemoryRuntimeTests(); fixture.setUp()
+         self.addCleanup(fixture.doCleanups)
+diff --git a/tests/test_mount_transaction.py b/tests/test_mount_transaction.py
+index 9212381..8c9e587 100644
+--- a/tests/test_mount_transaction.py
++++ b/tests/test_mount_transaction.py
+@@ -158,6 +158,67 @@ class MountTransactionTests(unittest.TestCase):
+         self.execute()
+         self.assertTrue((self.root.parent / 'HermesWorkspace').is_dir())
+ 
++    def test_completed_mounts_remove_credential_bearing_snapshots(self):
++        (self.profile / '.env').write_text('SYNTHETIC_PROVIDER_KEY=synthetic-mount-secret\n')
++        for _ in range(2):
++            result = self.execute()
++            self.assertEqual(self.transaction().status()['state'], 'committed')
++            self.assertFalse(Path(result['snapshot']).exists())
++            self.assertEqual(list(self.transaction().state.glob('*/stage/.env')), [])
++        self.assertIn('synthetic-mount-secret', (self.profile / '.env').read_text())
++
++    def test_pending_recovery_retains_copies_until_rollback_completes(self):
++        self.crash_after_soul()
++        manifest = json.loads(self.transaction().journal.read_text())
++        snapshot = Path(manifest['snapshot'])
++        self.assertTrue((snapshot / 'previous/0').is_file())
++        self.assertEqual(self.transaction().status()['state'], 'applying')
++        self.assertTrue(snapshot.exists())
++        self.assertEqual(self.transaction().recover()['state'], 'rolled_back')
++        self.assertFalse(snapshot.exists())
++        self.assertEqual(self.transaction().status()['state'], 'rolled_back')
++
++    def test_failed_validation_removes_unneeded_credential_copies(self):
++        self.hermes.write_text('#!/bin/sh\nexit 23\n')
++        # Prepared configuration validation uses the real runtime and passes before this check fails.
++        with self.assertRaisesRegex(RuntimeError, 'config check'):
++            self.execute()
++        self.assertEqual(self.transaction().status()['state'], 'rolled_back')
++        self.assertEqual([path for path in self.transaction().state.iterdir() if path.is_dir()], [])
++
++    def test_killed_preparation_cleans_owned_orphan_without_changing_live_files(self):
++        original = (self.profile / 'config.yaml').read_bytes()
++        program = self.profile / 'kill-preparation.py'
++        program.write_text('import os, signal, sys\nfrom pathlib import Path\n'
++            'from lifeos_hook_bridge import mount_transaction as module\n'
++            'root, profile, bun, hermes = sys.argv[1:]\n'
++            'def interrupted(*args): os.kill(os.getpid(), signal.SIGKILL)\n'
++            'module._check_prepared_config = interrupted\n'
++            'module.MountTransaction(Path(root), Path(profile)).execute(dict(os.environ), bun, hermes)\n')
++        result = subprocess.run([sys.executable, str(program), str(self.root), str(self.profile),
++            self.fixture.fixture.memory.bun, str(self.hermes)], env={**self.environment,
++                'PYTHONPATH': str(Path(__file__).parents[1]) + os.pathsep + str(HOST)},
++                text=True, capture_output=True, timeout=60)
++        self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
++        self.assertEqual(result.stderr, '')
++        self.assertTrue(list(self.transaction().state.glob('*/stage/.env')))
++        self.assertEqual(self.transaction().status()['state'], 'none')
++        self.assertEqual([path for path in self.transaction().state.iterdir() if path.is_dir()], [])
++        self.assertEqual((self.profile / 'config.yaml').read_bytes(), original)
++
++    def test_snapshot_cleanup_preserves_unrecognized_directories_and_link_targets(self):
++        self.transaction().state.mkdir(mode=0o700)
++        unknown = self.transaction().state / ('b' * 32)
++        unknown.mkdir(mode=0o700)
++        (unknown / 'keep.txt').write_text('Synthetic unrelated data')
++        outside = self.profile / 'synthetic-outside'
++        outside.mkdir()
++        (outside / 'keep.txt').write_text('Synthetic link target')
++        (self.transaction().state / ('c' * 32)).symlink_to(outside)
++        self.execute()
++        self.assertEqual((unknown / 'keep.txt').read_text(), 'Synthetic unrelated data')
++        self.assertEqual((outside / 'keep.txt').read_text(), 'Synthetic link target')
++
+ 
+ if __name__ == '__main__':
+     unittest.main()
+diff --git a/tests/test_update_transaction.py b/tests/test_update_transaction.py
+index b46838b..840ce96 100644
+--- a/tests/test_update_transaction.py
++++ b/tests/test_update_transaction.py
+@@ -12,7 +12,7 @@ from unittest.mock import patch
+ from lifeos_hook_bridge.native_capabilities import capability_record, supports_task_count, RECORD_NAME
+ 
+ from lifeos_hook_bridge.update_transaction import (
+-    UpdateTransactionError, apply_update, recover_update, restore_update,
++    UpdateTransactionError, apply_update, recover_update, restore_update, validate_restore,
+ )
+ 
+ 
+@@ -157,6 +157,91 @@ class UpdateTransactionTests(unittest.TestCase):
+             self.assertEqual(baseline.read_bytes(), before)
+             self.assertEqual(json.loads((snapshot / "manifest.json").read_text())["state"], "rolled_back")
+ 
++    def test_restore_preserves_later_profile_edits_and_modes(self):
++        mutations = {
++            'configuration': lambda home: (home / 'config.yaml').write_text('Synthetic later model choice'),
++            'new environment': lambda home: (home / '.env').write_text('SYNTHETIC_KEY=later-value\n'),
++            'removed prompt': lambda home: (home / 'SOUL.md').unlink(),
++            'file permissions': lambda home: (home / 'config.yaml').chmod(0o600),
++            'plugin edit': lambda home: (home / 'plugins/lifeos/guard.py').write_text('Synthetic later guard'),
++            'plugin addition': lambda home: (home / 'plugins/lifeos/additional.py').write_text('Synthetic addition'),
++            'plugin removal': lambda home: (home / 'plugins/lifeos/guard.py').unlink(),
++            'plugin directory': lambda home: (home / 'plugins/lifeos/empty').mkdir(),
++            'directory permissions': lambda home: (home / 'plugins/lifeos').chmod(0o700),
++        }
++        for name, mutate in mutations.items():
++            with self.subTest(change=name), tempfile.TemporaryDirectory() as directory:
++                installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++                (hermes / 'plugins/lifeos').mkdir(parents=True)
++                (hermes / 'plugins/lifeos/guard.py').write_text('Synthetic installed guard')
++                events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
++                apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
++                             stop=stop, start=start, mount=mount, renew=renew, verify=verify)
++                mutate(hermes)
++                before = {str(path.relative_to(hermes)): (path.read_bytes(), path.stat().st_mode)
++                          for path in hermes.rglob('*') if path.is_file()}
++                journal = (snapshot / 'manifest.json').read_bytes()
++                with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++                    validate_restore(snapshot, installed=installed)
++                with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++                    restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
++                self.assertEqual(events, ['stop', 'start', 'verify'])
++                self.assertEqual((snapshot / 'manifest.json').read_bytes(), journal)
++                self.assertEqual(before, {str(path.relative_to(hermes)): (path.read_bytes(), path.stat().st_mode)
++                                         for path in hermes.rglob('*') if path.is_file()})
++                self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v2')
++
++    def test_restore_requires_post_update_profile_metadata(self):
++        with tempfile.TemporaryDirectory() as directory:
++            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
++            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
++                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
++            manifest = json.loads((snapshot / 'manifest.json').read_text())
++            manifest.pop('mount_state', None)
++            (snapshot / 'manifest.json').write_text(json.dumps(manifest))
++            with self.assertRaisesRegex(UpdateTransactionError, 'profile restore metadata'):
++                restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
++            self.assertEqual(events, ['stop', 'start', 'verify'])
++            self.assertEqual((hermes / 'config.yaml').read_text(), 'selected config')
++
++    def test_restore_rechecks_profile_after_stopping_the_gateway(self):
++        with tempfile.TemporaryDirectory() as directory:
++            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
++            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
++                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
++            journal = (snapshot / 'manifest.json').read_bytes()
++            def stop_and_edit():
++                stop()
++                (hermes / 'config.yaml').write_text('Synthetic edit while stopping')
++            with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
++                restore_update(snapshot, stop=stop_and_edit, start=start, verify=lambda: None)
++            self.assertEqual((snapshot / 'manifest.json').read_bytes(), journal)
++            self.assertEqual((hermes / 'config.yaml').read_text(), 'Synthetic edit while stopping')
++            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v2')
++            self.assertEqual(events, ['stop', 'start', 'verify', 'stop', 'start'])
++
++    def test_restore_archives_a_write_that_races_with_profile_replacement(self):
++        with tempfile.TemporaryDirectory() as directory:
++            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++            _, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
++            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
++                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
++            original_replace = os.replace
++            def write_during_move(source, destination):
++                if Path(source) == hermes / 'config.yaml' and Path(destination).is_relative_to(snapshot / 'mount-before-restore'):
++                    Path(source).write_text('Synthetic edit after the final check')
++                return original_replace(source, destination)
++            with patch('lifeos_hook_bridge.update_transaction.os.replace', side_effect=write_during_move):
++                restored = restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
++            self.assertEqual(restored['state'], 'rolled_back')
++            archive = Path(restored['profile_archive'])
++            self.assertEqual(archive.stat().st_mode & 0o777, 0o700)
++            self.assertEqual((archive / 'config.yaml').read_text(), 'Synthetic edit after the final check')
++            self.assertEqual((archive / 'baseline.json').read_text(), 'selected baseline')
++            self.assertEqual((hermes / 'config.yaml').read_text(), 'prior config')
++
+     def test_second_directory_rename_failure_restores_installed_tree(self):
+         with tempfile.TemporaryDirectory() as directory:
+             installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))

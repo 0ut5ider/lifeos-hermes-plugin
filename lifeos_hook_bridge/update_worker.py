@@ -245,7 +245,11 @@ def _main() -> int:
         try:
             manifest = args.job / "snapshot/manifest.json"
             state = json.loads(manifest.read_text())["state"] if manifest.is_file() else "failed"
-            _write_status(args.job, state if state in {"rolled_back", "rollback_failed"} else "failed", str(error))
+            if state in {"stopped", "swapped", "restoring", "rollback_failed"}:
+                state = 'interrupted'
+            elif state not in {'applied', 'rolled_back'}:
+                state = 'failed'
+            _write_status(args.job, state, str(error))
         except (OSError, ValueError, KeyError):
             pass
         print(f"LifeOS update {args.action} failed: {error}", file=sys.stderr)
