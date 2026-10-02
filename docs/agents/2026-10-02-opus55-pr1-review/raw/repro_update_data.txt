@@ -1,0 +1,14 @@
+{
+  "R1_concurrent_write": {
+    "update_state": "applied",
+    "fact_in_installed": false,
+    "fact_only_in_snapshot_live_prior": true,
+    "restore_guard_baseline_includes_loss": false
+  },
+  "R2_restore_profile_edit": {
+    "route_guard": "passed",
+    "config_after_restore": "prior config",
+    "env_exists_after_restore": false,
+    "later_edit_copies_retained_anywhere_in_snapshot": []
+  }
+}

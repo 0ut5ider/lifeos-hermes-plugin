@@ -1,0 +1,225 @@
+{
+  "reviewed_base": "648fe30a5c5f40551c9a3d73f0d80f527dbd7412",
+  "reviewed_head": "4190e9929f90f058622ce6d9cc4d64444fbbb508",
+  "pr_url": "https://github.com/0ut5ider/lifeos-hermes-plugin/pull/1",
+  "date": "2026-10-02",
+  "model": {
+    "requested": "claude-opus-5-5",
+    "actual": "claude-opus-5-5",
+    "effort": "medium"
+  },
+  "findings": [
+    {
+      "id": "F1",
+      "severity": "high",
+      "status": "reproduced",
+      "category": "data-preservation",
+      "file": "lifeos_hook_bridge/update_transaction.py",
+      "line": 77,
+      "related": [
+        "lifeos_hook_bridge/update_transaction.py:188-198",
+        "lifeos_hook_bridge/dashboard/plugin_api.py:605-648"
+      ],
+      "caller_path": "POST /installation/update/restore -> _resume_lifeos_update -> validate_restore -> update_worker --action restore -> restore_update -> _restore_mount",
+      "summary": "Browser version restore deletes later Hermes profile edits (config.yaml, .env, SOUL.md, plugins/lifeos) without a guard or archive.",
+      "expected": "Restore refuses or archives when profile mount targets changed after the update.",
+      "actual": "Guard passes; config.yaml reverts; .env added after update is deleted; no copy retained.",
+      "reproduce": "cd /home/outsider/Projects/Hermes_agent/LifeOS_plugin && PYTHONDONTWRITEBYTECODE=1 $HOME/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-10-02-opus55-pr1-review/raw/repro_update_data.py",
+      "evidence": "raw/repro_update_data.txt (R2_restore_profile_edit)",
+      "correction": "Record post-update digests/modes of mount targets; validate_restore refuses on difference, or archive current targets before replacement; add regression test."
+    },
+    {
+      "id": "F2",
+      "severity": "medium",
+      "status": "reproduced",
+      "category": "confidentiality",
+      "dormant": true,
+      "file": "lifeos_hook_bridge/bin/claude_direct.py",
+      "line": 148,
+      "caller_path": "Inference.ts -> bin/claude (LIFEOS_CHILD_INFERENCE_DIRECT=1) -> claude_direct.main -> check_call(request={'model'}) -> POST ANTHROPIC_BASE_URL",
+      "summary": "Direct child inference runs memory admission on a model-only body, so forgotten claims in the child system prompt or content reach the model.",
+      "expected": "Child exits non-zero and the gateway receives no request.",
+      "actual": "Exit 0; gateway receives 1 request whose system prompt contains the forgotten claim; same check refuses when given the full body.",
+      "reproduce": "cd /home/outsider/Projects/Hermes_agent/LifeOS_plugin && LIFEOS_MEMORY_SOURCE=$HOME/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=$HOME/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=.:tests:$LIFEOS_HERMES_SOURCE $HOME/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-10-02-opus55-pr1-review/raw/repro_child_direct.py",
+      "evidence": "raw/repro_child_direct.txt",
+      "correction": "Pass the actual request_body to check_call and send the checked body; add regression test with forgotten text in system and user content."
+    },
+    {
+      "id": "F3",
+      "severity": "low",
+      "status": "reproduced (function level)",
+      "category": "credential-filtering",
+      "file": "development/hook_capture/store.py",
+      "line": 22,
+      "related": [
+        "development/hook_capture/instrument.py:602",
+        "lifeos_hook_bridge/bridge.py:1298-1301"
+      ],
+      "summary": "Private recorder captures full hook env; names like ANTHROPIC_KEY, GH_PAT, SSH_PASSPHRASE and path-embedded webhook secrets survive redaction.",
+      "reproduce": "cd /home/outsider/Projects/Hermes_agent/LifeOS_plugin && $HOME/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-10-02-opus55-pr1-review/raw/repro_recorder_redaction.py",
+      "evidence": "raw/repro_recorder_redaction.txt",
+      "correction": "Do not record env values, or record names plus an allowlist."
+    },
+    {
+      "id": "F4",
+      "severity": "low",
+      "status": "static",
+      "category": "credential-retention",
+      "file": "lifeos_hook_bridge/mount_transaction.py",
+      "line": 301,
+      "summary": "Each mount leaves permanent 0600 copies of .env and config.yaml under <profile>/.lifeos-mount/<uuid>/; no cleanup.",
+      "reproduce": null,
+      "correction": "Prune snapshots not referenced by the current journal after committed or rolled_back."
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "file": "lifeos_hook_bridge/dashboard/plugin_api.py",
+      "line": 614,
+      "summary": "No job lock on restore/recover launch; concurrent requests can start two workers and leave the gateway stopped."
+    },
+    {
+      "id": "H2",
+      "file": "lifeos_hook_bridge/dashboard/plugin_api.py",
+      "line": 575,
+      "summary": "3600 s apply grant may expire during a long update, causing post-swap rollback with an unclear cause."
+    },
+    {
+      "id": "H3",
+      "file": "lifeos_hook_bridge/update_transaction.py",
+      "line": 143,
+      "pre_existing": true,
+      "summary": "Writes during copy window are lost for non-symlinked LIFEOS/MEMORY layouts; managed layout requires symlinks so governed writes are unaffected.",
+      "evidence": "raw/repro_update_data.txt (R1_concurrent_write)"
+    }
+  ],
+  "optional_improvements": [
+    "Apply _fixed_mount_request to POST /installation/update and /installation/update/recover (plugin_api.py:548, 595).",
+    "Check job binding in MemoryService.administrative (memory_service.py:219).",
+    "Revoke grant when run_update_job initial validation fails (update_worker.py:227-229)."
+  ],
+  "tests": [
+    {
+      "command": "raw/run_gate.sh (31 unittest modules, -W error::ResourceWarning)",
+      "result": "337 passed, 0 failed, 0 skipped, 0 warnings",
+      "duration_s": 240.28,
+      "output": "raw/gate.txt"
+    },
+    {
+      "command": "unittest discover development/tests",
+      "result": "30 passed",
+      "output": "raw/development-tests.txt"
+    },
+    {
+      "command": "node --test tests/test_dashboard_ui.cjs tests/test_memory_dashboard_ui.cjs",
+      "result": "11 passed",
+      "output": "raw/dashboard-ui.txt"
+    },
+    {
+      "command": "unittest test_memory_children test_update_transaction -v",
+      "result": "6 run, OK, 1 skipped (LIFEOS_TASK_HOOK_PATH unset in ad hoc run; passed in gate)",
+      "output": "raw/children-update-tests.txt"
+    },
+    {
+      "command": "raw/repro_update_data.py",
+      "result": "F1 reproduced; H3 behavior observed",
+      "output": "raw/repro_update_data.txt"
+    },
+    {
+      "command": "raw/repro_child_direct.py",
+      "result": "F2 reproduced",
+      "output": "raw/repro_child_direct.txt"
+    },
+    {
+      "command": "raw/repro_recorder_redaction.py",
+      "result": "F3 reproduced (4 of 7 synthetic values retained)",
+      "output": "raw/repro_recorder_redaction.txt"
+    }
+  ],
+  "coverage": [
+    {
+      "component": "memory_administration.py",
+      "status": "reviewed, tested"
+    },
+    {
+      "component": "mount_transaction.py",
+      "status": "reviewed, tested"
+    },
+    {
+      "component": "update_worker.py / update_transaction.py",
+      "status": "reviewed, tested, reproduced"
+    },
+    {
+      "component": "dashboard/plugin_api.py",
+      "status": "reviewed, tested"
+    },
+    {
+      "component": "install_source.py (finalize)",
+      "status": "reviewed, tested"
+    },
+    {
+      "component": "version_drift.py",
+      "status": "reviewed"
+    },
+    {
+      "component": "memory_http.py + native relay/Mount.ts/MemoryAccess.ts in lifeos-memory-access.patch",
+      "status": "reviewed (relay, origin, remount, staged mount); renderers skimmed"
+    },
+    {
+      "component": "memory_service.py, memory_policy.py, memory_context.py, memory_rpc.py",
+      "status": "reviewed, tested"
+    },
+    {
+      "component": "memory_runtime.py, memory_provider.py, __init__.py, bridge.py diff",
+      "status": "reviewed, tested; dormant"
+    },
+    {
+      "component": "bin/claude, bin/claude_direct.py",
+      "status": "reviewed, reproduced"
+    },
+    {
+      "component": "memory_sharing.py, memory_mcp.py, memory_preferences.py",
+      "status": "reviewed, tested"
+    },
+    {
+      "component": "hermes-required-middleware.patch",
+      "status": "additions reviewed; host pytest not run"
+    },
+    {
+      "component": "other Hermes patch diffs",
+      "status": "not reviewed"
+    },
+    {
+      "component": "memory_access.py",
+      "status": "partially reviewed"
+    },
+    {
+      "component": "memory_restore/staging/sources/source_review/diagnostics/canonical/wiki/knowledge/pulse/prompt/proposals/adoption/history/native.ts/publication.ts/transaction",
+      "status": "entry-point authorization spot-checked; internals not re-reviewed"
+    },
+    {
+      "component": "development/hook_capture",
+      "status": "partially reviewed, tested"
+    },
+    {
+      "component": "scripts/prepare_sources.py, scripts/rebuild_hermes_patches.py, development/probes/remote_capture.py",
+      "status": "not reviewed"
+    },
+    {
+      "component": "dashboard/dist/index.js",
+      "status": "not reviewed; UI tests pass"
+    }
+  ],
+  "limitations": [
+    "Medium effort; several memory modules reviewed only at authorization entry points.",
+    "Complete 600-case memory regression and Hermes patch pytest suite not run.",
+    "No live systemd, browser, SSH remote, Docker, .211/.212/.213, external credential, or real-model tests.",
+    "Archived historical tests not rerun.",
+    "F1 live reachability depends on the strict user-data guard passing; currently a native audit append often blocks restore (documented).",
+    "F2 is dormant while ownership is disabled.",
+    "F3 reachability depends on actual environment variable names on the host (not inspected).",
+    "No claim of full hook parity, full memory acceptance, or release acceptance."
+  ],
+  "merge_recommendation": "Keep as draft; do not merge as release candidate until F1 and F2 are fixed with regression tests."
+}
