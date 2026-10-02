@@ -2,6 +2,7 @@
 # ABOUTME: Runs native finalization and validates queued update grants without starting systemd services.
 import importlib.util
 import contextlib
+from concurrent.futures import ThreadPoolExecutor
 import io
 import json
 import os
@@ -10,6 +11,7 @@ import secrets
 import signal
 import subprocess
 import sys
+import threading
 import unittest
 from unittest.mock import patch
 
@@ -365,6 +367,36 @@ class MemoryAdminDashboardTests(unittest.TestCase):
                     self.assertEqual((job / 'status.json').read_bytes(), before_status)
                     self.assertEqual(self.grants(), [])
             launched.assert_not_called()
+
+    def test_dashboard_remains_responsive_while_recovery_launch_waits(self):
+        self.login()
+        job = self.interrupted_job()
+        entered, release, finished = threading.Event(), threading.Event(), threading.Event()
+
+        @self.app.get('/auth/login/recovery-scheduling-probe')
+        async def probe():
+            return {'launch_finished': finished.is_set()}
+
+        def launch(selected, action):
+            self.assertEqual((selected, action), (job, 'recover'))
+            entered.set()
+            release.wait(timeout=5)
+            finished.set()
+
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=launch), ThreadPoolExecutor(max_workers=1) as pool:
+            pending = pool.submit(self.post, '/update/recover')
+            try:
+                self.assertTrue(entered.wait(timeout=5), 'Recovery did not reach launch')
+                response = self.client.get('/auth/login/recovery-scheduling-probe')
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertFalse(response.json()['launch_finished'], 'Recovery launch blocked other dashboard requests')
+            finally:
+                release.set()
+                recovery = pending.result(timeout=10)
+                self.assertEqual(recovery.status_code, 200, recovery.text)
+                request = json.loads((job / 'request.json').read_text())
+                self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
+                                Path(request['memory_authorization']))
 
     def test_restore_refuses_a_job_for_another_installation(self):
         self.login()
