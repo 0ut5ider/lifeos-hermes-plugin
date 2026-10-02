@@ -1,0 +1,107 @@
+{
+  "tested_revision": "567d9c9193f8457596c271aa8deb4c64338e9419",
+  "python": {
+    "selected": 1051,
+    "passed": 1030,
+    "skipped": 21,
+    "failures": 0,
+    "errors": 0,
+    "resource_warnings": 0
+  },
+  "development_recorder": {
+    "passed": 32,
+    "skipped": 0
+  },
+  "dashboard": {
+    "passed": 12,
+    "skipped": 0
+  },
+  "skips": [
+    {
+      "test": "test_content_bearing_browser_results_reach_webfetch_matcher (test_live_browser_result_safety.LiveBrowserResultSafetyTests.test_content_bearing_browser_results_reach_webfetch_matcher)",
+      "reason": "real browser fixture is required"
+    },
+    {
+      "test": "test_native_neutral_command_is_blocked_before_docker_execution (test_live_container_command_policy.LiveContainerCommandPolicyTests.test_native_neutral_command_is_blocked_before_docker_execution)",
+      "reason": "Docker image and native Safety hook are required"
+    },
+    {
+      "test": "test_docker_file_tools_and_hooks_use_the_same_path (test_live_container_file_hooks.LiveContainerFileHookTests.test_docker_file_tools_and_hooks_use_the_same_path)",
+      "reason": "disposable Docker image is required"
+    },
+    {
+      "test": "test_docker_web_cache_read_reaches_webfetch_hook (test_live_container_file_hooks.LiveContainerFileHookTests.test_docker_web_cache_read_reaches_webfetch_hook)",
+      "reason": "disposable Docker image is required"
+    },
+    {
+      "test": "test_nested_execute_code_read_uses_container_and_outer_session (test_live_container_file_hooks.LiveContainerFileHookTests.test_nested_execute_code_read_uses_container_and_outer_session)",
+      "reason": "disposable Docker image is required"
+    },
+    {
+      "test": "test_container_read_external_edit_and_native_write_guard (test_live_container_isa.LiveContainerISATests.test_container_read_external_edit_and_native_write_guard)",
+      "reason": "disposable Docker image is required"
+    },
+    {
+      "test": "test_async_container_hook_survives_parent_exit (test_live_container_project_hooks.LiveContainerProjectHookTests.test_async_container_hook_survives_parent_exit)",
+      "reason": "disposable Docker project is required"
+    },
+    {
+      "test": "test_container_project_hook_requires_image_bound_trust (test_live_container_project_hooks.LiveContainerProjectHookTests.test_container_project_hook_requires_image_bound_trust)",
+      "reason": "disposable Docker project is required"
+    },
+    {
+      "test": "test_container_symlink_destination_file_rule (test_live_container_project_hooks.LiveContainerProjectHookTests.test_container_symlink_destination_file_rule)",
+      "reason": "disposable Docker project is required"
+    },
+    {
+      "test": "test_execute_code_inner_read_uses_ssh_workspace_and_outer_session (test_live_nested_ssh_hooks.LiveNestedSshHookTests.test_execute_code_inner_read_uses_ssh_workspace_and_outer_session)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_remote_hook_receives_large_payload_and_separate_streams (test_live_project_hook_transport.LiveProjectHookTransportTests.test_remote_hook_receives_large_payload_and_separate_streams)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_remote_read_external_edit_and_native_write_guard (test_live_remote_isa.LiveRemoteISATests.test_remote_read_external_edit_and_native_write_guard)",
+      "reason": "disposable SSH fixture is required"
+    },
+    {
+      "test": "test_async_ssh_project_hook_survives_parent_exit (test_live_remote_project_hooks.LiveRemoteProjectHookTests.test_async_ssh_project_hook_survives_parent_exit)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_remote_project_http_hook_uses_backend_loopback (test_live_remote_project_hooks.LiveRemoteProjectHookTests.test_remote_project_http_hook_uses_backend_loopback)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_remote_settings_change_reaches_config_change_hooks (test_live_remote_project_hooks.LiveRemoteProjectHookTests.test_remote_settings_change_reaches_config_change_hooks)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_ssh_project_bash_deny_requires_backend_bound_trust (test_live_remote_project_hooks.LiveRemoteProjectHookTests.test_ssh_project_bash_deny_requires_backend_bound_trust)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_ssh_project_hook_requires_backend_bound_trust (test_live_remote_project_hooks.LiveRemoteProjectHookTests.test_ssh_project_hook_requires_backend_bound_trust)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_ssh_symlink_destination_file_rule (test_live_remote_project_hooks.LiveRemoteProjectHookTests.test_ssh_symlink_destination_file_rule)",
+      "reason": "disposable SSH project is required"
+    },
+    {
+      "test": "test_project_permission_denial_uses_ssh_workspace (test_live_ssh_command_policy.LiveSshCommandPolicyTests.test_project_permission_denial_uses_ssh_workspace)",
+      "reason": "native Safety hook and disposable SSH project are required"
+    },
+    {
+      "test": "test_ssh_web_cache_read_reaches_webfetch_hook (test_live_ssh_web_cache.LiveSshWebCacheTests.test_ssh_web_cache_read_reaches_webfetch_hook)",
+      "reason": "disposable SSH endpoint is required"
+    },
+    {
+      "test": "test_first_natural_prompt_names_session_with_local_model (test_native_prompt_processing.NativePromptProcessingTests.test_first_natural_prompt_names_session_with_local_model)",
+      "reason": "local model settings and child launcher are required"
+    }
+  ],
+  "review_gate": "77 independent correction cases pass; six findings closed",
+  "live_acceptance": "apply, external-audit-preserving restore, and process-kill mount recovery pass"
+}

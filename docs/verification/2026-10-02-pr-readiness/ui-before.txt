@@ -1,0 +1,74 @@
+TAP version 13
+# Subtest: memory status names incomplete gates and does not offer activation
+ok 1 - memory status names incomplete gates and does not offer activation
+  ---
+  duration_ms: 9.713009
+  type: 'test'
+  ...
+# Subtest: agent correction guidance requires active memory ownership
+not ok 2 - agent correction guidance requires active memory ownership
+  ---
+  duration_ms: 3.033553
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_ui.cjs:51:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    true !== false
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: false
+  actual: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard_ui.cjs:56:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 3 - pending changes show their target and exact revision for manual decisions
+  ---
+  duration_ms: 4.471814
+  type: 'test'
+  ...
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 4 - conflicted proposal remains visible and edit decisions send the owner draft
+  ---
+  duration_ms: 1.732323
+  type: 'test'
+  ...
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 5 - valid minimal revoked grants do not break the preferences page
+  ---
+  duration_ms: 2.145093
+  type: 'test'
+  ...
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 6 - owner search displays references and new connections default to read-only project access
+  ---
+  duration_ms: 1.732804
+  type: 'test'
+  ...
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 7 - source adoption previews historical records and sends exact project assignments
+  ---
+  duration_ms: 1.879786
+  type: 'test'
+  ...
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 8 - source adoption retains a conflicted preview and reuses its request identifier
+  ---
+  duration_ms: 1.835342
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 84.722968

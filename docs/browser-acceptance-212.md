@@ -37,7 +37,7 @@ The tested LifeOS revision is 7.40.4 at commit `5e2f2e8c0abde612da0e99c16c0d07d4
 
 The browser completes native installation and setup. A real detached worker applies a same-revision update and restarts the gateway. The interrupted-mount control restores verified previous bytes and permissions after a killed process.
 
-`Restore previous LifeOS version` uses the saved update snapshot. The control refuses restoration when user data has changed after that snapshot. It keeps the current installation and update job intact. Two live browser checks verify this refusal. A fresh restore rehearsal finds a native configuration audit appended after the update. The guard refuses that change too. Preserving later audit data while restoring program files remains an acceptance case; earlier directory-level restore tests do not replace it.
+`Restore previous LifeOS version` restores the saved program snapshot and keeps current external LifeOS user data. The transaction verifies the recorded directory links and physical target identities before the swap. A live browser rehearsal adds a synthetic audit entry after the update. Restore preserves all 321,597 audit bytes and the original file identity. Changed embedded data, replaced links, and later Hermes profile changes still refuse restoration. The [PR readiness record](verification/2026-10-02-pr-readiness/README.md) contains the receipts and limits.
 
 Some native hooks update generated documentation timestamps. An update can then require an explicit baseline review. The plugin must not ignore arbitrary source changes to make an update pass. This is a current usability limit.
 

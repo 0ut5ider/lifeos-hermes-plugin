@@ -51,3 +51,9 @@ To restore the prior LifeOS system files, run `python scripts/system_overlay_sna
 The LifeOS Bridge page offers **Prepare latest LifeOS update** and **Apply prepared LifeOS update** for the tested revision. It does not call `hermes update` or repeat `DeployCore.ts --apply` over the live tree. Its registration replacement accounts for the native installer's empty-matcher grouping, preserves unrelated hooks, and refuses edited or duplicate old hooks. [The ownership probe](../notes/2026-09-29-update-tool-ownership.md) records the 74-hook check.
 
 The long-term way to reduce this maintenance cost is to contribute the generic Hermes hook events upstream and make the LifeOS handlers accept Hermes event data upstream. Until both sides contain those changes, the compatibility set and staged verification remain necessary.
+
+## Operation admission
+
+The dashboard rejects installation mutations from another origin. Fixed installation actions also reject query parameters and request bodies. Authenticated admission and detached code workers share a private installation lock. A competing action receives a conflict before it creates a job or owner grant. Process termination releases the lock; the transaction journal still determines whether recovery is required.
+
+The [PR readiness record](verification/2026-10-02-pr-readiness/README.md) verifies real lock contention, process termination, browser apply, and version restore with later external audit data. These checks use the pinned revisions. They do not establish compatibility with a newer upstream version.

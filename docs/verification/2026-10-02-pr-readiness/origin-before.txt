@@ -1,0 +1,41 @@
+FFFF
+======================================================================
+FAIL: test_other_mutations_refuse_cross_origin_before_payload_validation (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_other_mutations_refuse_cross_origin_before_payload_validation) (method='POST', path='/memory/sharing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 118, in test_other_mutations_refuse_cross_origin_before_payload_validation
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 403 : {"detail":"Choose whether memory sharing is enabled"}
+
+======================================================================
+FAIL: test_other_mutations_refuse_cross_origin_before_payload_validation (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_other_mutations_refuse_cross_origin_before_payload_validation) (method='PUT', path='/settings')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 118, in test_other_mutations_refuse_cross_origin_before_payload_validation
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"saved":[],"restart_required":false}
+
+======================================================================
+FAIL: test_other_mutations_refuse_cross_origin_before_payload_validation (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_other_mutations_refuse_cross_origin_before_payload_validation) (method='POST', path='/version-drift')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 118, in test_other_mutations_refuse_cross_origin_before_payload_validation
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 403 : {"detail":"Enter an absolute LifeOS source install path"}
+
+======================================================================
+FAIL: test_other_mutations_refuse_cross_origin_before_payload_validation (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_other_mutations_refuse_cross_origin_before_payload_validation) (method='DELETE', path='/memory/connections/synthetic')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 118, in test_other_mutations_refuse_cross_origin_before_payload_validation
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 403 : {"detail":"Memory is unavailable under the current installation policy"}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.224s
+
+FAILED (failures=4)

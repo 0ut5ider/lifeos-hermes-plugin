@@ -1,0 +1,28 @@
+commit 36727e508c0795868045968d86cdace0c88f9d35
+Author:     Adrian <adrian@construkted.com>
+AuthorDate: Fri Oct 2 17:31:34 2026 -0400
+Commit:     Adrian <adrian@construkted.com>
+CommitDate: Fri Oct 2 17:31:34 2026 -0400
+
+    fix(install): close readiness review findings
+    
+    Bind external user directories before version restore. Keep current external facts and audit data in place. Refuse changed embedded data and profile targets.
+    
+    Reject mutation requests from another dashboard origin. Serialize program workers and admission with one private installation lock. Keep restore launches off the dashboard event loop.
+    
+    Correct ownership guidance and source branch preparation. Add regression cases for the confirmed failures in PR #1.
+
+diff --git a/lifeos_hook_bridge/memory_provider.py b/lifeos_hook_bridge/memory_provider.py
+index 1a05813..006b8cb 100644
+--- a/lifeos_hook_bridge/memory_provider.py
++++ b/lifeos_hook_bridge/memory_provider.py
+@@ -44,7 +44,8 @@ class LifeOSMemoryProvider(MemoryProvider):
+             return False
+ 
+     def unavailable_reason(self) -> str:
+-        return 'Set up LifeOS lasting memory in the plugin page and verify the required host extension first.'
++        return ('LifeOS memory ownership cannot be activated in this release. '
++                'Experimental ownership profiles also require the tested host extension.')
+ 
+     def initialize(self, session_id: str, **kwargs) -> None:
+         if kwargs.get('hermes_home') and Path(kwargs['hermes_home']).absolute() != self.configuration.path.parent.absolute():

@@ -1,0 +1,76 @@
+TAP version 13
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+  ---
+  duration_ms: 10.416725
+  type: 'test'
+  ...
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+  ---
+  duration_ms: 2.187053
+  type: 'test'
+  ...
+# Subtest: missing LifeOS shows preparation without active model settings
+ok 3 - missing LifeOS shows preparation without active model settings
+  ---
+  duration_ms: 2.339515
+  type: 'test'
+  ...
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+  ---
+  duration_ms: 2.867044
+  type: 'test'
+  ...
+# Subtest: memory status names incomplete gates and does not offer activation
+ok 5 - memory status names incomplete gates and does not offer activation
+  ---
+  duration_ms: 10.185282
+  type: 'test'
+  ...
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 6 - pending changes show their target and exact revision for manual decisions
+  ---
+  duration_ms: 4.604378
+  type: 'test'
+  ...
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 7 - conflicted proposal remains visible and edit decisions send the owner draft
+  ---
+  duration_ms: 1.727584
+  type: 'test'
+  ...
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 8 - valid minimal revoked grants do not break the preferences page
+  ---
+  duration_ms: 1.334332
+  type: 'test'
+  ...
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 9 - owner search displays references and new connections default to read-only project access
+  ---
+  duration_ms: 2.834331
+  type: 'test'
+  ...
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 10 - source adoption previews historical records and sends exact project assignments
+  ---
+  duration_ms: 2.092313
+  type: 'test'
+  ...
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 11 - source adoption retains a conflicted preview and reuses its request identifier
+  ---
+  duration_ms: 1.739438
+  type: 'test'
+  ...
+1..11
+# tests 11
+# suites 0
+# pass 11
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 77.516544
