@@ -208,6 +208,18 @@ def preview_memory_adoption(request: dict, account: str = Depends(_memory_accoun
     return _memory_action(lambda preferences:preferences.preview_adoption(account=account))
 
 
+@router.post('/memory/sources/preview')
+def preview_memory_sources(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'paths'}:
+        raise HTTPException(status_code=400, detail='Choose installed source paths for review')
+    return _memory_action(lambda preferences: preferences.preview_sources(request['paths'], account=account))
+
+
+@router.post('/memory/sources')
+def approve_memory_sources(request: dict, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences: preferences.approve_sources(request, account=account))
+
+
 @router.post('/memory/adoption')
 def adopt_memory_sources(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'signature','projects','request_id'}:

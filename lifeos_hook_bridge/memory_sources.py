@@ -72,6 +72,35 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
+def _markdown_source(memory, scope: MemoryScope, path: str):
+    source, relative = _source_path(memory, scope, path)
+    if source.suffix != '.md':
+        raise MemoryUnavailable('The declared wiki source must be native Markdown')
+    before = source.stat()
+    if before.st_size > SOURCE_LIMIT:
+        raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
+    try:
+        content = source.read_text(encoding='utf-8')
+    except UnicodeError as error:
+        raise MemoryUnavailable('The native wiki source is not valid UTF-8') from error
+    after = source.stat()
+    if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
+            != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
+        raise MemoryUnavailable('The native wiki source changed during collection')
+    _source_path(memory, scope, path)
+    if len(content.encode()) > SOURCE_LIMIT:
+        raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
+    return ({'path': path, 'relative': relative, 'content': content,
+             'lastModified': _source_time(after, milliseconds=True)}, _source_time(after))
+
+
+def _admit(memory, connection, scope, content, relative, timestamp):
+    from .memory_source_review import is_reviewed
+    labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
+    return memory._filter_history(connection, scope, '\n'.join((content, relative, labels)), timestamp,
+                                  reviewed=is_reviewed(memory, connection, scope, relative, content))
+
+
 def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
     authorize(scope)
     if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
@@ -81,30 +110,13 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
         timestamps = {}
         total = 0
         for path in paths:
-            source, relative = _source_path(memory, scope, path)
-            if source.suffix != '.md':
-                raise MemoryUnavailable('The declared wiki source must be native Markdown')
-            before = source.stat()
-            if before.st_size > SOURCE_LIMIT:
-                raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
-            try:
-                content = source.read_text(encoding='utf-8')
-            except UnicodeError as error:
-                raise MemoryUnavailable('The native wiki source is not valid UTF-8') from error
-            after = source.stat()
-            if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
-                    != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
-                raise MemoryUnavailable('The native wiki source changed during collection')
-            _source_path(memory, scope, path)
-            size = len(content.encode())
-            if size > SOURCE_LIMIT:
-                raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
+            source, timestamp = _markdown_source(memory, scope, path)
+            size = len(source['content'].encode())
             total += size
             if total > CORPUS_LIMIT:
                 raise MemoryUnavailable('The declared native wiki sources exceed their transport limit')
-            timestamps[path] = _source_time(after)
-            sources.append({'path': path, 'relative': relative, 'content': content,
-                            'lastModified': _source_time(after, milliseconds=True)})
+            timestamps[path] = timestamp
+            sources.append(source)
         if not sources:
             return []
         checked = memory._native('validate_source_batch',
@@ -114,9 +126,7 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
             if accepted is not True:
                 continue
             relative = source['relative']
-            labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
-            if not memory._filter_history(connection, scope,
-                    '\n'.join((source['content'], relative, labels)), timestamps[source['path']])['excluded']:
+            if not _admit(memory, connection, scope, source['content'], relative, timestamps[source['path']])['excluded']:
                 admitted.append(source)
         return admitted
 
@@ -232,8 +242,8 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
             checked = memory._validate({'type':'idea','title':'Native retained source','content':text},text,'project')
             if checked:
                 return {**rejected, 'reason':'Native validation rejected this source text'}
-        labels = re.sub(r'(^|/)\d{8}-\d{6}_',r'\1',relative).replace('-',' ')
-        filtered = memory._filter_history(connection,scope,'\n'.join((content,decoded,relative,labels)),timestamp)
+        filtered = _admit(memory, connection, scope, '\n'.join((content, decoded)) if decoded else content,
+                          relative, timestamp)
         if filtered['excluded']:
             return {**rejected, 'reason':'This retained source predates a correction or contains a removed claim'}
         return {'ok':True, 'content':content, 'excluded':False, 'historical':relative.startswith('LIFEOS/MEMORY/LEARNING/')}

@@ -2,13 +2,14 @@
 # ABOUTME: Manages optional client grants without claiming that unfinished ownership gates have passed.
 from __future__ import annotations
 
+from dataclasses import replace
 from pathlib import Path
 import sqlite3
 import subprocess
 from typing import Any
 
 from .memory_access import NativeMemory, MemoryUnavailable
-from .memory_policy import CATEGORIES, MemoryScope
+from .memory_policy import CATEGORIES, MemoryPolicy, MemoryScope
 from .memory_service import MemoryConfiguration, MemoryService
 from .memory_sharing import MemorySharing
 
@@ -101,6 +102,23 @@ class MemoryPreferences:
     def preview_adoption(self, *, account: str | None = None) -> dict[str, Any]:
         config = self._configuration(account=account)
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))
+
+    def preview_sources(self, paths: list[str], *, account: str | None = None):
+        from .memory_source_review import preview
+        config = self._configuration(account=account)
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return preview(NativeMemory(self.root), scope, paths)
+
+    def approve_sources(self, request: dict[str, Any], *, account: str | None = None):
+        from .memory_source_review import approve
+        config = self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'paths', 'signature'}:
+            raise ValueError('Provide the reviewed installed paths and source signature')
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changed during source review')
+        scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
+        return approve(NativeMemory(self.root), scope, **request, check_current=check_current)
 
     def wiki_response(self, target: str, *, account: str | None = None):
         from .memory_wiki import view

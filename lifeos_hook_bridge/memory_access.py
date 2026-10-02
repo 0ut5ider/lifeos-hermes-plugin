@@ -20,7 +20,7 @@ from .memory_policy import CATEGORIES, MemoryScope
 from .memory_transaction import MemoryTransaction
 
 
-SCHEMA_VERSION = 3
+SCHEMA_VERSION = 4
 HOT_FILES = {
     "principal": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
     "assistant": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
@@ -82,7 +82,7 @@ class NativeMemory:
             connection.execute("PRAGMA busy_timeout=30000")
             connection.execute("BEGIN IMMEDIATE")
             version = connection.execute("PRAGMA user_version").fetchone()[0]
-            if version not in (0, SCHEMA_VERSION):
+            if version not in (0, 3, SCHEMA_VERSION):
                 raise MemoryUnavailable("The memory metadata schema is unsupported")
             connection.executescript("""
                 CREATE TABLE IF NOT EXISTS records (
@@ -100,6 +100,11 @@ class NativeMemory:
                 CREATE TABLE IF NOT EXISTS operations (
                     writer TEXT NOT NULL, request_id TEXT NOT NULL, payload_digest TEXT NOT NULL,
                     receipt TEXT NOT NULL, PRIMARY KEY(writer, request_id)
+                );
+                CREATE TABLE IF NOT EXISTS source_reviews (
+                    principal TEXT NOT NULL, path TEXT NOT NULL, digest TEXT NOT NULL,
+                    retirement_digest TEXT NOT NULL, writer TEXT NOT NULL, reviewed_at TEXT NOT NULL,
+                    PRIMARY KEY(principal, path)
                 );
             """)
             connection.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
@@ -664,7 +669,8 @@ class NativeMemory:
         with self._transaction() as connection:
             return self._filter_history(connection,scope,content,timestamp)
 
-    def _filter_history(self, connection: sqlite3.Connection, scope: MemoryScope, content: str, timestamp: str) -> dict[str, Any]:
+    def _filter_history(self, connection: sqlite3.Connection, scope: MemoryScope, content: str, timestamp: str,
+                        *, reviewed: bool = False) -> dict[str, Any]:
         retained = connection.execute("""SELECT * FROM records AS retained WHERE status IN ('forgotten','superseded')
                                       AND NOT EXISTS (SELECT 1 FROM records AS current WHERE current.status='active'
                                       AND current.claim_digest=retained.claim_digest AND current.category=retained.category
@@ -676,7 +682,7 @@ class NativeMemory:
             source_time = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
             if source_time.tzinfo is None:
                 raise ValueError("Reviewer sources need an explicit timezone")
-            if source_time <= max(datetime.fromisoformat(row["updated"]) for row in retained):
+            if not reviewed and source_time <= max(datetime.fromisoformat(row["updated"]) for row in retained):
                 return {"content": "", "excluded": True}
         except ValueError:
             return {"content": "", "excluded": True}
