@@ -185,14 +185,23 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         raise UpdateTransactionError(str(error)) from error
 
 
-def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
     manifest_path = snapshot / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest["state"] != "applied":
         raise UpdateTransactionError("Only an applied update can be restored")
-    installed = Path(manifest["installed"])
-    if _memory_digest(installed) != manifest["user_data"]:
+    target = Path(manifest['installed'])
+    if installed is not None and target.absolute() != installed.absolute():
+        raise UpdateTransactionError('The restore snapshot belongs to another installation')
+    if _memory_digest(target) != manifest["user_data"]:
         raise UpdateTransactionError("User data changed after update; automatic restore refused")
+    return manifest
+
+
+def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+    manifest = validate_restore(snapshot)
+    manifest_path = snapshot / "manifest.json"
+    installed = Path(manifest['installed'])
     manifest["state"] = "restoring"
     _write_json(manifest_path, manifest)
     stop()

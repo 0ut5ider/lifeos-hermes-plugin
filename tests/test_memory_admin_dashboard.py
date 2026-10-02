@@ -244,7 +244,9 @@ class MemoryAdminDashboardTests(unittest.TestCase):
     def applied_job(self):
         job = self.interrupted_job()
         (job / 'status.json').write_text(json.dumps({'state': 'applied'}) + '\n')
-        (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'applied'}))
+        transaction = self.api.install_module.memory_module('update_transaction')
+        (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'applied',
+            'installed': str(self.fixture.root), 'user_data': transaction._memory_digest(self.fixture.root)}))
         return job
 
     def test_restore_requires_fresh_action_bound_owner_authorization(self):
@@ -312,6 +314,20 @@ class MemoryAdminDashboardTests(unittest.TestCase):
             response = self.post('/update/restore')
         self.assertEqual(response.status_code, 403, response.text)
         self.assertEqual(self.grants(), [])
+
+    def test_changed_user_data_refuses_restore_without_changing_job(self):
+        self.login()
+        job = self.applied_job()
+        before_request = (job / 'request.json').read_bytes()
+        before_status = (job / 'status.json').read_bytes()
+        (self.fixture.root / 'USER.md').write_text('Synthetic later user edit')
+        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Data must be checked first')):
+            response = self.post('/update/restore')
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertIn('User data changed', response.text)
+        self.assertEqual(self.grants(), [])
+        self.assertEqual((job / 'request.json').read_bytes(), before_request)
+        self.assertEqual((job / 'status.json').read_bytes(), before_status)
 
     def test_failed_recovery_launch_preserves_retryable_job_state(self):
         self.login()

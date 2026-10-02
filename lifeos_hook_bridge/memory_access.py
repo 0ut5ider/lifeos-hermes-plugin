@@ -107,7 +107,8 @@ class NativeMemory:
                     PRIMARY KEY(principal, path)
                 );
             """)
-            connection.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
+            if version != SCHEMA_VERSION:
+                connection.execute(f"PRAGMA user_version={SCHEMA_VERSION}")
             connection.commit()
             os.chmod(self.database, 0o600)
             return connection

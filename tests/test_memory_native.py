@@ -51,6 +51,14 @@ class NativeMemoryTests(unittest.TestCase):
         return self.memory.remember(OWNER, category=category, content=content,
                                     title="Synthetic lab routing", project="lab", request_id=request)
 
+    def test_opening_current_metadata_preserves_database_bytes(self):
+        with self.memory._connect() as connection:
+            before_rows = list(connection.iterdump())
+        before = self.memory.database.read_bytes()
+        with self.memory._connect() as connection:
+            self.assertEqual(list(connection.iterdump()), before_rows)
+        self.assertEqual(self.memory.database.read_bytes(), before)
+
     def test_native_write_and_recall_share_the_authoritative_record(self):
         saved = self.remember()
         self.assertEqual(saved["status"], "committed")

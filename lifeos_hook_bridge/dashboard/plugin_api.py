@@ -625,6 +625,10 @@ def _resume_lifeos_update(previous: dict, account: str, action: str):
             authorization = preferences.authorize_mount(account=account, ttl=3600,
                 binding=install_module.memory_administration().job_binding(job, request, action))
             request['memory_authorization'] = str(authorization)
+        if action == 'restore':
+            install_module.memory_module('update_transaction').validate_restore(
+                job / 'snapshot', installed=INSTALLED_ROOT)
+        if 'authorization' in locals():
             changed = True
             install_module.memory_administration().publish(job / 'request.json',
                 (json.dumps(request) + '\n').encode())
