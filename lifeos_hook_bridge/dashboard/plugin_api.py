@@ -528,12 +528,18 @@ def _launch_lifeos_update(job: Path, action: str = "apply"):
         os.fchmod(stream.fileno(), 0o600)
         json.dump(status, stream)
         stream.write("\n")
-    command = ["systemd-run", "--user", "--collect",
-               f"--unit={unit}",
-               f"--setenv=HERMES_HOME={HERMES_HOME}", sys.executable,
-               str(PLUGIN_DIR / "update_worker.py"), str(job)]
+    from hermes_cli import _launchers
+    arguments = [str(PLUGIN_DIR / "update_worker.py"), str(job)]
     if action != "apply":
-        command.extend(["--action", action])
+        arguments.extend(["--action", action])
+    code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
+    runtime = _launchers.runtime_command(_host_source(), arguments, code=code, python=sys.executable)
+    command = ["systemd-run", "--user", "--collect", f"--unit={unit}",
+               f"--setenv=HOME={INSTALLED_ROOT.parent}", f"--setenv=HERMES_HOME={HERMES_HOME}",
+               f"--setenv=PATH={os.environ.get('PATH', os.defpath)}"]
+    if 'PULSE_URL' in os.environ:
+        command.append(f"--setenv=PULSE_URL={os.environ['PULSE_URL']}")
+    command.extend(runtime)
     launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
     if launched.returncode:
         raise IncompatibleLifeOS(f"Could not start the LifeOS update worker: {launched.returncode}")

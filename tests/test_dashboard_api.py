@@ -3,6 +3,8 @@
 
 import importlib.util
 import json
+import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -16,6 +18,51 @@ API_PATH = Path(__file__).resolve().parents[1] / "lifeos_hook_bridge/dashboard/p
 
 
 class DashboardApiTests(unittest.TestCase):
+    def test_update_worker_starts_installed_runtime_with_bound_home_and_tools(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        from hermes_cli import _launchers
+        host = Path(_launchers.__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            api.INSTALLED_ROOT = home / '.claude'
+            api.HERMES_HOME = home / '.hermes'
+            api.HERMES_HOME.mkdir()
+            api.HOST_SOURCE = host
+            api.PLUGIN_DIR = home / 'plugin'
+            api.PLUGIN_DIR.mkdir()
+            tools = home / '.local/bin'
+            tools.mkdir(parents=True)
+            bun = shutil.which('bun') or '/home/outsider/.bun/bin/bun'
+            (tools / 'bun').symlink_to(bun)
+            (api.PLUGIN_DIR / 'update_worker.py').write_text(
+                'import json,os,shutil,sys\nimport hermes_yaml\n'
+                'print(json.dumps(dict(home=os.environ["HOME"], profile=os.environ["HERMES_HOME"],'
+                'bun=shutil.which("bun"),pulse=os.environ.get("PULSE_URL"),args=sys.argv[1:])))\n')
+            job = home / 'job'
+            job.mkdir()
+            (job / 'status.json').write_text('{"state":"queued"}')
+            commands = []
+            with patch.dict(os.environ, {'PATH':str(tools)+':/usr/bin:/bin',
+                                         'PULSE_URL':'http://127.0.0.1:8923'}):
+                with patch.object(api.subprocess, 'run', side_effect=lambda command, **_: commands.append(command) or
+                                  types.SimpleNamespace(returncode=0, stdout='active')):
+                    api._launch_lifeos_update(job)
+            launch = commands[-1]
+            self.assertIn('--setenv=HOME='+str(home), launch)
+            self.assertIn('--setenv=PATH='+str(tools)+':/usr/bin:/bin', launch)
+            self.assertIn('--setenv=PULSE_URL=http://127.0.0.1:8923', launch)
+            environment = dict(os.environ, HOME='/wrong-home', PATH='/usr/bin:/bin')
+            for value in launch:
+                if value.startswith('--setenv='):
+                    key, data = value[len('--setenv='):].split('=', 1)
+                    environment[key] = data
+            start = launch.index(sys.executable)
+            child = subprocess.run(launch[start:], env=environment, capture_output=True, text=True, timeout=30)
+            self.assertEqual(child.returncode, 0, child.stderr)
+            self.assertEqual(child.stderr, '')
+            self.assertEqual(json.loads(child.stdout), {'home':str(home),'profile':str(api.HERMES_HOME),
+                'bun':str(tools/'bun'),'pulse':'http://127.0.0.1:8923','args':[str(job)]})
+
     def test_installation_status_distinguishes_missing_partial_and_installed(self):
         api = self.load_api(lambda *_: [], lambda *_: [])
         with tempfile.TemporaryDirectory() as directory:
