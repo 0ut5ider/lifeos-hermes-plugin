@@ -273,7 +273,7 @@ index 78c3927fc..583b122b4 100644
 +                    raise
          return results
 diff --git a/model_tools.py b/model_tools.py
-index 9a068d5a1..553a96609 100644
+index 9a068d5a1b..81017735ca 100644
 --- a/model_tools.py
 +++ b/model_tools.py
 @@ -1,3 +1,5 @@
@@ -333,7 +333,18 @@ index 9a068d5a1..553a96609 100644
      function_args = coerce_tool_args(function_name, function_args)
      if not isinstance(function_args, dict):
          function_args = {}
-@@ -954,6 +972,12 @@ def handle_function_call(
+@@ -906,7 +924,9 @@ def handle_function_call(
+     if bridged is not None:
+         result, underlying = bridged
+         if underlying is None:
+-            return _emit(result, duration_ms=_elapsed_ms(start))
++            duration_ms = _elapsed_ms(start)
++            _emit(result, duration_ms=duration_ms)
++            return _apply_transform_tool_result_hook(function_name, function_args, result, duration_ms, ids)
+         from tools.connectors import CONNECTOR_BATCH_SENTINEL, dispatch_connector_batch
+         if underlying[0] == CONNECTOR_BATCH_SENTINEL:
+             return _emit(dispatch_connector_batch(
+@@ -954,6 +974,12 @@ def handle_function_call(
          start = time.monotonic()
          result = _execute_tool(function_name, function_args, original_args, ids, user_task=user_task,
                                 enabled_tools=enabled_tools, skip_tool_execution_middleware=skip_tool_execution_middleware)
