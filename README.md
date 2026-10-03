@@ -1,5 +1,7 @@
 # LifeOS plugin for Hermes
 
+**Version:** `0.1.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
+
 This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
 
 
@@ -96,10 +98,10 @@ Install Hermes and configure a model first. Then install this plugin into Hermes
 
 The [source preparation command](docs/clean-install.md) applies this exact patch order from pinned public base revisions into two new trees. It checks every patch and writes `source-manifest.json` before publishing the output directory. The separate [system overlay snapshot tool](scripts/system_overlay_snapshot.py) saves changed LifeOS system files for a verified rollback. Run the rest of the clean install from those prepared trees.
 
-Clone this repository and get the full commit ID for the tested branch:
+Clone this repository and get the full commit ID for `main`:
 
 ```sh
-git rev-parse origin/feature/initial-scaffold
+git rev-parse origin/main
 ```
 
 Use that 40-character ID in Hermes's Git installer:
@@ -122,6 +124,26 @@ Required prompt, command, and final-answer callbacks stop the operation if they 
 A session review grant covers the reviewed command, target backend, and working directory. The plugin asks again for another workspace or target. Hermes still enforces a later denial. A failed required final check fails the turn immediately; it does not consume the configured continuation limit. When several valid final checks reject an answer, any check that requires failure at the limit retains that requirement.
 
 When a tier uses a Hermes provider and model, the LifeOS child launcher uses Hermes's installed runtime and that provider's credentials automatically. It does not need a separate gateway token in `model.env`. The direct provider route does not fall back to another provider when the selected provider fails. **Keep existing child routing (advanced)** is an explicit per-tier choice. Delegated Agent children then inherit the parent Hermes model, while direct inference uses `ANTHROPIC_MODEL` and the Anthropic Messages compatible gateway from `model.env` when direct mode is enabled. For that separate gateway route, set `LIFEOS_CHILD_INFERENCE_DIRECT=1` and keep `ANTHROPIC_BASE_URL`, `ANTHROPIC_AUTH_TOKEN`, and `ANTHROPIC_MODEL` in `model.env` with mode `0600`. Without direct mode, the child launcher passes the selected model and effort to the installed Claude CLI. A launcher started outside Hermes needs `LIFEOS_MODEL_TIER_MAP` in its environment to use plugin settings. The direct path accepts LifeOS text requests and image file references. For the Hermes integrity gate, run `hermes lifeos-probe --run` once and repeat it after changing the Fable route. The probe evidence expires after 30 days. `CarrierProbe.ts` remains the Claude Code specific test. See [the direct inference probe](notes/2026-09-28-direct-child-inference.md).
+
+## Versioning
+
+[VERSION](VERSION) records the plugin version. Hermes reads the matching version
+from [plugin.yaml](lifeos_hook_bridge/plugin.yaml), and the dashboard reads it from
+[manifest.json](lifeos_hook_bridge/dashboard/manifest.json). These three values
+must match. The plugin version is separate from the pinned Hermes and LifeOS
+source revisions in the tested compatibility set.
+
+Record pending changes under **Unreleased** in [CHANGELOG.md](CHANGELOG.md). When
+preparing a version, update `VERSION`, both manifests, and the version above in
+the same commit. Move the pending entries into a dated version section and record
+the validation results and known limits. Use patch increments for fixes and
+documentation, and minor increments for features. During `0.x` development,
+breaking changes also require a minor increment and explicit migration notes.
+Reserve `1.0.0` for a defined, stable compatibility contract.
+
+Version `0.1.0` records the experimental baseline after PR #1 merged. Install
+from a reviewed full commit ID as shown above. Server deployment follows the
+[update policy](docs/update-policy.md).
 
 ## Development evidence
 
