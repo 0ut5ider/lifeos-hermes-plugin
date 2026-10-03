@@ -1,0 +1,44 @@
+{
+  "scope": "Two paired handler cases. This does not establish complete effects for all registrations.",
+  "claude_code": "2.1.272",
+  "plugin_revision": "968de9d",
+  "cases": {
+    "toolsearch-benign": {
+      "native": {
+        "exit_code": 0,
+        "stdout_sha256": "c226b048200471a85c3bf18c3c6fe60a7d00859e138add63393431d156f8c5bf",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "additional_context_sha256": "4144a9a2ade9cec41b14916c4486af6a5f0e3ac13ec896489d5fec431993f68d"
+      },
+      "hermes": {
+        "exit_code": 0,
+        "stdout_sha256": "c226b048200471a85c3bf18c3c6fe60a7d00859e138add63393431d156f8c5bf",
+        "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "additional_context_sha256": "4144a9a2ade9cec41b14916c4486af6a5f0e3ac13ec896489d5fec431993f68d"
+      }
+    },
+    "terminal-401": {
+      "native": {
+        "event_type": "stop_failure",
+        "hook_event": "StopFailure",
+        "error_details": "authentication_failed"
+      },
+      "hermes": {
+        "event_type": "stop_failure",
+        "hook_event": "StopFailure",
+        "error_details": "authentication_failed"
+      }
+    }
+  },
+  "limitations": [
+    "The private gateway rejects tool_reference content on the next native model request.",
+    "Native failure control uses interactive mode; print mode does not emit this event in the tested fixture.",
+    "Only timestamps and session IDs are excluded from the failure audit comparison."
+  ],
+  "raw_traces": {
+    "native-hooks.jsonl": "bf42efe409008c299055b303490ca017ffd7fdcd90003c7b93b0c883ad82c4e2",
+    "hermes-hooks.jsonl": "a0ceb13ceec7b851f17afb8052330e47ae053d06876c2c165186ce51fd66324e",
+    "native-failure-hooks.jsonl": "8669e2b576a930ec954e1106bbadeec893b715f5c329e318d9838c3ab46886e6",
+    "hermes-failure-hooks.jsonl": "6c53d52f8054bce2a7fcfc325f849a26fa18eb98504c4b41c27b5ee5989ec5d5"
+  }
+}

@@ -1,0 +1,1049 @@
+{
+  "date": "2026-10-03",
+  "complete": false,
+  "scope": "Pinned local, SSH, and Docker evidence. Two selected paired effects are verified; complete handler effects remain open.",
+  "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
+  "artifacts": {
+    "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
+    "docs/verification/2026-10-03-hook-compatibility/affected-gate.log": "5f661841d50e6cb5ae0a5f54acda57f1e33f60585cbb392d00a882fea45869a7",
+    "docs/verification/2026-10-03-hook-compatibility/candidate-commands.json": "b1795a080116e0a9028b2bde73f0d25f1f928344a4c39f5a05b76292b2438f4a",
+    "docs/verification/2026-10-03-hook-compatibility/catalog-after.log": "ce822d8c136cc7605512de4d4ba4a5bdeede91ad7e0e722145b2ce976b4940c9",
+    "docs/verification/2026-10-03-hook-compatibility/catalog-before.log": "5d210c00a555cea4243dfa912b48b8d4f98908213aa27b6fab1213b124650f4d",
+    "docs/verification/2026-10-03-hook-compatibility/catalog-regression-results.json": "6301422f365bfaa4eb710ac3c4a0fe66195bef6f95ebd3de91dde0faf0a45a11",
+    "docs/verification/2026-10-03-hook-compatibility/cleanup.json": "98bd30a79eb640502cb476f7b3be74e615cb8b0afdf5d735374f6d523f39eb72",
+    "docs/verification/2026-10-03-hook-compatibility/full-suite-command.json": "f5283804686c858814a4213d703e12e5cf69bfdcc66f87a9e5a8894e626c4d54",
+    "docs/verification/2026-10-03-hook-compatibility/full-suite-driver.py": "bf6da78f917d49a9b056ae6149aa7772abfa5b35575d68285a7c9ae104f72915",
+    "docs/verification/2026-10-03-hook-compatibility/full-suite-prompt-failure.log": "b730e499dca82448bdda7f2a969d16743f62ab43688783d2356e8c7bbb2aba5c",
+    "docs/verification/2026-10-03-hook-compatibility/full-suite-result.json": "f82f5621c93575804be1562524091691278a1679e45405940f489b8e386a0105",
+    "docs/verification/2026-10-03-hook-compatibility/full-suite.log": "9034014864ac74ac1f2d7a662bca1208f46d8f963eaa06750fed5e655ba7b49e",
+    "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json": "6be39f3830f42e88157769aa523d401d5e60b055344c9825eb9610321377b2dc",
+    "docs/verification/2026-10-03-hook-compatibility/host-gate.log": "4f00fe6b7a90bd5726e164227aabf93c2a49f5cd049d44303d679f5ddffb2862",
+    "docs/verification/2026-10-03-hook-compatibility/initial-full-result.json": "7e7335393d4b1b6dd5282c1a9b01b3abe85ab4ac7fac93e029f8495040f1dfde",
+    "docs/verification/2026-10-03-hook-compatibility/native-control-results.json": "fce7e2f8f4c78240f2bc9c82962bb61882aa5c398de65d705b0b03ec95216002",
+    "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json": "ab7725e8019826ac59041fbea59a65b22640a0fde023649ee7d31d33ba663dc5",
+    "docs/verification/2026-10-03-hook-compatibility/native-handler-command.json": "f6d947d0a90bbb42d7977f4121b31803d62f8229818917056b7582e35604e627",
+    "docs/verification/2026-10-03-hook-compatibility/native-handler-gate.log": "11e2b6eba4768fe0a62e0200030b4fe62a36c854a7477c8e69306df73a33cb7b",
+    "docs/verification/2026-10-03-hook-compatibility/native-handler-result.json": "a1bc7ac4e32fb134a704cc8b07f3d4062e76920a5531c2ae72f782d5e2ec1f61",
+    "docs/verification/2026-10-03-hook-compatibility/paired-effects.json": "2a301de6ad4f6ba6758306511be06bb70c58e5d829da15a050e7a23e60dfc750",
+    "docs/verification/2026-10-03-hook-compatibility/prompt-full-trace.jsonl": "a2a17cf9ec8b2983d553d005470fc2273eed96efff87291736b5041c63e1484c",
+    "docs/verification/2026-10-03-hook-compatibility/prompt-repeat-results.json": "4a46b3551517b22209da67f9efea3cdeededef3473eb1171a85f6dd62285923a",
+    "docs/verification/2026-10-03-hook-compatibility/remote-command.json": "a17dbe0792add618f85ba2680ee93152cea0e399a185c4da0aa306193bc6183f",
+    "docs/verification/2026-10-03-hook-compatibility/remote-gate.log": "55689ce465dfdbc01ae707b5f30d68d2ea9ae1fbd7c34fe8392bf04f11374c10",
+    "docs/verification/2026-10-03-hook-compatibility/remote-result.json": "a2044ec8724ac786afbba41dc29aa67e7a69c7c6dd93b80188fc35ed53b165d0",
+    "docs/verification/2026-10-03-hook-compatibility/source-manifest.json": "6b3ec0b8cd5b1a3e29790bfd2b596309d62a3d6ddf0b6c214a568330299efa45",
+    "docs/verification/2026-10-03-hook-compatibility/toolsearch-hook-outputs.json": "2a6b0f9600e438ebf7408dfd858bfafbae8fc87a3834419ec780ebda1868350f",
+    "patches/hermes-plugin-events.patch": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2",
+    "lifeos_hook_bridge/patches/hermes-plugin-events.patch": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2"
+  },
+  "registrations": [
+    {
+      "id": "PreToolUse.1.1",
+      "event": "PreToolUse",
+      "matcher": "Bash",
+      "handler": "$HOME/.claude/hooks/ContextReduction.hook.sh",
+      "expected_effect": "Rewrite supported commands through RTK and retain the native permission decision.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PreToolUse.2.1",
+      "event": "PreToolUse",
+      "matcher": "Skill",
+      "handler": "http://localhost:31337/hooks/skill-guard",
+      "expected_effect": "Validate the selected skill and return its Pulse guard decision.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PreToolUse.3.1",
+      "event": "PreToolUse",
+      "matcher": "Agent",
+      "handler": "http://localhost:31337/hooks/agent-guard",
+      "expected_effect": "Validate the selected agent and return its Pulse guard decision.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PreToolUse.3.2",
+      "event": "PreToolUse",
+      "matcher": "Agent",
+      "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
+      "expected_effect": "Record and validate agent invocation and completion state.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PreToolUse.4.1",
+      "event": "PreToolUse",
+      "matcher": "AskUserQuestion",
+      "handler": "$HOME/.claude/hooks/TabState.hook.ts",
+      "expected_effect": "Set the terminal state for a question awaiting a user answer.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PreToolUse.5.1",
+      "event": "PreToolUse",
+      "matcher": "Bash|Write|Edit|MultiEdit",
+      "handler": "$HOME/.claude/hooks/PreToolGuard.hook.ts",
+      "expected_effect": "Run the nested pre-tool guards and preserve deny, ask, and changed-input decisions.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_voice_gate.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.1.1",
+      "event": "PostToolUse",
+      "matcher": "Agent",
+      "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
+      "expected_effect": "Record and validate agent invocation and completion state.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.2.1",
+      "event": "PostToolUse",
+      "matcher": "WebFetch",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "expected_effect": "Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.3.1",
+      "event": "PostToolUse",
+      "matcher": "WebSearch",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "expected_effect": "Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.4.1",
+      "event": "PostToolUse",
+      "matcher": "mcp__.*",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "expected_effect": "Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.5.1",
+      "event": "PostToolUse",
+      "matcher": "ToolSearch",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "expected_effect": "Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "toolsearch-benign",
+          "artifacts": [
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/toolsearch-hook-outputs.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json"
+          ],
+          "native": {
+            "exit_code": 0,
+            "stdout_sha256": "c226b048200471a85c3bf18c3c6fe60a7d00859e138add63393431d156f8c5bf",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "additional_context_sha256": "4144a9a2ade9cec41b14916c4486af6a5f0e3ac13ec896489d5fec431993f68d"
+          },
+          "hermes": {
+            "exit_code": 0,
+            "stdout_sha256": "c226b048200471a85c3bf18c3c6fe60a7d00859e138add63393431d156f8c5bf",
+            "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "additional_context_sha256": "4144a9a2ade9cec41b14916c4486af6a5f0e3ac13ec896489d5fec431993f68d"
+          }
+        }
+      ],
+      "related_native_tests": [],
+      "remaining": "Complete the remaining handler branches, native control, and user/model delivery assertions."
+    },
+    {
+      "id": "PostToolUse.6.1",
+      "event": "PostToolUse",
+      "matcher": "AskUserQuestion",
+      "handler": "$HOME/.claude/hooks/TabState.hook.ts",
+      "expected_effect": "Restore the applicable terminal state after the user answer.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.7.1",
+      "event": "PostToolUse",
+      "matcher": "Read",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "expected_effect": "Record the complete ISA content view for this session and backend.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_remote_isa.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.1",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
+      "expected_effect": "Synchronize ISA and active work state after a successful file change.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.2",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "expected_effect": "Prevent ISA writes based on a stale session view of the actual local or backend file.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_remote_isa.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.3",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
+      "expected_effect": "Commit eligible verified ISC state and write a retrievable checkpoint record.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_checkpoint.py",
+        "tests/test_native_partial_patch.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.4",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/ConfigEvalFire.hook.ts",
+      "expected_effect": "Trigger the configured evaluation when an applicable configuration file changes.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.5",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "expected_effect": "Record applicable architecture file changes in the native event store.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.6",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
+      "expected_effect": "Enforce the native knowledge-write contract for applicable file changes.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.8.7",
+      "event": "PostToolUse",
+      "matcher": "Write",
+      "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
+      "expected_effect": "Accumulate changed lines and return the configured complexity warning.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_partial_patch.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.1",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
+      "expected_effect": "Synchronize ISA and active work state after a successful file change.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.2",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "expected_effect": "Prevent ISA writes based on a stale session view of the actual local or backend file.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_remote_isa.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.3",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
+      "expected_effect": "Commit eligible verified ISC state and write a retrievable checkpoint record.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_checkpoint.py",
+        "tests/test_native_partial_patch.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.4",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/ConfigEvalFire.hook.ts",
+      "expected_effect": "Trigger the configured evaluation when an applicable configuration file changes.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.5",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "expected_effect": "Record applicable architecture file changes in the native event store.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.6",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
+      "expected_effect": "Enforce the native knowledge-write contract for applicable file changes.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.9.7",
+      "event": "PostToolUse",
+      "matcher": "Edit",
+      "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
+      "expected_effect": "Accumulate changed lines and return the configured complexity warning.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_partial_patch.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.1",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
+      "expected_effect": "Synchronize ISA and active work state after a successful file change.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.2",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
+      "expected_effect": "Prevent ISA writes based on a stale session view of the actual local or backend file.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_remote_isa.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.3",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
+      "expected_effect": "Commit eligible verified ISC state and write a retrievable checkpoint record.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_checkpoint.py",
+        "tests/test_native_partial_patch.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.4",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/ConfigEvalFire.hook.ts",
+      "expected_effect": "Trigger the configured evaluation when an applicable configuration file changes.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.5",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "expected_effect": "Record applicable architecture file changes in the native event store.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.6",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
+      "expected_effect": "Enforce the native knowledge-write contract for applicable file changes.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.10.7",
+      "event": "PostToolUse",
+      "matcher": "MultiEdit",
+      "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
+      "expected_effect": "Accumulate changed lines and return the configured complexity warning.",
+      "dispatch_status": "not_observed",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_partial_patch.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.11.1",
+      "event": "PostToolUse",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "expected_effect": "Write native tool activity, record applicable skill execution, and update the active ISA heartbeat.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_event_logger.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.12.1",
+      "event": "PostToolUse",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/PostToolObserver.hook.ts",
+      "expected_effect": "Run the nested post-tool observers with the actual result and transcript.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.12.2",
+      "event": "PostToolUse",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
+      "expected_effect": "Track repeated failures and return the native loop warning.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_loop_detector.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUse.13.1",
+      "event": "PostToolUse",
+      "matcher": "Bash",
+      "handler": "$HOME/.claude/hooks/AtlasEventCapture.hook.ts",
+      "expected_effect": "Record applicable architecture file changes in the native event store.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionEnd.1.1",
+      "event": "SessionEnd",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/WorkCompletionLearning.hook.ts",
+      "expected_effect": "Read session completion evidence and persist eligible native learning.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_learning.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionEnd.1.2",
+      "event": "SessionEnd",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/SessionCleanup.hook.ts",
+      "expected_effect": "Close native session state and remove the applicable transient work state.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_learning.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionEnd.1.3",
+      "event": "SessionEnd",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/UpdateCounts.hook.ts",
+      "expected_effect": "Refresh the configured usage counts or remain neutral without OAuth credentials.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_all.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionEnd.1.4",
+      "event": "SessionEnd",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts",
+      "expected_effect": "Check native memory health and publish the applicable result without losing async delivery.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_all.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionEnd.1.5",
+      "event": "SessionEnd",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/DocIntegrity.hook.ts",
+      "expected_effect": "Check documentation integrity and report applicable stale documentation.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_all.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionEnd.1.6",
+      "event": "SessionEnd",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/IntegrityCheck.hook.ts",
+      "expected_effect": "Compare installed files with the native integrity baseline and report changes.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_all.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.1.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/PromptProcessing.hook.ts",
+      "expected_effect": "Create and persist the session name, including the configured child inference result.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_prompt_processing.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.2.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/SatisfactionCapture.hook.ts",
+      "expected_effect": "Capture eligible satisfaction feedback from the submitted prompt.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.3.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/ReminderRouter.hook.ts",
+      "expected_effect": "Route due native reminders under the configured session and delivery policy.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_reminder_router.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.4.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/VersionDrift.hook.ts",
+      "expected_effect": "Compare the installation with its selected baseline and emit the native drift warning.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_version_drift.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.5.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/MemoryTurnStart.hook.ts",
+      "expected_effect": "Supply the admitted native memory context for the current turn.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.6.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/DriftReminder.hook.ts",
+      "expected_effect": "Return the applicable drift context within its per-prompt line budget.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_drift_reminder.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.7.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/AlgorithmNudge.hook.ts",
+      "expected_effect": "Return the applicable algorithm or capability nudge to the model.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_algorithm_nudge.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.8.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/TimeContext.hook.ts",
+      "expected_effect": "Return the current native time context through the configured async path.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "UserPromptSubmit.9.1",
+      "event": "UserPromptSubmit",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/ModelRungGuard.hook.ts",
+      "expected_effect": "Evaluate the actual model and effort carrier and return the applicable rung guidance.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_model_rung_guard.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUseFailure.1.1",
+      "event": "PostToolUseFailure",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "expected_effect": "Write the native tool-failure audit row with the actual tool and error.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_event_logger.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUseFailure.2.1",
+      "event": "PostToolUseFailure",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/AlgorithmNudge.hook.ts",
+      "expected_effect": "Return the applicable algorithm or capability nudge to the model.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_algorithm_nudge.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PostToolUseFailure.3.1",
+      "event": "PostToolUseFailure",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
+      "expected_effect": "Track repeated failures and return the native loop warning.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_loop_detector.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "TaskCreated.1.1",
+      "event": "TaskCreated",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/TaskGovernance.hook.ts",
+      "expected_effect": "Apply the task quality and count rules to the actual task creation event.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_task_hook.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "ConfigChange.1.1",
+      "event": "ConfigChange",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "expected_effect": "Write the native settings-change audit row and applicable configuration difference.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_event_logger.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionStart.1.1",
+      "event": "SessionStart",
+      "matcher": "",
+      "handler": "bun $HOME/.claude/hooks/HookHealer.hook.ts",
+      "expected_effect": "Repair interpreter and executable permissions for installed registered hooks.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_hook_healer.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionStart.1.2",
+      "event": "SessionStart",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/KittyEnvPersist.hook.ts",
+      "expected_effect": "Persist applicable terminal environment state and remain neutral on remote channels.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_kitty_channel.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionStart.1.3",
+      "event": "SessionStart",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/LoadContext.hook.ts",
+      "expected_effect": "Load the applicable native identity, system, and admitted user context.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionStart.1.4",
+      "event": "SessionStart",
+      "matcher": "",
+      "handler": "bun $HOME/.claude/LIFEOS/TOOLS/FreshnessCache.ts --quiet",
+      "expected_effect": "Write the native freshness cache for the installed source tree.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_freshness_cache.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "SessionStart.1.5",
+      "event": "SessionStart",
+      "matcher": "",
+      "handler": "bun $HOME/.claude/LIFEOS/TOOLS/SettingsBackport.ts; bun $HOME/.claude/LIFEOS/TOOLS/MergeSettings.ts --system $HOME/.claude/settings.system.json --user $HOME/.claude/LIFEOS/USER/CONFIG/settings.user.json --output $HOME/.claude/settings.json",
+      "expected_effect": "Backport applicable settings and atomically merge system and user settings.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_settings_merge.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.1",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/LastResponseCache.hook.ts",
+      "expected_effect": "Persist the final assistant response in the native response cache.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.2",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/TabState.hook.ts",
+      "expected_effect": "Set the applicable completed-turn terminal state.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.3",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/VoiceCompletion.hook.ts",
+      "expected_effect": "Record final-answer voice state and apply the configured remote-channel desktop gate.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_voice_gate.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.4",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/ISARenderOnStop.hook.ts",
+      "expected_effect": "Render the applicable active ISA after the completed response.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.5",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/SpendAuditor.hook.ts",
+      "expected_effect": "Update and check the native session spending record under the configured cost policy.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.6",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/StopGates.hook.ts",
+      "expected_effect": "Run nested completion gates and return required continuation or blocking feedback.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_isa_gate.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.1.7",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/MemoryReviewFire.hook.ts",
+      "expected_effect": "Trigger the eligible native memory review and preserve proposal approval rules.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "Stop.2.1",
+      "event": "Stop",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts",
+      "expected_effect": "Check native memory health and publish the applicable result without losing async delivery.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [
+        "tests/test_native_session_end_all.py"
+      ],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "StopFailure.1.1",
+      "event": "StopFailure",
+      "matcher": "",
+      "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
+      "expected_effect": "Write the native terminal API failure audit row with the actual error.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "terminal-401",
+          "artifacts": [
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json"
+          ],
+          "native": {
+            "event_type": "stop_failure",
+            "hook_event": "StopFailure",
+            "error_details": "authentication_failed"
+          },
+          "hermes": {
+            "event_type": "stop_failure",
+            "hook_event": "StopFailure",
+            "error_details": "authentication_failed"
+          }
+        }
+      ],
+      "related_native_tests": [
+        "tests/test_native_event_logger.py"
+      ],
+      "remaining": "Complete the remaining handler branches, native control, and user/model delivery assertions."
+    },
+    {
+      "id": "PermissionRequest.1.1",
+      "event": "PermissionRequest",
+      "matcher": "Write|Edit|MultiEdit|Bash",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "expected_effect": "Evaluate the actual command or file permission request, including secret egress, and return the native decision.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    },
+    {
+      "id": "PermissionRequest.2.1",
+      "event": "PermissionRequest",
+      "matcher": "mcp__.*",
+      "handler": "$HOME/.claude/hooks/Safety.hook.ts",
+      "expected_effect": "Evaluate the actual command or file permission request, including secret egress, and return the native decision.",
+      "dispatch_status": "matched_dispatch_and_output_shape",
+      "effect_status": "unverified",
+      "paired_cases": [],
+      "related_native_tests": [],
+      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+    }
+  ]
+}

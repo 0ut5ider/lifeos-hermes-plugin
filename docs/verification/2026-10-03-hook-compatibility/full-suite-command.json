@@ -1,0 +1,11 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-W",
+    "error::ResourceWarning",
+    "/home/outsider/.cache/lifeos-hook-evidence-20261003/full-prompt-driver.py",
+    "/home/outsider/.cache/lifeos-hook-evidence-20261003/full-prompt-trace.jsonl"
+  ],
+  "instrumentation": "Capture the real PromptProcessing child completion without changing execution.",
+  "environment_from": "candidate-commands.json"
+}

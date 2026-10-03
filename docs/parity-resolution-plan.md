@@ -28,7 +28,32 @@ The completion gate is a status for every item in the agreed contract, no unreso
 
 ## Latest gate result
 
-The [2026-09-29 release gate](../notes/2026-09-29-release-gate.md) is blocked by unobserved native events and remaining behavior cases. The complete LifeOS update transaction passed apply, restore, and forced rollback against the pinned revision, with gateway restart and unchanged synthetic USER and MEMORY files. A newer upstream revision was unavailable. The [paired ledger](parity/paired-live-coverage.json) records 63 matching registration dispatch and output shapes; 11 registrations have no native event control. A Haiku identity routed to the same private model exposed and paired `TaskCreated.1.1`. The ledger records Hermes's extra compatibility probe separately. It does not establish side-effect parity. The plugin suite ran 376 tests with 65 skips, the patched Hermes selection passed 378 tests with 10 skips, and the live SSH and Docker gate passed 19 tests without selected skips. The sections below record earlier checkpoints and should be read with this newer result.
+The [October 3 evidence bundle](verification/2026-10-03-hook-compatibility/README.md) adds successful native ToolSearch and StopFailure controls. The [paired ledger](parity/paired-live-coverage.json) now records 65 matching registration dispatch and output shapes. The other 63 controls retain their September 29 scope. No dispatch mismatch is recorded. These counts do not establish complete handler effects.
+
+The [effect matrix](parity/handler-effects.md) gives all 74 registrations an expected effect. Its [JSON ledger](parity/handler-effects.json) records related native tests, selected paired outcomes, and retained artifact hashes. ToolSearch has an equal Safety notice. StopFailure has an equal normalized native audit row. Both rows remain partial because other handler branches are unverified. The completion check rejects partial effects even when all registration identifiers are present:
+
+```sh
+python scripts/check_hook_evidence.py
+python scripts/check_hook_evidence.py --require-complete
+```
+
+The first command checks the recorded inventory and artifacts. The second command currently fails. The check validates evidence structure and equal recorded outcomes. A reviewer must still assess scenario coverage and the underlying measurements.
+
+Nine registrations lack a successful native event control:
+
+| Registrations | Missing control | Measured limit |
+| --- | --- | --- |
+| `PostToolUse.2.1` | WebFetch | Claude Code rejects the public fetch at domain verification, including through the constrained public proxy. |
+| `PostToolUse.3.1` | WebSearch | The private model gateway rejects the native server-tool definition with HTTP 400 because `input_schema` is missing. |
+| `PostToolUse.10.1` through `.10.7` | MultiEdit | Both tested native tool inventories omit MultiEdit. |
+
+Native ToolSearch runs its hook, then the next model request fails because the private gateway rejects `tool_reference` content. Its Safety comparison is valid for that tool event. It does not prove a complete search-and-MCP-call session. StopFailure requires the tested interactive native control; print mode does not emit that event. No missing native event is replaced by a synthetic event or counted as passed.
+
+The staged Hermes patch now applies result transforms and augmentation to catalog search results. The real-dispatch regression fails before this fix and passes afterward. The fix remains outside the active `.212` profiles. The bundle records local tests, live SSH and Docker tests, temporary fixture cleanup, and unresolved validation limits.
+
+Completion still requires paired state and user/model delivery assertions for the remaining handler branches, the unresolved contract scenarios below, and the complete installation and update gate. The [Hermes-managed installation task](../TODO.md) is deferred. A green local regression suite cannot close these requirements.
+
+The [September 29 release gate](../notes/2026-09-29-release-gate.md) remains historical evidence for apply, restore, and forced rollback against the pinned revision. It records gateway restart and unchanged synthetic USER and MEMORY files. A newer upstream revision was unavailable. A Haiku identity routed to the same private model exposed and paired `TaskCreated.1.1`. The ledger records Hermes's extra compatibility probe separately. The sections below record earlier checkpoints.
 
 ## Earlier progress on the pinned `.212` fixture
 

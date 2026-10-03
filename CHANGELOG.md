@@ -10,6 +10,16 @@ Keep it equal to the version in both plugin manifests.
 
 - A root `VERSION` file and version information in the README.
 - This changelog and instructions for future version updates.
+- A registration effect matrix and a completion check for retained hook evidence.
+- Paired ToolSearch Safety and StopFailure audit controls on disposable profiles.
+
+### Fixed
+
+- Hermes catalog search results run the existing result transform and augmentation
+  callbacks. LifeOS Safety context reaches the tool caller.
+
+The catalog fix is staged. The active `.212` profiles still use merged version
+`0.1.0`. Complete hook compatibility remains unverified.
 
 ## 0.1.0 (2026-10-03)
 

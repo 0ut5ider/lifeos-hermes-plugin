@@ -1,0 +1,86 @@
+{
+  "search": {
+    "exit_code": 0,
+    "seconds": 21.218,
+    "session_id": "20261003_132035_dfe10c",
+    "tool_calls": [
+      "tool_search"
+    ],
+    "tool_results": [
+      {
+        "name": "tool_search",
+        "is_error": false
+      }
+    ],
+    "target_hooks": [
+      {
+        "id": "PostToolUse.5.1",
+        "event": "PostToolUse",
+        "tool_name": "ToolSearch",
+        "exit_code": 127,
+        "stdout_size": 0,
+        "stderr_size": 42
+      },
+      {
+        "id": "PostToolUse.5.1",
+        "event": "PostToolUse",
+        "tool_name": "ToolSearch",
+        "exit_code": 0,
+        "stdout_size": 249,
+        "stderr_size": 0
+      }
+    ],
+    "command": [
+      "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/hermes/.hermes/bin/hermes",
+      "chat",
+      "--oneshot",
+      "-Q",
+      "--format",
+      "stream-json",
+      "-t",
+      "memory,skills,todo",
+      "--query-file",
+      "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/search-prompt.txt"
+    ],
+    "output_sha256": "8f7a3824abef0b66b5bdd911fcd17023e3acf2509de8321603d8570566bb21fd"
+  },
+  "failure": {
+    "exit_code": 1,
+    "seconds": 10.444,
+    "session_id": "20261003_133304_1e8884",
+    "target_hooks": [
+      {
+        "id": "StopFailure.1.1",
+        "event": "StopFailure",
+        "session_id": "20261003_133304_1e8884",
+        "exit_code": 0,
+        "stdout_size": 0,
+        "stderr_size": 0
+      }
+    ],
+    "audit": [
+      {
+        "timestamp": "2026-10-03T10:33:11-07:00",
+        "session_id": "20261003_133304_1e8884",
+        "event_type": "stop_failure",
+        "hook_event": "StopFailure",
+        "error_details": "authentication_failed"
+      }
+    ],
+    "command": [
+      "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/hermes/.hermes/bin/hermes",
+      "chat",
+      "--oneshot",
+      "-Q",
+      "--format",
+      "stream-json",
+      "-t",
+      "memory",
+      "--query-file",
+      "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/failure-prompt.txt"
+    ]
+  },
+  "isolation": {
+    "protected_files_unchanged": true
+  }
+}
