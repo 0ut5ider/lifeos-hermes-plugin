@@ -56,6 +56,8 @@ The long-term way to reduce this maintenance cost is to contribute the generic H
 
 Restore records a durable `restore_stopping` state before it stops the gateway. If the worker dies in this state, the authenticated recovery action restarts and verifies the selected installation. It does not replace program files, the profile, the baseline, or user data. It then records `applied`. A later restore request must pass the current data and profile checks again. Once the worker records `restoring`, recovery uses the prior installation snapshot. Status reads use a completed durable state if a worker dies before it writes its final status.
 
+Update apply records the recoverable `stopped` intent after it saves the mount snapshot and before it calls the gateway stop operation. Recovery can restart the prior installation if process death occurs during that stop operation.
+
 The dashboard rejects installation mutations from another origin. Fixed installation actions also reject query parameters and request bodies. Authenticated admission and detached code workers share a private installation lock. A competing action receives a conflict before it creates a job or owner grant. Process termination releases the lock; the transaction journal still determines whether recovery is required.
 
 The [PR readiness record](verification/2026-10-02-pr-readiness/README.md) verifies real lock contention, process termination, browser apply, and version restore with later external audit data. These checks use the pinned revisions. They do not establish compatibility with a newer upstream version.

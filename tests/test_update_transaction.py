@@ -25,6 +25,28 @@ def digest(path):
 
 
 class UpdateTransactionTests(unittest.TestCase):
+    def test_apply_stop_crash_has_a_recoverable_durable_journal(self):
+        with tempfile.TemporaryDirectory() as directory:
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+            code = ('import os, signal, sys\nfrom pathlib import Path\n'
+                    'from lifeos_hook_bridge.update_transaction import apply_update\n'
+                    'def stopped():\n    os.kill(os.getpid(), signal.SIGKILL)\n'
+                    'apply_update(*[Path(arg) for arg in sys.argv[1:]], stop=stopped, start=lambda: None, '
+                    'mount=lambda: None, renew=lambda a,b: None, verify=lambda: None)\n')
+            process = subprocess.run([sys.executable, '-c', code, *map(str,
+                (installed, hermes, prior, selected, reference, baseline, snapshot))],
+                capture_output=True, text=True, timeout=30)
+            self.assertEqual(process.returncode, -signal.SIGKILL, process.stderr)
+            self.assertEqual(process.stderr, '')
+            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'stopped')
+            events, stop, start, _, _, _ = self.callbacks(hermes, baseline)
+            result = recover_update(snapshot, stop=stop, start=start, verify=lambda: events.append('verify'))
+            self.assertEqual(result['state'], 'rolled_back')
+            self.assertEqual(events, ['stop', 'start', 'verify'])
+            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
+            self.assertEqual((hermes / 'config.yaml').read_text(), 'prior config')
+            self.assertEqual((installed / 'LIFEOS/MEMORY/user.txt').read_text(), 'private memory')
+
     def test_restore_stop_crash_recovery_preserves_the_selected_installation(self):
         with tempfile.TemporaryDirectory() as directory:
             installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))

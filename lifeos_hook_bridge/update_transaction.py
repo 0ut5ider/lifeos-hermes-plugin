@@ -231,9 +231,9 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
     try:
         _snapshot_mount(hermes_home, snapshot, baseline_path)
         stopped = True
-        stop()
         manifest["state"] = "stopped"
         _write_json(manifest_path, manifest)
+        stop()
         plan = plan_system_files(installed, baseline, selected_source, reference)
         _copy_tree(installed, snapshot / "staged")
         staged = snapshot / "staged"
