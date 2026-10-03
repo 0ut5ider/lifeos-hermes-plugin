@@ -1,0 +1,436 @@
+{
+  "discord": {
+    "result.json": {
+      "baseline_changed": 0,
+      "baseline_files": 1798,
+      "http": {
+        "/api/plugins": 401,
+        "/chat": 200,
+        "/lifeos-bridge": 200
+      },
+      "memory_ownership": false,
+      "model_smoke": "MERGED-212-DISCORD-READY",
+      "preserved_profile": true,
+      "preserved_user_data_at_apply": true,
+      "revision": "d5dafbcac41434eb9aac2c4c7880a9b9be8135a4",
+      "runtime_files": 75,
+      "services": {
+        "com.lifeos.pulse.service": "active",
+        "hermes-dashboard.service": "active",
+        "hermes-gateway.service": "active"
+      },
+      "source_mismatch": 0,
+      "state": "verified",
+      "target": "discord"
+    },
+    "tool-result.json": {
+      "target": "discord",
+      "exit_code": 0,
+      "tool": "terminal",
+      "command": "pwd",
+      "tool_succeeded": true,
+      "final_reply_marker": "MERGED-212-DISCORD-TOOL-READY",
+      "session_id": "20261003_114424_5bc819"
+    },
+    "capture-check.json": {
+      "target": "discord",
+      "scope": "tool verification time window; identifiers may be redacted",
+      "events": 496,
+      "stages": {
+        "bridge.initialized": 2,
+        "inventory.observed": 28,
+        "instrumentation.loaded": 6,
+        "host.invoke_hook.entered": 15,
+        "host.invoke_hook.returned": 15,
+        "callback.entered": 8,
+        "bridge_callback.entered": 9,
+        "drain_async_context.entered": 1,
+        "drain_async_context.returned": 1,
+        "translation.entered": 6,
+        "registration.evaluated": 34,
+        "run_async.entered": 10,
+        "async.handoff": 10,
+        "async.launch_systemd.started": 10,
+        "async.launch_systemd.returned": 10,
+        "run_async.returned": 10,
+        "hook.started": 34,
+        "run_command.entered": 24,
+        "process.started": 24,
+        "process.completed": 24,
+        "run_command.returned": 24,
+        "hook.completed": 34,
+        "response.parsed.entered": 24,
+        "response.parsed.returned": 24,
+        "translation.returned": 6,
+        "bridge_callback.returned": 9,
+        "callback.returned": 8,
+        "host.build_api_messages.entered": 2,
+        "host.build_api_messages.returned": 2,
+        "host.dispatch_authorized_once.entered": 1,
+        "host.pre_tool_block.entered": 1,
+        "host.dispatch_pre_tool_call_hooks.entered": 1,
+        "registration.skipped": 32,
+        "host.dispatch_pre_tool_call_hooks.returned": 1,
+        "host.pre_tool_block.returned": 1,
+        "host.begin_tool_execution.entered": 1,
+        "host.begin_tool_execution.returned": 1,
+        "host.dispatch_authorized_once.returned": 1,
+        "host.commit_tool_result.entered": 1,
+        "host.commit_tool_result.returned": 1,
+        "host.apply_stop_gates.entered": 1,
+        "host.pre_turn_stop_nudge.entered": 1,
+        "host.get_pre_turn_stop_continue_message.entered": 1,
+        "host.get_pre_turn_stop_continue_message.returned": 1,
+        "host.pre_turn_stop_nudge.returned": 1,
+        "host.apply_stop_gates.returned": 1,
+        "process.initialized": 22,
+        "async.runner_started": 10,
+        "async.context_persisted": 2
+      },
+      "failed_hooks": 0,
+      "capture_gaps": 0,
+      "incomplete_invocations": 0,
+      "recorder_source_mismatches": 0,
+      "recorder_host_mismatches": 0,
+      "run_id_preserved": true,
+      "startup_exists": true,
+      "configuration_owned_by_account": true
+    },
+    "actual-loader-stage.json": {
+      "loaded": true,
+      "required_middleware": {
+        "llm_execution": true,
+        "llm_admission": true
+      },
+      "hooks": [
+        "api_request_error",
+        "augment_tool_result",
+        "on_session_finalize",
+        "on_turn_result",
+        "post_tool_call",
+        "pre_command_approval",
+        "pre_prompt_admission",
+        "pre_tool_call",
+        "pre_turn_stop"
+      ],
+      "dependencies": {
+        "tree-sitter": "0.26.0",
+        "tree-sitter-bash": "0.25.1",
+        "pathspec": "1.1.1",
+        "mcp": "2.0.0"
+      },
+      "profile_and_ssh_state_unchanged": true
+    },
+    "actual-loader-live.json": {
+      "loaded": true,
+      "required_middleware": {
+        "llm_execution": true,
+        "llm_admission": true
+      },
+      "hooks": [
+        "api_request_error",
+        "augment_tool_result",
+        "on_session_finalize",
+        "on_turn_result",
+        "post_tool_call",
+        "pre_command_approval",
+        "pre_prompt_admission",
+        "pre_tool_call",
+        "pre_turn_stop"
+      ],
+      "dependencies": {
+        "tree-sitter": "0.26.0",
+        "tree-sitter-bash": "0.25.1",
+        "pathspec": "1.1.1",
+        "mcp": "2.0.0"
+      },
+      "profile_and_ssh_state_unchanged": true
+    },
+    "catalog_validation": {
+      "ok": false,
+      "exit_code": 1,
+      "failed_checks": [
+        {
+          "name": "capability probe",
+          "ok": false,
+          "detail": "register() raised: RecordingContext.register_middleware() got an unexpected keyword argument 'required'"
+        },
+        {
+          "name": "security scan",
+          "ok": false,
+          "detail": "dangerous: ssh_backdoor (memory_preferences.py:27), ssh_backdoor (memory_preferences.py:31), ssh_backdoor (memory_sharing.py:106), ssh_backdoor (memory_sharing.py:144), ssh_backdoor (memory_sharing.py:169), ssh_backdoor (memory_sharing.py:63), ssh_backdoor (memory_sharing.py:66), ssh_backdoor (memory_sharing.py:69), ssh_backdoor (memory_sharing.py:78), ssh_backdoor (memory_sharing.py:82), ssh_backdoor (memory_sharing.py:84), ssh_backdoor (memory_sharing.py:86), ssh_backdoor (memory_sharing.py:87), ssh_backdoor (memory_sharing.py:89), ssh_backdoor (memory_sharing.py:94), ssh_backdoor (plugin_api.py:116)"
+        }
+      ],
+      "warnings": []
+    },
+    "changed_code_files": {
+      "plugin": 51,
+      "hermes": 6,
+      "native": 28,
+      "recorder": 3
+    },
+    "native_hooks": {
+      "foreign_hooks": 0,
+      "new_hooks": 74,
+      "old_hooks": 74
+    },
+    "file_rehearsal": {
+      "target": "discord",
+      "real_code_files": 88,
+      "apply_bytes_verified": true,
+      "rollback_bytes_verified": true,
+      "current_data_preserved": true,
+      "service_calls": 0
+    },
+    "phase_exit_codes": {
+      "dependencies": 0,
+      "apply": 0,
+      "verify": 0
+    },
+    "mount_check": [
+      "soul       38132 chars, digest af6c84fbd04a",
+      "           current",
+      "config     current"
+    ],
+    "private_release_directory": "/home/lifeos-hermes/workspace/releases/20261003-merged-d5dafbc",
+    "hermes_local_commit": "6056259cc67cb6daeaf8d6ceffabbc524598e418",
+    "final_service_status": [
+      "Id=com.lifeos.pulse.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:45:58 EDT",
+      "MainPID=3156244",
+      "",
+      "Id=hermes-dashboard.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:45:48 EDT",
+      "MainPID=3155941",
+      "",
+      "Id=hermes-gateway.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:45:49 EDT",
+      "MainPID=3155997"
+    ],
+    "discord_connection": "2026-10-03 11:46:03,792 INFO hermes_plugins.platforms__discord.adapter: [Discord] Connected as Shiny Hermes Bot#3996",
+    "generated_document_review": {
+      "change": "Only the generated last_updated timestamp changes after the real tool turn",
+      "file": "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md",
+      "renewed": true,
+      "substantive_changes": 0
+    }
+  },
+  "acceptance": {
+    "result.json": {
+      "baseline_changed": 0,
+      "baseline_files": 1798,
+      "http": {
+        "/api/plugins": 401,
+        "/chat": 200,
+        "/lifeos-bridge": 200
+      },
+      "memory_ownership": false,
+      "model_smoke": "MERGED-212-ACCEPTANCE-READY",
+      "preserved_profile": true,
+      "preserved_user_data_at_apply": true,
+      "revision": "d5dafbcac41434eb9aac2c4c7880a9b9be8135a4",
+      "runtime_files": 75,
+      "services": {
+        "hermes-gateway.service": "active",
+        "lifeos-acceptance-dashboard.service": "active",
+        "lifeos-acceptance-native.service": "active",
+        "lifeos-acceptance-pulse.service": "active"
+      },
+      "source_mismatch": 0,
+      "state": "verified",
+      "target": "acceptance"
+    },
+    "tool-result.json": {
+      "target": "acceptance",
+      "exit_code": 0,
+      "tool": "terminal",
+      "command": "pwd",
+      "tool_succeeded": true,
+      "final_reply": "MERGED-212-ACCEPTANCE-TOOL-READY",
+      "session_id": "20261003_113800_3ff09c"
+    },
+    "capture-check.json": {
+      "target": "acceptance",
+      "scope": "tool verification time window; identifiers may be redacted",
+      "events": 485,
+      "stages": {
+        "bridge.initialized": 2,
+        "inventory.observed": 28,
+        "instrumentation.loaded": 6,
+        "host.invoke_hook.entered": 15,
+        "host.invoke_hook.returned": 15,
+        "callback.entered": 8,
+        "bridge_callback.entered": 9,
+        "drain_async_context.entered": 1,
+        "drain_async_context.returned": 1,
+        "translation.entered": 6,
+        "registration.evaluated": 34,
+        "run_async.entered": 10,
+        "async.handoff": 10,
+        "async.launch_systemd.started": 10,
+        "async.launch_systemd.returned": 10,
+        "run_async.returned": 10,
+        "hook.started": 34,
+        "run_command.entered": 24,
+        "process.started": 24,
+        "process.completed": 24,
+        "run_command.returned": 24,
+        "hook.completed": 34,
+        "response.parsed.entered": 24,
+        "response.parsed.returned": 24,
+        "translation.returned": 6,
+        "bridge_callback.returned": 9,
+        "callback.returned": 8,
+        "host.build_api_messages.entered": 2,
+        "host.build_api_messages.returned": 2,
+        "host.dispatch_authorized_once.entered": 1,
+        "host.pre_tool_block.entered": 1,
+        "host.dispatch_pre_tool_call_hooks.entered": 1,
+        "registration.skipped": 32,
+        "host.dispatch_pre_tool_call_hooks.returned": 1,
+        "host.pre_tool_block.returned": 1,
+        "host.begin_tool_execution.entered": 1,
+        "host.begin_tool_execution.returned": 1,
+        "host.dispatch_authorized_once.returned": 1,
+        "host.commit_tool_result.entered": 1,
+        "host.commit_tool_result.returned": 1,
+        "host.apply_stop_gates.entered": 1,
+        "host.pre_turn_stop_nudge.entered": 1,
+        "host.get_pre_turn_stop_continue_message.entered": 1,
+        "host.get_pre_turn_stop_continue_message.returned": 1,
+        "host.pre_turn_stop_nudge.returned": 1,
+        "host.apply_stop_gates.returned": 1,
+        "process.initialized": 11,
+        "async.runner_started": 10,
+        "async.context_persisted": 2
+      },
+      "failed_hooks": 0,
+      "capture_gaps": 0,
+      "incomplete_invocations": 0,
+      "recorder_source_mismatches": 0,
+      "recorder_host_mismatches": 0,
+      "run_id_preserved": true,
+      "startup_exists": true,
+      "configuration_owned_by_account": true
+    },
+    "actual-loader-stage.json": {
+      "loaded": true,
+      "required_middleware": {
+        "llm_execution": true,
+        "llm_admission": true
+      },
+      "hooks": [
+        "api_request_error",
+        "augment_tool_result",
+        "on_session_finalize",
+        "on_turn_result",
+        "post_tool_call",
+        "pre_command_approval",
+        "pre_prompt_admission",
+        "pre_tool_call",
+        "pre_turn_stop"
+      ],
+      "dependencies": {
+        "tree-sitter": "0.26.0",
+        "tree-sitter-bash": "0.25.1",
+        "pathspec": "1.1.1",
+        "mcp": "2.0.0"
+      },
+      "profile_and_ssh_state_unchanged": true
+    },
+    "actual-loader-live.json": {
+      "loaded": true,
+      "required_middleware": {
+        "llm_execution": true,
+        "llm_admission": true
+      },
+      "hooks": [
+        "api_request_error",
+        "augment_tool_result",
+        "on_session_finalize",
+        "on_turn_result",
+        "post_tool_call",
+        "pre_command_approval",
+        "pre_prompt_admission",
+        "pre_tool_call",
+        "pre_turn_stop"
+      ],
+      "dependencies": {
+        "tree-sitter": "0.26.0",
+        "tree-sitter-bash": "0.25.1",
+        "pathspec": "1.1.1",
+        "mcp": "2.0.0"
+      },
+      "profile_and_ssh_state_unchanged": true
+    },
+    "catalog_validation": {
+      "ok": false,
+      "exit_code": 1,
+      "failed_checks": [
+        {
+          "name": "capability probe",
+          "ok": false,
+          "detail": "register() raised: RecordingContext.register_middleware() got an unexpected keyword argument 'required'"
+        },
+        {
+          "name": "security scan",
+          "ok": false,
+          "detail": "dangerous: ssh_backdoor (memory_preferences.py:27), ssh_backdoor (memory_preferences.py:31), ssh_backdoor (memory_sharing.py:106), ssh_backdoor (memory_sharing.py:144), ssh_backdoor (memory_sharing.py:169), ssh_backdoor (memory_sharing.py:63), ssh_backdoor (memory_sharing.py:66), ssh_backdoor (memory_sharing.py:69), ssh_backdoor (memory_sharing.py:78), ssh_backdoor (memory_sharing.py:82), ssh_backdoor (memory_sharing.py:84), ssh_backdoor (memory_sharing.py:86), ssh_backdoor (memory_sharing.py:87), ssh_backdoor (memory_sharing.py:89), ssh_backdoor (memory_sharing.py:94), ssh_backdoor (plugin_api.py:116)"
+        }
+      ],
+      "warnings": []
+    },
+    "changed_code_files": {
+      "plugin": 8,
+      "recorder": 1
+    },
+    "native_hooks": {
+      "foreign_hooks": 0,
+      "new_hooks": 74,
+      "old_hooks": 74
+    },
+    "file_rehearsal": {
+      "target": "acceptance",
+      "real_code_files": 9,
+      "apply_bytes_verified": true,
+      "rollback_bytes_verified": true,
+      "current_data_preserved": true,
+      "service_calls": 0
+    },
+    "phase_exit_codes": {
+      "dependencies": 0,
+      "apply": 0,
+      "verify": 0
+    },
+    "mount_check": [
+      "soul       37863 chars, digest 89fe07e4f2ba",
+      "           current",
+      "config     current"
+    ],
+    "private_release_directory": "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/releases/20261003-merged-d5dafbc",
+    "final_service_status": [
+      "Id=hermes-gateway.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:24:25 EDT",
+      "MainPID=3114147",
+      "",
+      "Id=lifeos-acceptance-dashboard.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:24:25 EDT",
+      "MainPID=3114148",
+      "",
+      "Id=lifeos-acceptance-native.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:24:25 EDT",
+      "MainPID=3114149",
+      "",
+      "Id=lifeos-acceptance-pulse.service",
+      "ActiveState=active",
+      "ActiveEnterTimestamp=Sat 2026-10-03 11:24:25 EDT",
+      "MainPID=3114150"
+    ]
+  }
+}
