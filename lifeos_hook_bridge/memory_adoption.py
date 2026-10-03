@@ -156,8 +156,9 @@ def _snapshot(memory, connection, scope: MemoryScope) -> dict[str, Any]:
                 paths[relative] = _digest(target.read_text())
                 pending.append({'reference':{'id':identifier,'revision':1},'row':row,
                                 'target':relative,'target_digest':paths[relative]})
-            except (KeyError, ValueError, MemoryUnavailable) as error:
-                excluded.append({'path':QUEUE,'reference':identifier,'reason':str(error)})
+            except (KeyError, ValueError, MemoryUnavailable):
+                excluded.append({'path':QUEUE,'reference':identifier,
+                    'reason':'The native proposal target or content is not eligible for adoption'})
 
     if excluded:
         checked_labels = memory._native('validate_source_batch',

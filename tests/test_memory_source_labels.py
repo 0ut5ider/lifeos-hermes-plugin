@@ -8,6 +8,7 @@ import unittest
 
 from lifeos_hook_bridge.memory_canonical import corpus
 from lifeos_hook_bridge.memory_preferences import MemoryPreferences
+from lifeos_hook_bridge.memory_proposals import QUEUE
 from lifeos_hook_bridge.memory_service import MemoryConfiguration
 import test_memory_native as native_fixture
 from test_memory_native import OWNER
@@ -69,6 +70,20 @@ class MemorySourceLabelTests(unittest.TestCase):
     def test_previously_registered_private_sources_do_not_enter_owner_responses(self):
         path = self.note('<private>SYNTHETIC_PRIVATE_LABEL')
         self.assert_registered_source_excluded(path, 'SYNTHETIC_PRIVATE_LABEL')
+
+    def test_rejected_proposal_reason_does_not_expose_a_retired_target(self):
+        self.retire()
+        queue = self.memory._path(QUEUE)
+        queue.parent.mkdir(parents=True, exist_ok=True)
+        queue.write_text(json.dumps({'id': 'synthetic-foreign-proposal', 'status': 'pending',
+            'target_kind': 'operational-rule',
+            'target_file': str(self.root.parent / 'Synthetic_retired_source_label.md'),
+            'edit': 'Safe synthetic proposal edit', 'confidence': 0.8,
+            'rationale': 'Safe synthetic proposal rationale'}) + '\n')
+        preview = self.preferences.preview_adoption(account='dashboard:synthetic-owner')
+        self.assertEqual(preview['proposals'], [])
+        self.assertTrue(preview['excluded'])
+        self.assertNotIn('Synthetic_retired_source_label', json.dumps(preview))
 
     def test_previously_registered_forgotten_labels_do_not_enter_owner_responses(self):
         self.retire()
