@@ -159,6 +159,14 @@ def _snapshot(memory, connection, scope: MemoryScope) -> dict[str, Any]:
             except (KeyError, ValueError, MemoryUnavailable) as error:
                 excluded.append({'path':QUEUE,'reference':identifier,'reason':str(error)})
 
+    if excluded:
+        checked_labels = memory._native('validate_source_batch',
+            contents=[item['path'] for item in excluded])['accepted']
+        for item, valid in zip(excluded, checked_labels, strict=True):
+            if valid is not True or memory._filter_history(connection, scope,
+                    source_labels(item['path']), _now())['excluded']:
+                item['path'] = '[excluded source]'
+
     signature = _digest(json.dumps({'root':str(memory.root),'principal':scope.principal,
                                      'files':paths,'mtimes':{name:memory._path(name).stat().st_mtime_ns for name in paths},
                                      'records':records,'proposals':proposals,'candidates':candidates,

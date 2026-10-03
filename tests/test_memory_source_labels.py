@@ -57,6 +57,15 @@ class MemorySourceLabelTests(unittest.TestCase):
         self.assertEqual(preview['records'], [])
         self.assertNotIn('Synthetic_retired_source_label', json.dumps(preview))
 
+    def test_early_body_rejection_does_not_expose_a_private_filename(self):
+        self.retire()
+        path = self.note('<private>SYNTHETIC_PRIVATE_REJECTED_LABEL')
+        path.write_text(path.read_text().replace('SafeSyntheticCurrentBody', 'Synthetic retired source label'))
+        preview = self.preferences.preview_adoption(account='dashboard:synthetic-owner')
+        self.assertEqual(preview['records'], [])
+        self.assertTrue(preview['excluded'])
+        self.assertNotIn('SYNTHETIC_PRIVATE_REJECTED_LABEL', json.dumps(preview))
+
     def test_previously_registered_private_sources_do_not_enter_owner_responses(self):
         path = self.note('<private>SYNTHETIC_PRIVATE_LABEL')
         self.assert_registered_source_excluded(path, 'SYNTHETIC_PRIVATE_LABEL')
