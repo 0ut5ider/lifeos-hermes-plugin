@@ -1,0 +1,55 @@
+{
+  "before": {
+    "user_value": "edited"
+  },
+  "after": {
+    "system_value": "system",
+    "user_value": "edited",
+    "overlay_value": "edited",
+    "snapshot_matches_generated": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "733f3540-9cb7-4ef9-b234-fe00cb100f79",
+  "seconds": 0.619,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.5",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionStart.1.5 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/settings-backport/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvTElGRU9TL1RPT0xTL1NldHRpbmdzQmFja3BvcnQudHM7IGJ1biAvaG9tZS9saWZlb3MtY2xhdWRlLXJlZi8uY2xhdWRlL0xJRkVPUy9UT09MUy9NZXJnZVNldHRpbmdzLnRzIC0tc3lzdGVtIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmL3dvcmtzcGFjZS9wYWlyZWQtZWZmZWN0cy0yMDI2MTAwMy9saWZlY3ljbGUtcGFpcmVkLXYyLTIwMjYxMDAzL3NldHRpbmdzLWJhY2twb3J0Ly5jbGF1ZGUvc2V0dGluZ3Muc3lzdGVtLmpzb24gLS11c2VyIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmL3dvcmtzcGFjZS9wYWlyZWQtZWZmZWN0cy0yMDI2MTAwMy9saWZlY3ljbGUtcGFpcmVkLXYyLTIwMjYxMDAzL3NldHRpbmdzLWJhY2twb3J0Ly5jbGF1ZGUvTElGRU9TL1VTRVIvQ09ORklHL3NldHRpbmdzLnVzZXIuanNvbiAtLW91dHB1dCAvaG9tZS9saWZlb3MtY2xhdWRlLXJlZi93b3Jrc3BhY2UvcGFpcmVkLWVmZmVjdHMtMjAyNjEwMDMvbGlmZWN5Y2xlLXBhaXJlZC12Mi0yMDI2MTAwMy9zZXR0aW5ncy1iYWNrcG9ydC8uY2xhdWRlL3NldHRpbmdzLmpzb24=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/LIFEOS/TOOLS/SettingsBackport.ts": "a9fda1f1731301e6ecfde05caa21bfab0b9526cfaf84b44dce340183a50b81b4",
+        "/home/lifeos-claude-ref/.claude/LIFEOS/TOOLS/MergeSettings.ts": "f79be90fb31735262f0995e10e5e65e5a68ede9a7d2d9c04cd2a923f355c75eb"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "7be4c1158fe2abbeb1ff14fef2dc6293255a9c923f1079b0e9b2feaa578fa72b",
+    "fixture-events.jsonl": "2749dc62a702d48582272b3383bb42030f7e30435957cd22f3184e3b93838aad",
+    "cli.log": "2ab6f8183841ba7b4682d3f4e80a30ec20ac22fec40e96182016dc8aad1a3e8b",
+    "before-state.json": "f349bbad4913390fea29fcbe6b5546abeca3203e89b1835d4d67ed2584bb0252",
+    "after-state.json": "ff58453bbc4e4600f3e63e83493c512037b5141a2039a65b04bfc04ec4596295",
+    "fixture-files-before.json": "8109e36f9a43cd04696c170a54e16c5520ca3008c8f191d950baf88016fb940a",
+    "fixture-files-after.json": "b0847cc2b609222db94cb9c5d1371c2111f3706c193a68a7e344381c69b5a422"
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "before": {
+    "work_phase": "complete",
+    "learning_count": 0
+  },
+  "after": {
+    "learning_count": 1,
+    "learning_session_matches": true,
+    "claims_closed": "1/1"
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261003_194247_12f4b7",
+  "seconds": 5.336,
+  "command": [
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.1",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.1 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/learning-complete/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvV29ya0NvbXBsZXRpb25MZWFybmluZy5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/WorkCompletionLearning.hook.ts": "f52e218dc4b3c089b1c2410062976b78827238fdc4efb91d7e8a290872e26b3b"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "d88b783dd3aa24478ef14d336e385d7726bd711040265e79ce711ebfa807b05f",
+    "fixture-events.jsonl": "3458737c10cd91d537c109a3ea65a5dc3c443d8113cf2af686ed642eb0fc9368",
+    "cli.log": "d69ee493938a5120f7793793cf9f4cc271dde9de8bfb1fb3b1f23a1ef32e5bd0",
+    "before-state.json": "073d11516576cd7fa4a186c4d577251b9d455aa1be0872dcb355cf5a00081dc9",
+    "after-state.json": "0d5c2a7566713a377a05edf812d5c16e7fd100bcd56262828f568c6fa1cf2188",
+    "fixture-files-before.json": "86b6ff7c862669086106da6da1539b908fb9c3ba48355d3a5210fa0aff9a4899",
+    "fixture-files-after.json": "4cc2ae7306b97235a1e9f76211a724386f7fbbe5f997f5111610c22ce46f0b2c"
+  }
+}

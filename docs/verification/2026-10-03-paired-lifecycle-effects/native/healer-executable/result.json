@@ -1,0 +1,53 @@
+{
+  "before": {
+    "executable": false
+  },
+  "after": {
+    "executable": true,
+    "healed_target": true,
+    "unrelated_preserved": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "a3e88f89-2a58-4a82-bdb2-0771ef8e04b1",
+  "seconds": 0.619,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.1",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionStart.1.1 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/healer-executable/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvSG9va0hlYWxlci5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/HookHealer.hook.ts": "84ef309ec981e3589d3a54bf7210d115335d775146c179c8dd50fe5680ad6324"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "d4b20015172c7821ed3ce8918ab0d32ca3507df432ccc7705c60bdb271a3b129",
+    "fixture-events.jsonl": "f06f5798f84936a368a3c394cbd9813221280005ce3eb9fc53329e1cb7145723",
+    "cli.log": "1e1f326727001df5341acebfd008d9402a80444fd1ea229993c8bcff59de6006",
+    "before-state.json": "89969069453b0aa63b4694240a805b5f3f471f0481e26728033aaf9e2cd5cebb",
+    "after-state.json": "1471e5e6c3258156a50707e888f7c23b5fdd94eb3a88314e71e623c3aaa6df7b",
+    "fixture-files-before.json": "b6039acd5ee1107f09305d2bc21267d9a76d0de417c6aa607a6422edbe4369ff",
+    "fixture-files-after.json": "c06a50023e22de214b788b524e6d391c5d9fbd18147f9886086ef6574c873d72"
+  }
+}

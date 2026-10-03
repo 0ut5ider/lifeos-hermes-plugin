@@ -1,7 +1,7 @@
 {
   "date": "2026-10-03",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. Two selected paired effects are verified; complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. Eleven selected paired cases cover eight registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -32,8 +32,163 @@
     "docs/verification/2026-10-03-hook-compatibility/remote-result.json": "a2044ec8724ac786afbba41dc29aa67e7a69c7c6dd93b80188fc35ed53b165d0",
     "docs/verification/2026-10-03-hook-compatibility/source-manifest.json": "6b3ec0b8cd5b1a3e29790bfd2b596309d62a3d6ddf0b6c214a568330299efa45",
     "docs/verification/2026-10-03-hook-compatibility/toolsearch-hook-outputs.json": "2a6b0f9600e438ebf7408dfd858bfafbae8fc87a3834419ec780ebda1868350f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/README.md": "c0bfbb57c1467afe18a7cf88f55f0a5204c3128560600e00b21caf53361cfaa2",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json": "fcefcef045f1447306d6dff47273050d7c4bd221f48abc03cefb885bf2012753",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/after-state.json": "4d2fd5e328be41e7c0a673272a33826e1f6fdf3d3644ce7684faed952c67f94a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/cli.log": "6b2a160fd18295cb7658e76eecc2b060b18849cfaea35073dbbe14f0587b76f0",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-events.jsonl": "77e942904ae89e71310c5c2fac149976e081b146c9395a1cb8a5a2a0522e37aa",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-files-after.json": "ce986bb3a75149ec2bb9dfae79f7f6c669157a73b2d5b746cd06d3d3620dbc6c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-files-before.json": "fec39a2052a4c811a65af5cca4b4bcff49dfa968604ba1572bcbff06fdd267b5",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/hooks.jsonl": "0e393e964329d1945f98cbd060a3ca7ba12d91826890739e1488cf13726c0c52",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/result.json": "9c3af8ef2ea61a04b28bc0d3e5bbd21f22bbdf1ac0f1eb4e598cefc9d4d380d1",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/after-state.json": "fc38d169fa44b6c3e1337a7ddd667395a450babb6e66519151e4bcb809c5a0f4",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/cli.log": "0af5b3787b6dbbbda928f1b6bc121b983a372fd736bc77af67a51b9dcb2f1258",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/fixture-events.jsonl": "af865913ca5be5a05fe238c3c594d3103cfb903aab013c638780c83e9a65b06f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/fixture-files-after.json": "492095bed5e1dfefc6ad8ef80edbd18a59cc3eafd6bd2823ccc0ea8bc6f4693a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/fixture-files-before.json": "292c7962a45a8ce84dd3e0758b9d9cdc3fe431bba7cebb9a8f45f5eac14ada6e",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/hooks.jsonl": "28ca2659ab56526214449a0c33c4971cc8b2ad2543c0fdcea48c83663f976d8b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/result.json": "3e70e951935620af4c84ae6a038e76d67af4520bac601a06b5078b13db412914",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/after-state.json": "11a937edd780fad3a2b5d5850add8e4abd74fb6a8dfeee50e9aafb0548085623",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/before-state.json": "91eb9ab2c9fd5c62fe90bef166d31b3c0574c2e33dd0dbad2b82133dd9775e7f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/cli.log": "b186d4b016971f764c53e872a435fbf0d7a7207fc34b76255d09a6c8ef1fd463",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/fixture-events.jsonl": "1da88ffd51e17ca60746275be92ad71834e8e92d7d326ca5bf0d16f1e7cdca04",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/fixture-files-after.json": "08e74601c3c2f897b3c8ee0fafe4176754225c7ef5abf8ca4230e365ce187d4e",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/fixture-files-before.json": "754a2d443b519c72026bffdd45c68b2b4821c2913e1179382b894b0aa1232625",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/hooks.jsonl": "3af97c3b38d9ece2b2f6f9782908322b8ca32f0b0e19e7ebb44b68ffded1f5b2",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/result.json": "4243f4ddf2099d28dfe4b6a3f104514e543b4ffa0cfe935437dd97cd17919963",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/after-state.json": "1471e5e6c3258156a50707e888f7c23b5fdd94eb3a88314e71e623c3aaa6df7b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/before-state.json": "89969069453b0aa63b4694240a805b5f3f471f0481e26728033aaf9e2cd5cebb",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/cli.log": "ccd93ce5f0a461af1f039d59b2eb3dc3b8d78f9fb8c324ef3eceae82c9a4e4a9",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/fixture-events.jsonl": "68cd9c73a052a968afab24ac80691d816766c1359625b62bf860b94b48a19e03",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/fixture-files-after.json": "39f1c18ff4fed2e49b19dfff25dd3986fc8c06d2329164d258f043ecda1f174a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/fixture-files-before.json": "4b132c30eac94cf35a342c2896124ec9bc8455d117c97f42f6bfc8da2bf1fe77",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/hooks.jsonl": "1b7f2cbfef4b96802dfab473fa50652034203c4e7a5519f5e0007b5f8d2eaa0f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/result.json": "9ce3b20902e24a20f932c078fee1968ffe332e7894b8da7faa5918e2c6061bd2",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/after-state.json": "0d5c2a7566713a377a05edf812d5c16e7fd100bcd56262828f568c6fa1cf2188",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/cli.log": "cf0e18f5f2f7e5cc161657583906101d3ef59b946d9ab9bd8d5994da25c48203",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/fixture-events.jsonl": "ab29ea941e8e68851ef4130ca1ce1cf54d68f116b8fa95033db45f3f1dc32666",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/fixture-files-after.json": "49130b86e713e813df7326200a154d877431e51d7cf7547d3ffb507f7eff598a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/fixture-files-before.json": "3fc62ec4bc8caf21e6bf94126aa8de4a7cddd026ecafa91d3a8c229d678842f9",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/hooks.jsonl": "9167af5f5b447091fcbaecebffe16148f0444dff7c78140961265101389f4afe",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/result.json": "99a7147fc884246badf8760fb3cf6f50037dab4573c3739539245a8e462da5bf",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/after-state.json": "0d5c2a7566713a377a05edf812d5c16e7fd100bcd56262828f568c6fa1cf2188",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/before-state.json": "073d11516576cd7fa4a186c4d577251b9d455aa1be0872dcb355cf5a00081dc9",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/cli.log": "d69ee493938a5120f7793793cf9f4cc271dde9de8bfb1fb3b1f23a1ef32e5bd0",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/fixture-events.jsonl": "3458737c10cd91d537c109a3ea65a5dc3c443d8113cf2af686ed642eb0fc9368",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/fixture-files-after.json": "4cc2ae7306b97235a1e9f76211a724386f7fbbe5f997f5111610c22ce46f0b2c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/fixture-files-before.json": "86b6ff7c862669086106da6da1539b908fb9c3ba48355d3a5210fa0aff9a4899",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/hooks.jsonl": "d88b783dd3aa24478ef14d336e385d7726bd711040265e79ce711ebfa807b05f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/result.json": "9e1e16116e82a5956bbe4c5d9ac8a98132913aecaa76e589f195f9479e0bb422",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/after-state.json": "ff58453bbc4e4600f3e63e83493c512037b5141a2039a65b04bfc04ec4596295",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/before-state.json": "f349bbad4913390fea29fcbe6b5546abeca3203e89b1835d4d67ed2584bb0252",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/cli.log": "c590378937c33ac409d98e765ec94fbcae20ad012f259e4a603211443a8a8595",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/fixture-events.jsonl": "d6d9c0d2d192bd902038b04b49670fc4813f6a6c0a00aa704902f3dcd8dd57c9",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/fixture-files-after.json": "680a608dfb9ba82ea4e6f01132d71e75c356f2c1c2a9ef4d36b7c5f26880c2ee",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/fixture-files-before.json": "f7c1fb9576e46f57596c003a5df41796c972616daa24363cfd27e4e4fe1339d0",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/hooks.jsonl": "ac4fa9112853ccfcc8fee25c3666fc5ba29ea04fd4edb69e4228cff0c50fe9fc",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/result.json": "6f4879a9c6bb832f5dc24ec8dea963926e04e2f1ce44eb3886106ccb8c25e3c5",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/after-state.json": "b531b3147e2c72266a9740b86780a2b36157e10bbfa161e98f808e81a2cb3299",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/before-state.json": "8cff2120d8f575b91789863eb8e447f49ce5ef0d82468e7675fd7b6a07d77c90",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/cli.log": "13d98b10d3e3c2597ecdb06a8dcc14436d0b6a5504f8fff2a0232ca0169feb9c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/fixture-events.jsonl": "103f246addbf677aead559f30f46a9c2cffc5adacfcc5cdf0faabc338bd10220",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/fixture-files-after.json": "1a3bfc2448b7df951597e6dcc5bd69cc2bf9b223f13ee2dd156ad8680a6584b8",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/fixture-files-before.json": "999bb1536cf3faa38648854bc38ed5e4ffc985f9143ce1f2f6dfdc2131720252",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/hooks.jsonl": "8e1d2a7cf9913ed83feebd5ff2b71896bc50b276f6d19c1e850175688aa2d6c8",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/result.json": "c30ec4f8b995fd2949fc7ad3580e771901ceb2dd011eec5f5af7bf6d675645e5",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/after-state.json": "92f198da665429391dc79a0c8491468a217e30247c0c5e742c3a24a9bd60b3e7",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/before-state.json": "a59281e61f033027ce216bcdd32c2bf3546d662f33c88f14172114829b294293",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/cli.log": "8e3f98f777101d7fcbefce8dd96cb1b1bfcba7e2eb7e6572b3b3e6f5bc94d8f6",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/fixture-events.jsonl": "e2621d0625eb76504146e960531ad6a54db00c9ec891f758c7b93f549c33cca2",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/fixture-files-after.json": "674c29af58cbc84db8dfe217a59cd0fadb6d9435cae886c81aee95d572356f3c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/fixture-files-before.json": "674c29af58cbc84db8dfe217a59cd0fadb6d9435cae886c81aee95d572356f3c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/hooks.jsonl": "37535c5bf2aacd40337e8af402ce5297d7987189864921a1a0b36d6ae075b37a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/result.json": "92367ea6bf932094a389cfa9a186573df5a41c101e468641855a41e24bb86d83",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native-regression-command.json": "f95cac7d04f25cae4f998ea91b09fbe39f74a66c0c5466778bd5bf0b534e4602",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native-regression.log": "4e02acaed82affa4960657cdc8c41cf9c773a00b3667def63952d9cb05a7c98c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/after-state.json": "4d2fd5e328be41e7c0a673272a33826e1f6fdf3d3644ce7684faed952c67f94a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/cli.log": "e2446be83f54a7f4b122435d000a8bd37cb8ec7c5334adfb579c2b552f93fdd0",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-events.jsonl": "7201151c7029658a989ea743a66169c8b7f48f56b8b0265873828558b99d7177",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-files-after.json": "3479afb26ecf254d3a1eb140507cd661c32d5ebf80969536de2dc7cab68fc86a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-files-before.json": "6f4a84a0cb3f34c78b2e4dd6346ce5d1beb1f82333cfd1cb361a3888a37c1339",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/hooks.jsonl": "84f4a6a41bae4ab48987cc32a8fcde4adc1562b68e58837a28b1870624629d2a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/result.json": "b48c0d19cd3f4b6d10d9a96adbd3ef549297ce6b87af877f927e9cdd66078853",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/after-state.json": "fc38d169fa44b6c3e1337a7ddd667395a450babb6e66519151e4bcb809c5a0f4",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/cli.log": "6093f49ab3d9bc5a799ea43aaeeabf526223d94edc63c971623275ddf73d3edf",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/fixture-events.jsonl": "b1b3aae0823703df37f3ea25d69a444a16696af2a340333d1e6b78b0ffd50776",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/fixture-files-after.json": "92057fee100d02928ef01a945d92c8d39c310623f3eb2abc2db69456bc4c9d4f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/fixture-files-before.json": "abf36c1f9b4bc193e3aa1c5c421e4ab66333fb3ab0bebac93833ce1d9a04bd8b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/hooks.jsonl": "551b2bdcdb8ba7fa464ddd9b6bbd1bfd1938243730074470f13451b873fd90de",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/result.json": "287b97bddffcafe377adabe8c00b979c4ffdf59a89b6ba53ffed86128c6142a9",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/after-state.json": "11a937edd780fad3a2b5d5850add8e4abd74fb6a8dfeee50e9aafb0548085623",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/before-state.json": "91eb9ab2c9fd5c62fe90bef166d31b3c0574c2e33dd0dbad2b82133dd9775e7f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/cli.log": "9a6800604bb515c8ae3b7fde21b0f214b3886a7528182402f989c638196425bc",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/fixture-events.jsonl": "da5993a1c8bc42ddb2b478ab265cbd165e7e11e24bd9ea19f252eeda2710d0d6",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/fixture-files-after.json": "aefcaebfd4b31345b59f3ddfa295f1c34239977d06e0c47c05067468cf531c42",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/fixture-files-before.json": "b78c00cf082837edc90faeb554c95818f0c400ae363a12efac3cd8fd5493e4e8",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/hooks.jsonl": "d8189fb5a98928c65001b0a16a1484e7021e2b4cd6a5b7cb86a2a0a893b262dd",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/result.json": "b15a0bd48755a9e82209f83adce97908861e4900d112d74e5b888f5d1ffcc53b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/after-state.json": "1471e5e6c3258156a50707e888f7c23b5fdd94eb3a88314e71e623c3aaa6df7b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/before-state.json": "89969069453b0aa63b4694240a805b5f3f471f0481e26728033aaf9e2cd5cebb",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/cli.log": "1e1f326727001df5341acebfd008d9402a80444fd1ea229993c8bcff59de6006",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/fixture-events.jsonl": "f06f5798f84936a368a3c394cbd9813221280005ce3eb9fc53329e1cb7145723",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/fixture-files-after.json": "c06a50023e22de214b788b524e6d391c5d9fbd18147f9886086ef6574c873d72",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/fixture-files-before.json": "b6039acd5ee1107f09305d2bc21267d9a76d0de417c6aa607a6422edbe4369ff",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/hooks.jsonl": "d4b20015172c7821ed3ce8918ab0d32ca3507df432ccc7705c60bdb271a3b129",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/result.json": "5ce4f1aed46f6ae4f6fcbee7c2f08cefab6f2bd1deb1f715f44e883e4032b25b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/after-state.json": "0d5c2a7566713a377a05edf812d5c16e7fd100bcd56262828f568c6fa1cf2188",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/cli.log": "0ce5511df67586f8c09f5fbe6cd15610b68ad249398f7f119e4eb9b0eb7f44ca",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/fixture-events.jsonl": "1697733a67a3a600c7c38e5679fc017c40d2c5f0772ef655b1b2a0d2aa581e36",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/fixture-files-after.json": "4d421b01642cd6c71067f4ea44896b275dc3eff66b01b8466300b31eaf6278b6",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/fixture-files-before.json": "b5a0aac566b9dc82b657911f5c0baaf976767363792e4b1c47af7f47f578c2c3",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/hooks.jsonl": "e2c3602d85f96d223e22e4d8cf3cdd93a0d1311d6d49ac6d65ff0d03ab1d957f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/result.json": "50c6b776758fae09676697681fbd300e0f5aff86064ed3fcac819f219983042d",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/after-state.json": "0d5c2a7566713a377a05edf812d5c16e7fd100bcd56262828f568c6fa1cf2188",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/before-state.json": "073d11516576cd7fa4a186c4d577251b9d455aa1be0872dcb355cf5a00081dc9",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/cli.log": "3cdecc837df0d0e611d99464b848dc093827fcf9f9879ddcf0c1a2117691fb40",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/fixture-events.jsonl": "460e6d442d22b730ee7aaf4155c8e12606e20293ce7414bb1de2b030ad7d4118",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/fixture-files-after.json": "743d63753a610cb41e4df079a5791a7fe59cbf6c8232735c01b90a96a88d5a13",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/fixture-files-before.json": "2a188e09ab83db9d5576196f9f1181a2593f2e3b700978b7bee36ebcf98f5021",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/hooks.jsonl": "f63d8bc0f0881e8de682cf1c0888c273fbf24f8c82a7d1a190bb4b266dcf3df3",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/result.json": "9d622eb7f428e46c06e0891fc2b5eff01685e258aa390b642e40d95ed9badc81",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/after-state.json": "ff58453bbc4e4600f3e63e83493c512037b5141a2039a65b04bfc04ec4596295",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/before-state.json": "f349bbad4913390fea29fcbe6b5546abeca3203e89b1835d4d67ed2584bb0252",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/cli.log": "2ab6f8183841ba7b4682d3f4e80a30ec20ac22fec40e96182016dc8aad1a3e8b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/fixture-events.jsonl": "2749dc62a702d48582272b3383bb42030f7e30435957cd22f3184e3b93838aad",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/fixture-files-after.json": "b0847cc2b609222db94cb9c5d1371c2111f3706c193a68a7e344381c69b5a422",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/fixture-files-before.json": "8109e36f9a43cd04696c170a54e16c5520ca3008c8f191d950baf88016fb940a",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/hooks.jsonl": "7be4c1158fe2abbeb1ff14fef2dc6293255a9c923f1079b0e9b2feaa578fa72b",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/result.json": "dd40e592f6297e84c52c4d39eb7ecf9832f67a6eff429d49af45ef2fc3f1c1cf",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/after-state.json": "b531b3147e2c72266a9740b86780a2b36157e10bbfa161e98f808e81a2cb3299",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/before-state.json": "8cff2120d8f575b91789863eb8e447f49ce5ef0d82468e7675fd7b6a07d77c90",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/cli.log": "4fa40e63bc888e637ff82104b82dccd8b5523ec8ae0c61ec6ac86423e630f681",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/fixture-events.jsonl": "6e24d59b6a502a2323e6884d1fbea93847623ff93ecf60ffa8f61659441d4fb1",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/fixture-files-after.json": "c4d98442960614aeb6172d684d44a64375a5d8c09d07115c4453010fd3b05d03",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/fixture-files-before.json": "4af9ed06ad86e898720cdfc5c10d7b480a4565bed7996e998886b6e5af302f34",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/hooks.jsonl": "5123e6869a4793c560822696e9f016a884dfd65746a7b845b9325db50e50279d",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/result.json": "6d56ad046f73139c86c1821c29f044bc9e23890166dc79389d5e1920c820d54f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/after-state.json": "92f198da665429391dc79a0c8491468a217e30247c0c5e742c3a24a9bd60b3e7",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/before-state.json": "a59281e61f033027ce216bcdd32c2bf3546d662f33c88f14172114829b294293",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/cli.log": "bc924f2de3c3bcb0006d8760c53119a638ffb91232f29cfdb5e62ab876c6b62c",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/fixture-events.jsonl": "0dc42209830a4d2a539fe7ffc7b7518410a4a3964e701ed146e8ded864d6e053",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/fixture-files-after.json": "353a56de53d298802d4976889881b988a712b3b83e87ed04aacf03c39ff66059",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/fixture-files-before.json": "353a56de53d298802d4976889881b988a712b3b83e87ed04aacf03c39ff66059",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/hooks.jsonl": "9590841b7204e4af68ff985425a08cb76c0b185df3ebf0f72c8cdc42d30f1bde",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/result.json": "c158adfc3ee83a1f20cd3d733e2c75778dd86baee57a76a110a51d9a099750c7",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json": "96f66387973709af25a007ac641fc1476e220429a913e21618f2494644ed3d9f",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/run.log": "ec0c351e549f2258fb36ea9b1689a9db731e0504350ffa454b40b9911682b8c0",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json": "52eb12b55e9150f1117e3dcdcaccb95f8766965730d83c9d466a52cd670fe286",
+    "docs/verification/2026-10-03-paired-lifecycle-effects/verification-results.json": "737d65360ac1edb913ad8952ce199d3d50d684395c87e289eaf0d986ac8381e4",
+    "lifeos_hook_bridge/patches/hermes-plugin-events.patch": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2",
     "patches/hermes-plugin-events.patch": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2",
-    "lifeos_hook_bridge/patches/hermes-plugin-events.patch": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2"
+    "scripts/check_hook_evidence.py": "3fe8328a699091a1c1609a75f47e1f57dc871ef5211609de43ff488fa562cb97",
+    "scripts/paired_hook_trace.py": "ec389ce6f6a69e78681addb94b2bf3d912c07af05f8f609a2e6fba4a812048f1",
+    "scripts/paired_lifecycle_effects.py": "f7d33cdf8c8ae30af8c23d88b4c2b565decc97f3e00a2dc1a1c92b8b8d4be88c"
   },
   "registrations": [
     {
@@ -550,12 +705,214 @@
       "handler": "$HOME/.claude/hooks/WorkCompletionLearning.hook.ts",
       "expected_effect": "Read session completion evidence and persist eligible native learning.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "learning-active",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-active/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-active/result.json"
+          ],
+          "native": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        },
+        {
+          "id": "learning-complete",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/learning-complete/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/learning-complete/result.json"
+          ],
+          "native": {
+            "before": {
+              "work_phase": "complete",
+              "learning_count": 0
+            },
+            "after": {
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "work_phase": "complete",
+              "learning_count": 0
+            },
+            "after": {
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        },
+        {
+          "id": "cleanup-learning-parallel",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/result.json"
+          ],
+          "native": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "work_phase": "complete",
+              "isa_phase": "complete",
+              "isa_status": "COMPLETED",
+              "current_name_present": false,
+              "unrelated_name_preserved": true,
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "work_phase": "complete",
+              "isa_phase": "complete",
+              "isa_status": "COMPLETED",
+              "current_name_present": false,
+              "unrelated_name_preserved": true,
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_session_end_learning.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Test remaining learning eligibility, repeated sessions, other scheduling orders, and the full shutdown group."
     },
     {
       "id": "SessionEnd.1.2",
@@ -564,12 +921,155 @@
       "handler": "$HOME/.claude/hooks/SessionCleanup.hook.ts",
       "expected_effect": "Close native session state and remove the applicable transient work state.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "cleanup-work",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-work/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-work/result.json"
+          ],
+          "native": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "work_phase": "complete",
+              "isa_phase": "complete",
+              "isa_status": "COMPLETED",
+              "current_name_present": false,
+              "unrelated_name_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "work_phase": "complete",
+              "isa_phase": "complete",
+              "isa_status": "COMPLETED",
+              "current_name_present": false,
+              "unrelated_name_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        },
+        {
+          "id": "cleanup-learning-parallel",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/cleanup-learning-parallel/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/cleanup-learning-parallel/result.json"
+          ],
+          "native": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "work_phase": "complete",
+              "isa_phase": "complete",
+              "isa_status": "COMPLETED",
+              "current_name_present": false,
+              "unrelated_name_preserved": true,
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "work_phase": "execute",
+              "learning_count": 0
+            },
+            "after": {
+              "work_phase": "complete",
+              "isa_phase": "complete",
+              "isa_status": "COMPLETED",
+              "current_name_present": false,
+              "unrelated_name_preserved": true,
+              "learning_count": 1,
+              "learning_session_matches": true,
+              "claims_closed": "1/1"
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_session_end_learning.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Test remaining transient-state cleanup branches and the full shutdown group."
     },
     {
       "id": "SessionEnd.1.3",
@@ -578,12 +1078,72 @@
       "handler": "$HOME/.claude/hooks/UpdateCounts.hook.ts",
       "expected_effect": "Refresh the configured usage counts or remain neutral without OAuth credentials.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "update-counts-no-oauth",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/update-counts-no-oauth/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/update-counts-no-oauth/result.json"
+          ],
+          "native": {
+            "before": {
+              "credentials_present": false
+            },
+            "after": {
+              "credentials_present": false,
+              "usage_cache_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "credentials_present": false
+            },
+            "after": {
+              "credentials_present": false,
+              "usage_cache_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_session_end_all.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Test OAuth-backed usage refresh and the remaining credential and network failure branches."
     },
     {
       "id": "SessionEnd.1.4",
@@ -824,12 +1384,74 @@
       "handler": "bun $HOME/.claude/hooks/HookHealer.hook.ts",
       "expected_effect": "Repair interpreter and executable permissions for installed registered hooks.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "healer-executable",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/healer-executable/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/healer-executable/result.json"
+          ],
+          "native": {
+            "before": {
+              "executable": false
+            },
+            "after": {
+              "executable": true,
+              "healed_target": true,
+              "unrelated_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "executable": false
+            },
+            "after": {
+              "executable": true,
+              "healed_target": true,
+              "unrelated_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_hook_healer.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Test interpreter repair and the remaining installed-hook branches with paired native controls."
     },
     {
       "id": "SessionStart.1.2",
@@ -864,12 +1486,288 @@
       "handler": "bun $HOME/.claude/LIFEOS/TOOLS/FreshnessCache.ts --quiet",
       "expected_effect": "Write the native freshness cache for the installed source tree.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "freshness-reviewed",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/freshness-reviewed/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/freshness-reviewed/result.json"
+          ],
+          "native": {
+            "before": {
+              "cache_present": false
+            },
+            "after": {
+              "total": 8,
+              "fresh_count": 2,
+              "total_matches_files": true,
+              "telos_stale": false,
+              "generated_at_present": true,
+              "cache_without_generated_at": {
+                "total": 8,
+                "fresh_count": 2,
+                "stale_count": 6,
+                "overall_pct": 25,
+                "overall_grade": "D",
+                "most_stale": {
+                  "slug": "projects",
+                  "name": "PROJECTS.md",
+                  "age_days": null,
+                  "threshold_days": 30,
+                  "reviewed_age_days": null,
+                  "pct": 0,
+                  "grade": "F",
+                  "why": "no frontmatter"
+                },
+                "files": [
+                  {
+                    "slug": "telos",
+                    "name": "TELOS.md",
+                    "age_days": 0,
+                    "threshold_days": 30,
+                    "reviewed_age_days": 0,
+                    "pct": 100,
+                    "grade": "A",
+                    "stale": false
+                  },
+                  {
+                    "slug": "da_identity",
+                    "name": "DA_IDENTITY.md",
+                    "age_days": null,
+                    "threshold_days": 180,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "principal_identity",
+                    "name": "PRINCIPAL_IDENTITY.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "projects",
+                    "name": "PROJECTS.md",
+                    "age_days": null,
+                    "threshold_days": 30,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "lifeos_system_prompt",
+                    "name": "LIFEOS_SYSTEM_PROMPT.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "principal_telos",
+                    "name": "PRINCIPAL_TELOS.md",
+                    "age_days": 0,
+                    "threshold_days": 30,
+                    "reviewed_age_days": 0,
+                    "pct": 100,
+                    "grade": "A",
+                    "stale": false
+                  },
+                  {
+                    "slug": "architecture_summary",
+                    "name": "ARCHITECTURE_SUMMARY.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "source missing"
+                  },
+                  {
+                    "slug": "lifeos_system_architecture",
+                    "name": "LifeosSystemArchitecture.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  }
+                ]
+              }
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "cache_present": false
+            },
+            "after": {
+              "total": 8,
+              "fresh_count": 2,
+              "total_matches_files": true,
+              "telos_stale": false,
+              "generated_at_present": true,
+              "cache_without_generated_at": {
+                "total": 8,
+                "fresh_count": 2,
+                "stale_count": 6,
+                "overall_pct": 25,
+                "overall_grade": "D",
+                "most_stale": {
+                  "slug": "projects",
+                  "name": "PROJECTS.md",
+                  "age_days": null,
+                  "threshold_days": 30,
+                  "reviewed_age_days": null,
+                  "pct": 0,
+                  "grade": "F",
+                  "why": "no frontmatter"
+                },
+                "files": [
+                  {
+                    "slug": "telos",
+                    "name": "TELOS.md",
+                    "age_days": 0,
+                    "threshold_days": 30,
+                    "reviewed_age_days": 0,
+                    "pct": 100,
+                    "grade": "A",
+                    "stale": false
+                  },
+                  {
+                    "slug": "da_identity",
+                    "name": "DA_IDENTITY.md",
+                    "age_days": null,
+                    "threshold_days": 180,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "principal_identity",
+                    "name": "PRINCIPAL_IDENTITY.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "projects",
+                    "name": "PROJECTS.md",
+                    "age_days": null,
+                    "threshold_days": 30,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "lifeos_system_prompt",
+                    "name": "LIFEOS_SYSTEM_PROMPT.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  },
+                  {
+                    "slug": "principal_telos",
+                    "name": "PRINCIPAL_TELOS.md",
+                    "age_days": 0,
+                    "threshold_days": 30,
+                    "reviewed_age_days": 0,
+                    "pct": 100,
+                    "grade": "A",
+                    "stale": false
+                  },
+                  {
+                    "slug": "architecture_summary",
+                    "name": "ARCHITECTURE_SUMMARY.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "source missing"
+                  },
+                  {
+                    "slug": "lifeos_system_architecture",
+                    "name": "LifeosSystemArchitecture.md",
+                    "age_days": null,
+                    "threshold_days": 90,
+                    "reviewed_age_days": null,
+                    "pct": 0,
+                    "grade": "F",
+                    "stale": true,
+                    "why": "no frontmatter"
+                  }
+                ]
+              }
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_freshness_cache.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Test stale and missing-source branches and the complete installed source tree with paired native controls."
     },
     {
       "id": "SessionStart.1.5",
@@ -878,12 +1776,139 @@
       "handler": "bun $HOME/.claude/LIFEOS/TOOLS/SettingsBackport.ts; bun $HOME/.claude/LIFEOS/TOOLS/MergeSettings.ts --system $HOME/.claude/settings.system.json --user $HOME/.claude/LIFEOS/USER/CONFIG/settings.user.json --output $HOME/.claude/settings.json",
       "expected_effect": "Backport applicable settings and atomically merge system and user settings.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "settings-merge",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-merge/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-merge/result.json"
+          ],
+          "native": {
+            "before": {
+              "user_value": null
+            },
+            "after": {
+              "system_value": "system",
+              "user_value": "overlay",
+              "overlay_value": "overlay",
+              "snapshot_matches_generated": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "user_value": null
+            },
+            "after": {
+              "system_value": "system",
+              "user_value": "overlay",
+              "overlay_value": "overlay",
+              "snapshot_matches_generated": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        },
+        {
+          "id": "settings-backport",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-03-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/native/settings-backport/result.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/after-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/before-state.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/cli.log",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/fixture-events.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/fixture-files-after.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/fixture-files-before.json",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/hooks.jsonl",
+            "docs/verification/2026-10-03-paired-lifecycle-effects/hermes/settings-backport/result.json"
+          ],
+          "native": {
+            "before": {
+              "user_value": "edited"
+            },
+            "after": {
+              "system_value": "system",
+              "user_value": "edited",
+              "overlay_value": "edited",
+              "snapshot_matches_generated": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "user_value": "edited"
+            },
+            "after": {
+              "system_value": "system",
+              "user_value": "edited",
+              "overlay_value": "edited",
+              "snapshot_matches_generated": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_settings_merge.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Test concurrent edits, settings deletion, remaining merge policies, and the full startup group."
     },
     {
       "id": "Stop.1.1",

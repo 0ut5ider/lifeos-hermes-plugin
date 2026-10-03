@@ -1,0 +1,47 @@
+{
+  "date": "2026-10-03",
+  "real_cli_pairs": {
+    "cases": 9,
+    "cli_runs": 18,
+    "hook_invocations": 20,
+    "cli_failures": 0,
+    "hook_failures": 0,
+    "observed_model_generation_requests": 0,
+    "hermes_metadata_requests": 18
+  },
+  "evidence_regressions": {
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "tests.test_hook_evidence",
+      "tests.test_paired_lifecycle_effects",
+      "tests.test_paired_hook_trace",
+      "tests.test_paired_coverage",
+      "tests.test_hook_inventory",
+      "-v"
+    ],
+    "tests": 22,
+    "failures": 0,
+    "skips": 0,
+    "exit_code": 0
+  },
+  "native_regressions": {
+    "command_artifact": "native-regression-command.json",
+    "output_artifact": "native-regression.log",
+    "tests": 7,
+    "failures": 0,
+    "skips": 0,
+    "exit_code": 0
+  },
+  "effect_gate": {
+    "exit_code": 0
+  },
+  "complete_effect_gate": {
+    "exit_code": 1,
+    "reason": "All 74 registrations retain incomplete handler effects."
+  },
+  "full_suite_rerun": false,
+  "runtime_product_changes": false,
+  "active_deployment_changes": false
+}

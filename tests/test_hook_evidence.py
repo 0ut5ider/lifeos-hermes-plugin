@@ -61,3 +61,48 @@ class HookEvidenceTests(unittest.TestCase):
             errors = check_evidence(inventory, ledger, root)
             self.assertIn('complete claim includes partial effects: StopFailure.1.1', errors)
             self.assertIn('paired case is missing: StopFailure.1.1', errors)
+
+    def lifecycle_fixture(self, root):
+        inventory, ledger, document = self.fixture(root)
+        inventory.write_text('id,event,handler\nSessionEnd.1.3,SessionEnd,counts\n')
+        document['registrations_sha256'] = hashlib.sha256(inventory.read_bytes()).hexdigest()
+        side = {'before': {'credentials_present': False},
+                'after': {'credentials_present': False, 'usage_cache_present': False},
+                'hook_exit_codes': [0], 'event': 'SessionEnd', 'cli_exit_code': 0,
+                'model_generation_requests': 0}
+        result = {'id': 'update-counts-no-oauth', 'registrations': ['SessionEnd.1.3'],
+                  'native': side, 'hermes': dict(side)}
+        row = document['registrations'][0]
+        row.update(id='SessionEnd.1.3', effect_status='paired_case_verified', paired_cases=[{
+            'id': result['id'], 'kind': 'paired_lifecycle', 'result_artifact': 'result.json',
+            'artifacts': ['result.json'], 'native': side, 'hermes': dict(side)}])
+        return inventory, ledger, document, result
+
+    def save_lifecycle(self, root, ledger, document, result):
+        raw = root / 'result.json'
+        raw.write_text(json.dumps({'cases': [result]}))
+        document['artifacts']['result.json'] = hashlib.sha256(raw.read_bytes()).hexdigest()
+        ledger.write_text(json.dumps(document))
+
+    def test_lifecycle_assertions_reject_equal_but_invalid_retained_outcomes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, ledger, document, result = self.lifecycle_fixture(root)
+            self.save_lifecycle(root, ledger, document, result)
+            self.assertEqual(check_evidence(inventory, ledger, root), [])
+            result['native']['model_generation_requests'] = 1
+            result['hermes']['model_generation_requests'] = 1
+            self.save_lifecycle(root, ledger, document, result)
+            self.assertTrue(any('model generation was attempted' in error for error in
+                                check_evidence(inventory, ledger, root)))
+
+    def test_lifecycle_case_must_cover_the_registration_and_match_ledger_outcomes(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, ledger, document, result = self.lifecycle_fixture(root)
+            result['registrations'] = ['SessionEnd.1.2']
+            result['native'] = {**result['native'], 'cli_exit_code': 1}
+            self.save_lifecycle(root, ledger, document, result)
+            errors = check_evidence(inventory, ledger, root)
+            self.assertTrue(any('does not cover registration' in error for error in errors))
+            self.assertTrue(any('ledger outcome differs' in error for error in errors))

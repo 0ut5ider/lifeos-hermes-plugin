@@ -8,8 +8,36 @@ import hashlib
 import json
 from pathlib import Path
 
+if __package__:
+    from .paired_lifecycle_effects import check_pair
+else:
+    from paired_lifecycle_effects import check_pair
+
 ROOT = Path(__file__).resolve().parents[1]
 STATUSES = {'unverified', 'native_handler_checked', 'paired_case_verified', 'paired_effect_verified'}
+
+
+def check_lifecycle_case(identifier: str, case: dict, artifacts: dict, root: Path) -> list[str]:
+    label = f'{identifier}/{case["id"]}'
+    name = case.get('result_artifact')
+    if name not in artifacts or name not in case.get('artifacts', []):
+        return [f'lifecycle result is not retained: {label}']
+    target = (root / name).resolve()
+    if not target.is_relative_to(root) or not target.is_file():
+        return [f'lifecycle result is missing: {label}']
+    records = json.loads(target.read_text()).get('cases', [])
+    matches = [record for record in records if record.get('id') == case['id']]
+    if len(matches) != 1:
+        return [f'lifecycle case is missing or duplicated: {label}']
+    record = matches[0]
+    errors = [f'invalid lifecycle case: {label}: {error}' for error in check_pair(record)]
+    if identifier not in record.get('registrations', []):
+        errors.append(f'lifecycle case does not cover registration: {label}')
+    for side in ('native', 'hermes'):
+        outcome = {key: value for key, value in record[side].items() if key != 'metadata_requests'}
+        if case.get(side) != outcome:
+            errors.append(f'ledger outcome differs from lifecycle result: {label}/{side}')
+    return errors
 
 
 def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: bool = False) -> list[str]:
@@ -47,6 +75,8 @@ def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: 
             names = case.get('artifacts', [])
             if not names or any(name not in artifacts for name in names):
                 errors.append(f'paired case lacks a retained artifact: {label}')
+            if case.get('kind') == 'paired_lifecycle':
+                errors.extend(check_lifecycle_case(identifier, case, artifacts, root))
         if document.get('complete') and status != 'paired_effect_verified':
             errors.append(f'complete claim includes partial effects: {identifier}')
     for identifier in identifiers - rows.keys():

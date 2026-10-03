@@ -1,0 +1,67 @@
+{
+  "before": {
+    "work_phase": "execute",
+    "learning_count": 0
+  },
+  "after": {
+    "work_phase": "complete",
+    "isa_phase": "complete",
+    "isa_status": "COMPLETED",
+    "current_name_present": false,
+    "unrelated_name_preserved": true,
+    "learning_count": 1,
+    "learning_session_matches": true,
+    "claims_closed": "1/1"
+  },
+  "hook_exit_codes": [
+    0,
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "95641fc7-bc64-4ce0-b35e-6e6185f804f6",
+  "seconds": 0.619,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.1",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.1 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/cleanup-learning-parallel/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvV29ya0NvbXBsZXRpb25MZWFybmluZy5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/WorkCompletionLearning.hook.ts": "f52e218dc4b3c089b1c2410062976b78827238fdc4efb91d7e8a290872e26b3b"
+      }
+    },
+    {
+      "id": "SessionEnd.1.2",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.2 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/cleanup-learning-parallel/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvU2Vzc2lvbkNsZWFudXAuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/SessionCleanup.hook.ts": "e8a1e04b8d2edf6a8faa2e3f36f792dab6f5a4e756fe612afbebb620738d151c"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "84f4a6a41bae4ab48987cc32a8fcde4adc1562b68e58837a28b1870624629d2a",
+    "fixture-events.jsonl": "7201151c7029658a989ea743a66169c8b7f48f56b8b0265873828558b99d7177",
+    "cli.log": "e2446be83f54a7f4b122435d000a8bd37cb8ec7c5334adfb579c2b552f93fdd0",
+    "before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "after-state.json": "4d2fd5e328be41e7c0a673272a33826e1f6fdf3d3644ce7684faed952c67f94a",
+    "fixture-files-before.json": "6f4a84a0cb3f34c78b2e4dd6346ce5d1beb1f82333cfd1cb361a3888a37c1339",
+    "fixture-files-after.json": "3479afb26ecf254d3a1eb140507cd661c32d5ebf80969536de2dc7cab68fc86a"
+  }
+}

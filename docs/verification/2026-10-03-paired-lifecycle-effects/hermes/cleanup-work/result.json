@@ -1,0 +1,70 @@
+{
+  "before": {
+    "work_phase": "execute",
+    "learning_count": 0
+  },
+  "after": {
+    "work_phase": "complete",
+    "isa_phase": "complete",
+    "isa_status": "COMPLETED",
+    "current_name_present": false,
+    "unrelated_name_preserved": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261003_194234_4a9bee",
+  "seconds": 5.784,
+  "command": [
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.2",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.2 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/cleanup-work/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvU2Vzc2lvbkNsZWFudXAuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/SessionCleanup.hook.ts": "e8a1e04b8d2edf6a8faa2e3f36f792dab6f5a4e756fe612afbebb620738d151c"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "28ca2659ab56526214449a0c33c4971cc8b2ad2543c0fdcea48c83663f976d8b",
+    "fixture-events.jsonl": "af865913ca5be5a05fe238c3c594d3103cfb903aab013c638780c83e9a65b06f",
+    "cli.log": "0af5b3787b6dbbbda928f1b6bc121b983a372fd736bc77af67a51b9dcb2f1258",
+    "before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "after-state.json": "fc38d169fa44b6c3e1337a7ddd667395a450babb6e66519151e4bcb809c5a0f4",
+    "fixture-files-before.json": "292c7962a45a8ce84dd3e0758b9d9cdc3fe431bba7cebb9a8f45f5eac14ada6e",
+    "fixture-files-after.json": "492095bed5e1dfefc6ad8ef80edbd18a59cc3eafd6bd2823ccc0ea8bc6f4693a"
+  }
+}

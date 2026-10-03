@@ -1,0 +1,54 @@
+{
+  "before": {
+    "user_value": null
+  },
+  "after": {
+    "system_value": "system",
+    "user_value": "overlay",
+    "overlay_value": "overlay",
+    "snapshot_matches_generated": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "745ce735-79b8-41d3-9450-cab875b5dc9e",
+  "seconds": 0.62,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.5",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionStart.1.5 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/settings-merge/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvTElGRU9TL1RPT0xTL01lcmdlU2V0dGluZ3MudHMgLS1zeXN0ZW0gL2hvbWUvbGlmZW9zLWNsYXVkZS1yZWYvd29ya3NwYWNlL3BhaXJlZC1lZmZlY3RzLTIwMjYxMDAzL2xpZmVjeWNsZS1wYWlyZWQtdjItMjAyNjEwMDMvc2V0dGluZ3MtbWVyZ2UvLmNsYXVkZS9zZXR0aW5ncy5zeXN0ZW0uanNvbiAtLXVzZXIgL2hvbWUvbGlmZW9zLWNsYXVkZS1yZWYvd29ya3NwYWNlL3BhaXJlZC1lZmZlY3RzLTIwMjYxMDAzL2xpZmVjeWNsZS1wYWlyZWQtdjItMjAyNjEwMDMvc2V0dGluZ3MtbWVyZ2UvLmNsYXVkZS9MSUZFT1MvVVNFUi9DT05GSUcvc2V0dGluZ3MudXNlci5qc29uIC0tb3V0cHV0IC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmL3dvcmtzcGFjZS9wYWlyZWQtZWZmZWN0cy0yMDI2MTAwMy9saWZlY3ljbGUtcGFpcmVkLXYyLTIwMjYxMDAzL3NldHRpbmdzLW1lcmdlLy5jbGF1ZGUvc2V0dGluZ3MuanNvbg==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/LIFEOS/TOOLS/MergeSettings.ts": "f79be90fb31735262f0995e10e5e65e5a68ede9a7d2d9c04cd2a923f355c75eb"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "5123e6869a4793c560822696e9f016a884dfd65746a7b845b9325db50e50279d",
+    "fixture-events.jsonl": "6e24d59b6a502a2323e6884d1fbea93847623ff93ecf60ffa8f61659441d4fb1",
+    "cli.log": "4fa40e63bc888e637ff82104b82dccd8b5523ec8ae0c61ec6ac86423e630f681",
+    "before-state.json": "8cff2120d8f575b91789863eb8e447f49ce5ef0d82468e7675fd7b6a07d77c90",
+    "after-state.json": "b531b3147e2c72266a9740b86780a2b36157e10bbfa161e98f808e81a2cb3299",
+    "fixture-files-before.json": "4af9ed06ad86e898720cdfc5c10d7b480a4565bed7996e998886b6e5af302f34",
+    "fixture-files-after.json": "c4d98442960614aeb6172d684d44a64375a5d8c09d07115c4453010fd3b05d03"
+  }
+}

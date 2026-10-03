@@ -12,6 +12,8 @@ Keep it equal to the version in both plugin manifests.
 - This changelog and instructions for future version updates.
 - A registration effect matrix and a completion check for retained hook evidence.
 - Paired ToolSearch Safety and StopFailure audit controls on disposable profiles.
+- Nine paired lifecycle effect cases through real Claude Code and Hermes events,
+  with exact synthetic file captures and assertions checked by the evidence gate.
 
 ### Fixed
 

@@ -37,6 +37,8 @@ python scripts/check_hook_evidence.py
 python scripts/check_hook_evidence.py --require-complete
 ```
 
+The [paired lifecycle bundle](verification/2026-10-03-paired-lifecycle-effects/README.md) adds nine selected cases for six registrations. Both real CLIs run matching synthetic fixtures for executable repair, reviewed freshness, settings merge and direct-edit backport, work cleanup, active and completed work learning, concurrent learning and cleanup, and the credential-free UpdateCounts branch. All 18 CLI runs and all 20 selected hook invocations pass. The guard records zero model generation requests and retains the Hermes metadata probes separately. The effect ledger now contains eleven selected cases across eight registrations. The evidence check reevaluates the lifecycle assertions and checks that each ledger claim matches its retained result. Remaining branches and full installed hook groups stay open.
+
 The first command checks the recorded inventory and artifacts. The second command currently fails. The check validates evidence structure and equal recorded outcomes. A reviewer must still assess scenario coverage and the underlying measurements.
 
 Nine registrations lack a successful native event control:
