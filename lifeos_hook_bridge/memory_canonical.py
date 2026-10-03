@@ -7,7 +7,7 @@ from pathlib import Path
 import re
 
 from .memory_access import MemoryUnavailable
-from .memory_sources import authorize, _strings
+from .memory_sources import authorize, _strings, source_labels
 
 
 RESPONSE_LIMIT = 3 * 1024 * 1024
@@ -51,11 +51,16 @@ def corpus(memory, scope, root: str, *, connection=None) -> dict:
             sources.append(source)
             if source_bytes>RESPONSE_LIMIT:
                 raise MemoryUnavailable('The declared canonical sources exceed their transport limit')
+        if sources:
+            checked = memory._native('validate_source_batch', contents=[
+                source['content'] + '\n' + source['path'] for source in sources])['accepted']
+            sources = [source for source, accepted in zip(sources, checked, strict=True) if accepted is True]
         parsed=memory._native('canonical_records',root=str(requested),sources=sources)
         if len(parsed['records'])!=len(sources) or len(parsed['metadata'])!=len(sources):
             raise MemoryUnavailable('Native canonical parsing changed its declared sources')
         if len({record['id'] for record in parsed['records']})!=len(parsed['records']):
             raise MemoryUnavailable('The canonical source declares duplicate native record identifiers')
+        admitted_sources, admitted_records = [], []
         for source,record,metadata in zip(sources,parsed['records'],parsed['metadata'],strict=True):
             if record['content']!=source['content']:
                 raise MemoryUnavailable('Native canonical parsing changes the declared source text')
@@ -64,8 +69,14 @@ def corpus(memory, scope, root: str, *, connection=None) -> dict:
                               record['provenance']['session'] or ''])
             if memory._filter_history(connection,scope,labels,datetime.now(timezone.utc).isoformat())['excluded']:
                 raise MemoryUnavailable('Canonical metadata contains an excluded claim')
-        result={'ok':True,'root':str(requested),'files':[source['path'] for source in sources],
-                'records':parsed['records']}
+            relative = 'LIFEOS/MEMORY/' + Path(source['path']).relative_to(physical).as_posix()
+            if memory._filter_history(connection, scope, source_labels(relative),
+                    datetime.now(timezone.utc).isoformat())['excluded']:
+                continue
+            admitted_sources.append(source)
+            admitted_records.append(record)
+        result={'ok':True,'root':str(requested),'files':[source['path'] for source in admitted_sources],
+                'records':admitted_records}
         if len(json.dumps(result).encode())>RESPONSE_LIMIT:
             raise MemoryUnavailable('The governed canonical response exceeds its transport limit')
         return result

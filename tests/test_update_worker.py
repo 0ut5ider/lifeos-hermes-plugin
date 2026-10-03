@@ -18,6 +18,7 @@ from lifeos_hook_bridge.update_worker import check_prior_source, check_template_
 class UpdateWorkerTests(unittest.TestCase):
     def test_worker_error_retains_recoverable_transaction_status(self):
         expected = {'stopped': 'interrupted', 'swapped': 'interrupted', 'restoring': 'interrupted',
+                    'restore_stopping': 'interrupted',
                     'rollback_failed': 'interrupted', 'applied': 'applied', 'rolled_back': 'rolled_back',
                     'prepared': 'failed', 'failed_before_stop': 'failed'}
         for state, status in expected.items():

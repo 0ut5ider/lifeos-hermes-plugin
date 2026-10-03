@@ -12,6 +12,7 @@ from uuid import uuid4
 from .memory_access import HOT_FILES, MemoryUnavailable, _claim_digest, _claim_words, _digest, _now
 from .memory_policy import CATEGORIES, MemoryScope
 from .memory_proposals import QUEUE
+from .memory_sources import source_labels, source_projection
 
 
 def _owner(scope: MemoryScope) -> bool:
@@ -110,9 +111,15 @@ def _snapshot(memory, connection, scope: MemoryScope) -> dict[str, Any]:
 
     if items:
         checked = memory._native('validate_batch',items=items)['results']
+        source_checked = memory._native('validate_source_batch', contents=[
+            source_projection(memory, candidate['path'], candidate['content']) for candidate in candidates])['accepted']
         accepted = []
-        for candidate, item, result in zip(candidates,items,checked,strict=True):
-            if result.get('ok') and result.get('item') == item:
+        for candidate, item, result, source_valid in zip(candidates,items,checked,source_checked,strict=True):
+            labels_excluded = (candidate['category'] == 'project' and memory._filter_history(
+                connection, scope, source_labels(candidate['path']), _now())['excluded'])
+            if source_valid is not True or labels_excluded:
+                excluded.append({'path':'[excluded source]','reason':'Source labels or metadata are excluded'})
+            elif result.get('ok') and result.get('item') == item:
                 accepted.append(candidate)
             else:
                 excluded.append({'path':candidate['path'],'reason':'Native validation rejected this source text'})

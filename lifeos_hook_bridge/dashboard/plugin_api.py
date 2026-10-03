@@ -536,7 +536,8 @@ def get_lifeos_update_status():
             active = subprocess.run(["systemctl", "--user", "is-active", status["unit"]],
                                     text=True, capture_output=True, timeout=15)
             if active.returncode or active.stdout.strip() != "active":
-                status["state"] = "interrupted"
+                status["state"] = (status.get('transaction_state') if status.get('transaction_state')
+                                   in {'applied', 'rolled_back'} else 'interrupted')
         return {**status, "job": str(job)}
     except (OSError, ValueError, TypeError):
         return {"state": "error", "job": str(job), "error": "Update status could not be read"}
@@ -638,7 +639,7 @@ def _recover_lifeos_update(account: str):
 def _recover_lifeos_update_locked(account: str):
     previous = get_lifeos_update_status()
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
-        "stopped", "swapped", "restoring", "rollback_failed"
+        "stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"
     }:
         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
     return _resume_lifeos_update(previous, account, 'recover')

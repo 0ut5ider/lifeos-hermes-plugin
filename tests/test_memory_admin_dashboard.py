@@ -334,6 +334,32 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.fixture.fixture.admin().validate(self.configuration, authorization,
             binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True, purpose='recover')
 
+    def test_dead_restore_stop_worker_can_queue_authenticated_recovery(self):
+        self.login()
+        job = self.interrupted_job()
+        (job / 'status.json').write_text(json.dumps({'state': 'restoring', 'unit': 'synthetic-dead-worker'}))
+        (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'restore_stopping'}))
+        with patch.object(self.api.subprocess, 'run', return_value=subprocess.CompletedProcess([], 3, '', '')):
+            self.assertEqual(self.api.get_lifeos_update_status()['state'], 'interrupted')
+            with patch.object(self.api, '_launch_lifeos_update') as launched:
+                response = self.post('/update/recover')
+        self.assertEqual(response.status_code, 200, response.text)
+        launched.assert_called_once_with(job, 'recover')
+        request = json.loads((job / 'request.json').read_text())
+        authorization = Path(request['memory_authorization'])
+        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, authorization)
+        self.fixture.fixture.admin().validate(self.configuration, authorization,
+            binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True, purpose='recover')
+
+    def test_dead_recovery_worker_reports_its_durable_completed_state(self):
+        job = self.interrupted_job()
+        for state in ('applied', 'rolled_back'):
+            with self.subTest(state=state):
+                (job / 'status.json').write_text(json.dumps({'state': 'recovering', 'unit': 'synthetic-dead-worker'}))
+                (job / 'snapshot/manifest.json').write_text(json.dumps({'state': state}))
+                with patch.object(self.api.subprocess, 'run', return_value=subprocess.CompletedProcess([], 3, '', '')):
+                    self.assertEqual(self.api.get_lifeos_update_status()['state'], state)
+
     def applied_job(self):
         job = self.interrupted_job()
         (job / 'status.json').write_text(json.dumps({'state': 'applied'}) + '\n')

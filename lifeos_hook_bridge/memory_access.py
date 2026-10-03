@@ -628,14 +628,19 @@ class NativeMemory:
             return [{**records[item["path"]], "score": item["score"]} for item in ranked["results"]]
 
     def _corpus(self, connection: sqlite3.Connection, scope: MemoryScope) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+        from .memory_sources import source_labels, source_projection
         records = {}
         corpus = []
+        declared = []
         hot_entries = {}
         for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
             if not self._allowed(scope, row):
                 continue
             # Reuse native parsing inside this locked retrieval, keeping each reference's digest check.
             content = self._content(row, hot_entries)
+            if row['category'] == 'project' and self._filter_history(connection, scope,
+                    source_labels(row['path']), _now())['excluded']:
+                continue
             records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
                                   "content": content, "category": row["category"], "project": row["project"],
                                   "writer": row["writer"], "status": 'historical' if row['source_kind']=='learning' else row["status"],
@@ -644,6 +649,11 @@ class NativeMemory:
                                                                  "title": row["project"] or row["category"]},
                            "body": content, "wordCount": max(1, len(content.split())),
                            "noteClass": 'learning' if row['source_kind']=='learning' else "knowledge" if row["category"] == "project" else "memory"})
+            declared.append(source_projection(self, row['path'], content))
+        if declared:
+            checked = self._native('validate_source_batch', contents=declared)['accepted']
+            corpus = [item for item, accepted in zip(corpus, checked, strict=True) if accepted is True]
+            records = {item['filePath']: records[item['filePath']] for item in corpus}
         return records, corpus
 
     def relevant_context(self, scope: MemoryScope, query: str, options: dict[str, Any]) -> dict[str, Any]:

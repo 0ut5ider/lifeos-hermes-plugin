@@ -11,6 +11,8 @@ This plugin is a translation layer that allows a full replacement of Claude code
 
 [PR readiness corrections](docs/verification/2026-10-02-pr-readiness/README.md) add request origin checks and a shared installation lock. The isolated browser installation verifies apply, version restore with a later audit entry, and recovery after process termination. The [integrated review](docs/agents/2026-10-02-pr-ready-integrated-review/pr-ready-integrated-review.md) closes six findings. Memory ownership and full hook parity remain unavailable.
 
+Restore records its stop intent before it stops the gateway. Recovery before file replacement restarts the selected version and preserves later data and profile edits. Memory adoption and retrieval exclude private source filenames and normalized forgotten filename labels. The [update policy](docs/update-policy.md) describes the restore recovery states.
+
 ## Compatibility target
 
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.

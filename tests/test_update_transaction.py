@@ -25,6 +25,51 @@ def digest(path):
 
 
 class UpdateTransactionTests(unittest.TestCase):
+    def test_restore_stop_crash_recovery_preserves_the_selected_installation(self):
+        with tempfile.TemporaryDirectory() as directory:
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+            code = ('import os, signal, sys\nfrom pathlib import Path\n'
+                    'from lifeos_hook_bridge.update_transaction import restore_update\n'
+                    'def stopped():\n    os.kill(os.getpid(), signal.SIGKILL)\n'
+                    'restore_update(Path(sys.argv[1]), stop=stopped, start=lambda: None, verify=lambda: None)\n')
+            process = subprocess.run([sys.executable, '-c', code, str(snapshot)],
+                                     capture_output=True, text=True, timeout=30)
+            self.assertEqual(process.returncode, -signal.SIGKILL, process.stderr)
+            self.assertEqual(process.stderr, '')
+            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restore_stopping')
+            (hermes / 'config.yaml').write_text('Synthetic edit after interruption')
+            (installed / 'LIFEOS/MEMORY/user.txt').write_text('Synthetic later memory')
+            events.clear()
+            result = recover_update(snapshot, stop=stop, start=start, verify=lambda: events.append('verify'))
+            self.assertEqual(result['state'], 'applied')
+            self.assertEqual(events, ['start', 'verify'])
+            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v2')
+            self.assertEqual((hermes / 'config.yaml').read_text(), 'Synthetic edit after interruption')
+            self.assertEqual((installed / 'LIFEOS/MEMORY/user.txt').read_text(), 'Synthetic later memory')
+            self.assertTrue((snapshot / 'live-prior').is_dir())
+            self.assertFalse((snapshot / 'restored-selected').exists())
+
+    def test_failed_restart_keeps_restore_stop_intent_recoverable(self):
+        with tempfile.TemporaryDirectory() as directory:
+            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
+            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+            def stopped_and_changed():
+                stop()
+                (hermes / 'config.yaml').write_text('Synthetic stop edit')
+            def unavailable():
+                raise RuntimeError('Synthetic start failure')
+            with self.assertRaisesRegex(RuntimeError, 'Synthetic start failure'):
+                restore_update(snapshot, stop=stopped_and_changed, start=unavailable, verify=lambda: None)
+            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restore_stopping')
+            recovered = recover_update(snapshot, stop=stop, start=start, verify=lambda: None)
+            self.assertEqual(recovered['state'], 'applied')
+            self.assertEqual((hermes / 'config.yaml').read_text(), 'Synthetic stop edit')
+
     @unittest.skipUnless(os.environ.get("LIFEOS_TASK_HOOK_PATH"), "Prepared native TaskGovernance is required")
     def test_capability_record_applies_and_restores_with_native_hook_files(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -550,7 +550,7 @@
       setInstallationBusy(true);
       setInstallationStatus("");
       SDK.fetchJSON(lifeosUpdateEndpoint + "/recover", { method: "POST" }).then(function () {
-        setInstallationStatus("LifeOS recovery started. The worker will restore the prior installation and restart Hermes.");
+        setInstallationStatus("LifeOS recovery started. If no files were replaced, the worker restarts the current version. Otherwise, it restores the prior version and restarts Hermes.");
         refreshLifeOSUpdate(0);
       }).catch(function (error) {
         setInstallationStatus("Could not start LifeOS recovery: " + error.message);

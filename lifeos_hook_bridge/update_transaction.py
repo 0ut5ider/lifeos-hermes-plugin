@@ -36,6 +36,7 @@ def _write_json(path: Path, data: dict) -> None:
         stream.flush()
         os.fsync(stream.fileno())
     os.replace(temporary, path)
+    _sync_directory(path.parent)
 
 
 def _copy_tree(source: Path, target: Path) -> None:
@@ -289,6 +290,12 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
     target = Path(manifest['installed'])
     if installed is not None and target.absolute() != installed.absolute():
         raise UpdateTransactionError('The restore snapshot belongs to another installation')
+    _validate_restore_data(snapshot, manifest)
+    return manifest
+
+
+def _validate_restore_data(snapshot: Path, manifest: dict) -> None:
+    target = Path(manifest['installed'])
     external = _external_user_data(target, excluded=(snapshot,))
     if external != manifest.get('user_data_links', {}) or external != _external_user_data(
             snapshot / 'live-prior', excluded=(target, snapshot)):
@@ -299,18 +306,21 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
         raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
     if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
         raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
-    return manifest
 
 
 def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
     manifest = validate_restore(snapshot)
     manifest_path = snapshot / "manifest.json"
     installed = Path(manifest['installed'])
-    stop()
+    manifest['state'] = 'restore_stopping'
+    _write_json(manifest_path, manifest)
     try:
-        manifest = validate_restore(snapshot)
+        stop()
+        _validate_restore_data(snapshot, manifest)
     except Exception:
         start()
+        manifest['state'] = 'applied'
+        _write_json(manifest_path, manifest)
         raise
     manifest["state"] = "restoring"
     _write_json(manifest_path, manifest)
@@ -328,6 +338,15 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
 def recover_update(snapshot: Path, *, stop, start, verify) -> dict:
     manifest_path = snapshot / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest['state'] == 'restore_stopping':
+        if not Path(manifest['installed']).is_dir() or (snapshot / 'restored-selected').exists():
+            raise UpdateTransactionError('The interrupted restore-stop installation changed its program tree')
+        # No program or profile swap starts before the restoring journal is durable.
+        start()
+        verify()
+        manifest['state'] = 'applied'
+        _write_json(manifest_path, manifest)
+        return manifest
     if manifest["state"] not in {"stopped", "swapped", "restoring", "rollback_failed"}:
         raise UpdateTransactionError("Update snapshot does not need interrupted recovery")
     installed = Path(manifest["installed"])

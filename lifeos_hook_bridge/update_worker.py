@@ -254,7 +254,7 @@ def _main() -> int:
         try:
             manifest = args.job / "snapshot/manifest.json"
             state = json.loads(manifest.read_text())["state"] if manifest.is_file() else "failed"
-            if state in {"stopped", "swapped", "restoring", "rollback_failed"}:
+            if state in {"stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"}:
                 state = 'interrupted'
             elif state not in {'applied', 'rolled_back'}:
                 state = 'failed'

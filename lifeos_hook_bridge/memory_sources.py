@@ -101,6 +101,22 @@ def _admit(memory, connection, scope, content, relative, timestamp):
                                   reviewed=is_reviewed(memory, connection, scope, relative, content))
 
 
+def source_labels(relative: str) -> str:
+    parts = Path(relative).parts
+    # Knowledge type directories name native formats, not user claims.
+    start = 4 if parts[:3] == ('LIFEOS', 'MEMORY', 'KNOWLEDGE') else 3
+    dynamic = '/'.join(parts[start:])
+    normalized = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', dynamic).replace('-', ' ').replace('_', ' ')
+    return '\n'.join((dynamic, normalized))
+
+
+def source_projection(memory, relative: str, content: str) -> str:
+    path = memory._path(relative)
+    text = path.read_text(encoding='utf-8')
+    front = re.match(r'^---\n.*?\n---\n', text, re.DOTALL)
+    return '\n'.join((front.group() if front else '', content, str(path)))
+
+
 def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
     authorize(scope)
     if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
