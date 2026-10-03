@@ -1,0 +1,190 @@
+test_account_binding_and_principal_are_rechecked_on_same_connection (test_memory_pulse_auth.MemoryPulseAuthTests.test_account_binding_and_principal_are_rechecked_on_same_connection) ... ok
+test_anonymous_or_fabricated_identity_never_admits_owner (test_memory_pulse_auth.MemoryPulseAuthTests.test_anonymous_or_fabricated_identity_never_admits_owner) ... ok
+test_bad_bearer_does_not_fall_back_to_valid_cookie (test_memory_pulse_auth.MemoryPulseAuthTests.test_bad_bearer_does_not_fall_back_to_valid_cookie) ... ok
+test_browser_logout_removes_cookie_authority (test_memory_pulse_auth.MemoryPulseAuthTests.test_browser_logout_removes_cookie_authority) ... ok
+test_changed_installation_binding_refuses_private_snapshot (test_memory_pulse_auth.MemoryPulseAuthTests.test_changed_installation_binding_refuses_private_snapshot) ... ok
+test_corrupt_registry_returns_sanitized_unavailable_response (test_memory_pulse_auth.MemoryPulseAuthTests.test_corrupt_registry_returns_sanitized_unavailable_response) ... ERROR
+test_disabled_host_gate_does_not_mint_an_owner_scope (test_memory_pulse_auth.MemoryPulseAuthTests.test_disabled_host_gate_does_not_mint_an_owner_scope) ... ok
+test_host_and_framework_denials_always_disable_response_storage (test_memory_pulse_auth.MemoryPulseAuthTests.test_host_and_framework_denials_always_disable_response_storage) ... FAIL
+test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) ... ok
+test_read_only_routes_ignore_no_caller_scope_or_source_arguments (test_memory_pulse_auth.MemoryPulseAuthTests.test_read_only_routes_ignore_no_caller_scope_or_source_arguments) ... ok
+
+======================================================================
+ERROR: test_corrupt_registry_returns_sanitized_unavailable_response (test_memory_pulse_auth.MemoryPulseAuthTests.test_corrupt_registry_returns_sanitized_unavailable_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 139, in test_corrupt_registry_returns_sanitized_unavailable_response
+    response = self.client.get(self.endpoint + 'snapshot')
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py", line 482, in get
+    return super().get(
+           ~~~~~~~~~~~^
+        url,
+        ^^^^
+    ...<6 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_client.py", line 1118, in get
+    return self.request(
+           ~~~~~~~~~~~~^
+        "GET",
+        ^^^^^^
+    ...<7 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py", line 454, in request
+    return super().request(
+           ~~~~~~~~~~~~~~~^
+        method,
+        ^^^^^^^
+    ...<11 lines>...
+        extensions=extensions,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_client.py", line 803, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_client.py", line 985, in send
+    response = self._send_handling_auth(
+        request,
+    ...<2 lines>...
+        history=[],
+    )
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_client.py", line 1013, in _send_handling_auth
+    response = self._send_handling_redirects(
+        request,
+        follow_redirects=follow_redirects,
+        history=history,
+    )
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_client.py", line 1048, in _send_handling_redirects
+    response = self._send_single_request(request)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_client.py", line 1081, in _send_single_request
+    response = transport.handle_request(request)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py", line 356, in handle_request
+    raise exc
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py", line 353, in handle_request
+    portal.call(self.app, scope, receive, send)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/from_thread.py", line 340, in call
+    return cast(T_Retval, self.start_task_soon(func, *args).result())
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 454, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/from_thread.py", line 265, in _call_func
+    retval = await retval_or_awaitable
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/applications.py", line 1215, in __call__
+    await super().__call__(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/telemetry/_asgi.py", line 151, in __call__
+    await self.app(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-cortex-final/hermes/hermes_cli/dashboard_auth/middleware.py", line 205, in gated_auth_middleware
+    response = await call_next(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 2786, in app
+    await route.handle(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 1817, in handle
+    await self.original_router.handle(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 2869, in handle
+    await included_router._handle_selected(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 1843, in _handle_selected
+    await original_route.handle(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 1308, in handle
+    await effective_context.app(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 165, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 151, in app
+    response = await f(request)
+               ^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 727, in app
+    raw_response = await run_endpoint_function(
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/routing.py", line 362, in run_endpoint_function
+    return await run_in_threadpool(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+        _run_sync_endpoint, function=dependant.call, arguments=values
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/concurrency.py", line 34, in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/to_thread.py", line 65, in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        func, args, abandon_on_cancel=abandon_on_cancel, limiter=limiter
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/_backends/_asyncio.py", line 2706, in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/_backends/_asyncio.py", line 1100, in run
+    result = context.run(func, *args)
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/fastapi/telemetry/_api.py", line 240, in _run_sync_endpoint
+    return function(**arguments)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dashboard/plugin_api.py", line 99, in get_memory_pulse
+    result = _memory_preferences().pulse_snapshot(view, account=f'dashboard:{session.provider}:{session.user_id}')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 77, in pulse_snapshot
+    return snapshot(NativeMemory(self.root), self._owner_scope(config), view)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_pulse.py", line 45, in snapshot
+    with memory._transaction() as connection:
+         ~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/contextlib.py", line 141, in __enter__
+    return next(self.gen)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 116, in _transaction
+    connection = self._connect()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 82, in _connect
+    connection.execute("BEGIN IMMEDIATE")
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+sqlite3.DatabaseError: file is not a database
+
+======================================================================
+FAIL: test_host_and_framework_denials_always_disable_response_storage (test_memory_pulse_auth.MemoryPulseAuthTests.test_host_and_framework_denials_always_disable_response_storage)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 129, in test_host_and_framework_denials_always_disable_response_storage
+    self.assertEqual(anonymous.headers.get('cache-control'), 'no-store')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: None != 'no-store'
+
+----------------------------------------------------------------------
+Ran 10 tests in 5.648s
+
+FAILED (failures=1, errors=1)

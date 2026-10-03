@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_dashboard_remains_responsive_while_restore_launch_waits (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dashboard_remains_responsive_while_restore_launch_waits)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 460, in test_dashboard_remains_responsive_while_restore_launch_waits
+    self.assertFalse(response.json()['launch_finished'], 'Restore launch blocked other dashboard requests')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : Restore launch blocked other dashboard requests
+
+----------------------------------------------------------------------
+Ran 1 test in 2.228s
+
+FAILED (failures=1)

@@ -1,0 +1,107 @@
+{
+  "invalid_reference_cannot_index": {
+    "capture_failure_processes": 0,
+    "capture_gaps": 0,
+    "events": 2,
+    "hooks": [],
+    "incomplete_invocations": 0,
+    "integrity_issues": {
+      "artifact_error": 1
+    },
+    "known_lost_events": 0,
+    "known_registrations": 0,
+    "note": "Completion is execution evidence, not semantic parity.",
+    "partial_tails": 0,
+    "statuses": {},
+    "unexercised_registrations": []
+  },
+  "real_bearer_hook": {
+    "leak_stages": [],
+    "observed_stages": [
+      "bridge.initialized",
+      "bridge_callback.entered",
+      "bridge_callback.returned",
+      "hook.completed",
+      "hook.started",
+      "instrumentation.loaded",
+      "inventory.observed",
+      "process.completed",
+      "process.initialized",
+      "process.started",
+      "registration.evaluated",
+      "response.parsed.entered",
+      "response.parsed.returned",
+      "run_command.entered",
+      "run_command.returned",
+      "translation.entered",
+      "translation.returned"
+    ],
+    "same_native_outcome": true
+  },
+  "real_cookie_http_hook": {
+    "event_count": 19,
+    "first_cookie_leak_stages": [],
+    "http_header_redacted": true,
+    "leak_stages": [],
+    "same_native_outcome": true,
+    "second_cookie_leak_stages": [],
+    "source_hashes": {
+      "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+      "analysis.py": "6d2d23be5778b99976018fab81597fec905fda2f3d490c41afc22e3720779dc4",
+      "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+      "instrument.py": "e4cb288785b4ca9a0e07206fd6924a1d3e464ae1c38d96fe803e8a2ae27699ca",
+      "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+      "store.py": "24f18190afecd2088f0aec0824c840aa73a378e2aee16b9a9f805278c2932385"
+    }
+  },
+  "reference_orders": {
+    "bad_then_valid": {
+      "capture_failure_processes": 0,
+      "capture_gaps": 0,
+      "events": 2,
+      "hooks": [],
+      "incomplete_invocations": 0,
+      "integrity_issues": {
+        "artifact_error": 1
+      },
+      "known_lost_events": 0,
+      "known_registrations": 1,
+      "note": "Completion is execution evidence, not semantic parity.",
+      "partial_tails": 0,
+      "statuses": {},
+      "unexercised_registrations": [
+        {
+          "hook_kind": null,
+          "matcher": null,
+          "native_event": null,
+          "registration_id": "valid-registration",
+          "settings_origin": null
+        }
+      ]
+    },
+    "valid_then_bad": {
+      "capture_failure_processes": 0,
+      "capture_gaps": 0,
+      "events": 2,
+      "hooks": [],
+      "incomplete_invocations": 0,
+      "integrity_issues": {
+        "artifact_error": 1
+      },
+      "known_lost_events": 0,
+      "known_registrations": 1,
+      "note": "Completion is execution evidence, not semantic parity.",
+      "partial_tails": 0,
+      "statuses": {},
+      "unexercised_registrations": [
+        {
+          "hook_kind": null,
+          "matcher": null,
+          "native_event": null,
+          "registration_id": "valid-registration",
+          "settings_origin": null
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-01-memory-pulse-snapshot-review/raw/probe_controls.py", line 13, in <module>
+    try:snapshot(c.fixture.fixture.fixture.memory,READER,'state')
+        ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_pulse.py", line 42, in snapshot
+    authorize(scope)
+    ~~~~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_sources.py", line 24, in authorize
+    raise MemoryUnavailable('This unclassified native source requires unrestricted owner recall')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: This unclassified native source requires unrestricted owner recall

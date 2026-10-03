@@ -1,0 +1,18 @@
+test_apply_stop_crash_has_a_recoverable_durable_journal (test_update_transaction.UpdateTransactionTests.test_apply_stop_crash_has_a_recoverable_durable_journal) ... FAIL
+
+======================================================================
+FAIL: test_apply_stop_crash_has_a_recoverable_durable_journal (test_update_transaction.UpdateTransactionTests.test_apply_stop_crash_has_a_recoverable_durable_journal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 41, in test_apply_stop_crash_has_a_recoverable_durable_journal
+    self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'stopped')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'prepared' != 'stopped'
+- prepared
++ stopped
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.090s
+
+FAILED (failures=1)

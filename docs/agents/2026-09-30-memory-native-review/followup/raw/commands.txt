@@ -1,0 +1,30 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Date: 2026-09-30
+
+Skill read:
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+
+Primary review reads:
+git status --short
+git diff -- lifeos_hook_bridge/memory_access.py tests/test_memory_archive.py tests/test_memory_delegation.py
+cat tests/test_memory_archive.py
+diff -u docs/agents/2026-09-30-memory-native-review/raw/reviewed-memory_access.py lifeos_hook_bridge/memory_access.py
+cat docs/agents/2026-09-30-memory-native-review/raw/probe_native.py
+sed -n '580,700p' lifeos_hook_bridge/memory_access.py
+sed -n '1,100p' lifeos_hook_bridge/memory_policy.py
+sed -n '1,110p' tests/test_memory_native.py
+sed -n '1,150p' lifeos_hook_bridge/memory_native.ts
+nl -ba lifeos_hook_bridge/memory_access.py | sed -n '475,490p;534,558p;610,648p'
+
+Full tests, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p 'test_memory_*.py' -v > docs/agents/2026-09-30-memory-native-review/followup/raw/memory-tests.txt 2>&1
+
+Original unchanged probes, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-native-review/raw/probe_native.py > docs/agents/2026-09-30-memory-native-review/followup/raw/native-probes.jsonl 2>&1
+
+New follow-up probes, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-native-review/followup/raw/probe_followup.py > docs/agents/2026-09-30-memory-native-review/followup/raw/followup-probes.jsonl 2>&1
+
+The new script ran once with the save case, then again after adding the correction variant. The final JSONL records both variants and the restricted-project reviewer prompt. Both runs exited 0. The probe script reports outcomes rather than asserting that the defect exists.
+
+Snapshot checks used Python pathlib byte comparisons and hashlib.sha256. Top-level patch, bundled patch, and prior patch snapshot all compared equal. Reviewed source copies and hashes are in this directory.

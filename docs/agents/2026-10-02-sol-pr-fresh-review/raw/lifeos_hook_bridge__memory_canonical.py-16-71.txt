@@ -1,0 +1,56 @@
+16: def corpus(memory, scope, root: str, *, connection=None) -> dict:
+17:     authorize(scope)
+18:     if not isinstance(root,str) or not Path(root).is_absolute():
+19:         raise MemoryUnavailable('Canonical recall needs the installed memory root')
+20:     with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
+21:         physical=memory.root.parent/'.config/LIFEOS/USER/MEMORY'
+22:         requested=Path(root).resolve()
+23:         if requested not in (physical,physical/'KNOWLEDGE'):
+24:             raise MemoryUnavailable('Canonical recall cannot select another memory root')
+25:         grouped={}
+26:         for row in connection.execute("SELECT * FROM records WHERE status='active' AND category='project' ORDER BY path,position"):
+27:             relative=Path(row['path'])
+28:             if (not row['path'].startswith('LIFEOS/MEMORY/KNOWLEDGE/') or relative.suffix!='.md'
+29:                     or any(part.startswith(('_','.')) for part in relative.parts[3:])):
+30:                 continue
+31:             if not memory._allowed(scope,row):
+32:                 raise MemoryUnavailable('Canonical recall needs every selected source grant')
+33:             grouped.setdefault(row['path'],[]).append(row)
+34:         sources=[]
+35:         source_bytes=2
+36:         for relative,rows in grouped.items():
+37:             source=memory._path(relative)
+38:             expected=physical/Path(relative).relative_to('LIFEOS/MEMORY')
+39:             if source.resolve()!=expected or not source.is_file():
+40:                 raise MemoryUnavailable('Canonical recall requires its permitted physical source')
+41:             if source.stat().st_size>8*1024*1024:
+42:                 raise MemoryUnavailable('Canonical source exceeds the native file limit')
+43:             entries=[memory._content(row) for row in rows]
+44:             text=source.read_text(encoding='utf-8')
+45:             front=re.match(r'^---\n.*?\n---\n',text,re.DOTALL)
+46:             if front is None:
+47:                 raise MemoryUnavailable('Canonical recall requires the native note metadata')
+48:             header=front.group()
+49:             source={'path':str(expected),'content':header+'\n'+'\n\n'.join(entries)}
+50:             source_bytes+=len(json.dumps(source).encode())+(2 if sources else 0)
+51:             sources.append(source)
+52:             if source_bytes>RESPONSE_LIMIT:
+53:                 raise MemoryUnavailable('The declared canonical sources exceed their transport limit')
+54:         parsed=memory._native('canonical_records',root=str(requested),sources=sources)
+55:         if len(parsed['records'])!=len(sources) or len(parsed['metadata'])!=len(sources):
+56:             raise MemoryUnavailable('Native canonical parsing changed its declared sources')
+57:         if len({record['id'] for record in parsed['records']})!=len(parsed['records']):
+58:             raise MemoryUnavailable('The canonical source declares duplicate native record identifiers')
+59:         for source,record,metadata in zip(sources,parsed['records'],parsed['metadata'],strict=True):
+60:             if record['content']!=source['content']:
+61:                 raise MemoryUnavailable('Native canonical parsing changes the declared source text')
+62:             labels='\n'.join([*_strings(metadata),record['id'],record['title'],
+63:                               *record['related'],
+64:                               record['provenance']['session'] or ''])
+65:             if memory._filter_history(connection,scope,labels,datetime.now(timezone.utc).isoformat())['excluded']:
+66:                 raise MemoryUnavailable('Canonical metadata contains an excluded claim')
+67:         result={'ok':True,'root':str(requested),'files':[source['path'] for source in sources],
+68:                 'records':parsed['records']}
+69:         if len(json.dumps(result).encode())>RESPONSE_LIMIT:
+70:             raise MemoryUnavailable('The governed canonical response exceeds its transport limit')
+71:         return result

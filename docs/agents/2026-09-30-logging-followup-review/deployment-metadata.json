@@ -1,0 +1,214 @@
+{
+  "config_mode": "0o600",
+  "events": 1184,
+  "host_identity_counts": {
+    "host.ainvoke_hook.entered": {
+      "events": 1,
+      "session_id": 0,
+      "turn_id": 0
+    },
+    "host.ainvoke_hook.returned": {
+      "events": 1,
+      "session_id": 0,
+      "turn_id": 0
+    },
+    "host.apply_stop_gates.entered": {
+      "events": 2,
+      "session_id": 2,
+      "turn_id": 0
+    },
+    "host.apply_stop_gates.returned": {
+      "events": 2,
+      "session_id": 2,
+      "turn_id": 0
+    },
+    "host.begin_tool_execution.entered": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.begin_tool_execution.returned": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.build_api_messages.entered": {
+      "events": 3,
+      "session_id": 3,
+      "turn_id": 0
+    },
+    "host.build_api_messages.returned": {
+      "events": 3,
+      "session_id": 3,
+      "turn_id": 0
+    },
+    "host.commit_tool_result.entered": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.commit_tool_result.returned": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.dispatch_authorized_once.entered": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.dispatch_authorized_once.returned": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.dispatch_pre_tool_call_hooks.entered": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 1
+    },
+    "host.dispatch_pre_tool_call_hooks.returned": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 1
+    },
+    "host.get_pre_turn_stop_continue_message.entered": {
+      "events": 2,
+      "session_id": 2,
+      "turn_id": 0
+    },
+    "host.get_pre_turn_stop_continue_message.returned": {
+      "events": 2,
+      "session_id": 2,
+      "turn_id": 0
+    },
+    "host.invoke_hook.entered": {
+      "events": 23,
+      "session_id": 23,
+      "turn_id": 15
+    },
+    "host.invoke_hook.returned": {
+      "events": 23,
+      "session_id": 23,
+      "turn_id": 15
+    },
+    "host.pre_tool_block.entered": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.pre_tool_block.returned": {
+      "events": 1,
+      "session_id": 1,
+      "turn_id": 0
+    },
+    "host.pre_turn_stop_nudge.entered": {
+      "events": 2,
+      "session_id": 2,
+      "turn_id": 0
+    },
+    "host.pre_turn_stop_nudge.returned": {
+      "events": 2,
+      "session_id": 2,
+      "turn_id": 0
+    }
+  },
+  "host_root": "/home/lifeos-hermes/workspace/hermes-agent",
+  "metadata_read_errors": 0,
+  "observer_manifest_actual": {
+    "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+    "analysis.py": "4d562823cc79195b2299cd4e508b1cbdd58c2a554de6958c371e0323117d56ce",
+    "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+    "instrument.py": "a7ba4b32070ed790b70b033802df2aadbe54dde2e8b05312d664aa640a2ed1fe",
+    "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+    "store.py": "b5195d59858b05578f0d83ef00ae3b6eca8d9c5c842d10c2e8c8c891517cd1d7"
+  },
+  "observer_manifest_matches": true,
+  "plugin_root": "/home/lifeos-hermes/.hermes/plugins/lifeos-hook-bridge",
+  "process_manifest_versions": {
+    "7b2084cd613c69582492dc01e79f9ae5ebe75e4e6cfeeff79fc0694a08031011": 27,
+    "bdbed12984bdd715fab0ffb6639a7b3e3a3266558f68df449d9cdbc7b3480dda": 46,
+    "de46151812f8b4de1b7691ba943398f3cbc2b97df82616fe99c2721dbd508f7b": 34
+  },
+  "reported_losses": 0,
+  "root_mode": "0o700",
+  "runtime_fingerprints_match": true,
+  "stage_counts": {
+    "async.context_persisted": 7,
+    "async.handoff": 24,
+    "async.launch_systemd.returned": 24,
+    "async.launch_systemd.started": 24,
+    "async.runner_started": 24,
+    "bridge.initialized": 15,
+    "bridge_callback.entered": 13,
+    "bridge_callback.returned": 13,
+    "callback.entered": 11,
+    "callback.returned": 11,
+    "discord._dispatch_discord_message.entered": 5,
+    "discord._dispatch_discord_message.returned": 5,
+    "discord._handle_message.entered": 1,
+    "discord._handle_message.returned": 1,
+    "discord.admission.entered": 5,
+    "discord.admission.returned": 5,
+    "discord.send.entered": 3,
+    "discord.send.returned": 3,
+    "drain_async_context.entered": 5,
+    "drain_async_context.returned": 5,
+    "hook.completed": 61,
+    "hook.failed": 2,
+    "hook.started": 63,
+    "host.ainvoke_hook.entered": 1,
+    "host.ainvoke_hook.returned": 1,
+    "host.apply_stop_gates.entered": 2,
+    "host.apply_stop_gates.returned": 2,
+    "host.begin_tool_execution.entered": 1,
+    "host.begin_tool_execution.returned": 1,
+    "host.build_api_messages.entered": 3,
+    "host.build_api_messages.returned": 3,
+    "host.commit_tool_result.entered": 1,
+    "host.commit_tool_result.returned": 1,
+    "host.dispatch_authorized_once.entered": 1,
+    "host.dispatch_authorized_once.returned": 1,
+    "host.dispatch_pre_tool_call_hooks.entered": 1,
+    "host.dispatch_pre_tool_call_hooks.returned": 1,
+    "host.get_pre_turn_stop_continue_message.entered": 2,
+    "host.get_pre_turn_stop_continue_message.returned": 2,
+    "host.invoke_hook.entered": 23,
+    "host.invoke_hook.returned": 23,
+    "host.pre_tool_block.entered": 1,
+    "host.pre_tool_block.returned": 1,
+    "host.pre_turn_stop_nudge.entered": 2,
+    "host.pre_turn_stop_nudge.returned": 2,
+    "instrumentation.loaded": 98,
+    "inventory.observed": 157,
+    "process.completed": 39,
+    "process.initialized": 107,
+    "process.started": 39,
+    "registration.evaluated": 59,
+    "registration.skipped": 33,
+    "remote_hook.entered": 4,
+    "remote_hook.returned": 4,
+    "response.parsed.entered": 39,
+    "response.parsed.returned": 39,
+    "run_async.entered": 20,
+    "run_async.returned": 20,
+    "run_command.entered": 39,
+    "run_command.returned": 39,
+    "run_remote_async.entered": 4,
+    "run_remote_async.returned": 4,
+    "translation.entered": 13,
+    "translation.returned": 13,
+    "transport.completed": 4,
+    "transport.started": 4
+  },
+  "status_counts": {
+    "accepted": 3,
+    "completed": 100,
+    "delivered": 3,
+    "ignored": 8,
+    "launched": 24,
+    "no_result": 2,
+    "parsed": 39,
+    "skipped": 33
+  }
+}

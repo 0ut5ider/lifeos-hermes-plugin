@@ -1,0 +1,28 @@
+test_unmanaged_remote_startup_keeps_native_context_isolation (test_memory_sources.MemorySourceTests.test_unmanaged_remote_startup_keeps_native_context_isolation) ... ok
+test_managed_remote_startup_uses_the_same_policy_for_different_apps (test_memory_sources.MemorySourceTests.test_managed_remote_startup_uses_the_same_policy_for_different_apps) ... 
+  test_managed_remote_startup_uses_the_same_policy_for_different_apps (test_memory_sources.MemorySourceTests.test_managed_remote_startup_uses_the_same_policy_for_different_apps) (channel='chat-a') ... FAIL
+  test_managed_remote_startup_uses_the_same_policy_for_different_apps (test_memory_sources.MemorySourceTests.test_managed_remote_startup_uses_the_same_policy_for_different_apps) (channel='chat-b') ... FAIL
+test_managed_remote_startup_excludes_unknown_missing_and_restricted_contexts (test_memory_sources.MemorySourceTests.test_managed_remote_startup_excludes_unknown_missing_and_restricted_contexts) ... ok
+
+======================================================================
+FAIL: test_managed_remote_startup_uses_the_same_policy_for_different_apps (test_memory_sources.MemorySourceTests.test_managed_remote_startup_uses_the_same_policy_for_different_apps) (channel='chat-a')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_sources.py", line 84, in test_managed_remote_startup_uses_the_same_policy_for_different_apps
+    self.assertIn(marker,self.startup(channel=channel))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic approved remote relationship marker' not found in '\n✅ LifeOS session ready...\n'
+
+======================================================================
+FAIL: test_managed_remote_startup_uses_the_same_policy_for_different_apps (test_memory_sources.MemorySourceTests.test_managed_remote_startup_uses_the_same_policy_for_different_apps) (channel='chat-b')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_sources.py", line 84, in test_managed_remote_startup_uses_the_same_policy_for_different_apps
+    self.assertIn(marker,self.startup(channel=channel))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic approved remote relationship marker' not found in '\n✅ LifeOS session ready...\n'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.368s
+
+FAILED (failures=2)

@@ -1,0 +1,45 @@
+test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files (test_memory_host.MemoryHostTests.test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files) ... FAIL
+test_provider_selection_alone_keeps_builtin_memory_enabled (test_memory_host.MemoryHostTests.test_provider_selection_alone_keeps_builtin_memory_enabled) ... FAIL
+
+======================================================================
+FAIL: test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files (test_memory_host.MemoryHostTests.test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 56, in test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files
+    result = self.initialize({'provider':'lifeos-hook-bridge','memory_enabled':False,'user_profile_enabled':False})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 43, in initialize
+    self.assertEqual(self.fixture.received,[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'path': '/api/show', 'body': {'name': 's[73 chars]l'}}] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+{'path': '/api/show', 'body': {'name': 'synthetic-model'}}
+
++ []
+- [{'body': {'name': 'synthetic-model'}, 'path': '/api/show'},
+-  {'body': {'name': 'synthetic-model'}, 'path': '/api/show'}]
+
+======================================================================
+FAIL: test_provider_selection_alone_keeps_builtin_memory_enabled (test_memory_host.MemoryHostTests.test_provider_selection_alone_keeps_builtin_memory_enabled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 47, in test_provider_selection_alone_keeps_builtin_memory_enabled
+    result = self.initialize({'provider':'lifeos-hook-bridge'})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 43, in initialize
+    self.assertEqual(self.fixture.received,[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'path': '/api/show', 'body': {'name': 's[73 chars]l'}}] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+{'path': '/api/show', 'body': {'name': 'synthetic-model'}}
+
++ []
+- [{'body': {'name': 'synthetic-model'}, 'path': '/api/show'},
+-  {'body': {'name': 'synthetic-model'}, 'path': '/api/show'}]
+
+----------------------------------------------------------------------
+Ran 2 tests in 8.627s
+
+FAILED (failures=2)

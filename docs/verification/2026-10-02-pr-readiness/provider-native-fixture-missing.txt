@@ -1,0 +1,48 @@
+test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills (test_memory_host.MemoryHostTests.test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills) ... FAIL
+test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files (test_memory_host.MemoryHostTests.test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files) ... FAIL
+test_provider_selection_alone_keeps_builtin_memory_enabled (test_memory_host.MemoryHostTests.test_provider_selection_alone_keeps_builtin_memory_enabled) ... FAIL
+test_unavailable_lifeos_provider_does_not_reenable_disabled_builtin_stores (test_memory_host.MemoryHostTests.test_unavailable_lifeos_provider_does_not_reenable_disabled_builtin_stores) ... ok
+
+======================================================================
+FAIL: test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills (test_memory_host.MemoryHostTests.test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 94, in test_config_restoration_reuses_preserved_builtin_files_and_keeps_skills
+    disabled = self.initialize({'provider':'lifeos-hook-bridge','memory_enabled':False,'user_profile_enabled':False})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 55, in initialize
+    self.assertEqual(outcome['warnings'],'')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Memory provider 'lifeos-hook-bridge' is [441 chars]n.\n" != ''
+- Memory provider 'lifeos-hook-bridge' is selected but reports unavailable — external memory is disabled for this session (built-in memory still works). Check the provider's credentials/config with 'hermes memory status'. Note: systemd/gateway services do not inherit ~/.hermes/.env automatically; set any required variables in the service environment. LifeOS memory ownership cannot be activated in this release. Experimental ownership profiles also require the tested host extension.
+
+
+======================================================================
+FAIL: test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files (test_memory_host.MemoryHostTests.test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 78, in test_explicit_ownership_flags_disable_both_builtin_stores_without_removing_files
+    result = self.initialize({'provider':'lifeos-hook-bridge','memory_enabled':False,'user_profile_enabled':False})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 55, in initialize
+    self.assertEqual(outcome['warnings'],'')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Memory provider 'lifeos-hook-bridge' is [441 chars]n.\n" != ''
+- Memory provider 'lifeos-hook-bridge' is selected but reports unavailable — external memory is disabled for this session (built-in memory still works). Check the provider's credentials/config with 'hermes memory status'. Note: systemd/gateway services do not inherit ~/.hermes/.env automatically; set any required variables in the service environment. LifeOS memory ownership cannot be activated in this release. Experimental ownership profiles also require the tested host extension.
+
+
+======================================================================
+FAIL: test_provider_selection_alone_keeps_builtin_memory_enabled (test_memory_host.MemoryHostTests.test_provider_selection_alone_keeps_builtin_memory_enabled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 69, in test_provider_selection_alone_keeps_builtin_memory_enabled
+    result = self.initialize({'provider':'lifeos-hook-bridge'})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 55, in initialize
+    self.assertEqual(outcome['warnings'],'')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "Memory provider 'lifeos-hook-bridge' is [441 chars]n.\n" != ''
+- Memory provider 'lifeos-hook-bridge' is selected but reports unavailable — external memory is disabled for this session (built-in memory still works). Check the provider's credentials/config with 'hermes memory status'. Note: systemd/gateway services do not inherit ~/.hermes/.env automatically; set any required variables in the service environment. LifeOS memory ownership cannot be activated in this release. Experimental ownership profiles also require the tested host extension.
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 16.758s
+
+FAILED (failures=3)

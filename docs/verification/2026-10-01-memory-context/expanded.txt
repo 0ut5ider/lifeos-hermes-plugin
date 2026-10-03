@@ -1,0 +1,32 @@
+test_cached_owner_block_is_not_reused_after_context_is_removed (test_memory_context_builder.MemoryContextBuilderTests.test_cached_owner_block_is_not_reused_after_context_is_removed) ... ok
+test_cached_owner_block_is_not_reused_after_policy_revocation (test_memory_context_builder.MemoryContextBuilderTests.test_cached_owner_block_is_not_reused_after_policy_revocation) ... ok
+test_connector_loss_cannot_select_raw_reader_or_cached_owner_block (test_memory_context_builder.MemoryContextBuilderTests.test_connector_loss_cannot_select_raw_reader_or_cached_owner_block) ... ok
+test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded (test_memory_context_builder.MemoryContextBuilderTests.test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded) ... ok
+test_identity_source_cannot_follow_a_redirect_into_configuration (test_memory_context_builder.MemoryContextBuilderTests.test_identity_source_cannot_follow_a_redirect_into_configuration) ... ok
+test_invalid_connector_refuses_before_identity_collection (test_memory_context_builder.MemoryContextBuilderTests.test_invalid_connector_refuses_before_identity_collection) ... ok
+test_managed_display_names_are_refreshed_without_reusing_a_retired_label (test_memory_context_builder.MemoryContextBuilderTests.test_managed_display_names_are_refreshed_without_reusing_a_retired_label) ... FAIL
+test_managed_owner_keeps_identity_goals_sessions_and_current_memory (test_memory_context_builder.MemoryContextBuilderTests.test_managed_owner_keeps_identity_goals_sessions_and_current_memory) ... ok
+test_missing_context_cannot_read_identity_sources (test_memory_context_builder.MemoryContextBuilderTests.test_missing_context_cannot_read_identity_sources) ... ok
+test_native_subprocess_does_not_retain_its_initial_owner_context (test_memory_context_builder.MemoryContextBuilderTests.test_native_subprocess_does_not_retain_its_initial_owner_context) ... ok
+test_native_subprocess_receives_the_current_context_after_import (test_memory_context_builder.MemoryContextBuilderTests.test_native_subprocess_receives_the_current_context_after_import) ... ok
+test_oversized_identity_source_is_unavailable_instead_of_entering_context (test_memory_context_builder.MemoryContextBuilderTests.test_oversized_identity_source_is_unavailable_instead_of_entering_context) ... ok
+test_owner_display_names_do_not_carry_private_markup (test_memory_context_builder.MemoryContextBuilderTests.test_owner_display_names_do_not_carry_private_markup) ... ok
+test_private_markup_in_identity_is_excluded_from_the_owner_block (test_memory_context_builder.MemoryContextBuilderTests.test_private_markup_in_identity_is_excluded_from_the_owner_block) ... ok
+test_project_only_caller_cannot_collect_unclassified_identity (test_memory_context_builder.MemoryContextBuilderTests.test_project_only_caller_cannot_collect_unclassified_identity) ... ok
+test_retired_display_name_is_not_reused_from_native_configuration (test_memory_context_builder.MemoryContextBuilderTests.test_retired_display_name_is_not_reused_from_native_configuration) ... ok
+test_standalone_builder_keeps_identity_memory_order_and_active_session_slice (test_memory_context_builder.MemoryContextBuilderTests.test_standalone_builder_keeps_identity_memory_order_and_active_session_slice) ... ok
+test_updated_native_identity_is_visible_on_the_next_managed_call (test_memory_context_builder.MemoryContextBuilderTests.test_updated_native_identity_is_visible_on_the_next_managed_call) ... ok
+
+======================================================================
+FAIL: test_managed_display_names_are_refreshed_without_reusing_a_retired_label (test_memory_context_builder.MemoryContextBuilderTests.test_managed_display_names_are_refreshed_without_reusing_a_retired_label)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 176, in test_managed_display_names_are_refreshed_without_reusing_a_retired_label
+    self.assertIn('SyntheticCurrentDisplayName', self.call()['block'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticCurrentDisplayName' not found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:20 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [1/48 entries · 32/12288 chars]\nRULE: Synthetic context hot fact\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+----------------------------------------------------------------------
+Ran 18 tests in 30.766s
+
+FAILED (failures=1)

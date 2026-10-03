@@ -1,0 +1,31 @@
+test_distinct_hot_capacity_finishes_within_registered_hook_timeout (test_memory_delta.MemoryDeltaTests.test_distinct_hot_capacity_finishes_within_registered_hook_timeout) ... ERROR
+
+======================================================================
+ERROR: test_distinct_hot_capacity_finishes_within_registered_hook_timeout (test_memory_delta.MemoryDeltaTests.test_distinct_hot_capacity_finishes_within_registered_hook_timeout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 114, in test_distinct_hot_capacity_finishes_within_registered_hook_timeout
+    output = self.call(timeout=8)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 33, in call
+    result = subprocess.run(['bun', '--no-install', str(self.root / 'hooks' / script)],
+                            input=json.dumps({'session_id': 'delta-session', 'prompt': 'memory'}),
+                            env=environment, cwd=self.root, capture_output=True, text=True, timeout=timeout)
+  File "/usr/lib64/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['bun', '--no-install', '/tmp/native-memory-khx0_b8i/.claude/hooks/MemoryTurnStart.hook.ts']' timed out after 8 seconds
+
+----------------------------------------------------------------------
+Ran 1 test in 8.711s
+
+FAILED (errors=1)

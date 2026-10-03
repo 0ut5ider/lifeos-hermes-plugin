@@ -1,0 +1,541 @@
+{
+  "baseline": "f6620c5616686c583e6755d7557df8f9d747c200",
+  "closures": {
+    "F1": "closed in bounded reviewed scope",
+    "F2": "closed in bounded reviewed scope",
+    "F3": "closed in bounded reviewed scope",
+    "F4": "closed in bounded reviewed scope",
+    "R1": "closed in bounded reviewed scope",
+    "R2": "closed in bounded reviewed scope",
+    "R3": "closed in bounded reviewed scope"
+  },
+  "date": "2026-10-02",
+  "effort": "high",
+  "findings": [
+    {
+      "effects": [
+        "fresh authenticated owner grant",
+        "job status changed",
+        "captured launch reached"
+      ],
+      "evidence": [
+        "raw/probe_recovery_admission.py",
+        "raw/probe-recovery-admission.txt",
+        "raw/caller-origin-initial.txt"
+      ],
+      "http_results": {
+        "body": 200,
+        "foreign_origin": 200,
+        "query": 200
+      },
+      "id": "N1",
+      "limits": [
+        "no account or job substitution",
+        "no browser CSRF exploit established",
+        "no real service launch"
+      ],
+      "location": "lifeos_hook_bridge/dashboard/plugin_api.py:595",
+      "origin": "inherited at f6620c5",
+      "severity": "medium",
+      "status": "reproduced",
+      "title": "Recovery omits fixed Origin, query, and body admission"
+    }
+  ],
+  "head": "13337135d79245fc79eca427e595446a7ae96c76",
+  "initial_negative_probe": {
+    "cause": "Foreign Origin reaches captured launch assertion",
+    "evidence": "raw/caller-origin-initial.txt",
+    "exit": 1
+  },
+  "limits": [
+    "power loss",
+    "live systemd lifecycle",
+    "full hook parity",
+    "complete memory acceptance",
+    "browser cookie behavior",
+    "concurrent update workers",
+    "hostile same-account substitution",
+    "real model providers",
+    "complete release certification"
+  ],
+  "model": "GPT-6.1-Sol",
+  "probes": {
+    "actual_sigkill_exits": 8,
+    "admission": 3,
+    "cleanup": 13,
+    "defect_reproductions": 3,
+    "expected_behavior": 34,
+    "recorder": 7,
+    "restore_scenarios": 9,
+    "scenarios": 37,
+    "worker_mapping": 5
+  },
+  "question": "Do R1-R3 close at 1333713 while original F1-F4 stay closed?",
+  "raw_scenarios": {
+    "admission": [
+      {
+        "authorization_issued": true,
+        "authorized_account": "dashboard:basic:synthetic-owner",
+        "body": {
+          "job": "/tmp/native-memory-lna63srr/state/updates/interrupted-synthetic-job",
+          "state": "recovering"
+        },
+        "case": "origin",
+        "http": 200,
+        "job_status_changed": true,
+        "launch_calls": 1
+      },
+      {
+        "authorization_issued": true,
+        "authorized_account": "dashboard:basic:synthetic-owner",
+        "body": {
+          "job": "/tmp/native-memory-63_l23__/state/updates/interrupted-synthetic-job",
+          "state": "recovering"
+        },
+        "case": "query",
+        "http": 200,
+        "job_status_changed": true,
+        "launch_calls": 1
+      },
+      {
+        "authorization_issued": true,
+        "authorized_account": "dashboard:basic:synthetic-owner",
+        "body": {
+          "job": "/tmp/native-memory-qa44xl6l/state/updates/interrupted-synthetic-job",
+          "state": "recovering"
+        },
+        "case": "body",
+        "http": 200,
+        "job_status_changed": true,
+        "launch_calls": 1
+      }
+    ],
+    "callers": [
+      {
+        "action": "recover",
+        "authenticated_http": 200,
+        "case": "worker_stopped",
+        "refused_overrides": [],
+        "scope_categories": [],
+        "worker_status": {
+          "error": "Synthetic restore failure",
+          "state": "interrupted",
+          "unit": "synthetic-unit"
+        },
+        "worker_stderr": "LifeOS update restore failed: Synthetic restore failure\n",
+        "wrong_action_refused": true
+      },
+      {
+        "action": "recover",
+        "authenticated_http": 200,
+        "case": "worker_swapped",
+        "refused_overrides": [],
+        "scope_categories": [],
+        "worker_status": {
+          "error": "Synthetic restore failure",
+          "state": "interrupted",
+          "unit": "synthetic-unit"
+        },
+        "worker_stderr": "LifeOS update restore failed: Synthetic restore failure\n",
+        "wrong_action_refused": true
+      },
+      {
+        "action": "recover",
+        "authenticated_http": 200,
+        "case": "worker_restoring",
+        "refused_overrides": [],
+        "scope_categories": [],
+        "worker_status": {
+          "error": "Synthetic restore failure",
+          "state": "interrupted",
+          "unit": "synthetic-unit"
+        },
+        "worker_stderr": "LifeOS update restore failed: Synthetic restore failure\n",
+        "wrong_action_refused": true
+      },
+      {
+        "action": "recover",
+        "authenticated_http": 200,
+        "case": "worker_rollback_failed",
+        "refused_overrides": [],
+        "scope_categories": [],
+        "worker_status": {
+          "error": "Synthetic restore failure",
+          "state": "interrupted",
+          "unit": "synthetic-unit"
+        },
+        "worker_stderr": "LifeOS update restore failed: Synthetic restore failure\n",
+        "wrong_action_refused": true
+      },
+      {
+        "action": "restore",
+        "authenticated_http": 200,
+        "case": "worker_applied",
+        "refused_overrides": [
+          403,
+          400,
+          400
+        ],
+        "scope_categories": [
+          "assistant",
+          "principal",
+          "project"
+        ],
+        "worker_status": {
+          "error": "Synthetic restore failure",
+          "state": "applied"
+        },
+        "worker_stderr": "LifeOS update restore failed: Synthetic restore failure\n",
+        "wrong_action_refused": true
+      }
+    ],
+    "cleanup": [
+      {
+        "case": "terminal",
+        "error": null,
+        "snapshot_exists": false,
+        "status": {
+          "recovery_required": false,
+          "state": "committed"
+        }
+      },
+      {
+        "case": "pending_prepared",
+        "error": null,
+        "snapshot_exists": true,
+        "status": {
+          "recovery_required": true,
+          "state": "prepared"
+        }
+      },
+      {
+        "case": "pending_applying",
+        "error": null,
+        "snapshot_exists": true,
+        "status": {
+          "recovery_required": true,
+          "state": "applying"
+        }
+      },
+      {
+        "case": "pending_restoring",
+        "error": null,
+        "snapshot_exists": true,
+        "status": {
+          "recovery_required": true,
+          "state": "restoring"
+        }
+      },
+      {
+        "case": "orphan",
+        "error": null,
+        "snapshot_exists": false,
+        "status": {
+          "recovery_required": false,
+          "state": "none"
+        }
+      },
+      {
+        "case": "foreign_identity",
+        "error": null,
+        "snapshot_exists": true,
+        "status": {
+          "recovery_required": false,
+          "state": "none"
+        }
+      },
+      {
+        "case": "missing_identity",
+        "error": null,
+        "snapshot_exists": true,
+        "status": {
+          "recovery_required": false,
+          "state": "none"
+        }
+      },
+      {
+        "case": "identity_symlink",
+        "error": null,
+        "snapshot_exists": true,
+        "status": {
+          "recovery_required": false,
+          "state": "none"
+        }
+      },
+      {
+        "case": "nested_symlink",
+        "error": null,
+        "snapshot_exists": false,
+        "status": {
+          "recovery_required": false,
+          "state": "none"
+        }
+      },
+      {
+        "case": "malformed_journal",
+        "error": "The mount journal belongs to another installation or is invalid",
+        "snapshot_exists": true,
+        "status": null
+      },
+      {
+        "case": "missing_pending_snapshot",
+        "error": "The mount recovery snapshot is missing",
+        "snapshot_exists": false,
+        "status": null
+      },
+      {
+        "case": "missing_terminal_snapshot",
+        "error": null,
+        "snapshot_exists": false,
+        "status": {
+          "recovery_required": false,
+          "state": "committed"
+        }
+      },
+      {
+        "case": "historical_terminal",
+        "error": null,
+        "snapshot_exists": false,
+        "status": {
+          "recovery_required": false,
+          "state": "committed"
+        }
+      }
+    ],
+    "recorder": [
+      {
+        "case": "env",
+        "clean": {
+          "echo": "[REDACTED]",
+          "env": {
+            "CUSTOM_PROVIDER_VALUE": "[REDACTED]",
+            "LANG": "C.UTF-8",
+            "LIFEOS_CHILD_EFFORT": "high"
+          },
+          "prompt": "Ordinary synthetic prompt remains useful"
+        },
+        "secret_retained": false
+      },
+      {
+        "case": "environment",
+        "clean": {
+          "echo": "[REDACTED]",
+          "environment": {
+            "CUSTOM_PROVIDER_VALUE": "[REDACTED]",
+            "LANG": "C.UTF-8",
+            "LIFEOS_CHILD_EFFORT": "high"
+          },
+          "prompt": "Ordinary synthetic prompt remains useful"
+        },
+        "secret_retained": false
+      },
+      {
+        "case": "ENV",
+        "clean": {
+          "ENV": {
+            "CUSTOM_PROVIDER_VALUE": "[REDACTED]",
+            "LANG": "C.UTF-8",
+            "LIFEOS_CHILD_EFFORT": "high"
+          },
+          "echo": "[REDACTED]",
+          "prompt": "Ordinary synthetic prompt remains useful"
+        },
+        "secret_retained": false
+      },
+      {
+        "case": "outer_json",
+        "clean": "{\"options\": {\"environment\": {\"CUSTOM_PROVIDER_VALUE\": \"[REDACTED]\", \"LANG\": \"C.UTF-8\", \"LIFEOS_CHILD_EFFORT\": \"high\"}}, \"echo\": \"[REDACTED]\"}",
+        "secret_retained": false
+      },
+      {
+        "case": "alias",
+        "clean": {
+          "echo": "[REDACTED]",
+          "options": {
+            "env": {
+              "CUSTOM_PROVIDER_VALUE": "[REDACTED]",
+              "LANG": "C.UTF-8",
+              "LIFEOS_CHILD_EFFORT": "high"
+            }
+          },
+          "unlabeled_alias": {
+            "CUSTOM_PROVIDER_VALUE": "[REDACTED]",
+            "LANG": "C.UTF-8",
+            "LIFEOS_CHILD_EFFORT": "high"
+          }
+        },
+        "secret_retained": false
+      },
+      {
+        "case": "later_echo",
+        "clean": {
+          "echo": "[REDACTED]",
+          "prompt": "Ordinary synthetic prompt remains useful"
+        },
+        "secret_retained": false
+      },
+      {
+        "case": "bytes_json",
+        "clean": {
+          "bytes": "eyJlbnYiOiB7IkNVU1RPTV9QUk9WSURFUl9WQUxVRSI6ICJbUkVEQUNURURdIiwgIkxBTkciOiAiQy5VVEYtOCIsICJMSUZFT1NfQ0hJTERfRUZGT1JUIjogImhpZ2gifSwgImVjaG8iOiAiW1JFREFDVEVEXSJ9",
+          "encoding": "base64"
+        },
+        "secret_retained": false
+      }
+    ],
+    "restore": [
+      {
+        "baseline_dev": 52,
+        "case": "late_edit_profile",
+        "events": [
+          "stop",
+          "start",
+          "verify"
+        ],
+        "indexes": [
+          {
+            ".env": "/dev/shm/tmp2kv72gbc/profile/.lifeos-restore-od7dsk2m/.env",
+            "SOUL.md": "/dev/shm/tmp2kv72gbc/profile/.lifeos-restore-od7dsk2m/SOUL.md",
+            "baseline.json": "/tmp/tmpmxf0iyb1/home/state/.lifeos-restore-kbfvfg0z/baseline.json",
+            "config.yaml": "/dev/shm/tmp2kv72gbc/profile/.lifeos-restore-od7dsk2m/config.yaml",
+            "plugins/lifeos": "/dev/shm/tmp2kv72gbc/profile/plugins/.lifeos-restore-di7m4gvk/lifeos"
+          }
+        ],
+        "profile_dev": 27,
+        "snapshot_dev": 52
+      },
+      {
+        "baseline_dev": 27,
+        "case": "late_edit_baseline",
+        "events": [
+          "stop",
+          "start",
+          "verify"
+        ],
+        "indexes": [
+          {
+            ".env": "/tmp/tmphnfq4_ry/home/.hermes/.lifeos-restore-1w6kooh9/.env",
+            "SOUL.md": "/tmp/tmphnfq4_ry/home/.hermes/.lifeos-restore-1w6kooh9/SOUL.md",
+            "baseline.json": "/dev/shm/tmpsc9gml9i/state/.lifeos-restore-y00ii6xl/baseline.json",
+            "config.yaml": "/tmp/tmphnfq4_ry/home/.hermes/.lifeos-restore-1w6kooh9/config.yaml",
+            "plugins/lifeos": "/tmp/tmphnfq4_ry/home/.hermes/plugins/.lifeos-restore-ifvhkuvo/lifeos"
+          }
+        ],
+        "profile_dev": 52,
+        "snapshot_dev": 52
+      },
+      {
+        "baseline_dev": 27,
+        "case": "late_edit_both",
+        "events": [
+          "stop",
+          "start",
+          "verify"
+        ],
+        "indexes": [
+          {
+            ".env": "/dev/shm/tmpwebrqojk/profile/.lifeos-restore-ifyejwrx/.env",
+            "SOUL.md": "/dev/shm/tmpwebrqojk/profile/.lifeos-restore-ifyejwrx/SOUL.md",
+            "baseline.json": "/dev/shm/tmpwebrqojk/state/.lifeos-restore-36go_zjh/baseline.json",
+            "config.yaml": "/dev/shm/tmpwebrqojk/profile/.lifeos-restore-ifyejwrx/config.yaml",
+            "plugins/lifeos": "/dev/shm/tmpwebrqojk/profile/plugins/.lifeos-restore-n8bi8pbs/lifeos"
+          }
+        ],
+        "profile_dev": 27,
+        "snapshot_dev": 52
+      },
+      {
+        "archive_count_retained": 0,
+        "case": "kill_index",
+        "exit": -9,
+        "index_count_after_recovery": 2,
+        "indexes_before_recovery": [
+          {
+            "config.yaml": "/dev/shm/tmpmj1as_mf/profile/.lifeos-restore-hc4_0ys6/config.yaml"
+          }
+        ]
+      },
+      {
+        "archive_count_retained": 1,
+        "case": "kill_config",
+        "exit": -9,
+        "index_count_after_recovery": 2,
+        "indexes_before_recovery": [
+          {
+            "config.yaml": "/dev/shm/tmpb9qmzcr0/profile/.lifeos-restore-1jbjlg8x/config.yaml"
+          }
+        ]
+      },
+      {
+        "archive_count_retained": 4,
+        "case": "kill_plugin",
+        "exit": -9,
+        "index_count_after_recovery": 2,
+        "indexes_before_recovery": [
+          {
+            ".env": "/dev/shm/tmpmxu_e5wk/profile/.lifeos-restore-gxmh62ma/.env",
+            "SOUL.md": "/dev/shm/tmpmxu_e5wk/profile/.lifeos-restore-gxmh62ma/SOUL.md",
+            "config.yaml": "/dev/shm/tmpmxu_e5wk/profile/.lifeos-restore-gxmh62ma/config.yaml",
+            "plugins/lifeos": "/dev/shm/tmpmxu_e5wk/profile/plugins/.lifeos-restore-v06n80xc/lifeos"
+          }
+        ]
+      },
+      {
+        "archive_count_retained": 5,
+        "case": "kill_baseline",
+        "exit": -9,
+        "index_count_after_recovery": 2,
+        "indexes_before_recovery": [
+          {
+            ".env": "/dev/shm/tmphp30h66j/profile/.lifeos-restore-xjsetj0x/.env",
+            "SOUL.md": "/dev/shm/tmphp30h66j/profile/.lifeos-restore-xjsetj0x/SOUL.md",
+            "baseline.json": "/dev/shm/tmphp30h66j/state/.lifeos-restore-znch6k3g/baseline.json",
+            "config.yaml": "/dev/shm/tmphp30h66j/profile/.lifeos-restore-xjsetj0x/config.yaml",
+            "plugins/lifeos": "/dev/shm/tmphp30h66j/profile/plugins/.lifeos-restore-1alya6jm/lifeos"
+          }
+        ]
+      },
+      {
+        "archive_count_retained": 5,
+        "case": "kill_published",
+        "exit": -9,
+        "index_count_after_recovery": 2,
+        "indexes_before_recovery": [
+          {
+            ".env": "/dev/shm/tmpeeb0i9c2/profile/.lifeos-restore-_fiz4cmu/.env",
+            "SOUL.md": "/dev/shm/tmpeeb0i9c2/profile/.lifeos-restore-_fiz4cmu/SOUL.md",
+            "baseline.json": "/dev/shm/tmpeeb0i9c2/state/.lifeos-restore-ch8h6bpu/baseline.json",
+            "config.yaml": "/dev/shm/tmpeeb0i9c2/profile/.lifeos-restore-_fiz4cmu/config.yaml",
+            "plugins/lifeos": "/dev/shm/tmpeeb0i9c2/profile/plugins/.lifeos-restore-_16elemf/lifeos"
+          }
+        ]
+      },
+      {
+        "case": "repeated_recovery_kills",
+        "exits": [
+          -9,
+          -9,
+          -9
+        ],
+        "index_count": 4,
+        "selected_archive_retained": true
+      }
+    ]
+  },
+  "role": "independent correction reviewer, Cerebo",
+  "source_reads_and_tests_complete": true,
+  "tests": {
+    "focused": {
+      "passed": 55,
+      "seconds": 44.327
+    },
+    "recorder": {
+      "passed": 32,
+      "seconds": 6.832
+    },
+    "repository_failed": 0,
+    "repository_passed": 87,
+    "skips": 0,
+    "warnings": 0
+  }
+}

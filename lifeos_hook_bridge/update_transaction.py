@@ -7,8 +7,11 @@ import hashlib
 import json
 import os
 import shutil
+import stat
 import subprocess
+import tempfile
 from pathlib import Path
+from uuid import uuid4
 
 from .update_dependencies import sync_dependencies
 from .update_hooks import replace_owned_hooks
@@ -17,6 +20,7 @@ from .update_plan import apply_system_plan, plan_system_files
 
 MOUNT_FILES = ("config.yaml", "SOUL.md", ".env")
 MOUNT_DIRS = ("plugins/lifeos",)
+USER_DATA_PATHS = ("LIFEOS/MEMORY", "LIFEOS/USER", "USER.md", "MEMORY.md")
 
 
 class UpdateTransactionError(RuntimeError):
@@ -32,6 +36,7 @@ def _write_json(path: Path, data: dict) -> None:
         stream.flush()
         os.fsync(stream.fileno())
     os.replace(temporary, path)
+    _sync_directory(path.parent)
 
 
 def _copy_tree(source: Path, target: Path) -> None:
@@ -65,16 +70,52 @@ def _snapshot_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
     _write_json(snapshot / "mount-manifest.json", {"present": present})
 
 
-def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
+def _sync_directory(path: Path) -> None:
+    descriptor = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(descriptor)
+    finally:
+        os.close(descriptor)
+
+
+def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> Path:
+    _mount_state(hermes_home)
+    if baseline.is_symlink() or baseline.exists() and not baseline.is_file():
+        raise UpdateTransactionError('The restore baseline must be a regular file')
     present = set(json.loads((snapshot / "mount-manifest.json").read_text())["present"])
+    archives = snapshot / 'mount-before-restore'
+    archives.mkdir(mode=0o700, exist_ok=True)
+    info = archives.stat()
+    if archives.resolve() != archives or info.st_uid != os.getuid() or info.st_mode & 0o077:
+        raise UpdateTransactionError('Restore archives require a private owner directory')
+    archive = archives / uuid4().hex
+    archive.mkdir(mode=0o700)
+    containers = {}
+    targets = {}
+
+    def retain(destination, name):
+        if destination.parent.resolve() != destination.parent:
+            raise UpdateTransactionError('A restore target changes its physical path')
+        if destination.parent not in containers:
+            containers[destination.parent] = Path(tempfile.mkdtemp(
+                prefix='.lifeos-restore-', dir=destination.parent))
+            _sync_directory(destination.parent)
+        saved = containers[destination.parent] / destination.name
+        targets[name] = str(saved)
+        # The index survives process death between the archive rename and file restoration.
+        _write_json(archive / 'archive-manifest.json', {'targets': targets})
+        _sync_directory(archive)
+        _sync_directory(archives)
+        os.replace(destination, saved)
+        _sync_directory(destination.parent)
+        _sync_directory(saved.parent)
+
     for name in (*MOUNT_FILES, *MOUNT_DIRS):
         destination = hermes_home / name
         if destination.is_symlink():
             raise UpdateTransactionError(f"Hermes mount became a symbolic link: {name}")
-        if destination.is_dir():
-            shutil.rmtree(destination)
-        elif destination.exists():
-            destination.unlink()
+        if destination.exists():
+            retain(destination, name)
         if name in present:
             source = snapshot / "mount" / name
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -84,7 +125,10 @@ def _restore_mount(hermes_home: Path, snapshot: Path, baseline: Path) -> None:
                 shutil.copy2(source, destination)
     temporary = baseline.with_suffix(baseline.suffix + ".restore")
     shutil.copy2(snapshot / "baseline.json", temporary)
+    if baseline.exists():
+        retain(baseline, 'baseline.json')
     os.replace(temporary, baseline)
+    return archive
 
 
 def _source_hooks(source: Path) -> dict:
@@ -92,9 +136,59 @@ def _source_hooks(source: Path) -> dict:
     return manifest["hooks"]
 
 
-def _memory_digest(root: Path) -> dict[str, str]:
+def _mount_state(hermes_home: Path) -> dict:
+    states = {}
+
+    def collect(path):
+        if path.parent.resolve() != path.parent:
+            raise UpdateTransactionError('A Hermes profile target changes its physical path')
+        name = path.relative_to(hermes_home).as_posix()
+        try:
+            info = path.lstat()
+        except FileNotFoundError:
+            states[name] = None
+            return
+        mode = stat.S_IMODE(info.st_mode)
+        if stat.S_ISDIR(info.st_mode):
+            states[name] = {'type': 'directory', 'mode': mode}
+            for child in sorted(path.iterdir()):
+                collect(child)
+        elif stat.S_ISREG(info.st_mode):
+            with path.open('rb') as stream:
+                digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+            states[name] = {'type': 'file', 'mode': mode, 'digest': digest}
+        else:
+            raise UpdateTransactionError('Hermes profile targets must be regular files or directories')
+
+    for name in (*MOUNT_FILES, *MOUNT_DIRS):
+        collect(hermes_home / name)
+    return states
+
+
+def _external_user_data(root: Path, *, excluded: tuple[Path, ...] = ()) -> dict:
+    bindings = {}
+    for name in USER_DATA_PATHS:
+        path = root / name
+        if not path.is_symlink():
+            continue
+        target = path.resolve(strict=True)
+        if not target.is_dir() or any(target.is_relative_to(tree) or tree.is_relative_to(target)
+                                     for tree in (root.resolve(), *excluded)):
+            raise UpdateTransactionError('User data links require an external directory')
+        for file in target.rglob('*'):
+            if file.is_symlink() or not (file.is_file() or file.is_dir()):
+                raise UpdateTransactionError('External user data contains an unsupported file')
+        info = target.stat()
+        bindings[name] = {'link': os.readlink(path), 'target': str(target),
+                          'device': info.st_dev, 'inode': info.st_ino}
+    return bindings
+
+
+def _memory_digest(root: Path, external: dict | None = None) -> dict[str, str]:
     hashes = {}
-    for name in ("LIFEOS/MEMORY", "LIFEOS/USER", "USER.md", "MEMORY.md"):
+    for name in USER_DATA_PATHS:
+        if name in (external or {}):
+            continue
         path = root / name
         if path.is_file():
             hashes[name] = hashlib.sha256(path.read_bytes()).hexdigest()
@@ -119,6 +213,7 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         raise UpdateTransactionError("Baseline is missing or update snapshot already exists")
     if installed.stat().st_dev != snapshot.parent.stat().st_dev:
         raise UpdateTransactionError("Update snapshot must be on the LifeOS filesystem")
+    _mount_state(hermes_home)
     baseline = json.loads(baseline_path.read_text(encoding="utf-8"))
     plan = plan_system_files(installed, baseline, selected_source, reference)
     current_settings = json.loads((installed / "settings.json").read_text(encoding="utf-8"))
@@ -136,9 +231,9 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
     try:
         _snapshot_mount(hermes_home, snapshot, baseline_path)
         stopped = True
-        stop()
         manifest["state"] = "stopped"
         _write_json(manifest_path, manifest)
+        stop()
         plan = plan_system_files(installed, baseline, selected_source, reference)
         _copy_tree(installed, snapshot / "staged")
         staged = snapshot / "staged"
@@ -156,7 +251,9 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         verify()
         manifest["state"] = "applied"
         manifest["package_roots"] = dependency_report["package_roots"]
-        manifest["user_data"] = _memory_digest(installed)
+        manifest['user_data_links'] = _external_user_data(installed, excluded=(snapshot,))
+        manifest["user_data"] = _memory_digest(installed, manifest['user_data_links'])
+        manifest['mount_state'] = _mount_state(hermes_home)
         _write_json(manifest_path, manifest)
         return manifest
     except Exception as error:
@@ -185,20 +282,52 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
         raise UpdateTransactionError(str(error)) from error
 
 
-def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
     manifest_path = snapshot / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     if manifest["state"] != "applied":
         raise UpdateTransactionError("Only an applied update can be restored")
-    installed = Path(manifest["installed"])
-    if _memory_digest(installed) != manifest["user_data"]:
+    target = Path(manifest['installed'])
+    if installed is not None and target.absolute() != installed.absolute():
+        raise UpdateTransactionError('The restore snapshot belongs to another installation')
+    _validate_restore_data(snapshot, manifest)
+    return manifest
+
+
+def _validate_restore_data(snapshot: Path, manifest: dict) -> None:
+    target = Path(manifest['installed'])
+    external = _external_user_data(target, excluded=(snapshot,))
+    if external != manifest.get('user_data_links', {}) or external != _external_user_data(
+            snapshot / 'live-prior', excluded=(target, snapshot)):
+        raise UpdateTransactionError('User data binding changed after update; automatic restore refused')
+    if _memory_digest(target, external) != manifest["user_data"]:
         raise UpdateTransactionError("User data changed after update; automatic restore refused")
+    if not isinstance(manifest.get('mount_state'), dict):
+        raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
+    if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
+        raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+
+
+def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+    manifest = validate_restore(snapshot)
+    manifest_path = snapshot / "manifest.json"
+    installed = Path(manifest['installed'])
+    manifest['state'] = 'restore_stopping'
+    _write_json(manifest_path, manifest)
+    try:
+        stop()
+        _validate_restore_data(snapshot, manifest)
+    except Exception:
+        start()
+        manifest['state'] = 'applied'
+        _write_json(manifest_path, manifest)
+        raise
     manifest["state"] = "restoring"
     _write_json(manifest_path, manifest)
-    stop()
     os.replace(installed, snapshot / "restored-selected")
     os.replace(snapshot / "live-prior", installed)
-    _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
+    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
+    manifest['profile_archive'] = str(archive)
     start()
     verify()
     manifest["state"] = "rolled_back"
@@ -209,6 +338,15 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
 def recover_update(snapshot: Path, *, stop, start, verify) -> dict:
     manifest_path = snapshot / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if manifest['state'] == 'restore_stopping':
+        if not Path(manifest['installed']).is_dir() or (snapshot / 'restored-selected').exists():
+            raise UpdateTransactionError('The interrupted restore-stop installation changed its program tree')
+        # No program or profile swap starts before the restoring journal is durable.
+        start()
+        verify()
+        manifest['state'] = 'applied'
+        _write_json(manifest_path, manifest)
+        return manifest
     if manifest["state"] not in {"stopped", "swapped", "restoring", "rollback_failed"}:
         raise UpdateTransactionError("Update snapshot does not need interrupted recovery")
     installed = Path(manifest["installed"])

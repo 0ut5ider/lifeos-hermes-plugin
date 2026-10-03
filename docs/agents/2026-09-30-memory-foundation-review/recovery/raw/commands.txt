@@ -1,0 +1,25 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+Source reads:
+cat lifeos_hook_bridge/memory_transaction.py
+git diff -- lifeos_hook_bridge/memory_access.py tests/test_memory_native.py
+cat lifeos_hook_bridge/memory_access.py
+git status --short
+cat lifeos_hook_bridge/memory_native.ts
+sed -n '150,250p' tests/test_memory_native.py
+sed -n '365,390p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+sed -n '280,313p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+sed -n '485,555p' /home/outsider/.cache/lifeos-plugin-memory/source/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+
+Test command, exit status 0:
+python -m unittest discover -s tests -p 'test_memory*.py' -v > docs/agents/2026-09-30-memory-foundation-review/recovery/raw/tests-22.txt 2>&1
+
+Foundation diagnostic rerun, exit status 0:
+python docs/agents/2026-09-30-memory-foundation-review/followup/raw/probe_followup.py > docs/agents/2026-09-30-memory-foundation-review/recovery/raw/foundation-probes.jsonl
+
+Recovery diagnostic command, exit status 0:
+python docs/agents/2026-09-30-memory-foundation-review/recovery/raw/probe_recovery.py > docs/agents/2026-09-30-memory-foundation-review/recovery/raw/recovery-probes.jsonl
+
+The recovery script was run as cases were added. The preserved JSONL file contains the complete final six-case run. Its child processes use actual native tools in temporary synthetic fixtures. Process exits at specific boundaries inject crashes. One temporary Bun gating script delays actual native publication so the Python parent can be killed before publication. The probe waits for the native child's completion before cleaning its fixture.
+
+The four reviewed source files were copied and SHA-256 hashed before test execution. Their copies and hashes are preserved here. The native source-only fixture is the same one recorded in the first review.

@@ -1,0 +1,156 @@
+{
+  "schema": [
+    {
+      "retired": null,
+      "unmanaged": false,
+      "exit": 2,
+      "published": true,
+      "unavailable": false,
+      "clobber_details": [
+        {
+          "system": "/tmp/native-memory-lbesv1mh/.claude/settings.system.json",
+          "live": "/tmp/native-memory-lbesv1mh/.claude/settings.json",
+          "hook": "MemoryTurnStart.hook.ts"
+        }
+      ]
+    },
+    {
+      "retired": "system",
+      "unmanaged": false,
+      "exit": 2,
+      "published": false,
+      "unavailable": true,
+      "clobber_details": []
+    },
+    {
+      "retired": "live",
+      "unmanaged": false,
+      "exit": 2,
+      "published": false,
+      "unavailable": true,
+      "clobber_details": []
+    },
+    {
+      "retired": "system",
+      "unmanaged": true,
+      "exit": 2,
+      "published": true,
+      "unavailable": false,
+      "clobber_details": [
+        {
+          "system": "/tmp/native-memory-ia6muvdo/.claude/settings.system.json",
+          "live": "/tmp/native-memory-ia6muvdo/.claude/settings.json",
+          "hook": "MemoryTurnStart.hook.ts"
+        }
+      ]
+    }
+  ],
+  "provenance": {
+    "context_session": "native-session",
+    "context_writer": "chat-a:100",
+    "native": [
+      {
+        "ok": true,
+        "type": "memory",
+        "path": "/tmp/native-memory-mir4c58w/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+        "detail": {
+          "ok": true,
+          "accepted": 1,
+          "dropped_malformed": 0,
+          "dropped_overlength": 0,
+          "dropped_duplicates": 0,
+          "prior_count": 0,
+          "new_count": 1,
+          "evictions": [],
+          "additions": [
+            "RULE: Synthetic delegated provenance"
+          ]
+        },
+        "receipt": {
+          "status": "committed",
+          "references": [
+            {
+              "id": "29a3aedee64043a4a4000e26bad53462",
+              "revision": 1
+            }
+          ],
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic delegated provenance"
+            ]
+          },
+          "writer": "chat-a:100",
+          "request_id": "33172a40-0717-43fc-b696-6640ed6634be"
+        }
+      },
+      {
+        "ok": true,
+        "type": "knowledge",
+        "path": "/tmp/native-memory-mir4c58w/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-delegated-provenance.md",
+        "detail": {
+          "bytes_written": 337,
+          "created_or_appended": "created",
+          "related_links": 0
+        },
+        "receipt": {
+          "status": "committed",
+          "reference": {
+            "id": "49a6c76c46bf42af87c359f06b154ffd",
+            "revision": 1
+          },
+          "detail": {
+            "bytes_written": 337,
+            "created_or_appended": "created",
+            "related_links": 0
+          },
+          "writer": "chat-a:100",
+          "request_id": "0d35e4c0-25c7-427a-93a4-6d29bc4bac77"
+        }
+      }
+    ],
+    "recall": [
+      {
+        "reference": {
+          "id": "49a6c76c46bf42af87c359f06b154ffd",
+          "revision": 1
+        },
+        "content": "Synthetic delegated provenance",
+        "category": "project",
+        "project": "general",
+        "writer": "chat-a:100",
+        "status": "active",
+        "source": {
+          "kind": "native",
+          "session": "native-session",
+          "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-delegated-provenance.md"
+        },
+        "score": 3.2061068702290076
+      },
+      {
+        "reference": {
+          "id": "29a3aedee64043a4a4000e26bad53462",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic delegated provenance",
+        "category": "principal",
+        "project": "",
+        "writer": "chat-a:100",
+        "status": "active",
+        "source": {
+          "kind": "native-curation",
+          "session": "",
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+        },
+        "score": 2.818791946308725
+      }
+    ]
+  }
+}

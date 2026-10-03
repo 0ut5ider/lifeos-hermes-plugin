@@ -1,0 +1,290 @@
+[
+  {
+    "category": "principal",
+    "mode": "remember",
+    "journal_log": false,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6MzIuMjI5WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:32.229Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:32.229Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:32.966Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:32.229Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:32.966Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "prefix_restored_exactly": false,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "f6635c41357c7db7615e5ce7b63ececdd6a35dd55164a5d74d709f8610ff011c"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +2 learned \u2014 \"principal: RULE: Synthetic committed audit prefix\", \"principal: RULE: Synthetic interrupted audit candidate\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": true
+  },
+  {
+    "category": "principal",
+    "mode": "remember",
+    "journal_log": true,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+          "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTI6MzY6MzQuMzgwWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9QUklOQ0lQQUwvUFJJTkNJUEFMX01FTU9SWS5tZCIsInVwZGF0ZWRfYnkiOiJNZW1vcnlTeXN0ZW0uYWRkIiwicmVqZWN0ZWQiOmZhbHNlLCJwcmlvcl9jb3VudCI6MCwibmV3X2NvdW50IjoxLCJhY2NlcHRlZCI6MSwiZHJvcHBlZF9tYWxmb3JtZWQiOjAsImRyb3BwZWRfb3Zlcmxlbmd0aCI6MCwiZHJvcHBlZF9kdXBsaWNhdGVzIjowLCJldmljdGlvbnMiOltdLCJhZGRpdGlvbnMiOlsiUlVMRTogU3ludGhldGljIGNvbW1pdHRlZCBhdWRpdCBwcmVmaXgiXX0K"
+        },
+        {
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6MzQuMzgwWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:34.380Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:34.380Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:35.122Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:34.380Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "prefix_restored_exactly": true,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "ca8a9fd1ad235c438727786df53396abff73d3e82a5004c825bdc8e1eaa83d7e"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +1 learned \u2014 \"principal: RULE: Synthetic committed audit prefix\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": false
+  },
+  {
+    "category": "principal",
+    "mode": "native_add",
+    "journal_log": false,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6MzYuNTQyWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:36.542Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:36.542Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:37.259Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:36.542Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:37.259Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "prefix_restored_exactly": false,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "6f5bd387c85999aa04c715b7da9e42d7e198b7b6d6fb1cd454d2bdd4cf597087"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +2 learned \u2014 \"principal: RULE: Synthetic committed audit prefix\", \"principal: RULE: Synthetic interrupted audit candidate\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": true
+  },
+  {
+    "category": "principal",
+    "mode": "native_add",
+    "journal_log": true,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+          "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTI6MzY6MzguNjk2WiIsImZpbGUiOiJMSUZFT1MvVVNFUi9QUklOQ0lQQUwvUFJJTkNJUEFMX01FTU9SWS5tZCIsInVwZGF0ZWRfYnkiOiJNZW1vcnlTeXN0ZW0uYWRkIiwicmVqZWN0ZWQiOmZhbHNlLCJwcmlvcl9jb3VudCI6MCwibmV3X2NvdW50IjoxLCJhY2NlcHRlZCI6MSwiZHJvcHBlZF9tYWxmb3JtZWQiOjAsImRyb3BwZWRfb3Zlcmxlbmd0aCI6MCwiZHJvcHBlZF9kdXBsaWNhdGVzIjowLCJldmljdGlvbnMiOltdLCJhZGRpdGlvbnMiOlsiUlVMRTogU3ludGhldGljIGNvbW1pdHRlZCBhdWRpdCBwcmVmaXgiXX0K"
+        },
+        {
+          "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6MzguNjk2WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:38.696Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:38.696Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:39.433Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:38.696Z\",\"file\":\"LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "prefix_restored_exactly": true,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "bc26c89335d90ea95d057d7ac0d5f39236c8e7fd6d3bd99d7cb83ead5718a932"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +1 learned \u2014 \"principal: RULE: Synthetic committed audit prefix\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": false
+  },
+  {
+    "category": "assistant",
+    "mode": "remember",
+    "journal_log": false,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6NDAuODg5WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:40.889Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:40.889Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:41.722Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:40.889Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:41.722Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "prefix_restored_exactly": false,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "02bd1786fc8fa5e13155205d2b61548c4912cd3a5c8dc562d2c0ccf9e5097c13"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +2 learned \u2014 \"self: RULE: Synthetic committed audit prefix\", \"self: RULE: Synthetic interrupted audit candidate\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": true
+  },
+  {
+    "category": "assistant",
+    "mode": "remember",
+    "journal_log": true,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+          "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTI6MzY6NDMuMTQ3WiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjAsIm5ld19jb3VudCI6MSwiYWNjZXB0ZWQiOjEsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyBjb21taXR0ZWQgYXVkaXQgcHJlZml4Il19Cg=="
+        },
+        {
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6NDMuMTQ3WgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:43.147Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:43.147Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:43.899Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:43.147Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "prefix_restored_exactly": true,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "545e4c9bc79df076c4c0e316a9a931d92907ce01b96a714e50b00ba19a8485ee"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +1 learned \u2014 \"self: RULE: Synthetic committed audit prefix\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": false
+  },
+  {
+    "category": "assistant",
+    "mode": "native_add",
+    "journal_log": false,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6NDUuMzUwWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:45.350Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:45.350Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:46.070Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:45.350Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:46.070Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "prefix_restored_exactly": false,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "fabaf98e1fc47fab5752b6e24678a881977a1057ec8cbafb80ab91c9e11d70bf"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +2 learned \u2014 \"self: RULE: Synthetic committed audit prefix\", \"self: RULE: Synthetic interrupted audit candidate\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": true
+  },
+  {
+    "category": "assistant",
+    "mode": "native_add",
+    "journal_log": true,
+    "child_exit": 73,
+    "recovery_journal": {
+      "writer": "local:owner",
+      "request_id": "interrupted",
+      "copies": [
+        {
+          "path": "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl",
+          "data": "eyJ0cyI6IjIwMjYtMTAtMDFUMTI6MzY6NDcuNTEyWiIsImZpbGUiOiJMSUZFT1MvVVNFUi9ESUdJVEFMX0FTU0lTVEFOVC9EQV9NRU1PUlkubWQiLCJ1cGRhdGVkX2J5IjoiTWVtb3J5U3lzdGVtLmFkZCIsInJlamVjdGVkIjpmYWxzZSwicHJpb3JfY291bnQiOjAsIm5ld19jb3VudCI6MSwiYWNjZXB0ZWQiOjEsImRyb3BwZWRfbWFsZm9ybWVkIjowLCJkcm9wcGVkX292ZXJsZW5ndGgiOjAsImRyb3BwZWRfZHVwbGljYXRlcyI6MCwiZXZpY3Rpb25zIjpbXSwiYWRkaXRpb25zIjpbIlJVTEU6IFN5bnRoZXRpYyBjb21taXR0ZWQgYXVkaXQgcHJlZml4Il19Cg=="
+        },
+        {
+          "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "data": "LS0tCmxhc3RfdXBkYXRlZF9ieTogTWVtb3J5U3lzdGVtLmFkZApsYXN0X3VwZGF0ZWQ6IDIwMjYtMTAtMDFUMTI6MzY6NDcuNTEyWgotLS0KPCEtLSBCRUdJTiBFTlRSSUVTIC0tPgpSVUxFOiBTeW50aGV0aWMgY29tbWl0dGVkIGF1ZGl0IHByZWZpeAo8IS0tIEVORCBFTlRSSUVTIC0tPgo="
+        }
+      ]
+    },
+    "before_log": "{\"ts\":\"2026-10-01T12:36:47.512Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "published_log": "{\"ts\":\"2026-10-01T12:36:47.512Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n{\"ts\":\"2026-10-01T12:36:48.272Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":1,\"new_count\":2,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic interrupted audit candidate\"]}\n",
+    "recovered_log": "{\"ts\":\"2026-10-01T12:36:47.512Z\",\"file\":\"LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"updated_by\":\"MemorySystem.add\",\"rejected\":false,\"prior_count\":0,\"new_count\":1,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"evictions\":[],\"additions\":[\"RULE: Synthetic committed audit prefix\"]}\n",
+    "prefix_restored_exactly": true,
+    "current_hot": {
+      "entries": [
+        "RULE: Synthetic committed audit prefix"
+      ],
+      "count": 1,
+      "chars_used": 38,
+      "cap_entries": 48,
+      "cap_chars": 12288,
+      "dropped_invalid": [],
+      "revision": "914da7f8a706f5084ee3448382e1f5914849246553487de7e1b0dbe5dd8bd55d"
+    },
+    "registered_output": "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [1/48 entries \u00b7 38/12288 chars]\nRULE: Synthetic committed audit prefix\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: +1 learned \u2014 \"self: RULE: Synthetic committed audit prefix\" \u00b7 freshness: no data\n</lifeos-memory-delta>\n",
+    "candidate_current": false,
+    "candidate_surfaced": false
+  }
+]

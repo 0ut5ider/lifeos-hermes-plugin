@@ -1,0 +1,84 @@
+{
+  "source_revision": "2cc9303",
+  "source_hashes": {
+    "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+    "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+    "instrument.py": "d13042fdb5775059ed070f5597894625345cbfd917782143164651b14b9dd90d",
+    "analysis.py": "8cb2642ab98057d8f71ed7a2590ac7e66202ad259a20bd38c2a2c6e25acd1ab0",
+    "store.py": "996c5cc834a71583012569d9f16474bf6782563354710804e8763bce5027c375",
+    "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a"
+  },
+  "declared_bearer_echo": {
+    "first_artifact": {
+      "headers": {
+        "Authorization": "[REDACTED]"
+      },
+      "stdout": "SYNTHETIC-BEARER-CREDENTIAL-482739"
+    },
+    "later_artifact": {
+      "stdout": "SYNTHETIC-BEARER-CREDENTIAL-482739"
+    },
+    "token_learned": false
+  },
+  "real_bearer_hook": {
+    "baseline_exit": 0,
+    "traced_exit": 0,
+    "same_outcome": true,
+    "baseline_stdout": "null\n",
+    "traced_stdout": "null\n",
+    "baseline_stderr": "",
+    "traced_stderr": "",
+    "leak_stages": [
+      "hook.completed",
+      "process.completed",
+      "response.parsed.entered",
+      "response.parsed.returned",
+      "run_command.returned",
+      "translation.returned"
+    ]
+  },
+  "repeated_path_wrong_digest": {
+    "first_reference": {
+      "sha256": "c547b0110ea3bc12793b76ad4f3d26505ab3c0f2f58b81a50c0e5f51af7e99a9",
+      "path": "artifacts/sha256/c5/47b0110ea3bc12793b76ad4f3d26505ab3c0f2f58b81a50c0e5f51af7e99a9.json.gz",
+      "bytes": 31
+    },
+    "second_reference": {
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
+      "path": "artifacts/sha256/c5/47b0110ea3bc12793b76ad4f3d26505ab3c0f2f58b81a50c0e5f51af7e99a9.json.gz",
+      "bytes": 31
+    },
+    "summary": {
+      "events": 2,
+      "statuses": {},
+      "incomplete_invocations": 0,
+      "known_lost_events": 0,
+      "capture_failure_processes": 0,
+      "capture_gaps": 0,
+      "known_registrations": 0,
+      "unexercised_registrations": [],
+      "partial_tails": 0,
+      "integrity_issues": {},
+      "hooks": [],
+      "note": "Completion is execution evidence, not semantic parity."
+    }
+  },
+  "deeply_nested_record": {
+    "summary": {
+      "events": 2,
+      "statuses": {},
+      "incomplete_invocations": 0,
+      "known_lost_events": 0,
+      "capture_failure_processes": 0,
+      "capture_gaps": 0,
+      "known_registrations": 0,
+      "unexercised_registrations": [],
+      "partial_tails": 0,
+      "integrity_issues": {
+        "invalid_event": 1
+      },
+      "hooks": [],
+      "note": "Completion is execution evidence, not semantic parity."
+    }
+  }
+}

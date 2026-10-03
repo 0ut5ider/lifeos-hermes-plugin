@@ -1,0 +1,579 @@
+diff --git a/lifeos_hook_bridge/dashboard/plugin_api.py b/lifeos_hook_bridge/dashboard/plugin_api.py
+index 6d11833..23f3896 100644
+--- a/lifeos_hook_bridge/dashboard/plugin_api.py
++++ b/lifeos_hook_bridge/dashboard/plugin_api.py
+@@ -158,19 +158,29 @@ def review_memory(request: dict, account: str = Depends(_memory_account)):
+ 
+ @router.get('/memory/wiki')
+ def get_memory_wiki(request: Request, account: str = Depends(_memory_account)):
++    return _memory_source_read('wiki', request, account)
++
++
++@router.get('/memory/knowledge')
++def get_memory_knowledge(request: Request, account: str = Depends(_memory_account)):
++    return _memory_source_read('knowledge', request, account)
++
++
++def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, account: str):
+     preferences = _memory_preferences()
+-    request_target = importlib.import_module('lifeos_memory_settings.memory_wiki').request_target
++    request_target = importlib.import_module('lifeos_memory_settings.memory_' + view).request_target
+     headers = {'Cache-Control': 'no-store'}
+     try:
+         if list(request.query_params.keys()) != ['target'] or len(request.query_params.getlist('target')) != 1:
+-            raise ValueError('Wiki reads require one fixed route')
++            raise ValueError('Source reads require one fixed route')
+         target = request_target(request.query_params['target'])
+     except LookupError:
+-        return JSONResponse({'error': 'This wiki route is not a governed read view'}, status_code=404, headers=headers)
++        return JSONResponse({'error': 'This source route is not a governed read view'}, status_code=404, headers=headers)
+     except ValueError:
+-        return JSONResponse({'error': 'Invalid wiki read route'}, status_code=400, headers=headers)
++        return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
+     try:
+-        result, binding = preferences.wiki_response(target, account=account)
++        operation = preferences.wiki_response if view == 'wiki' else preferences.knowledge_response
++        result, binding = operation(target, account=account)
+     except PermissionError:
+         return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+     except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+diff --git a/lifeos_hook_bridge/memory_http.py b/lifeos_hook_bridge/memory_http.py
+index aab2f0e..79c262e 100644
+--- a/lifeos_hook_bridge/memory_http.py
++++ b/lifeos_hook_bridge/memory_http.py
+@@ -64,21 +64,24 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
+ 
+ 
+ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
+-    wiki = arguments.get('view') == 'wiki'
+-    expected = {'view','authorization','cookie'} | ({'target'} if wiki else set())
++    source_view = arguments.get('view') in ('wiki', 'knowledge')
++    expected = {'view','authorization','cookie'} | ({'target'} if source_view else set())
+     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
+-            or (arguments['view'] not in VIEWS and not wiki)):
++            or (arguments['view'] not in VIEWS and not source_view)):
+         return _response(400,{'error':'Choose a supported native memory view'})
+     route = '/memory/pulse/' + arguments['view']
+-    if wiki:
+-        from .memory_wiki import request_target
++    if source_view:
++        if arguments['view'] == 'wiki':
++            from .memory_wiki import request_target
++        else:
++            from .memory_knowledge import request_target
+         try:
+             target = request_target(arguments['target'])
+         except LookupError:
+-            return _response(404,{'error':'This wiki route is not a governed read view'})
++            return _response(404,{'error':'This source route is not a governed read view'})
+         except ValueError:
+-            return _response(400,{'error':'Invalid wiki read route'})
+-        route = '/memory/wiki?' + urllib.parse.urlencode({'target':target})
++            return _response(400,{'error':'Invalid source read route'})
++        route = '/memory/' + arguments['view'] + '?' + urllib.parse.urlencode({'target':target})
+     credentials={}
+     for key in ('authorization','cookie'):
+         value=arguments[key]
+@@ -113,9 +116,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
+             response=error
+         with response:
+             status=response.status
+-            if status not in ({200,400,401,403,404} if wiki else {200,400,401,403}):
++            if status not in ({200,400,401,403,404} if source_view else {200,400,401,403}):
+                 return _response(503,{'error':'Authenticated memory is unavailable'})
+-            if (status in ({200,404} if wiki else {200}) and response.headers.get('x-lifeos-memory-installation')
++            if (status in ({200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
+                     !=installation_binding(config,configuration.path)):
+                 raise ValueError('The authenticated response belongs to another installation')
+             if response.headers.get_content_type()!='application/json':
+diff --git a/lifeos_hook_bridge/memory_knowledge.py b/lifeos_hook_bridge/memory_knowledge.py
+new file mode 100644
+index 0000000..8ad7831
+--- /dev/null
++++ b/lifeos_hook_bridge/memory_knowledge.py
+@@ -0,0 +1,48 @@
++# ABOUTME: Selects registered current Knowledge notes for authenticated native Observability reads.
++# ABOUTME: Restricts page routes and renders native response shapes without reopening retained files.
++import json
++from pathlib import Path
++import re
++
++from .memory_access import MemoryUnavailable
++from .memory_canonical import corpus, RESPONSE_LIMIT
++
++
++DOMAINS = frozenset({'people', 'companies', 'ideas', 'research'})
++
++
++def request_target(value: object) -> str:
++    if not isinstance(value, str) or len(value) > 512:
++        raise ValueError('Choose a fixed Knowledge read route')
++    if value == '/api/knowledge':
++        return value
++    if '?' in value or '#' in value or '%' in value or any(ord(char) < 32 for char in value):
++        raise ValueError('Knowledge reads require an exact page route without query parameters')
++    match = re.fullmatch(r'/api/knowledge/([A-Za-z]+)/([a-z0-9][a-z0-9-]{0,255})', value)
++    if match is None or match[1].lower() not in DOMAINS:
++        raise LookupError('This Knowledge route is not a governed read view')
++    return '/api/knowledge/' + match[1].lower() + '/' + match[2]
++
++
++def view(memory, scope, target: str) -> dict:
++    target = request_target(target)
++    physical = memory.root.parent / '.config/LIFEOS/USER/MEMORY'
++    with memory._transaction() as connection:
++        current = corpus(memory, scope, str(physical), connection=connection)
++        sources = []
++        for record in current['records']:
++            relative = Path(record['provenance']['path'])
++            if (len(relative.parts) != 3 or relative.parts[0] != 'KNOWLEDGE'
++                    or relative.parts[1].lower() not in DOMAINS):
++                continue
++            if str(physical / relative) not in current['files']:
++                raise MemoryUnavailable('The Knowledge source changes its declared canonical path')
++            sources.append({'path': str(memory.root / 'LIFEOS/MEMORY' / relative), 'content': record['content']})
++        if len(json.dumps(sources).encode()) > RESPONSE_LIMIT:
++            raise MemoryUnavailable('The declared Knowledge sources exceed their transport limit')
++        result = memory._native('knowledge_view', target=target, sources=sources)
++        if (set(result) != {'status', 'body'} or type(result['status']) is not int
++                or result['status'] not in {200, 404} or not isinstance(result['body'], dict)
++                or len(json.dumps(result).encode()) > RESPONSE_LIMIT):
++            raise MemoryUnavailable('Native Knowledge rendering returned an invalid response')
++        return result
+diff --git a/lifeos_hook_bridge/memory_native.ts b/lifeos_hook_bridge/memory_native.ts
+index 88f1023..417b6e3 100644
+--- a/lifeos_hook_bridge/memory_native.ts
++++ b/lifeos_hook_bridge/memory_native.ts
+@@ -40,17 +40,33 @@ async function main(): Promise<void> {
+       metadata.push(module.canonicalMetadata(source.content,source.path,input.root));
+     }
+     result = {records, metadata};
++  } else if (input.action === "knowledge_view") {
++    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/Observability/observability.ts")).href);
++    if (!object(module) || typeof module.renderKnowledgeView !== "function" || typeof input.target !== "string"
++        || !Array.isArray(input.sources)) throw new Error("Native Knowledge rendering needs declared source text");
++    const sources: Array<{path: string; content: string}> = [];
++    for (const source of input.sources) {
++      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
++        throw new Error("Native Knowledge sources are unavailable");
++      }
++      sources.push({path: source.path, content: source.content});
++    }
++    const response: unknown = module.renderKnowledgeView(sources, input.target);
++    if (!(response instanceof Response)) throw new Error("Native Knowledge rendering did not return a response");
++    result = {status: response.status, body: await response.json()};
+   } else if (input.action === "wiki_view") {
+     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/wiki.ts")).href);
+     if (!object(module) || typeof module.renderWikiView !== "function" || typeof input.target !== "string"
+         || !Array.isArray(input.sources)) throw new Error("Native wiki rendering needs declared source text");
+-    const sources: Array<{path: string; content: string; lastModified: string; category: string; slug: string}> = [];
++    const sources: Array<{path: string; content: string; lastModified: string; category: string; slug: string; group?: string}> = [];
+     for (const source of input.sources) {
+       if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
+           || typeof source.lastModified !== "string" || typeof source.category !== "string"
+-          || typeof source.slug !== "string") throw new Error("Native wiki sources are unavailable");
++          || typeof source.slug !== "string" || (source.group !== undefined && typeof source.group !== "string")) {
++        throw new Error("Native wiki sources are unavailable");
++      }
+       sources.push({path: source.path, content: source.content, lastModified: source.lastModified,
+-        category: source.category, slug: source.slug});
++        category: source.category, slug: source.slug, ...(typeof source.group === "string" ? {group: source.group} : {})});
+     }
+     const request = new Request("http://127.0.0.1" + input.target);
+     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
+@@ -85,6 +101,19 @@ async function main(): Promise<void> {
+   } else if (input.action === "validate_batch") {
+     if (!Array.isArray(input.items) || typeof system.sanitizeTypedItemForPersistence !== "function") throw new Error("Invalid native validation batch");
+     result = {results: input.items.map((item: unknown) => system.sanitizeTypedItemForPersistence(item))};
++  } else if (input.action === "validate_source_batch") {
++    const capture: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/CaptureEnvelope.ts")).href);
++    if (!object(capture) || typeof capture.stripPrivateContent !== "function" || !Array.isArray(input.contents)) {
++      throw new Error("Native retained source validation is unavailable");
++    }
++    const accepted: boolean[] = [];
++    for (const content of input.contents) {
++      if (typeof content !== "string") throw new Error("Native retained sources require declared text");
++      // The canonical text boundary permits Markdown metadata and comments, unlike a new fact write.
++      accepted.push(!/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F]/u.test(content)
++        && !/[\uD800-\uDFFF]/u.test(content) && capture.stripPrivateContent(content) === content);
++    }
++    result = {accepted};
+   } else if (input.action === "rank") {
+     const retriever: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryRetriever.ts")).href);
+     if (!object(retriever) || retriever.SUPPLIED_CORPUS_API_VERSION !== 1 || typeof retriever.getRelevantContext !== "function") {
+diff --git a/lifeos_hook_bridge/memory_preferences.py b/lifeos_hook_bridge/memory_preferences.py
+index f410db1..c89a5dc 100644
+--- a/lifeos_hook_bridge/memory_preferences.py
++++ b/lifeos_hook_bridge/memory_preferences.py
+@@ -92,6 +92,13 @@ class MemoryPreferences:
+         return (view(NativeMemory(self.root), self._owner_scope(config), target),
+                 installation_binding(config, self.configuration.path))
+ 
++    def knowledge_response(self, target: str, *, account: str | None = None):
++        from .memory_knowledge import view
++        from .memory_http import installation_binding
++        config = self._configuration(account=account)
++        return (view(NativeMemory(self.root), self._owner_scope(config), target),
++                installation_binding(config, self.configuration.path))
++
+     def adopt(self, request: dict[str, Any], *, account: str | None = None) -> dict[str, Any]:
+         if not isinstance(request,dict) or set(request) != {'signature','projects','request_id'}:
+             raise ValueError('Provide the reviewed source preview, project assignments, and request identifier')
+diff --git a/lifeos_hook_bridge/memory_sources.py b/lifeos_hook_bridge/memory_sources.py
+index 79fd8b3..47cc32a 100644
+--- a/lifeos_hook_bridge/memory_sources.py
++++ b/lifeos_hook_bridge/memory_sources.py
+@@ -1,6 +1,7 @@
+ # ABOUTME: Governs retained native source reads before startup summaries reach a model.
+ # ABOUTME: Excludes restricted, invalid, forgotten, and superseded source text without copying files.
+ from datetime import datetime, timezone
++from contextlib import nullcontext
+ import json
+ from pathlib import Path
+ import re
+@@ -11,6 +12,7 @@ from .memory_policy import CATEGORIES, MemoryScope
+ 
+ 
+ PREFIXES = ('LIFEOS/MEMORY/LEARNING/', 'LIFEOS/MEMORY/WISDOM/FRAMES/',
++            'LIFEOS/MEMORY/WISDOM/PRINCIPLES/', 'LIFEOS/MEMORY/WISDOM/META/', 'LIFEOS/MEMORY/RESEARCH/',
+             'LIFEOS/MEMORY/RELATIONSHIP/', 'LIFEOS/MEMORY/WORK/', 'LIFEOS/MEMORY/STATE/progress/')
+ FILES = {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
+          'LIFEOS/MEMORY/STATE/events.jsonl'}
+@@ -20,6 +22,11 @@ CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
+ CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+                  'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
+                  'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'LIFEOS/USER/PROJECTS.md'}
++SYSTEM_PREFIXES = ('LIFEOS/DOCUMENTATION/', 'LIFEOS/ALGORITHM/')
++SYSTEM_FILES = {'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'}
++SOURCE_LIMIT = 256 * 1024
++CORPUS_LIMIT = 3 * 1024 * 1024
++SOURCE_COUNT_LIMIT = 2048
+ 
+ 
+ def authorize(scope: MemoryScope) -> dict[str, Any]:
+@@ -34,6 +41,9 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
+     if not isinstance(path,str):
+         raise MemoryUnavailable('A supported native source path is required')
+     relative = Path(path).relative_to(memory.root).as_posix()
++    if '..' in Path(relative).parts:
++        raise MemoryUnavailable('The native source cannot leave its installed root')
++    system = relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
+     if diagnostic:
+         from .memory_diagnostics import DIAGNOSTIC_FILES, DIAGNOSTIC_DIRECTORIES
+         directory = not require_file and relative in DIAGNOSTIC_DIRECTORIES
+@@ -42,11 +52,12 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
+         permitted = relative in DIAGNOSTIC_FILES or directory or report
+     else:
+         directory = False
+-        permitted = relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES or relative.startswith(PREFIXES)
++        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES
++                     or relative.startswith(PREFIXES) or system)
+     if not permitted:
+         raise MemoryUnavailable('This is not a supported native history or context source')
+-    source = memory._path(relative)
+-    physical = memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
++    source = memory.root / relative if system else memory._path(relative)
++    physical = source.absolute() if system else memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
+         'LIFEOS/USER' if relative in CACHE_FILES | CONTEXT_FILES else 'LIFEOS')
+     if (source.resolve() != physical.absolute() or (require_file and not source.is_file())
+             or (not require_file and source.exists() and not (source.is_dir() if directory else source.is_file()))):
+@@ -54,6 +65,52 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
+     return source, relative
+ 
+ 
++def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
++    authorize(scope)
++    if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
++        raise MemoryUnavailable('The declared native sources exceed their count limit or repeat a path')
++    with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
++        sources = []
++        total = 0
++        for path in paths:
++            source, relative = _source_path(memory, scope, path)
++            if source.suffix != '.md':
++                raise MemoryUnavailable('The declared wiki source must be native Markdown')
++            before = source.stat()
++            if before.st_size > SOURCE_LIMIT:
++                raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
++            try:
++                content = source.read_text(encoding='utf-8')
++            except UnicodeError as error:
++                raise MemoryUnavailable('The native wiki source is not valid UTF-8') from error
++            after = source.stat()
++            if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
++                    != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
++                raise MemoryUnavailable('The native wiki source changed during collection')
++            _source_path(memory, scope, path)
++            size = len(content.encode())
++            if size > SOURCE_LIMIT:
++                raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
++            total += size
++            if total > CORPUS_LIMIT:
++                raise MemoryUnavailable('The declared native wiki sources exceed their transport limit')
++            timestamp = datetime.fromtimestamp(after.st_mtime, timezone.utc).isoformat()
++            sources.append({'path': path, 'relative': relative, 'content': content, 'lastModified': timestamp})
++        if not sources:
++            return []
++        checked = memory._native('validate_source_batch', contents=[source['content'] for source in sources])['accepted']
++        admitted = []
++        for source, accepted in zip(sources, checked, strict=True):
++            if accepted is not True:
++                continue
++            relative = source['relative']
++            labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
++            if not memory._filter_history(connection, scope,
++                    '\n'.join((source['content'], relative, labels)), source['lastModified'])['excluded']:
++                admitted.append(source)
++        return admitted
++
++
+ def check(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
+     with memory._transaction():
+         _source_path(memory,scope,path)
+diff --git a/lifeos_hook_bridge/memory_wiki.py b/lifeos_hook_bridge/memory_wiki.py
+index 4dfb782..edc2685 100644
+--- a/lifeos_hook_bridge/memory_wiki.py
++++ b/lifeos_hook_bridge/memory_wiki.py
+@@ -1,4 +1,4 @@
+-# ABOUTME: Selects current registered native notes for authenticated wiki read views.
++# ABOUTME: Selects current native notes, retained silos, and documentation for authenticated wiki views.
+ # ABOUTME: Validates fixed routes and renders each request in an isolated native worker.
+ from datetime import datetime, timezone
+ import json
+@@ -8,10 +8,81 @@ from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit
+ 
+ from .memory_access import MemoryUnavailable
+ from .memory_canonical import corpus, RESPONSE_LIMIT
++from .memory_sources import read_markdown, SOURCE_COUNT_LIMIT
+ 
+ DOMAINS = {'People': 'person', 'Companies': 'company', 'Ideas': 'idea',
+            'Blogs': 'blog', 'Books': 'book', 'Research': 'research'}
+ 
++
++def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True) -> list[Path]:
++    if directory.is_symlink():
++        raise MemoryUnavailable('The wiki directory changes its permitted physical path')
++    if not directory.exists():
++        return []
++    result = []
++    pending = [directory]
++    visited = 0
++    while pending:
++        parent = pending.pop()
++        for path in sorted(parent.iterdir()):
++            if path.name.startswith('.') or (hide_metadata and path.name.startswith('_')):
++                continue
++            visited += 1
++            if visited > SOURCE_COUNT_LIMIT:
++                raise MemoryUnavailable('The wiki directory exceeds its source count limit')
++            if path.is_symlink():
++                raise MemoryUnavailable('The wiki source changes its permitted physical path')
++            if path.is_dir() and recursive:
++                pending.append(path)
++            elif path.is_file() and path.suffix == '.md':
++                result.append(path)
++    return sorted(result)
++
++
++def _retained_sources(memory, scope, connection) -> list[dict]:
++    root = memory.root / 'LIFEOS'
++    selected = {}
++
++    def add(path, category, slug, group=None):
++        selected[str(path)] = {'category': category, 'slug': slug, **({'group': group} if group else {})}
++        if len(selected) > SOURCE_COUNT_LIMIT:
++            raise MemoryUnavailable('The wiki corpus exceeds its source count limit')
++
++    prompt = root / 'LIFEOS_SYSTEM_PROMPT.md'
++    if prompt.exists() or prompt.is_symlink():
++        add(prompt, 'system-doc', 'LIFEOS_SYSTEM_PROMPT', 'Overview')
++    documentation = root / 'DOCUMENTATION'
++    for path in _files(documentation):
++        relative = path.relative_to(documentation)
++        group = 'Overview' if len(relative.parts) == 1 else path.parent.name
++        add(path, 'system-doc', path.stem if len(relative.parts) == 1 else group + '__' + path.stem, group)
++    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False):
++        add(path, 'system-doc', 'Algorithm__' + path.stem, 'Algorithm')
++    work = root / 'MEMORY/WORK'
++    if work.is_symlink():
++        raise MemoryUnavailable('The wiki work directory changes its permitted physical path')
++    if work.exists():
++        for directory in sorted(work.iterdir()):
++            if directory.name.startswith(('.', '_')):
++                continue
++            if directory.is_symlink():
++                raise MemoryUnavailable('The wiki work source changes its permitted physical path')
++            path = directory / 'ISA.md'
++            if directory.is_dir() and (path.exists() or path.is_symlink()):
++                add(path, 'isa', directory.name)
++    for silo, subdirectories, category in (('LEARNING', ('SYSTEM', 'ALGORITHM', 'SYNTHESIS'), 'lesson'),
++            ('WISDOM', ('FRAMES', 'PRINCIPLES', 'META'), 'wisdom')):
++        for sub in subdirectories:
++            directory = root / 'MEMORY' / silo / sub
++            for path in _files(directory):
++                slug = sub + '--' + path.relative_to(directory).with_suffix('').as_posix().replace('/', '--')
++                add(path, category, slug, sub.capitalize())
++    directory = root / 'MEMORY/RESEARCH'
++    for path in _files(directory):
++        add(path, 'research', path.relative_to(directory).with_suffix('').as_posix().replace('/', '--'))
++    return [{key: source[key] for key in ('path', 'content', 'lastModified')} | selected[source['path']]
++            for source in read_markdown(memory, scope, list(selected), connection=connection)]
++
+ def request_target(value: object) -> str:
+     if not isinstance(value, str) or len(value) > 8192 or any(ord(char) < 32 for char in value):
+         raise ValueError('Choose a fixed wiki read route')
+@@ -51,7 +122,7 @@ def view(memory, scope, target: str) -> dict:
+     physical = memory.root.parent / '.config/LIFEOS/USER/MEMORY'
+     with memory._transaction() as connection:
+         current = corpus(memory, scope, str(physical), connection=connection)
+-        sources = []
++        sources = _retained_sources(memory, scope, connection)
+         for record in current['records']:
+             relative = Path(record['provenance']['path'])
+             if len(relative.parts) != 3 or relative.parts[0] != 'KNOWLEDGE' or relative.parts[1] not in DOMAINS:
+diff --git a/patches/lifeos-memory-access.patch b/patches/lifeos-memory-access.patch
+index efee25e..becb026 100644
+--- a/patches/lifeos-memory-access.patch
++++ b/patches/lifeos-memory-access.patch
+@@ -1,3 +1,141 @@
++diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
++index 787cf28..0938faf 100644
++--- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
+++++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
++@@ -1,3 +1,5 @@
+++// ABOUTME: Serves native LifeOS operational views and declared current Knowledge pages.
+++// ABOUTME: Delegates managed Knowledge requests to authenticated memory admission.
++ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
++ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
++ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
++@@ -36,6 +38,7 @@ import YAML from "yaml"
++ import { PULSE_BASE } from "../endpoint"
++ import { RUN_ACTIVITY } from "../../TOOLS/ascent"
++ import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
+++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess"
++ 
++ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
++ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
++@@ -1535,9 +1538,9 @@ function handleMemoryGraphApi(): Response {
++   }
++ }
++ 
++-function handleKnowledgeApi(): Response {
+++function handleKnowledgeApi(declared?: ReadonlyMap<string, string>): Response {
++   try {
++-    if (!existsSync(KNOWLEDGE_DIR)) {
+++    if (declared === undefined && !existsSync(KNOWLEDGE_DIR)) {
++       return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })
++     }
++ 
++@@ -1548,7 +1551,7 @@ function handleKnowledgeApi(): Response {
++ 
++     // Parse master _index.md for last harvest date
++     const masterIndexPath = join(KNOWLEDGE_DIR, "_index.md")
++-    if (existsSync(masterIndexPath)) {
+++    if (declared === undefined && existsSync(masterIndexPath)) {
++       const content = readFileSync(masterIndexPath, "utf-8")
++       const harvestMatch = content.match(/\*\*Last harvest:\*\*\s*(\S+)/)
++       if (harvestMatch) lastHarvest = harvestMatch[1]
++@@ -1556,14 +1559,17 @@ function handleKnowledgeApi(): Response {
++ 
++     for (const domain of KNOWLEDGE_DOMAINS) {
++       const domainDir = join(KNOWLEDGE_DIR, domain)
++-      if (!existsSync(domainDir)) {
+++      if (declared === undefined && !existsSync(domainDir)) {
++         domains.push({ name: domain, count: 0, avgQuality: 0, lowCount: 0, midCount: 0, highCount: 0 })
++         continue
++       }
++ 
++       let files: string[]
++       try {
++-        files = readdirSync(domainDir).filter(f => f.endsWith(".md") && !f.startsWith("_"))
+++        files = declared === undefined
+++          ? readdirSync(domainDir).filter(f => f.endsWith(".md") && !f.startsWith("_"))
+++          : [...declared.keys()].filter(path => path.startsWith(domainDir + "/"))
+++              .map(path => path.slice(domainDir.length + 1))
++       } catch {
++         files = []
++       }
++@@ -1573,7 +1579,8 @@ function handleKnowledgeApi(): Response {
++       for (const file of files) {
++         const filePath = join(domainDir, file)
++         try {
++-          const raw = readFileSync(filePath, "utf-8")
+++          const raw = declared === undefined ? readFileSync(filePath, "utf-8") : declared.get(filePath)
+++          if (raw === undefined) throw new Error("The declared Knowledge note is unavailable")
++           const fm = parseFrontmatter(raw)
++ 
++           const title = (fm.title as string) || file.replace(/\.md$/, "")
++@@ -1656,13 +1663,14 @@ function capitalizeFirst(s: string): string {
++   return s.charAt(0).toUpperCase() + s.slice(1)
++ }
++ 
++-function handleGetKnowledgeNote(domain: string, slug: string): Response {
+++function handleGetKnowledgeNote(domain: string, slug: string, declared?: ReadonlyMap<string, string>): Response {
++   const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
++-  if (!existsSync(filePath)) {
+++  if (declared === undefined ? !existsSync(filePath) : !declared.has(filePath)) {
++     return Response.json({ error: "Note not found" }, { status: 404 })
++   }
++   try {
++-    const content = readFileSync(filePath, "utf-8")
+++    const content = declared === undefined ? readFileSync(filePath, "utf-8") : declared.get(filePath)
+++    if (content === undefined) throw new Error("The declared Knowledge note is unavailable")
++     const fm = parseFrontmatter(content)
++     return Response.json({
++       domain,
++@@ -1680,6 +1688,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
++   }
++ }
++ 
+++export function renderKnowledgeView(sources: ReadonlyArray<{path: string; content: string}>, pathname: string): Response {
+++  const declared = new Map<string, string>()
+++  for (const source of sources) {
+++    const relative = source.path.startsWith(KNOWLEDGE_DIR + "/") ? source.path.slice(KNOWLEDGE_DIR.length + 1) : ""
+++    const parts = relative.split("/")
+++    if (parts.length !== 2 || !KNOWLEDGE_DOMAINS.includes(parts[0]) || !parts[1].endsWith(".md")
+++        || parts[1].startsWith(".") || parts[1].startsWith("_") || declared.has(source.path)) {
+++      throw new Error("The declared Knowledge sources require valid unique native paths")
+++    }
+++    declared.set(source.path, source.content)
+++  }
+++  if (pathname === "/api/knowledge") return handleKnowledgeApi(declared)
+++  const note = parseKnowledgeNotePath(pathname)
+++  if (note) return handleGetKnowledgeNote(note.domain, note.slug, declared)
+++  return Response.json({error: "This is not a declared Knowledge read view"}, {status: 404})
+++}
+++
++ async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
++   const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
++   if (!existsSync(filePath)) {
++@@ -4531,6 +4556,26 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
++   const pathname = url.pathname
++   const method = req.method
++ 
+++  if (hasManagedMemoryHTTP() && (pathname === "/api/knowledge" || pathname.startsWith("/api/knowledge/")
+++      || pathname === "/api/memory/graph")) {
+++    const headers = {"cache-control": "no-store"}
+++    if (pathname === "/api/memory/graph") {
+++      return Response.json({error: "The managed graph cache is not a governed read view"}, {status: 404, headers})
+++    }
+++    if (method !== "GET") {
+++      return Response.json({error: "Knowledge edits require reviewed current references"}, {status: 405, headers})
+++    }
+++    const origin = req.headers.get("origin")
+++    if (origin && origin !== url.origin) {
+++      return Response.json({error: "Knowledge reads require a same-origin request"}, {status: 403, headers})
+++    }
+++    try {
+++      return memoryHTTPResponse(req, "knowledge", pathname + url.search)
+++    } catch {
+++      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers})
+++    }
+++  }
+++
++   // ── PUT routes ──
++ 
++   if (method === "PUT") {
+ diff --git a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
+ index a65dfb3..0a7f66c 100644
+ --- a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts

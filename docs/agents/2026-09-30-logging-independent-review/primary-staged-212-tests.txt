@@ -1,0 +1,220 @@
+test_artifacts_are_complete_private_and_credentials_are_removed (test_capture.EvidenceTests.test_artifacts_are_complete_private_and_credentials_are_removed) ... ok
+test_credential_fields_inside_json_stdin_and_stdout_are_redacted (test_capture.EvidenceTests.test_credential_fields_inside_json_stdin_and_stdout_are_redacted) ... ok
+test_encoded_transport_credentials_are_removed_before_storage (test_capture.EvidenceTests.test_encoded_transport_credentials_are_removed_before_storage) ... ok
+test_failed_hook_is_reported_as_failure_not_successful_execution (test_capture.EvidenceTests.test_failed_hook_is_reported_as_failure_not_successful_execution) ... ERROR
+test_host_identity_retains_native_agent_turn (test_capture.EvidenceTests.test_host_identity_retains_native_agent_turn) ... FAIL
+test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) ... 
+  test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'headers': {'X-API-Key': 'SYNTHETIC-HTTP-CREDENTIAL-928374'}}) ... FAIL
+  test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'url': 'https://operator:SYNTHETIC-HTTP-CREDENTIAL-928374@example.invalid/route?ordinary=yes'}) ... FAIL
+  test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'url': 'https://example.invalid/route?ordinary=yes&access_token=SYNTHETIC-HTTP-CREDENTIAL-928374'}) ... FAIL
+  test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'url': 'https://example.invalid/route#access_token=SYNTHETIC-HTTP-CREDENTIAL-928374'}) ... FAIL
+test_index_handles_a_partial_tail_and_reports_missing_completion (test_capture.EvidenceTests.test_index_handles_a_partial_tail_and_reports_missing_completion) ... ok
+test_index_reports_malformed_records_and_corrupt_compressed_artifacts (test_capture.EvidenceTests.test_index_reports_malformed_records_and_corrupt_compressed_artifacts) ... ERROR
+test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) ... 
+  test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) (kind='str') ... FAIL
+  test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) (kind='Result') ... FAIL
+  test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) (kind='CompletedProcess') ... FAIL
+test_summary_reports_known_capture_loss_and_instrumentation_gaps (test_capture.EvidenceTests.test_summary_reports_known_capture_loss_and_instrumentation_gaps) ... ERROR
+test_a_real_storage_failure_does_not_change_the_hook_decision (test_capture.OverlayTests.test_a_real_storage_failure_does_not_change_the_hook_decision) ... FAIL
+test_detached_runner_survives_parent_and_captures_discarded_large_streams (test_capture.OverlayTests.test_detached_runner_survives_parent_and_captures_discarded_large_streams) ... ERROR
+test_duplicate_commands_and_skips_have_exact_distinct_identities (test_capture.OverlayTests.test_duplicate_commands_and_skips_have_exact_distinct_identities) ... FAIL
+test_http_observes_the_same_read_limit_without_draining_the_response (test_capture.OverlayTests.test_http_observes_the_same_read_limit_without_draining_the_response) ... ok
+test_identical_hooks_at_distinct_settings_origins_have_distinct_registration_ids (test_capture.OverlayTests.test_identical_hooks_at_distinct_settings_origins_have_distinct_registration_ids) ... FAIL
+test_large_stdout_stderr_and_timeout_evidence_precede_conversion (test_capture.OverlayTests.test_large_stdout_stderr_and_timeout_evidence_precede_conversion) ... ERROR
+test_malformed_specific_output_does_not_change_native_behavior (test_capture.OverlayTests.test_malformed_specific_output_does_not_change_native_behavior) ... FAIL
+test_real_hook_credential_echo_is_filtered_before_every_result_artifact (test_capture.OverlayTests.test_real_hook_credential_echo_is_filtered_before_every_result_artifact) ... FAIL
+test_real_http_url_headers_and_response_credentials_are_filtered (test_capture.OverlayTests.test_real_http_url_headers_and_response_credentials_are_filtered) ... FAIL
+test_recorder_source_drift_is_reported_without_changing_native_result (test_capture.OverlayTests.test_recorder_source_drift_is_reported_without_changing_native_result) ... FAIL
+test_thread_pool_retains_only_the_capture_context (test_capture.OverlayTests.test_thread_pool_retains_only_the_capture_context) ... ok
+
+======================================================================
+ERROR: test_failed_hook_is_reported_as_failure_not_successful_execution (test_capture.EvidenceTests.test_failed_hook_is_reported_as_failure_not_successful_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 119, in test_failed_hook_is_reported_as_failure_not_successful_execution
+    self.assertEqual(hook["terminal_outcomes"], 1)
+                     ~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'terminal_outcomes'
+
+======================================================================
+ERROR: test_index_reports_malformed_records_and_corrupt_compressed_artifacts (test_capture.EvidenceTests.test_index_reports_malformed_records_and_corrupt_compressed_artifacts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 106, in test_index_reports_malformed_records_and_corrupt_compressed_artifacts
+    report = summary(rebuild(root))
+                     ~~~~~~~^^^^^^
+  File "/home/lifeos-hermes/workspace/development-hook-capture/development/hook_capture/analysis.py", line 52, in rebuild
+    raw = gzip.decompress(artifact.read_bytes())
+  File "/home/lifeos-hermes/.hermes/tools/python-3.14.7+20260901-linux-x64/lib/python3.14/gzip.py", line 655, in decompress
+    decompressed = do.decompress(data[fp.tell():])
+zlib.error: Error -3 while decompressing data: invalid block type
+
+======================================================================
+ERROR: test_summary_reports_known_capture_loss_and_instrumentation_gaps (test_capture.EvidenceTests.test_summary_reports_known_capture_loss_and_instrumentation_gaps)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 86, in test_summary_reports_known_capture_loss_and_instrumentation_gaps
+    self.assertEqual(report["known_lost_events"], 3)
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'known_lost_events'
+
+======================================================================
+ERROR: test_detached_runner_survives_parent_and_captures_discarded_large_streams (test_capture.OverlayTests.test_detached_runner_survives_parent_and_captures_discarded_large_streams)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 441, in test_detached_runner_survives_parent_and_captures_discarded_large_streams
+    done = next(e for e in events if e["stage"] == "hook.completed")
+StopIteration
+
+======================================================================
+ERROR: test_large_stdout_stderr_and_timeout_evidence_precede_conversion (test_capture.OverlayTests.test_large_stdout_stderr_and_timeout_evidence_precede_conversion)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 285, in test_large_stdout_stderr_and_timeout_evidence_precede_conversion
+    completion = next(e for e in events if e["stage"] == "hook.completed")
+StopIteration
+
+======================================================================
+FAIL: test_host_identity_retains_native_agent_turn (test_capture.EvidenceTests.test_host_identity_retains_native_agent_turn)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 128, in test_host_identity_retains_native_agent_turn
+    self.assertEqual(identity({"agent": Agent()}), {"session_id": "native-session", "turn_id": "native-turn"})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'session_id': 'native-session'} != {'session_id': 'native-session', 'turn_id': 'native-turn'}
+- {'session_id': 'native-session'}
++ {'session_id': 'native-session', 'turn_id': 'native-turn'}
+
+======================================================================
+FAIL: test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'headers': {'X-API-Key': 'SYNTHETIC-HTTP-CREDENTIAL-928374'}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 40, in test_http_credentials_are_redacted_and_echoed_values_are_learned
+    self.assertNotIn(secret, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-HTTP-CREDENTIAL-928374' unexpectedly found in '{"headers":{"X-API-Key":"SYNTHETIC-HTTP-CREDENTIAL-928374"},"prompt":"keep this ordinary prompt","stdout":"SYNTHETIC-HTTP-CREDENTIAL-928374"}'
+
+======================================================================
+FAIL: test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'url': 'https://operator:SYNTHETIC-HTTP-CREDENTIAL-928374@example.invalid/route?ordinary=yes'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 40, in test_http_credentials_are_redacted_and_echoed_values_are_learned
+    self.assertNotIn(secret, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-HTTP-CREDENTIAL-928374' unexpectedly found in '{"prompt":"keep this ordinary prompt","stdout":"SYNTHETIC-HTTP-CREDENTIAL-928374","url":"https://operator:SYNTHETIC-HTTP-CREDENTIAL-928374@example.invalid/route?ordinary=yes"}'
+
+======================================================================
+FAIL: test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'url': 'https://example.invalid/route?ordinary=yes&access_token=SYNTHETIC-HTTP-CREDENTIAL-928374'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 40, in test_http_credentials_are_redacted_and_echoed_values_are_learned
+    self.assertNotIn(secret, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-HTTP-CREDENTIAL-928374' unexpectedly found in '{"prompt":"keep this ordinary prompt","stdout":"SYNTHETIC-HTTP-CREDENTIAL-928374","url":"https://example.invalid/route?ordinary=yes&access_token=SYNTHETIC-HTTP-CREDENTIAL-928374"}'
+
+======================================================================
+FAIL: test_http_credentials_are_redacted_and_echoed_values_are_learned (test_capture.EvidenceTests.test_http_credentials_are_redacted_and_echoed_values_are_learned) (declared={'url': 'https://example.invalid/route#access_token=SYNTHETIC-HTTP-CREDENTIAL-928374'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 40, in test_http_credentials_are_redacted_and_echoed_values_are_learned
+    self.assertNotIn(secret, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-HTTP-CREDENTIAL-928374' unexpectedly found in '{"prompt":"keep this ordinary prompt","stdout":"SYNTHETIC-HTTP-CREDENTIAL-928374","url":"https://example.invalid/route#access_token=SYNTHETIC-HTTP-CREDENTIAL-928374"}'
+
+======================================================================
+FAIL: test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) (kind='str')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 58, in test_json_text_and_dataclasses_declare_credentials_before_echo_redaction
+    self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-DECLARED-CREDENTIAL-382719' unexpectedly found in '{"input":"{\\"api_key\\":\\"[REDACTED]\\",\\"stdout\\":\\"SYNTHETIC-DECLARED-CREDENTIAL-382719\\"}","stdout":"SYNTHETIC-DECLARED-CREDENTIAL-382719"}'
+
+======================================================================
+FAIL: test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) (kind='Result')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 58, in test_json_text_and_dataclasses_declare_credentials_before_echo_redaction
+    self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-DECLARED-CREDENTIAL-382719' unexpectedly found in '{"input":{"api_key":"[REDACTED]","stdout":"SYNTHETIC-DECLARED-CREDENTIAL-382719"},"stdout":"SYNTHETIC-DECLARED-CREDENTIAL-382719"}'
+
+======================================================================
+FAIL: test_json_text_and_dataclasses_declare_credentials_before_echo_redaction (test_capture.EvidenceTests.test_json_text_and_dataclasses_declare_credentials_before_echo_redaction) (kind='CompletedProcess')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 58, in test_json_text_and_dataclasses_declare_credentials_before_echo_redaction
+    self.assertNotIn(secret, gzip.decompress((root / ref["path"]).read_bytes()).decode())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-DECLARED-CREDENTIAL-382719' unexpectedly found in '{"input":{"args":["true"],"returncode":0,"stderr":"SYNTHETIC-DECLARED-CREDENTIAL-382719","stdout":"{\\"api_key\\":\\"[REDACTED]\\",\\"echo\\":\\"SYNTHETIC-DECLARED-CREDENTIAL-382719\\"}"},"stdout":"SYNTHETIC-DECLARED-CREDENTIAL-382719"}'
+
+======================================================================
+FAIL: test_a_real_storage_failure_does_not_change_the_hook_decision (test_capture.OverlayTests.test_a_real_storage_failure_does_not_change_the_hook_decision)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 382, in test_a_real_storage_failure_does_not_change_the_hook_decision
+    self.assertIn("CANARY-BLOCK", result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'CANARY-BLOCK' not found in 'OUTCOME:null\n'
+
+======================================================================
+FAIL: test_duplicate_commands_and_skips_have_exact_distinct_identities (test_capture.OverlayTests.test_duplicate_commands_and_skips_have_exact_distinct_identities)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 273, in test_duplicate_commands_and_skips_have_exact_distinct_identities
+    self.assertEqual(len(completed), 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_identical_hooks_at_distinct_settings_origins_have_distinct_registration_ids (test_capture.OverlayTests.test_identical_hooks_at_distinct_settings_origins_have_distinct_registration_ids)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 258, in test_identical_hooks_at_distinct_settings_origins_have_distinct_registration_ids
+    self.assertEqual(len(completed), 2)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 2
+
+======================================================================
+FAIL: test_malformed_specific_output_does_not_change_native_behavior (test_capture.OverlayTests.test_malformed_specific_output_does_not_change_native_behavior)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 390, in test_malformed_specific_output_does_not_change_native_behavior
+    self.assertTrue(any(e["stage"] == "response.parsed.returned" for e in events))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+======================================================================
+FAIL: test_real_hook_credential_echo_is_filtered_before_every_result_artifact (test_capture.OverlayTests.test_real_hook_credential_echo_is_filtered_before_every_result_artifact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 318, in test_real_hook_credential_echo_is_filtered_before_every_result_artifact
+    self.assertEqual(inspected, stages)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the second set but not the first:
+'process.completed'
+'hook.completed'
+'response.parsed.entered'
+
+======================================================================
+FAIL: test_real_http_url_headers_and_response_credentials_are_filtered (test_capture.OverlayTests.test_real_http_url_headers_and_response_credentials_are_filtered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 346, in test_real_http_url_headers_and_response_credentials_are_filtered
+    self.assertNotIn(query_secret, raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-QUERY-CREDENTIAL-928374' unexpectedly found in '{"event":"PreToolUse","groups":[{"hooks":[{"type":"http","url":"http://127.0.0.1:34331/?access_token=SYNTHETIC-QUERY-CREDENTIAL-928374"}]}],"registrations":[{"asynchronous":false,"group_index":0,"hook":{"type":"http","url":"http://127.0.0.1:34331/?access_token=SYNTHETIC-QUERY-CREDENTIAL-928374"},"hook_index":0,"hook_kind":"http","inventory_id":"b4d4deef96932e04c234975b359a9942258a0d3eb8c97b95dab663030f5e5234","matcher":"","native_event":"PreToolUse","origin_observed":true,"registration_id":"b4d4deef96932e04c234975b359a9942258a0d3eb8c97b95dab663030f5e5234:PreToolUse:0:0","settings_origin":"/tmp/tmp899nshdp/settings.json","target_kind":"local"}]}'
+
+======================================================================
+FAIL: test_recorder_source_drift_is_reported_without_changing_native_result (test_capture.OverlayTests.test_recorder_source_drift_is_reported_without_changing_native_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/workspace/development-hook-capture/.staging-12042c9/development/tests/test_capture.py", line 241, in test_recorder_source_drift_is_reported_without_changing_native_result
+    self.assertTrue(any(e.get("status") == "capture_gap" for e in events))
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 21 tests in 8.571s
+
+FAILED (failures=15, errors=5)

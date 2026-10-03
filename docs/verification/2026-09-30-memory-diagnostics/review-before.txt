@@ -1,0 +1,36 @@
+test_long_genuine_native_proposal_keeps_its_display_sample_and_id (test_memory_diagnostics.MemoryDiagnosticTests.test_long_genuine_native_proposal_keeps_its_display_sample_and_id) ... FAIL
+test_genuine_escaped_proposal_history_fits_actual_connector_response (test_memory_diagnostics.MemoryDiagnosticTests.test_genuine_escaped_proposal_history_fits_actual_connector_response) ... FAIL
+test_extreme_number_is_omitted_without_crashing_current_run (test_memory_diagnostics.MemoryDiagnosticTests.test_extreme_number_is_omitted_without_crashing_current_run) ... ERROR
+test_retired_claim_after_display_prefix_still_excludes_whole_sample (test_memory_diagnostics.MemoryDiagnosticTests.test_retired_claim_after_display_prefix_still_excludes_whole_sample) ... ok
+
+======================================================================
+ERROR: test_extreme_number_is_omitted_without_crashing_current_run (test_memory_diagnostics.MemoryDiagnosticTests.test_extreme_number_is_omitted_without_crashing_current_run)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 240, in test_extreme_number_is_omitted_without_crashing_current_run
+    self.assertNotIn('duration_ms', result['last_reviewer_run'])
+                                    ~~~~~~^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'last_reviewer_run'
+
+======================================================================
+FAIL: test_long_genuine_native_proposal_keeps_its_display_sample_and_id (test_memory_diagnostics.MemoryDiagnosticTests.test_long_genuine_native_proposal_keeps_its_display_sample_and_id)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 223, in test_long_genuine_native_proposal_keeps_its_display_sample_and_id
+    self.assertIn('Synthetic long authorized proposal marker.', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic long authorized proposal marker.' not found in 'memory insights — last 1 day(s)\n════════════════════════════════════════════════════════════\nwindow: 2026-09-30 03:02 → 2026-10-01 03:02\n\nMemory growth:\n  PRINCIPAL_MEMORY.md   +0 entries (mtime: 2026-10-01 03:02)\n  DA_MEMORY.md          +0 entries (mtime: 2026-10-01 03:02)\n\nKnowledge / Ideas:\n  knowledge notes added  0\n  idea notes added       0\n\nProposals (1 total in window):\n  pending        1\n\n  Recent samples:\n    • ? — \n\nReviewer runs (0 total):\n  succeeded   0\n  failed      0\n\nHealth:\n  (no health snapshot in window)\n\nVerdict: stale\n'
+
+======================================================================
+FAIL: test_genuine_escaped_proposal_history_fits_actual_connector_response (test_memory_diagnostics.MemoryDiagnosticTests.test_genuine_escaped_proposal_history_fits_actual_connector_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_diagnostics.py", line 232, in test_genuine_escaped_proposal_history_fits_actual_connector_response
+    self.assertLess(len((json.dumps(result) + '\n').encode()), 4 * 1024 * 1024)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 4663295 not less than 4194304
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.996s
+
+FAILED (failures=2, errors=1)

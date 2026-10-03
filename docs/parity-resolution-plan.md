@@ -15,6 +15,8 @@ The current registration inventory is 74 hooks across 11 Claude Code events. A r
 
 ## Immediate work order
 
+The [installation, trial, and removal requirements](memory-implementation-plan.md#installation-trial-and-removal-requirements) extend the product release plan. A fresh installation remains the first acceptance target. Existing-user support also requires reviewed import, verified profile isolation, and a reversible return to Hermes. Complete the active memory foundation before those transitions. Do not claim established-installation support from fresh-install evidence.
+
 1. Capture the current registration inventory and make missing or changed registrations fail a check.
 2. Run native probes for `PreToolUse` ask and SessionStart and SessionEnd matchers. Reproduce the current Hermes outcomes with real child hooks.
 3. Implement the smallest bridge changes that satisfy those probes. Keep Hermes denial precedence and approval identity stable.
@@ -48,9 +50,11 @@ The [2026-09-29 release gate](../notes/2026-09-29-release-gate.md) is blocked by
 
 ## Follow-up after plugin completion: memory integration
 
-Start this review after the six-phase completion gate passes. It does not change the hook parity gate or authorize a memory migration.
+Adrian now authorizes implementation of the [accepted memory design](../notes/2026-09-30-memory-design.md). The [implementation plan](memory-implementation-plan.md) records progress and activation gates. This work does not change the hook parity gate or authorize copying existing memory.
+
+Build for a fresh, self-contained Hermes, plugin, and LifeOS installation. LifeOS owns durable facts and preferences; Hermes retains its memory manager, session history, and context compression. Optional MCP access shares this installation's memory with authorized agents. The existing `.211` and `.213` systems remain unchanged and are not dependencies.
 
 1. Map the active data flows for Hermes `MEMORY.md` and `USER.md`, Hermes session search, LifeOS Cortex hot memory and retrieval hooks, the LifeOS reviewer, and any LifeOS snapshot mounted into `SOUL.md`. Identify duplicate writes, duplicate retrieval, and stale context with measured examples.
-2. Compare keeping both stores with making Cortex the canonical store for LifeOS-backed Hermes. If a shared store is preferable, design governed read and write tools or a memory provider. Specify how Hermes's built-in memory settings, LifeOS hooks, and reviewer jobs would interact.
-3. Test the chosen design in disposable profiles across turns, restarts, concurrent Claude Code and Hermes sessions, and rollback. Include an SSH or remote adapter only if the deployment needs to share memory across hosts. Check what memory can appear in Discord replies.
-4. Record the decision, evidence, migration plan if needed, and a recovery path before changing any existing memory files or production settings.
+2. Implement governed LifeOS access through a Hermes memory provider and optional MCP service. Preserve native memory hooks, define one automatic recall owner, and coordinate reviewer jobs. Verify corrections, forgetting, and independent skill learning before disabling built-in durable writes in a test profile.
+3. Test the chosen design in disposable profiles across turns, restarts, concurrent Claude Code and Hermes sessions, and rollback. Include an SSH or remote adapter only if the deployment needs to share memory across hosts. Apply the same identity, audience, and destination policy to every connected messaging app. Verify memory exposure before model input and before delivery.
+4. Add understandable preferences and test a clean installation, updates, and configuration rollback. Record evidence and a recovery path before enabling the new default. Importing existing Hermes memory is a separate, optional feature; preserve existing files until a reviewed migration is verified.

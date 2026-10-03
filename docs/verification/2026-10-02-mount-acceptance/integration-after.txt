@@ -1,0 +1,43 @@
+======================================================================
+ERROR: test_failed_mount_restores_hermes_files (test_lifeos_install_source.InstallSourceTests.test_failed_mount_restores_hermes_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_lifeos_install_source.py", line 225, in test_failed_mount_restores_hermes_files
+    finalize_lifeos(candidate, installed, hermes_home, baseline,
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    str(bun), str(hermes), revision, patches,
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    ("lifeos-test.patch",), create_baseline, save_baseline)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 322, in finalize_lifeos
+    baseline = create_baseline(candidate / "LifeOS/install", installed)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/version_drift.py", line 113, in create_baseline
+    raise ValueError("No tracked LifeOS system files are installed")
+ValueError: No tracked LifeOS system files are installed
+
+======================================================================
+ERROR: test_finalization_mounts_and_records_installed_system_files (test_lifeos_install_source.InstallSourceTests.test_finalization_mounts_and_records_installed_system_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 328, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 260, in execute
+    raise MountError('The installed native mount does not support prepared output')
+lifeos_hook_bridge.mount_transaction.MountError: The installed native mount does not support prepared output
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_lifeos_install_source.py", line 193, in test_finalization_mounts_and_records_installed_system_files
+    result = finalize_lifeos(candidate, installed, hermes_home, baseline,
+                             str(bun), str(hermes), revision, patches,
+                             ("lifeos-test.patch",), create_baseline, save_baseline)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 331, in finalize_lifeos
+    raise IncompatibleLifeOS(str(error)) from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: The installed native mount does not support prepared output
+
+----------------------------------------------------------------------
+Ran 36 tests in 38.644s
+
+FAILED (errors=2)

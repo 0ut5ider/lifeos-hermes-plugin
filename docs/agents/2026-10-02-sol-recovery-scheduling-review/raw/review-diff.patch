@@ -1,0 +1,72 @@
+diff --git a/lifeos_hook_bridge/dashboard/plugin_api.py b/lifeos_hook_bridge/dashboard/plugin_api.py
+index df3a726..0b4a9a2 100644
+--- a/lifeos_hook_bridge/dashboard/plugin_api.py
++++ b/lifeos_hook_bridge/dashboard/plugin_api.py
+@@ -595,6 +595,10 @@ def apply_lifeos_update(account: str = Depends(_memory_account)):
+ @router.post("/installation/update/recover")
+ async def recover_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+     await _fixed_mount_request(request)
++    return await run_in_threadpool(_recover_lifeos_update, account)
++
++
++def _recover_lifeos_update(account: str):
+     previous = get_lifeos_update_status()
+     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
+         "stopped", "swapped", "restoring", "rollback_failed"
+diff --git a/tests/test_memory_admin_dashboard.py b/tests/test_memory_admin_dashboard.py
+index 61a327c..8b5e064 100644
+--- a/tests/test_memory_admin_dashboard.py
++++ b/tests/test_memory_admin_dashboard.py
+@@ -2,6 +2,7 @@
+ # ABOUTME: Runs native finalization and validates queued update grants without starting systemd services.
+ import importlib.util
+ import contextlib
++from concurrent.futures import ThreadPoolExecutor
+ import io
+ import json
+ import os
+@@ -10,6 +11,7 @@ import secrets
+ import signal
+ import subprocess
+ import sys
++import threading
+ import unittest
+ from unittest.mock import patch
+ 
+@@ -366,6 +368,36 @@ class MemoryAdminDashboardTests(unittest.TestCase):
+                     self.assertEqual(self.grants(), [])
+             launched.assert_not_called()
+ 
++    def test_dashboard_remains_responsive_while_recovery_launch_waits(self):
++        self.login()
++        job = self.interrupted_job()
++        entered, release, finished = threading.Event(), threading.Event(), threading.Event()
++
++        @self.app.get('/auth/login/recovery-scheduling-probe')
++        async def probe():
++            return {'launch_finished': finished.is_set()}
++
++        def launch(selected, action):
++            self.assertEqual((selected, action), (job, 'recover'))
++            entered.set()
++            release.wait(timeout=5)
++            finished.set()
++
++        with patch.object(self.api, '_launch_lifeos_update', side_effect=launch), ThreadPoolExecutor(max_workers=1) as pool:
++            pending = pool.submit(self.post, '/update/recover')
++            try:
++                self.assertTrue(entered.wait(timeout=5), 'Recovery did not reach launch')
++                response = self.client.get('/auth/login/recovery-scheduling-probe')
++                self.assertEqual(response.status_code, 200, response.text)
++                self.assertFalse(response.json()['launch_finished'], 'Recovery launch blocked other dashboard requests')
++            finally:
++                release.set()
++                recovery = pending.result(timeout=10)
++                self.assertEqual(recovery.status_code, 200, recovery.text)
++                request = json.loads((job / 'request.json').read_text())
++                self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
++                                Path(request['memory_authorization']))
++
+     def test_restore_refuses_a_job_for_another_installation(self):
+         self.login()
+         job = self.applied_job()

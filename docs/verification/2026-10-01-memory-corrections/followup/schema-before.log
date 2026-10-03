@@ -1,0 +1,15 @@
+test_retired_settings_field_names_preserve_native_missing_hook_report (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_settings_field_names_preserve_native_missing_hook_report) ... FAIL
+
+======================================================================
+FAIL: test_retired_settings_field_names_preserve_native_missing_hook_report (test_memory_cortex_health.MemoryCortexHealthTests.test_retired_settings_field_names_preserve_native_missing_hook_report)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 173, in test_retired_settings_field_names_preserve_native_missing_hook_report
+    self.assertNotIn('unavailable', report)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unavailable' unexpectedly found in {'unavailable': 'Memory diagnostics are unavailable under the current policy'}
+
+----------------------------------------------------------------------
+Ran 1 test in 3.249s
+
+FAILED (failures=1)

@@ -1,0 +1,28 @@
+{
+  "repair_snapshot_sessions": [
+    "session"
+  ],
+  "sessions_after_concurrent_admit": [
+    "concurrent-session",
+    "session"
+  ],
+  "dispatched": {
+    "messages": [
+      {
+        "role": "user",
+        "content": "Synthetic fresh request"
+      }
+    ]
+  },
+  "repair_errors": [],
+  "sessions_after_repair": [
+    "concurrent-session",
+    "session"
+  ],
+  "inactive_retained_session_check": "MemoryAdmissionError('Memory ownership changed for retained context. Start a new conversation.')"
+}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-history-repair/raw/probe_state_race.py", line 48, in <module>
+    assert 'concurrent-session' not in evidence['sessions_after_repair'],'Race did not reproduce'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Race did not reproduce

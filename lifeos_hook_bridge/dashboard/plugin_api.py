@@ -2,15 +2,21 @@
 # ABOUTME: Delegates validation and storage to Hermes's plugin settings service.
 
 import importlib.util
+import importlib
 import json
 import os
 from pathlib import Path
 import shutil
+import sqlite3
 import subprocess
 import sys
+import types
+from typing import Literal
 from uuid import uuid4
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+from fastapi.responses import JSONResponse
+from starlette.concurrency import run_in_threadpool
 from hermes_cli.plugins_settings import plugin_settings_fields, save_plugin_settings
 
 
@@ -52,7 +58,281 @@ HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"
 LIFEOS_UPDATE_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/updates"
 HOST_SOURCE = None
 PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
-router = APIRouter()
+
+
+async def _dashboard_origin(request: Request):
+    if request.method in {'POST', 'PUT', 'PATCH', 'DELETE'}:
+        origin = request.headers.get('origin')
+        if origin and origin != request.url.scheme + '://' + request.url.netloc:
+            raise HTTPException(status_code=403, detail='Use the installed dashboard origin')
+
+
+router = APIRouter(dependencies=[Depends(_dashboard_origin)])
+
+
+class MemoryResponseHeaders:
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        path = scope.get('path', '')
+        root = scope.get('root_path', '')
+        if root and path.startswith(root + '/'):
+            path = path[len(root):]
+        prefix = '/api/plugins/lifeos-hook-bridge/memory'
+        if scope['type'] != 'http' or (path != prefix and not path.startswith(prefix + '/')):
+            return await self.app(scope, receive, send)
+
+        async def send_private(message):
+            if message['type'] == 'http.response.start':
+                headers = [(key, value) for key, value in message.get('headers', [])
+                           if key.lower() not in (b'cache-control', b'etag', b'last-modified')]
+                message = {**message, 'headers': [*headers, (b'cache-control', b'no-store')]}
+            await send(message)
+
+        await self.app(scope, receive, send_private)
+
+
+def install_memory_cache_headers(app: FastAPI) -> None:
+    if not getattr(app.state, 'lifeos_memory_cache_headers', False):
+        app.add_middleware(MemoryResponseHeaders)
+        app.state.lifeos_memory_cache_headers = True
+
+
+# Hermes imports plugin routers while assembling its app, before its middleware stack starts.
+_dashboard_host = sys.modules.get('hermes_cli.web_server')
+if _dashboard_host is not None and isinstance(getattr(_dashboard_host, 'app', None), FastAPI):
+    install_memory_cache_headers(_dashboard_host.app)
+
+
+def _memory_preferences():
+    name = 'lifeos_memory_settings'
+    if name not in sys.modules:
+        package = types.ModuleType(name)
+        package.__path__ = [str(PLUGIN_DIR)]
+        sys.modules[name] = package
+    module = importlib.import_module(name + '.memory_preferences')
+    return module.MemoryPreferences(HERMES_HOME / 'lifeos-memory.json', INSTALLED_ROOT,
+                                    Path.home() / '.ssh/authorized_keys', Path(sys.executable),
+                                    PLUGIN_DIR / 'memory_mcp.py')
+
+
+def _memory_action(action):
+    try:
+        return action(_memory_preferences())
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='This dashboard account has no installation owner binding') from error
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired) as error:
+        raise HTTPException(status_code=409, detail='Memory is unavailable under the current installation policy') from error
+
+
+def _memory_account(request: Request) -> str:
+    try:
+        from hermes_cli.dashboard_auth.base import Session
+    except ImportError as error:
+        raise HTTPException(status_code=503, detail='Memory request authentication is unavailable') from error
+    session = getattr(request.state, 'session', None)
+    if not isinstance(session, Session):
+        raise HTTPException(status_code=401, detail='An authenticated dashboard session is required')
+    return f'dashboard:{session.provider}:{session.user_id}'
+
+
+@router.get('/memory')
+def get_memory(account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences:preferences.status(account=account))
+
+
+def _mount_transaction():
+    return install_module.memory_module('mount_transaction').MountTransaction(
+        INSTALLED_ROOT, HERMES_HOME, BASELINE_PATH)
+
+
+def _mount_owner_action(account, action):
+    return _installation_action(lambda: _execute_mount_owner_action(account, action))
+
+
+def _installation_action(action, *, resume_update=False):
+    try:
+        with install_module.memory_module('installation_lock').installation_lock(HERMES_HOME):
+            if not resume_update and get_lifeos_update_status()['state'] in {
+                    'queued', 'preparing', 'applying', 'restoring', 'recovering',
+                    'interrupted', 'rollback_failed', 'error'}:
+                raise HTTPException(status_code=409, detail='A LifeOS update job already owns this installation')
+            return action()
+    except (OSError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+def _execute_mount_owner_action(account, action):
+    administration = install_module.memory_administration()
+    if administration.required(INSTALLED_ROOT, HERMES_HOME):
+        configuration = _memory_preferences().configuration
+        binding = {'action':'recover'} if action == 'recover' else None
+        with administration.lease(configuration, account, binding=binding) as authorization:
+            if action == 'recover':
+                administration.validate(configuration, authorization, purpose='recover', check_binding=True, binding=binding)
+                return _mount_transaction().recover()
+            environment = administration.mount_environment(INSTALLED_ROOT, HERMES_HOME, authorization)
+            return _execute_mount(environment)
+    if action == 'recover':
+        return _mount_transaction().recover()
+    return _execute_mount(administration.mount_environment(INSTALLED_ROOT, HERMES_HOME))
+
+
+def _execute_mount(environment):
+    bun, hermes = shutil.which('bun'), shutil.which('hermes')
+    if not bun or not hermes:
+        raise RuntimeError('Bun and the Hermes command are required to mount LifeOS')
+    return _mount_transaction().execute(environment, bun, hermes)
+
+
+async def _fixed_mount_request(request: Request):
+    await _dashboard_origin(request)
+    if request.query_params or await request.body():
+        raise HTTPException(status_code=400, detail='Mount requests use the installed owner configuration')
+
+
+@router.post('/memory/remount')
+async def remount_memory(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    headers = {'Cache-Control':'no-store'}
+    try:
+        configuration = _memory_preferences().configuration
+        configuration_value = configuration.load()
+        configuration.check_owner(configuration_value, account)
+        binding = install_module.memory_module('memory_http').installation_binding(configuration_value, configuration.path)
+        result = await run_in_threadpool(_mount_owner_action, account, 'mount')
+        return JSONResponse({'ok':True, 'exitCode':0, 'output':result['output'], 'error':None,
+                             'mount':{'state':result['state'], 'restart_required':True}},
+                            headers={**headers, 'X-LifeOS-Memory-Installation':binding})
+    except PermissionError:
+        return JSONResponse({'error':'The installation owner must authorize mounting'}, status_code=403, headers=headers)
+    except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired, sqlite3.Error):
+        return JSONResponse({'error':'Mounting is unavailable. Check setup and recovery in the LifeOS plugin.'},
+                            status_code=409, headers=headers)
+
+
+@router.post('/installation/mount/recover')
+async def recover_mount(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    try:
+        return await run_in_threadpool(_mount_owner_action, account, 'recover')
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='The installation owner must authorize recovery') from error
+    except (OSError, ValueError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail='Recovery cannot overwrite a later edit or invalid snapshot') from error
+
+
+@router.get('/memory/pulse/{view}')
+def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], request: Request,
+                     account: str = Depends(_memory_account)):
+    headers = {'Cache-Control': 'no-store'}
+    if request.query_params:
+        return JSONResponse({'error': 'Memory views use the installed owner configuration'}, status_code=400, headers=headers)
+    try:
+        result, binding = _memory_preferences().pulse_response(view, account=account)
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'},
+                            status_code=403, headers=headers)
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Memory is unavailable under the current installation policy'},
+                            status_code=503, headers=headers)
+    return JSONResponse(result, headers={**headers,'X-LifeOS-Memory-Installation':binding})
+
+
+@router.post('/memory/review')
+def review_memory(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'tool','arguments'} or not isinstance(request['tool'], str) or not isinstance(request['arguments'], dict):
+        raise HTTPException(status_code=400, detail='Choose a memory action and its arguments')
+    return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments'], account=account))
+
+
+@router.get('/memory/wiki')
+def get_memory_wiki(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('wiki', request, account)
+
+
+@router.get('/memory/knowledge')
+def get_memory_knowledge(request: Request, account: str = Depends(_memory_account)):
+    return _memory_source_read('knowledge', request, account)
+
+
+def _memory_source_read(view: Literal['wiki', 'knowledge'], request: Request, account: str):
+    preferences = _memory_preferences()
+    request_target = importlib.import_module('lifeos_memory_settings.memory_' + view).request_target
+    headers = {'Cache-Control': 'no-store'}
+    try:
+        if list(request.query_params.keys()) != ['target'] or len(request.query_params.getlist('target')) != 1:
+            raise ValueError('Source reads require one fixed route')
+        target = request_target(request.query_params['target'])
+    except LookupError:
+        return JSONResponse({'error': 'This source route is not a governed read view'}, status_code=404, headers=headers)
+    except ValueError:
+        return JSONResponse({'error': 'Invalid source read route'}, status_code=400, headers=headers)
+    try:
+        operation = preferences.wiki_response if view == 'wiki' else preferences.knowledge_response
+        result, binding = operation(target, account=account)
+    except PermissionError:
+        return JSONResponse({'error': 'This dashboard account has no installation owner binding'}, status_code=403, headers=headers)
+    except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
+        return JSONResponse({'error': 'Memory is unavailable under the current installation policy'}, status_code=503, headers=headers)
+    return JSONResponse(result['body'], status_code=result['status'],
+                        headers={**headers, 'X-LifeOS-Memory-Installation': binding})
+
+
+@router.post('/memory/prompt/preview')
+def preview_memory_prompt(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'keep_output_format'} or type(request['keep_output_format']) is not bool:
+        raise HTTPException(status_code=400, detail='Choose whether to retain the native output format')
+    return _memory_action(lambda preferences: preferences.preview_prompt(**request, account=account))
+
+
+@router.post('/memory/prompt')
+def publish_memory_prompt(request: dict, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences: preferences.publish_prompt(request, account=account))
+
+
+@router.post('/memory/adoption/preview')
+def preview_memory_adoption(request: dict, account: str = Depends(_memory_account)):
+    if request:
+        raise HTTPException(status_code=400, detail='Source preview uses the installed LifeOS configuration')
+    return _memory_action(lambda preferences:preferences.preview_adoption(account=account))
+
+
+@router.post('/memory/sources/preview')
+def preview_memory_sources(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'paths'}:
+        raise HTTPException(status_code=400, detail='Choose installed source paths for review')
+    return _memory_action(lambda preferences: preferences.preview_sources(request['paths'], account=account))
+
+
+@router.post('/memory/sources')
+def approve_memory_sources(request: dict, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences: preferences.approve_sources(request, account=account))
+
+
+@router.post('/memory/adoption')
+def adopt_memory_sources(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'signature','projects','request_id'}:
+        raise HTTPException(status_code=400, detail='Provide the reviewed source preview, project assignments, and request identifier')
+    return _memory_action(lambda preferences:preferences.adopt(request, account=account))
+
+
+@router.post('/memory/sharing')
+def set_memory_sharing(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'enabled'} or type(request['enabled']) is not bool:
+        raise HTTPException(status_code=400, detail='Choose whether memory sharing is enabled')
+    return _memory_action(lambda preferences:preferences.sharing(request['enabled'], account=account))
+
+
+@router.post('/memory/connections')
+def enroll_memory_connection(request: dict, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences:preferences.enroll(request, account=account))
+
+
+@router.delete('/memory/connections/{client}')
+def revoke_memory_connection(client: str, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences:preferences.revoke(client, account=account))
 
 
 def _host_source():
@@ -110,7 +390,14 @@ def get_installation():
             host_candidate = validate_supported_hermes(HERMES_CANDIDATE)
         except (IncompatibleLifeOS, OSError) as error:
             host_candidate_error = str(error)
+    mount = {'state':'none', 'recovery_required':False}
+    if (HERMES_HOME / '.lifeos-mount').exists():
+        try:
+            mount = _mount_transaction().status()
+        except (ValueError, OSError, RuntimeError):
+            mount = {'state':'unavailable', 'recovery_required':False}
     return {
+        'mount': mount,
         "lifeos": lifeos,
         "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
         "hermes": hermes,
@@ -129,7 +416,7 @@ def get_installation():
     }
 
 
-@router.post("/installation/prepare")
+@router.post("/installation/prepare", dependencies=[Depends(_fixed_mount_request)])
 def prepare_installation():
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         if (INSTALLED_ROOT.is_symlink() or not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file()
@@ -164,7 +451,7 @@ def prepare_installation():
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
-@router.post("/installation/apply")
+@router.post("/installation/apply", dependencies=[Depends(_fixed_mount_request)])
 def apply_installation():
     if INSTALLED_ROOT.exists() or INSTALLED_ROOT.is_symlink():
         raise HTTPException(status_code=409, detail="A .claude directory exists. The fresh installer will not overwrite it.")
@@ -177,20 +464,34 @@ def apply_installation():
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
-@router.post("/installation/finalize")
-def finalize_installation():
+@router.post("/installation/finalize", dependencies=[Depends(_memory_account), Depends(_fixed_mount_request)])
+def finalize_installation(account: str = Depends(_memory_account)):
+    return _installation_action(lambda: _finalize_installation(account))
+
+
+def _finalize_installation(account: str):
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before finishing setup")
     if BASELINE_PATH.exists() or BASELINE_PATH.is_symlink():
         raise HTTPException(status_code=409, detail="A VersionDrift baseline already exists")
     try:
+        if install_module.memory_administration().required(INSTALLED_ROOT, HERMES_HOME):
+            preferences = _memory_preferences()
+            authorization = preferences.authorize_mount(account=account)
+            try:
+                return finalize_prepared_lifeos(_candidate_path(), INSTALLED_ROOT, HERMES_HOME,
+                    BASELINE_PATH, create_baseline, save_baseline, memory_authorization=authorization)
+            finally:
+                preferences.revoke_mount(authorization)
         return finalize_prepared_lifeos(_candidate_path(), INSTALLED_ROOT, HERMES_HOME,
                                         BASELINE_PATH, create_baseline, save_baseline)
-    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='The installation owner must authorize managed setup') from error
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as error:
         raise HTTPException(status_code=409, detail=str(error)) from error
 
 
-@router.post("/installation/prepare-hermes")
+@router.post("/installation/prepare-hermes", dependencies=[Depends(_fixed_mount_request)])
 def prepare_hermes_installation():
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not (INSTALLED_ROOT / "settings.json").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before preparing the Hermes extension")
@@ -235,7 +536,8 @@ def get_lifeos_update_status():
             active = subprocess.run(["systemctl", "--user", "is-active", status["unit"]],
                                     text=True, capture_output=True, timeout=15)
             if active.returncode or active.stdout.strip() != "active":
-                status["state"] = "interrupted"
+                status["state"] = (status.get('transaction_state') if status.get('transaction_state')
+                                   in {'applied', 'rolled_back'} else 'interrupted')
         return {**status, "job": str(job)}
     except (OSError, ValueError, TypeError):
         return {"state": "error", "job": str(job), "error": "Update status could not be read"}
@@ -254,24 +556,36 @@ def _launch_lifeos_update(job: Path, action: str = "apply"):
         os.fchmod(stream.fileno(), 0o600)
         json.dump(status, stream)
         stream.write("\n")
-    command = ["systemd-run", "--user", "--collect",
-               f"--unit={unit}",
-               f"--setenv=HERMES_HOME={HERMES_HOME}", sys.executable,
-               str(PLUGIN_DIR / "update_worker.py"), str(job)]
+    from hermes_cli import _launchers
+    arguments = [str(PLUGIN_DIR / "update_worker.py"), str(job)]
     if action != "apply":
-        command.extend(["--action", action])
+        arguments.extend(["--action", action])
+    code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
+    runtime = _launchers.runtime_command(_host_source(), arguments, code=code, python=sys.executable)
+    command = ["systemd-run", "--user", "--collect", f"--unit={unit}",
+               f"--setenv=HOME={INSTALLED_ROOT.parent}", f"--setenv=HERMES_HOME={HERMES_HOME}",
+               f"--setenv=PATH={os.environ.get('PATH', os.defpath)}"]
+    if 'PULSE_URL' in os.environ:
+        command.append(f"--setenv=PULSE_URL={os.environ['PULSE_URL']}")
+    command.extend(runtime)
     launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
     if launched.returncode:
         raise IncompatibleLifeOS(f"Could not start the LifeOS update worker: {launched.returncode}")
 
 
-@router.post("/installation/update")
-def apply_lifeos_update():
+@router.post("/installation/update", dependencies=[Depends(_memory_account), Depends(_fixed_mount_request)])
+def apply_lifeos_update(account: str = Depends(_memory_account)):
+    return _installation_action(lambda: _apply_lifeos_update(account))
+
+
+def _apply_lifeos_update(account: str):
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file() or not BASELINE_PATH.is_file():
         raise HTTPException(status_code=409, detail="An installed LifeOS and VersionDrift baseline are required")
     previous = get_lifeos_update_status()
-    if previous["state"] in {"queued", "preparing", "applying", "rollback_failed", "interrupted"}:
+    if previous["state"] in {"queued", "preparing", "applying", "restoring", "recovering", "rollback_failed", "interrupted", "error"}:
         raise HTTPException(status_code=409, detail="A LifeOS update job already owns this installation")
+    if get_host_patch_status()['state'] in {'staged', 'applying', 'restoring', 'restore_failed', 'rollback_failed', 'error'}:
+        raise HTTPException(status_code=409, detail='A Hermes patch job already owns this installation')
     try:
         selected_candidate = _candidate_path()
         candidate = validate_prepared_lifeos(selected_candidate)
@@ -290,33 +604,99 @@ def apply_lifeos_update():
                    "baseline": str(BASELINE_PATH), "candidate": str(selected_candidate),
                    "prior_source": str(prior_source), "candidate_commit": candidate["upstream_commit"],
                    "hermes_command": str(_host_source() / ".hermes/bin/hermes")}
+        if install_module.memory_administration().required(INSTALLED_ROOT, HERMES_HOME):
+            preferences = _memory_preferences()
+            authorization = preferences.authorize_mount(account=account, ttl=3600,
+                binding=install_module.memory_administration().job_binding(job, request, 'apply'))
+            request['memory_authorization'] = str(authorization)
         for name, data in (("request.json", request), ("status.json", {"state": "queued"})):
             with (job / name).open("w", encoding="utf-8") as stream:
                 os.fchmod(stream.fileno(), 0o600)
                 json.dump(data, stream)
                 stream.write("\n")
         _launch_lifeos_update(job)
-    except (IncompatibleLifeOS, OSError, ValueError, KeyError, subprocess.TimeoutExpired) as error:
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, KeyError, subprocess.TimeoutExpired) as error:
+        if 'authorization' in locals():
+            preferences.revoke_mount(authorization)
         if "job" in locals() and job.is_dir():
             shutil.rmtree(job)
+        if isinstance(error, PermissionError):
+            raise HTTPException(status_code=403, detail='The installation owner must authorize managed updates') from error
         raise HTTPException(status_code=409, detail=str(error)) from error
     return {"state": "queued", "job": str(job)}
 
 
 @router.post("/installation/update/recover")
-def recover_lifeos_update():
+async def recover_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    return await run_in_threadpool(_recover_lifeos_update, account)
+
+
+def _recover_lifeos_update(account: str):
+    return _installation_action(lambda: _recover_lifeos_update_locked(account), resume_update=True)
+
+
+def _recover_lifeos_update_locked(account: str):
     previous = get_lifeos_update_status()
     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
-        "stopped", "swapped", "restoring", "rollback_failed"
+        "stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"
     }:
         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
+    return _resume_lifeos_update(previous, account, 'recover')
+
+
+@router.post("/installation/update/restore")
+async def restore_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    return await run_in_threadpool(_restore_lifeos_update, account)
+
+
+def _restore_lifeos_update(account: str):
+    return _installation_action(lambda: _restore_lifeos_update_locked(account), resume_update=True)
+
+
+def _restore_lifeos_update_locked(account: str):
+    previous = get_lifeos_update_status()
+    if previous['state'] != 'applied' or previous.get('transaction_state') != 'applied':
+        raise HTTPException(status_code=409, detail='There is no applied LifeOS update to restore')
+    return _resume_lifeos_update(previous, account, 'restore')
+
+
+def _resume_lifeos_update(previous: dict, account: str, action: str):
     job = Path(previous["job"])
+    changed = False
     try:
-        (job / "status.json").write_text(json.dumps({"state": "recovering"}) + "\n", encoding="utf-8")
-        _launch_lifeos_update(job, "recover")
-    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+        original_request = (job / 'request.json').read_bytes()
+        original_status = (job / 'status.json').read_bytes()
+        if install_module.memory_administration().required(INSTALLED_ROOT, HERMES_HOME):
+            request = json.loads(original_request)
+            if Path(request['installed']).absolute() != INSTALLED_ROOT.absolute() or Path(request['hermes_home']).absolute() != HERMES_HOME.absolute():
+                raise PermissionError('The update job belongs to another installation')
+            preferences = _memory_preferences()
+            authorization = preferences.authorize_mount(account=account, ttl=3600,
+                binding=install_module.memory_administration().job_binding(job, request, action))
+            request['memory_authorization'] = str(authorization)
+        if action == 'restore':
+            install_module.memory_module('update_transaction').validate_restore(
+                job / 'snapshot', installed=INSTALLED_ROOT)
+        if 'authorization' in locals():
+            changed = True
+            install_module.memory_administration().publish(job / 'request.json',
+                (json.dumps(request) + '\n').encode())
+        changed = True
+        install_module.memory_administration().publish(job / 'status.json',
+            (json.dumps({'state': 'recovering' if action == 'recover' else 'restoring'}) + '\n').encode())
+        _launch_lifeos_update(job, action)
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError, KeyError, subprocess.TimeoutExpired) as error:
+        if 'authorization' in locals():
+            preferences.revoke_mount(authorization)
+        if changed:
+            install_module.memory_administration().publish(job / 'request.json', original_request)
+            install_module.memory_administration().publish(job / 'status.json', original_status)
+        if isinstance(error, PermissionError):
+            raise HTTPException(status_code=403, detail='The installation owner must authorize this update action') from error
         raise HTTPException(status_code=409, detail=str(error)) from error
-    return {"state": "recovering", "job": str(job)}
+    return {"state": "recovering" if action == 'recover' else 'restoring', "job": str(job)}
 
 
 @router.get("/installation/host-patch")
@@ -346,8 +726,12 @@ def _launch_host_patch(snapshot: Path, action: str):
         raise IncompatibleLifeOS(f"Could not start the Hermes patch worker: {launched.returncode}")
 
 
-@router.post("/installation/apply-hermes")
+@router.post("/installation/apply-hermes", dependencies=[Depends(_fixed_mount_request)])
 def apply_hermes_installation():
+    return _installation_action(_apply_hermes_installation)
+
+
+def _apply_hermes_installation():
     if not (INSTALLED_ROOT / "LIFEOS/VERSION").is_file():
         raise HTTPException(status_code=409, detail="Install LifeOS before patching Hermes")
     previous = get_host_patch_status()
@@ -369,8 +753,12 @@ def apply_hermes_installation():
     return {"state": "staged", "snapshot": str(snapshot)}
 
 
-@router.post("/installation/restore-hermes")
+@router.post("/installation/restore-hermes", dependencies=[Depends(_fixed_mount_request)])
 def restore_hermes_installation():
+    return _installation_action(_restore_hermes_installation)
+
+
+def _restore_hermes_installation():
     previous = get_host_patch_status()
     if previous["state"] != "applied":
         raise HTTPException(status_code=409, detail="There is no applied Hermes patch to restore")

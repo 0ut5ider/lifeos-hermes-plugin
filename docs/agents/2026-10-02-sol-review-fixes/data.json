@@ -1,0 +1,247 @@
+{
+  "acceptance_limits": [
+    "same-account substitution races",
+    "arbitrary unknown secrets in prose or unrelated encodings",
+    "existing secret echo threshold below four characters",
+    "unmarked historical orphan snapshots require operator inspection",
+    "purposeful version snapshots retain separate archive lifetime",
+    "ownership activation and complete memory acceptance remain open"
+  ],
+  "closure": {
+    "F1": {
+      "remaining": [
+        "R1",
+        "R2",
+        "R3"
+      ],
+      "status": "partially_closed"
+    },
+    "F2": {
+      "status": "closed_in_direct_gateway_scope"
+    },
+    "F3": {
+      "status": "closed_for_supported_environment_mappings"
+    },
+    "F4": {
+      "status": "closed_in_reviewed_lifecycle"
+    }
+  },
+  "coverage": {
+    "broader_primary_gate_counted": false,
+    "changed_tests_reviewed": true,
+    "fixture_hash_statement": "supplied input, not recalculated",
+    "immediate_paths": [
+      "lifeos_hook_bridge/dashboard/plugin_api.py",
+      "lifeos_hook_bridge/update_worker.py",
+      "lifeos_hook_bridge/memory_runtime.py",
+      "lifeos_hook_bridge/memory_history.py",
+      "lifeos_hook_bridge/memory_transaction.py",
+      "development/hook_capture/instrument.py"
+    ],
+    "implementation": [
+      "lifeos_hook_bridge/update_transaction.py",
+      "lifeos_hook_bridge/mount_transaction.py",
+      "lifeos_hook_bridge/bin/claude_direct.py",
+      "development/hook_capture/store.py"
+    ]
+  },
+  "date": "2026-10-02",
+  "effort": "high",
+  "findings": [
+    {
+      "actual": "Apply accepts split filesystems; restore and recovery both raise EXDEV after stop; prior program and selected profile remain live; no start.",
+      "caller": "update_worker._execute_update_job -> restore_update / recover_update / apply_update rollback -> _restore_mount",
+      "classification": "reproduced_regression",
+      "evidence": "raw/probe_restore.txt:cross_filesystem",
+      "expected": "Reject unsupported archive filesystems before stop or mutation, or preserve targets on their filesystem.",
+      "id": "R1",
+      "locations": [
+        {
+          "file": "lifeos_hook_bridge/update_transaction.py",
+          "line": 91
+        },
+        {
+          "file": "lifeos_hook_bridge/update_transaction.py",
+          "line": 102
+        },
+        {
+          "file": "lifeos_hook_bridge/update_transaction.py",
+          "line": 166
+        }
+      ],
+      "original": "F1",
+      "proposed_correction": "Preflight profile and baseline archive filesystem constraints before apply and restore/recover mutation, or use durable per-filesystem archives.",
+      "reproduction": "python docs/agents/2026-10-02-sol-review-fixes/raw/probe_restore.py",
+      "severity": "high",
+      "title": "Cross-filesystem profile archive blocks restore and recovery after swap"
+    },
+    {
+      "actual": "Edit at installed rename boundary causes final refusal; gateway events only stop; manifest restoring; program prior.",
+      "caller": "dashboard restore -> update_worker -> restore_update -> _restore_mount(expected_state)",
+      "classification": "reproduced_regression",
+      "evidence": "raw/probe_restore.txt:late_refusal",
+      "expected": "Preserve late edit and leave coherent selected state with restarted gateway or actionable recovery.",
+      "id": "R2",
+      "locations": [
+        {
+          "file": "lifeos_hook_bridge/update_transaction.py",
+          "line": 72
+        },
+        {
+          "file": "lifeos_hook_bridge/update_transaction.py",
+          "line": 265
+        },
+        {
+          "file": "lifeos_hook_bridge/update_transaction.py",
+          "line": 267
+        }
+      ],
+      "original": "F1",
+      "proposed_correction": "Coordinate exception recovery around final check and directory swaps; restore selected state and restart before profile mutation; expose recovery after partial mutation.",
+      "reproduction": "python docs/agents/2026-10-02-sol-review-fixes/raw/probe_restore.py",
+      "severity": "medium",
+      "title": "Final profile check refuses after program swap without restart"
+    },
+    {
+      "actual": "Worker writes failed; status retains failed plus restoring; authenticated recover route returns 409.",
+      "caller": "update_worker._main -> get_lifeos_update_status -> recover_lifeos_update",
+      "classification": "reproduced_missed_immediate_caller",
+      "evidence": "raw/probe_callers.txt",
+      "expected": "Exited worker with restoring snapshot retains authorized recovery route.",
+      "id": "R3",
+      "locations": [
+        {
+          "file": "lifeos_hook_bridge/update_worker.py",
+          "line": 248
+        },
+        {
+          "file": "lifeos_hook_bridge/dashboard/plugin_api.py",
+          "line": 508
+        },
+        {
+          "file": "lifeos_hook_bridge/dashboard/plugin_api.py",
+          "line": 598
+        }
+      ],
+      "original": "F1",
+      "probe_limit": "Injected exception at worker boundary; real exception handler and local password-authenticated API; no live systemd.",
+      "proposed_correction": "Derive recovery-required status from validated transaction and inactive worker, including failed worker status; preserve retry of unchanged applied snapshots.",
+      "reproduction": "python docs/agents/2026-10-02-sol-review-fixes/raw/probe_callers.py",
+      "severity": "medium",
+      "title": "Worker failure status hides recoverable restore from browser recovery"
+    }
+  ],
+  "hypotheses": [
+    {
+      "id": "H1",
+      "status": "existing Opus hypothesis, not tested",
+      "title": "Concurrent detached restore/recover workers"
+    }
+  ],
+  "model": "GPT-6.1-Sol",
+  "mutations": "review output directory only; synthetic temporary test data; no repository implementation/test/config/Git mutations, remote operations, memory calls, journal calls, or subagents",
+  "not_run": [
+    "live systemd",
+    "browser",
+    "SSH",
+    "Docker",
+    "real model",
+    "power loss",
+    "full release gate",
+    "full source-preparation gate"
+  ],
+  "parent_commit": "c484ea071634187a76e8673c17dd24edc2a5a2c8",
+  "probes": {
+    "defect_reproductions": 3,
+    "expected_behavior_checks": 24,
+    "scenarios": 27,
+    "scripts": [
+      {
+        "exit": 0,
+        "path": "raw/probe_restore.py",
+        "scenarios": 2
+      },
+      {
+        "exit": 0,
+        "path": "raw/probe_callers.py",
+        "scenarios": 1
+      },
+      {
+        "exit": 0,
+        "path": "raw/probe_child.py",
+        "scenarios": 4
+      },
+      {
+        "exit": 0,
+        "path": "raw/probe_cleanup.py",
+        "scenarios": 13
+      },
+      {
+        "exit": 0,
+        "path": "raw/probe_recorder.py",
+        "scenarios": 7
+      }
+    ]
+  },
+  "recommendation": "keep draft; correct R1-R3 together before accepting the restore path",
+  "reviewed_commit": "f6620c5616686c583e6755d7557df8f9d747c200",
+  "role": "independent reviewer",
+  "static_observations": [
+    {
+      "classification": "optional_hardening",
+      "id": "S1",
+      "limit": "No power-loss test or reproduced archive loss; process-exit preservation differs from power-loss durability.",
+      "location": "lifeos_hook_bridge/update_transaction.py:91",
+      "title": "Profile archive directory moves lack parent-directory fsync"
+    },
+    {
+      "classification": "inspection_limit",
+      "id": "S2",
+      "limit": "No disk fault or permissions-failure probe; terminal journal precedes cleanup.",
+      "location": "lifeos_hook_bridge/mount_transaction.py:190",
+      "title": "Prune exceptions propagate after terminal publication"
+    }
+  ],
+  "tests": {
+    "failed": 0,
+    "passed": 133,
+    "selections": [
+      {
+        "count": 50,
+        "exit": 0,
+        "modules": [
+          "test_update_transaction",
+          "test_mount_transaction",
+          "test_memory_children",
+          "test_memory_admin_dashboard",
+          "test_update_worker"
+        ],
+        "output": "raw/focused-tests.txt",
+        "seconds": 46.777
+      },
+      {
+        "count": 32,
+        "exit": 0,
+        "modules": [
+          "development/tests/test_capture.py"
+        ],
+        "output": "raw/recorder-tests.txt",
+        "seconds": 7.28
+      },
+      {
+        "count": 51,
+        "exit": 0,
+        "modules": [
+          "test_memory_runtime",
+          "test_memory_history",
+          "test_hermes_memory_provider"
+        ],
+        "output": "raw/runtime-tests.txt",
+        "seconds": 16.607
+      }
+    ],
+    "skipped": 0,
+    "total": 133,
+    "warnings": 0
+  }
+}

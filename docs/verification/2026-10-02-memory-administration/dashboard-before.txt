@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_failed_recovery_launch_preserves_retryable_job_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_failed_recovery_launch_preserves_retryable_job_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 179, in test_failed_recovery_launch_preserves_retryable_job_state
+    self.assertEqual((job / 'request.json').read_bytes(), before_request)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"i[492 chars].lifeos-memory-admin/00e0d672a39cc0f9bcb3b94b2293c4e1.json"}\n' != b'{"i[492 chars].lifeos-memory-admin/c2e655b597eb450ef9c9243607110033.json"}\n'
+
+----------------------------------------------------------------------
+Ran 12 tests in 12.703s
+
+FAILED (failures=1)

@@ -1,0 +1,3 @@
+148:         const res = await fetch(`/api/wiki/search?q=${encodeURIComponent(query)}&limit=40`);
+357:       const res = await fetch("/api/wiki");
+368:       const res = await fetch(`/api/wiki/knowledge/${category}/${slug}`);

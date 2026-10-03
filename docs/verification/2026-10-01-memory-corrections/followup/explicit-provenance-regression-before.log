@@ -1,0 +1,76 @@
+test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) ... 
+  test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) (category='principal') ... FAIL
+  test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) (category='assistant') ... FAIL
+  test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) (category='project') ... FAIL
+test_explicit_context_proposal_records_its_authenticated_source_session (test_memory_proposal_delegation.MemoryProposalDelegationTests.test_explicit_context_proposal_records_its_authenticated_source_session) ... FAIL
+test_actual_agent_turn_commits_native_fact_and_reports_its_receipt (test_memory_agent.MemoryAgentTests.test_actual_agent_turn_commits_native_fact_and_reports_its_receipt) ... FAIL
+
+======================================================================
+FAIL: test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) (category='principal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 86, in test_explicit_context_saves_preserve_source_session_and_retries
+    self.assertEqual(fact['source'], {'kind': 'explicit', 'session': self.context.session_id})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'session': '', 'kind': 'explicit'} != {'kind': 'explicit', 'session': 'native-session'}
+- {'kind': 'explicit', 'session': ''}
++ {'kind': 'explicit', 'session': 'native-session'}
+?                                  ++++++++++++++
+
+
+======================================================================
+FAIL: test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) (category='assistant')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 86, in test_explicit_context_saves_preserve_source_session_and_retries
+    self.assertEqual(fact['source'], {'kind': 'explicit', 'session': self.context.session_id})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'session': '', 'kind': 'explicit'} != {'kind': 'explicit', 'session': 'native-session'}
+- {'kind': 'explicit', 'session': ''}
++ {'kind': 'explicit', 'session': 'native-session'}
+?                                  ++++++++++++++
+
+
+======================================================================
+FAIL: test_explicit_context_saves_preserve_source_session_and_retries (test_memory_delegation.MemoryDelegationTests.test_explicit_context_saves_preserve_source_session_and_retries) (category='project')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delegation.py", line 86, in test_explicit_context_saves_preserve_source_session_and_retries
+    self.assertEqual(fact['source'], {'kind': 'explicit', 'session': self.context.session_id})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'session': '', 'kind': 'explicit'} != {'kind': 'explicit', 'session': 'native-session'}
+- {'kind': 'explicit', 'session': ''}
++ {'kind': 'explicit', 'session': 'native-session'}
+?                                  ++++++++++++++
+
+
+======================================================================
+FAIL: test_explicit_context_proposal_records_its_authenticated_source_session (test_memory_proposal_delegation.MemoryProposalDelegationTests.test_explicit_context_proposal_records_its_authenticated_source_session)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_proposal_delegation.py", line 89, in test_explicit_context_proposal_records_its_authenticated_source_session
+    self.assertEqual(dict(row), {'writer': 'chat-a:100', 'source_session': self.context.session_id})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'writer': 'chat-a:100', 'source_session': ''} != {'writer': 'chat-a:100', 'source_session': 'native-session'}
+- {'source_session': '', 'writer': 'chat-a:100'}
++ {'source_session': 'native-session', 'writer': 'chat-a:100'}
+?                     ++++++++++++++
+
+
+======================================================================
+FAIL: test_actual_agent_turn_commits_native_fact_and_reports_its_receipt (test_memory_agent.MemoryAgentTests.test_actual_agent_turn_commits_native_fact_and_reports_its_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_agent.py", line 40, in test_actual_agent_turn_commits_native_fact_and_reports_its_receipt
+    self.assertEqual(native['source'], {'kind': 'explicit', 'session': 'session'})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'session': '', 'kind': 'explicit'} != {'kind': 'explicit', 'session': 'session'}
+- {'kind': 'explicit', 'session': ''}
++ {'kind': 'explicit', 'session': 'session'}
+?                                  +++++++
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 5.871s
+
+FAILED (failures=5)

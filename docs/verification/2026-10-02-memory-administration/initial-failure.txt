@@ -1,0 +1,30 @@
+/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py:123: SyntaxWarning: "\." is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\."? A raw string is also an option.
+  if path.parent != _directory(configuration) or re.fullmatch('[0-9a-f]{32}\.json', path.name) is None:
+/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py:153: SyntaxWarning: "\." is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\."? A raw string is also an option.
+  if path.parent != _directory(configuration) or re.fullmatch('[0-9a-f]{32}\.json', path.name) is None:
+<unknown>:1: SyntaxWarning: "\." is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\."? A raw string is also an option.
+======================================================================
+ERROR: test_job_binding_and_profile_binding_are_checked_before_mounting (test_memory_administration.MemoryAdministrationTests.test_job_binding_and_profile_binding_are_checked_before_mounting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 121, in test_job_binding_and_profile_binding_are_checked_before_mounting
+    self.admin().mount_environment(self.root, self.profile / 'other', grant)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 167, in mount_environment
+    config, _ = validate(configuration, authorization, binding=binding, check_binding=True)
+                ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 123, in validate
+    if path.parent != _directory(configuration) or re.fullmatch('[0-9a-f]{32}\.json', path.name) is None:
+                      ~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_administration.py", line 35, in _directory
+    if profile.resolve() != profile or profile.stat().st_uid != os.getuid() or profile.stat().st_mode & 0o022:
+                                       ~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 654, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-xwsyv67e/other'
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.431s
+
+FAILED (errors=1)

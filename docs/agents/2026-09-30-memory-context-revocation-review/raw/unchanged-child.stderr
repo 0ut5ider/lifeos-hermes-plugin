@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-admission-closure/raw/probe_children.py", line 52, in <module>
+    f.runtime.admit(f.metadata(),**f.route,is_first_turn=False)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 85, in admit
+    self._refuse_inactive_context(session_id or metadata.get('HERMES_SESSION_ID', ''),
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                  os.environ.get('LIFEOS_MEMORY_CONTEXT', ''))
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_runtime.py", line 115, in _refuse_inactive_context
+    raise MemoryAdmissionError('Memory ownership changed for retained context. Start a new conversation.')
+lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory ownership changed for retained context. Start a new conversation.

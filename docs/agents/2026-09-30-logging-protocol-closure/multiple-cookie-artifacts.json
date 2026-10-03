@@ -1,0 +1,997 @@
+[
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "1c0c206920874b0aa04c209522698d65",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 1,
+      "time_utc": "2026-09-30T16:33:40.389582+00:00",
+      "monotonic_ns": 433392499914910,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "process.initialized",
+      "data_ref": {
+        "sha256": "b077337d6f4a3696ad24fd4c7bb53f6f829debb0a593e822967f712788e60428",
+        "path": "artifacts/sha256/b0/77337d6f4a3696ad24fd4c7bb53f6f829debb0a593e822967f712788e60428.json.gz",
+        "bytes": 1944
+      }
+    },
+    "value": {
+      "argv": [
+        "-c"
+      ],
+      "capture_sources_actual": {
+        "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+        "analysis.py": "6d2d23be5778b99976018fab81597fec905fda2f3d490c41afc22e3720779dc4",
+        "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+        "instrument.py": "e4cb288785b4ca9a0e07206fd6924a1d3e464ae1c38d96fe803e8a2ae27699ca",
+        "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+        "store.py": "24f18190afecd2088f0aec0824c840aa73a378e2aee16b9a9f805278c2932385"
+      },
+      "config": {
+        "capture_sources": {
+          "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+          "analysis.py": "6d2d23be5778b99976018fab81597fec905fda2f3d490c41afc22e3720779dc4",
+          "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+          "instrument.py": "e4cb288785b4ca9a0e07206fd6924a1d3e464ae1c38d96fe803e8a2ae27699ca",
+          "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+          "store.py": "24f18190afecd2088f0aec0824c840aa73a378e2aee16b9a9f805278c2932385"
+        },
+        "enabled": true,
+        "fingerprints": {
+          "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py": "9066163167b30d5f123e1afc9af8d9aa7374446210d8de7d80bdbe1cdf75aec5",
+          "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bin/hook_runner.py": "1b18a694c54a417279b7321edf8c5b1e4d9f4da7bd847f4d79ca0c8528ee0680",
+          "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bridge.py": "caf8227b20402b82d8ad5b8f2aa8f1d45328e3fc345c5135125c77bb2685991b",
+          "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/remote_hooks.py": "7335cb146664da7ec588c5b09d5f836cef0b4da4cb72d8ec06d99a93bf5923cc"
+        },
+        "host_root": "",
+        "plugin_root": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge",
+        "root": "/tmp/tmpqzbym8mu/capture",
+        "run_id": "test-run"
+      },
+      "prefix": "/usr",
+      "python": "3.14.7 (main, Aug 10 2026, 00:00:00) [GCC 16.1.1 20260515 (Red Hat 16.1.1-2)]"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "5d51c66ce6ab45b29d42f24e96ce2c6f",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 2,
+      "time_utc": "2026-09-30T16:33:40.483366+00:00",
+      "monotonic_ns": 433392593695810,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "instrumentation.loaded",
+      "data_ref": {
+        "sha256": "479f4a35b26f6dd32fe2a5011af66a5ad77e105caa723215a7a72d6d8c13f52b",
+        "path": "artifacts/sha256/47/9f4a35b26f6dd32fe2a5011af66a5ad77e105caa723215a7a72d6d8c13f52b.json.gz",
+        "bytes": 166
+      }
+    },
+    "value": {
+      "path": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bridge.py",
+      "sha256": "caf8227b20402b82d8ad5b8f2aa8f1d45328e3fc345c5135125c77bb2685991b"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "c097ba52fbd546f7944c4b015a2ce9f8",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 3,
+      "time_utc": "2026-09-30T16:33:40.487107+00:00",
+      "monotonic_ns": 433392597431096,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "instrumentation.loaded",
+      "data_ref": {
+        "sha256": "840095fb849ed541c3ad84038f348d372f4e8c1ea4310e0903e91b3fd41526ee",
+        "path": "artifacts/sha256/84/0095fb849ed541c3ad84038f348d372f4e8c1ea4310e0903e91b3fd41526ee.json.gz",
+        "bytes": 168
+      }
+    },
+    "value": {
+      "path": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py",
+      "sha256": "9066163167b30d5f123e1afc9af8d9aa7374446210d8de7d80bdbe1cdf75aec5"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "84f052d5ccab46088ed72f24a6a6999f",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 4,
+      "time_utc": "2026-09-30T16:33:40.488456+00:00",
+      "monotonic_ns": 433392598777371,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "bridge.initialized",
+      "data_ref": {
+        "sha256": "bf17d3b25b60a670ba7022bb05e9fb9bc3bb742adc33011a359ec928a69aada0",
+        "path": "artifacts/sha256/bf/17d3b25b60a670ba7022bb05e9fb9bc3bb742adc33011a359ec928a69aada0.json.gz",
+        "bytes": 2915
+      }
+    },
+    "value": {
+      "environment": {
+        "BUN_INSTALL": "/home/outsider/.bun",
+        "CLAUDE_AGENT_SDK_VERSION": "0.3.276",
+        "CODEX_CI": "1",
+        "CODEX_SESSION_ID": "01a0dfb9-8a69-74a1-aea9-5198bf3b7d37",
+        "CODEX_THREAD_ID": "01a0f312-f829-7040-85c5-34e3503f3755",
+        "CODEX_VERSION": "0.159.2",
+        "COLORTERM": "truecolor",
+        "DBUS_SESSION_BUS_ADDRESS": "unix:path=/run/user/1000/bus",
+        "DEBUGINFOD_IMA_CERT_PATH": "/etc/keys/ima:",
+        "DEBUGINFOD_URLS": "ima:enforcing https://debuginfod.fedoraproject.org/ ima:ignore ",
+        "EDITOR": "/usr/bin/nano",
+        "GH_PAGER": "cat",
+        "GIT_PAGER": "cat",
+        "HISTCONTROL": "ignoredups",
+        "HISTSIZE": "1000",
+        "HOME": "/home/outsider",
+        "HOSTNAME": "localhost",
+        "INVOCATION_ID": "524a7422a5054c8ab6d9d02ade3677e3",
+        "JAVA_HOME": "/usr/lib/jvm/zulu-21#",
+        "LANG": "C.UTF-8",
+        "LC_CTYPE": "C.UTF-8",
+        "LESSOPEN": "||/usr/bin/lesspipe.sh %s",
+        "LIFEOS_DIR": "/tmp/tmpqzbym8mu/LIFEOS",
+        "LOGNAME": "outsider",
+        "MAIL": "/var/spool/mail/outsider",
+        "MANAGERPID": "854748",
+        "MANAGERPIDFDID": "857831",
+        "MEMORY_PRESSURE_WATCH": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/t3code.service/memory.pressure",
+        "MEMORY_PRESSURE_WRITE": "c29tZSAyMDAwMDAgMjAwMDAwMAA=",
+        "NO_COLOR": "1",
+        "NVM_BIN": "/home/outsider/.nvm/versions/node/v22.22.3/bin",
+        "NVM_CD_FLAGS": "",
+        "NVM_DIR": "/home/outsider/.nvm",
+        "NVM_INC": "/home/outsider/.nvm/versions/node/v22.22.3/include/node",
+        "NoDefaultCurrentDirectoryInExePath": "1",
+        "PAGER": "cat",
+        "PATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bin:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.npm-global/bin:/home/outsider/.local/bin:/home/outsider/bin:/home/outsider/.codex/packages/standalone/releases/0.159.2-x86_64-unknown-linux-musl/codex-path:/home/outsider/.codex/tmp/arg0/codex-arg0ludYkY:/home/outsider/.bun/bin:/home/outsider/.local/bin:/home/outsider/.opencode/bin:/home/outsider/.cargo/bin:/home/outsider/.npm-global/bin:/home/outsider/bin:/home/outsider/.nvm/versions/node/v22.22.3/bin:/usr/local/bin:/usr/bin:/usr/local/sbin:/usr/sbin",
+        "PWD": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+        "PYTHONPATH": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development:/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+        "SHELL": "/bin/bash",
+        "SHLVL": "1",
+        "SYSTEMD_EXEC_PID": "2140614",
+        "T3CODE_HOME": "/home/outsider/.t3",
+        "T3CODE_HOST": "100.68.139.37",
+        "T3CODE_PORT": "3773",
+        "T3_BOOT_SERVICE_UNIT": "t3code.service",
+        "T3_MCP_BEARER_TOKEN": "[REDACTED]",
+        "T3_SERVICE_LAUNCHER_CONTEXT": "{\"protocol\":3,\"childVersion\":\"0.0.45-nightly.20260930.2468\"}",
+        "TERM": "dumb",
+        "USER": "outsider",
+        "XDG_DATA_DIRS": "/home/outsider/.local/share/flatpak/exports/share:/var/lib/flatpak/exports/share:/usr/local/share/:/usr/share/",
+        "XDG_RUNTIME_DIR": "/run/user/1000",
+        "_": "/usr/bin/python3"
+      },
+      "hooks": {
+        "PreToolUse": [
+          {
+            "hooks": [
+              {
+                "type": "http",
+                "url": "http://127.0.0.1:46287/"
+              }
+            ]
+          }
+        ]
+      },
+      "root": "/tmp/tmpqzbym8mu",
+      "settings_path": "/tmp/tmpqzbym8mu/settings.json"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "1a8d03a3b12a45fa8f59bf3f9e4a0c6a",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 5,
+      "time_utc": "2026-09-30T16:33:40.488926+00:00",
+      "monotonic_ns": 433392599248983,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "inventory.observed",
+      "inventory_scope": "configured_user_hooks",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "data_ref": {
+        "sha256": "0f8c6acc98a9c960f98df4a7dbceea9a24c0ad81ad308e993192d8c47b51f500",
+        "path": "artifacts/sha256/0f/8c6acc98a9c960f98df4a7dbceea9a24c0ad81ad308e993192d8c47b51f500.json.gz",
+        "bytes": 689
+      }
+    },
+    "value": {
+      "event": "PreToolUse",
+      "groups": [
+        {
+          "capture_source": {
+            "group_index": 0,
+            "origin_observed": true,
+            "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+            "target_kind": "local"
+          },
+          "hooks": [
+            {
+              "type": "http",
+              "url": "http://127.0.0.1:46287/"
+            }
+          ]
+        }
+      ],
+      "registrations": [
+        {
+          "asynchronous": false,
+          "group_index": 0,
+          "hook": {
+            "type": "http",
+            "url": "http://127.0.0.1:46287/"
+          },
+          "hook_index": 0,
+          "hook_kind": "http",
+          "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+          "matcher": "",
+          "native_event": "PreToolUse",
+          "origin_observed": true,
+          "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+          "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+          "target_kind": "local"
+        }
+      ]
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "cb3d08b951cd4afa8090a575f800e0b0",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 6,
+      "time_utc": "2026-09-30T16:33:40.489344+00:00",
+      "monotonic_ns": 433392599664719,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "bridge_callback.entered",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": null,
+      "span_id": "7a77e4809a784cf9913cffc38791988e",
+      "data_ref": {
+        "sha256": "aa9b4a207e2261cb8cdf4229ee6f1b19c4ff7ad8dfe8cb01207cdab6c2784c43",
+        "path": "artifacts/sha256/aa/9b4a207e2261cb8cdf4229ee6f1b19c4ff7ad8dfe8cb01207cdab6c2784c43.json.gz",
+        "bytes": 138
+      }
+    },
+    "value": {
+      "args": {
+        "command": "pwd"
+      },
+      "self": {
+        "unsupported_type": "lifeos_hook_bridge.bridge.HookBridge"
+      },
+      "session_id": "cookie",
+      "tool_name": "terminal"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "4f5e0e9778014a52ba45d6fad7cbaea3",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 7,
+      "time_utc": "2026-09-30T16:33:40.490599+00:00",
+      "monotonic_ns": 433392600920421,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "translation.entered",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "7a77e4809a784cf9913cffc38791988e",
+      "span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "data_ref": {
+        "sha256": "0a056cf1c555ff171b36a4294972559d228625fb8869eeb27618d8d596f03fc3",
+        "path": "artifacts/sha256/0a/056cf1c555ff171b36a4294972559d228625fb8869eeb27618d8d596f03fc3.json.gz",
+        "bytes": 422
+      }
+    },
+    "value": {
+      "alias_input": null,
+      "event": "PreToolUse",
+      "matcher_alias": "",
+      "payload": {
+        "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+        "hook_event_name": "PreToolUse",
+        "session_id": "cookie",
+        "tool_input": {
+          "command": "pwd"
+        },
+        "tool_name": "Bash",
+        "transcript_path": "/tmp/tmpqzbym8mu/LIFEOS/MEMORY/STATE/hermes-transcripts/cookie.jsonl"
+      },
+      "self": {
+        "unsupported_type": "lifeos_hook_bridge.bridge.HookBridge"
+      },
+      "task_id": "",
+      "tool_name": "Bash"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "928ca528a75543e5892b7ddc4215e58b",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 8,
+      "time_utc": "2026-09-30T16:33:40.491588+00:00",
+      "monotonic_ns": 433392601910555,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "inventory.observed",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "7a77e4809a784cf9913cffc38791988e",
+      "span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "data_ref": {
+        "sha256": "0f8c6acc98a9c960f98df4a7dbceea9a24c0ad81ad308e993192d8c47b51f500",
+        "path": "artifacts/sha256/0f/8c6acc98a9c960f98df4a7dbceea9a24c0ad81ad308e993192d8c47b51f500.json.gz",
+        "bytes": 689
+      }
+    },
+    "value": {
+      "event": "PreToolUse",
+      "groups": [
+        {
+          "capture_source": {
+            "group_index": 0,
+            "origin_observed": true,
+            "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+            "target_kind": "local"
+          },
+          "hooks": [
+            {
+              "type": "http",
+              "url": "http://127.0.0.1:46287/"
+            }
+          ]
+        }
+      ],
+      "registrations": [
+        {
+          "asynchronous": false,
+          "group_index": 0,
+          "hook": {
+            "type": "http",
+            "url": "http://127.0.0.1:46287/"
+          },
+          "hook_index": 0,
+          "hook_kind": "http",
+          "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+          "matcher": "",
+          "native_event": "PreToolUse",
+          "origin_observed": true,
+          "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+          "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+          "target_kind": "local"
+        }
+      ]
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "44a4ff192b614b71b19c158cba8a1402",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 9,
+      "time_utc": "2026-09-30T16:33:40.492040+00:00",
+      "monotonic_ns": 433392602362588,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "registration.evaluated",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "7a77e4809a784cf9913cffc38791988e",
+      "span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "data_ref": {
+        "sha256": "ad64dcdbbb9af03a94d2ec70808693db0e445e4eb3fafe7ab01ddc29d11ae28f",
+        "path": "artifacts/sha256/ad/64dcdbbb9af03a94d2ec70808693db0e445e4eb3fafe7ab01ddc29d11ae28f.json.gz",
+        "bytes": 56
+      }
+    },
+    "value": {
+      "hook": {
+        "type": "http",
+        "url": "http://127.0.0.1:46287/"
+      }
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "694d769892824fdcbaf310ac4a7ab332",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 10,
+      "time_utc": "2026-09-30T16:33:40.492912+00:00",
+      "monotonic_ns": 433392603233415,
+      "pid": 2948226,
+      "thread_id": 140357391275712,
+      "stage": "hook.started",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "7a77e4809a784cf9913cffc38791988e",
+      "span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "data_ref": {
+        "sha256": "612362dfefde2936a2657f52d09a81957f304c9d0f0c43264c0b28dae5eea4a9",
+        "path": "artifacts/sha256/61/2362dfefde2936a2657f52d09a81957f304c9d0f0c43264c0b28dae5eea4a9.json.gz",
+        "bytes": 383
+      }
+    },
+    "value": {
+      "arguments": [
+        {
+          "type": "http",
+          "url": "http://127.0.0.1:46287/"
+        },
+        {
+          "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+          "hook_event_name": "PreToolUse",
+          "session_id": "cookie",
+          "tool_input": {
+            "command": "pwd"
+          },
+          "tool_name": "Bash",
+          "transcript_path": "/tmp/tmpqzbym8mu/LIFEOS/MEMORY/STATE/hermes-transcripts/cookie.jsonl"
+        }
+      ],
+      "hook": {
+        "type": "http",
+        "url": "http://127.0.0.1:46287/"
+      },
+      "kwargs": {}
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "62ad17e41a0947e18a2774612cf2312c",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 11,
+      "time_utc": "2026-09-30T16:33:40.493327+00:00",
+      "monotonic_ns": 433392603647998,
+      "pid": 2948226,
+      "thread_id": 140357391275712,
+      "stage": "run_http.entered",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "span_id": "4b70882822ef43a694780e4229c96ba2",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "data_ref": {
+        "sha256": "b547495cb012cf33ff6d4d84ec69ad9c789a098e3ffbfe8a5e6fd34c3fe72695",
+        "path": "artifacts/sha256/b5/47495cb012cf33ff6d4d84ec69ad9c789a098e3ffbfe8a5e6fd34c3fe72695.json.gz",
+        "bytes": 319
+      }
+    },
+    "value": {
+      "hook": {
+        "type": "http",
+        "url": "http://127.0.0.1:46287/"
+      },
+      "payload": {
+        "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+        "hook_event_name": "PreToolUse",
+        "session_id": "cookie",
+        "tool_input": {
+          "command": "pwd"
+        },
+        "tool_name": "Bash",
+        "transcript_path": "/tmp/tmpqzbym8mu/LIFEOS/MEMORY/STATE/hermes-transcripts/cookie.jsonl"
+      }
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "a7932b4cab574de48d26636ae76a7e84",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 12,
+      "time_utc": "2026-09-30T16:33:40.497966+00:00",
+      "monotonic_ns": 433392608289917,
+      "pid": 2948226,
+      "thread_id": 140357391275712,
+      "stage": "http.request",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "span_id": "4b70882822ef43a694780e4229c96ba2",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "data_ref": {
+        "sha256": "ff56a567c29a080f4522b173bfe34e7911f6be5f45e13b89eecae98c6a9853d6",
+        "path": "artifacts/sha256/ff/56a567c29a080f4522b173bfe34e7911f6be5f45e13b89eecae98c6a9853d6.json.gz",
+        "bytes": 495
+      }
+    },
+    "value": {
+      "body": {
+        "bytes": "eyJob29rX2V2ZW50X25hbWUiOiAiUHJlVG9vbFVzZSIsICJzZXNzaW9uX2lkIjogImNvb2tpZSIsICJ0cmFuc2NyaXB0X3BhdGgiOiAiL3RtcC90bXBxemJ5bThtdS9MSUZFT1MvTUVNT1JZL1NUQVRFL2hlcm1lcy10cmFuc2NyaXB0cy9jb29raWUuanNvbmwiLCAiY3dkIjogIi9ob21lL291dHNpZGVyL1Byb2plY3RzL0hlcm1lc19hZ2VudC9MaWZlT1NfcGx1Z2luIiwgInRvb2xfbmFtZSI6ICJCYXNoIiwgInRvb2xfaW5wdXQiOiB7ImNvbW1hbmQiOiAicHdkIn19",
+        "encoding": "base64"
+      },
+      "headers": {
+        "Content-type": "application/json"
+      },
+      "options": {
+        "timeout": 5
+      },
+      "url": "http://127.0.0.1:46287/"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "2ca58e981689454fa5af9410029973bb",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 13,
+      "time_utc": "2026-09-30T16:33:40.501312+00:00",
+      "monotonic_ns": 433392611634776,
+      "pid": 2948226,
+      "thread_id": 140357391275712,
+      "stage": "http.response_read",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "span_id": "4b70882822ef43a694780e4229c96ba2",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "observed_bytes": 92,
+      "read_limit": 65536,
+      "completeness": "end_of_read",
+      "data_ref": {
+        "sha256": "633bb237446afa50cb3395e51101de250077d75fb84745522ca90bc6442ffde1",
+        "path": "artifacts/sha256/63/3bb237446afa50cb3395e51101de250077d75fb84745522ca90bc6442ffde1.json.gz",
+        "bytes": 252
+      }
+    },
+    "value": {
+      "body": {
+        "bytes": "eyJlY2hvIjogIltSRURBQ1RFRF0iLCAic2Vjb25kX2VjaG8iOiAiW1JFREFDVEVEXSJ9",
+        "encoding": "base64"
+      },
+      "headers": {
+        "Content-Length": [
+          "92"
+        ],
+        "Date": [
+          "Wed, 30 Sep 2026 16:33:40 GMT"
+        ],
+        "Server": [
+          "BaseHTTP/0.6 Python/3.14.7"
+        ],
+        "Set-Cookie": "[REDACTED]"
+      }
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "825a4fb7bf7e48fb93f1a075806aaa5b",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 14,
+      "time_utc": "2026-09-30T16:33:40.501834+00:00",
+      "monotonic_ns": 433392612156213,
+      "pid": 2948226,
+      "thread_id": 140357391275712,
+      "stage": "run_http.returned",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "span_id": "4b70882822ef43a694780e4229c96ba2",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "duration_ns": 8379479,
+      "evidence_level": "boundary-observed",
+      "data_ref": {
+        "sha256": "8e1166b334da2376eb72fac4fccf3634d6342b93a17140991f56003b00ccd835",
+        "path": "artifacts/sha256/8e/1166b334da2376eb72fac4fccf3634d6342b93a17140991f56003b00ccd835.json.gz",
+        "bytes": 487
+      }
+    },
+    "value": {
+      "effective_arguments": {
+        "hook": {
+          "type": "http",
+          "url": "http://127.0.0.1:46287/"
+        },
+        "payload": {
+          "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+          "hook_event_name": "PreToolUse",
+          "session_id": "cookie",
+          "tool_input": {
+            "command": "pwd"
+          },
+          "tool_name": "Bash",
+          "transcript_path": "/tmp/tmpqzbym8mu/LIFEOS/MEMORY/STATE/hermes-transcripts/cookie.jsonl"
+        }
+      },
+      "result": {
+        "args": [
+          "http://127.0.0.1:46287/"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "{\"echo\": \"[REDACTED]\", \"second_echo\": \"[REDACTED]\"}"
+      }
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "2a41525eb8184197a7a912a58ba2912a",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 15,
+      "time_utc": "2026-09-30T16:33:40.502230+00:00",
+      "monotonic_ns": 433392612551649,
+      "pid": 2948226,
+      "thread_id": 140357391275712,
+      "stage": "hook.completed",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "7a77e4809a784cf9913cffc38791988e",
+      "span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "status": "completed",
+      "exit_code": 0,
+      "duration_ns": 9516344,
+      "evidence_level": "hook-result",
+      "data_ref": {
+        "sha256": "a14174d87b76273fc77edc94e160f56b23b0fab7a1d43226bf344b3976f2005e",
+        "path": "artifacts/sha256/a1/4174d87b76273fc77edc94e160f56b23b0fab7a1d43226bf344b3976f2005e.json.gz",
+        "bytes": 145
+      }
+    },
+    "value": {
+      "result": {
+        "args": [
+          "http://127.0.0.1:46287/"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "{\"echo\": \"[REDACTED]\", \"second_echo\": \"[REDACTED]\"}"
+      }
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "a9aa25d82a164e2a8708d597a41cffc4",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 16,
+      "time_utc": "2026-09-30T16:33:40.502796+00:00",
+      "monotonic_ns": 433392613118082,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "response.parsed.entered",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "span_id": "0fa94ccf02434b90953d00784640f5d9",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "data_ref": {
+        "sha256": "f8fcd58fa740ed33e6207c47a9c7a464244a289a0906851a1857acc0a81ceade",
+        "path": "artifacts/sha256/f8/fcd58fa740ed33e6207c47a9c7a464244a289a0906851a1857acc0a81ceade.json.gz",
+        "bytes": 72
+      }
+    },
+    "value": {
+      "stdout": "{\"echo\": \"[REDACTED]\", \"second_echo\": \"[REDACTED]\"}"
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "c57183fa2da044518dadc088edce8374",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 17,
+      "time_utc": "2026-09-30T16:33:40.503206+00:00",
+      "monotonic_ns": 433392613526964,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "response.parsed.returned",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "span_id": "0fa94ccf02434b90953d00784640f5d9",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "group_index": 0,
+      "settings_origin": "/tmp/tmpqzbym8mu/settings.json",
+      "origin_observed": true,
+      "target_kind": "local",
+      "inventory_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604",
+      "registration_id": "3d0007e41ef5cfca5b37de33be876286f4605858682aaad47cc9c85086d86604:PreToolUse:0:0",
+      "hook_index": 0,
+      "hook_kind": "http",
+      "asynchronous": false,
+      "matcher": "",
+      "invocation_id": "1f5760e352a94f0bb836d528c26568cc",
+      "duration_ns": 435894,
+      "evidence_level": "boundary-observed",
+      "decision": null,
+      "status": "parsed",
+      "data_ref": {
+        "sha256": "fb591adf04d45270e9e8679a644c5f0d5e48dcf3c2bde7f26f0ea490f0f9f5ad",
+        "path": "artifacts/sha256/fb/591adf04d45270e9e8679a644c5f0d5e48dcf3c2bde7f26f0ea490f0f9f5ad.json.gz",
+        "bytes": 154
+      }
+    },
+    "value": {
+      "effective_arguments": {
+        "stdout": "{\"echo\": \"[REDACTED]\", \"second_echo\": \"[REDACTED]\"}"
+      },
+      "result": {
+        "echo": "[REDACTED]",
+        "second_echo": "[REDACTED]"
+      }
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "5a6acd21e2cc4f75b7d1883f4c1900a0",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 18,
+      "time_utc": "2026-09-30T16:33:40.503847+00:00",
+      "monotonic_ns": 433392614168482,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "translation.returned",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": "7a77e4809a784cf9913cffc38791988e",
+      "span_id": "98302ad590ff4d22aea264b1a0e5c6ec",
+      "task_id": "",
+      "native_event": "PreToolUse",
+      "dispatch_id": "c6a94eaede324a42b3fc4a2a595db13a",
+      "duration_ns": 13081473,
+      "evidence_level": "boundary-observed",
+      "data_ref": {
+        "sha256": "0a1f081dc105a740a9e77d514ca4e832b1b760127943a89a29f8b480b805000b",
+        "path": "artifacts/sha256/0a/1f081dc105a740a9e77d514ca4e832b1b760127943a89a29f8b480b805000b.json.gz",
+        "bytes": 643
+      }
+    },
+    "value": {
+      "effective_arguments": {
+        "alias_input": null,
+        "event": "PreToolUse",
+        "matcher_alias": "",
+        "payload": {
+          "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+          "hook_event_name": "PreToolUse",
+          "session_id": "cookie",
+          "tool_input": {
+            "command": "pwd"
+          },
+          "tool_name": "Bash",
+          "transcript_path": "/tmp/tmpqzbym8mu/LIFEOS/MEMORY/STATE/hermes-transcripts/cookie.jsonl"
+        },
+        "self": {
+          "unsupported_type": "lifeos_hook_bridge.bridge.HookBridge"
+        },
+        "task_id": "",
+        "tool_name": "Bash"
+      },
+      "result": [
+        [
+          {
+            "args": [
+              "http://127.0.0.1:46287/"
+            ],
+            "returncode": 0,
+            "stderr": "",
+            "stdout": "{\"echo\": \"[REDACTED]\", \"second_echo\": \"[REDACTED]\"}"
+          },
+          {
+            "echo": "[REDACTED]",
+            "second_echo": "[REDACTED]"
+          }
+        ]
+      ]
+    }
+  },
+  {
+    "event": {
+      "schema_version": 1,
+      "event_id": "8f68e5d2d95043f9a9c8f3963e8f2917",
+      "run_id": "test-run",
+      "process_id": "0946bbbcc17644c08c4b196a4bf50fe2",
+      "sequence": 19,
+      "time_utc": "2026-09-30T16:33:40.504153+00:00",
+      "monotonic_ns": 433392614474277,
+      "pid": 2948226,
+      "thread_id": 140357426670528,
+      "stage": "bridge_callback.returned",
+      "session_id": "cookie",
+      "callback_id": "0bf4df2aadc441888d8ee49254d336a0",
+      "bridge_method": "pre_tool_call",
+      "hermes_event": "pre_tool_call",
+      "parent_span_id": null,
+      "span_id": "7a77e4809a784cf9913cffc38791988e",
+      "duration_ns": 14801994,
+      "evidence_level": "boundary-observed",
+      "data_ref": {
+        "sha256": "3784efc579fcd0a81d7dc2297381090aa6b5b8e27893e36eb81f9a88ec27be21",
+        "path": "artifacts/sha256/37/84efc579fcd0a81d7dc2297381090aa6b5b8e27893e36eb81f9a88ec27be21.json.gz",
+        "bytes": 176
+      }
+    },
+    "value": {
+      "effective_arguments": {
+        "args": {
+          "command": "pwd"
+        },
+        "self": {
+          "unsupported_type": "lifeos_hook_bridge.bridge.HookBridge"
+        },
+        "session_id": "cookie",
+        "tool_name": "terminal"
+      },
+      "result": null
+    }
+  }
+]

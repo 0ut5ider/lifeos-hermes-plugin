@@ -1,0 +1,44 @@
+EFFF.
+======================================================================
+ERROR: test_restore_preserves_external_memory_and_audit_changes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_external_memory_and_audit_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 183, in test_restore_preserves_external_memory_and_audit_changes
+    result = restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_transaction.py", line 279, in restore_update
+    manifest = validate_restore(snapshot)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_transaction.py", line 270, in validate_restore
+    raise UpdateTransactionError("User data changed after update; automatic restore refused")
+lifeos_hook_bridge.update_transaction.UpdateTransactionError: User data changed after update; automatic restore refused
+
+======================================================================
+FAIL: test_restore_refuses_replaced_external_data_bindings (test_update_transaction.UpdateTransactionTests.test_restore_refuses_replaced_external_data_bindings) (mutation='link')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 227, in test_restore_refuses_replaced_external_data_bindings
+    with self.assertRaisesRegex(UpdateTransactionError, 'User data binding changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_refuses_replaced_external_data_bindings (test_update_transaction.UpdateTransactionTests.test_restore_refuses_replaced_external_data_bindings) (mutation='target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 227, in test_restore_refuses_replaced_external_data_bindings
+    with self.assertRaisesRegex(UpdateTransactionError, 'User data binding changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_refuses_replaced_external_data_bindings (test_update_transaction.UpdateTransactionTests.test_restore_refuses_replaced_external_data_bindings) (mutation='prior-link')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 227, in test_restore_refuses_replaced_external_data_bindings
+    with self.assertRaisesRegex(UpdateTransactionError, 'User data binding changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.092s
+
+FAILED (failures=3, errors=1)

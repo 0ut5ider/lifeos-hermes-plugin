@@ -3,14 +3,29 @@
 # ABOUTME: Emits the small Claude CLI JSON envelope that LifeOS Inference.ts reads.
 
 import argparse
+import importlib
 import base64
 import json
 import mimetypes
 import os
 import sys
+import types
 import urllib.error
 import urllib.request
 from pathlib import Path
+
+
+def _memory_runtime():
+    if __package__:
+        runtime = importlib.import_module(__package__.rsplit('.', 1)[0] + '.memory_runtime')
+    else:
+        package = types.ModuleType('lifeos_child_memory')
+        package.__path__ = [str(Path(__file__).resolve().parents[1])]
+        sys.modules[package.__name__] = package
+        runtime = importlib.import_module(package.__name__ + '.memory_runtime')
+    home = Path(os.environ.get('HERMES_HOME', str(Path.home() / '.hermes')))
+    configuration = Path(os.environ.get('LIFEOS_MEMORY_CONFIGURATION', str(home / 'lifeos-memory.json')))
+    return runtime.MemoryRuntime(configuration)
 
 
 def configure_arguments(parser: argparse.ArgumentParser) -> None:
@@ -88,6 +103,13 @@ def _run_hermes_provider(args: argparse.Namespace, system_prompt: str,
                          content: str | list[dict[str, object]], provider: str) -> int:
     from agent.auxiliary_client import call_llm, extract_content_or_reasoning
 
+    runtime = _memory_runtime()
+    if runtime.enabled() or os.environ.get('LIFEOS_MEMORY_CONTEXT'):
+        from hermes_cli.middleware import REQUIRED_MIDDLEWARE_API_VERSION
+        from hermes_cli.plugins import has_middleware
+        if REQUIRED_MIDDLEWARE_API_VERSION != 1 or not has_middleware('llm_admission'):
+            raise ValueError('LifeOS child inference needs required model-request checks')
+
     response = call_llm(
         provider=provider, model=args.model,
         messages=[{"role": "system", "content": system_prompt},
@@ -129,6 +151,12 @@ def main(args: argparse.Namespace | None = None) -> int:
         "system": system_prompt,
         "messages": [{"role": "user", "content": content}],
     }
+    try:
+        _memory_runtime().check_call(request=request_body, provider='lifeos-local-gateway',
+                                     model=args.model, base_url=base_url, api_mode='anthropic',
+                                     aux_task='lifeos_child')
+    except RuntimeError as error:
+        raise ValueError(str(error)) from error
     endpoint = base_url + ("/messages" if base_url.endswith("/v1") else "/v1/messages")
     request = urllib.request.Request(
         endpoint,

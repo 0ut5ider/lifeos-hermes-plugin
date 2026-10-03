@@ -1,0 +1,130 @@
+# ABOUTME: Tests shared memory tool semantics with native synthetic LifeOS records.
+# ABOUTME: Verifies server-bound grants, disabled sharing, and revocation on an open service.
+
+import json
+import copy
+from concurrent.futures import ThreadPoolExecutor
+from pathlib import Path
+import unittest
+
+from lifeos_hook_bridge.memory_service import MemoryService, MemoryConfiguration
+import test_memory_native as native_fixture
+
+OWNER = native_fixture.OWNER
+
+
+class MemoryServiceTests(unittest.TestCase):
+    def setUp(self):
+        self.fixture = native_fixture.NativeMemoryTests()
+        self.fixture.setUp()
+        self.addCleanup(self.fixture.doCleanups)
+        self.config = self.fixture.home / "hermes/memory.json"
+        self.configuration = {
+            "version": 1, "root": str(self.fixture.root), "principal": "owner",
+            "sharing_enabled": False, "accounts": {}, "destinations": {},
+            "clients": {"research": {"enabled": True, "read": ["project"], "write": [],
+                                      "projects": ["lab"], "model_route": "unknown"}},
+        }
+        MemoryConfiguration(self.config).save(self.configuration)
+        self.service = MemoryService(MemoryConfiguration(self.config))
+
+    def test_sharing_starts_disabled_and_caller_arguments_cannot_grant_access(self):
+        self.fixture.remember()
+        result = self.service.call_client("research", "lifeos_memory_search", {"query": "synthetic lab"})
+        self.assertEqual(result["status"], "rejected")
+        result = self.service.call(OWNER, "lifeos_memory_search", {"query": "lab", "caller": "owner"})
+        self.assertEqual(result["status"], "rejected")
+
+    def test_client_reads_the_same_native_fact_and_revocation_applies_immediately(self):
+        saved = self.fixture.remember()
+        self.fixture.remember("RULE: synthetic private lab marker", "private", "principal")
+        self.configuration["sharing_enabled"] = True
+        MemoryConfiguration(self.config).save(self.configuration)
+        first = self.service.call_client("research", "lifeos_memory_search", {"query": "synthetic lab"})
+        self.assertEqual(first["status"], "ok")
+        self.assertEqual(first["results"][0]["reference"], saved["reference"])
+        self.assertNotIn("private", json.dumps(first))
+        self.configuration["clients"]["research"]["enabled"] = False
+        MemoryConfiguration(self.config).save(self.configuration)
+        revoked = self.service.call_client("research", "lifeos_memory_get", {"reference": saved["reference"]})
+        self.assertEqual(revoked["status"], "rejected")
+
+    def test_project_write_grant_cannot_change_principal_memory(self):
+        self.configuration["sharing_enabled"] = True
+        self.configuration["clients"]["research"]["write"] = ["project"]
+        MemoryConfiguration(self.config).save(self.configuration)
+        arguments = {"category": "principal", "content": "RULE: unauthorized identity change", "title": "",
+                     "project": "", "request_id": "identity"}
+        denied = self.service.call_client("research", "lifeos_memory_remember", arguments)
+        self.assertEqual(denied["status"], "rejected")
+        arguments.update(category="project", content="Synthetic shared finding", title="Shared finding", project="lab")
+        saved = self.service.call_client("research", "lifeos_memory_remember", arguments)
+        self.assertEqual(saved["status"], "committed", saved)
+        self.assertEqual(self.fixture.memory.recall(OWNER, "shared finding")[0]["reference"], saved["reference"])
+        self.assertEqual(self.fixture.memory.get(OWNER, saved['reference'])['source'], {'kind': 'explicit', 'session': ''})
+
+    def test_get_obeys_current_revision_and_category_grants(self):
+        saved = self.fixture.remember()
+        corrected = self.fixture.memory.correct(OWNER, saved["reference"], "Synthetic updated project fact", "correct")
+        stale = self.service.call(OWNER, "lifeos_memory_get", {"reference": saved["reference"]})
+        self.assertEqual(stale["status"], "conflict")
+        current = self.service.call(OWNER, "lifeos_memory_get", {"reference": corrected["reference"]})
+        self.assertEqual(current["content"], "Synthetic updated project fact")
+
+    def test_configuration_is_private_and_rejects_identity_write_enrollment(self):
+        self.assertEqual(self.config.stat().st_mode & 0o777, 0o600)
+        self.configuration["clients"]["research"]["write"] = ["principal"]
+        with self.assertRaises(ValueError):
+            MemoryConfiguration(self.config).save(self.configuration)
+
+    def test_atomic_configuration_updates_preserve_revocation_and_other_changes(self):
+        config = MemoryConfiguration(self.config)
+        def change(index):
+            def apply(value):
+                value.setdefault('changes', {})[str(index)] = index
+                if index == 0:
+                    value['clients']['research']['enabled'] = False
+            return config.update(apply)
+        with ThreadPoolExecutor(max_workers=4) as pool:
+            list(pool.map(change, range(12)))
+        result = config.load()
+        self.assertFalse(result['clients']['research']['enabled'])
+        self.assertEqual(len(result['changes']), 12)
+
+    def test_invalid_update_preserves_the_previous_configuration(self):
+        config = MemoryConfiguration(self.config)
+        previous = self.config.read_bytes()
+        with self.assertRaises(ValueError):
+            config.update(lambda value: value.update(ownership_enabled='yes'))
+        self.assertEqual(self.config.read_bytes(), previous)
+
+    def test_one_request_cannot_mix_a_grant_and_a_different_root(self):
+        other = native_fixture.NativeMemoryTests()
+        other.setUp()
+        self.addCleanup(other.doCleanups)
+        other.remember("Synthetic newly private root marker", "private-root")
+        self.configuration["sharing_enabled"] = True
+        MemoryConfiguration(self.config).save(self.configuration)
+        replacement = copy.deepcopy(self.configuration)
+        replacement.update(sharing_enabled=False, root=str(other.root))
+        class RotateAfterRead(MemoryConfiguration):
+            def load(instance):
+                config = super().load()
+                MemoryConfiguration(instance.path).save(replacement)
+                return config
+        service = MemoryService(RotateAfterRead(self.config))
+        first = service.call_client("research", "lifeos_memory_search", {"query": "private root"})
+        self.assertNotIn("Synthetic newly private root marker", json.dumps(first))
+        self.assertEqual(service.call_client("research", "lifeos_memory_search", {"query": "private root"})["status"], "rejected")
+
+    def test_corrupt_metadata_is_reported_unavailable_by_status_and_reads(self):
+        saved = self.fixture.remember()
+        self.fixture.memory.database.write_bytes(b"synthetic invalid sqlite file")
+        for tool, arguments in (("lifeos_memory_status", {}), ("lifeos_memory_search", {"query": "synthetic"}),
+                                ("lifeos_memory_get", {"reference": saved["reference"]})):
+            with self.subTest(tool=tool):
+                self.assertEqual(self.service.call(OWNER, tool, arguments)["status"], "unavailable")
+
+
+if __name__ == "__main__":
+    unittest.main()

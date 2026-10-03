@@ -1,0 +1,99 @@
+test_account_binding_and_principal_are_rechecked_on_same_connection (test_memory_pulse_auth.MemoryPulseAuthTests.test_account_binding_and_principal_are_rechecked_on_same_connection) ... FAIL
+test_anonymous_or_fabricated_identity_never_admits_owner (test_memory_pulse_auth.MemoryPulseAuthTests.test_anonymous_or_fabricated_identity_never_admits_owner) ... ok
+test_bad_bearer_does_not_fall_back_to_valid_cookie (test_memory_pulse_auth.MemoryPulseAuthTests.test_bad_bearer_does_not_fall_back_to_valid_cookie) ... ok
+test_browser_logout_removes_cookie_authority (test_memory_pulse_auth.MemoryPulseAuthTests.test_browser_logout_removes_cookie_authority) ... ok
+test_changed_installation_binding_refuses_private_snapshot (test_memory_pulse_auth.MemoryPulseAuthTests.test_changed_installation_binding_refuses_private_snapshot) ... FAIL
+test_disabled_host_gate_does_not_mint_an_owner_scope (test_memory_pulse_auth.MemoryPulseAuthTests.test_disabled_host_gate_does_not_mint_an_owner_scope) ... FAIL
+test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) ... 
+  test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='snapshot') ... FAIL
+  test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='state') ... FAIL
+  test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='health') ... FAIL
+  test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='runs') ... FAIL
+test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) ... ERROR
+test_read_only_routes_ignore_no_caller_scope_or_source_arguments (test_memory_pulse_auth.MemoryPulseAuthTests.test_read_only_routes_ignore_no_caller_scope_or_source_arguments) ... FAIL
+
+======================================================================
+ERROR: test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 76, in test_password_login_preserves_all_four_governed_views
+    self.assertEqual(self.client.get(self.endpoint + 'snapshot').json()['principalMemory']['entries'],
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'principalMemory'
+
+======================================================================
+FAIL: test_account_binding_and_principal_are_rechecked_on_same_connection (test_memory_pulse_auth.MemoryPulseAuthTests.test_account_binding_and_principal_are_rechecked_on_same_connection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 95, in test_account_binding_and_principal_are_rechecked_on_same_connection
+    self.assertEqual(self.client.get(self.endpoint + 'snapshot').status_code, 200)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200
+
+======================================================================
+FAIL: test_changed_installation_binding_refuses_private_snapshot (test_memory_pulse_auth.MemoryPulseAuthTests.test_changed_installation_binding_refuses_private_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 107, in test_changed_installation_binding_refuses_private_snapshot
+    self.assertEqual(response.status_code, 503, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 503 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_disabled_host_gate_does_not_mint_an_owner_scope (test_memory_pulse_auth.MemoryPulseAuthTests.test_disabled_host_gate_does_not_mint_an_owner_scope)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 90, in test_disabled_host_gate_does_not_mint_an_owner_scope
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 401 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='snapshot')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 73, in test_password_login_preserves_all_four_governed_views
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 73, in test_password_login_preserves_all_four_governed_views
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='health')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 73, in test_password_login_preserves_all_four_governed_views
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_password_login_preserves_all_four_governed_views (test_memory_pulse_auth.MemoryPulseAuthTests.test_password_login_preserves_all_four_governed_views) (view='runs')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 73, in test_password_login_preserves_all_four_governed_views
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+======================================================================
+FAIL: test_read_only_routes_ignore_no_caller_scope_or_source_arguments (test_memory_pulse_auth.MemoryPulseAuthTests.test_read_only_routes_ignore_no_caller_scope_or_source_arguments)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_pulse_auth.py", line 123, in test_read_only_routes_ignore_no_caller_scope_or_source_arguments
+    self.assertEqual(self.client.post(self.endpoint + 'snapshot', json={}).status_code, 405)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 405
+
+----------------------------------------------------------------------
+Ran 8 tests in 3.397s
+
+FAILED (failures=8, errors=1)

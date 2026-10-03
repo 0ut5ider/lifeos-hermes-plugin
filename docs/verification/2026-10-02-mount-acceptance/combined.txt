@@ -1,0 +1,24 @@
+======================================================================
+ERROR: test_lifeos_update_worker (unittest.loader._FailedTest.test_lifeos_update_worker)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_lifeos_update_worker
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test_lifeos_update_worker'
+
+
+======================================================================
+ERROR: test_lifeos_update_transaction (unittest.loader._FailedTest.test_lifeos_update_transaction)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_lifeos_update_transaction
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+ModuleNotFoundError: No module named 'test_lifeos_update_transaction'
+
+
+----------------------------------------------------------------------
+Ran 71 tests in 54.141s
+
+FAILED (errors=2)

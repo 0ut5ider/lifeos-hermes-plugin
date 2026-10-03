@@ -8,6 +8,7 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from lifeos_hook_bridge.install_source import HERMES_PATCHES, LIFEOS_PATCHES
 
@@ -19,6 +20,24 @@ LIFEOS_REPO = os.environ.get("LIFEOS_PREPARE_LIFEOS_REPO")
 
 
 class PrepareSourcesTests(unittest.TestCase):
+    def test_source_branch_name_does_not_prevent_a_fresh_preparation(self):
+        from scripts.prepare_sources import SOURCES, prepare_source
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source'
+            subprocess.run(['git', 'init', '-q', '-b', 'feature/lifeos-hook-parity', str(source)], check=True)
+            (source / 'synthetic.txt').write_text('Synthetic upstream base')
+            subprocess.run(['git', '-C', str(source), 'add', 'synthetic.txt'], check=True)
+            subprocess.run(['git', '-C', str(source), '-c', 'user.name=Synthetic',
+                            '-c', 'user.email=synthetic@example.invalid', 'commit', '-qm', 'Synthetic base'], check=True)
+            base = subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'], text=True).strip()
+            with patch.dict(SOURCES, {'hermes': {'base': base, 'patches': ()}}):
+                result = prepare_source('hermes', source, root / 'prepared')
+            self.assertEqual(result, {'base': base, 'patches': []})
+            self.assertEqual((root / 'prepared/synthetic.txt').read_text(), 'Synthetic upstream base')
+            self.assertEqual(subprocess.check_output(['git', '-C', str(source), 'rev-parse', 'HEAD'],
+                                                     text=True).strip(), base)
+
     def run_prepare(self, hermes: str, lifeos: str, output: Path) -> subprocess.CompletedProcess[str]:
         return subprocess.run(
             [sys.executable, str(SCRIPT), "--hermes-repo", hermes,

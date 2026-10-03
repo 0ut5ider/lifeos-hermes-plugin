@@ -1,0 +1,20 @@
+Commands run during the PR #1 review (2026-10-02). Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Interpreter: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+Fixture: /home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release (all 19 distributed patch SHA-256 values match HEAD; checked with an inline Python hash comparison)
+
+1. Bounded gate, detached: setsid nohup raw/run_gate.sh
+   - 31 unittest modules (the 25 modules of the archived gate plus test_memory_restore, test_memory_mcp,
+     test_memory_sharing, test_memory_service, test_memory_policy, test_memory_context), -W error::ResourceWarning
+   - Result: raw/gate.txt "Ran 337 tests in 240.280s OK", exit 0 (raw/gate.exit). No skips or warnings in output.
+   - development/tests discover: raw/development-tests.txt "Ran 30 tests OK", exit 0.
+2. node --test tests/test_dashboard_ui.cjs tests/test_memory_dashboard_ui.cjs -> raw/dashboard-ui.txt, 11 pass, 0 fail, exit 0.
+3. python -m unittest test_memory_children test_update_transaction -v -> raw/children-update-tests.txt,
+   6 tests OK, 1 skipped (LIFEOS_TASK_HOOK_PATH not set in this ad hoc run; the same case ran in the gate).
+4. Reproductions (synthetic data, temporary directories, local loopback HTTP only):
+   PYTHONDONTWRITEBYTECODE=1 python raw/repro_update_data.py -> raw/repro_update_data.txt
+   PYTHONPATH=.:tests:$LIFEOS_HERMES_SOURCE LIFEOS_MEMORY_SOURCE=... python raw/repro_child_direct.py -> raw/repro_child_direct.txt
+   python raw/repro_recorder_redaction.py -> raw/repro_recorder_redaction.txt
+5. git status --porcelain after all runs: only "?? docs/agents/2026-10-02-opus55-pr1-review/" (no repository changes).
+
+Not run: tests that need .211, .212, .213, SSH to remote hosts, Docker, external credentials, or a real model.
+Historical archived results in docs/verification were not rerun.

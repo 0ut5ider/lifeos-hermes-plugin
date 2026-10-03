@@ -1,0 +1,217 @@
+{
+  "actual_command": {
+    "baseline_exit": 0,
+    "checked_stages": [
+      "hook.completed",
+      "process.completed",
+      "response.parsed.entered",
+      "run_command.returned"
+    ],
+    "credential_leak_stages": [],
+    "event_count": 19,
+    "same_outcome": true,
+    "stderr": {
+      "baseline": "",
+      "traced": ""
+    },
+    "traced_exit": 0
+  },
+  "actual_http": {
+    "baseline_exit": 0,
+    "checked_stages": [
+      "hook.completed",
+      "http.request",
+      "http.response_read",
+      "inventory.observed",
+      "run_http.returned"
+    ],
+    "decoded_credential_leak_stages": [],
+    "event_count": 19,
+    "same_outcome": true,
+    "stderr": {
+      "baseline": "",
+      "traced": ""
+    },
+    "traced_exit": 0
+  },
+  "actual_native_encoded_transport": {
+    "baseline_exit": 0,
+    "credential_leak_stages": [
+      "transport.completed"
+    ],
+    "event_count": 8,
+    "event_stages": [
+      "instrumentation.loaded",
+      "process.initialized",
+      "remote_hook.entered",
+      "remote_hook.returned",
+      "transport.completed",
+      "transport.started"
+    ],
+    "same_outcome": true,
+    "stderr": {
+      "baseline": "",
+      "traced": ""
+    },
+    "traced_exit": 0
+  },
+  "extra_malformed_inventory_mapping": {
+    "analysis_exception": "ProgrammingError",
+    "message": "Error binding parameter 4: type 'list' is not supported"
+  },
+  "extra_malformed_inventory_wrong_registration_list": {
+    "summary": {
+      "capture_failure_processes": 0,
+      "capture_gaps": 0,
+      "events": 2,
+      "hooks": [],
+      "incomplete_invocations": 0,
+      "integrity_issues": {},
+      "known_lost_events": 0,
+      "known_registrations": 0,
+      "note": "Completion is execution evidence, not semantic parity.",
+      "partial_tails": 0,
+      "statuses": {},
+      "unexercised_registrations": []
+    }
+  },
+  "extra_malformed_inventory_wrong_top_level": {
+    "summary": {
+      "capture_failure_processes": 0,
+      "capture_gaps": 0,
+      "events": 2,
+      "hooks": [],
+      "incomplete_invocations": 0,
+      "integrity_issues": {},
+      "known_lost_events": 0,
+      "known_registrations": 0,
+      "note": "Completion is execution evidence, not semantic parity.",
+      "partial_tails": 0,
+      "statuses": {},
+      "unexercised_registrations": []
+    }
+  },
+  "extra_malformed_sequence_overflow": {
+    "analysis_exception": "OverflowError",
+    "message": "Python int too large to convert to SQLite INTEGER"
+  },
+  "failed_hook_summary": {
+    "capture_failure_processes": 0,
+    "capture_gaps": 0,
+    "events": 1,
+    "hooks": [
+      {
+        "failures": 1,
+        "interventions": 0,
+        "max_ms": 0.0001,
+        "p50_ms": 0.0001,
+        "p95_ms": 0.0001,
+        "registration_id": "failed",
+        "successful_executions": 0,
+        "terminal_outcomes": 1
+      }
+    ],
+    "incomplete_invocations": 0,
+    "integrity_issues": {},
+    "known_lost_events": 0,
+    "known_registrations": 0,
+    "note": "Completion is execution evidence, not semantic parity.",
+    "partial_tails": 0,
+    "statuses": {
+      "exception": 1
+    },
+    "unexercised_registrations": []
+  },
+  "host_turn_identity": {
+    "session_retained": true,
+    "turns": [
+      "first-turn",
+      "first-turn",
+      "second-turn",
+      "second-turn"
+    ]
+  },
+  "loss_summary": {
+    "capture_failure_processes": 2,
+    "capture_gaps": 0,
+    "events": 3,
+    "hooks": [],
+    "incomplete_invocations": 0,
+    "integrity_issues": {},
+    "known_lost_events": 3,
+    "known_registrations": 0,
+    "note": "Completion is execution evidence, not semantic parity.",
+    "partial_tails": 0,
+    "statuses": {},
+    "unexercised_registrations": []
+  },
+  "malformed_recovery": {
+    "capture_failure_processes": 0,
+    "capture_gaps": 0,
+    "events": 2,
+    "hooks": [],
+    "incomplete_invocations": 0,
+    "integrity_issues": {
+      "artifact_error": 1,
+      "invalid_event": 4
+    },
+    "known_lost_events": 0,
+    "known_registrations": 0,
+    "note": "Completion is execution evidence, not semantic parity.",
+    "partial_tails": 0,
+    "statuses": {},
+    "unexercised_registrations": []
+  },
+  "origins": {
+    "distinct_origins_distinct_ids": true,
+    "known_registrations": 2,
+    "same_origin_stable_id": true
+  },
+  "source_drift_separate_fixture": {
+    "actual_source_manifest_recorded": true,
+    "baseline_exit": 0,
+    "capture_gap_count": 1,
+    "event_count": 2,
+    "observer_hooks_active": false,
+    "same_outcome": true,
+    "stderr": {
+      "baseline": "",
+      "traced": ""
+    },
+    "traced_exit": 0
+  },
+  "supported_representations": {
+    "bytes": {
+      "leak": false
+    },
+    "command_result": {
+      "leak": false
+    },
+    "dataclass": {
+      "leak": false
+    },
+    "json": {
+      "leak": false
+    },
+    "partial_json": {
+      "leak": false
+    },
+    "timeout_result": {
+      "leak": false
+    }
+  },
+  "url_and_header_declarations": {
+    "0": {
+      "leak": false
+    },
+    "1": {
+      "leak": false
+    },
+    "2": {
+      "leak": false
+    },
+    "3": {
+      "leak": false
+    }
+  }
+}

@@ -1,0 +1,120 @@
+[
+  {
+    "case": "anonymous",
+    "status": 401,
+    "cache": "no-store",
+    "body": {
+      "error": "An authenticated Hermes session is required"
+    }
+  },
+  {
+    "case": "/api/memory",
+    "status": 200,
+    "cache": "no-store",
+    "body": {
+      "ts": "2026-10-02T17:59:39.951Z",
+      "derivedState": "cold",
+      "cadenceConfig": {
+        "turn_threshold": 8,
+        "min_minutes_between": 30,
+        "idle_threshold": 2,
+        "confidence_threshold": 0.7
+      },
+      "reviewState": {
+        "turn_count_since_last_review": 0,
+        "last_review_at": null,
+        "last_message_at": null,
+        "pending_review": false
+      },
+      "health": null,
+      "lastFireCount": 0,
+      "recentFires": [],
+      "pendingProposals": 0,
+      "autoAppliedProposals": 0,
+      "proposalsRecent": [],
+      "recentRuns": [],
+      "principalMemory": {
+        "entries": [],
+        "count": 0,
+        "charsUsed": 0
+      },
+      "daMemory": {
+        "entries": [],
+        "count": 0,
+        "charsUsed": 0
+      }
+    }
+  },
+  {
+    "case": "/api/memory/state",
+    "status": 200,
+    "cache": "no-store",
+    "body": {}
+  },
+  {
+    "case": "/api/memory/health",
+    "status": 200,
+    "cache": "no-store",
+    "body": null
+  },
+  {
+    "case": "/api/memory/runs",
+    "status": 200,
+    "cache": "no-store",
+    "body": []
+  },
+  {
+    "case": "remount",
+    "status": 200,
+    "cache": "no-store",
+    "body": {
+      "ok": true,
+      "exitCode": 0,
+      "output": "\u2713 SOUL.md            37863 chars (cap 100000), digest 89fe07e4f2ba\n\u2713 skills mounted     ~/.claude/skills (55 indexed in soul \u2014 the default routing path)\n\u2713 config.yaml        already current\n\u2713 plugins/lifeos/__init__.py installed\n\u2713 plugins/lifeos/guard.py installed\n\u2713 plugins/lifeos/plugin.yaml installed\n\u2713 plugins/lifeos/policy.json 28 read rules, 41 shell globs, 3 trusted egress hosts\n",
+      "error": null,
+      "mount": {
+        "state": "committed",
+        "restart_required": true
+      }
+    }
+  },
+  {
+    "case": "body-refusal",
+    "status": 400,
+    "cache": "no-store",
+    "body": {
+      "error": "Remount uses the installed owner configuration"
+    }
+  },
+  {
+    "case": "query-refusal",
+    "status": 400,
+    "cache": "no-store",
+    "body": {
+      "error": "Remount uses the installed owner configuration"
+    }
+  },
+  {
+    "case": "unexposed-route",
+    "status": 404,
+    "cache": "no-store",
+    "body": {
+      "error": "This acceptance listener exposes only governed memory views and remount"
+    }
+  },
+  {
+    "case": "cross-origin",
+    "status": 403,
+    "body": {
+      "error": "Use the installed PULSE origin"
+    }
+  },
+  {
+    "case": "session-cleared",
+    "status": 401,
+    "cache": "no-store",
+    "body": {
+      "error": "An authenticated Hermes session is required"
+    }
+  }
+]

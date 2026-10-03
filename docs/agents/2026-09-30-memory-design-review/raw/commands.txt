@@ -1,0 +1,49 @@
+2026-09-30 Independent review source command log
+
+Read local sources:
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+cat notes/2026-09-30-memory-design.md
+cat docs/verification/2026-09-30-memory-design/pinned-source-excerpts.txt
+cat README.md
+cat docs/parity-resolution-plan.md
+wc -l docs/verification/2026-09-30-memory-design/pinned-source-excerpts.txt notes/2026-09-30-memory-design.md README.md
+rg --files /home/outsider/Projects/Hermes_agent/upstream | rg '(MemorySystem.ts|MemoryWriter.ts|MemoryTurnStart.hook.ts|MemoryReviewFire.hook.ts|memory_manager.py|memory_provider.py|memory.*mcp|Memory.*ts)$'
+Result: local upstream supplied multiple worktrees, none used as proof of pinned native source.
+git rev-parse HEAD
+Result: 308010100d354207a9eacab586c406d1eedde6ad
+
+Initial remote revision attempt:
+ssh outsider@192.168.8.212 'sudo -n git -C /home/lifeos-hermes/workspace/hermes-agent rev-parse HEAD'
+Result: Git refused due to dubious ownership. No Git config changed.
+
+Read-only revision check as owning account:
+ssh outsider@192.168.8.212 'sudo -n -u lifeos-hermes git -C /home/lifeos-hermes/workspace/hermes-agent rev-parse HEAD'
+Result: a01564231eb587a28ceca75f7ad6fe8d2fba4b04
+
+All copied remote native files used this command form, with PATH replaced by the following list:
+ssh outsider@192.168.8.212 'sudo -n cat /home/lifeos-hermes/.hermes/PATH' > local raw/BASENAME
+LIFEOS/TOOLS/MemorySystem.ts
+LIFEOS/TOOLS/MemoryWriter.ts
+LIFEOS/TOOLS/MemoryRetriever.ts
+LIFEOS/TOOLS/MemoryTypes.ts
+LIFEOS/TOOLS/KnowledgeSchema.ts
+hooks/MemoryTurnStart.hook.ts
+hooks/MemoryReviewFire.hook.ts
+hooks/LoadMemory.hook.ts
+
+Guessed code-only paths that returned No such file or directory:
+LIFEOS/TOOLS/MemoryReview.ts
+LIFEOS/TOOLS/ProposalSurfacer.ts
+The corresponding raw artifacts are empty and are not evidence.
+
+Hermes code-only source copies used this form:
+ssh outsider@192.168.8.212 'sudo -n cat /home/lifeos-hermes/workspace/hermes-agent/PATH' > local raw/PATH-WITH-DASHES
+agent/memory_manager.py
+agent/memory_provider.py
+plugins/memory/__init__.py
+agent/agent_init.py
+
+Follow-up observations used only rg, sed and cat against the copied local sources. Source evidence is preserved in full and source-hashes.txt pins its bytes. The selected locations are cited by filename and source line in the report.
+sha256sum raw/*.ts raw/*.py > raw/source-hashes.txt
+
+No native tool commands, package commands, bootstrap imports, runtime commands, model calls, tests, records, transcripts, private logs, memory/journal MCP calls, or Discord operations were used.

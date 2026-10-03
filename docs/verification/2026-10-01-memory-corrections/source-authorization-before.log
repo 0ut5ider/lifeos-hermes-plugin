@@ -1,0 +1,199 @@
+test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) ... 
+  test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='principal', operation='correct') ... FAIL
+  test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='principal', operation='forget') ... FAIL
+  test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='assistant', operation='correct') ... FAIL
+  test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='assistant', operation='forget') ... FAIL
+  test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='project', operation='correct') ... FAIL
+  test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='project', operation='forget') ... FAIL
+test_stale_correct_and_forget_do_not_read_sources_before_refusal (test_memory_authorization.MemoryAuthorizationTests.test_stale_correct_and_forget_do_not_read_sources_before_refusal) ... 
+  test_stale_correct_and_forget_do_not_read_sources_before_refusal (test_memory_authorization.MemoryAuthorizationTests.test_stale_correct_and_forget_do_not_read_sources_before_refusal) (operation='correct') ... FAIL
+  test_stale_correct_and_forget_do_not_read_sources_before_refusal (test_memory_authorization.MemoryAuthorizationTests.test_stale_correct_and_forget_do_not_read_sources_before_refusal) (operation='forget') ... FAIL
+
+======================================================================
+FAIL: test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='principal', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 50, in test_denied_correct_and_forget_do_not_read_category_or_project_sources
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-jfjz8ax5/.claude/LIF[146 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='principal', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 50, in test_denied_correct_and_forget_do_not_read_category_or_project_sources
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-jfjz8ax5/.claude/LIF[146 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='assistant', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 50, in test_denied_correct_and_forget_do_not_read_category_or_project_sources
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-jfjz8ax5/.claude/LIF[148 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='assistant', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 50, in test_denied_correct_and_forget_do_not_read_category_or_project_sources
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-jfjz8ax5/.claude/LIF[148 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='project', operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 50, in test_denied_correct_and_forget_do_not_read_category_or_project_sources
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-jfjz8ax5/.claude/LIF[178 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_denied_correct_and_forget_do_not_read_category_or_project_sources (test_memory_authorization.MemoryAuthorizationTests.test_denied_correct_and_forget_do_not_read_category_or_project_sources) (category='project', operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 50, in test_denied_correct_and_forget_do_not_read_category_or_project_sources
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-jfjz8ax5/.claude/LIF[178 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-jfjz8ax5/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_stale_correct_and_forget_do_not_read_sources_before_refusal (test_memory_authorization.MemoryAuthorizationTests.test_stale_correct_and_forget_do_not_read_sources_before_refusal) (operation='correct')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 63, in test_stale_correct_and_forget_do_not_read_sources_before_refusal
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-svkzc74r/.claude/LIF[146 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-svkzc74r/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-svkzc74r/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-svkzc74r/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+======================================================================
+FAIL: test_stale_correct_and_forget_do_not_read_sources_before_refusal (test_memory_authorization.MemoryAuthorizationTests.test_stale_correct_and_forget_do_not_read_sources_before_refusal) (operation='forget')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 63, in test_stale_correct_and_forget_do_not_read_sources_before_refusal
+    result = self.observe(saved['reference'], lambda: getattr(self.memory, operation)(*arguments))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_authorization.py", line 37, in observe
+    self.assertEqual(self.events, [], 'A denied or stale request opens the native source')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [('/tmp/native-memory-svkzc74r/.claude/LIF[146 chars]288)] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+('/tmp/native-memory-svkzc74r/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md', 'r', 524288)
+
++ []
+- [('/tmp/native-memory-svkzc74r/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   'r',
+-   524288),
+-  ('/tmp/native-memory-svkzc74r/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+-   None,
+-   524288)] : A denied or stale request opens the native source
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.805s
+
+FAILED (failures=8)

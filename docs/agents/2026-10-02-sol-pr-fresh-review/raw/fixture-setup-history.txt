@@ -1,0 +1,9 @@
+Fixture setup history, reviewer record reconstructed from tool results
+
+1. The first nohup background launch did not start the test runner before its shell process group exited. The runner output stayed empty, and expected private HOME directories did not exist. No test result came from that launch.
+2. The reviewer relaunched the same runner with setsid -f. The runner completed all four selections and created raw/.done.
+3. The first canonical-label probe lacked a PULSE symlink. The real native module reported: ResolveMessage: Cannot find module .../.claude/LIFEOS/PULSE/Observability/observability.ts. The initial temporary fixture used the default /tmp location because the intended synthetic TMPDIR did not yet exist. This fixture contained synthetic data only. Its unittest tearDown removed it.
+4. A subsequent attempt forced the output-local temporary parent before the private directory existed. tempfile raised FileNotFoundError for raw/fixture-home/tmp/native-memory-... . No memory operation ran.
+5. The successful probes use the output-local temporary parent and add a symlink to the public prepared native PULSE source. The reviewer changed only disposable probe setup. The reviewer did not change implementation or tests.
+
+The failed fixture probe outputs were overwritten during setup iteration. This file preserves the failure causes and acknowledges the missing original stdout/stderr. Successful probe stdout is saved without truncation in separate files.

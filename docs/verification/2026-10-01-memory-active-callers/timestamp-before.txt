@@ -1,0 +1,21 @@
+F
+======================================================================
+FAIL: test_source_times_at_millisecond_boundaries_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_times_at_millisecond_boundaries_match_native_standalone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 73, in test_source_times_at_millisecond_boundaries_match_native_standalone
+    self.assert_native_sources(paths)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 59, in assert_native_sources
+    self.assertEqual(int(actual_time.timestamp() * 1000), int(native_time.timestamp() * 1000),
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'managed': result['body']['lastModified'], 'native': control['body']['lastModified'],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+         'managed_float': actual_time.timestamp(), 'native_float': native_time.timestamp()})
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1790905907388 != 1790905907387 : {'managed': '2026-10-02T01:51:47.388000+00:00', 'native': '2026-10-02T01:51:47.387Z', 'managed_float': 1790905907.388, 'native_float': 1790905907.387}
+
+----------------------------------------------------------------------
+Ran 1 test in 3.453s
+
+FAILED (failures=1)

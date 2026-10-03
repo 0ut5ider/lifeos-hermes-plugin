@@ -1,0 +1,69 @@
+test_authorized_freshness_and_health_remain_visible (test_memory_delta.MemoryDeltaTests.test_authorized_freshness_and_health_remain_visible) ... FAIL
+test_authorized_updates_and_native_heartbeat_still_surface (test_memory_delta.MemoryDeltaTests.test_authorized_updates_and_native_heartbeat_still_surface) ... FAIL
+test_health_and_freshness_retained_text_is_filtered (test_memory_delta.MemoryDeltaTests.test_health_and_freshness_retained_text_is_filtered) ... FAIL
+test_invalid_connector_cannot_fall_back_to_native_log (test_memory_delta.MemoryDeltaTests.test_invalid_connector_cannot_fall_back_to_native_log) ... ok
+test_missing_context_does_not_consume_cursor_or_injection_state (test_memory_delta.MemoryDeltaTests.test_missing_context_does_not_consume_cursor_or_injection_state) ... FAIL
+test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows (test_memory_delta.MemoryDeltaTests.test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows) ... FAIL
+test_restricted_destination_cannot_read_unclassified_log (test_memory_delta.MemoryDeltaTests.test_restricted_destination_cannot_read_unclassified_log) ... ok
+test_standalone_delta_excludes_superseded_log_claims (test_memory_delta.MemoryDeltaTests.test_standalone_delta_excludes_superseded_log_claims) ... FAIL
+test_standalone_delta_refuses_missing_context (test_memory_delta.MemoryDeltaTests.test_standalone_delta_refuses_missing_context) ... ok
+test_unmanaged_turn_start_keeps_native_log_behavior (test_memory_delta.MemoryDeltaTests.test_unmanaged_turn_start_keeps_native_log_behavior) ... ok
+
+======================================================================
+FAIL: test_authorized_freshness_and_health_remain_visible (test_memory_delta.MemoryDeltaTests.test_authorized_freshness_and_health_remain_visible)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 124, in test_authorized_freshness_and_health_remain_visible
+    self.assertIn('C (5/8 fresh)', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'C (5/8 fresh)' not found in ''
+
+======================================================================
+FAIL: test_authorized_updates_and_native_heartbeat_still_surface (test_memory_delta.MemoryDeltaTests.test_authorized_updates_and_native_heartbeat_still_surface)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 45, in test_authorized_updates_and_native_heartbeat_still_surface
+    self.assertIn('+1 learned', first)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in ''
+
+======================================================================
+FAIL: test_health_and_freshness_retained_text_is_filtered (test_memory_delta.MemoryDeltaTests.test_health_and_freshness_retained_text_is_filtered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 114, in test_health_and_freshness_retained_text_is_filtered
+    self.assertIn('<lifeos-memory-delta>', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '<lifeos-memory-delta>' not found in ''
+
+======================================================================
+FAIL: test_missing_context_does_not_consume_cursor_or_injection_state (test_memory_delta.MemoryDeltaTests.test_missing_context_does_not_consume_cursor_or_injection_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 82, in test_missing_context_does_not_consume_cursor_or_injection_state
+    self.assertIn('<lifeos-memory>', authorized)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '<lifeos-memory>' not found in ''
+
+======================================================================
+FAIL: test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows (test_memory_delta.MemoryDeltaTests.test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 64, in test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows
+    self.assertIn('Synthetic current delta marker', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic current delta marker' not found in ''
+
+======================================================================
+FAIL: test_standalone_delta_excludes_superseded_log_claims (test_memory_delta.MemoryDeltaTests.test_standalone_delta_excludes_superseded_log_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 74, in test_standalone_delta_excludes_superseded_log_claims
+    self.assertIn('Synthetic next delta marker', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic next delta marker' not found in ''
+
+----------------------------------------------------------------------
+Ran 10 tests in 6.054s
+
+FAILED (failures=6)

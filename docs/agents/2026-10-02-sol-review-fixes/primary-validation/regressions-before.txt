@@ -1,0 +1,130 @@
+EEFFFFFFFF
+======================================================================
+ERROR: test_restore_retains_a_profile_edit_after_the_program_swap (test_update_transaction.UpdateTransactionTests.test_restore_retains_a_profile_edit_after_the_program_swap)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 261, in test_restore_retains_a_profile_edit_after_the_program_swap
+    result = restore_update(snapshot, stop=stop, start=start, verify=lambda: events.append('verify'))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_transaction.py", line 267, in restore_update
+    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]),
+                             expected_state=manifest['mount_state'])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_transaction.py", line 73, in _restore_mount
+    raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+lifeos_hook_bridge.update_transaction.UpdateTransactionError: Hermes profile changed after update; automatic restore refused
+
+======================================================================
+ERROR: test_profile_and_baseline_restore_across_filesystems (test_update_transaction.UpdateTransactionTests.test_profile_and_baseline_restore_across_filesystems) (action='restore')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 306, in test_profile_and_baseline_restore_across_filesystems
+    restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_transaction.py", line 267, in restore_update
+    archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]),
+                             expected_state=manifest['mount_state'])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/update_transaction.py", line 91, in _restore_mount
+    os.replace(destination, saved)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 18] Invalid cross-device link: '/dev/shm/tmp_isey_1w/hermes/config.yaml' -> '/tmp/tmp5gc1yni_/home/state/update/mount-before-restore/ad9091634c2b45cb8002065d2d376c04/config.yaml'
+
+======================================================================
+FAIL: test_profile_and_baseline_restore_across_filesystems (test_update_transaction.UpdateTransactionTests.test_profile_and_baseline_restore_across_filesystems) (action='rollback')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 308, in test_profile_and_baseline_restore_across_filesystems
+    self.assertEqual((profile / 'config.yaml').read_text(), 'prior config')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'selected config' != 'prior config'
+- selected config
++ prior config
+
+
+======================================================================
+FAIL: test_profile_and_baseline_restore_across_filesystems (test_update_transaction.UpdateTransactionTests.test_profile_and_baseline_restore_across_filesystems) (action='recover')
+----------------------------------------------------------------------
+OSError: [Errno 18] Invalid cross-device link: '/dev/shm/tmp6mtepphs/hermes/config.yaml' -> '/tmp/tmp5l2g3761/home/state/update/mount-before-restore/beadcd4bc2ff4895a3e4b516f1f57c68/config.yaml'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 302, in test_profile_and_baseline_restore_across_filesystems
+    with self.assertRaisesRegex(OSError, 'interrupted baseline'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "interrupted baseline" does not match "[Errno 18] Invalid cross-device link: '/dev/shm/tmp6mtepphs/hermes/config.yaml' -> '/tmp/tmp5l2g3761/home/state/update/mount-before-restore/beadcd4bc2ff4895a3e4b516f1f57c68/config.yaml'"
+
+======================================================================
+FAIL: test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='stopped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_worker.py", line 36, in test_worker_error_retains_recoverable_transaction_status
+    self.assertEqual(data['state'], status)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'interrupted'
+- failed
++ interrupted
+
+
+======================================================================
+FAIL: test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='swapped')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_worker.py", line 36, in test_worker_error_retains_recoverable_transaction_status
+    self.assertEqual(data['state'], status)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'interrupted'
+- failed
++ interrupted
+
+
+======================================================================
+FAIL: test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='restoring')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_worker.py", line 36, in test_worker_error_retains_recoverable_transaction_status
+    self.assertEqual(data['state'], status)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'interrupted'
+- failed
++ interrupted
+
+
+======================================================================
+FAIL: test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='rollback_failed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_worker.py", line 36, in test_worker_error_retains_recoverable_transaction_status
+    self.assertEqual(data['state'], status)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'rollback_failed' != 'interrupted'
+- rollback_failed
++ interrupted
+
+
+======================================================================
+FAIL: test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='applied')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_worker.py", line 36, in test_worker_error_retains_recoverable_transaction_status
+    self.assertEqual(data['state'], status)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'applied'
+- failed
++ applied
+
+
+======================================================================
+FAIL: test_restore_worker_failure_keeps_authenticated_recovery_available (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_worker_failure_keeps_authenticated_recovery_available)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 257, in test_restore_worker_failure_keeps_authenticated_recovery_available
+    self.assertEqual(self.api.get_lifeos_update_status()['state'], 'interrupted')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'interrupted'
+- failed
++ interrupted
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.269s
+
+FAILED (failures=8, errors=2)

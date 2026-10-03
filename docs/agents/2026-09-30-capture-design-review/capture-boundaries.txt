@@ -1,0 +1,69 @@
+lifeos_hook_bridge/remote_hooks.py:38:            process = subprocess.run(
+lifeos_hook_bridge/remote_hooks.py:50:        result = subprocess.run(
+lifeos_hook_bridge/bin/hook_runner.py:19:        spool.unlink(missing_ok=True)
+lifeos_hook_bridge/bin/hook_runner.py:24:            result = subprocess.run(
+lifeos_hook_bridge/bin/hook_runner.py:27:                stdout=output, stderr=subprocess.DEVNULL,
+lifeos_hook_bridge/bin/hook_runner.py:32:            response = output.read(65537)
+lifeos_hook_bridge/bin/hook_runner.py:34:            _save_context(request, response)
+lifeos_hook_bridge/bin/hook_runner.py:70:            _save_context(request, result.stdout)
+lifeos_hook_bridge/bin/hook_runner.py:77:def _save_context(request: dict, response: str) -> None:
+lifeos_hook_bridge/bridge.py:76:def _hook_matcher_matches(matcher: str, value: str) -> bool:
+lifeos_hook_bridge/bridge.py:452:def _decode_output(stdout: str) -> dict[str, Any] | None:
+lifeos_hook_bridge/bridge.py:1174:        alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
+lifeos_hook_bridge/bridge.py:1182:            native_match = _hook_matcher_matches(matcher, tool_name)
+lifeos_hook_bridge/bridge.py:1183:            alias_match = bool(matcher and matcher_alias and _hook_matcher_matches(matcher, matcher_alias))
+lifeos_hook_bridge/bridge.py:1228:                if skip_checkpoint and _is_native_checkpoint(command):
+lifeos_hook_bridge/bridge.py:1273:            futures = [executor.submit(callback, *arguments) for callback, arguments in sync_hooks]
+lifeos_hook_bridge/bridge.py:1276:                    process = future.result()
+lifeos_hook_bridge/bridge.py:1281:                    outcomes.append((process, _decode_output(process.stdout)))
+lifeos_hook_bridge/bridge.py:1289:            process = subprocess.run(
+lifeos_hook_bridge/bridge.py:1311:                body = response.read(65536).decode("utf-8", errors="replace")
+lifeos_hook_bridge/bridge.py:1387:        if shutil.which("systemd-run") and os.environ.get("XDG_RUNTIME_DIR"):
+lifeos_hook_bridge/bridge.py:1389:            service = subprocess.run(
+lifeos_hook_bridge/bridge.py:1390:                ["systemd-run", "--user", "--collect", "--service-type=exec", f"--unit={unit}", *runner],
+lifeos_hook_bridge/bridge.py:1396:        process = subprocess.Popen(
+lifeos_hook_bridge/bridge.py:1398:            stdin=subprocess.DEVNULL,
+lifeos_hook_bridge/bridge.py:1399:            stdout=subprocess.DEVNULL,
+lifeos_hook_bridge/bridge.py:1400:            stderr=subprocess.DEVNULL,
+lifeos_hook_bridge/bridge.py:1505:                return {"action": "deny"}
+lifeos_hook_bridge/bridge.py:1515:            return {"action": "deny"}
+lifeos_hook_bridge/bridge.py:1525:        if not any(group.get("hooks") and _hook_matcher_matches(group.get("matcher", ""), "Bash")
+lifeos_hook_bridge/bridge.py:1527:            return {"action": "review"} if rule_decision in {"ask", "unknown"} else None
+lifeos_hook_bridge/bridge.py:1548:            return {"action": "deny"}
+lifeos_hook_bridge/bridge.py:1551:                return {"action": "review"}
+lifeos_hook_bridge/bridge.py:1553:                return {"action": "rewrite", "command": replacement}
+lifeos_hook_bridge/bridge.py:1554:            return {"action": "review"} if rule_decision in {"ask", "unknown"} else {"action": "allow"}
+lifeos_hook_bridge/bridge.py:1555:        return {"action": "review"}
+lifeos_hook_bridge/bridge.py:1564:        if not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups):
+lifeos_hook_bridge/bridge.py:1575:                return {"action": "block", "message": str(message)[:2000]}
+lifeos_hook_bridge/bridge.py:1581:                        return {"action": "block", "message": "LifeOS supplied an invalid MCP replacement"}
+lifeos_hook_bridge/bridge.py:1583:                        return {"action": "block", "message": "LifeOS supplied conflicting MCP replacements"}
+lifeos_hook_bridge/bridge.py:1587:                return {"action": "modify", "args": replacement}
+lifeos_hook_bridge/bridge.py:1604:        if not any(_hook_matcher_matches(group.get("matcher", ""), native_name) for group in groups):
+lifeos_hook_bridge/bridge.py:1619:                    return {"action": "block", "message": str(message)[:2000]}
+lifeos_hook_bridge/bridge.py:1625:                            return {"action": "block", "message": "LifeOS supplied an invalid file replacement"}
+lifeos_hook_bridge/bridge.py:1627:                            return {"action": "block", "message": "LifeOS supplied an invalid Write replacement"}
+lifeos_hook_bridge/bridge.py:1629:                            return {"action": "block", "message": "LifeOS supplied conflicting file replacements"}
+lifeos_hook_bridge/bridge.py:1635:                return {"action": "block", "message": "LifeOS cannot replace a multi-file patch input"}
+lifeos_hook_bridge/bridge.py:1636:            return {"action": "modify", "args": _hermes_input(native_name, replacement)}
+lifeos_hook_bridge/bridge.py:1690:                decision = specific.get("permissionDecision")
+lifeos_hook_bridge/bridge.py:1692:                    message = specific.get("permissionDecisionReason") or process.stderr.strip() or "Blocked by a LifeOS hook"
+lifeos_hook_bridge/bridge.py:1693:                    return {"action": "block", "message": str(message)[:2000]}
+lifeos_hook_bridge/bridge.py:1695:                    reason = specific.get("permissionDecisionReason") or "LifeOS hook requests review"
+lifeos_hook_bridge/bridge.py:1771:                    return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+lifeos_hook_bridge/bridge.py:1785:                        return {"action": "block", "message": "LifeOS supplied an invalid file path"}
+lifeos_hook_bridge/bridge.py:1792:                        return {"action": "block", "message": f"LifeOS file permission rule denied {native_name}: {path}"}
+lifeos_hook_bridge/bridge.py:1816:                return {"action": "modify", "args": updated_args} if updated_args is not None else None
+lifeos_hook_bridge/bridge.py:1832:                return {"action": "block", "message": str(error)}
+lifeos_hook_bridge/bridge.py:1837:        return {"action": "modify", "args": updated_args} if updated_args is not None else None
+lifeos_hook_bridge/bridge.py:1889:            if _hook_matcher_matches(group.get("matcher", ""), "")
+lifeos_hook_bridge/bridge.py:1903:                return {"action": "block", "message": str(message)[:2000]}
+lifeos_hook_bridge/bridge.py:1914:            return {"action": "block", "message": "LifeOS task hook files do not match the verified installation. Repair or update LifeOS before creating tasks."}
+lifeos_hook_bridge/bridge.py:1935:                    return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
+lifeos_hook_bridge/bridge.py:1938:                return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
+lifeos_hook_bridge/bridge.py:1949:            return {"action": "block", "message": "LifeOS task hook files do not match the verified installation. Repair or update LifeOS before creating tasks."}
+lifeos_hook_bridge/bridge.py:1966:                return {"action": "block", "message": f"Task creation blocked: description too short ({length} chars). Provide a meaningful task description of at least 10 characters."}
+lifeos_hook_bridge/bridge.py:1968:                return {"action": "block", "message": "Task creation blocked: session limit of 50 tasks reached."}
+lifeos_hook_bridge/bridge.py:2017:                return {"action": "block", "message": str(reason)}
+lifeos_hook_bridge/bridge.py:2115:                skip_checkpoint=v4a and event == "PostToolUseFailure" and item_event == "PostToolUse",
+lifeos_hook_bridge/bridge.py:2214:                    return {"action": "continue", "message": str(message)[:2000]}

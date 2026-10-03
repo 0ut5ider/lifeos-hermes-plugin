@@ -1,0 +1,333 @@
+Plugin commit: d920dd1680a88192e26db0408044b868bf69f470
+Working diff:
+diff --git a/lifeos_hook_bridge/memory_sources.py b/lifeos_hook_bridge/memory_sources.py
+index 47cc32a..4b7fef4 100644
+--- a/lifeos_hook_bridge/memory_sources.py
++++ b/lifeos_hook_bridge/memory_sources.py
+@@ -98,7 +98,8 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
+             sources.append({'path': path, 'relative': relative, 'content': content, 'lastModified': timestamp})
+         if not sources:
+             return []
+-        checked = memory._native('validate_source_batch', contents=[source['content'] for source in sources])['accepted']
++        checked = memory._native('validate_source_batch',
++            contents=[source['content'] + '\n' + source['path'] for source in sources])['accepted']
+         admitted = []
+         for source, accepted in zip(sources, checked, strict=True):
+             if accepted is not True:
+diff --git a/lifeos_hook_bridge/memory_wiki.py b/lifeos_hook_bridge/memory_wiki.py
+index edc2685..fe7d523 100644
+--- a/lifeos_hook_bridge/memory_wiki.py
++++ b/lifeos_hook_bridge/memory_wiki.py
+@@ -1,9 +1,12 @@
+ # ABOUTME: Selects current native notes, retained silos, and documentation for authenticated wiki views.
+ # ABOUTME: Validates fixed routes and renders each request in an isolated native worker.
+ from datetime import datetime, timezone
++from itertools import count
+ import json
++import os
+ from pathlib import Path
+ import re
++from typing import Iterator
+ from urllib.parse import parse_qsl, quote, unquote, urlencode, urlsplit
+ 
+ from .memory_access import MemoryUnavailable
+@@ -14,22 +17,30 @@ DOMAINS = {'People': 'person', 'Companies': 'company', 'Ideas': 'idea',
+            'Blogs': 'blog', 'Books': 'book', 'Research': 'research'}
+ 
+ 
+-def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True) -> list[Path]:
++def _directory_entries(directory: Path, visits: Iterator[int]) -> list[Path]:
++    paths = []
++    with os.scandir(directory) as entries:
++        for entry in entries:
++            if next(visits) > SOURCE_COUNT_LIMIT:
++                raise MemoryUnavailable('The wiki directory exceeds its traversal count limit')
++            paths.append(Path(entry.path))
++    return sorted(paths)
++
++
++def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = True,
++           visits: Iterator[int] | None = None) -> list[Path]:
+     if directory.is_symlink():
+         raise MemoryUnavailable('The wiki directory changes its permitted physical path')
+     if not directory.exists():
+         return []
+     result = []
+     pending = [directory]
+-    visited = 0
++    visits = count(1) if visits is None else visits
+     while pending:
+         parent = pending.pop()
+-        for path in sorted(parent.iterdir()):
++        for path in _directory_entries(parent, visits):
+             if path.name.startswith('.') or (hide_metadata and path.name.startswith('_')):
+                 continue
+-            visited += 1
+-            if visited > SOURCE_COUNT_LIMIT:
+-                raise MemoryUnavailable('The wiki directory exceeds its source count limit')
+             if path.is_symlink():
+                 raise MemoryUnavailable('The wiki source changes its permitted physical path')
+             if path.is_dir() and recursive:
+@@ -42,6 +53,7 @@ def _files(directory: Path, *, recursive: bool = True, hide_metadata: bool = Tru
+ def _retained_sources(memory, scope, connection) -> list[dict]:
+     root = memory.root / 'LIFEOS'
+     selected = {}
++    visits = count(1)
+ 
+     def add(path, category, slug, group=None):
+         selected[str(path)] = {'category': category, 'slug': slug, **({'group': group} if group else {})}
+@@ -52,17 +64,17 @@ def _retained_sources(memory, scope, connection) -> list[dict]:
+     if prompt.exists() or prompt.is_symlink():
+         add(prompt, 'system-doc', 'LIFEOS_SYSTEM_PROMPT', 'Overview')
+     documentation = root / 'DOCUMENTATION'
+-    for path in _files(documentation):
++    for path in _files(documentation, visits=visits):
+         relative = path.relative_to(documentation)
+         group = 'Overview' if len(relative.parts) == 1 else path.parent.name
+         add(path, 'system-doc', path.stem if len(relative.parts) == 1 else group + '__' + path.stem, group)
+-    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False):
++    for path in _files(root / 'ALGORITHM', recursive=False, hide_metadata=False, visits=visits):
+         add(path, 'system-doc', 'Algorithm__' + path.stem, 'Algorithm')
+     work = root / 'MEMORY/WORK'
+     if work.is_symlink():
+         raise MemoryUnavailable('The wiki work directory changes its permitted physical path')
+     if work.exists():
+-        for directory in sorted(work.iterdir()):
++        for directory in _directory_entries(work, visits):
+             if directory.name.startswith(('.', '_')):
+                 continue
+             if directory.is_symlink():
+@@ -74,11 +86,11 @@ def _retained_sources(memory, scope, connection) -> list[dict]:
+             ('WISDOM', ('FRAMES', 'PRINCIPLES', 'META'), 'wisdom')):
+         for sub in subdirectories:
+             directory = root / 'MEMORY' / silo / sub
+-            for path in _files(directory):
++            for path in _files(directory, visits=visits):
+                 slug = sub + '--' + path.relative_to(directory).with_suffix('').as_posix().replace('/', '--')
+                 add(path, category, slug, sub.capitalize())
+     directory = root / 'MEMORY/RESEARCH'
+-    for path in _files(directory):
++    for path in _files(directory, visits=visits):
+         add(path, 'research', path.relative_to(directory).with_suffix('').as_posix().replace('/', '--'))
+     return [{key: source[key] for key in ('path', 'content', 'lastModified')} | selected[source['path']]
+             for source in read_markdown(memory, scope, list(selected), connection=connection)]
+diff --git a/tests/test_memory_wiki_corpus.py b/tests/test_memory_wiki_corpus.py
+index 2b771c0..ff730e4 100644
+--- a/tests/test_memory_wiki_corpus.py
++++ b/tests/test_memory_wiki_corpus.py
+@@ -1,14 +1,16 @@
+ # ABOUTME: Verifies governed native wiki collection across memory silos and documentation.
+ # ABOUTME: Pairs standalone native output with current access, retirement, and physical source tests.
+ from dataclasses import replace
++from contextlib import contextmanager
+ from datetime import datetime, timezone
+ import json
+ import os
+ from pathlib import Path
+ import unittest
++from unittest.mock import patch
+ 
+ from lifeos_hook_bridge.memory_access import MemoryUnavailable
+-from lifeos_hook_bridge.memory_wiki import view
++from lifeos_hook_bridge.memory_wiki import _files, view
+ from test_memory_native import OWNER, READER
+ import test_memory_wiki_render as render_fixture
+ 
+@@ -203,6 +205,65 @@ class MemoryWikiCorpusTests(unittest.TestCase):
+         self.assertNotIn('SyntheticPrivate', json.dumps(response))
+         self.assertNotIn('SyntheticControl', json.dumps(response))
+ 
++    def test_private_source_names_and_groups_cannot_supply_page_metadata(self):
++        paths = ('DOCUMENTATION/<private>SyntheticPrivateFilename.md',
++                 'DOCUMENTATION/<private>SyntheticPrivateGroup/safe.md',
++                 'MEMORY/WORK/<pr\u200bivate>SyntheticPrivateWork/ISA.md',
++                 'MEMORY/WISDOM/FRAMES/Synthetic\u0085ControlFilename.md')
++        for relative in paths:
++            self.source(relative, 'Safe body without a title\n')
++        result = json.dumps(view(self.memory, OWNER, '/api/wiki'))
++        self.assertNotIn('SyntheticPrivate', result)
++        self.assertNotIn('ControlFilename', result)
++        self.assertTrue(all((self.root / 'LIFEOS' / relative).exists() for relative in paths))
++
++    def test_hidden_population_counts_toward_directory_scan_limit(self):
++        directory = self.root / 'LIFEOS/DOCUMENTATION'
++        directory.mkdir()
++        for index in range(2049):
++            (directory / f'.hidden-{index}').touch()
++        with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++            view(self.memory, OWNER, '/api/wiki')
++
++    def test_non_source_work_population_counts_toward_directory_scan_limit(self):
++        directory = self.root / 'LIFEOS/MEMORY/WORK'
++        directory.mkdir()
++        for index in range(2049):
++            (directory / f'unrelated-{index}.txt').touch()
++        with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++            view(self.memory, OWNER, '/api/wiki')
++
++    def test_directory_scan_stops_before_materializing_oversized_population(self):
++        directory = self.root / 'LIFEOS/DOCUMENTATION'
++        directory.mkdir()
++        for index in range(4096):
++            (directory / f'unrelated-{index}.txt').touch()
++        original = os.scandir
++        consumed = []
++
++        @contextmanager
++        def observed(path):
++            with original(path) as entries:
++                def counted():
++                    for entry in entries:
++                        consumed.append(entry.name)
++                        yield entry
++                yield counted()
++
++        with patch.object(os, 'scandir', observed):
++            with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++                _files(directory)
++        self.assertEqual(len(consumed), 2049)
++
++    def test_directory_scan_budget_is_shared_between_retained_silos(self):
++        for relative in ('DOCUMENTATION', 'MEMORY/WORK'):
++            directory = self.root / 'LIFEOS' / relative
++            directory.mkdir()
++            for index in range(1025):
++                (directory / f'unrelated-{index}.txt').touch()
++        with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
++            view(self.memory, OWNER, '/api/wiki')
++
+ 
+ if __name__ == '__main__':
+     unittest.main()
+
+Source: /home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-knowledge-relay-final
+Command: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest -v test_memory_wiki_corpus test_memory_wiki_render test_memory_wiki_relay test_memory_knowledge_relay test_memory_knowledge_render test_memory_http test_memory_sources test_memory_canonical test_hermes_memory_provider test_prepare_sources test_patch_bundle
+test_aggregate_source_limit_refuses_a_partial_view (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_aggregate_source_limit_refuses_a_partial_view) ... ok
+test_correction_retires_older_sources_and_forgotten_claims_in_current_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_correction_retires_older_sources_and_forgotten_claims_in_current_files) ... ok
+test_directory_scan_budget_is_shared_between_retained_silos (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_directory_scan_budget_is_shared_between_retained_silos) ... ok
+test_directory_scan_stops_before_materializing_oversized_population (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_directory_scan_stops_before_materializing_oversized_population) ... ok
+test_every_corpus_requires_unrestricted_current_owner_scope (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_every_corpus_requires_unrestricted_current_owner_scope) ... ok
+test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles) ... ok
+test_hidden_population_counts_toward_directory_scan_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_population_counts_toward_directory_scan_limit) ... ok
+test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent) ... ok
+test_invalid_utf8_source_refuses_without_partial_index (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_invalid_utf8_source_refuses_without_partial_index) ... ok
+test_malformed_private_openers_and_canonical_control_characters_are_excluded (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_malformed_private_openers_and_canonical_control_characters_are_excluded) ... ok
+test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone) ... ok
+test_markdown_frontmatter_comments_and_rules_remain_native_read_content (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_markdown_frontmatter_comments_and_rules_remain_native_read_content) ... ok
+test_native_duplicate_slug_between_silos_refuses_ambiguous_pages (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_native_duplicate_slug_between_silos_refuses_ambiguous_pages) ... ok
+test_non_source_work_population_counts_toward_directory_scan_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_non_source_work_population_counts_toward_directory_scan_limit) ... ok
+test_oversized_source_refuses_before_native_publication (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_oversized_source_refuses_before_native_publication) ... ok
+test_private_markup_sources_are_excluded_without_changing_raw_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_markup_sources_are_excluded_without_changing_raw_files) ... ok
+test_private_source_names_and_groups_cannot_supply_page_metadata (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_source_names_and_groups_cannot_supply_page_metadata) ... ok
+test_read_content_can_exceed_native_write_limit_without_changing_that_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_read_content_can_exceed_native_write_limit_without_changing_that_limit) ... ok
+test_redirected_directory_cannot_supply_an_alias_corpus (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_redirected_directory_cannot_supply_an_alias_corpus) ... ok
+test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks) ... ok
+test_retired_frontmatter_and_work_directory_labels_are_excluded (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retired_frontmatter_and_work_directory_labels_are_excluded) ... ok
+test_source_count_limit_bounds_empty_file_and_directory_traversal (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_count_limit_bounds_empty_file_and_directory_traversal) ... ok
+test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) ... ok
+test_declared_renderer_does_not_scan_or_stat_another_physical_source (test_memory_wiki_render.MemoryWikiRenderTests.test_declared_renderer_does_not_scan_or_stat_another_physical_source) ... ok
+test_duplicate_page_slug_refuses_and_does_not_leave_partial_index (test_memory_wiki_render.MemoryWikiRenderTests.test_duplicate_page_slug_refuses_and_does_not_leave_partial_index) ... ok
+test_duplicate_physical_source_refuses_distinct_slug_aliases (test_memory_wiki_render.MemoryWikiRenderTests.test_duplicate_physical_source_refuses_distinct_slug_aliases) ... ok
+test_empty_later_corpus_cannot_reuse_previous_search_or_index (test_memory_wiki_render.MemoryWikiRenderTests.test_empty_later_corpus_cannot_reuse_previous_search_or_index) ... ok
+test_missing_declared_note_has_native_not_found_result (test_memory_wiki_render.MemoryWikiRenderTests.test_missing_declared_note_has_native_not_found_result) ... ok
+test_rendering_refuses_write_routes_and_unrelated_module_routes (test_memory_wiki_render.MemoryWikiRenderTests.test_rendering_refuses_write_routes_and_unrelated_module_routes) ... ok
+test_standalone_wiki_keeps_native_index_search_and_raw_note_control (test_memory_wiki_render.MemoryWikiRenderTests.test_standalone_wiki_keeps_native_index_search_and_raw_note_control) ... ok
+test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_index_graph_and_backlinks_exclude_raw_unknown_sources) ... ok
+test_supplied_native_note_body_search_and_excerpt_never_read_raw_body (test_memory_wiki_render.MemoryWikiRenderTests.test_supplied_native_note_body_search_and_excerpt_never_read_raw_body) ... ok
+test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_ambient_owner_and_internal_flags_do_not_authorize_any_wiki_view) ... ok
+test_authenticated_documentation_excludes_forget_in_body_search_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_documentation_excludes_forget_in_body_search_and_graph) ... ok
+test_authenticated_native_index_search_graph_and_body_use_registered_current_notes (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_native_index_search_graph_and_body_use_registered_current_notes) ... ok
+test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback (test_memory_wiki_relay.MemoryWikiRelayTests.test_authenticated_retained_silos_and_docs_refresh_without_raw_fallback) ... ok
+test_changed_local_installation_cannot_supply_a_wiki_response (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_local_installation_cannot_supply_a_wiki_response) ... ok
+test_changed_registered_source_is_unavailable_instead_of_serving_raw_content (test_memory_wiki_relay.MemoryWikiRelayTests.test_changed_registered_source_is_unavailable_instead_of_serving_raw_content) ... ok
+test_correction_and_forget_replace_live_body_search_index_and_graph (test_memory_wiki_relay.MemoryWikiRelayTests.test_correction_and_forget_replace_live_body_search_index_and_graph) ... ok
+test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies) ... ok
+test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_bearer_and_browser_logout_do_not_reuse_current_owner_view) ... ok
+test_invalid_connector_permissions_do_not_select_the_raw_native_reader (test_memory_wiki_relay.MemoryWikiRelayTests.test_invalid_connector_permissions_do_not_select_the_raw_native_reader) ... ok
+test_live_account_revocation_rechecks_every_wiki_view (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_account_revocation_rechecks_every_wiki_view) ... ok
+test_live_connector_loss_does_not_select_raw_wiki_or_existing_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_live_connector_loss_does_not_select_raw_wiki_or_existing_index) ... ok
+test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths (test_memory_wiki_relay.MemoryWikiRelayTests.test_managed_writes_reindex_and_scope_queries_do_not_admit_raw_paths) ... ok
+test_owner_and_anonymous_connections_do_not_share_the_wiki_index (test_memory_wiki_relay.MemoryWikiRelayTests.test_owner_and_anonymous_connections_do_not_share_the_wiki_index) ... ok
+test_persistent_marker_refuses_raw_wiki_after_restart_without_connector (test_memory_wiki_relay.MemoryWikiRelayTests.test_persistent_marker_refuses_raw_wiki_after_restart_without_connector) ... ok
+test_unavailable_dashboard_does_not_reuse_native_owner_data (test_memory_wiki_relay.MemoryWikiRelayTests.test_unavailable_dashboard_does_not_reuse_native_owner_data) ... ok
+test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory) ... ok
+test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_anonymous_index_and_note_cannot_borrow_ambient_owner_metadata) ... ok
+test_authenticated_index_and_note_preserve_native_metadata_from_current_sources (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_authenticated_index_and_note_preserve_native_metadata_from_current_sources) ... ok
+test_correction_and_forget_replace_current_read_shapes_without_deleting_history (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_correction_and_forget_replace_current_read_shapes_without_deleting_history) ... ok
+test_cross_origin_and_query_parameters_cannot_select_another_source (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_cross_origin_and_query_parameters_cannot_select_another_source) ... ok
+test_direct_observability_graph_handler_cannot_reopen_raw_cache (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_direct_observability_graph_handler_cannot_reopen_raw_cache) ... ok
+test_managed_put_refuses_unreviewed_file_replacement (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_managed_put_refuses_unreviewed_file_replacement) ... ok
+test_revocation_and_connector_loss_never_return_raw_notes (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_revocation_and_connector_loss_never_return_raw_notes) ... ok
+test_unmanaged_native_control_keeps_raw_index_note_and_write_behavior (test_memory_knowledge_relay.MemoryKnowledgeRelayTests.test_unmanaged_native_control_keeps_raw_index_note_and_write_behavior) ... ok
+test_declared_index_and_body_match_native_standalone_for_the_same_sources (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_declared_index_and_body_match_native_standalone_for_the_same_sources) ... ok
+test_declared_source_needs_no_physical_note_or_directory_stat (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_declared_source_needs_no_physical_note_or_directory_stat) ... ok
+test_duplicate_and_foreign_sources_refuse_without_partial_index (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_duplicate_and_foreign_sources_refuse_without_partial_index) ... ok
+test_later_empty_corpus_cannot_reuse_prior_notes_or_index (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_later_empty_corpus_cannot_reuse_prior_notes_or_index) ... ok
+test_native_declared_body_does_not_reopen_raw_note_text (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_native_declared_body_does_not_reopen_raw_note_text) ... ok
+test_native_declared_index_uses_source_metadata_without_raw_unknown_note (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_native_declared_index_uses_source_metadata_without_raw_unknown_note) ... ok
+test_nonknowledge_and_unknown_routes_do_not_reopen_raw_routes (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_nonknowledge_and_unknown_routes_do_not_reopen_raw_routes) ... ok
+test_route_admission_refuses_servers_queries_traversal_and_hidden_names (test_memory_knowledge_render.MemoryKnowledgeRenderTests.test_route_admission_refuses_servers_queries_traversal_and_hidden_names) ... ok
+test_destination_is_literal_loopback_and_has_no_redirect_inputs (test_memory_http.MemoryHTTPTests.test_destination_is_literal_loopback_and_has_no_redirect_inputs) ... ok
+test_fixed_prefix_and_supported_session_credentials_only (test_memory_http.MemoryHTTPTests.test_fixed_prefix_and_supported_session_credentials_only) ... ok
+test_incomplete_http_body_returns_unavailable (test_memory_http.MemoryHTTPTests.test_incomplete_http_body_returns_unavailable) ... ok
+test_invalid_content_and_oversized_response_refuse (test_memory_http.MemoryHTTPTests.test_invalid_content_and_oversized_response_refuse) ... ok
+test_invalid_wiki_targets_never_receive_forwarded_credentials (test_memory_http.MemoryHTTPTests.test_invalid_wiki_targets_never_receive_forwarded_credentials) ... ok
+test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found (test_memory_http.MemoryHTTPTests.test_knowledge_reads_use_the_fixed_local_route_and_current_binding_for_not_found) ... ok
+test_login_link_uses_configured_browser_address_instead_of_loopback (test_memory_http.MemoryHTTPTests.test_login_link_uses_configured_browser_address_instead_of_loopback) ... ok
+test_no_credentials_or_invalid_arguments_never_contact_backend (test_memory_http.MemoryHTTPTests.test_no_credentials_or_invalid_arguments_never_contact_backend) ... ok
+test_redirect_does_not_receive_forwarded_credentials (test_memory_http.MemoryHTTPTests.test_redirect_does_not_receive_forwarded_credentials) ... ok
+test_upstream_server_failures_are_sanitized (test_memory_http.MemoryHTTPTests.test_upstream_server_failures_are_sanitized) ... ok
+test_wiki_not_found_responses_require_the_current_installation_binding (test_memory_http.MemoryHTTPTests.test_wiki_not_found_responses_require_the_current_installation_binding) ... ok
+test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target (test_memory_http.MemoryHTTPTests.test_wiki_reads_use_the_fixed_local_route_with_one_encoded_target) ... ok
+test_wrong_local_installation_cannot_supply_a_successful_snapshot (test_memory_http.MemoryHTTPTests.test_wrong_local_installation_cannot_supply_a_successful_snapshot) ... ok
+test_advisory_reader_cannot_follow_a_source_redirect_into_configuration (test_memory_sources.MemorySourceTests.test_advisory_reader_cannot_follow_a_source_redirect_into_configuration) ... ok
+test_allowed_source_uses_installed_path_and_current_policy (test_memory_sources.MemorySourceTests.test_allowed_source_uses_installed_path_and_current_policy) ... ok
+test_decoded_json_strings_cannot_restore_normalized_forgotten_claims (test_memory_sources.MemorySourceTests.test_decoded_json_strings_cannot_restore_normalized_forgotten_claims) ... ok
+test_every_learning_reader_excludes_retained_claims_before_extracting_summaries (test_memory_sources.MemorySourceTests.test_every_learning_reader_excludes_retained_claims_before_extracting_summaries) ... ok
+test_managed_remote_startup_excludes_unknown_missing_and_restricted_contexts (test_memory_sources.MemorySourceTests.test_managed_remote_startup_excludes_unknown_missing_and_restricted_contexts) ... ok
+test_managed_remote_startup_uses_the_same_policy_for_different_apps (test_memory_sources.MemorySourceTests.test_managed_remote_startup_uses_the_same_policy_for_different_apps) ... ok
+test_native_advisory_excludes_private_markup_and_missing_authority (test_memory_sources.MemorySourceTests.test_native_advisory_excludes_private_markup_and_missing_authority) ... ok
+test_native_advisory_keeps_valid_findings_without_restoring_forgotten_text (test_memory_sources.MemorySourceTests.test_native_advisory_keeps_valid_findings_without_restoring_forgotten_text) ... ok
+test_native_startup_excludes_forgotten_relationship_and_work_text (test_memory_sources.MemorySourceTests.test_native_startup_excludes_forgotten_relationship_and_work_text) ... ok
+test_native_startup_keeps_allowed_relationship_and_work_context (test_memory_sources.MemorySourceTests.test_native_startup_keeps_allowed_relationship_and_work_context) ... ok
+test_native_wisdom_reader_excludes_exact_forgotten_claims (test_memory_sources.MemorySourceTests.test_native_wisdom_reader_excludes_exact_forgotten_claims) ... ok
+test_native_wisdom_reader_excludes_private_markup_and_unknown_context (test_memory_sources.MemorySourceTests.test_native_wisdom_reader_excludes_private_markup_and_unknown_context) ... ok
+test_restricted_project_context_cannot_read_unclassified_source_history (test_memory_sources.MemorySourceTests.test_restricted_project_context_cannot_read_unclassified_source_history) ... ok
+test_source_paths_cannot_read_credentials_or_intra_user_symlinks (test_memory_sources.MemorySourceTests.test_source_paths_cannot_read_credentials_or_intra_user_symlinks) ... ok
+test_unmanaged_remote_startup_keeps_native_context_isolation (test_memory_sources.MemorySourceTests.test_unmanaged_remote_startup_keeps_native_context_isolation) ... ok
+test_unmanaged_wisdom_reader_keeps_native_behavior (test_memory_sources.MemorySourceTests.test_unmanaged_wisdom_reader_keeps_native_behavior) ... ok
+test_work_filename_fallback_cannot_restore_a_forgotten_title (test_memory_sources.MemorySourceTests.test_work_filename_fallback_cannot_restore_a_forgotten_title) ... ok
+test_changed_binding_revokes_native_canonical_reads (test_memory_canonical.MemoryCanonicalTests.test_changed_binding_revokes_native_canonical_reads) ... ok
+test_changed_native_fact_cannot_be_admitted_under_an_old_reference (test_memory_canonical.MemoryCanonicalTests.test_changed_native_fact_cannot_be_admitted_under_an_old_reference) ... ok
+test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section) ... ok
+test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora (test_memory_canonical.MemoryCanonicalTests.test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora) ... ok
+test_fixed_native_metadata_names_are_not_retired_facts (test_memory_canonical.MemoryCanonicalTests.test_fixed_native_metadata_names_are_not_retired_facts) ... ok
+test_forgotten_archive_fact_is_not_exported_from_retained_file (test_memory_canonical.MemoryCanonicalTests.test_forgotten_archive_fact_is_not_exported_from_retained_file) ... ok
+test_known_knowledge_root_preserves_native_relative_provenance (test_memory_canonical.MemoryCanonicalTests.test_known_knowledge_root_preserves_native_relative_provenance) ... ok
+test_missing_caller_context_cannot_read_managed_canonical_records (test_memory_canonical.MemoryCanonicalTests.test_missing_caller_context_cannot_read_managed_canonical_records) ... ok
+test_native_root_option_does_not_grant_foreign_source_authority (test_memory_canonical.MemoryCanonicalTests.test_native_root_option_does_not_grant_foreign_source_authority) ... ok
+test_native_status_timeline_and_rebuild_use_the_governed_corpus (test_memory_canonical.MemoryCanonicalTests.test_native_status_timeline_and_rebuild_use_the_governed_corpus) ... ok
+test_native_type_directory_is_operational_metadata (test_memory_canonical.MemoryCanonicalTests.test_native_type_directory_is_operational_metadata) ... ok
+test_oversized_source_refuses_before_native_fact_read (test_memory_canonical.MemoryCanonicalTests.test_oversized_source_refuses_before_native_fact_read) ... ok
+test_owner_preserves_native_canonical_identity_and_content (test_memory_canonical.MemoryCanonicalTests.test_owner_preserves_native_canonical_identity_and_content) ... ok
+test_project_only_context_cannot_collect_unclassified_canonical_metadata (test_memory_canonical.MemoryCanonicalTests.test_project_only_context_cannot_collect_unclassified_canonical_metadata) ... ok
+test_retired_dynamic_title_remains_excluded (test_memory_canonical.MemoryCanonicalTests.test_retired_dynamic_title_remains_excluded) ... ok
+test_unmanaged_control_retains_native_read_behavior (test_memory_canonical.MemoryCanonicalTests.test_unmanaged_control_retains_native_read_behavior) ... ok
+test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted) ... ok
+test_actual_host_worker_admission_reaches_model_guard_and_provider_tools (test_hermes_memory_provider.HermesMemoryProviderTests.test_actual_host_worker_admission_reaches_model_guard_and_provider_tools) ... ok
+test_config_revocation_is_visible_without_provider_recreation (test_hermes_memory_provider.HermesMemoryProviderTests.test_config_revocation_is_visible_without_provider_recreation) ... ok
+test_explicit_tools_use_the_native_store_and_current_author (test_hermes_memory_provider.HermesMemoryProviderTests.test_explicit_tools_use_the_native_store_and_current_author) ... ok
+test_installed_bridge_loads_without_memory_selection_and_provider_namespace_shares_context (test_hermes_memory_provider.HermesMemoryProviderTests.test_installed_bridge_loads_without_memory_selection_and_provider_namespace_shares_context) ... ok
+test_profile_mismatch_and_session_switch_reject_stale_tools (test_hermes_memory_provider.HermesMemoryProviderTests.test_profile_mismatch_and_session_switch_reject_stale_tools) ... ok
+test_provider_does_not_duplicate_native_automatic_recall_or_review (test_hermes_memory_provider.HermesMemoryProviderTests.test_provider_does_not_duplicate_native_automatic_recall_or_review) ... ok
+test_terminal_worker_uses_actual_host_platform_without_gateway_metadata (test_hermes_memory_provider.HermesMemoryProviderTests.test_terminal_worker_uses_actual_host_platform_without_gateway_metadata) ... ok
+test_existing_symlink_is_not_replaced (test_prepare_sources.PrepareSourcesTests.test_existing_symlink_is_not_replaced) ... ok
+test_incompatible_input_leaves_no_output (test_prepare_sources.PrepareSourcesTests.test_incompatible_input_leaves_no_output) ... ok
+test_real_sources_receive_every_patch_in_order (test_prepare_sources.PrepareSourcesTests.test_real_sources_receive_every_patch_in_order) ... ok
+test_runtime_contains_exact_hermes_patch_sequence (test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_hermes_patch_sequence) ... ok
+test_runtime_contains_exact_lifeos_patch_sequence (test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_lifeos_patch_sequence) ... ok
+
+----------------------------------------------------------------------
+Ran 124 tests in 121.219s
+
+OK

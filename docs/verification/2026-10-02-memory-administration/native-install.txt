@@ -1,0 +1,26 @@
+======================================================================
+ERROR: test_late_check_failure_restores_mount_files_and_revokes_authority (test_memory_admin_install.MemoryAdminInstallTests.test_late_check_failure_restores_mount_files_and_revokes_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 350, in finalize_lifeos
+    raise IncompatibleLifeOS(f"LifeOS {label} exited with code {result.returncode}")
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS Hermes config check exited with code 23
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 79, in test_late_check_failure_restores_mount_files_and_revokes_authority
+    self.finalize(authorization)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_install.py", line 49, in finalize
+    return finalize_lifeos(self.candidate, self.root, self.profile, self.baseline,
+        self.fixture.fixture.memory.bun, str(self.hermes), self.revision, self.patches,
+        ('lifeos-test.patch',), create_baseline, save_baseline, memory_authorization=authorization)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 375, in finalize_lifeos
+    raise IncompatibleLifeOS(f"{error}. Hermes files were restored from {snapshot}") from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS Hermes config check exited with code 23. Hermes files were restored from /tmp/native-memory-qrbvgk84/state/mount-snapshot-go6bfbnb
+
+----------------------------------------------------------------------
+Ran 5 tests in 6.988s
+
+FAILED (errors=1)

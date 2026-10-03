@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_recovery_authorizes_a_missing_install_directory_without_prompt_access (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_authorizes_a_missing_install_directory_without_prompt_access)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 210, in test_recovery_authorizes_a_missing_install_directory_without_prompt_access
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"LifeOS USER is outside the physical USER_DATA boundary"}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.221s
+
+FAILED (failures=1)

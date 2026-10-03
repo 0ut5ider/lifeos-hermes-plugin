@@ -1,0 +1,11 @@
+Hermes prepared config check 1 Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import os, sys, runpy; os.environ.pop('PYTHONHOME', None); os.environ.pop('PYTHONPATH', None); os.environ.pop('VIRTUAL_ENV', None); sys.path.insert(0, '/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes'); os.environ['HERMES_HOME'] = os.environ.get('HERMES_HOME') or str(__import__('hermes_constants').get_default_hermes_root()); import hermes_bootstrap; exec('from argparse import Namespace\nfrom hermes_constants import set_hermes_home_override\nset_hermes_home_override(sys.argv[1])\nfrom hermes_cli.config import config_command\nconfig_command(Namespace(config_command="check"))\n')
+                                                                                                                                                                                                                                                                                                                                                                                                         ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<string>", line 4, in <module>
+  File "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes/hermes_cli/config.py", line 34, in <module>
+    import hermes_yaml as yaml
+  File "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes/hermes_yaml.py", line 10, in <module>
+    from ruamel.yaml import YAML
+ModuleNotFoundError: No module named 'ruamel'
+

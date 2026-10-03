@@ -1,0 +1,25 @@
+test_owner_display_names_do_not_carry_private_markup (test_memory_context_builder.MemoryContextBuilderTests.test_owner_display_names_do_not_carry_private_markup) ... FAIL
+test_managed_display_names_are_refreshed_without_reusing_a_retired_label (test_memory_context_builder.MemoryContextBuilderTests.test_managed_display_names_are_refreshed_without_reusing_a_retired_label) ... FAIL
+
+======================================================================
+FAIL: test_owner_display_names_do_not_carry_private_markup (test_memory_context_builder.MemoryContextBuilderTests.test_owner_display_names_do_not_carry_private_markup)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 174, in test_owner_display_names_do_not_carry_private_markup
+    self.assertNotIn('SYNTHETIC_PRIVATE_NAME', json.dumps(result))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC_PRIVATE_NAME' unexpectedly found in '{"block": "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\\n\\n**Today:** Thursday, October 1, 2026 at 10:22 AM (America/Los_Angeles)\\n\\n### About you (Synthetic assistant)\\nSynthetic assistant identity marker\\n\\n### About <private>SYNTHETIC_PRIVATE_NAME</private>\\nSynthetic private principal identity marker\\n\\n## PRINCIPAL MEMORY [1/48 entries \\u00b7 32/12288 chars]\\nRULE: Synthetic context hot fact\\n\\n## DA MEMORY [0/48 entries \\u00b7 0/12288 chars]\\n(no entries yet)\\n\\n### <private>SYNTHETIC_PRIVATE_NAME</private>\'s TELOS\\nSynthetic principal goal marker\\n\\n### Active sessions / in-flight work\\n## Open Sessions to Resume\\nSynthetic active session marker", "logs": []}'
+
+======================================================================
+FAIL: test_managed_display_names_are_refreshed_without_reusing_a_retired_label (test_memory_context_builder.MemoryContextBuilderTests.test_managed_display_names_are_refreshed_without_reusing_a_retired_label)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 182, in test_managed_display_names_are_refreshed_without_reusing_a_retired_label
+    self.assertIn('SyntheticUpdatedDisplayName', result['block'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticUpdatedDisplayName' not found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:22 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About SyntheticCurrentDisplayName\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [1/48 entries · 32/12288 chars]\nRULE: Synthetic context hot fact\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### SyntheticCurrentDisplayName's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.867s
+
+FAILED (failures=2)

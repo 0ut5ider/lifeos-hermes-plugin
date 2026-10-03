@@ -1,0 +1,31 @@
+traced= False result= OUTCOME:null
+traced= True failure= AssertionError 1 != 0 : Traceback (most recent call last):
+  File "<string>", line 7, in <module>
+    result=bridge.pre_tool_call('terminal',{'command':'pwd'},session_id='malformed')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/hook_capture/instrument.py", line 138, in wrapper
+    result = function(*args, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bridge.py", line 1683, in pre_tool_call
+    for process, output in self._run(
+                           ~~~~~~~~~^
+        "PreToolUse", payload, native_name,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<2 lines>...
+        task_id=task_id,
+        ^^^^^^^^^^^^^^^^
+    ):
+    ^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/hook_capture/instrument.py", line 138, in wrapper
+    result = function(*args, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bridge.py", line 1281, in _run
+    outcomes.append((process, _decode_output(process.stdout)))
+                              ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/hook_capture/instrument.py", line 139, in wrapper
+    after(values, result, started)
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/hook_capture/instrument.py", line 115, in after
+    fields["decision"] = decision(result)
+                         ~~~~~~~~^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/hook_capture/instrument.py", line 199, in decision
+    return specific.get("permissionDecision") or result.get("decision") or result.get("action")
+           ^^^^^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'

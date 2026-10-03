@@ -1,0 +1,2454 @@
+diff --git a/LifeOS/install/LIFEOS/HERMES/Mount.ts b/LifeOS/install/LIFEOS/HERMES/Mount.ts
+index e245d9e..6f22c9b 100644
+--- a/LifeOS/install/LIFEOS/HERMES/Mount.ts
++++ b/LifeOS/install/LIFEOS/HERMES/Mount.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Mounts native LifeOS services and a coherent admitted prompt into Hermes.
++// ABOUTME: Uses reviewed prompt publication when the memory connector is installed.
+ /**
+  * Mount — install (or re-sync) the LifeOS sidecar into a Hermes install.
+  *
+@@ -24,19 +26,22 @@
+  *   bun LIFEOS/HERMES/Mount.ts --keep-output-format
+  */
+ 
++
+ import { createHash } from "node:crypto";
+ import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
+ import { emitPolicy, SHELL_DENY_GLOBS } from "./Policy.ts";
+-import { daName, skillIndex } from "./RenderSoul.ts";
+-import { INSTALL_ROOT, renderSoul, scrubPaths } from "./RenderSoul.ts";
++import { memoryAccess, memoryObject } from "../TOOLS/lib/MemoryAccess.ts";
++import { INSTALL_ROOT, renderSoulBundle, scrubPaths } from "./RenderSoul.ts";
+ 
+ const HOME = homedir();
+ const HERMES_HOME = process.env.HERMES_HOME || join(HOME, ".hermes");
++const MOUNT_DESTINATION = process.env.LIFEOS_MOUNT_DESTINATION ?? HERMES_HOME;
++const staged = MOUNT_DESTINATION !== HERMES_HOME;
+ const WORKSPACE = process.env.HERMES_WORKSPACE || join(HOME, "HermesWorkspace");
+ const PLUGIN_SRC = join(import.meta.dir, "plugin");
+-const PLUGIN_DEST = join(HERMES_HOME, "plugins", "lifeos");
++const PLUGIN_DEST = join(MOUNT_DESTINATION, "plugins", "lifeos");
+ 
+ /**
+  * Soul cap. The stock default (20,000) truncates silently, and the constitution
+@@ -131,7 +136,7 @@ function ensureApprovals(yaml: string): { yaml: string; changed: boolean } {
+   return { yaml: `${yaml.replace(/\n*$/, "")}\n\n${MANAGED_BEGIN}\n${block}\n${MANAGED_END}\n`, changed: true };
+ }
+ 
+-function installPlugin(): Change[] {
++function installPlugin(launcherName: string): Change[] {
+   const changes: Change[] = [];
+   mkdirSync(PLUGIN_DEST, { recursive: true });
+ 
+@@ -147,7 +152,7 @@ function installPlugin(): Change[] {
+ 
+   const policyPath = join(PLUGIN_DEST, "policy.json");
+   const beforePolicy = existsSync(policyPath) ? readFileSync(policyPath, "utf8") : null;
+-  const policy = emitPolicy(policyPath, { launcherName: daName(), trustedEgressDomains: trustedEgressDomains() });
++  const policy = emitPolicy(policyPath, { launcherName, trustedEgressDomains: trustedEgressDomains() });
+   if (beforePolicy !== readFileSync(policyPath, "utf8")) {
+     changes.push({
+       what: "plugins/lifeos/policy.json",
+@@ -221,7 +226,19 @@ function main(): void {
+     throw new Error(`no Hermes install at ${scrubPaths(HERMES_HOME)} — install Hermes first`);
+   }
+ 
+-  const soul = renderSoul({ keepOutputFormat });
++  const preview = memoryAccess("prompt_preview", {home: HERMES_HOME, keepOutputFormat},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (preview !== undefined && (preview.ok !== true || !memoryObject(preview.bundle)
++      || typeof preview.signature !== "string" || typeof preview.previous_digest !== "string")) {
++    throw new Error("LifeOS prompt publication is unavailable under current memory policy");
++  }
++  const bundle = preview === undefined ? renderSoulBundle({keepOutputFormat}) : preview.bundle;
++  if (!memoryObject(bundle) || typeof bundle.soul !== "string" || typeof bundle.launcherName !== "string"
++      || !Array.isArray(bundle.skills)) throw new Error("The LifeOS prompt bundle is invalid");
++  if (preview !== undefined && bundle.launcherName.length === 0) {
++    throw new Error("The launcher policy requires current identity review before mounting");
++  }
++  const soul = bundle.soul;
+   const soulPath = join(HERMES_HOME, "SOUL.md");
+   const soulCurrent = existsSync(soulPath) ? readFileSync(soulPath, "utf8") : "";
+   const soulDrifted = soulCurrent !== soul;
+@@ -251,26 +268,41 @@ function main(): void {
+     process.exit(soulDrifted || configDrifted ? 1 : 0);
+   }
+ 
+-  writeFileSync(soulPath, soul, "utf8");
+-  if (configDrifted) writeFileSync(configPath, yaml, "utf8");
+-  const pluginChanges = [...installPlugin()];
++  if (staged || preview === undefined) writeFileSync(join(MOUNT_DESTINATION, "SOUL.md"), soul, "utf8");
++  else {
++    const receipt = memoryAccess("prompt_publish", {home: HERMES_HOME, keepOutputFormat,
++      signature: preview.signature, previous_digest: preview.previous_digest},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (receipt?.ok !== true) throw new Error("The reviewed LifeOS prompt changed before publication");
++  }
++  if (staged || configDrifted) writeFileSync(join(MOUNT_DESTINATION, "config.yaml"), yaml, "utf8");
++  const pluginChanges = [...installPlugin(bundle.launcherName)];
+ 
+-  mkdirSync(WORKSPACE, { recursive: true });
++  if (!staged) mkdirSync(WORKSPACE, { recursive: true });
+   const envPath = join(HERMES_HOME, ".env");
+   const env = existsSync(envPath) ? readFileSync(envPath, "utf8") : "";
+   if (!/^HERMES_WRITE_SAFE_ROOT=/m.test(env)) {
+     writeFileSync(
+-      envPath,
++      join(MOUNT_DESTINATION, ".env"),
+       `${env.replace(/\n*$/, "")}\n\n# Writes are hard-blocked outside these roots. The LifeOS tree is\n` +
+         `# READ-only to the sidecar; persistence goes through the memory API.\n` +
+         `HERMES_WRITE_SAFE_ROOT=${WORKSPACE}:${HERMES_HOME}\n`,
+       "utf8",
+     );
+     pluginChanges.push({ what: ".env", detail: "write-sandbox root set" });
++  } else if (staged) {
++    writeFileSync(join(MOUNT_DESTINATION, ".env"), env, "utf8");
++  }
++
++  if (staged) {
++    writeFileSync(join(MOUNT_DESTINATION, "mount-plan.json"), JSON.stringify({
++      version: 1, home: HERMES_HOME, keepOutputFormat,
++      signature: preview?.signature ?? null, previous_digest: preview?.previous_digest ?? null,
++    }) + "\n", "utf8");
+   }
+ 
+   console.log(`✓ SOUL.md            ${soul.length} chars (cap ${CONTEXT_FILE_MAX_CHARS}), digest ${digest}`);
+-  console.log(`✓ skills mounted     ${scrubPaths(join(INSTALL_ROOT, "skills"))} (${skillIndex().length} indexed in soul — the default routing path)`);
++  console.log(`✓ skills mounted     ${scrubPaths(join(INSTALL_ROOT, "skills"))} (${bundle.skills.length} indexed in soul — the default routing path)`);
+   console.log(`✓ config.yaml        ${configDrifted ? "patched" : "already current"}`);
+   for (const c of pluginChanges) console.log(`✓ ${c.what.padEnd(18)} ${c.detail}`);
+   if (!pluginChanges.length) console.log("✓ plugin             already current");
+diff --git a/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts b/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts
+index 2341394..d3b3fe8 100644
+--- a/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts
++++ b/LifeOS/install/LIFEOS/HERMES/RenderSoul.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Renders native identity, constitution, and skills from declared admitted sources.
++// ABOUTME: Uses governed memory admission for managed installations.
+ /**
+  * RenderSoul — build the identity and constitutional layer a mounted Hermes
+  * sidecar loads as its system prompt.
+@@ -23,6 +25,8 @@
+  * resolve from this file's own location, so it works in any LifeOS checkout.
+  */
+ 
++
++import { memoryAccess, memoryObject } from "../TOOLS/lib/MemoryAccess.ts";
+ import { existsSync, readFileSync, readdirSync } from "node:fs";
+ import { homedir } from "node:os";
+ import { join } from "node:path";
+@@ -44,6 +48,29 @@ const SRC = {
+   projects: join(USER, "PROJECTS.md"),
+ };
+ 
++export type SoulSources = Record<keyof typeof SRC, string>;
++export type SkillSource = { directory: string; content: string };
++export type SoulBundle = { soul: string; constitution: string; identity: string;
++  skillRouting: string; skills: Array<{ name: string; summary: string }>; launcherName: string };
++
++function governed(opts: { keepOutputFormat?: boolean } = {}): SoulBundle | undefined {
++  const result = memoryAccess("prompt_bundle", {keepOutputFormat: opts.keepOutputFormat === true},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (result === undefined) return undefined;
++  if (result.ok !== true || !memoryObject(result.bundle)) throw new Error("LifeOS prompt sources are unavailable under current memory policy");
++  const bundle = result.bundle;
++  if (!["soul", "constitution", "identity", "skillRouting", "launcherName"].every(key => typeof bundle[key] === "string")
++      || !Array.isArray(bundle.skills) || !bundle.skills.every(row => memoryObject(row)
++          && typeof row.name === "string" && typeof row.summary === "string")) {
++    throw new Error("The governed LifeOS prompt bundle is invalid");
++  }
++  return bundle as SoulBundle;
++}
++
++function source(name: keyof SoulSources, sources?: SoulSources): string {
++  return sources ? sources[name] : read(SRC[name]);
++}
++
+ const read = (p: string): string => {
+   if (!existsSync(p)) throw new Error(`soul source missing: ${p}`);
+   return readFileSync(p, "utf8");
+@@ -171,9 +198,13 @@ export function assertClean(text: string, what: string): void {
+  * this install's launcher, which is named after the DA. Read, never embedded —
+  * this file ships publicly with no instance literals.
+  */
+-export function daName(): string {
++export function daName(sources?: SoulSources): string {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.launcherName;
++  }
+   try {
+-    const m = read(SRC.daIdentity).match(/\*\*Name:\*\*\s*([A-Za-z0-9_-]+)/);
++    const m = source("daIdentity", sources).match(/\*\*Name:\*\*\s*([A-Za-z0-9_-]+)/);
+     return m?.[1] ?? "";
+   } catch {
+     return "";
+@@ -181,8 +212,12 @@ export function daName(): string {
+ }
+ 
+ /** Tier 1 — the install's constitution, minus CLI presentation. */
+-export function renderConstitution(opts: { keepOutputFormat?: boolean } = {}): string {
+-  let prompt = body(read(SRC.systemPrompt));
++export function renderConstitution(opts: { keepOutputFormat?: boolean } = {}, sources?: SoulSources): string {
++  if (!sources) {
++    const bundle = governed(opts);
++    if (bundle) return bundle.constitution;
++  }
++  let prompt = body(source("systemPrompt", sources));
+   if (!opts.keepOutputFormat) {
+     prompt = dropSection(prompt, "Output Format (CONSTITUTIONAL №1)");
+   }
+@@ -190,13 +225,17 @@ export function renderConstitution(opts: { keepOutputFormat?: boolean } = {}): s
+ }
+ 
+ /** Tier 2 — who I am, who they are, what they're building, what I know. */
+-export function renderIdentity(): string {
+-  const da = body(read(SRC.daIdentity));
+-  const principal = body(read(SRC.principal));
+-  const telos = body(read(SRC.telos));
++export function renderIdentity(sources?: SoulSources): string {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.identity;
++  }
++  const da = body(source("daIdentity", sources));
++  const principal = body(source("principal", sources));
++  const telos = body(source("telos", sources));
+ 
+   const daHeader = da.split(/^##\s/m)[0].trim();
+-  const projectNames = read(SRC.projects)
++  const projectNames = source("projects", sources)
+     .split("\n")
+     .filter((l) => /^\|\s*\*\*/.test(l))
+     .map((l) => {
+@@ -205,8 +244,8 @@ export function renderIdentity(): string {
+     })
+     .filter(Boolean);
+ 
+-  const pMem = dropPII(entries(read(SRC.principalMemory)));
+-  const dMem = dropPII(entries(read(SRC.daMemory)));
++  const pMem = dropPII(entries(source("principalMemory", sources)));
++  const dMem = dropPII(entries(source("daMemory", sources)));
+ 
+   return [
+     `${daHeader}`,
+@@ -238,13 +277,19 @@ const SKILLS_DIR = join(INSTALL_ROOT, "skills");
+  * before executing. Rendered at mount time, so a new skill appears on the next
+  * re-mount with no Hermes-side edit.
+  */
+-export function skillIndex(): Array<{ name: string; summary: string }> {
+-  if (!existsSync(SKILLS_DIR)) return [];
++export function skillIndex(sources?: SkillSource[]): Array<{ name: string; summary: string }> {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.skills;
++    if (!existsSync(SKILLS_DIR)) return [];
++    sources = readdirSync(SKILLS_DIR).sort().flatMap(directory => {
++      const path = join(SKILLS_DIR, directory, "SKILL.md");
++      return existsSync(path) ? [{directory, content: readFileSync(path, "utf8")}] : [];
++    });
++  }
+   const rows: Array<{ name: string; summary: string }> = [];
+-  for (const dir of readdirSync(SKILLS_DIR).sort()) {
+-    const path = join(SKILLS_DIR, dir, "SKILL.md");
+-    if (!existsSync(path)) continue;
+-    const fm = readFileSync(path, "utf8").match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
++  for (const {directory: dir, content} of sources) {
++    const fm = content.match(/^---\n([\s\S]*?)\n---/)?.[1] ?? "";
+     const name = fm.match(/^name:\s*"?([^"\n]+)"?\s*$/m)?.[1]?.trim() || dir;
+     const desc = fm.match(/^description:\s*"([^\n]*)"\s*$/m)?.[1] ?? fm.match(/^description:\s*(.+)$/m)?.[1] ?? "";
+     let summary = desc.split(/\s*USE WHEN/i)[0].trim().replace(/[.\s]+$/, "");
+@@ -255,8 +300,12 @@ export function skillIndex(): Array<{ name: string; summary: string }> {
+ }
+ 
+ /** Tier 3 — LifeOS skills are the default capability path on this door too. */
+-export function renderSkillRouting(): string {
+-  const rows = skillIndex().map((s) => `- **${s.name}** — ${s.summary}`);
++export function renderSkillRouting(sources?: SkillSource[]): string {
++  if (!sources) {
++    const bundle = governed();
++    if (bundle) return bundle.skillRouting;
++  }
++  const rows = skillIndex(sources).map((s) => `- **${s.name}** — ${s.summary}`);
+   return `## Skills are the default path
+ 
+ Hermes is the channel; LifeOS is the system. A request arriving here is handled
+@@ -336,21 +385,46 @@ No response format applies here beyond writing like myself: lead with the answer
+ plain words, short, verified or explicitly not.`;
+ }
+ 
+-export function renderSoul(opts: { keepOutputFormat?: boolean } = {}): string {
++export function renderSoulFromSources(sources: SoulSources, skills: SkillSource[], opts: { keepOutputFormat?: boolean } = {}): SoulBundle {
++  if (!memoryObject(sources) || Object.keys(sources).length !== Object.keys(SRC).length
++      || !Object.keys(SRC).every(key => typeof sources[key as keyof SoulSources] === "string")
++      || !Array.isArray(skills) || !skills.every(row => memoryObject(row)
++          && typeof row.directory === "string" && typeof row.content === "string")) {
++    throw new Error("LifeOS prompt rendering needs complete declared sources");
++  }
++  const constitution = renderConstitution(opts, sources);
++  const identity = renderIdentity(sources);
++  const skillRouting = renderSkillRouting(skills);
+   const soul = [
+     `# ${"Constitution and identity for the LifeOS sidecar"}\n`,
+-    renderConstitution(opts),
++    constitution,
+     "\n---\n",
+-    renderIdentity(),
++    identity,
+     "\n---\n",
+-    renderSkillRouting(),
++    skillRouting,
+     "\n---\n",
+     renderFrontDoorNotes(),
+   ].join("\n");
+ 
+   const cleaned = scrubPaths(stripDeadPointers(opts.keepOutputFormat ? soul : stripFormatContract(soul)));
+   assertClean(cleaned, "SOUL.md");
+-  return cleaned + "\n";
++  return {soul: cleaned + "\n", constitution, identity, skillRouting,
++    skills: skillIndex(skills), launcherName: daName(sources)};
++}
++
++export function renderSoulBundle(opts: { keepOutputFormat?: boolean } = {}): SoulBundle {
++  const admitted = governed(opts);
++  if (admitted) return admitted;
++  const sources = Object.fromEntries(Object.keys(SRC).map(key => [key, read(SRC[key as keyof SoulSources])])) as SoulSources;
++  const skills = existsSync(SKILLS_DIR) ? readdirSync(SKILLS_DIR).sort().flatMap(directory => {
++    const path = join(SKILLS_DIR, directory, "SKILL.md");
++    return existsSync(path) ? [{directory, content: readFileSync(path, "utf8")}] : [];
++  }) : [];
++  return renderSoulFromSources(sources, skills, opts);
++}
++
++export function renderSoul(opts: { keepOutputFormat?: boolean } = {}): string {
++  return renderSoulBundle(opts).soul;
+ }
+ 
+ if (import.meta.main) {
+diff --git a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
+index 787cf28..0938faf 100644
+--- a/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
++++ b/LifeOS/install/LIFEOS/PULSE/Observability/observability.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves native LifeOS operational views and declared current Knowledge pages.
++// ABOUTME: Delegates managed Knowledge requests to authenticated memory admission.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -36,6 +38,7 @@ import YAML from "yaml"
+ import { PULSE_BASE } from "../endpoint"
+ import { RUN_ACTIVITY } from "../../TOOLS/ascent"
+ import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess"
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -1535,9 +1538,9 @@ function handleMemoryGraphApi(): Response {
+   }
+ }
+ 
+-function handleKnowledgeApi(): Response {
++function handleKnowledgeApi(declared?: ReadonlyMap<string, string>): Response {
+   try {
+-    if (!existsSync(KNOWLEDGE_DIR)) {
++    if (declared === undefined && !existsSync(KNOWLEDGE_DIR)) {
+       return Response.json({ domains: [], notes: [], totalNotes: 0, lastHarvest: null })
+     }
+ 
+@@ -1548,7 +1551,7 @@ function handleKnowledgeApi(): Response {
+ 
+     // Parse master _index.md for last harvest date
+     const masterIndexPath = join(KNOWLEDGE_DIR, "_index.md")
+-    if (existsSync(masterIndexPath)) {
++    if (declared === undefined && existsSync(masterIndexPath)) {
+       const content = readFileSync(masterIndexPath, "utf-8")
+       const harvestMatch = content.match(/\*\*Last harvest:\*\*\s*(\S+)/)
+       if (harvestMatch) lastHarvest = harvestMatch[1]
+@@ -1556,14 +1559,17 @@ function handleKnowledgeApi(): Response {
+ 
+     for (const domain of KNOWLEDGE_DOMAINS) {
+       const domainDir = join(KNOWLEDGE_DIR, domain)
+-      if (!existsSync(domainDir)) {
++      if (declared === undefined && !existsSync(domainDir)) {
+         domains.push({ name: domain, count: 0, avgQuality: 0, lowCount: 0, midCount: 0, highCount: 0 })
+         continue
+       }
+ 
+       let files: string[]
+       try {
+-        files = readdirSync(domainDir).filter(f => f.endsWith(".md") && !f.startsWith("_"))
++        files = declared === undefined
++          ? readdirSync(domainDir).filter(f => f.endsWith(".md") && !f.startsWith("_"))
++          : [...declared.keys()].filter(path => path.startsWith(domainDir + "/"))
++              .map(path => path.slice(domainDir.length + 1))
+       } catch {
+         files = []
+       }
+@@ -1573,7 +1579,8 @@ function handleKnowledgeApi(): Response {
+       for (const file of files) {
+         const filePath = join(domainDir, file)
+         try {
+-          const raw = readFileSync(filePath, "utf-8")
++          const raw = declared === undefined ? readFileSync(filePath, "utf-8") : declared.get(filePath)
++          if (raw === undefined) throw new Error("The declared Knowledge note is unavailable")
+           const fm = parseFrontmatter(raw)
+ 
+           const title = (fm.title as string) || file.replace(/\.md$/, "")
+@@ -1656,13 +1663,14 @@ function capitalizeFirst(s: string): string {
+   return s.charAt(0).toUpperCase() + s.slice(1)
+ }
+ 
+-function handleGetKnowledgeNote(domain: string, slug: string): Response {
++function handleGetKnowledgeNote(domain: string, slug: string, declared?: ReadonlyMap<string, string>): Response {
+   const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
+-  if (!existsSync(filePath)) {
++  if (declared === undefined ? !existsSync(filePath) : !declared.has(filePath)) {
+     return Response.json({ error: "Note not found" }, { status: 404 })
+   }
+   try {
+-    const content = readFileSync(filePath, "utf-8")
++    const content = declared === undefined ? readFileSync(filePath, "utf-8") : declared.get(filePath)
++    if (content === undefined) throw new Error("The declared Knowledge note is unavailable")
+     const fm = parseFrontmatter(content)
+     return Response.json({
+       domain,
+@@ -1680,6 +1688,23 @@ function handleGetKnowledgeNote(domain: string, slug: string): Response {
+   }
+ }
+ 
++export function renderKnowledgeView(sources: ReadonlyArray<{path: string; content: string}>, pathname: string): Response {
++  const declared = new Map<string, string>()
++  for (const source of sources) {
++    const relative = source.path.startsWith(KNOWLEDGE_DIR + "/") ? source.path.slice(KNOWLEDGE_DIR.length + 1) : ""
++    const parts = relative.split("/")
++    if (parts.length !== 2 || !KNOWLEDGE_DOMAINS.includes(parts[0]) || !parts[1].endsWith(".md")
++        || parts[1].startsWith(".") || parts[1].startsWith("_") || declared.has(source.path)) {
++      throw new Error("The declared Knowledge sources require valid unique native paths")
++    }
++    declared.set(source.path, source.content)
++  }
++  if (pathname === "/api/knowledge") return handleKnowledgeApi(declared)
++  const note = parseKnowledgeNotePath(pathname)
++  if (note) return handleGetKnowledgeNote(note.domain, note.slug, declared)
++  return Response.json({error: "This is not a declared Knowledge read view"}, {status: 404})
++}
++
+ async function handlePutKnowledgeNote(req: Request, domain: string, slug: string): Promise<Response> {
+   const filePath = join(KNOWLEDGE_DIR, capitalizeFirst(domain), `${slug}.md`)
+   if (!existsSync(filePath)) {
+@@ -4531,6 +4556,26 @@ export async function handleObservabilityRequest(req: Request): Promise<Response
+   const pathname = url.pathname
+   const method = req.method
+ 
++  if (hasManagedMemoryHTTP() && (pathname === "/api/knowledge" || pathname.startsWith("/api/knowledge/")
++      || pathname === "/api/memory/graph")) {
++    const headers = {"cache-control": "no-store"}
++    if (pathname === "/api/memory/graph") {
++      return Response.json({error: "The managed graph cache is not a governed read view"}, {status: 404, headers})
++    }
++    if (method !== "GET") {
++      return Response.json({error: "Knowledge edits require reviewed current references"}, {status: 405, headers})
++    }
++    const origin = req.headers.get("origin")
++    if (origin && origin !== url.origin) {
++      return Response.json({error: "Knowledge reads require a same-origin request"}, {status: 403, headers})
++    }
++    try {
++      return memoryHTTPResponse(req, "knowledge", pathname + url.search)
++    } catch {
++      return Response.json({error: "Authenticated memory is unavailable"}, {status: 503, headers})
++    }
++  }
++
+   // ── PUT routes ──
+ 
+   if (method === "PUT") {
+diff --git a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
+index a65dfb3..0a7f66c 100644
+--- a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
++++ b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Builds per-turn identity, memory, goal, and active-session context.
++// ABOUTME: Governs managed source reads and caches only standalone context.
+ /**
+  * lifeos-context — the per-turn LifeOS context block for SDK-backed channels.
+  *
+@@ -14,6 +16,7 @@ import { loadLifeosConfig } from "../../TOOLS/LifeosConfig"
+ import { read as readMemory, type ReadResult as MemoryReadResult } from "../../TOOLS/MemoryWriter"
+ import { getRelevantContext } from "../../TOOLS/MemoryRetriever"
+ import { homedir } from "node:os";
++import { canReadMemorySources, filterMemorySource, hasMemoryAccess, hasManagedMemoryHTTP, readMemorySource } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir()
+ const LIFEOS_DIR = join(HOME, ".claude", "LIFEOS")
+@@ -23,18 +26,23 @@ const LIFEOS_DIR = join(HOME, ".claude", "LIFEOS")
+ // (ISA ISC-29; worst case ~50k under ISC-30).
+ const CONTEXT_BLOCK_MAX_CHARS = 60_000
+ 
+-// DA display name from LifeosConfig ([da].name); "LifeOS" fallback (PR #1457).
+-const DA_NAME = ((): string => {
+-  try { const n = loadLifeosConfig().da.name; if (n && typeof n === "string" && n.length > 0) return n } catch { /* default */ }
+-  return "LifeOS"
+-})()
+-
+-// Principal display name from LifeosConfig ([principal].name); generic fallback
+-// keeps a not-yet-configured install functional (public issue #1143).
+-const PRINCIPAL_NAME = ((): string => {
+-  try { const n = loadLifeosConfig().principal.name; if (n && typeof n === "string" && n.length > 0) return n } catch { /* default */ }
+-  return "Principal"
+-})()
++// LifeosConfig supplies display names. Generic fallbacks keep an unconfigured
++// install functional (PR #1457 and public issue #1143).
++function displayNames(managed: boolean): { da: string; principal: string } {
++  let da = "LifeOS";
++  let principal = "Principal";
++  try {
++    const configuration = loadLifeosConfig({ force: managed });
++    if (configuration.da.name) da = configuration.da.name;
++    if (configuration.principal.name) principal = configuration.principal.name;
++  } catch { /* default */ }
++  if (managed) {
++    const timestamp = new Date().toISOString();
++    da = filterMemorySource(da, timestamp) ?? "LifeOS";
++    principal = filterMemorySource(principal, timestamp) ?? "Principal";
++  }
++  return { da, principal };
++}
+ 
+ function log(level: "info" | "warn" | "error", msg: string, data?: unknown) {
+   console.log(JSON.stringify({
+@@ -88,6 +96,14 @@ function formatMemoryBlock(title: string, r: MemoryReadResult): string {
+  * blowing up the whole turn.
+  */
+ export async function buildLifeosContextBlock(query?: string): Promise<string> {
++  const managed = hasManagedMemoryHTTP();
++  const authorize = (): void => {
++    if (managed && (!hasMemoryAccess() || !canReadMemorySources())) {
++      throw new Error("LifeOS context is unavailable under the current memory policy");
++    }
++  };
++  authorize();
++  const names = displayNames(managed);
+   const { stat } = await import("fs/promises")
+ 
+   // Cheap mtime probe to decide if the cache is still valid. Both the four
+@@ -111,7 +127,7 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+   // When a query is provided, the relevant-memory injection makes the block
+   // query-dependent — skip the static cache. The MemoryRetriever has its own
+   // per-query cache that absorbs repeated calls within a turn cluster.
+-  if (cachedContext && !query) {
++  if (cachedContext && !query && !managed) {
+     const age = Date.now() - cachedContext.builtAt
+     const mtimesUnchanged = Object.entries(mtimes)
+       .every(([k, v]) => cachedContext!.mtimes[k] === v)
+@@ -122,7 +138,7 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+ 
+   const readSafe = async (rel: string, label: string): Promise<string> => {
+     try {
+-      const raw = await readFile(join(LIFEOS_DIR, rel), "utf8")
++      const raw = managed ? readMemorySource(join(LIFEOS_DIR, rel)) : await readFile(join(LIFEOS_DIR, rel), "utf8")
+       return raw.trim()
+     } catch (err) {
+       log("warn", "context-block: file unavailable", { rel, error: String(err).slice(0, 120) })
+@@ -191,10 +207,10 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+     "",
+     `**Today:** ${today} (America/Los_Angeles)`,
+     "",
+-    `### About you (${DA_NAME})`,
++    `### About you (${names.da})`,
+     daIdentity,
+     "",
+-    `### About ${PRINCIPAL_NAME}`,
++    `### About ${names.principal}`,
+     principalIdentity,
+     "",
+     memoryBlocks[0],
+@@ -202,7 +218,7 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+     memoryBlocks[1],
+     ...(relevantMemoryBlock ? ["", relevantMemoryBlock] : []),
+     "",
+-    `### ${PRINCIPAL_NAME}'s TELOS`,
++    `### ${names.principal}'s TELOS`,
+     principalTelos,
+     "",
+     "### Active sessions / in-flight work",
+@@ -216,8 +232,10 @@ export async function buildLifeosContextBlock(query?: string): Promise<string> {
+       "\n\n…[context truncated to fit per-turn budget — Read the source files directly if you need more]"
+   }
+ 
+-  // Only cache the query-free baseline. Query-driven blocks are per-turn.
+-  if (!query) {
++  // Only standalone query-free context uses the file-mtime cache. Managed
++  // callers require current policy and registry decisions for every turn.
++  authorize();
++  if (!query && !managed) {
+     cachedContext = { text: block, builtAt: Date.now(), mtimes }
+   }
+   return block
+diff --git a/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts b/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts
+index fb6dffa..599a563 100644
+--- a/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts
++++ b/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts
+@@ -20,6 +20,8 @@
+ 
+ import { appendFileSync, existsSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
++import { randomUUID } from "node:crypto";
++import { memoryAccess, memoryObject, hasMemoryAccess } from "../../TOOLS/lib/MemoryAccess";
+ import { isAbsolute, join } from "node:path";
+ import {
+   PENDING_PROPOSALS_PATH,
+@@ -82,6 +84,7 @@ export function isTerminalStatus(status: string): boolean {
+ }
+ 
+ export interface ProposalRow {
++  reference?: { id: string; revision: number };
+   id: string;
+   ts: string;
+   status: ProposalStatus;
+@@ -113,6 +116,11 @@ export type ProposalReply =
+   | { kind: null };
+ 
+ export function loadProposalQueue(path: string = PENDING_PROPOSALS_PATH): ProposalRow[] {
++  const managed = memoryAccess("proposal_list", {path},
++    (value): value is {rows: ProposalRow[]} => memoryObject(value) && Array.isArray(value.rows)
++      && value.rows.every((row: unknown) => memoryObject(row) && typeof row.id === "string"
++        && typeof row.target_file === "string" && typeof row.edit === "string" && typeof row.status === "string"));
++  if (managed !== undefined) return managed.rows;
+   if (!existsSync(path)) return [];
+   try {
+     const raw = readFileSync(path, "utf8");
+@@ -135,6 +143,7 @@ export function loadProposalQueue(path: string = PENDING_PROPOSALS_PATH): Propos
+ }
+ 
+ export function writeProposalQueue(rows: ProposalRow[], path: string = PENDING_PROPOSALS_PATH): void {
++  if (hasMemoryAccess()) throw new Error("Governed proposals require a referenced native decision");
+   const tmp = `${path}.tmp`;
+   const body = rows.map((r) => JSON.stringify(r)).join("\n") + (rows.length > 0 ? "\n" : "");
+   writeFileSync(tmp, body, "utf8");
+@@ -142,6 +151,7 @@ export function writeProposalQueue(rows: ProposalRow[], path: string = PENDING_P
+ }
+ 
+ export function markProposal(id: string, patch: Partial<ProposalRow>, path: string = PENDING_PROPOSALS_PATH): ProposalRow | null {
++  if (hasMemoryAccess()) throw new Error("Governed proposals require a referenced native decision");
+   const rows = loadProposalQueue(path);
+   let matched: ProposalRow | null = null;
+   for (const r of rows) {
+@@ -230,6 +240,7 @@ function stampTarget(absPath: string): void {
+ }
+ 
+ export function applyProposalEdit(targetFile: string, editText: string): { ok: true } | { ok: false; reason: string } {
++  if (hasMemoryAccess()) return { ok: false, reason: "Governed proposals require a referenced native decision" };
+   // A proposal's targetFile is root-relative (e.g. "LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md").
+   // Resolve it against ~/.claude so it works regardless of the process CWD: the Pulse server runs
+   // from LIFEOS/PULSE, so a bare relative path resolved to a nonexistent nested path and every
+@@ -300,14 +311,21 @@ function pinnedTargetFor(row: ProposalRow): string | null {
+ function resolve(
+   id: string,
+   status: ProposalStatus,
+-  opts: { editText?: string; note?: string; path?: string },
++  opts: { editText?: string; note?: string; path?: string; confidenceThreshold?: number },
+ ): DecisionResult {
+   const path = opts.path ?? PENDING_PROPOSALS_PATH;
+   const found = openRow(id, path);
+   if (!found.ok) return { ok: false, reason: found.reason };
+   const row = found.row;
++  const decision = status === "accepted" ? "accept" : status === "rejected" ? "reject" : status === "edited" ? "edit"
++    : status === "applied-elsewhere" ? "applied_elsewhere" : "auto_apply";
++  const managed = memoryAccess("proposal_decision", {reference: row.reference, decision, request_id: randomUUID(),
++    ...(opts.editText !== undefined ? {content: opts.editText} : {}), ...(opts.note !== undefined ? {note: opts.note} : {}),
++    ...(opts.confidenceThreshold !== undefined ? {confidence_threshold: opts.confidenceThreshold} : {})},
++    (value): value is DecisionResult => memoryObject(value) && typeof value.ok === "boolean");
++  if (managed !== undefined) return managed;
+ 
+-  const writes = status === "accepted" || status === "edited";
++  const writes = status === "accepted" || status === "edited" || status === "auto-applied";
+   const editText = opts.editText ?? row.edit;
+   if (writes) {
+     const target = pinnedTargetFor(row);
+@@ -367,3 +385,14 @@ export function markProposalAppliedElsewhere(id: string, note: string, path?: st
+ export function pendingProposals(path: string = PENDING_PROPOSALS_PATH): ProposalRow[] {
+   return loadProposalQueue(path).filter((r) => !isTerminalStatus(r.status));
+ }
++
++/** Apply a queued proposal only after its native confidence threshold is met. */
++export function autoApplyProposal(id: string, confidenceThreshold: number, path?: string): DecisionResult {
++  if (!Number.isFinite(confidenceThreshold) || confidenceThreshold < 0 || confidenceThreshold > 1) {
++    return { ok: false, reason: "invalid proposal confidence threshold" };
++  }
++  const found = openRow(id, path ?? PENDING_PROPOSALS_PATH);
++  if (!found.ok) return found;
++  if (found.row.confidence < confidenceThreshold) return { ok: false, reason: "proposal is below its confidence threshold" };
++  return resolve(id, "auto-applied", { path, confidenceThreshold });
++}
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
+index 0259a78..583cb24 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/hermes.ts
+@@ -35,6 +35,8 @@
+  * same rule the guard plugin enforces on the sidecar itself — a dashboard is not
+  * an exemption.
+  */
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess.ts";
++
+ import { spawn } from "node:child_process";
+ import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from "node:fs";
+ import { homedir } from "node:os";
+@@ -418,6 +420,21 @@ function backup(f: CoreFile): string | null {
+ 
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
+   const method = req.method;
++  if (pathname === "/api/hermes/remount" && method === "POST") {
++    try {
++      if (hasManagedMemoryHTTP()) {
++        const url = new URL(req.url);
++        const origin = req.headers.get("origin");
++        if (origin && origin !== url.origin) return Response.json({error: "Use the installed PULSE origin"},
++          {status: 403, headers: {"cache-control": "no-store"}});
++        if (url.search || (await req.text()).length) return Response.json({error: "Remount uses the installed owner configuration"},
++          {status: 400, headers: {"cache-control": "no-store"}});
++        return memoryHTTPResponse(req, "remount");
++      }
++    } catch {
++      return Response.json({error: "Authenticated mounting is unavailable"}, {status: 503, headers: {"cache-control": "no-store"}});
++    }
++  }
+ 
+   if (method === "GET" && (pathname === "/api/hermes" || pathname === "/api/hermes/")) {
+     let hermes: HermesHealth | null = null;
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/memory.ts b/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
+index ea4d80b..68a149f 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/memory.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves native memory views through request-bound managed authentication.
++// ABOUTME: Exposes native collectors for governed projection and standalone operation.
+ /**
+  * Memory — Pulse module exposing the autonomic-memory subsystem state.
+  *
+@@ -31,6 +33,7 @@ import { join } from "node:path";
+ import { parseMemoryContent } from "../../TOOLS/MemoryWriter";
+ import { isTerminalStatus } from "../lib/memory-proposals";
+ import { homedir } from "node:os";
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const CLAUDE = join(HOME, ".claude");
+@@ -250,7 +253,36 @@ function buildSnapshot() {
+   };
+ }
+ 
++export function readMemoryView(view: string): unknown {
++  if (view === "snapshot") return buildSnapshot();
++  if (view === "state") return safeReadJson(REVIEW_STATE) || {};
++  if (view === "health") return safeReadJsonLines(HEALTH_LOG, 1)[0] || null;
++  if (view === "runs") return recentReviewerRuns(20);
++  throw new Error("Choose a supported native memory view");
++}
++
+ export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
++  if (pathname === "/api/memory" || pathname.startsWith("/api/memory/")) {
++    const refused = (status: number, error: string): Response => new Response(JSON.stringify({error}), {
++      status, headers: {"content-type": "application/json", "cache-control": "no-store"},
++    });
++    try {
++      if (hasManagedMemoryHTTP()) {
++        const views: Record<string, string> = {"/api/memory": "snapshot", "/api/memory/": "snapshot",
++          "/api/memory/state": "state", "/api/memory/health": "health", "/api/memory/runs": "runs"};
++        const view = views[pathname];
++        if (!view) return refused(404, "This managed memory route is not supported");
++        if (req.method !== "GET") return refused(405, "Memory views require GET");
++        const url = new URL(req.url);
++        if (url.search) return refused(400, "Memory views use the installed owner configuration");
++        const origin = req.headers.get("origin");
++        if (origin && origin !== url.origin) return refused(403, "Memory views require the current origin");
++        return memoryHTTPResponse(req, view);
++      }
++    } catch {
++      return refused(503, "Authenticated memory is unavailable");
++    }
++  }
+   if (req.method !== "GET") return null;
+ 
+   if (pathname === "/api/memory" || pathname === "/api/memory/") {
+diff --git a/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts b/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
+index 65ae65c..1eeb3c3 100644
+--- a/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
++++ b/LifeOS/install/LIFEOS/PULSE/modules/wiki.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Serves native wiki metadata, bodies, search, backlinks, and graph views.
++// ABOUTME: Renders declared current sources without reading their raw bodies again.
+ /**
+  * LifeOS Pulse - Wiki Module
+  *
+@@ -32,6 +34,7 @@ import {
+ } from "fs"
+ import MiniSearch from "minisearch"
+ import { homedir } from "node:os";
++import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess";
+ 
+ // Path Construction
+ 
+@@ -100,9 +103,16 @@ interface IndexOptions {
+   group?: string
+ }
+ 
++export interface WikiSource extends IndexOptions {
++  path: string
++  content: string
++  lastModified: string
++}
++
+ // State
+ 
+ const pageIndex: Map<string, WikiPage> = new Map()
++const pageContents = new Map<string, string>()
+ const backlinkIndex: Map<string, BacklinkEntry[]> = new Map()
+ let searchIndex: MiniSearch | null = null
+ let moduleStartedAt: string | null = null
+@@ -291,18 +301,18 @@ function stringArrayFromFrontmatter(value: unknown): string[] {
+ 
+ // Index a Single File
+ 
+-function indexFile(filePath: string, options: IndexOptions): WikiPage | null {
++function indexFile(filePath: string, options: IndexOptions, supplied?: WikiSource): WikiPage | null {
+   try {
+-    if (!existsSync(filePath)) return null
++    if (!supplied && !existsSync(filePath)) return null
+ 
+-    const raw = readFileSync(filePath, "utf-8")
++    const raw = supplied?.content ?? readFileSync(filePath, "utf-8")
+     const fm = parseFrontmatter(raw)
+     const filename = basename(filePath)
+     const slug = options.slug ?? stripMarkdownExtension(filename)
+ 
+     let mtime: string
+     try {
+-      mtime = statSync(filePath).mtime.toISOString()
++      mtime = supplied?.lastModified ?? statSync(filePath).mtime.toISOString()
+     } catch {
+       mtime = new Date().toISOString()
+     }
+@@ -467,6 +477,7 @@ function indexResearchOutputs(): void {
+ 
+ function buildFullIndex(): void {
+   pageIndex.clear()
++  pageContents.clear()
+ 
+   indexSystemDocs()
+   indexKnowledgeArchive()
+@@ -530,7 +541,7 @@ function rebuildSearchIndex(): void {
+     let content = ""
+ 
+     try {
+-      content = stripFrontmatter(readFileSync(page.filePath, "utf-8")).slice(
++      content = stripFrontmatter(readPageContent(page)).slice(
+         0,
+         5000
+       )
+@@ -803,6 +814,7 @@ function notFound(message: string): Response {
+ }
+ 
+ function readPageContent(page: WikiPage): string {
++  if (pageContents.has(page.filePath)) return pageContents.get(page.filePath) ?? ""
+   try {
+     return readFileSync(page.filePath, "utf-8")
+   } catch {
+@@ -936,7 +948,7 @@ function buildExcerpt(page: WikiPage, query: string): string {
+   let body = ""
+ 
+   try {
+-    body = stripFrontmatter(readFileSync(page.filePath, "utf-8"))
++    body = stripFrontmatter(readPageContent(page))
+   } catch {
+     body = ""
+   }
+@@ -1033,8 +1045,59 @@ function handleGraph(): Response {
+ 
+ // Lifecycle
+ 
++export function renderWikiView(sources: ReadonlyArray<WikiSource>, request: Request, pathname: string): Response {
++  pageIndex.clear()
++  pageContents.clear()
++  backlinkIndex.clear()
++  searchIndex = null
++  try {
++    for (const source of sources) {
++      const page = indexFile(source.path, source, source)
++      if (!page || pageIndex.has(page.slug) || pageContents.has(source.path)) {
++        throw new Error("The declared wiki sources require valid unique pages")
++      }
++      pageIndex.set(page.slug, page)
++      pageContents.set(source.path, source.content)
++    }
++    rebuildBacklinks()
++    rebuildSearchIndex()
++    lastIndexedAt = new Date().toISOString()
++    if (request.method !== "GET") return jsonResponse({error: "Wiki rendering requires a read request"}, 405)
++    if (pathname === "/api/wiki") return handleIndex()
++    if (pathname === "/api/wiki/graph") return handleGraph()
++    if (pathname === "/api/wiki/search") {
++      const url = new URL(request.url)
++      const limit = parseInt(url.searchParams.get("limit") ?? "20", 10) || 20
++      return handleSearch(url.searchParams.get("q") ?? "", limit)
++    }
++    const backlinks = pathname.match(/^\/api\/wiki\/backlinks\/([^/]+)$/)
++    if (backlinks) return handleBacklinks(decodeURIComponent(backlinks[1]))
++    const knowledge = pathname.match(/^\/api\/wiki\/knowledge\/([^/]+)\/([^/]+)$/)
++    if (knowledge) return handleKnowledgeNote(decodeURIComponent(knowledge[1]), decodeURIComponent(knowledge[2]))
++    const doc = pathname.match(/^\/api\/wiki\/doc\/([^/]+)$/)
++    if (doc) return handleDoc(decodeURIComponent(doc[1]))
++    return jsonResponse({error: "This is not a declared wiki read view"}, 404)
++  } finally {
++    pageIndex.clear()
++    pageContents.clear()
++    backlinkIndex.clear()
++    searchIndex = null
++    lastIndexedAt = null
++  }
++}
++
+ export function startWiki(): void {
+   moduleStartedAt = new Date().toISOString()
++  if (hasManagedMemoryHTTP()) {
++    stopWatchers()
++    stopSafetyRebuild()
++    pageIndex.clear()
++    pageContents.clear()
++    backlinkIndex.clear()
++    searchIndex = null
++    lastIndexedAt = null
++    return
++  }
+   buildFullIndex()
+   startWatchers()
+   startSafetyRebuild()
+@@ -1303,6 +1366,18 @@ export async function handleWikiRequest(
+   req: Request,
+   pathname: string
+ ): Promise<Response | null> {
++  if ((pathname === "/api/wiki" || pathname.startsWith("/api/wiki/")) && hasManagedMemoryHTTP()) {
++    const headers = {"content-type": "application/json", "cache-control": "no-store"}
++    if (req.method !== "GET") return new Response(JSON.stringify({error: "Managed wiki editing is unavailable"}), {status: 405, headers})
++    try {
++      const url = new URL(req.url)
++      const origin = req.headers.get("origin")
++      if (origin && origin !== url.origin) return new Response(JSON.stringify({error: "Wiki views require the current origin"}), {status: 403, headers})
++      return memoryHTTPResponse(req, "wiki", pathname + url.search)
++    } catch {
++      return new Response(JSON.stringify({error: "Authenticated wiki is unavailable"}), {status: 503, headers})
++    }
++  }
+   if (pathname === "/api/wiki/reindex") {
+     buildFullIndex()
+     return jsonResponse({ ok: true, pages: pageIndex.size, indexedAt: lastIndexedAt })
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
+index 390808e..2baccc7 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
+@@ -1,8 +1,12 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reads canonical memory records through governed access in managed profiles.
++// ABOUTME: Preserves native query and export contracts for authorized current notes.
+ import { existsSync, lstatSync, opendirSync, readFileSync, realpathSync } from "node:fs";
+ import { join, relative, resolve, sep } from "node:path";
+ import { homedir } from "node:os";
+ import { createHash } from "node:crypto";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { ALL_DIRS, ENVELOPE, SCHEMA_VERSION as KNOWLEDGE_SCHEMA_VERSION } from "./KnowledgeSchema";
+ import { createCaptureEnvelope, isEnvelopeValidAt } from "./CaptureEnvelope";
+ 
+ export const SCHEMA = "lifeos-cortex/v1" as const;
+@@ -124,7 +128,27 @@ function sanitizeContent(content: string, fields: Record<string, string>): strin
+   return createCaptureEnvelope({ source: fields.source_kind || fields.source || "canonical", channel: "canonical", timestamps: { captured_at: fields.created || fields.date || fields.ts || new Date(0).toISOString() }, valid_from: fields.valid_from || null, valid_until: fields.valid_until || null, session_id: fields.source_session || null, content }).content;
+ }
+ function parseMarkdown(path: string, root: string): CortexRecord {
+-  const raw = readCanonicalUtf8(path, relative(root, path));
++  return parseCanonicalMarkdown(readCanonicalUtf8(path, relative(root, path)),path,root);
++}
++export function canonicalMetadata(raw: string, path: string, root: string): string[] {
++  const declared = new Map(ENVELOPE.map(field => [field.key,field]));
++  const labels: string[] = [];
++  for (const [key,value] of Object.entries(fieldsFromMarkdown(raw))) {
++    const field = declared.get(key);
++    if (!field) labels.push(key);
++    if (field?.format === "select" && field.values?.includes(value)) continue;
++    if (field?.format === "number" && value.trim() && Number.isFinite(Number(value))) continue;
++    if (field?.format === "date" && validTimestamp(value)) continue;
++    if (key === "convention" && value === KNOWLEDGE_SCHEMA_VERSION) continue;
++    labels.push(value);
++  }
++  for (const part of relative(root,path).split(sep)) {
++    if (part !== "KNOWLEDGE" && !ALL_DIRS.includes(part)) labels.push(part.replace(/\.md$/, ""));
++  }
++  return labels;
++}
++export function parseCanonicalMarkdown(raw: string, path: string, root: string): CortexRecord {
++  assertCanonicalText(raw,relative(root,path));
+   const preliminary = fieldsFromMarkdown(raw);
+   const content = sanitizeContent(raw, preliminary);
+   const fields = fieldsFromMarkdown(content);
+@@ -157,7 +181,36 @@ function canonicalFiles(root: string): string[] {
+   if (existsSync(nested)) return filesUnder(nested, root);
+   return filesUnder(root, root);
+ }
++function canonicalRecord(value: unknown): value is CortexRecord {
++  return memoryObject(value) && typeof value.id === "string" && typeof value.type === "string"
++    && typeof value.title === "string" && typeof value.created === "string" && typeof value.updated === "string"
++    && typeof value.content === "string" && memoryObject(value.provenance)
++    && typeof value.provenance.source === "string" && typeof value.provenance.path === "string"
++    && (value.provenance.session === null || typeof value.provenance.session === "string")
++    && Array.isArray(value.related) && value.related.every(item => typeof item === "string")
++    && (value.valid_from === null || typeof value.valid_from === "string")
++    && (value.valid_until === null || typeof value.valid_until === "string");
++}
++
+ export function enumerateCanonicalCorpus(root: string): { root: string; files: string[]; records: CortexRecord[] } {
++  const governed = memoryAccess("canonical_corpus",{root},memoryObject);
++  if (governed !== undefined) {
++    if (governed.ok !== true || typeof governed.root !== "string"
++        || !Array.isArray(governed.files) || !Array.isArray(governed.records)
++        || governed.files.length !== governed.records.length) integrity("The governed canonical corpus is unavailable");
++    const files: string[] = [], records: CortexRecord[] = [], ids = new Set<string>();
++    for (const file of governed.files) {
++      if (typeof file !== "string") integrity("The governed canonical source is invalid");
++      files.push(file);
++    }
++    for (const record of governed.records) {
++      if (!canonicalRecord(record)) integrity("The governed canonical record is invalid");
++      if (ids.has(record.id)) integrity("The governed canonical corpus declares duplicate record identifiers");
++      ids.add(record.id);
++      records.push(validateRecord(record));
++    }
++    return {root:governed.root,files,records};
++  }
+   const canonicalRoot = pinCanonicalRoot(root);
+   const files = canonicalFiles(canonicalRoot), records: CortexRecord[] = [], ids = new Map<string, string>();
+   if (files.length > CANONICAL_CORPUS_LIMITS.MAX_FILES) integrity(`Canonical corpus exceeds file count limit (${CANONICAL_CORPUS_LIMITS.MAX_FILES})`);
+diff --git a/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts b/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
+index 58270db..68741d7 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/CortexHealth.ts
+@@ -1,7 +1,10 @@
++// ABOUTME: Collects and assesses native Cortex health evidence with configured thresholds.
++// ABOUTME: Requires managed source authority and filters retained diagnostic text before publication.
+ import { existsSync, lstatSync, readFileSync, readdirSync, realpathSync, statSync } from "node:fs";
+ import { dirname, join, resolve, sep } from "node:path";
+ import { createHash } from "node:crypto";
+ import { loadCanonicalRecords } from "./Cortex";
++import { canReadMemoryDiagnostics, hasMemoryAccess, checkMemoryDiagnostic, filterMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ export type Severity = "ok" | "warn" | "critical";
+ export interface HealthFinding { id: string; severity: Severity; message: string; evidence?: any; }
+@@ -101,6 +104,7 @@ export function assessCortexEvidence(input: CortexEvidence): CortexAssessment {
+ }
+ 
+ function readJsonl(path: string): { rows: any[]; malformedLines: number[]; exists: boolean } {
++  checkMemoryDiagnostic(path);
+   if (!existsSync(path)) return { rows: [], malformedLines: [], exists: false };
+   const rows: any[] = [], malformedLines: number[] = [];
+   readFileSync(path, "utf8").split(/\r?\n/).forEach((line, index) => { if (!line.trim()) return; try { rows.push(JSON.parse(line)); } catch { malformedLines.push(index + 1); } });
+@@ -118,6 +122,7 @@ function reviewerEvidence(obs: string, nowMs: number, thresholds: CortexThreshol
+   const latest = parsed.rows.at(-1);
+   if (parsed.malformedLines.length) return { status: "parse-failed", evidence: log, error: `malformed JSONL lines: ${parsed.malformedLines.join(",")}` };
+   const runsDir = join(obs, "reviewer-runs");
++  checkMemoryDiagnostic(runsDir);
+   const dirs = existsSync(runsDir) ? readdirSync(runsDir, { withFileTypes: true }).filter((e) => e.isDirectory()).map((e) => e.name).sort() : [];
+   const latestDir = dirs.at(-1);
+   const latestDirMs = runMs(latestDir);
+@@ -200,13 +205,19 @@ function validatedThresholds(overrides: Partial<CortexThresholds> = {}): CortexT
+ 
+ export interface CollectCortexOptions { root: string; nowMs?: number; thresholds?: Partial<CortexThresholds>; indexManifest?: string; }
+ export function collectCortexEvidence(options: CollectCortexOptions): CortexEvidence {
++  if (!canReadMemoryDiagnostics(options.root)) throw new Error("Memory diagnostics are unavailable under the current policy");
+   const nowMs = options.nowMs ?? Date.now();
+   const thresholds = validatedThresholds(options.thresholds);
+   const memoryRoot = join(options.root, "LIFEOS/MEMORY"), obs = join(memoryRoot, "OBSERVABILITY");
+   const retrievalLog = join(obs, "memory-retrievals.jsonl"), retrieval = readJsonl(retrievalLog), retrievalLast = retrieval.rows.at(-1);
+   const proposalLog = join(obs, "pending-proposals.jsonl"), proposals = readJsonl(proposalLog);
+   const manifest = options.indexManifest ?? join(memoryRoot, "INDEX/index-manifest.json");
+-  return { nowMs, thresholds, reviewer: reviewerEvidence(obs, nowMs, thresholds),
++  if (hasMemoryAccess() && resolve(dirname(manifest)) !== resolve(memoryRoot, "INDEX")) {
++    throw new Error("Cortex diagnostics require an installed memory index manifest");
++  }
++  checkMemoryDiagnostic(join(memoryRoot, "INDEX"));
++  const evidence: CortexEvidence = { nowMs, thresholds, reviewer: reviewerEvidence(obs, nowMs, thresholds),
+     retrieval: retrieval.malformedLines.length ? { status: "invalid", evidence: retrievalLog, malformedLines: retrieval.malformedLines } : validRetrievalRow(retrievalLast) ? { status: "ok", ts: retrievalLast.ts as string, queryHash: retrievalLast.query_hash as string, returnedCount: retrievalLast.returned_count as number, durationMs: retrievalLast.duration_ms as number, evidence: `${retrievalLog}:latest` } : retrievalLast ? { status: "invalid", evidence: `${retrievalLog}:latest` } : { status: "missing", evidence: retrievalLog },
+     proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
++  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
+ }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
+index 0975c2f..0c15cb8 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Stages native Knowledge notes and delegates managed promotion to reviewed publication.
++// ABOUTME: Renders native indexes from declared current sources without a second fact store.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -37,6 +39,8 @@ import { parseArgs } from "util";
+ import * as fs from "fs";
+ import * as path from "path";
+ import { homedir } from "node:os";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -74,8 +78,21 @@ const PROJECTS_DIR = path.join(HOME, ".claude", "projects");
+  * ranking; seedling expiry branches only on > 0, now keyed to REAL inbound
+  * note-links rather than MOC self-listing).
+  */
+-function computeBacklinks(): Map<string, number> {
++interface KnowledgeSource { path: string; content: string }
++type EmitIndex = (path: string, content: string) => void;
++
++function computeBacklinks(corpus?: readonly KnowledgeSource[]): Map<string, number> {
+   const sources = new Map<string, Set<string>>();
++  const recordLinks = (full: string, content: string): void => {
++    const sourceSlug = path.basename(full).replace(/\.md$/, "").toLowerCase();
++    for (const match of content.matchAll(/\[\[([^\]]+?)\]\]/g)) {
++      // [[target]], [[target|alias]], [[domain/target#anchor]] -> bare slug
++      const target = match[1].split("|")[0].split("#")[0].trim().toLowerCase().split("/").pop() || "";
++      if (!target || target === sourceSlug) continue; // self-links never count
++      if (!sources.has(target)) sources.set(target, new Set());
++      sources.get(target)?.add(full);
++    }
++  };
+   const walk = (dir: string): void => {
+     let entries: fs.Dirent[];
+     try { entries = fs.readdirSync(dir, { withFileTypes: true }); } catch { return; }
+@@ -84,19 +101,13 @@ function computeBacklinks(): Map<string, number> {
+       const full = path.join(dir, entry.name);
+       if (entry.isDirectory()) { walk(full); continue; }
+       if (!entry.name.endsWith(".md")) continue;
+-      const sourceSlug = entry.name.replace(/\.md$/, "").toLowerCase();
+       let content = "";
+       try { content = fs.readFileSync(full, "utf-8"); } catch { continue; }
+-      for (const m of content.matchAll(/\[\[([^\]]+?)\]\]/g)) {
+-        // [[target]], [[target|alias]], [[domain/target#anchor]] -> bare slug
+-        const target = m[1].split("|")[0].split("#")[0].trim().toLowerCase().split("/").pop() || "";
+-        if (!target || target === sourceSlug) continue; // self-links never count
+-        if (!sources.has(target)) sources.set(target, new Set());
+-        sources.get(target)!.add(full);
+-      }
++      recordLinks(full, content);
+     }
+   };
+-  walk(KNOWLEDGE_DIR);
++  if (corpus) for (const source of corpus) recordLinks(source.path, source.content);
++  else walk(KNOWLEDGE_DIR);
+   const counts = new Map<string, number>();
+   for (const [target, srcs] of sources) counts.set(target, srcs.size);
+   return counts;
+@@ -646,16 +657,19 @@ function matchStaged(staged: StagedNote[], target: string): StagedNote[] {
+ // MOC Dashboard Generation
+ // ============================================================================
+ 
+-function regenerateMOC(domain: string, backlinks: Map<string, number>): void {
++function regenerateMOC(domain: string, backlinks: Map<string, number>, corpus?: readonly KnowledgeSource[],
++                       emit: EmitIndex = (file, content) => fs.writeFileSync(file, content)): void {
+   const domainDir = path.join(KNOWLEDGE_DIR, domain);
+-  if (!fs.existsSync(domainDir)) return;
++  if (!corpus && !fs.existsSync(domainDir)) return;
+ 
+   const notes: Array<{ slug: string; title: string; quality: number; tags: string[]; updated: string; backlinkCount: number }> = [];
+ 
+-  for (const file of fs.readdirSync(domainDir)) {
+-    if (file === "_index.md" || !file.endsWith(".md")) continue;
+-    const content = fs.readFileSync(path.join(domainDir, file), "utf-8");
+-    const fm = parseFrontmatter(content);
++  const inputs = corpus ? corpus.filter(source => path.dirname(source.path) === domainDir)
++    : fs.readdirSync(domainDir).filter(file => file !== "_index.md" && file.endsWith(".md"))
++      .map(file => ({path: path.join(domainDir, file), content: fs.readFileSync(path.join(domainDir, file), "utf-8")}));
++  for (const source of inputs) {
++    const file = path.basename(source.path);
++    const fm = parseFrontmatter(source.content);
+     const slug = file.replace(/\.md$/, "");
+ 
+     // O(1) lookup in the single-pass index (public PR #1574, @asdf8675309)
+@@ -738,24 +752,27 @@ ${sections.join("\n")}
+ *Auto-generated by KnowledgeHarvester. ${notes.length} note${notes.length !== 1 ? "s" : ""} in domain.*
+ `;
+ 
+-  fs.writeFileSync(path.join(domainDir, "_index.md"), moc);
++  emit(path.join(domainDir, "_index.md"), moc);
+ }
+ 
+-function regenerateMasterMOC(): void {
++function regenerateMasterMOC(corpus?: readonly KnowledgeSource[], state?: HarvestState,
++                             emit: EmitIndex = (file, content) => fs.writeFileSync(file, content)): void {
+   const today = new Date().toISOString().split("T")[0];
+   const domainStats: Array<{ name: string; count: number }> = [];
+   const recentNotes: Array<{ slug: string; domain: string; title: string; updated: string }> = [];
+ 
+   for (const domain of DOMAINS) {
+     const domainDir = path.join(KNOWLEDGE_DIR, domain);
+-    if (!fs.existsSync(domainDir)) { domainStats.push({ name: domain, count: 0 }); continue; }
++    if (!corpus && !fs.existsSync(domainDir)) { domainStats.push({ name: domain, count: 0 }); continue; }
+ 
+     let count = 0;
+-    for (const file of fs.readdirSync(domainDir)) {
+-      if (file === "_index.md" || !file.endsWith(".md")) continue;
++    const inputs = corpus ? corpus.filter(source => path.dirname(source.path) === domainDir)
++      : fs.readdirSync(domainDir).filter(file => file !== "_index.md" && file.endsWith(".md"))
++        .map(file => ({path: path.join(domainDir, file), content: fs.readFileSync(path.join(domainDir, file), "utf-8")}));
++    for (const source of inputs) {
++      const file = path.basename(source.path);
+       count++;
+-      const content = fs.readFileSync(path.join(domainDir, file), "utf-8");
+-      const fm = parseFrontmatter(content);
++      const fm = parseFrontmatter(source.content);
+       recentNotes.push({
+         slug: `${domain.toLowerCase()}/${file.replace(/\.md$/, "")}`,
+         domain: domain.toLowerCase(),
+@@ -769,7 +786,7 @@ function regenerateMasterMOC(): void {
+   const totalNotes = domainStats.reduce((acc, d) => acc + d.count, 0);
+   const recent = recentNotes.sort((a, b) => b.updated.localeCompare(a.updated)).slice(0, 10);
+ 
+-  const state = loadHarvestState();
++  const currentState = state ?? loadHarvestState();
+ 
+   const domainTable = domainStats.map(d =>
+     `| [[${d.name.toLowerCase()}/_index\\|${d.name}]] | ${d.count} |`
+@@ -801,14 +818,14 @@ ${recentList || "- (none yet)"}
+ 
+ ## Archive Health
+ - **Total notes:** ${totalNotes}
+-- **Last harvest:** ${state.lastHarvest !== "1970-01-01T00:00:00Z" ? state.lastHarvest.split("T")[0] : "never"}
+-- **Total harvested:** ${state.totalHarvested}
++- **Last harvest:** ${currentState.lastHarvest !== "1970-01-01T00:00:00Z" ? currentState.lastHarvest.split("T")[0] : "never"}
++- **Total harvested:** ${currentState.totalHarvested}
+ 
+ ---
+ *Schema: [[_schema]]*
+ `;
+ 
+-  fs.writeFileSync(path.join(KNOWLEDGE_DIR, "_index.md"), moc);
++  emit(path.join(KNOWLEDGE_DIR, "_index.md"), moc);
+ }
+ 
+ // ============================================================================
+@@ -1262,6 +1279,16 @@ function cmdIndex(): void {
+ // CLI Entry Point
+ // ============================================================================
+ 
++export function renderKnowledgeIndexes(corpus: readonly KnowledgeSource[], state: HarvestState): Array<KnowledgeSource> {
++  const writes: KnowledgeSource[] = [];
++  const emit: EmitIndex = (file, content) => writes.push({path: file, content});
++  const backlinks = computeBacklinks(corpus);
++  for (const domain of DOMAINS) regenerateMOC(domain, backlinks, corpus, emit);
++  regenerateMasterMOC(corpus, state, emit);
++  return writes;
++}
++
++function main(): void {
+ const { values, positionals } = parseArgs({
+   args: process.argv.slice(2),
+   options: {
+@@ -1271,6 +1298,9 @@ const { values, positionals } = parseArgs({
+     limit: { type: "string", short: "n" },
+     all: { type: "boolean" },
+     help: { type: "boolean", short: "h" },
++    project: { type: "string" },
++    signature: { type: "string" },
++    "request-id": { type: "string" },
+   },
+   allowPositionals: true,
+   strict: false,
+@@ -1323,7 +1353,15 @@ switch (command) {
+     cmdReview();
+     break;
+   case "promote":
+-    cmdPromote(positionals[1] ?? null, !!values.all);
++    if (hasMemoryAccess()) {
++      const arguments_: Record<string, unknown> = {target: positionals[1] ?? null, all: !!values.all,
++                                                  project: values.project ?? ""};
++      if (values.signature) Object.assign(arguments_, {signature: values.signature,
++                                                       request_id: values["request-id"] ?? randomUUID()});
++      const result = memoryAccess(values.signature ? "staged_promote" : "staged_preview", arguments_, memoryObject);
++      if (!result || result.ok !== true) throw new Error("Managed staged publication is unavailable");
++      console.log(JSON.stringify(result));
++    } else cmdPromote(positionals[1] ?? null, !!values.all);
+     break;
+   case "reject":
+     cmdReject(positionals[1] ?? null, !!values.all);
+@@ -1341,3 +1379,13 @@ switch (command) {
+     console.error(`Unknown command: ${command}. Use --help for usage.`);
+     process.exit(1);
+ }
++
++}
++if (import.meta.main) {
++  try { main(); }
++  catch (error: unknown) {
++    if (!hasMemoryAccess()) throw error;
++    console.error("Managed staged publication is unavailable. Check authority and review a current staged preview.");
++    process.exitCode = 1;
++  }
++}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
+index ecfbbeb..4809978 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeQuery.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Queries native Knowledge metadata from the permitted current note corpus.
++// ABOUTME: Preserves native filters and output formats under managed caller authority.
+ /**
+  * KnowledgeQuery — the `kb query` surface over the Knowledge Archive.
+  *
+@@ -37,9 +39,11 @@
+  */
+ 
+ import { readdirSync, readFileSync, existsSync } from "node:fs";
+-import { resolve as pathResolve, join as pathJoin } from "node:path";
++import { resolve as pathResolve, join as pathJoin, relative } from "node:path";
+ import { homedir } from "node:os";
+ import { parseNote, slugFromPath, ALL_DIRS, type ParsedNote } from "./KnowledgeSchema";
++import { hasMemoryAccess } from "./lib/MemoryAccess";
++import { enumerateCanonicalCorpus } from "./Cortex";
+ 
+ const KNOWLEDGE_DIR = pathResolve(homedir(), ".claude/LIFEOS/MEMORY/KNOWLEDGE");
+ const DIRS = ALL_DIRS;
+@@ -75,8 +79,8 @@ function parseTags(parsed: ParsedNote): string[] {
+   return [...f.raw.matchAll(/^\s+-\s+(.+)$/gm)].map((mm) => deq(mm[1])).filter(Boolean);
+ }
+ 
+-function readRec(path: string, dir: string): Rec | null {
+-  const parsed = parseNote(readFileSync(path, "utf8"));
++function readRec(path: string, dir: string, content?: string): Rec | null {
++  const parsed = parseNote(content ?? readFileSync(path, "utf8"));
+   if (!parsed.hadFrontmatter) return null;
+   const q = scalar(parsed, "quality");
+   const rel = parsed.fields.find((x) => x.key === "related");
+@@ -134,7 +138,19 @@ function main() {
+ 
+   const dirs = onlyDir ? [onlyDir] : [...DIRS];
+   const recs: Rec[] = [];
+-  for (const dir of dirs) {
++  if (hasMemoryAccess()) {
++    const corpus = enumerateCanonicalCorpus(KNOWLEDGE_DIR);
++    for (const [index, record] of corpus.records.entries()) {
++      const path = corpus.files[index];
++      if (path === undefined) throw new Error("The managed Knowledge source is missing");
++      const parts = relative(corpus.root, path).split("/");
++      const [dir, file] = parts;
++      if (parts.length !== 2 || !dir || !file || !dirs.includes(dir)
++          || !file.endsWith(".md") || file.startsWith("_") || file === "README.md") continue;
++      const parsed = readRec(path, dir, record.content);
++      if (parsed) recs.push(parsed);
++    }
++  } else for (const dir of dirs) {
+     const abs = pathJoin(KNOWLEDGE_DIR, dir);
+     if (!existsSync(abs)) continue;
+     for (const f of readdirSync(abs)) {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
+index a46c7b2..5b31fc2 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Checks native memory lifecycle, structural integrity, and health evidence.
++// ABOUTME: Requires managed source authority and filters diagnostics before publication.
+ /**
+  * MemoryHealthCheck.ts — Autonomic memory subsystem health check.
+  *
+@@ -27,6 +29,7 @@ import { parseMemoryContent, read as memoryRead, BEGIN_MARKER, END_MARKER } from
+ import { assessCortexEvidence, collectCortexEvidence } from "./CortexHealth";
+ import { atomicWriteJSON } from "../PULSE/lib/atomic-write";
+ import { homedir } from "node:os";
++import { canReadMemoryDiagnostics, hasMemoryAccess, checkMemoryDiagnostic, diagnoseMemoryFile, filterMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ // CLI script, not a library: the checks below run at module top level and end in
+ // process.exit. Spawn it (MemoryHealthGate does); never import it.
+@@ -36,6 +39,39 @@ if (!import.meta.main) {
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+ const CLAUDE = process.env.CORTEX_HEALTH_ROOT || join(HOME, ".claude");
++function requireDiagnostics<T>(collect: () => T): T {
++  if (!hasMemoryAccess()) return collect();
++  try {
++    return collect();
++  } catch {
++    console.log(JSON.stringify({unavailable: "Memory diagnostics are unavailable under the current policy"}));
++    process.exit(2);
++  }
++}
++const hotDiagnostics = new Map<string, ReturnType<typeof diagnoseMemoryFile>>();
++let diagnosticsAvailable = canReadMemoryDiagnostics(CLAUDE);
++try {
++  if (diagnosticsAvailable && hasMemoryAccess()) {
++    for (const name of ["review-state.json", "memory-writes.jsonl", "memory-health.jsonl"]) {
++      checkMemoryDiagnostic(join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY", name));
++    }
++    checkMemoryDiagnostic(join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs"));
++    checkMemoryDiagnostic(join(CLAUDE, "LIFEOS/MEMORY/INDEX"));
++    if (process.env.CORTEX_HEALTH_REPORT_PATH) {
++      checkMemoryDiagnostic(process.env.CORTEX_HEALTH_REPORT_PATH, true);
++    }
++    for (const [label, file] of [["PRINCIPAL", "PRINCIPAL_MEMORY.md"], ["DIGITAL_ASSISTANT", "DA_MEMORY.md"]]) {
++      const path = join(CLAUDE, "LIFEOS/USER", label, file);
++      hotDiagnostics.set(path, diagnoseMemoryFile(path));
++    }
++  }
++} catch {
++  diagnosticsAvailable = false;
++}
++if (!diagnosticsAvailable) {
++  await Bun.write(Bun.stdout, JSON.stringify({unavailable: "Memory diagnostics are unavailable under the current policy"}) + "\n");
++  process.exit(2);
++}
+ const HOOKS_DIR = join(CLAUDE, "hooks");
+ const TOOLS_DIR = join(CLAUDE, "LIFEOS/TOOLS");
+ const OBS_DIR = join(CLAUDE, "LIFEOS/MEMORY/OBSERVABILITY");
+@@ -291,7 +327,7 @@ for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as co
+ for (const [label, path] of [["principal", PRINCIPAL_MEM], ["da", DA_MEM]] as const) {
+   if (!existsSync(path)) continue;
+   try {
+-    const r = memoryRead(path);
++    const r = hotDiagnostics.get(path) ?? memoryRead(path);
+     if ("code" in r) continue;
+     if (r.dropped_invalid.length > 0) {
+       add(
+@@ -355,10 +391,10 @@ const retrievalStaleMs = cortexThresholdEnv("CORTEX_RETRIEVAL_STALE_MS");
+ const proposalBacklog = cortexThresholdEnv("CORTEX_PROPOSAL_BACKLOG");
+ const observabilityMaxBytes = cortexThresholdEnv("CORTEX_OBSERVABILITY_MAX_BYTES");
+ const observabilityMaxAgeMs = cortexThresholdEnv("CORTEX_OBSERVABILITY_MAX_AGE_MS");
+-const cortexEvidence = collectCortexEvidence({ root: CLAUDE, nowMs: process.env.CORTEX_HEALTH_NOW ? Date.parse(process.env.CORTEX_HEALTH_NOW) : Date.now(), thresholds: {
++const cortexEvidence = requireDiagnostics(() => collectCortexEvidence({ root: CLAUDE, nowMs: process.env.CORTEX_HEALTH_NOW ? Date.parse(process.env.CORTEX_HEALTH_NOW) : Date.now(), thresholds: {
+   ...(retrievalStaleMs === undefined ? {} : { retrievalStaleMs }), ...(proposalBacklog === undefined ? {} : { proposalBacklog }),
+   ...(observabilityMaxBytes === undefined ? {} : { observabilityMaxBytes }), ...(observabilityMaxAgeMs === undefined ? {} : { observabilityMaxAgeMs }),
+-}, indexManifest: process.env.CORTEX_INDEX_MANIFEST });
++}, indexManifest: process.env.CORTEX_INDEX_MANIFEST }));
+ const cortexAssessment = assessCortexEvidence(cortexEvidence);
+ for (const finding of cortexAssessment.findings) add(finding.id, finding.severity, finding.message, finding.evidence);
+ 
+@@ -369,7 +405,7 @@ const oks = findings.filter(f => f.severity === "ok");
+ 
+ const overall: Severity = criticals.length > 0 ? "critical" : warns.length > 0 ? "warn" : "ok";
+ 
+-const report = {
++const report = requireDiagnostics(() => filterMemoryDiagnostic({
+   ts: new Date().toISOString(),
+   overall,
+   counts: { critical: criticals.length, warn: warns.length, ok: oks.length },
+@@ -377,7 +413,7 @@ const report = {
+   evidence: cortexEvidence,
+   findings: findings.filter(f => f.severity !== "ok"),
+   ok_summary: oks.map(o => o.id),
+-};
++}, new Date().toISOString()));
+ 
+ // Append to observability log
+ try {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
+index 9ad9d6a..b507429 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryInsights.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Summarizes memory activity over the selected native time window.
++// ABOUTME: Preserves operational counts and filters managed proposal samples before display.
+ /**
+  * MemoryInsights — `memory insights` CLI for autonomic memory delta view.
+  *
+@@ -23,6 +25,7 @@ import { existsSync, readFileSync, statSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { getDAName } from "../../hooks/lib/identity"
++import { canReadMemorySources, readMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ const ROOT = pathResolve(homedir(), ".claude");
+ const OBS = pathResolve(ROOT, "LIFEOS/MEMORY/OBSERVABILITY");
+@@ -53,8 +56,8 @@ function parseArgs(): Args {
+ 
+ function readJsonlSince<T = any>(path: string, sinceMs: number): T[] {
+   if (!existsSync(path)) return [];
++  const raw = readMemoryDiagnostic(path);
+   try {
+-    const raw = readFileSync(path, "utf8");
+     const out: T[] = [];
+     for (const line of raw.split("\n")) {
+       const t = line.trim();
+@@ -105,6 +108,7 @@ function deriveVerdict(opts: {
+ 
+ function main(): void {
+   const { days } = parseArgs();
++  if (!canReadMemorySources()) throw new Error("Memory diagnostics are unavailable under the current policy");
+   const now = Date.now();
+   const sinceMs = now - days * 86400 * 1000;
+ 
+@@ -200,6 +204,10 @@ function main(): void {
+     out.push("");
+     out.push("  Recent samples:");
+     for (const p of samples) {
++      if (p.details_available === false) {
++        out.push("    Proposal details are unavailable under the current memory policy.");
++        continue;
++      }
+       const edit = (p.edit || "").slice(0, 80);
+       const ellipsis = (p.edit || "").length > 80 ? "…" : "";
+       out.push(`    • ${p.target_file || "?"} — ${edit}${ellipsis}`);
+@@ -232,4 +240,8 @@ function main(): void {
+   console.log(out.join("\n"));
+ }
+ 
+-main();
++try {
++  main();
++} catch {
++  console.log("Memory diagnostics are unavailable under the current policy.");
++}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts
+index 5b1d05f..ae208c9 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Previews and applies governed recovery of current native hot facts.
++// ABOUTME: Preserves standalone snapshot copies when no memory service is installed.
+ /**
+  * MemoryRestore — recover a hot-layer memory file from the per-write snapshot
+  * ring that MemoryWriter maintains. set-overwrite has a whole-file blast radius;
+@@ -8,14 +10,16 @@
+  *   bun MemoryRestore.ts restore <snapshot-file>  — byte-exact restore to target
+  *   bun MemoryRestore.ts latest principal         — restore the newest snapshot
+  *
+- * Restore is a raw byte copy (frontmatter + entries + markers), so it cannot
+- * itself trip the curation guards — it's a recovery path, not a curation write.
++ * Standalone restore copies snapshot bytes. Managed recovery requires a current
++ * preview and preserves registered current facts through the publication service.
+  */
+ 
+ import { readdirSync, readFileSync, writeFileSync, existsSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { parseMemoryContent } from "./MemoryWriter";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const SNAPSHOT_DIR = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-snapshots");
+@@ -41,6 +45,43 @@ function countEntries(content: string): number {
+ 
+ function main(): void {
+   const [cmd, arg] = process.argv.slice(2);
++  if (hasMemoryAccess()) {
++    const category = arg === "da" ? "assistant" : arg;
++    const read = (operation: string, arguments_: Record<string, unknown>): Record<string, unknown> => {
++      const result = memoryAccess(operation, arguments_, memoryObject);
++      if (!result || result.ok !== true) throw new Error("Managed native recovery is unavailable");
++      return result;
++    };
++    const listing = (): string[] => {
++      const result = read("restore_list", {category: cmd === "restore" ? null : category ?? null});
++      if (!Array.isArray(result.snapshots) || !result.snapshots.every(value => typeof value === "string")) {
++        throw new Error("Managed native snapshot references are unavailable");
++      }
++      return result.snapshots;
++    };
++    if (cmd === "list") {
++      console.log(JSON.stringify({ok: true, snapshots: listing()}));
++      return;
++    }
++    if ((cmd !== "restore" && cmd !== "latest") || !arg) throw new Error("Choose a native recovery snapshot");
++    const snapshot = cmd === "latest" ? listing().at(-1) : arg;
++    if (!snapshot) throw new Error("No native recovery snapshot exists");
++    const flags = process.argv.slice(4);
++    const values = new Map<string, string>();
++    for (let index = 0; index < flags.length; index += 2) {
++      const flag = flags[index], value = flags[index + 1];
++      if ((flag !== "--signature" && flag !== "--request-id") || !value || values.has(flag)) {
++        throw new Error("Managed recovery needs the reviewed signature and request identifier");
++      }
++      values.set(flag, value);
++    }
++    const signature = values.get("--signature");
++    const result = signature
++      ? read("restore", {snapshot, signature, request_id: values.get("--request-id") ?? randomUUID()})
++      : read("restore_preview", {snapshot});
++    console.log(JSON.stringify(result));
++    return;
++  }
+ 
+   if (cmd === "list") {
+     for (const which of arg ? [arg] : ["principal", "da"]) {
+@@ -78,4 +119,9 @@ function main(): void {
+   process.exit(2);
+ }
+ 
+-main();
++try { main(); }
++catch (error: unknown) {
++  if (!hasMemoryAccess()) throw error;
++  console.error("Managed native recovery is unavailable. Check authority and review a current snapshot preview.");
++  process.exitCode = 1;
++}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+index dcc185e..ef2bb3a 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+@@ -44,6 +44,7 @@ import * as fs from "fs";
+ import * as path from "path";
+ import { spawnSync } from "child_process";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -121,7 +122,7 @@ interface Frontmatter {
+  */
+ type NoteClass = "knowledge" | "learning" | "memory";
+ 
+-interface KnowledgeNote {
++export interface KnowledgeNote {
+   filePath: string;
+   frontmatter: Frontmatter;
+   body: string;
+@@ -129,6 +130,8 @@ interface KnowledgeNote {
+   noteClass: NoteClass;
+ }
+ 
++export const SUPPLIED_CORPUS_API_VERSION = 1;
++
+ interface ScoredNote {
+   note: KnowledgeNote;
+   score: number;
+@@ -664,8 +667,8 @@ function loadMemoryFiles(): KnowledgeNote[] {
+  * getRelevantContext(). See HOT_PATH_LEARNING_LIMIT for why LEARNING is
+  * bounded here and unbounded on the CLI path.
+  */
+-function discoverAllItems(): KnowledgeNote[] {
+-  return [...discoverNotes(), ...discoverLearningNotes(HOT_PATH_LEARNING_LIMIT), ...loadMemoryFiles()];
++export function discoverAllItems(learningLimit: number | null = HOT_PATH_LEARNING_LIMIT): KnowledgeNote[] {
++  return [...discoverNotes(), ...discoverLearningNotes(learningLimit ?? undefined), ...loadMemoryFiles()];
+ }
+ 
+ /**
+@@ -687,8 +690,14 @@ function discoverAllItems(): KnowledgeNote[] {
+  */
+ export function getRelevantContext(
+   query: string,
+-  options: { topK?: number; threshold?: number; excerptChars?: number; typeFilter?: string } = {},
++  options: { topK?: number; threshold?: number; excerptChars?: number; typeFilter?: string; corpus?: KnowledgeNote[] } = {},
+ ): GetRelevantContextResult {
++  if (options.corpus === undefined) {
++    const managed = memoryAccess("retrieve", {query, options},
++      (value): value is GetRelevantContextResult => memoryObject(value) && Array.isArray(value.results)
++        && typeof value.markdownBlock === "string" && typeof value.totalSearched === "number" && typeof value.cached === "boolean");
++    if (managed !== undefined) return managed;
++  }
+   const topK = options.topK ?? RELEVANT_DEFAULT_TOP_K;
+   const threshold = options.threshold ?? RELEVANT_DEFAULT_THRESHOLD;
+   const excerptChars = options.excerptChars ?? RELEVANT_EXCERPT_CHARS;
+@@ -696,7 +705,7 @@ export function getRelevantContext(
+ 
+   // Cache check — key on query + options
+   const cacheKey = JSON.stringify({ q: query.trim().toLowerCase(), topK, threshold, excerptChars, typeFilter });
+-  const cached = relevantCache.get(cacheKey);
++  const cached = options.corpus === undefined ? relevantCache.get(cacheKey) : undefined;
+   if (cached && Date.now() - cached.ts < RELEVANT_CACHE_TTL_MS) {
+     return { ...cached.result, cached: true };
+   }
+@@ -705,13 +714,13 @@ export function getRelevantContext(
+ 
+   const queryTerms = tokenize(query);
+   if (queryTerms.length === 0) {
+-    relevantCache.set(cacheKey, { ts: Date.now(), result: empty });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result: empty });
+     return empty;
+   }
+ 
+-  const allNotes = discoverAllItems();
++  const allNotes = options.corpus ?? discoverAllItems();
+   if (allNotes.length === 0) {
+-    relevantCache.set(cacheKey, { ts: Date.now(), result: { ...empty, totalSearched: 0 } });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result: { ...empty, totalSearched: 0 } });
+     return empty;
+   }
+ 
+@@ -730,7 +739,7 @@ export function getRelevantContext(
+ 
+   if (scored.length === 0) {
+     const result = { ...empty, totalSearched: allNotes.length };
+-    relevantCache.set(cacheKey, { ts: Date.now(), result });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result });
+     return result;
+   }
+ 
+@@ -745,7 +754,7 @@ export function getRelevantContext(
+ 
+   const markdownBlock = formatRelevantBlock(results);
+   const result: GetRelevantContextResult = { results, markdownBlock, totalSearched: allNotes.length, cached: false };
+-  relevantCache.set(cacheKey, { ts: Date.now(), result });
++  if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result });
+   return result;
+ }
+ 
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
+index d350d27..c8bfcaa 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
+@@ -41,6 +41,8 @@ import {
+ } from "node:fs";
+ import { basename as pathBasename, dirname, join as pathJoin, resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
++import { randomUUID } from "node:crypto";
++import { memoryAccess, memoryObject, hasMemoryAccess } from "./lib/MemoryAccess";
+ 
+ import { add as memoryAdd, sanitizeTypedItemForPersistence, type AddResult } from "./MemorySystem";
+ import { read as memoryWriterRead } from "./MemoryWriter";
+@@ -356,6 +358,12 @@ function renderCurrentMemory(snap: CurrentMemorySnapshot | undefined): string[]
+ }
+ 
+ export function buildReviewerUserPrompt(exchanges: Exchange[], currentMemory?: CurrentMemorySnapshot): string {
++  exchanges = exchanges.filter(exchange => {
++    const result = memoryAccess("filter_history", {content: `${exchange.user}\n${exchange.assistant}`, timestamp: exchange.ts},
++      (value): value is {content: string; excluded: boolean} => memoryObject(value)
++        && typeof value.content === "string" && typeof value.excluded === "boolean");
++    return result === undefined || !result.excluded;
++  });
+   const lines = [
+     ...renderCurrentMemory(currentMemory),
+     `Recent conversation between ${PRINCIPAL_NAME} and ${DA_NAME} (last ` + exchanges.length + " exchanges):",
+@@ -533,6 +541,15 @@ export function dispatchItems(items: TypedItem[], opts: { dryRun?: boolean; conf
+       // This is the orchestrator that was deferred from MemorySystem.add (which
+       // is a pure TS module and cannot reach into Claude-side skills).
+       if (item.type === "proposal" && typeof item.confidence === "number" && item.confidence >= threshold) {
++        if (hasMemoryAccess()) {
++          if (memoryObject(result) && memoryObject(result.receipt) && result.receipt.status === "diverted") continue;
++          const reference = memoryObject(result) && memoryObject(result.receipt) ? result.receipt.proposal_reference : undefined;
++          const applied = memoryAccess("proposal_decision", {reference, decision: "auto_apply", request_id: randomUUID(), confidence_threshold: threshold},
++            (value): value is {ok: boolean} => memoryObject(value) && typeof value.ok === "boolean");
++          if (applied?.ok) summary.proposals_auto_applied++;
++          else summary.proposals_auto_apply_failed++;
++          continue;
++        }
+         const proposalId = (result.detail?.id as string | undefined) ?? null;
+         // Pin the APPLY target the same way the queue write already does
+         // (public PR #1563, @anikinsasha). Without this, the queue row recorded
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts
+index c82729a..f8146bb 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryStatus.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reports native memory activity, capacity, and current review state.
++// ABOUTME: Requires source authority and projects managed diagnostics before display.
+ /**
+  * MemoryStatus — read-only viewer for LifeOS's memory subsystem.
+  *
+@@ -33,6 +35,7 @@ import {
+   PENDING_PROPOSALS_PATH,
+ } from "./MemoryTypes";
+ import { read as readMemory } from "./MemoryWriter";
++import { canReadMemorySources, readMemoryDiagnostic } from "./lib/MemoryAccess";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const LIFEOS_DIR = pathJoin(CLAUDE_ROOT, "LIFEOS");
+@@ -151,8 +154,8 @@ function corpusStats(dir: string): CorpusStats {
+ function proposalQueueStats(): ProposalQueueStats {
+   const empty: ProposalQueueStats = { pending: 0, total_observed: 0, most_recent_ids: [], pending_by_kind: {} };
+   if (!existsSync(PENDING_PROPOSALS_PATH)) return empty;
++  const raw = readMemoryDiagnostic(PENDING_PROPOSALS_PATH);
+   try {
+-    const raw = readFileSync(PENDING_PROPOSALS_PATH, "utf8");
+     const lines = raw.split("\n").filter((l) => l.trim().length > 0);
+     let pending = 0;
+     const recent: string[] = [];
+@@ -184,8 +187,9 @@ function proposalQueueStats(): ProposalQueueStats {
+ 
+ function reviewStateSnapshot(): ReviewStateSnapshot | null {
+   if (!existsSync(REVIEW_STATE_PATH)) return null;
++  const content = readMemoryDiagnostic(REVIEW_STATE_PATH);
+   try {
+-    const raw = JSON.parse(readFileSync(REVIEW_STATE_PATH, "utf8"));
++    const raw = JSON.parse(content);
+     const now = Date.now();
+     const parseIso = (s: string | null): number | null => {
+       if (!s) return null;
+@@ -209,8 +213,8 @@ function reviewStateSnapshot(): ReviewStateSnapshot | null {
+ 
+ function lastJsonlRow<T>(path: string): T | null {
+   if (!existsSync(path)) return null;
++  const raw = readMemoryDiagnostic(path);
+   try {
+-    const raw = readFileSync(path, "utf8");
+     const lines = raw.split("\n").filter((l) => l.trim().length > 0);
+     if (lines.length === 0) return null;
+     return JSON.parse(lines[lines.length - 1]!) as T;
+@@ -220,6 +224,7 @@ function lastJsonlRow<T>(path: string): T | null {
+ }
+ 
+ function buildReport(): StatusReport {
++  if (!canReadMemorySources()) throw new Error("Memory diagnostics are unavailable under the current policy");
+   return {
+     generated_at: new Date().toISOString(),
+     memory_files: {
+@@ -322,7 +327,14 @@ function renderText(r: StatusReport): string {
+ function main(): void {
+   const args = process.argv.slice(2);
+   const wantJson = args.includes("--json");
+-  const report = buildReport();
++  let report: StatusReport;
++  try {
++    report = buildReport();
++  } catch {
++    process.stdout.write(wantJson ? JSON.stringify({unavailable: "Memory diagnostics are unavailable under the current policy"}) + "\n"
++      : "Memory diagnostics are unavailable under the current policy.\n");
++    process.exit(1);
++  }
+   if (wantJson) {
+     process.stdout.write(JSON.stringify(report, null, 2) + "\n");
+   } else {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts b/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+index b57c7aa..7edf2e9 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+@@ -67,6 +67,7 @@ import {
+   ALL_PROPOSAL_KINDS,
+   TIER_B_AUDIT_PATH,
+   PRINCIPAL_MEMORY_PATH,
++  DA_MEMORY_PATH,
+   type TypedItem,
+   type MemoryTypeName,
+   type Tier,
+@@ -80,6 +81,8 @@ import { getTier } from "./MutationTier";
+ import { getRelevantContext, type RelevantResultItem } from "./MemoryRetriever";
+ import { mintId, slugFromPath, SCHEMA_VERSION } from "./KnowledgeSchema";
+ import { stripPrivateContent } from "./CaptureEnvelope";
++import { memoryAccess, memoryObject, observedMemoryRevision } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ import { assertInsideUserData } from "./lib/ForeignDataCheck";
+ 
+ // ── Constants ──
+@@ -808,6 +811,12 @@ export function sanitizeTypedItemForPersistence(item: TypedItem): SanitizedItemR
+  * tier — a defense-in-depth check against registry/classifier drift.
+  */
+ export function add(item: TypedItem): AddResult {
++  const managed = memoryAccess("add", {item, request_id: randomUUID(), project: process.env.LIFEOS_MEMORY_PROJECT ?? "general",
++    observed_revision: item?.type === "memory" ? observedMemoryRevision(item.actor === "principal" ? PRINCIPAL_MEMORY_PATH : DA_MEMORY_PATH) : ""},
++    (value): value is AddResult => memoryObject(value) && (value.ok === true
++      ? typeof value.path === "string" && isKnownType(String(value.type)) && memoryObject(value.detail)
++      : value.ok === false && ["EINVAL_ITEM", "EWRITE_FAILED"].includes(String(value.code)) && typeof value.message === "string"));
++  if (managed !== undefined) return managed;
+   if (!item || typeof item !== "object" || !("type" in item)) {
+     return { ok: false, code: "EINVAL_ITEM", message: "Item missing 'type' field" };
+   }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+index 5122376..a53aa26 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+@@ -52,6 +52,9 @@ import {
+ import { dirname, resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ 
++import { memoryAccess, memoryObject, observedMemoryRevision } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
++
+ // ── Constants ──
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+@@ -526,6 +529,16 @@ export function setEntries(
+   entries: string[],
+   options: SetEntriesOptions = {},
+ ): SetEntriesResult {
++  const managed = memoryAccess("set", {path: pathResolve(filePath), entries, request_id: randomUUID(),
++    observed_revision: observedMemoryRevision(filePath), allow_drastic: options.allowDrastic === true},
++    (value): value is SetEntriesResult => memoryObject(value) && (value.ok === true
++      ? ["accepted", "dropped_malformed", "dropped_overlength", "dropped_duplicates", "prior_count", "new_count"].every(key => typeof value[key] === "number")
++        && Array.isArray(value.evictions) && Array.isArray(value.additions)
++      : value.ok === false && ["EINVAL_PATH", "EWRITE_FAILED"].includes(String(value.code)) && typeof value.message === "string"));
++  if (managed !== undefined) {
++    if (!managed.ok) return {ok: false, code: "EWRITE_FAILED", message: managed.message};
++    return managed;
++  }
+   const pathCheck = validatePath(filePath);
+   if (!("abs" in pathCheck)) return pathCheck;
+   const abs = pathCheck.abs;
+@@ -638,6 +651,12 @@ export function setEntries(
+ }
+ 
+ export function read(filePath: string): ReadResult | SetEntriesErrPath {
++  const managed = memoryAccess("read", {path: pathResolve(filePath)},
++    (value): value is ReadResult | SetEntriesErrPath => memoryObject(value) && (Array.isArray(value.entries)
++      ? value.entries.every(entry => typeof entry === "string") && ["count", "chars_used", "cap_entries", "cap_chars"].every(key => typeof value[key] === "number")
++        && Array.isArray(value.dropped_invalid)
++      : value.ok === false && value.code === "EINVAL_PATH" && typeof value.message === "string"));
++  if (managed !== undefined) return managed;
+   const pathCheck = validatePath(filePath);
+   if (!("abs" in pathCheck)) return pathCheck;
+   const abs = pathCheck.abs;
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
+index 30db06e..7c1ca94 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
+@@ -36,6 +36,11 @@ const UPGRADES_DIR = join(BASE_DIR, "MEMORY", "UPGRADES");
+ const RECORDS_DIR = join(UPGRADES_DIR, "records");
+ const STATE_FILE = join(UPGRADES_DIR, ".state.json");
+ const EXPIRY_DAYS = 30;
++let publicationObserver: ((path: string) => void) | undefined;
++
++export function observeUpgradePublication(observer: (path: string) => void): void {
++  publicationObserver = observer;
++}
+ 
+ export type UpgradeStatus = "recommended" | "accepted" | "applied" | "verified" | "rejected" | "expired";
+ export type UpgradeSource = "directive" | "correction" | "upgrade-skill" | "algo-run" | "autonomous" | "manual";
+@@ -189,7 +194,7 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+   const stamp = now.toISOString();
+   const idStamp = stamp.slice(0, 19).replace(/[-:T]/g, "").replace(/^(\d{8})(\d{6})$/, "$1-$2");
+   const slug = slugify(input.claim);
+-  const id = `${idStamp}_${slug}`;
++  const id = `${idStamp}_${slug}_${hash}`;
+   const record: UpgradeRecord = {
+     ...input,
+     claim: input.claim.trim().slice(0, 1000),
+@@ -202,8 +207,10 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+     notes: [`${stamp} — created (source: ${input.source})`],
+     filename: `${id}.md`,
+   };
++  publicationObserver?.(join(RECORDS_DIR, record.filename));
+   writeFileSync(join(RECORDS_DIR, record.filename), renderRecord(record));
+   st.claim_hashes[hash] = { id, created: stamp };
++  publicationObserver?.(STATE_FILE);
+   saveState(st);
+   return { created: true, id };
+ }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
+new file mode 100644
+index 0000000..f008c5d
+--- /dev/null
++++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
+@@ -0,0 +1,205 @@
++// ABOUTME: Delegates native memory operations to an optional governed local service.
++// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
++
++import { lstatSync, readFileSync, realpathSync } from "node:fs";
++import { homedir } from "node:os";
++import { isAbsolute, resolve } from "node:path";
++import { spawnSync } from "node:child_process";
++
++const revisions = new Map<string, string>();
++
++export function memoryObject(value: unknown): value is Record<string, unknown> {
++  return value !== null && typeof value === "object" && !Array.isArray(value);
++}
++
++export function hasMemoryAccess(): boolean {
++  if (process.env.LIFEOS_MEMORY_INTERNAL === "1") return false;
++  try {
++    lstatSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json"));
++    return true;
++  } catch (error: unknown) {
++    if (memoryObject(error) && error.code === "ENOENT") return false;
++    throw error;
++  }
++}
++
++export function observedMemoryRevision(path: string): string {
++  return revisions.get(resolve(path)) ?? "";
++}
++
++export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,
++                                valid: (value: unknown) => value is T): T | undefined {
++  if (operation !== "pulse_http" && !hasMemoryAccess()) return undefined;
++  const path = resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json");
++  const info = lstatSync(path);
++  if (!info.isFile() || info.isSymbolicLink() || info.uid !== process.getuid?.() || (info.mode & 0o077) !== 0) {
++    throw new Error("The native memory service configuration needs private owner permissions");
++  }
++  const configuration: unknown = JSON.parse(readFileSync(path, "utf8"));
++  if (!memoryObject(configuration) || configuration.version !== 1 || !Array.isArray(configuration.command)) {
++    throw new Error("Unsupported native memory service configuration");
++  }
++  const command: string[] = [];
++  for (const argument of configuration.command) {
++    if (typeof argument !== "string" || argument.length === 0) throw new Error("Invalid native memory service command");
++    command.push(argument);
++  }
++  const executable = command.shift();
++  if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
++  const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
++                                               env: {...process.env},
++                                               encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
++  if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
++  const response: unknown = JSON.parse(result.stdout);
++  if (!valid(response)) throw new Error("The native memory service returned an invalid result");
++  if (operation === "read" && memoryObject(response) && typeof response.revision === "string" && typeof arguments_.path === "string") {
++    revisions.set(resolve(arguments_.path), response.revision);
++  }
++  return response;
++}
++
++
++export function readMemorySource(path: string): string {
++  const governed = memoryAccess("read_source", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return readFileSync(path, "utf8");
++  if (governed.ok !== true || typeof governed.content !== "string" || governed.excluded !== false) {
++    throw new Error("The retained native source is excluded or unavailable");
++  }
++  return governed.content;
++}
++
++export function readMemoryDiagnostic(path: string): string {
++  const governed = memoryAccess("read_diagnostic", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return readFileSync(path, "utf8");
++  if (governed.ok !== true || typeof governed.content !== "string" || governed.excluded !== false) {
++    throw new Error("Memory diagnostics are unavailable under the current policy");
++  }
++  return governed.content;
++}
++
++export function checkMemoryDiagnostic(path: string, report = false): void {
++  const governed = memoryAccess(report ? "check_diagnostic_report" : "check_diagnostic", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined && governed.ok !== true) {
++    throw new Error("Memory diagnostics are unavailable under the current policy");
++  }
++}
++
++export function canReadMemoryDiagnostics(root: string): boolean {
++  try {
++    if (!canReadMemorySources()) return false;
++    return !hasMemoryAccess() || realpathSync(root) === realpathSync(resolve(homedir(), ".claude"));
++  } catch {
++    return false;
++  }
++}
++
++interface HotMemoryDiagnostic {
++  dropped_invalid: Array<{entry: string; reason: "malformed" | "overlength"}>;
++}
++
++export function diagnoseMemoryFile(path: string): HotMemoryDiagnostic | undefined {
++  const response = memoryAccess("diagnose_hot", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (response === undefined) return undefined;
++  const valid = (value: unknown): value is HotMemoryDiagnostic => memoryObject(value)
++    && Array.isArray(value.dropped_invalid) && value.dropped_invalid.every(row => memoryObject(row)
++      && typeof row.entry === "string" && (row.reason === "malformed" || row.reason === "overlength"));
++  if (response.ok !== true || !valid(response)) throw new Error("Hot-memory diagnostics are unavailable under the current policy");
++  return response;
++}
++
++function sameDiagnosticShape(value: unknown, source: unknown): boolean {
++  if (Array.isArray(source)) {
++    return Array.isArray(value) && value.length === source.length
++      && source.every((item, index) => sameDiagnosticShape(value[index], item));
++  }
++  if (memoryObject(source)) {
++    return memoryObject(value) && Object.keys(value).length === Object.keys(source).length
++      && Object.entries(source).every(([key, item]) => Object.hasOwn(value, key) && sameDiagnosticShape(value[key], item));
++  }
++  return source === null ? value === null : typeof value === typeof source;
++}
++
++export function filterMemoryDiagnostic<T>(report: T, timestamp: string): T {
++  const content = JSON.stringify(report);
++  const governed = memoryAccess("filter_diagnostic", {content, timestamp},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return report;
++  if (governed.ok !== true || typeof governed.content !== "string") {
++    throw new Error("Memory diagnostic details are unavailable under the current policy");
++  }
++  const filtered: unknown = JSON.parse(governed.content);
++  const source: unknown = JSON.parse(content);
++  const valid = (value: unknown): value is T => sameDiagnosticShape(value, source);
++  if (!valid(filtered)) throw new Error("The native diagnostic service returned an invalid result");
++  return filtered;
++}
++
++
++export function filterMemorySource(content: string, timestamp: string): string | null {
++  const governed = memoryAccess("filter_source", {content, timestamp},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.content === "string" && typeof value.excluded === "boolean");
++  if (governed === undefined) return content;
++  return governed.excluded ? null : String(governed.content);
++}
++
++
++export function checkMemorySource(path: string): void {
++  const governed = memoryAccess("check_source", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined && governed.ok !== true) throw new Error("The native source path is excluded or unavailable");
++}
++
++
++export function canReadMemorySources(): boolean {
++  try {
++    if (!hasMemoryAccess()) return true;
++    const governed = memoryAccess("check_sources", {},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    return governed?.ok === true;
++  } catch {
++    return false;
++  }
++}
++
++
++let managedHTTP = false;
++
++// ABOUTME: Resolves managed HTTP mode independently from ambient agent context.
++// ABOUTME: Retains refusal after connector loss and honors the persistent HTTP marker.
++export function hasManagedMemoryHTTP(): boolean {
++  for (const name of ["memory-http.json", "memory-access.json"]) {
++    try {
++      lstatSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG", name));
++      managedHTTP = true;
++    } catch (error: unknown) {
++      if (!memoryObject(error) || error.code !== "ENOENT") throw error;
++    }
++  }
++  return managedHTTP;
++}
++
++interface MemoryHTTPResponse {
++  status: number;
++  headers: string[][];
++  body: string;
++}
++
++export function memoryHTTPResponse(request: Request, view: string, target?: string): Response {
++  const valid = (value: unknown): value is MemoryHTTPResponse => memoryObject(value)
++    && typeof value.status === "number" && [200, 400, 401, 403, 404, 409, 503].includes(value.status)
++    && typeof value.body === "string" && Array.isArray(value.headers)
++    && value.headers.every(header => Array.isArray(header) && header.length === 2
++      && typeof header[0] === "string" && typeof header[1] === "string"
++      && ["content-type", "cache-control", "set-cookie"].includes(header[0]));
++  const response = memoryAccess("pulse_http", {view, authorization: request.headers.get("authorization") ?? "",
++    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})}, valid);
++  if (response === undefined) throw new Error("Authenticated memory is unavailable");
++  const headers = new Headers();
++  for (const header of response.headers) headers.append(header[0], header[1]);
++  headers.set("cache-control", "no-store");
++  return new Response(response.body, {status: response.status, headers});
++}
+diff --git a/LifeOS/install/hooks/LoadContext.hook.ts b/LifeOS/install/hooks/LoadContext.hook.ts
+index eb68d1d..75a715a 100755
+--- a/LifeOS/install/hooks/LoadContext.hook.ts
++++ b/LifeOS/install/hooks/LoadContext.hook.ts
+@@ -47,6 +47,7 @@ import { loadWisdomFrames } from './lib/learning-readback';
+ import { loadAdvisoryDigest } from './lib/advisory-readback';
+ import { isSubagentContext } from './lib/subagent';
+ import { isDesktopChannel, getNotificationChannel } from './lib/notification-channel';
++import { readMemorySource, hasMemoryAccess } from '../LIFEOS/TOOLS/lib/MemoryAccess';
+ import { PHASE_TO_ASCENT } from '../LIFEOS/TOOLS/ascent';
+ 
+ /**
+@@ -139,7 +140,7 @@ function loadRelationshipContext(paiDir: string): string | null {
+     );
+     if (existsSync(notePath)) {
+       try {
+-        const content = readFileSync(notePath, 'utf-8');
++        const content = readMemorySource(notePath);
+         const notes = content
+           .split('\n')
+           .filter(line => line.trim().startsWith('- '))
+@@ -221,7 +222,7 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+   const namesPath = join(paiDir, 'MEMORY', 'STATE', 'session-names.json');
+   try {
+     if (existsSync(namesPath)) {
+-      sessionNames = JSON.parse(readFileSync(namesPath, 'utf-8'));
++      sessionNames = JSON.parse(readMemorySource(namesPath));
+     }
+   } catch { /* ignore parse errors */ }
+ 
+@@ -270,7 +271,7 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+         // v4.0+: Read from ISA.md / PRD.md frontmatter. Modern ISAs carry
+         // `phase:`; `status:` is the legacy key, and wins when both are present.
+         try {
+-          const head = readFileSync(isaPath, 'utf-8').substring(0, 600);
++          const head = readMemorySource(isaPath).substring(0, 600);
+           const statusMatch = head.match(/^status:\s*"?(\w+)"?/m);
+           const phaseMatch = head.match(/^phase:\s*"?([\w-]+)"?/m);
+           const titleMatch = head.match(/^title:\s*"?(.+?)"?\s*$/m);
+@@ -279,18 +280,18 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+           else if (phaseMatch) status = phaseMatch[1];
+           if (titleMatch) rawTitle = titleMatch[1];
+           if (sessionIdMatch) sessionId = sessionIdMatch[1]?.trim();
+-        } catch { /* skip */ }
++        } catch { if (hasMemoryAccess()) continue; /* skip */ }
+       } else if (existsSync(metaPath)) {
+         // Legacy: Read from META.yaml
+         try {
+-          const meta = readFileSync(metaPath, 'utf-8');
++          const meta = readMemorySource(metaPath);
+           const statusMatch = meta.match(/^status:\s*"?(\w+)"?/m);
+           const titleMatch = meta.match(/^title:\s*"?(.+?)"?\s*$/m);
+           const sessionIdMatch = meta.match(/^session_id:\s*"?(.+?)"?\s*$/m);
+           if (statusMatch) status = statusMatch[1];
+           if (titleMatch) rawTitle = titleMatch[1];
+           if (sessionIdMatch) sessionId = sessionIdMatch[1]?.trim();
+-        } catch { /* skip */ }
++        } catch { if (hasMemoryAccess()) continue; /* skip */ }
+       } else {
+         continue; // No ISA.md / PRD.md / META.yaml — skip
+       }
+@@ -322,7 +323,7 @@ function getRecentWorkSessions(paiDir: string): WorkSession[] {
+             if (files.length > 0) artifactFile = join(dirPath, files[0]);
+           }
+           if (artifactFile) {
+-            const isaContent = readFileSync(artifactFile, 'utf-8');
++            const isaContent = readMemorySource(artifactFile);
+             const idMatch = isaContent.match(/^id:\s*(.+)$/m);
+             const statusMatch2 = isaContent.match(/^status:\s*(.+)$/m);
+             const verifyMatch = isaContent.match(/^verification_summary:\s*"?(.+?)"?$/m);
+@@ -368,7 +369,7 @@ function getProjectProgress(paiDir: string): WorkSession[] {
+ 
+     for (const file of files) {
+       try {
+-        const content = readFileSync(join(progressDir, file), 'utf-8');
++        const content = readMemorySource(join(progressDir, file));
+ 
+         interface ProgressFile {
+           project: string;
+@@ -478,13 +479,10 @@ async function main() {
+     recordSessionStart();
+     console.error('⏱️ Session start time recorded');
+ 
+-    // Remote-channel sessions (iMessage, etc. — see lib/notification-channel.ts)
+-    // serve someone through a bot surface. Injecting the principal's
+-    // relationship notes, wisdom frames, advisory findings and active work
+-    // summary into that context is the same class of leak as a desktop /notify
+-    // fired from a remote turn. One guard here covers every loader below,
+-    // present and future.
+-    if (!isDesktopChannel()) {
++    // Unmanaged remote sessions cannot load private owner context. Managed
++    // sessions authorize each source through the authenticated memory policy.
++    // Desktop notification isolation remains in the notification hooks.
++    if (!isDesktopChannel() && !hasMemoryAccess()) {
+       console.error(`📵 Remote channel (${getNotificationChannel()}) - skipping dynamic context injection`);
+       console.log('\n✅ LifeOS session ready...');
+       process.exit(0);
+diff --git a/LifeOS/install/hooks/LoadMemory.hook.ts b/LifeOS/install/hooks/LoadMemory.hook.ts
+index 12af0c6..1412a55 100755
+--- a/LifeOS/install/hooks/LoadMemory.hook.ts
++++ b/LifeOS/install/hooks/LoadMemory.hook.ts
+@@ -24,7 +24,8 @@ import { existsSync, readFileSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { isSubagentContext as isSubagentInvocation } from './lib/subagent';
+-import { parseMemoryContent } from "../LIFEOS/TOOLS/MemoryWriter";
++import { parseMemoryContent, read as memoryRead } from "../LIFEOS/TOOLS/MemoryWriter";
++import { hasMemoryAccess } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const PRINCIPAL_MEMORY = pathResolve(CLAUDE_ROOT, "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md");
+@@ -37,6 +38,11 @@ interface MemoryRead {
+ }
+ 
+ function readMemory(path: string): MemoryRead {
++  if (hasMemoryAccess()) {
++    const result = memoryRead(path);
++    if ("code" in result) return {entries: [], count: 0, charsUsed: 0};
++    return {entries: result.entries, count: result.count, charsUsed: result.chars_used};
++  }
+   if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };
+   try {
+     // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice
+diff --git a/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts b/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
+index ebcbb89..64ea902 100755
+--- a/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
++++ b/LifeOS/install/hooks/MemoryDeltaSurface.hook.ts
+@@ -35,6 +35,8 @@ import { resolve as pathResolve, dirname } from "node:path";
+ import { homedir } from "node:os";
+ import { isSubagentContext as isSubagent } from './lib/subagent';
+ 
++import { canReadMemorySources, readMemorySource } from "../LIFEOS/TOOLS/lib/MemoryAccess";
++
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const WRITES_LOG = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl");
+ const CURSOR = pathResolve(CLAUDE_ROOT, "LIFEOS/MEMORY/OBSERVABILITY/memory-delta-cursor.json");
+@@ -54,6 +56,8 @@ interface WriteRow {
+   accepted?: number;
+   additions?: string[];
+   evictions?: string[];
++  additions_count?: number;
++  evictions_count?: number;
+ }
+ 
+ function readCursor(): string {
+@@ -119,7 +123,7 @@ function freshnessSegment(): string {
+   try {
+     if (!existsSync(FRESHNESS_CACHE)) return "freshness: no data";
+     const age = Date.now() - statSync(FRESHNESS_CACHE).mtimeMs;
+-    const f = JSON.parse(readFileSync(FRESHNESS_CACHE, "utf8"));
++    const f = JSON.parse(readMemorySource(FRESHNESS_CACHE));
+     const grade = f.overall_grade ?? "?";
+     const fresh = f.fresh_count ?? "?";
+     const total = f.total ?? "?";
+@@ -132,7 +136,7 @@ function freshnessSegment(): string {
+ 
+ function stalestSegment(): string {
+   try {
+-    const f = JSON.parse(readFileSync(FRESHNESS_CACHE, "utf8"));
++    const f = JSON.parse(readMemorySource(FRESHNESS_CACHE));
+     const ms = f.most_stale;
+     if (!ms?.name || (!ms.stale && ms.grade !== "F")) return "";
+     const why = ms.why ? ` (${ms.why})` : "";
+@@ -146,7 +150,7 @@ function stalestSegment(): string {
+ function criticalHealthLine(): string | null {
+   try {
+     if (!existsSync(HEALTH_LOG)) return null;
+-    const lines = readFileSync(HEALTH_LOG, "utf8").trim().split("\n");
++    const lines = readMemorySource(HEALTH_LOG).trim().split("\n");
+     const last = JSON.parse(lines[lines.length - 1]);
+     if (last?.overall !== "critical") return null;
+     const blockers = (last.findings ?? [])
+@@ -161,6 +165,7 @@ function criticalHealthLine(): string | null {
+ 
+ /** Returns the <lifeos-memory-health>? + <lifeos-memory-delta> blocks, or null. Pure — no exit. */
+ export function run(): string | null {
++  if (!canReadMemorySources()) return null;
+   let out = "";
+   try {
+     touchHeartbeat(); // liveness guard: MemoryHealthCheck flags a dead surface
+@@ -176,7 +181,7 @@ export function run(): string | null {
+     if (existsSync(WRITES_LOG)) {
+       // Tail-bounded scan: rows are append-only chronological; cursor advances
+       // every prompt, so only the tail can hold unsurfaced rows.
+-      const allLines = readFileSync(WRITES_LOG, "utf8").split("\n").filter((l) => l.trim().length > 0);
++      const allLines = readMemorySource(WRITES_LOG).split("\n").filter((l) => l.trim().length > 0);
+       for (const line of allLines.slice(-500)) {
+         let row: WriteRow;
+         try { row = JSON.parse(line); } catch { continue; }
+@@ -189,8 +194,8 @@ export function run(): string | null {
+         if (cursor && row.ts <= cursor) continue; // already surfaced
+         const adds = row.additions ?? [];
+         const evs = row.evictions ?? [];
+-        learned += adds.length;
+-        dropped += evs.length;
++        learned += row.additions_count ?? adds.length;
++        dropped += row.evictions_count ?? evs.length;
+         for (const a of adds) if (learnedSamples.length < 2) learnedSamples.push(`${fileLabel(row.file)}: ${short(a)}`);
+         for (const e of evs) if (droppedSamples.length < 1) droppedSamples.push(short(e));
+       }
+@@ -227,7 +232,7 @@ export function run(): string | null {
+         const age = ageStr(Date.now() - Date.parse(lastAutonomic.ts));
+         // additions[] is NET-new entries; `accepted` is the post-overwrite total
+         // (set-overwrite semantics) and would overstate. Only claim +N for real news.
+-        const n = (lastAutonomic.additions ?? []).length;
++        const n = lastAutonomic.additions_count ?? (lastAutonomic.additions ?? []).length;
+         const what = n > 0 ? `+${n} new → ` : "ran → ";
+         segs.push(`last curation ${what}${fileLabel(lastAutonomic.file)} ${age}`);
+       } else {
+diff --git a/LifeOS/install/hooks/MemoryTurnStart.hook.ts b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
+index 1e73f45..1c96139 100755
+--- a/LifeOS/install/hooks/MemoryTurnStart.hook.ts
++++ b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
+@@ -28,6 +28,7 @@
+ 
+ // tickCadence removed 2026-07-11: MemoryReviewFire (Stop) owns the whole
+ // cadence now — counting, decision, and firing in one place.
++import { canReadMemorySources } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+ import { run as loadMemory } from "./LoadMemory.hook";
+ import { run as deltaSurface } from "./MemoryDeltaSurface.hook";
+ import { getRelevantContext } from "../LIFEOS/TOOLS/MemoryRetriever";
+@@ -88,7 +89,7 @@ async function readStdin(): Promise<string> {
+   });
+ }
+ 
+-if (isSubagent()) process.exit(0);
++if (isSubagent() || !canReadMemorySources()) process.exit(0);
+ 
+ (async () => {
+   let sessionId = "unknown";
+diff --git a/LifeOS/install/hooks/lib/advisory-readback.ts b/LifeOS/install/hooks/lib/advisory-readback.ts
+index fdf5dfa..cdbec6a 100644
+--- a/LifeOS/install/hooks/lib/advisory-readback.ts
++++ b/LifeOS/install/hooks/lib/advisory-readback.ts
+@@ -29,7 +29,8 @@
+ import { readFileSync, writeFileSync, mkdirSync } from 'fs';
+ import { dirname } from 'path';
+ import { paiPath } from './paths';
+-import { readLatestByType, findingsOf, type EventRecord, type Finding } from './events';
++import { filterMemorySource, checkMemorySource } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
++import { readLatestByType, findingsOf, type EventRecord, type Finding, eventsPath } from './events';
+ 
+ /** UTC, matching the event log. See the note in lib/events.ts. */
+ function nowIso(): string {
+@@ -196,8 +197,13 @@ export function writeMarker(marker: AdvisoryMarker, path: string = markerPath())
+  */
+ export function loadAdvisoryDigest(opts: { eventsPath?: string; markerPath?: string } = {}): string | null {
+   try {
++    checkMemorySource(opts.eventsPath ?? eventsPath());
+     const latest = readLatestByType([...ADVISORY_EVENT_TYPES], { path: opts.eventsPath });
+-    const findings = collectFindings(latest);
++    const findings = collectFindings(latest).filter((finding) => {
++      const event = latest.get(finding.type);
++      const content = [finding.type, finding.key, finding.detail].join("\n");
++      return filterMemorySource(content, typeof event?.timestamp === "string" ? event.timestamp : "") !== null;
++    });
+     const marker = readMarker(opts.markerPath ?? markerPath());
+     const decision = decideDigest(findings, marker);
+     writeMarker(decision.marker, opts.markerPath ?? markerPath());
+diff --git a/LifeOS/install/hooks/lib/learning-readback.ts b/LifeOS/install/hooks/lib/learning-readback.ts
+index 5b428b7..81a753f 100755
+--- a/LifeOS/install/hooks/lib/learning-readback.ts
++++ b/LifeOS/install/hooks/lib/learning-readback.ts
+@@ -23,7 +23,8 @@
+  * Combined output stays under 2000 chars for context injection.
+  */
+ 
+-import { readFileSync, existsSync, readdirSync } from 'fs';
++import { existsSync, readdirSync } from 'fs';
++import { readMemorySource } from '../../LIFEOS/TOOLS/lib/MemoryAccess';
+ import { join } from 'path';
+ 
+ /** Default freshness window for the learning digest. Entries older than this are
+@@ -88,7 +89,7 @@ function getRecentLearnings(baseDir: string, subdir: string, count: number, maxA
+           // Skip stale entries so a quiet category can't surface old signals.
+           if (!isFresh(file, maxAgeDays)) continue;
+           try {
+-            const content = readFileSync(join(monthPath, file), 'utf-8');
++            const content = readMemorySource(join(monthPath, file));
+             const feedbackMatch = content.match(/\*\*Feedback:\*\*\s*(.+)/);
+             const ratingMatch = content.match(/rating:\s*(\d+)/);
+             if (feedbackMatch) {
+@@ -147,7 +148,7 @@ export function loadWisdomFrames(paiDir: string): string | null {
+ 
+     for (const file of files) {
+       try {
+-        const content = readFileSync(join(framesDir, file), 'utf-8');
++        const content = readMemorySource(join(framesDir, file));
+         const domain = file.replace('.md', '');
+ 
+         // Extract principle headers with CRYSTAL confidence
+@@ -204,7 +205,7 @@ export function loadFailurePatterns(paiDir: string): string | null {
+           if (!existsSync(contextPath)) continue;
+ 
+           try {
+-            const content = readFileSync(contextPath, 'utf-8');
++            const content = readMemorySource(contextPath);
+             // Get date from dir name
+             const dateMatch = dir.match(/^(\d{4}-\d{2}-\d{2})/);
+             const date = dateMatch ? dateMatch[1] : '';
+@@ -262,7 +263,7 @@ export function loadSynthesisPatterns(paiDir: string): string | null {
+ 
+         for (const file of files) {
+           try {
+-            const content = readFileSync(join(monthPath, file), 'utf-8');
++            const content = readMemorySource(join(monthPath, file));
+ 
+             const avgMatch = content.match(/\*\*Average Rating:\*\*\s*([\d.]+\/10)/);
+             if (!avgMatch) continue;
+@@ -300,7 +301,7 @@ export function loadSignalTrends(paiDir: string): string | null {
+   if (!existsSync(cachePath)) return null;
+ 
+   try {
+-    const content = readFileSync(cachePath, 'utf-8');
++    const content = readMemorySource(cachePath);
+ 
+     // Parse shell variable assignments (key='value' or key=value)
+     const vars: Record<string, string> = {};

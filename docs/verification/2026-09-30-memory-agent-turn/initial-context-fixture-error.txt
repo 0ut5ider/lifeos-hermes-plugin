@@ -1,0 +1,38 @@
+test_actual_agent_turn_commits_native_fact_and_reports_its_receipt (test_memory_agent.MemoryAgentTests.test_actual_agent_turn_commits_native_fact_and_reports_its_receipt) ... FAIL
+
+======================================================================
+FAIL: test_actual_agent_turn_commits_native_fact_and_reports_its_receipt (test_memory_agent.MemoryAgentTests.test_actual_agent_turn_commits_native_fact_and_reports_its_receipt)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_agent.py", line 28, in test_actual_agent_turn_commits_native_fact_and_reports_its_receipt
+    result = self.fixture.initialize({'provider':'lifeos-hook-bridge','memory_enabled':False,'user_profile_enabled':False},
+                                     operation='conversation',message='Remember a synthetic lab fact and report its saved reference.')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_host.py", line 41, in initialize
+    self.assertEqual(result.returncode,0,result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_host_calls.py", line 60, in <module>
+    main()
+    ~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_host_calls.py", line 29, in main
+    agent = AIAgent(**settings['route'],api_key='synthetic-key',session_id='session',platform='chat-a',
+                    user_id='100',chat_id='200',chat_type='dm',quiet_mode=True,
+                    enabled_toolsets=['memory','skills'],skip_context_files=True,skip_background_review=True,
+                    cwd=os.environ['HERMES_HOME'])
+  File "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes/run_agent.py", line 311, in __init__
+    init_agent(self, **init_kwargs)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes/agent/agent_init.py", line 2492, in init_agent
+    _enforce_minimum_context(agent)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes/agent/agent_init.py", line 2085, in _enforce_minimum_context
+    raise ValueError(
+    ...<3 lines>...
+    )
+ValueError: Model synthetic-model has a context window of 16,384 tokens, which is below the minimum 64,000 required by Hermes Agent.  Your local server is serving a 16,384-token window.  Start it with at least 64K context (llama.cpp: -c 64000; vLLM: --max-model-len; Ollama: OLLAMA_CONTEXT_LENGTH=64000 or a Modelfile num_ctx), or set model.ollama_num_ctx in config.yaml to the window it really serves (at least 64K).
+
+
+----------------------------------------------------------------------
+Ran 1 test in 2.850s
+
+FAILED (failures=1)

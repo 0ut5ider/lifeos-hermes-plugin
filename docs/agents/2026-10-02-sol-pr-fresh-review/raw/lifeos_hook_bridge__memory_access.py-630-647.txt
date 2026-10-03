@@ -1,0 +1,18 @@
+630:     def _corpus(self, connection: sqlite3.Connection, scope: MemoryScope) -> tuple[dict[str, Any], list[dict[str, Any]]]:
+631:         records = {}
+632:         corpus = []
+633:         hot_entries = {}
+634:         for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
+635:             if not self._allowed(scope, row):
+636:                 continue
+637:             # Reuse native parsing inside this locked retrieval, keeping each reference's digest check.
+638:             content = self._content(row, hot_entries)
+639:             records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
+640:                                   "content": content, "category": row["category"], "project": row["project"],
+641:                                   "writer": row["writer"], "status": 'historical' if row['source_kind']=='learning' else row["status"],
+642:                                   "source":{'kind':row['source_kind'],'session':row['source_session'],'path':row['path']}}
+643:             corpus.append({"filePath": row["id"], "frontmatter": {"type": ("idea" if "/KNOWLEDGE/Ideas/" in row["path"] else "knowledge") if row["category"] == "project" else "memory",
+644:                                                                  "title": row["project"] or row["category"]},
+645:                            "body": content, "wordCount": max(1, len(content.split())),
+646:                            "noteClass": 'learning' if row['source_kind']=='learning' else "knowledge" if row["category"] == "project" else "memory"})
+647:         return records, corpus

@@ -1,0 +1,14 @@
+test_final_health_report_filters_retired_invalid_entry_without_losing_warning (test_memory_cortex_health.MemoryCortexHealthTests.test_final_health_report_filters_retired_invalid_entry_without_losing_warning) ... ERROR
+
+======================================================================
+ERROR: test_final_health_report_filters_retired_invalid_entry_without_losing_warning (test_memory_cortex_health.MemoryCortexHealthTests.test_final_health_report_filters_retired_invalid_entry_without_losing_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 165, in test_final_health_report_filters_retired_invalid_entry_without_losing_warning
+    warning = next(row for row in report['findings'] if row['id'] == 'pending-silent-loss:principal')
+StopIteration
+
+----------------------------------------------------------------------
+Ran 1 test in 1.228s
+
+FAILED (errors=1)

@@ -1,0 +1,328 @@
+{
+  "cases": [
+    {
+      "operation": "correct",
+      "category": "principal",
+      "drift": "none",
+      "receipt": "committed",
+      "neighbor_present_after": false,
+      "read_error": null
+    },
+    {
+      "operation": "correct",
+      "category": "principal",
+      "drift": "overlength",
+      "receipt": "rejected",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory needs repair before governed curation"
+    },
+    {
+      "operation": "correct",
+      "category": "principal",
+      "drift": "valid_addition",
+      "receipt": "conflict",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory changed outside governed publication; review it before adoption"
+    },
+    {
+      "operation": "correct",
+      "category": "assistant",
+      "drift": "none",
+      "receipt": "committed",
+      "neighbor_present_after": false,
+      "read_error": null
+    },
+    {
+      "operation": "correct",
+      "category": "assistant",
+      "drift": "overlength",
+      "receipt": "rejected",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory needs repair before governed curation"
+    },
+    {
+      "operation": "correct",
+      "category": "assistant",
+      "drift": "valid_addition",
+      "receipt": "conflict",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory changed outside governed publication; review it before adoption"
+    },
+    {
+      "operation": "forget",
+      "category": "principal",
+      "drift": "none",
+      "receipt": "committed",
+      "neighbor_present_after": false,
+      "read_error": null
+    },
+    {
+      "operation": "forget",
+      "category": "principal",
+      "drift": "overlength",
+      "receipt": "rejected",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory needs repair before governed curation"
+    },
+    {
+      "operation": "forget",
+      "category": "principal",
+      "drift": "valid_addition",
+      "receipt": "conflict",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory changed outside governed publication; review it before adoption"
+    },
+    {
+      "operation": "forget",
+      "category": "assistant",
+      "drift": "none",
+      "receipt": "committed",
+      "neighbor_present_after": false,
+      "read_error": null
+    },
+    {
+      "operation": "forget",
+      "category": "assistant",
+      "drift": "overlength",
+      "receipt": "rejected",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory needs repair before governed curation"
+    },
+    {
+      "operation": "forget",
+      "category": "assistant",
+      "drift": "valid_addition",
+      "receipt": "conflict",
+      "neighbor_present_after": true,
+      "read_error": "Native hot memory changed outside governed publication; review it before adoption"
+    }
+  ],
+  "provenance": {
+    "hot": [
+      {
+        "category": "principal",
+        "receipt": {
+          "ok": true,
+          "type": "memory",
+          "path": "/tmp/native-memory-v8hlx87o/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic native source principal"
+            ]
+          },
+          "receipt": {
+            "status": "committed",
+            "references": [
+              {
+                "id": "74bd2bd9d2a54f5fbaca5f808064dccc",
+                "revision": 1
+              }
+            ],
+            "detail": {
+              "ok": true,
+              "accepted": 1,
+              "dropped_malformed": 0,
+              "dropped_overlength": 0,
+              "dropped_duplicates": 0,
+              "prior_count": 0,
+              "new_count": 1,
+              "evictions": [],
+              "additions": [
+                "RULE: Synthetic native source principal"
+              ]
+            },
+            "writer": "local:owner",
+            "request_id": "native-source-principal"
+          }
+        },
+        "recall": [
+          {
+            "reference": {
+              "id": "74bd2bd9d2a54f5fbaca5f808064dccc",
+              "revision": 1
+            },
+            "content": "RULE: Synthetic native source principal",
+            "category": "principal",
+            "project": "",
+            "writer": "local:owner",
+            "status": "active",
+            "source": {
+              "kind": "native",
+              "session": "synthetic-source-session",
+              "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+            },
+            "score": 14
+          }
+        ]
+      },
+      {
+        "category": "assistant",
+        "receipt": {
+          "ok": true,
+          "type": "memory",
+          "path": "/tmp/native-memory-v8hlx87o/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md",
+          "detail": {
+            "ok": true,
+            "accepted": 1,
+            "dropped_malformed": 0,
+            "dropped_overlength": 0,
+            "dropped_duplicates": 0,
+            "prior_count": 0,
+            "new_count": 1,
+            "evictions": [],
+            "additions": [
+              "RULE: Synthetic native source assistant"
+            ]
+          },
+          "receipt": {
+            "status": "committed",
+            "references": [
+              {
+                "id": "1ddf29288a2c4f2e9db0458d85ae4323",
+                "revision": 1
+              }
+            ],
+            "detail": {
+              "ok": true,
+              "accepted": 1,
+              "dropped_malformed": 0,
+              "dropped_overlength": 0,
+              "dropped_duplicates": 0,
+              "prior_count": 0,
+              "new_count": 1,
+              "evictions": [],
+              "additions": [
+                "RULE: Synthetic native source assistant"
+              ]
+            },
+            "writer": "local:owner",
+            "request_id": "native-source-assistant"
+          }
+        },
+        "recall": [
+          {
+            "reference": {
+              "id": "1ddf29288a2c4f2e9db0458d85ae4323",
+              "revision": 1
+            },
+            "content": "RULE: Synthetic native source assistant",
+            "category": "assistant",
+            "project": "",
+            "writer": "local:owner",
+            "status": "active",
+            "source": {
+              "kind": "native",
+              "session": "synthetic-source-session",
+              "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md"
+            },
+            "score": 14
+          },
+          {
+            "reference": {
+              "id": "74bd2bd9d2a54f5fbaca5f808064dccc",
+              "revision": 1
+            },
+            "content": "RULE: Synthetic native source principal",
+            "category": "principal",
+            "project": "",
+            "writer": "local:owner",
+            "status": "active",
+            "source": {
+              "kind": "native",
+              "session": "synthetic-source-session",
+              "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+            },
+            "score": 3
+          }
+        ]
+      }
+    ],
+    "project_control": {
+      "receipt": {
+        "ok": true,
+        "type": "knowledge",
+        "path": "/tmp/native-memory-v8hlx87o/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-native-project.md",
+        "detail": {
+          "bytes_written": 326,
+          "created_or_appended": "created",
+          "related_links": 0
+        },
+        "receipt": {
+          "status": "committed",
+          "reference": {
+            "id": "d24da1b1981e4823a79a43cf134186f7",
+            "revision": 1
+          },
+          "detail": {
+            "bytes_written": 326,
+            "created_or_appended": "created",
+            "related_links": 0
+          },
+          "writer": "local:owner",
+          "request_id": "native-source-project"
+        }
+      },
+      "recall": [
+        {
+          "reference": {
+            "id": "d24da1b1981e4823a79a43cf134186f7",
+            "revision": 1
+          },
+          "content": "Synthetic native project source",
+          "category": "project",
+          "project": "lab",
+          "writer": "local:owner",
+          "status": "active",
+          "source": {
+            "kind": "native",
+            "session": "synthetic-source-session",
+            "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-native-project.md"
+          },
+          "score": 4.2748091603053435
+        },
+        {
+          "reference": {
+            "id": "1ddf29288a2c4f2e9db0458d85ae4323",
+            "revision": 1
+          },
+          "content": "RULE: Synthetic native source assistant",
+          "category": "assistant",
+          "project": "",
+          "writer": "local:owner",
+          "status": "active",
+          "source": {
+            "kind": "native",
+            "session": "synthetic-source-session",
+            "path": "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md"
+          },
+          "score": 2.906574394463668
+        },
+        {
+          "reference": {
+            "id": "74bd2bd9d2a54f5fbaca5f808064dccc",
+            "revision": 1
+          },
+          "content": "RULE: Synthetic native source principal",
+          "category": "principal",
+          "project": "",
+          "writer": "local:owner",
+          "status": "active",
+          "source": {
+            "kind": "native",
+            "session": "synthetic-source-session",
+            "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+          },
+          "score": 2.906574394463668
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,112 @@
+test_authorized_freshness_and_health_remain_visible (test_memory_delta.MemoryDeltaTests.test_authorized_freshness_and_health_remain_visible) ... ok
+test_authorized_updates_and_native_heartbeat_still_surface (test_memory_delta.MemoryDeltaTests.test_authorized_updates_and_native_heartbeat_still_surface) ... FAIL
+test_decoded_log_claims_are_filtered_without_changing_raw_evidence (test_memory_delta.MemoryDeltaTests.test_decoded_log_claims_are_filtered_without_changing_raw_evidence) ... ok
+test_denied_turn_preserves_existing_native_state (test_memory_delta.MemoryDeltaTests.test_denied_turn_preserves_existing_native_state) ... ERROR
+test_excluded_latest_health_does_not_replay_older_critical_warning (test_memory_delta.MemoryDeltaTests.test_excluded_latest_health_does_not_replay_older_critical_warning) ... ok
+test_followup_delta_selects_samples_after_the_native_cursor (test_memory_delta.MemoryDeltaTests.test_followup_delta_selects_samples_after_the_native_cursor) ... FAIL
+test_full_native_curation_rows_fit_the_connector_response_budget (test_memory_delta.MemoryDeltaTests.test_full_native_curation_rows_fit_the_connector_response_budget) ... FAIL
+test_health_and_freshness_retained_text_is_filtered (test_memory_delta.MemoryDeltaTests.test_health_and_freshness_retained_text_is_filtered) ... ok
+test_invalid_connector_cannot_fall_back_to_native_log (test_memory_delta.MemoryDeltaTests.test_invalid_connector_cannot_fall_back_to_native_log) ... ok
+test_log_and_cache_redirects_cannot_read_configuration (test_memory_delta.MemoryDeltaTests.test_log_and_cache_redirects_cannot_read_configuration) ... ok
+test_malformed_write_row_does_not_hide_later_current_updates (test_memory_delta.MemoryDeltaTests.test_malformed_write_row_does_not_hide_later_current_updates) ... FAIL
+test_missing_context_does_not_consume_cursor_or_injection_state (test_memory_delta.MemoryDeltaTests.test_missing_context_does_not_consume_cursor_or_injection_state) ... FAIL
+test_native_tail_window_finishes_within_registered_hook_timeout (test_memory_delta.MemoryDeltaTests.test_native_tail_window_finishes_within_registered_hook_timeout) ... FAIL
+test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows (test_memory_delta.MemoryDeltaTests.test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows) ... FAIL
+test_restricted_destination_cannot_read_unclassified_log (test_memory_delta.MemoryDeltaTests.test_restricted_destination_cannot_read_unclassified_log) ... ok
+test_standalone_delta_excludes_superseded_log_claims (test_memory_delta.MemoryDeltaTests.test_standalone_delta_excludes_superseded_log_claims) ... FAIL
+test_standalone_delta_refuses_missing_context (test_memory_delta.MemoryDeltaTests.test_standalone_delta_refuses_missing_context) ... ok
+test_summary_projection_preserves_curation_counts_and_native_sample_order (test_memory_delta.MemoryDeltaTests.test_summary_projection_preserves_curation_counts_and_native_sample_order) ... ok
+test_unknown_author_and_changed_participants_cannot_surface_private_status (test_memory_delta.MemoryDeltaTests.test_unknown_author_and_changed_participants_cannot_surface_private_status) ... ok
+test_unmanaged_turn_start_keeps_native_log_behavior (test_memory_delta.MemoryDeltaTests.test_unmanaged_turn_start_keeps_native_log_behavior) ... ok
+
+======================================================================
+ERROR: test_denied_turn_preserves_existing_native_state (test_memory_delta.MemoryDeltaTests.test_denied_turn_preserves_existing_native_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 118, in test_denied_turn_preserves_existing_native_state
+    before = {path: path.read_bytes() for path in paths}
+                    ~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-5djfh716/.claude/LIFEOS/MEMORY/OBSERVABILITY/memory-delta-cursor.json'
+
+======================================================================
+FAIL: test_authorized_updates_and_native_heartbeat_still_surface (test_memory_delta.MemoryDeltaTests.test_authorized_updates_and_native_heartbeat_still_surface)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 45, in test_authorized_updates_and_native_heartbeat_still_surface
+    self.assertIn('+1 learned', first)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 36/12288 chars]\nRULE: Synthetic current delta marker\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_followup_delta_selects_samples_after_the_native_cursor (test_memory_delta.MemoryDeltaTests.test_followup_delta_selects_samples_after_the_native_cursor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 240, in test_followup_delta_selects_samples_after_the_native_cursor
+    self.assertIn('Synthetic initial sample alpha', initial)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic initial sample alpha' not found in '<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_full_native_curation_rows_fit_the_connector_response_budget (test_memory_delta.MemoryDeltaTests.test_full_native_curation_rows_fit_the_connector_response_budget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 212, in test_full_native_curation_rows_fit_the_connector_response_budget
+    self.assertIn('+1 learned', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in '<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_malformed_write_row_does_not_hide_later_current_updates (test_memory_delta.MemoryDeltaTests.test_malformed_write_row_does_not_hide_later_current_updates)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 197, in test_malformed_write_row_does_not_hide_later_current_updates
+    self.assertIn('+1 learned', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 38/12288 chars]\nRULE: Synthetic valid row shape marker\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_missing_context_does_not_consume_cursor_or_injection_state (test_memory_delta.MemoryDeltaTests.test_missing_context_does_not_consume_cursor_or_injection_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 83, in test_missing_context_does_not_consume_cursor_or_injection_state
+    self.assertIn('+1 learned', authorized)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 36/12288 chars]\nRULE: Synthetic private delta marker\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_native_tail_window_finishes_within_registered_hook_timeout (test_memory_delta.MemoryDeltaTests.test_native_tail_window_finishes_within_registered_hook_timeout)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 186, in test_native_tail_window_finishes_within_registered_hook_timeout
+    self.assertIn('+500 learned', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+500 learned' not found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 37/12288 chars]\nRULE: Synthetic bounded volume marker\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows (test_memory_delta.MemoryDeltaTests.test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 65, in test_registered_composer_excludes_forgotten_log_claims_and_keeps_current_rows
+    self.assertIn('+1 learned', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 36/12288 chars]\nRULE: Synthetic current delta marker\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+======================================================================
+FAIL: test_standalone_delta_excludes_superseded_log_claims (test_memory_delta.MemoryDeltaTests.test_standalone_delta_excludes_superseded_log_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 74, in test_standalone_delta_excludes_superseded_log_claims
+    self.assertIn('Synthetic next delta marker', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic next delta marker' not found in '<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: freshness: no data · no curation runs yet\n</lifeos-memory-delta>\n'
+
+----------------------------------------------------------------------
+Ran 20 tests in 39.086s
+
+FAILED (failures=8, errors=1)

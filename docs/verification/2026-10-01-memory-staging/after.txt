@@ -1,0 +1,28 @@
+test_changed_staging_preview_cannot_publish_different_bytes (test_memory_staging.MemoryStagingTests.test_changed_staging_preview_cannot_publish_different_bytes) ... ok
+test_derived_indexes_exclude_unregistered_and_forgotten_notes (test_memory_staging.MemoryStagingTests.test_derived_indexes_exclude_unregistered_and_forgotten_notes) ... ERROR
+test_destination_collision_preserves_existing_note_and_staging (test_memory_staging.MemoryStagingTests.test_destination_collision_preserves_existing_note_and_staging) ... ok
+test_forgotten_claim_cannot_be_promoted_from_staging (test_memory_staging.MemoryStagingTests.test_forgotten_claim_cannot_be_promoted_from_staging) ... ok
+test_restricted_context_cannot_read_staged_unclassified_content (test_memory_staging.MemoryStagingTests.test_restricted_context_cannot_read_staged_unclassified_content) ... ok
+test_reviewed_promotion_preserves_native_note_and_registers_project_reference (test_memory_staging.MemoryStagingTests.test_reviewed_promotion_preserves_native_note_and_registers_project_reference) ... ok
+test_staged_path_cannot_select_outside_files_or_symlinks (test_memory_staging.MemoryStagingTests.test_staged_path_cannot_select_outside_files_or_symlinks) ... ok
+test_standalone_native_promotion_retains_original_content_and_indexes (test_memory_staging.MemoryStagingTests.test_standalone_native_promotion_retains_original_content_and_indexes) ... ok
+test_unbound_native_promotion_cannot_publish_or_remove_staging (test_memory_staging.MemoryStagingTests.test_unbound_native_promotion_cannot_publish_or_remove_staging) ... ok
+test_unclassified_promotion_stays_private_from_project_reader (test_memory_staging.MemoryStagingTests.test_unclassified_promotion_stays_private_from_project_reader) ... ok
+
+======================================================================
+ERROR: test_derived_indexes_exclude_unregistered_and_forgotten_notes (test_memory_staging.MemoryStagingTests.test_derived_indexes_exclude_unregistered_and_forgotten_notes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 122, in test_derived_indexes_exclude_unregistered_and_forgotten_notes
+    plan=preview(self.native.memory,OWNER,self.selector)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_staging.py", line 143, in preview
+    return _public(_plan(memory,connection,scope,target,all,project))
+                   ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_staging.py", line 87, in _plan
+    raise MemoryUnavailable('The staged source is excluded by current memory policy')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The staged source is excluded by current memory policy
+
+----------------------------------------------------------------------
+Ran 10 tests in 4.690s
+
+FAILED (errors=1)

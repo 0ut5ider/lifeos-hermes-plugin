@@ -1,0 +1,18 @@
+E
+======================================================================
+ERROR: test_source_branch_name_does_not_prevent_a_fresh_preparation (test_prepare_sources.PrepareSourcesTests.test_source_branch_name_does_not_prevent_a_fresh_preparation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_prepare_sources.py", line 35, in test_source_branch_name_does_not_prevent_a_fresh_preparation
+    result = prepare_source('hermes', source, root / 'prepared')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/prepare_sources.py", line 78, in prepare_source
+    run("git", "checkout", "--quiet", "-b", "feature/lifeos-hook-parity", base, cwd=output)
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/prepare_sources.py", line 59, in run
+    raise PreparationError(f"{' '.join(args[:2])} failed: {detail}")
+scripts.prepare_sources.PreparationError: git checkout failed: fatal: a branch named 'feature/lifeos-hook-parity' already exists
+
+----------------------------------------------------------------------
+Ran 1 test in 0.026s
+
+FAILED (errors=1)

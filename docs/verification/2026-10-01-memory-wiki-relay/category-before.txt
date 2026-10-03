@@ -1,0 +1,15 @@
+test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory) ... FAIL
+
+======================================================================
+FAIL: test_wiki_category_follows_the_native_archive_directory (test_memory_wiki_relay.MemoryWikiRelayTests.test_wiki_category_follows_the_native_archive_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 221, in test_wiki_category_follows_the_native_archive_directory
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 503 != 200 : {"error": "Authenticated memory is unavailable"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.512s
+
+FAILED (failures=1)

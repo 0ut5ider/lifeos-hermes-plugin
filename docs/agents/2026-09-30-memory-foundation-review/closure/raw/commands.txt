@@ -1,0 +1,21 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Native fixture: /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install
+
+Source inspection:
+cat lifeos_hook_bridge/memory_native.ts
+sed -n '140,320p' lifeos_hook_bridge/memory_access.py
+sed -n '1,70p' tests/test_memory_native.py
+tail -85 tests/test_memory_native.py
+rg -n 'supplied|corpus|capabil|cache|search|export' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+git status --short
+sed -n '595,650p' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+sed -n '690,778p' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+cat lifeos_hook_bridge/patches/lifeos-memory-access.patch
+
+Test command, exit status 0:
+python -m unittest discover -s tests -p 'test_memory*.py' -v > docs/agents/2026-09-30-memory-foundation-review/closure/raw/tests-28.txt 2>&1
+
+Independent probes, exit status 0:
+python docs/agents/2026-09-30-memory-foundation-review/closure/raw/probe_closure.py > docs/agents/2026-09-30-memory-foundation-review/closure/raw/probe-results.jsonl
+
+The cache probe imports the actual managed native retriever once inside a temporary fixture and issues all cache comparison calls in that Bun process. The fixture HOME points to the temporary directory. All discovered ordinary records and supplied records are synthetic. Source snapshots and hashes were saved before execution.

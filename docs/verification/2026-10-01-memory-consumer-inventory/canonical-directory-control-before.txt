@@ -1,0 +1,15 @@
+test_native_type_directory_is_operational_metadata (test_memory_canonical.MemoryCanonicalTests.test_native_type_directory_is_operational_metadata) ... FAIL
+
+======================================================================
+FAIL: test_native_type_directory_is_operational_metadata (test_memory_canonical.MemoryCanonicalTests.test_native_type_directory_is_operational_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 105, in test_native_type_directory_is_operational_metadata
+    self.assertTrue(result['result']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : {'status': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'search', 'data': None, 'error': {'code': 'integrity_error', 'message': 'The governed canonical corpus is unavailable'}}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.591s
+
+FAILED (failures=1)

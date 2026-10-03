@@ -1,0 +1,26 @@
+test_hot_corpus_reuses_real_native_reads_and_respects_category_grants (test_memory_native.NativeMemoryTests.test_hot_corpus_reuses_real_native_reads_and_respects_category_grants) ... FAIL
+test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries (test_memory_native.NativeMemoryTests.test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries) ... 
+  test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries (test_memory_native.NativeMemoryTests.test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries) (changed='---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:12:20.700Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic validated corpus control\nRULE: Synthetic validated corpus control\n<!-- END ENTRIES -->\n') ... FAIL
+
+======================================================================
+FAIL: test_hot_corpus_reuses_real_native_reads_and_respects_category_grants (test_memory_native.NativeMemoryTests.test_hot_corpus_reuses_real_native_reads_and_respects_category_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native.py", line 361, in test_hot_corpus_reuses_real_native_reads_and_respects_category_grants
+    self.assertEqual(len(observed), 2, 'Retrieval reparses each fact instead of each native file')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 4 != 2 : Retrieval reparses each fact instead of each native file
+
+======================================================================
+FAIL: test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries (test_memory_native.NativeMemoryTests.test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries) (changed='---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-01T13:12:20.700Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic validated corpus control\nRULE: Synthetic validated corpus control\n<!-- END ENTRIES -->\n')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native.py", line 382, in test_hot_corpus_cache_does_not_hide_changed_or_duplicate_native_entries
+    with self.assertRaises(MemoryConflict):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: MemoryConflict not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 3.770s
+
+FAILED (failures=2)

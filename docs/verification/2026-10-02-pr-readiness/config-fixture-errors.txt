@@ -1,0 +1,37 @@
+test_config_change_reports_project_and_local_settings (test_bridge.HookBridgeTests.test_config_change_reports_project_and_local_settings) ... ERROR
+test_config_change_reaches_only_project_session (test_bridge.HookBridgeTests.test_config_change_reaches_only_project_session) ... ERROR
+
+======================================================================
+ERROR: test_config_change_reports_project_and_local_settings (test_bridge.HookBridgeTests.test_config_change_reports_project_and_local_settings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bridge.py", line 1039, in test_config_change_reports_project_and_local_settings
+    rows = [json.loads(line) for line in marker.read_text().splitlines()]
+                                         ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/pr-readiness-final-36727e5-2/tmp/tmpr3jq0xad/config-sources.jsonl'
+
+======================================================================
+ERROR: test_config_change_reaches_only_project_session (test_bridge.HookBridgeTests.test_config_change_reaches_only_project_session)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bridge.py", line 1094, in test_config_change_reaches_only_project_session
+    rows = [json.loads(line) for line in marker.read_text().splitlines()]
+                                         ~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 787, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/pr-readiness-final-36727e5-2/tmp/tmpft7dm4hz/project-sessions.jsonl'
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.368s
+
+FAILED (errors=2)

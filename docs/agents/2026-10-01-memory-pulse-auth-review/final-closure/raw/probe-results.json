@@ -1,0 +1,30 @@
+{
+  "errors": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "docs/agents/2026-10-01-memory-pulse-auth-review/raw/probe_errors.py"
+    ],
+    "returncode": 0
+  },
+  "binding": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "docs/agents/2026-10-01-memory-pulse-auth-review/raw/probe_binding.py"
+    ],
+    "returncode": 0
+  },
+  "network": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "docs/verification/2026-10-01-memory-pulse-http/probe_authenticated_routes.py"
+    ],
+    "returncode": 0
+  },
+  "host-mount": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "docs/verification/2026-10-01-memory-pulse-http/probe_host_mount.py"
+    ],
+    "returncode": 0
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "old": {
+    "status": "committed",
+    "reference": {
+      "id": "f63c6cb241774acfbb2f858b34159381",
+      "revision": 1
+    },
+    "source": {
+      "kind": "explicit",
+      "session": ""
+    },
+    "writer": "local:owner",
+    "request_id": "old"
+  },
+  "new": {
+    "status": "committed",
+    "reference": {
+      "id": "8bb1e16893aa4eda97483a18edae0784",
+      "revision": 1
+    },
+    "supersedes": {
+      "id": "f63c6cb241774acfbb2f858b34159381",
+      "revision": 1
+    },
+    "writer": "local:owner",
+    "request_id": "new"
+  },
+  "current": {
+    "status": "ok",
+    "reference": {
+      "id": "8bb1e16893aa4eda97483a18edae0784",
+      "revision": 1
+    },
+    "content": "RULE: Synthetic PULSE baseline setting now revised",
+    "category": "principal",
+    "project": "",
+    "writer": "local:owner",
+    "source": {
+      "session": "",
+      "kind": "correction"
+    }
+  },
+  "snapshot": {
+    "ts": "2026-10-01T04:46:14.930Z",
+    "derivedState": "cold",
+    "cadenceConfig": {
+      "turn_threshold": 8,
+      "min_minutes_between": 30,
+      "idle_threshold": 2,
+      "confidence_threshold": 0.7
+    },
+    "reviewState": {
+      "turn_count_since_last_review": 0,
+      "last_review_at": null,
+      "last_message_at": null,
+      "pending_review": false
+    },
+    "health": null,
+    "lastFireCount": 0,
+    "recentFires": [],
+    "pendingProposals": 0,
+    "autoAppliedProposals": 0,
+    "proposalsRecent": [],
+    "recentRuns": [],
+    "principalMemory": {
+      "entries": [
+        "RULE: Synthetic PULSE baseline setting now revised"
+      ],
+      "count": 1,
+      "charsUsed": 50
+    },
+    "daMemory": {
+      "entries": [],
+      "count": 0,
+      "charsUsed": 0
+    }
+  }
+}

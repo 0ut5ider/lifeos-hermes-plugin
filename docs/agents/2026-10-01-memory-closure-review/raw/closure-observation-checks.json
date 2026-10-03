@@ -1,0 +1,39 @@
+{
+  "source_head": "040079496cb227cf3dabfc701524eed856170af7",
+  "all_observed_contract_checks_pass": true,
+  "recovery": {
+    "interrupted_delta_learned": 1,
+    "control_delta_learned": 2,
+    "candidate_absent_after_recovery": true
+  },
+  "recovery_contracts": 7,
+  "latency": [
+    {
+      "records": 2,
+      "seconds": 0.940208094951231
+    },
+    {
+      "records": 96,
+      "seconds": 0.9792524899821728
+    }
+  ],
+  "native_counts": {
+    "read/read_hot": 2,
+    "read_source/validate_batch": 1,
+    "read_source/read_hot": 2,
+    "retrieve/read_hot": 2,
+    "retrieve/rank": 1
+  },
+  "native_hot_seconds": 0.4103663260466419,
+  "instrumented_composer_seconds": 1.1062423879629932,
+  "explicit_categories": [
+    "principal",
+    "assistant",
+    "project"
+  ],
+  "explicit_source_session": "native-session",
+  "complete_agent_source": {
+    "session": "session",
+    "kind": "explicit"
+  }
+}

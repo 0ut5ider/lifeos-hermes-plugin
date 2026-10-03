@@ -1,0 +1,20 @@
+▶ not activated — using HERMES_PYTHON: /tmp/lifeos-plugin-test-venv/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 2 test files (~9 tests) under ['tests/hermes_cli/test_required_middleware.py', 'tests/agent/test_auxiliary_hooks.py']; running with -j 4
+[ 22.2% |     2/~9 | ✓2 | ✗0] ✓ tests/agent/test_auxiliary_hooks.py (2✓, 3.9s)
+[100.0% |     9/~9 | ✓12 | ✗ 0] ✓ tests/hermes_cli/test_required_middleware.py (10✓, 6.0s)
+
+=== Summary: 2 files, 12 tests passed, 0 failed (100% complete) in 6.0s (4 workers) ===
+  Durations cached to test_durations.json (2 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   2
+  Total subprocess CPU-wall: 9.9s  (runner wall: 6.0s, parallelism: 4x)
+  P50: 6.00s  P90: 6.00s  P95: 6.00s  P99: 6.00s  Max: 6.00s
+  <1s: 0 files (0%)  <2s: 0 files (0%)
+  Top 10 slowest:
+      6.00s  tests/hermes_cli/test_required_middleware.py
+      3.91s  tests/agent/test_auxiliary_hooks.py

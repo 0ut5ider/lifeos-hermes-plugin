@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_baseline_tracks_plugin_added_source_files_and_preserves_edit_detection (tests.test_version_drift_baseline.VersionDriftBaselineTests.test_baseline_tracks_plugin_added_source_files_and_preserves_edit_detection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_version_drift_baseline.py", line 68, in test_baseline_tracks_plugin_added_source_files_and_preserves_edit_detection
+    self.assertIn(name, baseline['files'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'LIFEOS/TOOLS/lib/MemoryAccess.ts' not found in {'LIFEOS/TOOLS/Check.ts': '8ba8496a2525ae171ffd104d632dede6ef418d9b95962a9d88e2fcdbc8d48d24', 'hooks/VersionDrift.hook.ts': '83a87f7df6349114decbe3aaf122e32e3dd719fcea2eea4de8cb2da1dea0df56', 'skills/research/SKILL.md': '9c53c074d7ac6a2728b638ac1f376c5fa9eb8f71603017c3ea638c2fd40548df'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.016s
+
+FAILED (failures=1)

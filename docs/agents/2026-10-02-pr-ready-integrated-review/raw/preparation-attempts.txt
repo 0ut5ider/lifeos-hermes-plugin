@@ -1,0 +1,6 @@
+Observed preparation attempts, reconstructed from tool output to preserve fixture failures:
+1. Supplied prepared repository default branch collides with feature/lifeos-hook-parity. Exact unittest failure remains in lifecycle-tests.txt.
+2. Disposable normalization checkout under /tmp fails: Disk quota exceeded. Full Git errors remain in preparation-runner.txt. Disposable clones are removed by the runner trap.
+3. Bare shared source input fails: hermes source is not a Git working tree: /home/outsider/.cache/lifeos-plugin-memory/integrated-review-preparation.mlSmXw/hermes.
+4. Shared working-tree inputs without checkouts, with distinct default upstream-base branch and /home TMPDIR, pass the real patch preparation case. Exact result remains in preparation-test.txt.
+5. Primary changes fresh source preparation from checkout -b to checkout -B. Final 77-case correction run accepts the original supplied prepared repositories and passes.

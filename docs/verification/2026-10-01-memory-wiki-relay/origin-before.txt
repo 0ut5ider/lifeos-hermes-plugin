@@ -1,0 +1,15 @@
+test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies) ... FAIL
+
+======================================================================
+FAIL: test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies (test_memory_wiki_relay.MemoryWikiRelayTests.test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_relay.py", line 160, in test_cross_origin_requests_do_not_borrow_authenticated_owner_cookies
+    self.assertEqual(response.status_code, 403, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 403 : {"tree": [{"label": "Documentation", "children": [], "count": 0}, {"label": "People", "count": 0, "children": []}, {"label": "Companies", "count": 0, "children": []}, {"label": "Ideas", "count": 0, "children": []}, {"label": "Blogs", "count": 0, "children": []}, {"label": "Books", "count": 0, "children": []}, {"label": "Research", "count": 1, "children": [{"label": "Synthetic lab routing", "slug": "synthetic-lab-routing", "category": "research"}]}, {"label": "ISAs", "count": 0, "children": []}, {"label": "Lessons", "count": 0, "children": []}, {"label": "Wisdom", "count": 0, "children": []}], "recentChanges": [{"slug": "synthetic-lab-routing", "title": "Synthetic lab routing", "category": "research", "tags": ["untagged"], "quality": 2, "lastModified": "2026-10-01T18:25:43.285607+00:00", "wordCount": 1, "wikilinks": [], "filePath": "/tmp/native-memory-uk7hbsrc/.config/LIFEOS/USER/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md", "related": []}], "stats": {"totalPages": 1, "totalSystem": 0, "totalPeople": 0, "totalCompanies": 0, "totalIdeas": 0, "totalBlogs": 0, "totalBooks": 0, "totalResearch": 1, "totalIsas": 0, "totalLessons": 0, "totalWisdom": 0}, "lastIndexedAt": "2026-10-01T18:25:43.620Z"}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.723s
+
+FAILED (failures=1)

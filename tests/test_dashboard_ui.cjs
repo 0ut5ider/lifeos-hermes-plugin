@@ -231,6 +231,7 @@ test("missing LifeOS shows preparation without active model settings", async () 
       if (url.endsWith("/installation")) return Promise.resolve({
         lifeos, version: lifeos === "installed" ? "7.40.4" : null,
         setup_baseline_exists: setupComplete,
+        mount: {state: "applying", recovery_required: true},
         hermes: "stock", candidate_ready: candidateReady,
         candidate_commit: candidateReady ? "a".repeat(40) : null,
         candidate_patch_count: candidateReady ? 1 : null,
@@ -272,6 +273,8 @@ test("missing LifeOS shows preparation without active model settings", async () 
   assert.ok(calls.some((call) => call.url.endsWith("/installation/apply") && call.init?.method === "POST"));
   assert.ok(find(render(), (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("LifeOS 7.40.4 is installed"))));
+  assert.ok(find(render(), (node) => node.type === "button" &&
+    node.children.includes("Restore interrupted mount")));
   const finish = find(render(), (node) => node.type === "button" &&
     node.children.includes("Finish LifeOS setup"));
   assert.ok(finish);
@@ -371,6 +374,12 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
   await new Promise(setImmediate);
   await new Promise(setImmediate);
   assert.ok(calls.some((call) => call.url.endsWith("/installation/update") && call.init?.method === "POST"));
+  const restoreLifeOS = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Restore previous LifeOS version"));
+  assert.ok(restoreLifeOS);
+  restoreLifeOS.props.onClick();
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/update/restore") && call.init?.method === "POST"));
   const prepareHost = find(view, (node) => node.type === "button" &&
     node.children.includes("Prepare tested Hermes extension"));
   assert.ok(prepareHost);

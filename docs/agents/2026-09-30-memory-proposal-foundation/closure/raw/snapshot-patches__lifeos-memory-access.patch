@@ -1,0 +1,321 @@
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+index dcc185e..e7d1ec7 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryRetriever.ts
+@@ -44,6 +44,7 @@ import * as fs from "fs";
+ import * as path from "path";
+ import { spawnSync } from "child_process";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -121,7 +122,7 @@ interface Frontmatter {
+  */
+ type NoteClass = "knowledge" | "learning" | "memory";
+ 
+-interface KnowledgeNote {
++export interface KnowledgeNote {
+   filePath: string;
+   frontmatter: Frontmatter;
+   body: string;
+@@ -129,6 +130,8 @@ interface KnowledgeNote {
+   noteClass: NoteClass;
+ }
+ 
++export const SUPPLIED_CORPUS_API_VERSION = 1;
++
+ interface ScoredNote {
+   note: KnowledgeNote;
+   score: number;
+@@ -664,7 +667,7 @@ function loadMemoryFiles(): KnowledgeNote[] {
+  * getRelevantContext(). See HOT_PATH_LEARNING_LIMIT for why LEARNING is
+  * bounded here and unbounded on the CLI path.
+  */
+-function discoverAllItems(): KnowledgeNote[] {
++export function discoverAllItems(): KnowledgeNote[] {
+   return [...discoverNotes(), ...discoverLearningNotes(HOT_PATH_LEARNING_LIMIT), ...loadMemoryFiles()];
+ }
+ 
+@@ -687,8 +690,14 @@ function discoverAllItems(): KnowledgeNote[] {
+  */
+ export function getRelevantContext(
+   query: string,
+-  options: { topK?: number; threshold?: number; excerptChars?: number; typeFilter?: string } = {},
++  options: { topK?: number; threshold?: number; excerptChars?: number; typeFilter?: string; corpus?: KnowledgeNote[] } = {},
+ ): GetRelevantContextResult {
++  if (options.corpus === undefined) {
++    const managed = memoryAccess("retrieve", {query, options},
++      (value): value is GetRelevantContextResult => memoryObject(value) && Array.isArray(value.results)
++        && typeof value.markdownBlock === "string" && typeof value.totalSearched === "number" && typeof value.cached === "boolean");
++    if (managed !== undefined) return managed;
++  }
+   const topK = options.topK ?? RELEVANT_DEFAULT_TOP_K;
+   const threshold = options.threshold ?? RELEVANT_DEFAULT_THRESHOLD;
+   const excerptChars = options.excerptChars ?? RELEVANT_EXCERPT_CHARS;
+@@ -696,7 +705,7 @@ export function getRelevantContext(
+ 
+   // Cache check — key on query + options
+   const cacheKey = JSON.stringify({ q: query.trim().toLowerCase(), topK, threshold, excerptChars, typeFilter });
+-  const cached = relevantCache.get(cacheKey);
++  const cached = options.corpus === undefined ? relevantCache.get(cacheKey) : undefined;
+   if (cached && Date.now() - cached.ts < RELEVANT_CACHE_TTL_MS) {
+     return { ...cached.result, cached: true };
+   }
+@@ -705,13 +714,13 @@ export function getRelevantContext(
+ 
+   const queryTerms = tokenize(query);
+   if (queryTerms.length === 0) {
+-    relevantCache.set(cacheKey, { ts: Date.now(), result: empty });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result: empty });
+     return empty;
+   }
+ 
+-  const allNotes = discoverAllItems();
++  const allNotes = options.corpus ?? discoverAllItems();
+   if (allNotes.length === 0) {
+-    relevantCache.set(cacheKey, { ts: Date.now(), result: { ...empty, totalSearched: 0 } });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result: { ...empty, totalSearched: 0 } });
+     return empty;
+   }
+ 
+@@ -730,7 +739,7 @@ export function getRelevantContext(
+ 
+   if (scored.length === 0) {
+     const result = { ...empty, totalSearched: allNotes.length };
+-    relevantCache.set(cacheKey, { ts: Date.now(), result });
++    if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result });
+     return result;
+   }
+ 
+@@ -745,7 +754,7 @@ export function getRelevantContext(
+ 
+   const markdownBlock = formatRelevantBlock(results);
+   const result: GetRelevantContextResult = { results, markdownBlock, totalSearched: allNotes.length, cached: false };
+-  relevantCache.set(cacheKey, { ts: Date.now(), result });
++  if (options.corpus === undefined) relevantCache.set(cacheKey, { ts: Date.now(), result });
+   return result;
+ }
+ 
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
+index d350d27..a81b110 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryReviewer.ts
+@@ -41,6 +41,7 @@ import {
+ } from "node:fs";
+ import { basename as pathBasename, dirname, join as pathJoin, resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ import { add as memoryAdd, sanitizeTypedItemForPersistence, type AddResult } from "./MemorySystem";
+ import { read as memoryWriterRead } from "./MemoryWriter";
+@@ -356,6 +357,12 @@ function renderCurrentMemory(snap: CurrentMemorySnapshot | undefined): string[]
+ }
+ 
+ export function buildReviewerUserPrompt(exchanges: Exchange[], currentMemory?: CurrentMemorySnapshot): string {
++  exchanges = exchanges.filter(exchange => {
++    const result = memoryAccess("filter_history", {content: `${exchange.user}\n${exchange.assistant}`, timestamp: exchange.ts},
++      (value): value is {content: string; excluded: boolean} => memoryObject(value)
++        && typeof value.content === "string" && typeof value.excluded === "boolean");
++    return result === undefined || !result.excluded;
++  });
+   const lines = [
+     ...renderCurrentMemory(currentMemory),
+     `Recent conversation between ${PRINCIPAL_NAME} and ${DA_NAME} (last ` + exchanges.length + " exchanges):",
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts b/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+index b57c7aa..7edf2e9 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemorySystem.ts
+@@ -67,6 +67,7 @@ import {
+   ALL_PROPOSAL_KINDS,
+   TIER_B_AUDIT_PATH,
+   PRINCIPAL_MEMORY_PATH,
++  DA_MEMORY_PATH,
+   type TypedItem,
+   type MemoryTypeName,
+   type Tier,
+@@ -80,6 +81,8 @@ import { getTier } from "./MutationTier";
+ import { getRelevantContext, type RelevantResultItem } from "./MemoryRetriever";
+ import { mintId, slugFromPath, SCHEMA_VERSION } from "./KnowledgeSchema";
+ import { stripPrivateContent } from "./CaptureEnvelope";
++import { memoryAccess, memoryObject, observedMemoryRevision } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ import { assertInsideUserData } from "./lib/ForeignDataCheck";
+ 
+ // ── Constants ──
+@@ -808,6 +811,12 @@ export function sanitizeTypedItemForPersistence(item: TypedItem): SanitizedItemR
+  * tier — a defense-in-depth check against registry/classifier drift.
+  */
+ export function add(item: TypedItem): AddResult {
++  const managed = memoryAccess("add", {item, request_id: randomUUID(), project: process.env.LIFEOS_MEMORY_PROJECT ?? "general",
++    observed_revision: item?.type === "memory" ? observedMemoryRevision(item.actor === "principal" ? PRINCIPAL_MEMORY_PATH : DA_MEMORY_PATH) : ""},
++    (value): value is AddResult => memoryObject(value) && (value.ok === true
++      ? typeof value.path === "string" && isKnownType(String(value.type)) && memoryObject(value.detail)
++      : value.ok === false && ["EINVAL_ITEM", "EWRITE_FAILED"].includes(String(value.code)) && typeof value.message === "string"));
++  if (managed !== undefined) return managed;
+   if (!item || typeof item !== "object" || !("type" in item)) {
+     return { ok: false, code: "EINVAL_ITEM", message: "Item missing 'type' field" };
+   }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+index 5122376..a53aa26 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryWriter.ts
+@@ -52,6 +52,9 @@ import {
+ import { dirname, resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ 
++import { memoryAccess, memoryObject, observedMemoryRevision } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
++
+ // ── Constants ──
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+@@ -526,6 +529,16 @@ export function setEntries(
+   entries: string[],
+   options: SetEntriesOptions = {},
+ ): SetEntriesResult {
++  const managed = memoryAccess("set", {path: pathResolve(filePath), entries, request_id: randomUUID(),
++    observed_revision: observedMemoryRevision(filePath), allow_drastic: options.allowDrastic === true},
++    (value): value is SetEntriesResult => memoryObject(value) && (value.ok === true
++      ? ["accepted", "dropped_malformed", "dropped_overlength", "dropped_duplicates", "prior_count", "new_count"].every(key => typeof value[key] === "number")
++        && Array.isArray(value.evictions) && Array.isArray(value.additions)
++      : value.ok === false && ["EINVAL_PATH", "EWRITE_FAILED"].includes(String(value.code)) && typeof value.message === "string"));
++  if (managed !== undefined) {
++    if (!managed.ok) return {ok: false, code: "EWRITE_FAILED", message: managed.message};
++    return managed;
++  }
+   const pathCheck = validatePath(filePath);
+   if (!("abs" in pathCheck)) return pathCheck;
+   const abs = pathCheck.abs;
+@@ -638,6 +651,12 @@ export function setEntries(
+ }
+ 
+ export function read(filePath: string): ReadResult | SetEntriesErrPath {
++  const managed = memoryAccess("read", {path: pathResolve(filePath)},
++    (value): value is ReadResult | SetEntriesErrPath => memoryObject(value) && (Array.isArray(value.entries)
++      ? value.entries.every(entry => typeof entry === "string") && ["count", "chars_used", "cap_entries", "cap_chars"].every(key => typeof value[key] === "number")
++        && Array.isArray(value.dropped_invalid)
++      : value.ok === false && value.code === "EINVAL_PATH" && typeof value.message === "string"));
++  if (managed !== undefined) return managed;
+   const pathCheck = validatePath(filePath);
+   if (!("abs" in pathCheck)) return pathCheck;
+   const abs = pathCheck.abs;
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
+index 30db06e..7c1ca94 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
+@@ -36,6 +36,11 @@ const UPGRADES_DIR = join(BASE_DIR, "MEMORY", "UPGRADES");
+ const RECORDS_DIR = join(UPGRADES_DIR, "records");
+ const STATE_FILE = join(UPGRADES_DIR, ".state.json");
+ const EXPIRY_DAYS = 30;
++let publicationObserver: ((path: string) => void) | undefined;
++
++export function observeUpgradePublication(observer: (path: string) => void): void {
++  publicationObserver = observer;
++}
+ 
+ export type UpgradeStatus = "recommended" | "accepted" | "applied" | "verified" | "rejected" | "expired";
+ export type UpgradeSource = "directive" | "correction" | "upgrade-skill" | "algo-run" | "autonomous" | "manual";
+@@ -189,7 +194,7 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+   const stamp = now.toISOString();
+   const idStamp = stamp.slice(0, 19).replace(/[-:T]/g, "").replace(/^(\d{8})(\d{6})$/, "$1-$2");
+   const slug = slugify(input.claim);
+-  const id = `${idStamp}_${slug}`;
++  const id = `${idStamp}_${slug}_${hash}`;
+   const record: UpgradeRecord = {
+     ...input,
+     claim: input.claim.trim().slice(0, 1000),
+@@ -202,8 +207,10 @@ export function addUpgrade(input: UpgradeInput): { created: boolean; id: string;
+     notes: [`${stamp} — created (source: ${input.source})`],
+     filename: `${id}.md`,
+   };
++  publicationObserver?.(join(RECORDS_DIR, record.filename));
+   writeFileSync(join(RECORDS_DIR, record.filename), renderRecord(record));
+   st.claim_hashes[hash] = { id, created: stamp };
++  publicationObserver?.(STATE_FILE);
+   saveState(st);
+   return { created: true, id };
+ }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
+new file mode 100644
+index 0000000..f60f084
+--- /dev/null
++++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
+@@ -0,0 +1,51 @@
++// ABOUTME: Delegates native memory operations to an optional governed local service.
++// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
++
++import { existsSync, lstatSync, readFileSync } from "node:fs";
++import { homedir } from "node:os";
++import { isAbsolute, resolve } from "node:path";
++import { spawnSync } from "node:child_process";
++
++const revisions = new Map<string, string>();
++
++export function memoryObject(value: unknown): value is Record<string, unknown> {
++  return value !== null && typeof value === "object" && !Array.isArray(value);
++}
++
++export function hasMemoryAccess(): boolean {
++  return process.env.LIFEOS_MEMORY_INTERNAL !== "1" && existsSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json"));
++}
++
++export function observedMemoryRevision(path: string): string {
++  return revisions.get(resolve(path)) ?? "";
++}
++
++export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,
++                                valid: (value: unknown) => value is T): T | undefined {
++  if (!hasMemoryAccess()) return undefined;
++  const path = resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json");
++  const info = lstatSync(path);
++  if (!info.isFile() || info.isSymbolicLink() || info.uid !== process.getuid?.() || (info.mode & 0o077) !== 0) {
++    throw new Error("The native memory service configuration needs private owner permissions");
++  }
++  const configuration: unknown = JSON.parse(readFileSync(path, "utf8"));
++  if (!memoryObject(configuration) || configuration.version !== 1 || !Array.isArray(configuration.command)) {
++    throw new Error("Unsupported native memory service configuration");
++  }
++  const command: string[] = [];
++  for (const argument of configuration.command) {
++    if (typeof argument !== "string" || argument.length === 0) throw new Error("Invalid native memory service command");
++    command.push(argument);
++  }
++  const executable = command.shift();
++  if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
++  const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
++                                               encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
++  if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
++  const response: unknown = JSON.parse(result.stdout);
++  if (!valid(response)) throw new Error("The native memory service returned an invalid result");
++  if (operation === "read" && memoryObject(response) && typeof response.revision === "string" && typeof arguments_.path === "string") {
++    revisions.set(resolve(arguments_.path), response.revision);
++  }
++  return response;
++}
+diff --git a/LifeOS/install/hooks/LoadMemory.hook.ts b/LifeOS/install/hooks/LoadMemory.hook.ts
+index 12af0c6..1412a55 100755
+--- a/LifeOS/install/hooks/LoadMemory.hook.ts
++++ b/LifeOS/install/hooks/LoadMemory.hook.ts
+@@ -24,7 +24,8 @@ import { existsSync, readFileSync } from "node:fs";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+ import { isSubagentContext as isSubagentInvocation } from './lib/subagent';
+-import { parseMemoryContent } from "../LIFEOS/TOOLS/MemoryWriter";
++import { parseMemoryContent, read as memoryRead } from "../LIFEOS/TOOLS/MemoryWriter";
++import { hasMemoryAccess } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+ 
+ const CLAUDE_ROOT = pathResolve(homedir(), ".claude");
+ const PRINCIPAL_MEMORY = pathResolve(CLAUDE_ROOT, "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md");
+@@ -37,6 +38,11 @@ interface MemoryRead {
+ }
+ 
+ function readMemory(path: string): MemoryRead {
++  if (hasMemoryAccess()) {
++    const result = memoryRead(path);
++    if ("code" in result) return {entries: [], count: 0, charsUsed: 0};
++    return {entries: result.entries, count: result.count, charsUsed: result.chars_used};
++  }
+   if (!existsSync(path)) return { entries: [], count: 0, charsUsed: 0 };
+   try {
+     // Shared lenient parser — MemoryWriter owns it. The old strict indexOf slice

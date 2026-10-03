@@ -1,0 +1,72 @@
+test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) ... 
+  test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='principal', operation='remember') ... FAIL
+  test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='principal', operation='native_add') ... FAIL
+  test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='assistant', operation='remember') ... FAIL
+  test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='assistant', operation='native_add') ... FAIL
+test_unregistered_log_additions_cannot_become_learning_samples (test_memory_delta.MemoryDeltaTests.test_unregistered_log_additions_cannot_become_learning_samples) ... FAIL
+test_hot_publication_refuses_an_audit_log_redirect (test_memory_curation.MemoryCurationTests.test_hot_publication_refuses_an_audit_log_redirect) ... ERROR
+
+======================================================================
+ERROR: test_hot_publication_refuses_an_audit_log_redirect (test_memory_curation.MemoryCurationTests.test_hot_publication_refuses_an_audit_log_redirect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 98, in test_hot_publication_refuses_an_audit_log_redirect
+    secret.write_text('{"synthetic":"private configuration"}')
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 809, in write_text
+    with self.open(mode='w', encoding=encoding, errors=errors, newline=newline) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-sybp9z54/.claude/LIFEOS/USER/CONFIG/synthetic-secret.json'
+
+======================================================================
+FAIL: test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='principal', operation='remember')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 85, in test_interrupted_hot_additions_restore_audit_and_do_not_surface
+    self.assertEqual(log.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"t[312 chars]"]}\n{"ts":"2026-10-01T12:38:46.165Z","file":"[275 chars]]}\n' != b'{"t[312 chars]"]}\n'
+
+======================================================================
+FAIL: test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='principal', operation='native_add')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 85, in test_interrupted_hot_additions_restore_audit_and_do_not_surface
+    self.assertEqual(log.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"t[312 chars]"]}\n{"ts":"2026-10-01T12:38:47.539Z","file":"[275 chars]]}\n' != b'{"t[312 chars]"]}\n'
+
+======================================================================
+FAIL: test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='assistant', operation='remember')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 85, in test_interrupted_hot_additions_restore_audit_and_do_not_surface
+    self.assertEqual(log.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"t[313 chars]"]}\n{"ts":"2026-10-01T12:38:48.903Z","file":"[276 chars]]}\n' != b'{"t[313 chars]"]}\n'
+
+======================================================================
+FAIL: test_interrupted_hot_additions_restore_audit_and_do_not_surface (test_memory_delta.MemoryDeltaTests.test_interrupted_hot_additions_restore_audit_and_do_not_surface) (category='assistant', operation='native_add')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 85, in test_interrupted_hot_additions_restore_audit_and_do_not_surface
+    self.assertEqual(log.read_bytes(), before)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"t[313 chars]"]}\n{"ts":"2026-10-01T12:38:50.302Z","file":"[276 chars]]}\n' != b'{"t[313 chars]"]}\n'
+
+======================================================================
+FAIL: test_unregistered_log_additions_cannot_become_learning_samples (test_memory_delta.MemoryDeltaTests.test_unregistered_log_additions_cannot_become_learning_samples)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 100, in test_unregistered_log_additions_cannot_become_learning_samples
+    self.assertIn('+1 learned', output)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '+1 learned' not found in '<lifeos-memory>\n## PRINCIPAL MEMORY [1/48 entries · 43/12288 chars]\nRULE: Synthetic registered learning control\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: +2 learned — "principal: RULE: Synthetic registered learning control", "principal: RULE: Synthetic unregistered learning sample" · freshness: no data\n</lifeos-memory-delta>\n'
+
+----------------------------------------------------------------------
+Ran 3 tests in 7.449s
+
+FAILED (failures=5, errors=1)

@@ -27,6 +27,7 @@ SOURCES = {
             "hermes-strict-inference.patch",
             "hermes-remote-files.patch",
             "hermes-cron-bootstrap.patch",
+            "hermes-required-middleware.patch",
         ),
     },
     "lifeos": {
@@ -41,6 +42,7 @@ SOURCES = {
             "lifeos-remote-isa-view.patch",
             "lifeos-model-rung-effort.patch",
             "lifeos-hermes-carrier-probe.patch",
+            "lifeos-memory-access.patch",
         ),
     },
 }
@@ -73,7 +75,7 @@ def prepare_source(name: str, repo: Path, output: Path) -> dict[str, object]:
     source = SOURCES[name]
     base = str(source["base"])
     run("git", "clone", "--quiet", "--no-checkout", "--", str(repo), str(output))
-    run("git", "checkout", "--quiet", "-b", "feature/lifeos-hook-parity", base, cwd=output)
+    run("git", "checkout", "--quiet", "-B", "feature/lifeos-hook-parity", base, cwd=output)
     applied = []
     for filename in source["patches"]:
         patch = ROOT / "patches" / filename

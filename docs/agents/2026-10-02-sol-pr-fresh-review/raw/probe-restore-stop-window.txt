@@ -1,0 +1,33 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-c",
+    "import os, signal, sys\nfrom pathlib import Path\nfrom lifeos_hook_bridge.update_transaction import restore_update\ndef stopped():\n    Path(sys.argv[2]).write_text(\"The synthetic service boundary has stopped\\n\")\n    os.kill(os.getpid(),signal.SIGKILL)\nrestore_update(Path(sys.argv[1]),stop=stopped,start=lambda:None,verify=lambda:None)\n",
+    "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-pr-fresh-review/raw/fixture-home/tmp/restore-window-t5i13mu3/updates/update-synthetic/snapshot",
+    "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-pr-fresh-review/raw/fixture-home/tmp/restore-window-t5i13mu3/updates/update-synthetic/service-stopped.txt"
+  ],
+  "child_exit": -9,
+  "child_stdout": "",
+  "child_stderr": "",
+  "service_boundary_stopped": true,
+  "transaction_state": "applied",
+  "dashboard_status": {
+    "state": "interrupted",
+    "unit": "synthetic-dead-worker",
+    "transaction_state": "applied",
+    "job": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-pr-fresh-review/raw/fixture-home/tmp/restore-window-t5i13mu3/updates/update-synthetic"
+  },
+  "dashboard_refusals": {
+    "restore": {
+      "status": 409,
+      "detail": "There is no applied LifeOS update to restore"
+    },
+    "recover": {
+      "status": 409,
+      "detail": "There is no interrupted LifeOS swap to recover"
+    }
+  },
+  "direct_recovery_refusal": "Update snapshot does not need interrupted recovery",
+  "installed_owned_hook": "owned-v2",
+  "profile_soul": "selected soul"
+}

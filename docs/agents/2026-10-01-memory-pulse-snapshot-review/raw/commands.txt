@@ -1,0 +1,22 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Environment:
+PYTHONPATH=.:tests
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261001-cortex-final/lifeos/LifeOS/install
+Interpreter:
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+
+Tests:
+python -m unittest test_memory_pulse test_memory_cortex_health test_memory_diagnostics -v
+Actual interpreter and detached execution recorded in run_tests.sh; output tests.txt; exit marker tests.done.
+
+Probes (python means the complete interpreter above):
+python docs/agents/2026-10-01-memory-pulse-snapshot-review/raw/probe_current.py
+python docs/agents/2026-10-01-memory-pulse-snapshot-review/raw/probe_keys.py
+python docs/agents/2026-10-01-memory-pulse-snapshot-review/raw/probe_controls.py
+
+Original outputs are current.txt, keys.txt, controls.txt. Current and keys end with intentional expectation assertion failures exposing the defects. Controls succeeds. Initial control fixture errors were preserved separately before correcting the probe, not the implementation.
+Source checks:
+git rev-parse HEAD
+git status --short
+git diff -- lifeos_hook_bridge/memory_diagnostics.py lifeos_hook_bridge/memory_native.ts lifeos_hook_bridge/memory_preferences.py
+SHA-256 calculated with Python hashlib.sha256(Path(path).read_bytes()) for every absolute path in hashes-before.json and repeated in hashes-after.json.

@@ -1,0 +1,8 @@
+LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-adoption/lifeos/LifeOS/install
+LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-adoption/hermes
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_adoption.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_preferences.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_dashboard.py -v
+node --test tests/test_memory_dashboard_ui.cjs tests/test_dashboard_ui.cjs
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-adoption/raw/probe_adoption.py
+node docs/agents/2026-09-30-memory-adoption/closure/raw/probe_ui.cjs

@@ -1,0 +1,62 @@
+284: def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
+285:     manifest_path = snapshot / "manifest.json"
+286:     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+287:     if manifest["state"] != "applied":
+288:         raise UpdateTransactionError("Only an applied update can be restored")
+289:     target = Path(manifest['installed'])
+290:     if installed is not None and target.absolute() != installed.absolute():
+291:         raise UpdateTransactionError('The restore snapshot belongs to another installation')
+292:     external = _external_user_data(target, excluded=(snapshot,))
+293:     if external != manifest.get('user_data_links', {}) or external != _external_user_data(
+294:             snapshot / 'live-prior', excluded=(target, snapshot)):
+295:         raise UpdateTransactionError('User data binding changed after update; automatic restore refused')
+296:     if _memory_digest(target, external) != manifest["user_data"]:
+297:         raise UpdateTransactionError("User data changed after update; automatic restore refused")
+298:     if not isinstance(manifest.get('mount_state'), dict):
+299:         raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
+300:     if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
+301:         raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+302:     return manifest
+303: 
+304: 
+305: def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+306:     manifest = validate_restore(snapshot)
+307:     manifest_path = snapshot / "manifest.json"
+308:     installed = Path(manifest['installed'])
+309:     stop()
+310:     try:
+311:         manifest = validate_restore(snapshot)
+312:     except Exception:
+313:         start()
+314:         raise
+315:     manifest["state"] = "restoring"
+316:     _write_json(manifest_path, manifest)
+317:     os.replace(installed, snapshot / "restored-selected")
+318:     os.replace(snapshot / "live-prior", installed)
+319:     archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
+320:     manifest['profile_archive'] = str(archive)
+321:     start()
+322:     verify()
+323:     manifest["state"] = "rolled_back"
+324:     _write_json(manifest_path, manifest)
+325:     return manifest
+326: 
+327: 
+328: def recover_update(snapshot: Path, *, stop, start, verify) -> dict:
+329:     manifest_path = snapshot / "manifest.json"
+330:     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+331:     if manifest["state"] not in {"stopped", "swapped", "restoring", "rollback_failed"}:
+332:         raise UpdateTransactionError("Update snapshot does not need interrupted recovery")
+333:     installed = Path(manifest["installed"])
+334:     prior = snapshot / "live-prior"
+335:     stop()
+336:     if prior.exists():
+337:         if installed.exists():
+338:             archive = snapshot / "interrupted-selected"
+339:             if archive.exists():
+340:                 raise UpdateTransactionError("Interrupted selected archive already exists")
+341:             os.replace(installed, archive)
+342:         os.replace(prior, installed)
+343:     elif not installed.is_dir():
+344:         raise UpdateTransactionError("Neither installed LifeOS nor prior snapshot exists")
+345:     _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))

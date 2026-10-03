@@ -1,0 +1,27 @@
+93:     for note in memory._native('discover')['notes']:
+94:         if note['noteClass'] == 'memory':
+95:             continue
+96:         relative = Path(note['filePath']).relative_to(memory.root).as_posix()
+97:         if not relative.startswith(('LIFEOS/MEMORY/KNOWLEDGE/','LIFEOS/MEMORY/LEARNING/')):
+98:             raise MemoryUnavailable('Native discovery returned an unsupported source')
+99:         path = memory._path(relative)
+100:         text = path.read_text()
+101:         paths[relative] = _digest(text)
+102:         if not note['body']:
+103:             continue
+104:         kind = 'learning' if note['noteClass'] == 'learning' else 'adopted'
+105:         sections = [_body_source(text,note['body'])] if kind == 'learning' else _sections(text,note['body'])
+106:         for position, content in sections:
+107:             if position < 0:
+108:                 raise MemoryUnavailable('Native discovery changed a learning source')
+109:             add(relative,position,content,'project',kind,{'type':'idea','title':'Native source adoption','content':content})
+110: 
+111:     if items:
+112:         checked = memory._native('validate_batch',items=items)['results']
+113:         accepted = []
+114:         for candidate, item, result in zip(candidates,items,checked,strict=True):
+115:             if result.get('ok') and result.get('item') == item:
+116:                 accepted.append(candidate)
+117:             else:
+118:                 excluded.append({'path':candidate['path'],'reason':'Native validation rejected this source text'})
+119:         candidates = accepted

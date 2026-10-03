@@ -1,0 +1,21 @@
+test_owner_health_report_keeps_current_failure_and_native_publication (test_memory_cortex_health.MemoryCortexHealthTests.test_owner_health_report_keeps_current_failure_and_native_publication) ... ok
+test_missing_identity_does_not_publish_health_as_a_new_diagnostic (test_memory_cortex_health.MemoryCortexHealthTests.test_missing_identity_does_not_publish_health_as_a_new_diagnostic) ... FAIL
+test_final_health_report_excludes_retired_state_strings_before_writing (test_memory_cortex_health.MemoryCortexHealthTests.test_final_health_report_excludes_retired_state_strings_before_writing) ... ok
+
+======================================================================
+FAIL: test_missing_identity_does_not_publish_health_as_a_new_diagnostic (test_memory_cortex_health.MemoryCortexHealthTests.test_missing_identity_does_not_publish_health_as_a_new_diagnostic)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 138, in test_missing_identity_does_not_publish_health_as_a_new_diagnostic
+    result, report = self.health(context=False)
+                     ~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 123, in health
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: '203 | }\n204 | function validatedThreshol[1047 chars]4)\n' != ''
+Diff is 1105 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 3 tests in 2.066s
+
+FAILED (failures=1)

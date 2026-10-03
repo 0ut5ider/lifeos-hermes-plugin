@@ -1,0 +1,18 @@
+test_hot_publication_refuses_an_audit_log_redirect (test_memory_curation.MemoryCurationTests.test_hot_publication_refuses_an_audit_log_redirect) ... FAIL
+
+======================================================================
+FAIL: test_hot_publication_refuses_an_audit_log_redirect (test_memory_curation.MemoryCurationTests.test_hot_publication_refuses_an_audit_log_redirect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_curation.py", line 105, in test_hot_publication_refuses_an_audit_log_redirect
+    self.assertEqual(saved['status'], 'rejected', saved)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'committed' != 'rejected'
+- committed
++ rejected
+ : {'status': 'committed', 'reference': {'id': 'b919f9221d8342fcbb79d31b80a75d69', 'revision': 1}, 'source': {'kind': 'explicit', 'session': ''}, 'writer': 'local:owner', 'request_id': 'redirect'}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.271s
+
+FAILED (failures=1)

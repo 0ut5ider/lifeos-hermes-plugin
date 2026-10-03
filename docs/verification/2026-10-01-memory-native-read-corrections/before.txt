@@ -1,0 +1,55 @@
+test_private_source_names_and_groups_cannot_supply_page_metadata (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_source_names_and_groups_cannot_supply_page_metadata) ... FAIL
+test_hidden_population_counts_toward_directory_scan_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_population_counts_toward_directory_scan_limit) ... FAIL
+test_non_source_work_population_counts_toward_directory_scan_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_non_source_work_population_counts_toward_directory_scan_limit) ... FAIL
+test_directory_scan_stops_before_materializing_oversized_population (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_directory_scan_stops_before_materializing_oversized_population) ... FAIL
+test_directory_scan_budget_is_shared_between_retained_silos (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_directory_scan_budget_is_shared_between_retained_silos) ... FAIL
+
+======================================================================
+FAIL: test_private_source_names_and_groups_cannot_supply_page_metadata (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_source_names_and_groups_cannot_supply_page_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 216, in test_private_source_names_and_groups_cannot_supply_page_metadata
+    self.assertNotIn('SyntheticPrivate', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticPrivate' unexpectedly found in '{"status": 200, "body": {"tree": [{"label": "Documentation", "children": [{"label": "Overview", "count": 1, "children": [{"label": "<private>SyntheticPrivateFilename", "slug": "<private>SyntheticPrivateFilename", "category": "system-doc"}]}, {"label": "<private>SyntheticPrivateGroup", "count": 1, "children": [{"label": "safe", "slug": "<private>SyntheticPrivateGroup__safe", "category": "system-doc"}]}], "count": 2}, {"label": "People", "count": 0, "children": []}, {"label": "Companies", "count": 0, "children": []}, {"label": "Ideas", "count": 0, "children": []}, {"label": "Blogs", "count": 0, "children": []}, {"label": "Books", "count": 0, "children": []}, {"label": "Research", "count": 0, "children": []}, {"label": "ISAs", "count": 1, "children": [{"label": "ISA", "slug": "<pr\\u200bivate>SyntheticPrivateWork", "category": "isa"}]}, {"label": "Lessons", "count": 0, "children": []}, {"label": "Wisdom", "count": 1, "children": [{"label": "Synthetic\\u0085ControlFilename", "slug": "FRAMES--Synthetic\\u0085ControlFilename", "category": "wisdom"}]}], "recentChanges": [{"slug": "<pr\\u200bivate>SyntheticPrivateWork", "title": "ISA", "category": "isa", "tags": [], "quality": null, "lastModified": "2026-10-01T20:20:57.854065+00:00", "wordCount": 5, "wikilinks": [], "filePath": "/tmp/native-memory-74sbeakr/.claude/LIFEOS/MEMORY/WORK/<pr\\u200bivate>SyntheticPrivateWork/ISA.md", "related": []}, {"slug": "FRAMES--Synthetic\\u0085ControlFilename", "title": "Synthetic\\u0085ControlFilename", "category": "wisdom", "tags": [], "quality": null, "lastModified": "2026-10-01T20:20:57.854143+00:00", "wordCount": 5, "wikilinks": [], "filePath": "/tmp/native-memory-74sbeakr/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/Synthetic\\u0085ControlFilename.md", "group": "Frames", "related": []}, {"slug": "<private>SyntheticPrivateFilename", "title": "<private>SyntheticPrivateFilename", "category": "system-doc", "tags": [], "quality": null, "lastModified": "2026-10-01T20:20:57.853930+00:00", "wordCount": 5, "wikilinks": [], "filePath": "/tmp/native-memory-74sbeakr/.claude/LIFEOS/DOCUMENTATION/<private>SyntheticPrivateFilename.md", "group": "Overview", "related": []}, {"slug": "<private>SyntheticPrivateGroup__safe", "title": "safe", "category": "system-doc", "tags": [], "quality": null, "lastModified": "2026-10-01T20:20:57.853985+00:00", "wordCount": 5, "wikilinks": [], "filePath": "/tmp/native-memory-74sbeakr/.claude/LIFEOS/DOCUMENTATION/<private>SyntheticPrivateGroup/safe.md", "group": "<private>SyntheticPrivateGroup", "related": []}], "stats": {"totalPages": 4, "totalSystem": 2, "totalPeople": 0, "totalCompanies": 0, "totalIdeas": 0, "totalBlogs": 0, "totalBooks": 0, "totalResearch": 0, "totalIsas": 1, "totalLessons": 0, "totalWisdom": 1}, "lastIndexedAt": "2026-10-01T20:20:58.100Z"}}'
+
+======================================================================
+FAIL: test_hidden_population_counts_toward_directory_scan_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_population_counts_toward_directory_scan_limit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 225, in test_hidden_population_counts_toward_directory_scan_limit
+    with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_non_source_work_population_counts_toward_directory_scan_limit (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_non_source_work_population_counts_toward_directory_scan_limit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 233, in test_non_source_work_population_counts_toward_directory_scan_limit
+    with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_directory_scan_stops_before_materializing_oversized_population (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_directory_scan_stops_before_materializing_oversized_population)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 256, in test_directory_scan_stops_before_materializing_oversized_population
+    self.assertEqual(len(consumed), 2049)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 4096 != 2049
+
+======================================================================
+FAIL: test_directory_scan_budget_is_shared_between_retained_silos (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_directory_scan_budget_is_shared_between_retained_silos)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 264, in test_directory_scan_budget_is_shared_between_retained_silos
+    with self.assertRaisesRegex(MemoryUnavailable, 'count limit'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 5 tests in 1.270s
+
+FAILED (failures=5)

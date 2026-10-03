@@ -1,0 +1,42 @@
+{
+  "conditional_owner": {
+    "status": 200,
+    "cache_control": "no-store",
+    "contains_fact": true
+  },
+  "cookie_logout": {
+    "status": 401,
+    "cache_control": "no-store",
+    "contains_fact": false
+  },
+  "stateless_bearer_after_logout": {
+    "status": 200,
+    "cache_control": "no-store",
+    "contains_fact": true
+  },
+  "binding_removed_same_bearer": {
+    "status": 403,
+    "cache_control": "no-store",
+    "contains_fact": false
+  },
+  "public_config": {
+    "status": 503,
+    "cache_control": "no-store",
+    "contains_fact": false
+  },
+  "malformed_config": {
+    "status": 503,
+    "cache_control": "no-store",
+    "contains_fact": false
+  },
+  "missing_config": {
+    "status": 503,
+    "cache_control": "no-store",
+    "contains_fact": false
+  },
+  "other_verified_account": {
+    "status": 403,
+    "cache_control": "no-store",
+    "contains_fact": false
+  }
+}

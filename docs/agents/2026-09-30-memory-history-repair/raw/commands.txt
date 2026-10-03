@@ -1,0 +1,21 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-history-repair/raw/run_review.py > docs/agents/2026-09-30-memory-history-repair/raw/tests.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-history-repair/raw/probe_state_race.py > docs/agents/2026-09-30-memory-history-repair/raw/state-race.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest test_memory_history.MemoryHistoryTests.test_projection_does_not_remove_required_system_instructions -v > docs/agents/2026-09-30-memory-history-repair/raw/required-instructions.txt 2>&1
+
+Read-only inspection:
+cat /home/outsider/.agents/skills/coding-rules/SKILL.md
+cat /home/outsider/.agents/skills/experiment-method/SKILL.md
+git diff --stat
+cat lifeos_hook_bridge/memory_history.py
+git diff -- lifeos_hook_bridge/memory_runtime.py lifeos_hook_bridge/memory_provider.py
+cat tests/test_memory_history.py
+sed -n '1,340p' lifeos_hook_bridge/memory_runtime.py
+git diff -- tests/test_memory_agent.py tests/memory_host_calls.py
+sed -n '1,160p' tests/test_hermes_memory_provider.py
+sed -n '35,132p' lifeos_hook_bridge/memory_access.py
+sed -n '1,145p' lifeos_hook_bridge/memory_policy.py
+Host reads: hermes_cli/middleware.py, agent/auxiliary_hooks.py in the owned prepared source.

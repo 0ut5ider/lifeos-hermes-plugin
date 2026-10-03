@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_update_worker_starts_installed_runtime_with_bound_home_and_tools (test_dashboard_api.DashboardApiTests.test_update_worker_starts_installed_runtime_with_bound_home_and_tools)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_dashboard_api.py", line 51, in test_update_worker_starts_installed_runtime_with_bound_home_and_tools
+    self.assertIn('--setenv=HOME='+str(home), launch)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '--setenv=HOME=/tmp/tmpjxbtj30_' not found in ['systemd-run', '--user', '--collect', '--unit=lifeos-bridge-update-ecdfc19cdfbd4b51ad7530e8856afc73', '--setenv=HERMES_HOME=/tmp/tmpjxbtj30_/.hermes', '/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python', '/tmp/tmpjxbtj30_/plugin/update_worker.py', '/tmp/tmpjxbtj30_/job']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.238s
+
+FAILED (failures=1)

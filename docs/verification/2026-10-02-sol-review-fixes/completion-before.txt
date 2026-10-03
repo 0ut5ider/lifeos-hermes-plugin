@@ -1,0 +1,32 @@
+test_dead_recovery_worker_reports_its_durable_completed_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_recovery_worker_reports_its_durable_completed_state) ... 
+  test_dead_recovery_worker_reports_its_durable_completed_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_recovery_worker_reports_its_durable_completed_state) (state='applied') ... FAIL
+  test_dead_recovery_worker_reports_its_durable_completed_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_recovery_worker_reports_its_durable_completed_state) (state='rolled_back') ... FAIL
+
+======================================================================
+FAIL: test_dead_recovery_worker_reports_its_durable_completed_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_recovery_worker_reports_its_durable_completed_state) (state='applied')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 361, in test_dead_recovery_worker_reports_its_durable_completed_state
+    self.assertEqual(self.api.get_lifeos_update_status()['state'], state)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'interrupted' != 'applied'
+- interrupted
++ applied
+
+
+======================================================================
+FAIL: test_dead_recovery_worker_reports_its_durable_completed_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_recovery_worker_reports_its_durable_completed_state) (state='rolled_back')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 361, in test_dead_recovery_worker_reports_its_durable_completed_state
+    self.assertEqual(self.api.get_lifeos_update_status()['state'], state)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'interrupted' != 'rolled_back'
+- interrupted
++ rolled_back
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.189s
+
+FAILED (failures=2)

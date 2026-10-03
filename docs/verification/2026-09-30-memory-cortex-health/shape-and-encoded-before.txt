@@ -1,0 +1,25 @@
+test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure (test_memory_cortex_health.MemoryCortexHealthTests.test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure) ... ERROR
+test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery (test_memory_cortex_health.MemoryCortexHealthTests.test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery) ... FAIL
+
+======================================================================
+ERROR: test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure (test_memory_cortex_health.MemoryCortexHealthTests.test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 99, in test_malformed_latest_reviewer_keeps_invalid_status_without_undefined_shape_failure
+    self.assertEqual(result['evidence']['reviewer']['status'], 'invalid')
+                     ~~~~~~^^^^^^^^^^^^
+KeyError: 'evidence'
+
+======================================================================
+FAIL: test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery (test_memory_cortex_health.MemoryCortexHealthTests.test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 110, in test_json_encoded_retired_error_is_excluded_before_diagnostic_delivery
+    self.assertNotIn(encoded, error)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: '\\u0053\\u0079\\u006e\\u0074\\u0068\\u0065\\u0074\\u0069\\u0063\\u0020\\u0065\\u006e\\u0063\\u006f\\u0064\\u0065\\u0064\\u0020\\u0072\\u0065\\u0074\\u0069\\u0072\\u0065\\u0064\\u0020\\u0043\\u006f\\u0072\\u0074\\u0065\\u0078\\u0020\\u0065\\u0072\\u0072\\u006f\\u0072' unexpectedly found in '{"message":"\\u0053\\u0079\\u006e\\u0074\\u0068\\u0065\\u0074\\u0069\\u0063\\u0020\\u0065\\u006e\\u0063\\u006f\\u0064\\u0065\\u0064\\u0020\\u0072\\u0065\\u0074\\u0069\\u0072\\u0065\\u0064\\u0020\\u0043\\u006f\\u0072\\u0074\\u0065\\u0078\\u0020\\u0065\\u0072\\u0072\\u006f\\u0072"}'
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.345s
+
+FAILED (failures=1, errors=1)

@@ -1,0 +1,6 @@
+{"case": "allowed", "present": ["Synthetic relationship closure marker", "Synthetic wisdom closure marker", "Synthetic advisory closure marker"], "output": "<system-reminder>\nLifeOS Dynamic Context (Auto-loaded at Session Start)\n\n## Relationship Context\n\n**Recent Relationship Notes:**\n*2026-10-01:*\n- Synthetic relationship closure marker\n\n\n---\n\n## Learning Context (auto-loaded)\n\n**Wisdom Frames (high confidence):**\n  [synthetic] Synthetic wisdom closure marker (95%)\n---\n\n## Advisory Findings\n\n**Advisory findings from the last session (1):**\n  [memory-dirs] Synthetic advisory closure marker\n---\nDynamic context loaded. Constitutional rules are in the system prompt (LIFEOS/LIFEOS_SYSTEM_PROMPT.md). Operational procedures are in CLAUDE.md.\n</system-reminder>\n\n\u2705 LifeOS dynamic context loaded...\n"}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-rendered-prompts/third-closure/raw/probe_startup.py", line 23, in <module>
+    assert len(present)==(4 if case=='allowed' else 0)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

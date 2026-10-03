@@ -1,0 +1,10 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Source inspection: git rev-parse HEAD; git diff -- lifeos_hook_bridge/memory_sources.py lifeos_hook_bridge/memory_service.py; full reads of memory_diagnostics.py, native CortexHealth.ts, MemoryHealthCheck.ts, MemoryAccess.ts, MemoryHealthGate.hook.ts; relevant memory_history.py project_value and memory RPC input limit; test_memory_cortex_health.py.
+Test command: exact env/argv in run_tests.sh, launched via setsid and checked through tests.done.
+Probe interpreter: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+Probe env: PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-cortex-health/lifeos/LifeOS/install
+Probe scripts and outputs, all exit0:
+ probe_health_edges.py > health-edges.txt 2>&1
+ probe_controls.py > controls.txt 2>&1
+ probe_rpc_volume.py > rpc-volume.txt 2>&1 (interpreter only; uses saved synthetic payload, request parse fails before deliberately nonexistent config path can be read)
+Read-only artifact check attempted hash-comparison.json before it was created, received file-not-found. No fixture or implementation was affected.

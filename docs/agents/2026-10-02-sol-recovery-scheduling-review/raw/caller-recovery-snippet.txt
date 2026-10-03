@@ -1,0 +1,13 @@
+547:     function recoverLifeOSUpdate() {
+548:       setInstallationBusy(true);
+549:       setInstallationStatus("");
+550:       SDK.fetchJSON(lifeosUpdateEndpoint + "/recover", { method: "POST" }).then(function () {
+551:         setInstallationStatus("LifeOS recovery started. The worker will restore the prior installation and restart Hermes.");
+552:         refreshLifeOSUpdate(0);
+553:       }).catch(function (error) {
+554:         setInstallationStatus("Could not start LifeOS recovery: " + error.message);
+555:       }).finally(function () { setInstallationBusy(false); });
+556:     }
+557: 
+558:     function restoreLifeOSUpdate() {
+559:       setInstallationBusy(true);

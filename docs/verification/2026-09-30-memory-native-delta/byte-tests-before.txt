@@ -1,0 +1,20 @@
+test_full_native_curation_rows_fit_the_connector_response_budget (test_memory_delta.MemoryDeltaTests.test_full_native_curation_rows_fit_the_connector_response_budget) ... FAIL
+test_summary_projection_preserves_curation_counts_and_native_sample_order (test_memory_delta.MemoryDeltaTests.test_summary_projection_preserves_curation_counts_and_native_sample_order) ... ok
+
+======================================================================
+FAIL: test_full_native_curation_rows_fit_the_connector_response_budget (test_memory_delta.MemoryDeltaTests.test_full_native_curation_rows_fit_the_connector_response_budget)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 211, in test_full_native_curation_rows_fit_the_connector_response_budget
+    output = self.call(standalone=True, timeout=8)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 36, in call
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: 'MemoryDeltaSurface error: The native memory service is unavailable\n' != ''
+- MemoryDeltaSurface error: The native memory service is unavailable
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 6.980s
+
+FAILED (failures=1)

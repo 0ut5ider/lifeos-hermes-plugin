@@ -14,7 +14,8 @@ GROUPS = {
     "hermes-plugin-events.patch": (
         "hermes_cli/plugins.py", "hermes_cli/plugins_dispatch.py", "model_tools.py",
         "tests/hermes_cli/test_plugins.py", "tests/hermes_cli/test_required_policy_hooks.py",
-        "tests/hermes_cli/test_session_boundary_hooks.py", "tests/plugins/test_transform_tool_result_hook.py",
+        "tests/hermes_cli/test_session_boundary_hooks.py", "tests/hermes_cli/test_stop_policy_dispatch.py",
+        "tests/plugins/test_transform_tool_result_hook.py",
         "tests/agent/test_tool_result_context_hook.py",
     ),
     "hermes-turn-gates.patch": (
@@ -45,6 +46,9 @@ GROUPS = {
         "tests/tools/test_remote_file_staleness.py",
     ),
     "hermes-cron-bootstrap.patch": ("cron/scheduler.py",),
+    "hermes-required-middleware.patch": (
+        "agent/auxiliary_hooks.py", "hermes_cli/middleware.py", "tests/hermes_cli/test_required_middleware.py",
+    ),
 }
 
 

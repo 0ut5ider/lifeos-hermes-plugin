@@ -1,0 +1,164 @@
+{
+  "context_session": "native-session",
+  "context_writer": "chat-a:100",
+  "explicit": [
+    {
+      "category": "principal",
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "6d383b16a73945cabff36b7ad1b74154",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": "native-session"
+        },
+        "writer": "chat-a:100",
+        "request_id": "explicit-principal"
+      },
+      "record": {
+        "status": "ok",
+        "reference": {
+          "id": "6d383b16a73945cabff36b7ad1b74154",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic explicit source principal",
+        "category": "principal",
+        "project": "",
+        "writer": "chat-a:100",
+        "source": {
+          "session": "native-session",
+          "kind": "explicit"
+        }
+      }
+    },
+    {
+      "category": "assistant",
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "ea82461b84f040dbaf97e92cc5104778",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": "native-session"
+        },
+        "writer": "chat-a:100",
+        "request_id": "explicit-assistant"
+      },
+      "record": {
+        "status": "ok",
+        "reference": {
+          "id": "ea82461b84f040dbaf97e92cc5104778",
+          "revision": 1
+        },
+        "content": "RULE: Synthetic explicit source assistant",
+        "category": "assistant",
+        "project": "",
+        "writer": "chat-a:100",
+        "source": {
+          "session": "native-session",
+          "kind": "explicit"
+        }
+      }
+    },
+    {
+      "category": "project",
+      "receipt": {
+        "status": "committed",
+        "reference": {
+          "id": "7073af4b303d49f6b886805d10521b27",
+          "revision": 1
+        },
+        "source": {
+          "kind": "explicit",
+          "session": "native-session"
+        },
+        "writer": "chat-a:100",
+        "request_id": "explicit-project"
+      },
+      "record": {
+        "status": "ok",
+        "reference": {
+          "id": "7073af4b303d49f6b886805d10521b27",
+          "revision": 1
+        },
+        "content": "Synthetic explicit source project",
+        "category": "project",
+        "project": "general",
+        "writer": "chat-a:100",
+        "source": {
+          "session": "native-session",
+          "kind": "explicit"
+        }
+      }
+    }
+  ],
+  "native_control": {
+    "ok": true,
+    "type": "memory",
+    "path": "/tmp/native-memory-djxuyfnh/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md",
+    "detail": {
+      "ok": true,
+      "accepted": 2,
+      "dropped_malformed": 0,
+      "dropped_overlength": 0,
+      "dropped_duplicates": 0,
+      "prior_count": 1,
+      "new_count": 2,
+      "evictions": [],
+      "additions": [
+        "RULE: Synthetic native provenance control"
+      ]
+    },
+    "receipt": {
+      "status": "committed",
+      "references": [
+        {
+          "id": "6d383b16a73945cabff36b7ad1b74154",
+          "revision": 1
+        },
+        {
+          "id": "4d987b8f78ab4ebf8eb2b32db1e88451",
+          "revision": 1
+        }
+      ],
+      "detail": {
+        "ok": true,
+        "accepted": 2,
+        "dropped_malformed": 0,
+        "dropped_overlength": 0,
+        "dropped_duplicates": 0,
+        "prior_count": 1,
+        "new_count": 2,
+        "evictions": [],
+        "additions": [
+          "RULE: Synthetic native provenance control"
+        ]
+      },
+      "writer": "chat-a:100",
+      "request_id": "native-control"
+    }
+  },
+  "native_readback": [
+    {
+      "reference": {
+        "id": "4d987b8f78ab4ebf8eb2b32db1e88451",
+        "revision": 1
+      },
+      "content": "RULE: Synthetic native provenance control",
+      "category": "principal",
+      "project": "",
+      "writer": "chat-a:100",
+      "status": "active",
+      "source": {
+        "kind": "native",
+        "session": "native-session",
+        "path": "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md"
+      },
+      "score": 2.930591259640103
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Date: 2026-09-30
+
+Primary review reads:
+diff -u docs/agents/2026-09-30-memory-native-review/followup/raw/reviewed-memory_access.py lifeos_hook_bridge/memory_access.py
+cat tests/test_memory_archive.py
+sed -n '250,310p' lifeos_hook_bridge/memory_access.py
+diff -u docs/agents/2026-09-30-memory-native-review/followup/raw/reviewed-test_memory_delegation.py tests/test_memory_delegation.py
+
+Full tests, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p 'test_memory_*.py' -v > docs/agents/2026-09-30-memory-native-review/closure/raw/memory-tests.txt 2>&1
+
+Original unchanged probes, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-native-review/raw/probe_native.py > docs/agents/2026-09-30-memory-native-review/closure/raw/native-probes.jsonl 2>&1
+
+Follow-up unchanged probes, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-native-review/followup/raw/probe_followup.py > docs/agents/2026-09-30-memory-native-review/closure/raw/followup-probes.jsonl 2>&1
+
+Three additional closure probes, exit 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-native-review/closure/raw/probe_closure.py > docs/agents/2026-09-30-memory-native-review/closure/raw/closure-probes.jsonl 2>&1
+
+All complete outputs were read. The added script uses assertions for the intended outcomes. Original scripts were not changed.
+
+Snapshot checks used Python pathlib byte comparisons and hashlib.sha256. Top-level patch, bundled patch, and prior patch snapshot all compared equal. Reviewed source copies and hashes are in this directory.

@@ -1,0 +1,39 @@
+diff --git a/lifeos_hook_bridge/memory_adoption.py b/lifeos_hook_bridge/memory_adoption.py
+index 29d047b..7199cfc 100644
+--- a/lifeos_hook_bridge/memory_adoption.py
++++ b/lifeos_hook_bridge/memory_adoption.py
+@@ -159,6 +159,14 @@ def _snapshot(memory, connection, scope: MemoryScope) -> dict[str, Any]:
+             except (KeyError, ValueError, MemoryUnavailable) as error:
+                 excluded.append({'path':QUEUE,'reference':identifier,'reason':str(error)})
+ 
++    if excluded:
++        checked_labels = memory._native('validate_source_batch',
++            contents=[item['path'] for item in excluded])['accepted']
++        for item, valid in zip(excluded, checked_labels, strict=True):
++            if valid is not True or memory._filter_history(connection, scope,
++                    source_labels(item['path']), _now())['excluded']:
++                item['path'] = '[excluded source]'
++
+     signature = _digest(json.dumps({'root':str(memory.root),'principal':scope.principal,
+                                      'files':paths,'mtimes':{name:memory._path(name).stat().st_mtime_ns for name in paths},
+                                      'records':records,'proposals':proposals,'candidates':candidates,
+diff --git a/tests/test_memory_source_labels.py b/tests/test_memory_source_labels.py
+index 3fe87b7..86ef6cf 100644
+--- a/tests/test_memory_source_labels.py
++++ b/tests/test_memory_source_labels.py
+@@ -57,6 +57,15 @@ class MemorySourceLabelTests(unittest.TestCase):
+         self.assertEqual(preview['records'], [])
+         self.assertNotIn('Synthetic_retired_source_label', json.dumps(preview))
+ 
++    def test_early_body_rejection_does_not_expose_a_private_filename(self):
++        self.retire()
++        path = self.note('<private>SYNTHETIC_PRIVATE_REJECTED_LABEL')
++        path.write_text(path.read_text().replace('SafeSyntheticCurrentBody', 'Synthetic retired source label'))
++        preview = self.preferences.preview_adoption(account='dashboard:synthetic-owner')
++        self.assertEqual(preview['records'], [])
++        self.assertTrue(preview['excluded'])
++        self.assertNotIn('SYNTHETIC_PRIVATE_REJECTED_LABEL', json.dumps(preview))
++
+     def test_previously_registered_private_sources_do_not_enter_owner_responses(self):
+         path = self.note('<private>SYNTHETIC_PRIVATE_LABEL')
+         self.assert_registered_source_excluded(path, 'SYNTHETIC_PRIVATE_LABEL')

@@ -1,0 +1,66 @@
+{
+  "recovery_completed_before_status": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import os,signal,sys\nfrom pathlib import Path\nfrom lifeos_hook_bridge.update_transaction import recover_update\nrecover_update(Path(sys.argv[1]),stop=lambda:None,start=lambda:None,verify=lambda:None)\nos.kill(os.getpid(),signal.SIGKILL)\n",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/recovery_completed_before_status/jobs/update-synthetic/snapshot"
+    ],
+    "child_exit": -9,
+    "stdout": "",
+    "stderr": "",
+    "transaction_state": "applied",
+    "dashboard": {
+      "state": "applied",
+      "unit": "synthetic-dead-worker",
+      "transaction_state": "applied",
+      "job": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/recovery_completed_before_status/jobs/update-synthetic"
+    },
+    "stopped_marker": false,
+    "refusals": {},
+    "direct_recovery": "not retried",
+    "hook": "owned-v2",
+    "memory": "Synthetic later memory",
+    "profile": "Synthetic later profile"
+  },
+  "apply_stop_before_journal": {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-c",
+      "import os,signal,sys\nfrom pathlib import Path\nfrom lifeos_hook_bridge.update_transaction import apply_update\ndef stop():\n Path(sys.argv[8]).write_text(\"synthetic service stopped\")\n os.kill(os.getpid(),signal.SIGKILL)\napply_update(*[Path(a) for a in sys.argv[1:8]],stop=stop,start=lambda:None,mount=lambda:None,renew=lambda a,b:None,verify=lambda:None)\n",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/program/home/.claude",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/program/home/.hermes",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/program/prior",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/program/selected",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/program/reference/.claude",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/program/home/state/baseline.json",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/jobs/update-synthetic/snapshot",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/jobs/update-synthetic/synthetic-stopped"
+    ],
+    "child_exit": -9,
+    "stdout": "",
+    "stderr": "",
+    "transaction_state": "prepared",
+    "dashboard": {
+      "state": "interrupted",
+      "unit": "synthetic-dead-worker",
+      "transaction_state": "prepared",
+      "job": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-home/tmp/journal-windows-2uvif4j9/apply_stop_before_journal/jobs/update-synthetic"
+    },
+    "stopped_marker": true,
+    "refusals": {
+      "restore": {
+        "status": 409,
+        "detail": "There is no applied LifeOS update to restore"
+      },
+      "recover": {
+        "status": 409,
+        "detail": "There is no interrupted LifeOS swap to recover"
+      }
+    },
+    "direct_recovery": "Update snapshot does not need interrupted recovery",
+    "hook": "owned-v1",
+    "memory": "private memory",
+    "profile": "prior config"
+  }
+}

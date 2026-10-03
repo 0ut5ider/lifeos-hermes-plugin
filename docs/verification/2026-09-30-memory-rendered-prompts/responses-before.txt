@@ -1,0 +1,36 @@
+test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed (test_memory_runtime.MemoryRuntimeTests.test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed) ... 
+  test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed (test_memory_runtime.MemoryRuntimeTests.test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed) (request={'input': 'Synthetic removed Responses string marker'}) ... FAIL
+  test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed (test_memory_runtime.MemoryRuntimeTests.test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed) (request={'input': 'Synthetic public input', 'extra_body': {'input': 'Synthetic removed Responses string marker'}}) ... FAIL
+test_responses_string_compression_checks_generated_input_without_blocking_user_quotes (test_memory_model_calls.MemoryModelCallTests.test_responses_string_compression_checks_generated_input_without_blocking_user_quotes) ... FAIL
+
+======================================================================
+FAIL: test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed (test_memory_runtime.MemoryRuntimeTests.test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed) (request={'input': 'Synthetic removed Responses string marker'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 126, in test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed
+    with self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed (test_memory_runtime.MemoryRuntimeTests.test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed) (request={'input': 'Synthetic public input', 'extra_body': {'input': 'Synthetic removed Responses string marker'}})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 126, in test_generated_responses_string_rejects_removed_claim_but_user_quote_is_allowed
+    with self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_responses_string_compression_checks_generated_input_without_blocking_user_quotes (test_memory_model_calls.MemoryModelCallTests.test_responses_string_compression_checks_generated_input_without_blocking_user_quotes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_model_calls.py", line 179, in test_responses_string_compression_checks_generated_input_without_blocking_user_quotes
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 2 tests in 5.929s
+
+FAILED (failures=3)

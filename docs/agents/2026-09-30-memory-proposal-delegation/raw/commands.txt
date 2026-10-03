@@ -1,0 +1,11 @@
+cwd: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_proposals.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_proposal_delegation.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_runtime.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_service.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python -m unittest discover -s tests -p test_memory_mcp.py -v
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-proposal-delegation/raw/probe_dangling_connector.py
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-proposal-delegation/raw/probe_decision_text.py
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-proposal-delegation/raw/probe_native_states.py
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-proposal-delegation/raw/probe_context_states.py
+rg -n 'markProposal\(|writeProposalQueue\(|applyProposalEdit\(|pending-proposals\.jsonl|PENDING_PROPOSALS_PATH' /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/LIFEOS /home/outsider/.cache/lifeos-plugin-memory/managed-source/LifeOS/install/hooks --glob '*.ts' --glob '!**/node_modules/**'

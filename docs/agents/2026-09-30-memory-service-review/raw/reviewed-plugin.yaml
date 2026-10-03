@@ -1,0 +1,118 @@
+name: lifeos-hook-bridge
+version: 0.1.0
+description: Runs installed LifeOS Claude Code hooks at matching Hermes lifecycle events.
+author: 0ut5ider
+python_dependencies:
+  - tree-sitter==0.26.0
+  - tree-sitter-bash==0.25.1
+  - pathspec==1.1.1
+  - mcp==2.0.0
+config_schema:
+  lifeos_source_dir:
+    type: str
+    label: LifeOS source install path
+    description: Absolute path to the LifeOS/install directory used to review VersionDrift baseline files.
+    default: ""
+  stop_cap_policy:
+    type: str
+    label: Stop hook limit
+    description: After the continuation limit, allow the last answer like Claude Code or fail the turn without releasing it.
+    choices: [claude, fail_closed]
+    default: claude
+  pinned_tier:
+    type: str
+    label: Pinned LifeOS tier
+    description: Used when LifeOS settings.json names a local model instead of a Claude tier.
+    choices: [fable, opus, sonnet, haiku, none]
+    default: fable
+  haiku_model:
+    type: str
+    label: Haiku model
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
+    default: ""
+  haiku_inherit_child_default:
+    type: bool
+    label: Haiku uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
+  haiku_provider:
+    type: str
+    label: Haiku Hermes provider
+    description: Hermes provider for the Haiku model. Leave blank to inherit the current provider.
+    default: ""
+  haiku_effort:
+    type: str
+    label: Haiku effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: low
+  sonnet_model:
+    type: str
+    label: Sonnet model
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
+    default: ""
+  sonnet_inherit_child_default:
+    type: bool
+    label: Sonnet uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
+  sonnet_provider:
+    type: str
+    label: Sonnet Hermes provider
+    description: Hermes provider for the Sonnet model. Leave blank to inherit the current provider.
+    default: ""
+  sonnet_effort:
+    type: str
+    label: Sonnet effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: medium
+  opus_model:
+    type: str
+    label: Opus model
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
+    default: ""
+  opus_inherit_child_default:
+    type: bool
+    label: Opus uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
+  opus_provider:
+    type: str
+    label: Opus Hermes provider
+    description: Hermes provider for the Opus model. Leave blank to inherit the current provider.
+    default: ""
+  opus_effort:
+    type: str
+    label: Opus effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: xhigh
+  fable_model:
+    type: str
+    label: Fable model
+    description: Leave blank to use the current Hermes model unless existing child routing is selected.
+    default: ""
+  fable_inherit_child_default:
+    type: bool
+    label: Fable uses existing child routing
+    description: Use the parent Hermes model for delegated tasks and the separate LifeOS child connection for direct calls.
+    default: false
+  fable_provider:
+    type: str
+    label: Fable Hermes provider
+    description: Hermes provider for the Fable model. Leave blank to inherit the current provider.
+    default: ""
+  fable_effort:
+    type: str
+    label: Fable effort
+    choices: [minimal, low, medium, high, xhigh, max, ultra]
+    default: xhigh
+provides_hooks:
+  - pre_tool_call
+  - post_tool_call
+  - pre_command_approval
+  - augment_tool_result
+  - pre_llm_call
+  - pre_prompt_admission
+  - pre_turn_stop
+  - on_session_finalize
+  - api_request_error
+  - on_turn_result

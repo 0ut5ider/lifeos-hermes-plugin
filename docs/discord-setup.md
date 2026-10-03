@@ -54,6 +54,24 @@ Discord can show the bot account and its same-named role as identical `@Shiny He
 
 To make one channel mention-free, set `DISCORD_FREE_RESPONSE_CHANNELS` to its channel ID. Keep `DISCORD_REQUIRE_MENTION=true` for other channels. If you also want a thread for each top-level message in that free-response channel, set `DISCORD_FREE_RESPONSE_AUTO_THREAD=true`; the default is inline replies. Restart the gateway after configuration changes.
 
+### Use a separate channel for each Hermes instance
+
+Two bots in a shared free-response channel can both answer the same message. Give each gateway its own channel and preserve its user allowlist. Set these values in that gateway account's private `~/.hermes/.env`, replacing the channel ID:
+
+```dotenv
+DISCORD_ALLOWED_CHANNELS=123456789012345678
+DISCORD_FREE_RESPONSE_CHANNELS=123456789012345678
+DISCORD_REQUIRE_MENTION=true
+DISCORD_FREE_RESPONSE_AUTO_THREAD=false
+DISCORD_HOME_CHANNEL=123456789012345678
+```
+
+`DISCORD_ALLOWED_CHANNELS` restricts server-channel admission to the selected channel and its threads. `DISCORD_FREE_RESPONSE_CHANNELS` accepts ordinary messages there without an @ mention. `DISCORD_FREE_RESPONSE_AUTO_THREAD=false` keeps replies inline. `DISCORD_HOME_CHANNEL` sets the default destination for proactive delivery. Keep `DISCORD_ALLOWED_USERS` set to the intended user's numeric ID. Channel admission and direct-message admission are separate rules.
+
+On 2026-09-30, `.212` moved to `#hermes-212`, channel `1554859357374513222`. The gateway accepted a plain message and delivered its reply. The `.213` configuration was not changed. Existing cron jobs with an explicit destination retain that destination; changing the home channel does not rewrite them.
+
+Back up `.env` before changing these values. Restart the gateway after active turns finish, then verify a plain message in the selected channel. Restore the backup and restart the gateway to undo the routing change.
+
 ## 5. Verify scheduled delivery separately
 
 Hermes cron can send output to `discord:<channel-id>`. For a disposable delivery test, run the following as the Hermes account, replacing the channel ID:

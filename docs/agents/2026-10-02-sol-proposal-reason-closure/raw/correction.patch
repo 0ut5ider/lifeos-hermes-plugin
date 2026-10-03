@@ -1,0 +1,49 @@
+diff --git a/lifeos_hook_bridge/memory_adoption.py b/lifeos_hook_bridge/memory_adoption.py
+index 7199cfc..8905970 100644
+--- a/lifeos_hook_bridge/memory_adoption.py
++++ b/lifeos_hook_bridge/memory_adoption.py
+@@ -156,8 +156,9 @@ def _snapshot(memory, connection, scope: MemoryScope) -> dict[str, Any]:
+                 paths[relative] = _digest(target.read_text())
+                 pending.append({'reference':{'id':identifier,'revision':1},'row':row,
+                                 'target':relative,'target_digest':paths[relative]})
+-            except (KeyError, ValueError, MemoryUnavailable) as error:
+-                excluded.append({'path':QUEUE,'reference':identifier,'reason':str(error)})
++            except (KeyError, ValueError, MemoryUnavailable):
++                excluded.append({'path':QUEUE,'reference':identifier,
++                    'reason':'The native proposal target or content is not eligible for adoption'})
+ 
+     if excluded:
+         checked_labels = memory._native('validate_source_batch',
+diff --git a/tests/test_memory_source_labels.py b/tests/test_memory_source_labels.py
+index 86ef6cf..2c8f95f 100644
+--- a/tests/test_memory_source_labels.py
++++ b/tests/test_memory_source_labels.py
+@@ -8,6 +8,7 @@ import unittest
+ 
+ from lifeos_hook_bridge.memory_canonical import corpus
+ from lifeos_hook_bridge.memory_preferences import MemoryPreferences
++from lifeos_hook_bridge.memory_proposals import QUEUE
+ from lifeos_hook_bridge.memory_service import MemoryConfiguration
+ import test_memory_native as native_fixture
+ from test_memory_native import OWNER
+@@ -70,6 +71,20 @@ class MemorySourceLabelTests(unittest.TestCase):
+         path = self.note('<private>SYNTHETIC_PRIVATE_LABEL')
+         self.assert_registered_source_excluded(path, 'SYNTHETIC_PRIVATE_LABEL')
+ 
++    def test_rejected_proposal_reason_does_not_expose_a_retired_target(self):
++        self.retire()
++        queue = self.memory._path(QUEUE)
++        queue.parent.mkdir(parents=True, exist_ok=True)
++        queue.write_text(json.dumps({'id': 'synthetic-foreign-proposal', 'status': 'pending',
++            'target_kind': 'operational-rule',
++            'target_file': str(self.root.parent / 'Synthetic_retired_source_label.md'),
++            'edit': 'Safe synthetic proposal edit', 'confidence': 0.8,
++            'rationale': 'Safe synthetic proposal rationale'}) + '\n')
++        preview = self.preferences.preview_adoption(account='dashboard:synthetic-owner')
++        self.assertEqual(preview['proposals'], [])
++        self.assertTrue(preview['excluded'])
++        self.assertNotIn('Synthetic_retired_source_label', json.dumps(preview))
++
+     def test_previously_registered_forgotten_labels_do_not_enter_owner_responses(self):
+         self.retire()
+         path = self.note('Synthetic_retired_source_label')

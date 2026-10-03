@@ -1,0 +1,27 @@
+test_reviewer_directory_redirect_cannot_become_memory_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_reviewer_directory_redirect_cannot_become_memory_evidence) ... FAIL
+test_index_directory_redirect_cannot_become_memory_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_index_directory_redirect_cannot_become_memory_evidence) ... FAIL
+
+======================================================================
+FAIL: test_reviewer_directory_redirect_cannot_become_memory_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_reviewer_directory_redirect_cannot_become_memory_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 199, in test_reviewer_directory_redirect_cannot_become_memory_evidence
+    self.assertEqual(self.call(), {'unavailable': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'evidence': {'nowMs': 1790825836197, 'thre[3004 chars]00}}} != {'unavailable': True}
+Diff is 5418 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_index_directory_redirect_cannot_become_memory_evidence (test_memory_cortex_health.MemoryCortexHealthTests.test_index_directory_redirect_cannot_become_memory_evidence)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_cortex_health.py", line 206, in test_index_directory_redirect_cannot_become_memory_evidence
+    self.assertEqual(self.call(), {'unavailable': True})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'evidence': {'nowMs': 1790825836618, 'thre[2784 chars]00}}} != {'unavailable': True}
+Diff is 5204 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.854s
+
+FAILED (failures=2)

@@ -1,0 +1,102 @@
+======================================================================
+ERROR: test_invalid_target_symlink_refuses_without_overwriting_it (test_mount_transaction.MountTransactionTests.test_invalid_target_symlink_refuses_without_overwriting_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 120, in test_invalid_target_symlink_refuses_without_overwriting_it
+    self.execute()
+    ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 36, in execute
+    return self.transaction().execute(self.environment, self.fixture.fixture.memory.bun, str(self.hermes))
+           ~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 32, in transaction
+    from lifeos_hook_bridge.mount_transaction import MountTransaction
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.mount_transaction'
+
+======================================================================
+ERROR: test_late_validation_failure_restores_existing_files (test_mount_transaction.MountTransactionTests.test_late_validation_failure_restores_existing_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 83, in test_late_validation_failure_restores_existing_files
+    self.execute()
+    ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 36, in execute
+    return self.transaction().execute(self.environment, self.fixture.fixture.memory.bun, str(self.hermes))
+           ~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 32, in transaction
+    from lifeos_hook_bridge.mount_transaction import MountTransaction
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.mount_transaction'
+
+======================================================================
+ERROR: test_success_publishes_verified_native_files_and_commits_the_journal (test_mount_transaction.MountTransactionTests.test_success_publishes_verified_native_files_and_commits_the_journal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 71, in test_success_publishes_verified_native_files_and_commits_the_journal
+    result = self.execute()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 36, in execute
+    return self.transaction().execute(self.environment, self.fixture.fixture.memory.bun, str(self.hermes))
+           ~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 32, in transaction
+    from lifeos_hook_bridge.mount_transaction import MountTransaction
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.mount_transaction'
+
+======================================================================
+FAIL: test_native_preparation_does_not_change_live_profile_or_workspace (test_mount_transaction.MountTransactionTests.test_native_preparation_does_not_change_live_profile_or_workspace)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 64, in test_native_preparation_does_not_change_live_profile_or_workspace
+    self.assertEqual((self.profile / 'config.yaml').read_bytes(), config)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'mod[18 chars]cal\ncontext_file_max_chars: 100000\nskills:\n[1764 chars]os\n' != b'mod[18 chars]cal\n'
+
+======================================================================
+FAIL: test_process_death_recovers_all_prior_mount_files (test_mount_transaction.MountTransactionTests.test_process_death_recovers_all_prior_mount_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 92, in test_process_death_recovers_all_prior_mount_files
+    self.crash_after_soul()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 52, in crash_after_soul
+    self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != -9 : Traceback (most recent call last):
+  File "/tmp/native-memory-2f1nepwy/kill-mount.py", line 3, in <module>
+    from lifeos_hook_bridge import mount_transaction as module
+ImportError: cannot import name 'mount_transaction' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+
+======================================================================
+FAIL: test_recovery_preserves_a_later_user_edit_and_refuses_before_restore (test_mount_transaction.MountTransactionTests.test_recovery_preserves_a_later_user_edit_and_refuses_before_restore)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 101, in test_recovery_preserves_a_later_user_edit_and_refuses_before_restore
+    self.crash_after_soul()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 52, in crash_after_soul
+    self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != -9 : Traceback (most recent call last):
+  File "/tmp/native-memory-yo28krzw/kill-mount.py", line 3, in <module>
+    from lifeos_hook_bridge import mount_transaction as module
+ImportError: cannot import name 'mount_transaction' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+
+======================================================================
+FAIL: test_unfinished_mount_refuses_another_mount_until_recovery (test_mount_transaction.MountTransactionTests.test_unfinished_mount_refuses_another_mount_until_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 111, in test_unfinished_mount_refuses_another_mount_until_recovery
+    self.crash_after_soul()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 52, in crash_after_soul
+    self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != -9 : Traceback (most recent call last):
+  File "/tmp/native-memory-h05gxd33/kill-mount.py", line 3, in <module>
+    from lifeos_hook_bridge import mount_transaction as module
+ImportError: cannot import name 'mount_transaction' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.066s
+
+FAILED (failures=4, errors=3)

@@ -1,0 +1,23 @@
+FF
+======================================================================
+FAIL: test_environment_values_and_unknown_credential_echoes_are_not_recorded (test_capture.EvidenceTests.test_environment_values_and_unknown_credential_echoes_are_not_recorded) (field='env')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 39, in test_environment_values_and_unknown_credential_echoes_are_not_recorded
+    self.assertNotIn(environment[key], raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-KEY-311804' unexpectedly found in '{"options":{"env":{"ANTHROPIC_KEY":"SYNTHETIC-KEY-311804","GH_PAT":"SYNTHETIC-PAT-311805","LANG":"C.UTF-8","LIFEOS_CHILD_EFFORT":"medium","ORDINARY_CUSTOM_SETTING":"SYNTHETIC-UNKNOWN-311808","SLACK_WEBHOOK_URL":"https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SSH_PASSPHRASE":"SYNTHETIC-PHRASE-311806"}},"stdout":["SYNTHETIC-KEY-311804","SYNTHETIC-PAT-311805","SYNTHETIC-PHRASE-311806","https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SYNTHETIC-UNKNOWN-311808"]}'
+
+======================================================================
+FAIL: test_environment_values_and_unknown_credential_echoes_are_not_recorded (test_capture.EvidenceTests.test_environment_values_and_unknown_credential_echoes_are_not_recorded) (field='environment')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 39, in test_environment_values_and_unknown_credential_echoes_are_not_recorded
+    self.assertNotIn(environment[key], raw)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-KEY-311804' unexpectedly found in '{"options":{"environment":{"ANTHROPIC_KEY":"SYNTHETIC-KEY-311804","GH_PAT":"SYNTHETIC-PAT-311805","LANG":"C.UTF-8","LIFEOS_CHILD_EFFORT":"medium","ORDINARY_CUSTOM_SETTING":"SYNTHETIC-UNKNOWN-311808","SLACK_WEBHOOK_URL":"https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SSH_PASSPHRASE":"SYNTHETIC-PHRASE-311806"}},"stdout":["SYNTHETIC-KEY-311804","SYNTHETIC-PAT-311805","SYNTHETIC-PHRASE-311806","https://hooks.slack.com/services/T000/B000/SYNTHETIC-WEBHOOK-311807","SYNTHETIC-UNKNOWN-311808"]}'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.008s
+
+FAILED (failures=2)

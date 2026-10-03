@@ -1,0 +1,96 @@
+test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) ... 
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': 'Synthetic forgotten generated tool marker'}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': 'Synthetic forgotten generated tool marker'}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'type': 'function_call', 'call_id': 'synthetic', 'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'type': 'function_call', 'call_id': 'synthetic', 'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'role': 'assistant', 'content': None, 'tool_calls': [{'type': 'function', 'function': {'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}}]}) ... FAIL
+  test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'role': 'assistant', 'content': None, 'tool_calls': [{'type': 'function', 'function': {'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}}]}) ... FAIL
+test_responses_tool_outputs_keep_approved_text_and_reject_retired_claims (test_memory_model_calls.MemoryModelCallTests.test_responses_tool_outputs_keep_approved_text_and_reject_retired_claims) ... FAIL
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': 'Synthetic forgotten generated tool marker'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': 'Synthetic forgotten generated tool marker'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'type': 'function_call_output', 'call_id': 'synthetic', 'output': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'type': 'function_call', 'call_id': 'synthetic', 'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'type': 'function_call', 'call_id': 'synthetic', 'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='messages', item={'role': 'assistant', 'content': None, 'tool_calls': [{'type': 'function', 'function': {'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_compression_checks_structured_tool_results_and_decoded_arguments (test_memory_runtime.MemoryRuntimeTests.test_compression_checks_structured_tool_results_and_decoded_arguments) (key='input', item={'role': 'assistant', 'content': None, 'tool_calls': [{'type': 'function', 'function': {'name': 'synthetic', 'arguments': '{"result": "Synthetic forgotten\\ngenerated tool marker"}'}}]})
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_runtime.py", line 147, in test_compression_checks_structured_tool_results_and_decoded_arguments
+    with self.subTest(key=key,item=item),self.assertRaisesRegex(MemoryAdmissionError,'compression prompt'):
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+======================================================================
+FAIL: test_responses_tool_outputs_keep_approved_text_and_reject_retired_claims (test_memory_model_calls.MemoryModelCallTests.test_responses_tool_outputs_keep_approved_text_and_reject_retired_claims)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_model_calls.py", line 204, in test_responses_tool_outputs_keep_approved_text_and_reject_retired_claims
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 2 tests in 6.303s
+
+FAILED (failures=9)

@@ -1,0 +1,13 @@
+    def get(self, scope: MemoryScope, reference: dict[str, Any]) -> dict[str, Any]:
+        if not isinstance(reference, dict) or not isinstance(reference.get("id"), str) or type(reference.get("revision")) is not int:
+            return {"status": "rejected", "reason": "A current memory reference is required"}
+        with self._transaction() as connection:
+            row = connection.execute("SELECT * FROM records WHERE id=?", (reference["id"],)).fetchone()
+            if row is None or not self._allowed(scope, row):
+                return {"status": "rejected", "reason": "The memory reference is unavailable or has no read grant"}
+            if row["status"] != "active" or row["revision"] != reference["revision"]:
+                return {"status": "conflict", "reason": "The referenced revision is no longer current"}
+            return {"status": "ok", "reference": reference, "content": self._content(row),
+                    "category": row["category"], "project": row["project"], "writer": row["writer"],
+                    "source": {"session": row["source_session"], "kind": row["source_kind"]}}
+

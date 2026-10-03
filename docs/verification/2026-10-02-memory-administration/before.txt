@@ -1,0 +1,128 @@
+======================================================================
+ERROR: test_a_mount_grant_cannot_read_or_write_arbitrary_memory (test_memory_administration.MemoryAdministrationTests.test_a_mount_grant_cannot_read_or_write_arbitrary_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 77, in test_a_mount_grant_cannot_read_or_write_arbitrary_memory
+    grant = self.issue()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_environment_removes_inherited_internal_and_conversation_bypasses (test_memory_administration.MemoryAdministrationTests.test_environment_removes_inherited_internal_and_conversation_bypasses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 133, in test_environment_removes_inherited_internal_and_conversation_bypasses
+    grant = self.issue()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_forged_expired_and_revoked_grants_refuse_without_context_fallback (test_memory_administration.MemoryAdministrationTests.test_forged_expired_and_revoked_grants_refuse_without_context_fallback)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 87, in test_forged_expired_and_revoked_grants_refuse_without_context_fallback
+    grant = self.issue()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_job_binding_and_profile_binding_are_checked_before_mounting (test_memory_administration.MemoryAdministrationTests.test_job_binding_and_profile_binding_are_checked_before_mounting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 112, in test_job_binding_and_profile_binding_are_checked_before_mounting
+    grant = self.issue(binding=binding)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_native_mount_accepts_a_bound_owner_grant_without_conversation_metadata (test_memory_administration.MemoryAdministrationTests.test_native_mount_accepts_a_bound_owner_grant_without_conversation_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 58, in test_native_mount_accepts_a_bound_owner_grant_without_conversation_metadata
+    grant = self.issue()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_owner_revocation_and_configuration_change_invalidate_the_grant (test_memory_administration.MemoryAdministrationTests.test_owner_revocation_and_configuration_change_invalidate_the_grant)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 100, in test_owner_revocation_and_configuration_change_invalidate_the_grant
+    grant = self.issue()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_private_permissions_and_connector_loss_are_not_bypassable (test_memory_administration.MemoryAdministrationTests.test_private_permissions_and_connector_loss_are_not_bypassable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 123, in test_private_permissions_and_connector_loss_are_not_bypassable
+    grant = self.issue()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 35, in issue
+    return self.admin().issue(self.configuration, 'dashboard:owner', **options)
+           ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_unbound_and_missing_owner_accounts_cannot_issue_authority (test_memory_administration.MemoryAdministrationTests.test_unbound_and_missing_owner_accounts_cannot_issue_authority) (account=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 74, in test_unbound_and_missing_owner_accounts_cannot_issue_authority
+    self.admin().issue(self.configuration, account)
+    ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_unbound_and_missing_owner_accounts_cannot_issue_authority (test_memory_administration.MemoryAdministrationTests.test_unbound_and_missing_owner_accounts_cannot_issue_authority) (account='dashboard:other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 74, in test_unbound_and_missing_owner_accounts_cannot_issue_authority
+    self.admin().issue(self.configuration, account)
+    ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+======================================================================
+ERROR: test_unbound_and_missing_owner_accounts_cannot_issue_authority (test_memory_administration.MemoryAdministrationTests.test_unbound_and_missing_owner_accounts_cannot_issue_authority) (account='chat-a:100')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 74, in test_unbound_and_missing_owner_accounts_cannot_issue_authority
+    self.admin().issue(self.configuration, account)
+    ~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_administration.py", line 31, in admin
+    from lifeos_hook_bridge import memory_administration
+ImportError: cannot import name 'memory_administration' from 'lifeos_hook_bridge' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/__init__.py)
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.154s
+
+FAILED (errors=10)

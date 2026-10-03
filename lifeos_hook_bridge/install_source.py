@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import importlib
 import json
 import os
 import re
@@ -14,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import types
 from pathlib import Path
 from typing import Callable
 
@@ -30,6 +32,7 @@ HERMES_PATCHES = (
     "hermes-strict-inference.patch",
     "hermes-remote-files.patch",
     "hermes-cron-bootstrap.patch",
+    "hermes-required-middleware.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",
@@ -41,6 +44,7 @@ LIFEOS_PATCHES = (
     "lifeos-remote-isa-view.patch",
     "lifeos-model-rung-effort.patch",
     "lifeos-hermes-carrier-probe.patch",
+    "lifeos-memory-access.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")
@@ -289,7 +293,8 @@ def install_prepared_lifeos(candidate: Path, installed: Path, failed: Path) -> d
 
 def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baseline_path: Path,
                     bun: str, hermes: str, supported_revision: str, patches: Path,
-                    patch_names: tuple[str, ...], create_baseline, save_baseline) -> dict:
+                    patch_names: tuple[str, ...], create_baseline, save_baseline,
+                    *, memory_authorization=None) -> dict:
     manifest = validate_candidate(candidate, supported_revision, patches, patch_names)
     installed = installed.absolute()
     hermes_home = hermes_home.absolute()
@@ -310,72 +315,44 @@ def finalize_lifeos(candidate: Path, installed: Path, hermes_home: Path, baselin
     if not bun_executable or not hermes_executable:
         raise IncompatibleLifeOS("Bun and the Hermes command are required to finish setup")
 
-    targets = ("config.yaml", "SOUL.md", ".env", "plugins/lifeos")
-    for relative in targets:
-        if (hermes_home / relative).is_symlink():
-            raise IncompatibleLifeOS(f"Hermes mount target is a symbolic link: {relative}")
-    baseline_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
-    snapshot = Path(tempfile.mkdtemp(prefix="mount-snapshot-", dir=baseline_path.parent))
-    snapshot.chmod(0o700)
-    existing = []
-    for relative in targets:
-        path = hermes_home / relative
-        if path.exists():
-            existing.append(relative)
-            backup = snapshot / relative
-            backup.parent.mkdir(parents=True, exist_ok=True)
-            if path.is_dir():
-                shutil.copytree(path, backup, symlinks=True)
-            else:
-                shutil.copy2(path, backup)
+    environment = memory_administration().mount_environment(installed, hermes_home, memory_authorization)
+    environment['PATH'] = str(Path(bun_executable).parent) + os.pathsep + environment.get('PATH', '')
 
-    environment = dict(os.environ, HERMES_HOME=str(hermes_home),
-                       PATH=str(Path(bun_executable).parent) + os.pathsep + os.environ.get("PATH", ""))
-    mount = installed / "LIFEOS/HERMES/Mount.ts"
-    try:
-        for command, label in (
-            ([bun_executable, str(mount)], "Mount"),
-            ([bun_executable, str(mount), "--check"], "Mount check"),
-            ([hermes_executable, "config", "check"], "Hermes config check"),
-        ):
-            result = subprocess.run(command, cwd=installed.parent, env=environment,
-                                    text=True, capture_output=True, timeout=120)
-            if result.returncode:
-                raise IncompatibleLifeOS(f"LifeOS {label} exited with code {result.returncode}")
-        baseline = create_baseline(candidate / "LifeOS/install", installed)
-        save_baseline(baseline, baseline_path)
-    except BaseException as error:
+    baseline_path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
+    baseline = create_baseline(candidate / "LifeOS/install", installed)
+    with tempfile.TemporaryDirectory(prefix="mount-baseline-", dir=baseline_path.parent) as directory:
+        selected = Path(directory) / 'baseline.json'
+        save_baseline(baseline, selected)
+        transaction = memory_module('mount_transaction').MountTransaction(installed, hermes_home, baseline_path)
         try:
-            for relative in targets:
-                path = hermes_home / relative
-                if path.is_dir() and not path.is_symlink():
-                    shutil.rmtree(path)
-                elif path.exists() or path.is_symlink():
-                    path.unlink()
-                if relative in existing:
-                    backup = snapshot / relative
-                    path.parent.mkdir(parents=True, exist_ok=True)
-                    if backup.is_dir():
-                        shutil.copytree(backup, path, symlinks=True)
-                    else:
-                        shutil.copy2(backup, path)
-            baseline_path.unlink(missing_ok=True)
-        except OSError as rollback_error:
-            raise IncompatibleLifeOS(
-                f"LifeOS setup failed and Hermes files could not be restored. Snapshot: {snapshot}"
-            ) from rollback_error
-        if isinstance(error, KeyboardInterrupt):
-            raise
-        raise IncompatibleLifeOS(f"{error}. Hermes files were restored from {snapshot}") from error
-    return {"mounted": True, "baseline_created": True, "upstream_commit": manifest["upstream_commit"],
-            "snapshot": str(snapshot), "restart_required": True}
+            result = transaction.execute(environment, bun_executable, hermes_executable,
+                                         baseline_data=selected.read_bytes())
+        except (OSError, ValueError, RuntimeError, subprocess.TimeoutExpired) as error:
+            raise IncompatibleLifeOS(str(error)) from error
+    return {**result, "baseline_created": True, "upstream_commit": manifest["upstream_commit"]}
 
 
 def finalize_prepared_lifeos(candidate: Path, installed: Path, hermes_home: Path,
-                             baseline_path: Path, create_baseline, save_baseline) -> dict:
+                             baseline_path: Path, create_baseline, save_baseline,
+                             *, memory_authorization=None) -> dict:
     return finalize_lifeos(candidate, installed, hermes_home, baseline_path, "bun", "hermes",
                            SUPPORTED_LIFEOS_COMMIT, Path(__file__).parent / "patches", LIFEOS_PATCHES,
-                           create_baseline, save_baseline)
+                           create_baseline, save_baseline, memory_authorization=memory_authorization)
+
+
+def memory_administration():
+    return memory_module('memory_administration')
+
+
+def memory_module(module):
+    if __package__:
+        return importlib.import_module(__package__ + '.' + module)
+    name = 'lifeos_install_memory'
+    if name not in sys.modules:
+        package = types.ModuleType(name)
+        package.__path__ = [str(Path(__file__).resolve().parent)]
+        sys.modules[name] = package
+    return importlib.import_module(name + '.' + module)
 
 
 def _patch_paths(candidate: Path) -> list[str]:
@@ -645,6 +622,12 @@ def _verify_gateway(snapshot: Path, prior_pid: str) -> None:
 
 
 def run_hermes_patch_job(snapshot: Path, action: str) -> dict:
+    manifest = _read_patch_state(snapshot)
+    with memory_module('installation_lock').installation_lock(Path(manifest['config']).parent, wait=True):
+        return _run_hermes_patch_job(snapshot, action)
+
+
+def _run_hermes_patch_job(snapshot: Path, action: str) -> dict:
     service = "hermes-gateway.service"
     manifest = _read_patch_state(snapshot)
     launcher = str(Path(manifest["current"]) / ".hermes/bin/hermes")

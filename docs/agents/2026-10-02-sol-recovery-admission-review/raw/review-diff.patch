@@ -1,0 +1,70 @@
+diff --git a/docs/update-policy.md b/docs/update-policy.md
+index d7d58b4..666a08b 100644
+--- a/docs/update-policy.md
++++ b/docs/update-policy.md
+@@ -25,7 +25,7 @@ The original `lifeos-hermes` account uses a shared root: `~/.claude` links to `~
+ 
+ The LifeOS settings page starts a detached update worker for a prepared candidate. The worker makes a fresh reference install, checks managed-file ownership, stages source files and dependencies, replaces exact LifeOS-owned hook registrations, and snapshots Hermes mount files and the VersionDrift baseline. It stops the gateway, swaps the staged tree, remounts LifeOS, renews the baseline, restarts the gateway, and checks the native hooks and running service. A failure after stop restores the prior tree, mount files, and baseline. An interrupted swap has a recovery action. The [service-backed update rehearsal](../notes/2026-09-29-lifeos-update-transaction.md) passed apply, restore, and forced-failure rollback on the pinned revision. A newer upstream revision and authenticated page click have not been tested.
+ 
+-Version restore refuses later changes to Hermes mount files, directory contents, or permissions. It also refuses snapshots without a post-update profile record. The worker checks again after stopping the gateway, before the LifeOS swap. Replaced profile files and the baseline move into private `.lifeos-restore-*` directories beside their targets. This supports separate profile and baseline filesystems and preserves writes that race with the final check. The snapshot's `mount-before-restore/<operation>/archive-manifest.json` records each archive location before its target moves. Successful version restore records the index directory in `profile_archive`. The index and retained files remain available after rollback or interrupted recovery. A worker exception with an unfinished swap reports `interrupted`, so the authenticated dashboard offers recovery. Temporary per-mount preparation copies are removed after commit or rollback. Pending mount recovery retains its copies. Unknown historical snapshot directories require operator inspection. See [the review correction record](verification/2026-10-02-opus-review-fixes/README.md).
++Version restore refuses later changes to Hermes mount files, directory contents, or permissions. It also refuses snapshots without a post-update profile record. The worker checks again after stopping the gateway, before the LifeOS swap. Replaced profile files and the baseline move into private `.lifeos-restore-*` directories beside their targets. This supports separate profile and baseline filesystems and preserves writes that race with the final check. The snapshot's `mount-before-restore/<operation>/archive-manifest.json` records each archive location before its target moves. Successful version restore records the index directory in `profile_archive`. The index and retained files remain available after rollback or interrupted recovery. A worker exception with an unfinished swap reports `interrupted`, so the authenticated dashboard offers recovery. Restore and recovery reject requests from other origins, query parameters, and request bodies. Temporary per-mount preparation copies are removed after commit or rollback. Pending mount recovery retains its copies. Unknown historical snapshot directories require operator inspection. See [the review correction record](verification/2026-10-02-opus-review-fixes/README.md).
+ 
+ The update worker keeps the prior candidate source because the baseline refers to it. A later supported candidate uses a new directory and a plugin-owned selection file. A changed `CLAUDE.template.md` or `settings.system.json` requires a reviewed migration before the worker will stop the gateway. A normal Hermes source update is separate from this LifeOS worker.
+ 
+diff --git a/docs/verification/2026-10-02-opus-review-fixes/README.md b/docs/verification/2026-10-02-opus-review-fixes/README.md
+index 89af265..480cd0d 100644
+--- a/docs/verification/2026-10-02-opus-review-fixes/README.md
++++ b/docs/verification/2026-10-02-opus-review-fixes/README.md
+@@ -46,6 +46,6 @@ Process-kill tests cover a pending publication, interrupted restoration, and pre
+ 
+ The initial focused selection passes 47 cases. The final initial correction gate passes 349 cases, 32 development recorder cases, and 11 dashboard JavaScript cases. The Sol review records 133 repository test executions and 27 probe scenarios, including three defect reproductions. The primary independently reproduces those three defects and reruns the 24 positive probe scenarios. Its added four-test selection initially reports eight failures and two errors across subcases.
+ 
+-After the Sol corrections, 37 transaction, worker, and administrative dashboard cases pass. The additional process-death archive test passes. One initial run omitted `LIFEOS_MEMORY_SOURCE` and reported six native mount fixture failures. The corrected environment uses the prepared source and passes. Both outputs remain in the primary validation directory. The final regression gate and closure review will record their results separately.
++After the Sol corrections, 37 transaction, worker, and administrative dashboard cases pass. The additional process-death archive test passes. One initial run omitted `LIFEOS_MEMORY_SOURCE` and reported six native mount fixture failures. The corrected environment uses the prepared source and passes. Both outputs remain in the primary validation directory. The [closure record](../2026-10-02-sol-review-closure/README.md) records a 354-case Python gate, 32 recorder cases, and 11 dashboard cases. It also records the subsequent recovery request-admission correction and its affected-route tests.
+ 
+ The tests use disposable local data and pinned source fixtures. No server is deployed or modified. This correction batch does not activate memory ownership or establish complete memory or hook acceptance.
+diff --git a/lifeos_hook_bridge/dashboard/plugin_api.py b/lifeos_hook_bridge/dashboard/plugin_api.py
+index 2f8f319..df3a726 100644
+--- a/lifeos_hook_bridge/dashboard/plugin_api.py
++++ b/lifeos_hook_bridge/dashboard/plugin_api.py
+@@ -593,7 +593,8 @@ def apply_lifeos_update(account: str = Depends(_memory_account)):
+ 
+ 
+ @router.post("/installation/update/recover")
+-def recover_lifeos_update(account: str = Depends(_memory_account)):
++async def recover_lifeos_update(request: Request, account: str = Depends(_memory_account)):
++    await _fixed_mount_request(request)
+     previous = get_lifeos_update_status()
+     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
+         "stopped", "swapped", "restoring", "rollback_failed"
+diff --git a/tests/test_memory_admin_dashboard.py b/tests/test_memory_admin_dashboard.py
+index d160599..61a327c 100644
+--- a/tests/test_memory_admin_dashboard.py
++++ b/tests/test_memory_admin_dashboard.py
+@@ -346,6 +346,26 @@ class MemoryAdminDashboardTests(unittest.TestCase):
+             self.assertEqual(self.client.post(path, json={'job': 'other'}).status_code, 400)
+         self.assertEqual(self.grants(), [])
+ 
++    def test_recovery_refuses_cross_origin_and_request_overrides(self):
++        self.login()
++        job = self.interrupted_job()
++        before_request = (job / 'request.json').read_bytes()
++        before_status = (job / 'status.json').read_bytes()
++        path = self.prefix + '/update/recover'
++        requests = (
++            (path, {'headers': {'Origin': 'https://other.invalid'}}, 403),
++            (path + '?job=other', {}, 400),
++            (path, {'json': {'job': 'other'}}, 400),
++        )
++        with patch.object(self.api, '_launch_lifeos_update', side_effect=RuntimeError('Synthetic launch prevented')) as launched:
++            for url, options, expected in requests:
++                with self.subTest(request=options or url):
++                    self.assertEqual(self.client.post(url, **options).status_code, expected)
++                    self.assertEqual((job / 'request.json').read_bytes(), before_request)
++                    self.assertEqual((job / 'status.json').read_bytes(), before_status)
++                    self.assertEqual(self.grants(), [])
++            launched.assert_not_called()
++
+     def test_restore_refuses_a_job_for_another_installation(self):
+         self.login()
+         job = self.applied_job()

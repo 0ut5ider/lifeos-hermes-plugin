@@ -1,0 +1,24 @@
+{
+  "returncode": 0,
+  "stderr": "",
+  "review_done": null,
+  "origin": "assistant_tool",
+  "foreground_failed": false,
+  "followup_failed": true,
+  "followup_response": "custom didn't answer after 3 attempts \u2014 it looks temporarily unavailable. Wait a minute and send /retry, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`.\n\nProvider said: The model call contains an invalidated memory context. Start a new conversation.",
+  "requests": 1,
+  "stamp_differences": {
+    "user_input": {
+      "bound": {
+        "digest": "4f01bb7636193f8fe181be2b51eee00243c4c4fb138e2b9c4d17ef71d7a528a8",
+        "kind": "text",
+        "length": 24
+      },
+      "persisted": {
+        "digest": "764fb3c72ead7cf46ab4976b85362173b6a8347a34c26f13c31adc9fdb99bd00",
+        "kind": "text",
+        "length": 45
+      }
+    }
+  }
+}

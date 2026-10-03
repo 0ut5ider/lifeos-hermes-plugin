@@ -1,0 +1,80 @@
+test_correction_retires_older_sources_and_forgotten_claims_in_current_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_correction_retires_older_sources_and_forgotten_claims_in_current_files) ... FAIL
+test_every_corpus_requires_unrestricted_current_owner_scope (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_every_corpus_requires_unrestricted_current_owner_scope) ... ok
+test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_forgotten_filename_labels_do_not_reappear_as_native_fallback_titles) ... ok
+test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_hidden_queues_raw_failure_dumps_and_non_native_work_files_are_absent) ... ok
+test_invalid_utf8_source_refuses_without_partial_index (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_invalid_utf8_source_refuses_without_partial_index) ... FAIL
+test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone) ... FAIL
+test_oversized_source_refuses_before_native_publication (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_oversized_source_refuses_before_native_publication) ... FAIL
+test_private_markup_sources_are_excluded_without_changing_raw_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_private_markup_sources_are_excluded_without_changing_raw_files) ... ok
+test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks) ... ERROR
+test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) ... 
+  test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) (relative='DOCUMENTATION/synthetic.md') ... FAIL
+  test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) (relative='MEMORY/RESEARCH/synthetic.md') ... FAIL
+
+======================================================================
+ERROR: test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 62, in test_retained_silos_and_docs_are_searchable_with_native_excerpt_and_backlinks
+    self.assertEqual(search['body']['results'][0]['slug'], 'Overview')
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~^^^
+IndexError: list index out of range
+
+======================================================================
+FAIL: test_correction_retires_older_sources_and_forgotten_claims_in_current_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_correction_retires_older_sources_and_forgotten_claims_in_current_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 114, in test_correction_retires_older_sources_and_forgotten_claims_in_current_files
+    self.assertIn('SyntheticCurrentTitle', result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticCurrentTitle' not found in '{"status": 200, "body": {"tree": [{"label": "Documentation", "children": [], "count": 0}, {"label": "People", "count": 0, "children": []}, {"label": "Companies", "count": 0, "children": []}, {"label": "Ideas", "count": 0, "children": []}, {"label": "Blogs", "count": 0, "children": []}, {"label": "Books", "count": 0, "children": []}, {"label": "Research", "count": 0, "children": []}, {"label": "ISAs", "count": 0, "children": []}, {"label": "Lessons", "count": 0, "children": []}, {"label": "Wisdom", "count": 0, "children": []}], "recentChanges": [], "stats": {"totalPages": 0, "totalSystem": 0, "totalPeople": 0, "totalCompanies": 0, "totalIdeas": 0, "totalBlogs": 0, "totalBooks": 0, "totalResearch": 0, "totalIsas": 0, "totalLessons": 0, "totalWisdom": 0}, "lastIndexedAt": "2026-10-01T19:18:24.301Z"}}'
+
+======================================================================
+FAIL: test_invalid_utf8_source_refuses_without_partial_index (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_invalid_utf8_source_refuses_without_partial_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 134, in test_invalid_utf8_source_refuses_without_partial_index
+    with self.assertRaises(MemoryUnavailable):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 44, in test_managed_categories_slugs_and_groups_match_native_standalone
+    self.assertEqual(len(graph['body']['nodes']), len(paths))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 12
+
+======================================================================
+FAIL: test_oversized_source_refuses_before_native_publication (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_oversized_source_refuses_before_native_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 128, in test_oversized_source_refuses_before_native_publication
+    with self.assertRaisesRegex(MemoryUnavailable, '256 KiB'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) (relative='DOCUMENTATION/synthetic.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 92, in test_source_redirects_cannot_read_other_user_or_system_files
+    with self.assertRaises(MemoryUnavailable):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_source_redirects_cannot_read_other_user_or_system_files (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_source_redirects_cannot_read_other_user_or_system_files) (relative='MEMORY/RESEARCH/synthetic.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 92, in test_source_redirects_cannot_read_other_user_or_system_files
+    with self.assertRaises(MemoryUnavailable):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 10 tests in 3.547s
+
+FAILED (failures=6, errors=1)

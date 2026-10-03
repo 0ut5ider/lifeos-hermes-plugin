@@ -1,0 +1,1236 @@
+{"control": "restricted-before-FIFO-read", "seconds": 8.094997610896826e-06, "error": "This unclassified native source requires unrestricted owner recall"}
+{"hash_differences": [".config/LIFEOS/USER/MEMORY/STATE/memory-access.sqlite"]}
+{
+  "control": "native-cardinality-retirement-readonly",
+  "native": {
+    "snapshot": {
+      "ts": "2026-10-01T04:46:14.548Z",
+      "derivedState": "unhealthy_critical",
+      "cadenceConfig": {
+        "turn_threshold": 8,
+        "min_minutes_between": 30,
+        "idle_threshold": 2,
+        "confidence_threshold": 0.7
+      },
+      "reviewState": {
+        "turn_count_since_last_review": 4,
+        "last_review_at": "2026-10-01T02:03:04.000Z",
+        "last_message_at": "2026-10-01T02:03:04.000Z",
+        "pending_review": true,
+        "error": {
+          "ts": "Synthetic retired pulse output",
+          "content": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        }
+      },
+      "health": {
+        "ts": "2026-10-01T02:03:04.000Z",
+        "overall": "critical",
+        "counts": {
+          "critical": 2
+        },
+        "findings": [
+          {
+            "severity": "critical",
+            "message": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+          }
+        ]
+      },
+      "lastFireCount": 200,
+      "recentFires": [
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Synthetic retired pulse output",
+          "n": 200
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Synthetic retired pulse output",
+          "n": 201
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Synthetic retired pulse output",
+          "n": 202
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Synthetic retired pulse output",
+          "n": 203
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Synthetic retired pulse output",
+          "n": 204
+        }
+      ],
+      "pendingProposals": 50,
+      "autoAppliedProposals": 0,
+      "proposalsRecent": [
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "50",
+          "status": "pending",
+          "edit": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "51",
+          "status": "pending",
+          "edit": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "52",
+          "status": "pending",
+          "edit": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "53",
+          "status": "pending",
+          "edit": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "54",
+          "status": "pending",
+          "edit": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        }
+      ],
+      "principalMemory": {
+        "entries": [],
+        "count": 0,
+        "charsUsed": 0
+      },
+      "daMemory": {
+        "entries": [],
+        "count": 0,
+        "charsUsed": 0
+      },
+      "recentRuns": [
+        {
+          "runId": "2026-10-01T00-00-20-000Z",
+          "ts": "2026-10-01T00:00:20.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-19-000Z",
+          "ts": "2026-10-01T00:00:19.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-18-000Z",
+          "ts": "2026-10-01T00:00:18.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-17-000Z",
+          "ts": "2026-10-01T00:00:17.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-16-000Z",
+          "ts": "2026-10-01T00:00:16.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-15-000Z",
+          "ts": "2026-10-01T00:00:15.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-14-000Z",
+          "ts": "2026-10-01T00:00:14.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-13-000Z",
+          "ts": "2026-10-01T00:00:13.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-12-000Z",
+          "ts": "2026-10-01T00:00:12.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-11-000Z",
+          "ts": "2026-10-01T00:00:11.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Synthetic-retired-pulse-output.md"
+            }
+          ]
+        }
+      ]
+    },
+    "state": {
+      "turn_count_since_last_review": 4,
+      "last_review_at": "2026-10-01T02:03:04.000Z",
+      "last_message_at": "2026-10-01T02:03:04.000Z",
+      "pending_review": true,
+      "error": {
+        "ts": "Synthetic retired pulse output",
+        "content": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+      }
+    },
+    "health": {
+      "ts": "2026-10-01T02:03:04.000Z",
+      "overall": "critical",
+      "counts": {
+        "critical": 2
+      },
+      "findings": [
+        {
+          "severity": "critical",
+          "message": "{\"content\": \"\\u0053ynthetic retired pulse output\"}"
+        }
+      ]
+    },
+    "runs": [
+      {
+        "runId": "2026-10-01T00-00-20-000Z",
+        "ts": "2026-10-01T00:00:20.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-19-000Z",
+        "ts": "2026-10-01T00:00:19.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-18-000Z",
+        "ts": "2026-10-01T00:00:18.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-17-000Z",
+        "ts": "2026-10-01T00:00:17.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-16-000Z",
+        "ts": "2026-10-01T00:00:16.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-15-000Z",
+        "ts": "2026-10-01T00:00:15.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-14-000Z",
+        "ts": "2026-10-01T00:00:14.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-13-000Z",
+        "ts": "2026-10-01T00:00:13.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-12-000Z",
+        "ts": "2026-10-01T00:00:12.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-11-000Z",
+        "ts": "2026-10-01T00:00:11.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-10-000Z",
+        "ts": "2026-10-01T00:00:10.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-09-000Z",
+        "ts": "2026-10-01T00:00:09.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-08-000Z",
+        "ts": "2026-10-01T00:00:08.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-07-000Z",
+        "ts": "2026-10-01T00:00:07.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-06-000Z",
+        "ts": "2026-10-01T00:00:06.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-05-000Z",
+        "ts": "2026-10-01T00:00:05.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-04-000Z",
+        "ts": "2026-10-01T00:00:04.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-03-000Z",
+        "ts": "2026-10-01T00:00:03.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-02-000Z",
+        "ts": "2026-10-01T00:00:02.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-01-000Z",
+        "ts": "2026-10-01T00:00:01.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Synthetic-retired-pulse-output.md"
+          }
+        ]
+      }
+    ]
+  },
+  "governed": {
+    "snapshot": {
+      "ts": "2026-10-01T04:46:15.039Z",
+      "derivedState": "unhealthy_critical",
+      "cadenceConfig": {
+        "turn_threshold": 8,
+        "min_minutes_between": 30,
+        "idle_threshold": 2,
+        "confidence_threshold": 0.7
+      },
+      "reviewState": {
+        "turn_count_since_last_review": 4,
+        "last_review_at": "2026-10-01T02:03:04.000Z",
+        "last_message_at": "2026-10-01T02:03:04.000Z",
+        "pending_review": true,
+        "error": {
+          "ts": "Memory diagnostic details are unavailable under the current policy.",
+          "content": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        }
+      },
+      "health": {
+        "ts": "2026-10-01T02:03:04.000Z",
+        "overall": "critical",
+        "counts": {
+          "critical": 2
+        },
+        "findings": [
+          {
+            "severity": "critical",
+            "message": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+          }
+        ]
+      },
+      "lastFireCount": 200,
+      "recentFires": [
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Memory diagnostic details are unavailable under the current policy.",
+          "n": 200
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Memory diagnostic details are unavailable under the current policy.",
+          "n": 201
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Memory diagnostic details are unavailable under the current policy.",
+          "n": 202
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Memory diagnostic details are unavailable under the current policy.",
+          "n": 203
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "reason": "Memory diagnostic details are unavailable under the current policy.",
+          "n": 204
+        }
+      ],
+      "pendingProposals": 50,
+      "autoAppliedProposals": 0,
+      "proposalsRecent": [
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "50",
+          "status": "pending",
+          "edit": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "51",
+          "status": "pending",
+          "edit": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "52",
+          "status": "pending",
+          "edit": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "53",
+          "status": "pending",
+          "edit": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        },
+        {
+          "ts": "2026-10-01T02:03:04.000Z",
+          "id": "54",
+          "status": "pending",
+          "edit": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        }
+      ],
+      "recentRuns": [
+        {
+          "runId": "2026-10-01T00-00-20-000Z",
+          "ts": "2026-10-01T00:00:20.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-19-000Z",
+          "ts": "2026-10-01T00:00:19.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-18-000Z",
+          "ts": "2026-10-01T00:00:18.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-17-000Z",
+          "ts": "2026-10-01T00:00:17.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-16-000Z",
+          "ts": "2026-10-01T00:00:16.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-15-000Z",
+          "ts": "2026-10-01T00:00:15.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-14-000Z",
+          "ts": "2026-10-01T00:00:14.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-13-000Z",
+          "ts": "2026-10-01T00:00:13.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-12-000Z",
+          "ts": "2026-10-01T00:00:12.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        },
+        {
+          "runId": "2026-10-01T00-00-11-000Z",
+          "ts": "2026-10-01T00:00:11.000Z",
+          "itemsTotal": 2,
+          "itemsOk": 1,
+          "itemsFailed": 1,
+          "byType": {
+            "memory": 2
+          },
+          "itemPaths": [
+            {
+              "type": "memory",
+              "file": "Memory diagnostic details are unavailable under the current policy."
+            }
+          ]
+        }
+      ],
+      "principalMemory": {
+        "entries": [],
+        "count": 0,
+        "charsUsed": 0
+      },
+      "daMemory": {
+        "entries": [],
+        "count": 0,
+        "charsUsed": 0
+      }
+    },
+    "state": {
+      "turn_count_since_last_review": 4,
+      "last_review_at": "2026-10-01T02:03:04.000Z",
+      "last_message_at": "2026-10-01T02:03:04.000Z",
+      "pending_review": true,
+      "error": {
+        "ts": "Memory diagnostic details are unavailable under the current policy.",
+        "content": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+      }
+    },
+    "health": {
+      "ts": "2026-10-01T02:03:04.000Z",
+      "overall": "critical",
+      "counts": {
+        "critical": 2
+      },
+      "findings": [
+        {
+          "severity": "critical",
+          "message": "{\"content\": \"[Content excluded after a memory correction or forget request.]\"}"
+        }
+      ]
+    },
+    "runs": [
+      {
+        "runId": "2026-10-01T00-00-20-000Z",
+        "ts": "2026-10-01T00:00:20.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-19-000Z",
+        "ts": "2026-10-01T00:00:19.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-18-000Z",
+        "ts": "2026-10-01T00:00:18.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-17-000Z",
+        "ts": "2026-10-01T00:00:17.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-16-000Z",
+        "ts": "2026-10-01T00:00:16.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-15-000Z",
+        "ts": "2026-10-01T00:00:15.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-14-000Z",
+        "ts": "2026-10-01T00:00:14.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-13-000Z",
+        "ts": "2026-10-01T00:00:13.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-12-000Z",
+        "ts": "2026-10-01T00:00:12.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-11-000Z",
+        "ts": "2026-10-01T00:00:11.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-10-000Z",
+        "ts": "2026-10-01T00:00:10.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-09-000Z",
+        "ts": "2026-10-01T00:00:09.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-08-000Z",
+        "ts": "2026-10-01T00:00:08.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-07-000Z",
+        "ts": "2026-10-01T00:00:07.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-06-000Z",
+        "ts": "2026-10-01T00:00:06.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-05-000Z",
+        "ts": "2026-10-01T00:00:05.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-04-000Z",
+        "ts": "2026-10-01T00:00:04.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-03-000Z",
+        "ts": "2026-10-01T00:00:03.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-02-000Z",
+        "ts": "2026-10-01T00:00:02.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      },
+      {
+        "runId": "2026-10-01T00-00-01-000Z",
+        "ts": "2026-10-01T00:00:01.000Z",
+        "itemsTotal": 2,
+        "itemsOk": 1,
+        "itemsFailed": 1,
+        "byType": {
+          "memory": 2
+        },
+        "itemPaths": [
+          {
+            "type": "memory",
+            "file": "Memory diagnostic details are unavailable under the current policy."
+          }
+        ]
+      }
+    ]
+  },
+  "hashes_unchanged": true
+}
+{"control": "cadence-redirect", "error": "PULSE diagnostics need their permitted physical sources"}
+{"control": "runs-redirect", "error": "PULSE diagnostics need their permitted physical sources"}

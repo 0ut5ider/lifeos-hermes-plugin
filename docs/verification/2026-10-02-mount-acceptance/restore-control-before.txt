@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_restore_requires_fresh_action_bound_owner_authorization (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_requires_fresh_action_bound_owner_authorization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 255, in test_restore_requires_fresh_action_bound_owner_authorization
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.256s
+
+FAILED (failures=1)

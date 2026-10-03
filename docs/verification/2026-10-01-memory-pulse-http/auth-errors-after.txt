@@ -1,0 +1,38 @@
+{
+  "anonymous": {
+    "status": 401,
+    "cache_control": "no-store",
+    "body": "{\"error\":\"unauthenticated\",\"detail\":\"Unauthorized\",\"reason\":\"no_cookie\",\"login_url\":\"/login\"}",
+    "etag_present": false
+  },
+  "invalid_bearer": {
+    "status": 401,
+    "cache_control": "no-store",
+    "body": "{\"error\":\"session_expired\",\"detail\":\"Unauthorized\",\"reason\":\"invalid_or_expired_session\",\"login_url\":\"/login\"}",
+    "etag_present": false
+  },
+  "unsupported_view": {
+    "status": 422,
+    "cache_control": "no-store",
+    "body": "{\"detail\":[{\"type\":\"literal_error\",\"loc\":[\"path\",\"view\"],\"msg\":\"Input should be 'snapshot', 'state', 'health' or 'runs'\",\"input\":\"graph\",\"ctx\":{\"expected\":\"'snapshot', 'state', 'health' or 'runs'\"}}]}",
+    "etag_present": false
+  },
+  "unsupported_method": {
+    "status": 405,
+    "cache_control": "no-store",
+    "body": "{\"detail\":\"Method Not Allowed\"}",
+    "etag_present": false
+  },
+  "scope_query": {
+    "status": 400,
+    "cache_control": "no-store",
+    "body": "{\"error\":\"Memory views use the installed owner configuration\"}",
+    "etag_present": false
+  },
+  "corrupt_registry": {
+    "status": 503,
+    "cache_control": "no-store",
+    "body": "{\"error\":\"Memory is unavailable under the current installation policy\"}",
+    "etag_present": false
+  }
+}

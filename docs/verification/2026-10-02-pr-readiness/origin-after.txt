@@ -1,0 +1,79 @@
+test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled) ... 
+  test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled) (path='/finalize') ... FAIL
+  test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled) (path='/update') ... FAIL
+test_changed_profile_refuses_restore_without_changing_job (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_changed_profile_refuses_restore_without_changing_job) ... FAIL
+test_changed_user_data_refuses_restore_without_changing_job (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_changed_user_data_refuses_restore_without_changing_job) ... FAIL
+test_dashboard_remains_responsive_while_recovery_launch_waits (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dashboard_remains_responsive_while_recovery_launch_waits) ... ok
+test_failed_recovery_launch_preserves_retryable_job_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_failed_recovery_launch_preserves_retryable_job_state) ... ok
+test_failed_restore_launch_preserves_retryable_job_state (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_failed_restore_launch_preserves_retryable_job_state) ... ok
+test_installation_actions_refuse_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_installation_actions_refuse_cross_origin_and_request_overrides) ... ok
+test_other_mutations_refuse_cross_origin_before_payload_validation (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_other_mutations_refuse_cross_origin_before_payload_validation) ... ok
+test_owner_recovers_a_process_killed_mount_through_dashboard (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_owner_recovers_a_process_killed_mount_through_dashboard) ... ok
+test_queue_launch_failure_revokes_grant_and_removes_job (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_queue_launch_failure_revokes_grant_and_removes_job) ... ok
+test_recovery_authorizes_a_missing_install_directory_without_prompt_access (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_authorizes_a_missing_install_directory_without_prompt_access) ... ok
+test_recovery_refuses_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_refuses_cross_origin_and_request_overrides) ... ok
+test_recovery_requires_fresh_action_bound_owner_authorization (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_recovery_requires_fresh_action_bound_owner_authorization) ... ok
+test_remount_refuses_anonymous_revoked_and_cross_origin_requests (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_remount_refuses_anonymous_revoked_and_cross_origin_requests) ... ok
+test_restore_refuses_a_job_for_another_installation (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_refuses_a_job_for_another_installation) ... ok
+test_restore_refuses_an_unapplied_update (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_refuses_an_unapplied_update) ... ok
+test_restore_refuses_cross_origin_and_request_overrides (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_refuses_cross_origin_and_request_overrides) ... ok
+test_restore_requires_fresh_action_bound_owner_authorization (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_requires_fresh_action_bound_owner_authorization) ... FAIL
+test_restore_worker_failure_keeps_authenticated_recovery_available (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_worker_failure_keeps_authenticated_recovery_available) ... ok
+test_revoked_owner_cannot_finalize_or_leave_authorization (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_revoked_owner_cannot_finalize_or_leave_authorization) ... ok
+test_revoked_owner_cannot_queue_an_update (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_revoked_owner_cannot_queue_an_update) ... ok
+test_revoked_owner_cannot_reauthorize_recovery (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_revoked_owner_cannot_reauthorize_recovery) ... ok
+test_revoked_owner_cannot_restore_update (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_revoked_owner_cannot_restore_update) ... ok
+test_unconfigured_memory_remount_refuses_before_changing_profile (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_unconfigured_memory_remount_refuses_before_changing_profile) ... ok
+test_update_queue_seals_private_job_with_current_verified_owner (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_update_queue_seals_private_job_with_current_verified_owner) ... ok
+test_verified_owner_finalizes_real_native_mount_and_revokes_grant (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_verified_owner_finalizes_real_native_mount_and_revokes_grant) ... ok
+test_verified_owner_remounts_without_enabling_memory_ownership (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_verified_owner_remounts_without_enabling_memory_ownership) ... ok
+
+======================================================================
+FAIL: test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled) (path='/finalize')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 186, in test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 401 : {"detail":"Mount requests use the installed owner configuration"}
+
+======================================================================
+FAIL: test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled) (path='/update')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 186, in test_anonymous_and_fabricated_owner_cannot_authorize_even_with_host_gate_disabled
+    self.assertEqual(response.status_code, 401, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 400 != 401 : {"detail":"Mount requests use the installed owner configuration"}
+
+======================================================================
+FAIL: test_changed_profile_refuses_restore_without_changing_job (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_changed_profile_refuses_restore_without_changing_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 313, in test_changed_profile_refuses_restore_without_changing_job
+    self.assertIn('Hermes profile changed', response.text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Hermes profile changed' not found in '{"detail":"User data binding changed after update; automatic restore refused"}'
+
+======================================================================
+FAIL: test_changed_user_data_refuses_restore_without_changing_job (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_changed_user_data_refuses_restore_without_changing_job)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 444, in test_changed_user_data_refuses_restore_without_changing_job
+    self.assertIn('User data changed', response.text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'User data changed' not found in '{"detail":"User data binding changed after update; automatic restore refused"}'
+
+======================================================================
+FAIL: test_restore_requires_fresh_action_bound_owner_authorization (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_restore_requires_fresh_action_bound_owner_authorization)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 324, in test_restore_requires_fresh_action_bound_owner_authorization
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"User data binding changed after update; automatic restore refused"}
+
+----------------------------------------------------------------------
+Ran 27 tests in 18.584s
+
+FAILED (failures=5)

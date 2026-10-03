@@ -1,0 +1,48 @@
+{
+  "revision": "22745d4f1e3adff4e4c6b7900bf88506d3c89a18",
+  "parent": "eed9bdb745ac56824a4b3e2a3ba08d09e8839cfe",
+  "environment": {
+    "HOME": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home",
+    "TMPDIR": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home/tmp",
+    "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "commands": {
+    "diagnostics": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-diagnostic-closure/raw/probe-diagnostics.py"
+    ],
+    "prior-closures": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-review-fix-followup/raw/probe-closures.py"
+    ],
+    "apply-closure": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-apply-closure/raw/probe-apply-closure.py"
+    ],
+    "tests": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_memory_source_labels",
+      "test_memory_adoption"
+    ],
+    "foreign-proposal-reason": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-diagnostic-closure/raw/probe-foreign-proposal-reason.py"
+    ]
+  },
+  "results": {
+    "diagnostics": 0,
+    "prior-closures": 0,
+    "apply-closure": 0,
+    "tests": 0,
+    "foreign-proposal-reason": 1
+  }
+}

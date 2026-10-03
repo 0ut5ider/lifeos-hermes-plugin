@@ -1,0 +1,164 @@
+diff --git a/lifeos_hook_bridge/memory_runtime.py b/lifeos_hook_bridge/memory_runtime.py
+index 0dc6d19..1a965a2 100644
+--- a/lifeos_hook_bridge/memory_runtime.py
++++ b/lifeos_hook_bridge/memory_runtime.py
+@@ -226,7 +226,9 @@ class MemoryRuntime:
+     def _check_call(self, *, request: dict[str, Any], provider: str = '', model: str = '', base_url: str = '',
+                    api_mode: str = '', session_id: str = '', platform: str = '',
+                    metadata: Mapping[str, str] | None = None, project: bool = False, **kwargs):
+-        auxiliary = bool(kwargs.get('aux_task'))
++        # Review forks use the main chat pipeline with a generated user-role prompt.
++        provenance = sys.modules.get('tools.skill_provenance')
++        auxiliary = bool(kwargs.get('aux_task') or provenance and provenance.is_background_review())
+         project = project and not auxiliary
+         bound = _BOUND.get()
+         metadata = current_host_metadata() if metadata is None else metadata
+@@ -275,8 +277,13 @@ class MemoryRuntime:
+         memory = NativeMemory(Path(configuration['root']))
+         with memory._transaction() as connection:
+             states = self._states()
+-            current = self._stamp(configuration, context, connection,admitted.get('user_input'))
+             saved = states.get(context.session_id)
++            # Prompt workers publish the next human input without changing this thread's binding.
++            if (project and isinstance(saved,dict) and saved.get('user_input') is not None
++                    and all(saved.get(key)==admitted.get(key) for key in ('scope','generation','rendered','context'))):
++                admitted = saved
++                bound = (self.key,context,admitted)
++            current = self._stamp(configuration, context, connection,admitted.get('user_input'))
+             can_refresh = (project and saved in (admitted,current)
+                            and all(current.get(key)==admitted.get(key) for key in ('scope','context','rendered','user_input')))
+             if (current != admitted or saved != admitted) and not can_refresh:
+diff --git a/tests/memory_host_calls.py b/tests/memory_host_calls.py
+index b4dfd66..3d5e31e 100644
+--- a/tests/memory_host_calls.py
++++ b/tests/memory_host_calls.py
+@@ -7,6 +7,7 @@ import os
+ from contextlib import redirect_stdout
+ from pathlib import Path
+ import sys
++import threading
+ 
+ sys.path[:0] = [str(Path(__file__).parents[1]),os.environ['LIFEOS_HERMES_SOURCE']]
+ 
+@@ -40,6 +41,24 @@ def main():
+         if settings.get('operation') == 'conversation':
+             with redirect_stdout(diagnostics):
+                 conversation = agent.run_conversation(settings['message'])
++        review_done = None
++        review_summaries = []
++        followup = None
++        if settings.get('background_review'):
++            agent.background_review_callback = review_summaries.append
++            with redirect_stdout(diagnostics):
++                agent._spawn_background_review(conversation['messages'],review_skills=True,
++                                               focus=settings.get('review_focus'),explicit=settings.get('review_explicit',False))
++                review_run = getattr(agent,'_background_review_run',None)
++                review_done = review_run is None or review_run.request_done.wait(timeout=20)
++                for thread in threading.enumerate():
++                    if thread.name == 'bg-review':
++                        thread.join(timeout=20)
++                        review_done = review_done and not thread.is_alive()
++        if settings.get('followup_message') is not None:
++            with redirect_stdout(diagnostics):
++                followup = agent.run_conversation(settings['followup_message'],
++                                                  conversation_history=conversation['messages'])
+         denied_writes = []
+         if agent._memory_store is None:
+             from tools.memory_tool import memory_tool,load_on_disk_store
+@@ -51,7 +70,8 @@ def main():
+         print(json.dumps({'memory_enabled':agent._memory_enabled,'user_profile_enabled':agent._user_profile_enabled,
+                           'has_builtin_store':agent._memory_store is not None,'providers':providers,'tools':tools,
+                           'prompt':prompt,'skill_nudge_interval':agent._skill_nudge_interval,'disabled_writes':denied_writes,
+-                          'warnings':warnings.getvalue(),'conversation':conversation,'diagnostics':diagnostics.getvalue()}))
++                          'warnings':warnings.getvalue(),'conversation':conversation,'diagnostics':diagnostics.getvalue(),
++                          'review_done':review_done,'review_summaries':review_summaries,'followup':followup}))
+     finally:
+         if agent is not None:
+             agent.close()
+diff --git a/tests/test_memory_history.py b/tests/test_memory_history.py
+index 3130508..06bd4b1 100644
+--- a/tests/test_memory_history.py
++++ b/tests/test_memory_history.py
+@@ -1,6 +1,7 @@
+ # ABOUTME: Tests request-only history projection against native correction and forget state.
+ # ABOUTME: Verifies unchanged identity policy, protocol structure, and final admission checks.
+ from copy import deepcopy
++from concurrent.futures import ThreadPoolExecutor
+ import json
+ import sys
+ import threading
+@@ -44,6 +45,32 @@ class MemoryHistoryTests(unittest.TestCase):
+         self.assertEqual(self.project(request),original)
+         self.assertEqual(request,original)
+ 
++    def worker_turn(self):
++        self.fixture.runtime.admit(self.fixture.metadata(),**self.fixture.route,is_first_turn=True,
++                                   user_message='Synthetic previous user input')
++        with ThreadPoolExecutor(max_workers=1) as executor:
++            executor.submit(self.fixture.runtime.admit,self.fixture.metadata(),**self.fixture.route,
++                            is_first_turn=False,user_message='Synthetic admitted next user input').result()
++
++    def test_worker_input_proof_can_rebind_an_unchanged_admitted_foreground_context(self):
++        self.worker_turn()
++        request = {'messages':[{'role':'user','content':'Synthetic admitted next user input'}]}
++        self.assertEqual(self.project(request),request)
++
++    def test_worker_input_proof_cannot_authorize_a_different_foreground_input(self):
++        self.worker_turn()
++        with self.assertRaisesRegex(MemoryAdmissionError,'verify the current user input'):
++            self.project({'messages':[{'role':'user','content':'Synthetic previous user input'}]})
++
++    def test_worker_input_proof_does_not_refresh_auxiliary_or_direct_final_checks(self):
++        self.worker_turn()
++        request = {'messages':[{'role':'user','content':'Synthetic admitted next user input'}]}
++        with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
++            self.fixture.runtime.check_call(request=request,**self.fixture.route,session_id='session')
++        with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
++            self.fixture.runtime.project_call(request=request,next_call=lambda _:self.fail('Dispatch reached'),
++                **self.fixture.route,session_id='session',aux_task='compression')
++
+     def test_generation_refresh_removes_retired_tool_and_assistant_content(self):
+         request = {'messages':[{'role':'user','content':'Synthetic current request'},
+             {'role':'assistant','content':self.marker,'tool_calls':[{'id':'tool-one','type':'function',
+diff --git a/tests/test_memory_host.py b/tests/test_memory_host.py
+index d2ff657..73ec5ba 100644
+--- a/tests/test_memory_host.py
++++ b/tests/test_memory_host.py
+@@ -25,8 +25,12 @@ class MemoryHostTests(unittest.TestCase):
+         for name,data in self.original.items():
+             (self.home/'memories'/name).write_bytes(data)
+ 
+-    def initialize(self, memory, *, expected_warning='', operation='', message='', author='100'):
++    def initialize(self, memory, *, expected_warning='', operation='', message='', author='100',
++                   background_review=False, review_focus='Synthetic skill review',skill_approval=False,
++                   review_explicit=False,followup_message=None):
+         configuration = dict(self.fixture.host_config,memory=memory,plugins={'enabled':['lifeos-hook-bridge']})
++        if background_review:
++            configuration['skills'] = {'write_approval':skill_approval}
+         if operation == 'conversation':
+             configuration['model']=dict(configuration['model'],streaming=False,context_length=131072)
+         (self.home/'config.yaml').write_text(json.dumps(configuration))
+@@ -36,7 +40,9 @@ class MemoryHostTests(unittest.TestCase):
+                            LIFEOS_HOOK_SETTINGS=str(self.fixture.fixture.fixture.root/'settings.json'),
+                            BUN_CONFIG_NO_AUTO_INSTALL='1')
+         result = subprocess.run([sys.executable,str(Path(__file__).with_name('memory_host_calls.py'))],
+-                                input=json.dumps({'route':self.fixture.route,'operation':operation,'message':message,'author':author}),env=environment,
++                                input=json.dumps({'route':self.fixture.route,'operation':operation,'message':message,'author':author,
++                                                  'background_review':background_review,'review_focus':review_focus,
++                                                  'review_explicit':review_explicit,'followup_message':followup_message}),env=environment,
+                                 capture_output=True,text=True,timeout=45)
+         self.assertEqual(result.returncode,0,result.stderr)
+         self.assertEqual(result.stderr,'')
+@@ -52,8 +58,11 @@ class MemoryHostTests(unittest.TestCase):
+         probes = [request for request in self.fixture.received if request['path']=='/api/show']
+         if operation != 'conversation':
+             self.assertEqual(probes,self.fixture.received)
++        probe_models = {'synthetic-model'}
++        if background_review:
++            probe_models.add(configuration.get('auxiliary',{}).get('background_review',{}).get('model','synthetic-model'))
+         for request in probes:
+-            self.assertEqual(request['body'],{'name':'synthetic-model'})
++            self.assertIn(request['body'],[{'name':model} for model in probe_models])
+         return outcome
+ 
+     def test_provider_selection_alone_keeps_builtin_memory_enabled(self):

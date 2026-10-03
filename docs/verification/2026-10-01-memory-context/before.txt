@@ -1,0 +1,116 @@
+test_cached_owner_block_is_not_reused_after_context_is_removed (test_memory_context_builder.MemoryContextBuilderTests.test_cached_owner_block_is_not_reused_after_context_is_removed) ... FAIL
+test_cached_owner_block_is_not_reused_after_policy_revocation (test_memory_context_builder.MemoryContextBuilderTests.test_cached_owner_block_is_not_reused_after_policy_revocation) ... FAIL
+test_connector_loss_cannot_select_raw_reader_or_cached_owner_block (test_memory_context_builder.MemoryContextBuilderTests.test_connector_loss_cannot_select_raw_reader_or_cached_owner_block) ... FAIL
+test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded (test_memory_context_builder.MemoryContextBuilderTests.test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded) ... FAIL
+test_identity_source_cannot_follow_a_redirect_into_configuration (test_memory_context_builder.MemoryContextBuilderTests.test_identity_source_cannot_follow_a_redirect_into_configuration) ... FAIL
+test_invalid_connector_refuses_before_identity_collection (test_memory_context_builder.MemoryContextBuilderTests.test_invalid_connector_refuses_before_identity_collection) ... FAIL
+test_managed_owner_keeps_identity_goals_sessions_and_current_memory (test_memory_context_builder.MemoryContextBuilderTests.test_managed_owner_keeps_identity_goals_sessions_and_current_memory) ... FAIL
+test_missing_context_cannot_read_identity_sources (test_memory_context_builder.MemoryContextBuilderTests.test_missing_context_cannot_read_identity_sources) ... FAIL
+test_private_markup_in_identity_is_excluded_from_the_owner_block (test_memory_context_builder.MemoryContextBuilderTests.test_private_markup_in_identity_is_excluded_from_the_owner_block) ... FAIL
+test_project_only_caller_cannot_collect_unclassified_identity (test_memory_context_builder.MemoryContextBuilderTests.test_project_only_caller_cannot_collect_unclassified_identity) ... FAIL
+test_standalone_builder_keeps_identity_memory_order_and_active_session_slice (test_memory_context_builder.MemoryContextBuilderTests.test_standalone_builder_keeps_identity_memory_order_and_active_session_slice) ... ok
+test_updated_native_identity_is_visible_on_the_next_managed_call (test_memory_context_builder.MemoryContextBuilderTests.test_updated_native_identity_is_visible_on_the_next_managed_call) ... ok
+
+======================================================================
+FAIL: test_cached_owner_block_is_not_reused_after_context_is_removed (test_memory_context_builder.MemoryContextBuilderTests.test_cached_owner_block_is_not_reused_after_context_is_removed)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 99, in test_cached_owner_block_is_not_reused_after_context_is_removed
+    self.assertIn('context hot fact', self.call()['block'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'context hot fact' not found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+======================================================================
+FAIL: test_cached_owner_block_is_not_reused_after_policy_revocation (test_memory_context_builder.MemoryContextBuilderTests.test_cached_owner_block_is_not_reused_after_policy_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 103, in test_cached_owner_block_is_not_reused_after_policy_revocation
+    self.assertIn('context hot fact', self.call()['block'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'context hot fact' not found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+======================================================================
+FAIL: test_connector_loss_cannot_select_raw_reader_or_cached_owner_block (test_memory_context_builder.MemoryContextBuilderTests.test_connector_loss_cannot_select_raw_reader_or_cached_owner_block)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 116, in test_connector_loss_cannot_select_raw_reader_or_cached_owner_block
+    self.assertIn('context hot fact', self.call()['block'])
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'context hot fact' not found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+======================================================================
+FAIL: test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded (test_memory_context_builder.MemoryContextBuilderTests.test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 147, in test_forgotten_claims_in_identity_and_cached_hot_memory_stay_excluded
+    self.assertNotIn('context hot fact', result['block'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'context hot fact' unexpectedly found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\nRULE: Synthetic context hot fact\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+======================================================================
+FAIL: test_identity_source_cannot_follow_a_redirect_into_configuration (test_memory_context_builder.MemoryContextBuilderTests.test_identity_source_cannot_follow_a_redirect_into_configuration)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 137, in test_identity_source_cannot_follow_a_redirect_into_configuration
+    self.assertNotIn('SYNTHETIC_CONFIGURATION_ONLY_MARKER', json.dumps(result))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC_CONFIGURATION_ONLY_MARKER' unexpectedly found in '{"block": "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\\n\\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\\n\\n### About you (LifeOS)\\nSynthetic assistant identity marker\\n\\n### About Principal\\nSYNTHETIC_CONFIGURATION_ONLY_MARKER\\n\\n## PRINCIPAL MEMORY [0/48 entries \\u00b7 0/12288 chars]\\n(no entries yet)\\n\\n## DA MEMORY [0/48 entries \\u00b7 0/12288 chars]\\n(no entries yet)\\n\\n### Principal\'s TELOS\\nSynthetic principal goal marker\\n\\n### Active sessions / in-flight work\\n## Open Sessions to Resume\\nSynthetic active session marker", "logs": [["{\\"ts\\":\\"2026-10-01T17:14:24.034Z\\",\\"level\\":\\"warn\\",\\"component\\":\\"lifeos-context\\",\\"msg\\":\\"context-block: memory read returned error\\",\\"data\\":{\\"rel\\":\\"USER/PRINCIPAL/PRINCIPAL_MEMORY.md\\",\\"code\\":\\"EINVAL_PATH\\"}}"], ["{\\"ts\\":\\"2026-10-01T17:14:24.098Z\\",\\"level\\":\\"warn\\",\\"component\\":\\"lifeos-context\\",\\"msg\\":\\"context-block: memory read returned error\\",\\"data\\":{\\"rel\\":\\"USER/DIGITAL_ASSISTANT/DA_MEMORY.md\\",\\"code\\":\\"EINVAL_PATH\\"}}"]]}'
+
+======================================================================
+FAIL: test_invalid_connector_refuses_before_identity_collection (test_memory_context_builder.MemoryContextBuilderTests.test_invalid_connector_refuses_before_identity_collection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 122, in test_invalid_connector_refuses_before_identity_collection
+    self.deny(self.call())
+    ~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 74, in deny
+    self.assertIn('error', result, result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' not found in {'block': "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker", 'logs': [['{"ts":"2026-10-01T17:14:24.759Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read threw","data":{"rel":"USER/PRINCIPAL/PRINCIPAL_MEMORY.md","error":"SyntaxError: JSON Parse error: Expected \'}\'"}}'], ['{"ts":"2026-10-01T17:14:24.759Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read threw","data":{"rel":"USER/DIGITAL_ASSISTANT/DA_MEMORY.md","error":"SyntaxError: JSON Parse error: Expected \'}\'"}}']]} : {'block': "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker", 'logs': [['{"ts":"2026-10-01T17:14:24.759Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read threw","data":{"rel":"USER/PRINCIPAL/PRINCIPAL_MEMORY.md","error":"SyntaxError: JSON Parse error: Expected \'}\'"}}'], ['{"ts":"2026-10-01T17:14:24.759Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read threw","data":{"rel":"USER/DIGITAL_ASSISTANT/DA_MEMORY.md","error":"SyntaxError: JSON Parse error: Expected \'}\'"}}']]}
+
+======================================================================
+FAIL: test_managed_owner_keeps_identity_goals_sessions_and_current_memory (test_memory_context_builder.MemoryContextBuilderTests.test_managed_owner_keeps_identity_goals_sessions_and_current_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 93, in test_managed_owner_keeps_identity_goals_sessions_and_current_memory
+    self.assertIn(marker, block)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+AssertionError: 'context hot fact' not found in "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker"
+
+======================================================================
+FAIL: test_missing_context_cannot_read_identity_sources (test_memory_context_builder.MemoryContextBuilderTests.test_missing_context_cannot_read_identity_sources)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 96, in test_missing_context_cannot_read_identity_sources
+    self.deny(self.call(context=False, query='Synthetic context hot fact'))
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 74, in deny
+    self.assertIn('error', result, result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' not found in {'block': "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker", 'logs': [['{"ts":"2026-10-01T17:14:26.303Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/PRINCIPAL/PRINCIPAL_MEMORY.md","code":"EINVAL_PATH"}}'], ['{"ts":"2026-10-01T17:14:26.361Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/DIGITAL_ASSISTANT/DA_MEMORY.md","code":"EINVAL_PATH"}}']]} : {'block': "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker", 'logs': [['{"ts":"2026-10-01T17:14:26.303Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/PRINCIPAL/PRINCIPAL_MEMORY.md","code":"EINVAL_PATH"}}'], ['{"ts":"2026-10-01T17:14:26.361Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/DIGITAL_ASSISTANT/DA_MEMORY.md","code":"EINVAL_PATH"}}']]}
+
+======================================================================
+FAIL: test_private_markup_in_identity_is_excluded_from_the_owner_block (test_memory_context_builder.MemoryContextBuilderTests.test_private_markup_in_identity_is_excluded_from_the_owner_block)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 153, in test_private_markup_in_identity_is_excluded_from_the_owner_block
+    self.assertNotIn('SYNTHETIC_CONTEXT_PRIVATE_MARKER', json.dumps(result))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC_CONTEXT_PRIVATE_MARKER' unexpectedly found in '{"block": "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\\n\\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\\n\\n### About you (LifeOS)\\nSynthetic assistant identity marker\\n\\n### About Principal\\n<private>SYNTHETIC_CONTEXT_PRIVATE_MARKER</private>\\n\\n## PRINCIPAL MEMORY [0/48 entries \\u00b7 0/12288 chars]\\n(no entries yet)\\n\\n## DA MEMORY [0/48 entries \\u00b7 0/12288 chars]\\n(no entries yet)\\n\\n### Principal\'s TELOS\\nSynthetic principal goal marker\\n\\n### Active sessions / in-flight work\\n## Open Sessions to Resume\\nSynthetic active session marker", "logs": [["{\\"ts\\":\\"2026-10-01T17:14:27.135Z\\",\\"level\\":\\"warn\\",\\"component\\":\\"lifeos-context\\",\\"msg\\":\\"context-block: memory read returned error\\",\\"data\\":{\\"rel\\":\\"USER/PRINCIPAL/PRINCIPAL_MEMORY.md\\",\\"code\\":\\"EINVAL_PATH\\"}}"], ["{\\"ts\\":\\"2026-10-01T17:14:27.195Z\\",\\"level\\":\\"warn\\",\\"component\\":\\"lifeos-context\\",\\"msg\\":\\"context-block: memory read returned error\\",\\"data\\":{\\"rel\\":\\"USER/DIGITAL_ASSISTANT/DA_MEMORY.md\\",\\"code\\":\\"EINVAL_PATH\\"}}"]]}'
+
+======================================================================
+FAIL: test_project_only_caller_cannot_collect_unclassified_identity (test_memory_context_builder.MemoryContextBuilderTests.test_project_only_caller_cannot_collect_unclassified_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 113, in test_project_only_caller_cannot_collect_unclassified_identity
+    self.deny(self.call())
+    ~~~~~~~~~^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_context_builder.py", line 74, in deny
+    self.assertIn('error', result, result)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'error' not found in {'block': "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker", 'logs': [['{"ts":"2026-10-01T17:14:27.899Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/PRINCIPAL/PRINCIPAL_MEMORY.md","code":"EINVAL_PATH"}}'], ['{"ts":"2026-10-01T17:14:27.961Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/DIGITAL_ASSISTANT/DA_MEMORY.md","code":"EINVAL_PATH"}}']]} : {'block': "## LifeOS CONTEXT (refreshed every turn, do not narrate this header)\n\n**Today:** Thursday, October 1, 2026 at 10:14 AM (America/Los_Angeles)\n\n### About you (LifeOS)\nSynthetic assistant identity marker\n\n### About Principal\nSynthetic private principal identity marker\n\n## PRINCIPAL MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries · 0/12288 chars]\n(no entries yet)\n\n### Principal's TELOS\nSynthetic principal goal marker\n\n### Active sessions / in-flight work\n## Open Sessions to Resume\nSynthetic active session marker", 'logs': [['{"ts":"2026-10-01T17:14:27.899Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/PRINCIPAL/PRINCIPAL_MEMORY.md","code":"EINVAL_PATH"}}'], ['{"ts":"2026-10-01T17:14:27.961Z","level":"warn","component":"lifeos-context","msg":"context-block: memory read returned error","data":{"rel":"USER/DIGITAL_ASSISTANT/DA_MEMORY.md","code":"EINVAL_PATH"}}']]}
+
+----------------------------------------------------------------------
+Ran 12 tests in 9.860s
+
+FAILED (failures=10)

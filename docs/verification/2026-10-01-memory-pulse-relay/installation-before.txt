@@ -1,0 +1,15 @@
+test_wrong_local_installation_cannot_supply_a_successful_snapshot (test_memory_http.MemoryHTTPTests.test_wrong_local_installation_cannot_supply_a_successful_snapshot) ... FAIL
+
+======================================================================
+FAIL: test_wrong_local_installation_cannot_supply_a_successful_snapshot (test_memory_http.MemoryHTTPTests.test_wrong_local_installation_cannot_supply_a_successful_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_http.py", line 90, in test_wrong_local_installation_cannot_supply_a_successful_snapshot
+    self.assertEqual(self.call()['status'],503)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 200 != 503
+
+----------------------------------------------------------------------
+Ran 1 test in 0.507s
+
+FAILED (failures=1)

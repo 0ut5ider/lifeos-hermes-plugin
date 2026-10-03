@@ -1,0 +1,98 @@
+diff --git a/lifeos_hook_bridge/memory_runtime.py b/lifeos_hook_bridge/memory_runtime.py
+index 0dc6d19..729e222 100644
+--- a/lifeos_hook_bridge/memory_runtime.py
++++ b/lifeos_hook_bridge/memory_runtime.py
+@@ -226,7 +226,8 @@ class MemoryRuntime:
+     def _check_call(self, *, request: dict[str, Any], provider: str = '', model: str = '', base_url: str = '',
+                    api_mode: str = '', session_id: str = '', platform: str = '',
+                    metadata: Mapping[str, str] | None = None, project: bool = False, **kwargs):
+-        auxiliary = bool(kwargs.get('aux_task'))
++        provenance = sys.modules.get('tools.skill_provenance')
++        auxiliary = bool(kwargs.get('aux_task') or provenance and provenance.is_background_review())
+         project = project and not auxiliary
+         bound = _BOUND.get()
+         metadata = current_host_metadata() if metadata is None else metadata
+diff --git a/tests/memory_host_calls.py b/tests/memory_host_calls.py
+index b4dfd66..82db1ed 100644
+--- a/tests/memory_host_calls.py
++++ b/tests/memory_host_calls.py
+@@ -7,6 +7,7 @@ import os
+ from contextlib import redirect_stdout
+ from pathlib import Path
+ import sys
++import threading
+ 
+ sys.path[:0] = [str(Path(__file__).parents[1]),os.environ['LIFEOS_HERMES_SOURCE']]
+ 
+@@ -40,6 +41,19 @@ def main():
+         if settings.get('operation') == 'conversation':
+             with redirect_stdout(diagnostics):
+                 conversation = agent.run_conversation(settings['message'])
++        review_done = None
++        review_summaries = []
++        if settings.get('background_review'):
++            agent.background_review_callback = review_summaries.append
++            with redirect_stdout(diagnostics):
++                agent._spawn_background_review(conversation['messages'],review_skills=True,
++                                               focus=settings.get('review_focus'),explicit=settings.get('review_explicit',False))
++                review_run = getattr(agent,'_background_review_run',None)
++                review_done = review_run is None or review_run.request_done.wait(timeout=20)
++                for thread in threading.enumerate():
++                    if thread.name == 'bg-review':
++                        thread.join(timeout=20)
++                        review_done = review_done and not thread.is_alive()
+         denied_writes = []
+         if agent._memory_store is None:
+             from tools.memory_tool import memory_tool,load_on_disk_store
+@@ -51,7 +65,8 @@ def main():
+         print(json.dumps({'memory_enabled':agent._memory_enabled,'user_profile_enabled':agent._user_profile_enabled,
+                           'has_builtin_store':agent._memory_store is not None,'providers':providers,'tools':tools,
+                           'prompt':prompt,'skill_nudge_interval':agent._skill_nudge_interval,'disabled_writes':denied_writes,
+-                          'warnings':warnings.getvalue(),'conversation':conversation,'diagnostics':diagnostics.getvalue()}))
++                          'warnings':warnings.getvalue(),'conversation':conversation,'diagnostics':diagnostics.getvalue(),
++                          'review_done':review_done,'review_summaries':review_summaries}))
+     finally:
+         if agent is not None:
+             agent.close()
+diff --git a/tests/test_memory_host.py b/tests/test_memory_host.py
+index d2ff657..edd3d0e 100644
+--- a/tests/test_memory_host.py
++++ b/tests/test_memory_host.py
+@@ -25,8 +25,12 @@ class MemoryHostTests(unittest.TestCase):
+         for name,data in self.original.items():
+             (self.home/'memories'/name).write_bytes(data)
+ 
+-    def initialize(self, memory, *, expected_warning='', operation='', message='', author='100'):
++    def initialize(self, memory, *, expected_warning='', operation='', message='', author='100',
++                   background_review=False, review_focus='Synthetic skill review',skill_approval=False,
++                   review_explicit=False):
+         configuration = dict(self.fixture.host_config,memory=memory,plugins={'enabled':['lifeos-hook-bridge']})
++        if background_review:
++            configuration['skills'] = {'write_approval':skill_approval}
+         if operation == 'conversation':
+             configuration['model']=dict(configuration['model'],streaming=False,context_length=131072)
+         (self.home/'config.yaml').write_text(json.dumps(configuration))
+@@ -36,7 +40,9 @@ class MemoryHostTests(unittest.TestCase):
+                            LIFEOS_HOOK_SETTINGS=str(self.fixture.fixture.fixture.root/'settings.json'),
+                            BUN_CONFIG_NO_AUTO_INSTALL='1')
+         result = subprocess.run([sys.executable,str(Path(__file__).with_name('memory_host_calls.py'))],
+-                                input=json.dumps({'route':self.fixture.route,'operation':operation,'message':message,'author':author}),env=environment,
++                                input=json.dumps({'route':self.fixture.route,'operation':operation,'message':message,'author':author,
++                                                  'background_review':background_review,'review_focus':review_focus,
++                                                  'review_explicit':review_explicit}),env=environment,
+                                 capture_output=True,text=True,timeout=45)
+         self.assertEqual(result.returncode,0,result.stderr)
+         self.assertEqual(result.stderr,'')
+@@ -52,8 +58,11 @@ class MemoryHostTests(unittest.TestCase):
+         probes = [request for request in self.fixture.received if request['path']=='/api/show']
+         if operation != 'conversation':
+             self.assertEqual(probes,self.fixture.received)
++        probe_models = {'synthetic-model'}
++        if background_review:
++            probe_models.add(configuration.get('auxiliary',{}).get('background_review',{}).get('model','synthetic-model'))
+         for request in probes:
+-            self.assertEqual(request['body'],{'name':'synthetic-model'})
++            self.assertIn(request['body'],[{'name':model} for model in probe_models])
+         return outcome
+ 
+     def test_provider_selection_alone_keeps_builtin_memory_enabled(self):

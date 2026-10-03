@@ -1,0 +1,15 @@
+test_followup_delta_selects_samples_after_the_native_cursor (test_memory_delta.MemoryDeltaTests.test_followup_delta_selects_samples_after_the_native_cursor) ... FAIL
+
+======================================================================
+FAIL: test_followup_delta_selects_samples_after_the_native_cursor (test_memory_delta.MemoryDeltaTests.test_followup_delta_selects_samples_after_the_native_cursor)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_delta.py", line 245, in test_followup_delta_selects_samples_after_the_native_cursor
+    self.assertIn('Synthetic followup sample gamma', following)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic followup sample gamma' not found in '<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the 🧠 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n🧠 MEMORY: +1 learned · freshness: no data\n</lifeos-memory-delta>\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.494s
+
+FAILED (failures=1)

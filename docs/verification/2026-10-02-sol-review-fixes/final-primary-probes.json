@@ -1,0 +1,42 @@
+{
+  "revision": "2c02dc5c1c59c128448fb084d0580f75190abe08",
+  "environment": {
+    "HOME": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home",
+    "TMPDIR": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home/tmp",
+    "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "results": {
+    "foreign-proposal-reason": {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-diagnostic-closure/raw/probe-foreign-proposal-reason.py"
+      ],
+      "exit": 0
+    },
+    "diagnostics": {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-diagnostic-closure/raw/probe-diagnostics.py"
+      ],
+      "exit": 0
+    },
+    "prior-closures": {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-review-fix-followup/raw/probe-closures.py"
+      ],
+      "exit": 0
+    },
+    "apply-closure": {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-apply-closure/raw/probe-apply-closure.py"
+      ],
+      "exit": 0
+    }
+  }
+}

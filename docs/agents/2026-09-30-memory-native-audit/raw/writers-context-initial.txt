@@ -1,0 +1,11 @@
+{"case": "restore_without_context", "argv": ["/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryRestore.ts", "restore", "PRINCIPAL_MEMORY__2026-10-01T02-07-54-004Z.md"], "code": 0, "stdout": "Restored principal from PRINCIPAL_MEMORY__2026-10-01T02-07-54-004Z.md (1 entries).\n", "stderr": ""}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-09-30-memory-native-audit/raw/probe_writers_context.py", line 25, in <module>
+    print(json.dumps({'case':'restore_bytes_and_registry','retired_restored':retired in path.read_text(),'live_removed':'heron' not in path.read_text(),'current_reference':f.fixture.memory.get(OWNER,live['reference'])}))
+                                                                                                                                                                            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 660, in get
+    return {"status": "ok", "reference": reference, "content": self._content(row),
+                                                               ~~~~~~~~~~~~~^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 193, in _content
+    raise MemoryConflict("The referenced fact changed outside its recorded revision")
+lifeos_hook_bridge.memory_access.MemoryConflict: The referenced fact changed outside its recorded revision

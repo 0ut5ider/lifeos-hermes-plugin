@@ -1,0 +1,15 @@
+test_real_http_url_headers_and_response_credentials_are_filtered (test_capture.OverlayTests.test_real_http_url_headers_and_response_credentials_are_filtered) ... FAIL
+
+======================================================================
+FAIL: test_real_http_url_headers_and_response_credentials_are_filtered (test_capture.OverlayTests.test_real_http_url_headers_and_response_credentials_are_filtered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/development/tests/test_capture.py", line 453, in test_real_http_url_headers_and_response_credentials_are_filtered
+    self.assertNotIn(second_cookie, decoded)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC-SECOND-COOKIE-918275' unexpectedly found in '{"api_key": "[REDACTED]", "echo": "[REDACTED]", "cookie_echo": "[REDACTED]", "second_echo": "SYNTHETIC-SECOND-COOKIE-918275"}'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.745s
+
+FAILED (failures=1)

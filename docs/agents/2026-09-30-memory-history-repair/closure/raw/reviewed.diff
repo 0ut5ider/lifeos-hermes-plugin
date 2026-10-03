@@ -1,0 +1,270 @@
+diff --git a/lifeos_hook_bridge/memory_provider.py b/lifeos_hook_bridge/memory_provider.py
+index d3413e5..1a05813 100644
+--- a/lifeos_hook_bridge/memory_provider.py
++++ b/lifeos_hook_bridge/memory_provider.py
+@@ -94,5 +94,6 @@ def register_provider(ctx) -> MemoryRuntime:
+             raise MemoryAdmissionError('LifeOS lasting memory needs required model-request checks')
+     else:
+         if REQUIRED_MIDDLEWARE_API_VERSION == 1:
++            ctx.register_middleware('llm_execution', provider.runtime.project_call, required=True)
+             ctx.register_middleware('llm_admission', provider.runtime.check_call, required=True)
+     return provider.runtime
+diff --git a/lifeos_hook_bridge/memory_runtime.py b/lifeos_hook_bridge/memory_runtime.py
+index aecd017..18d20a0 100644
+--- a/lifeos_hook_bridge/memory_runtime.py
++++ b/lifeos_hook_bridge/memory_runtime.py
+@@ -20,6 +20,7 @@ from .memory_context import host_context, route_identity, parse_context, current
+ from .memory_policy import CATEGORIES, MemoryPolicy, SessionContext
+ from .memory_service import MemoryConfiguration
+ from .memory_transaction import publish
++from .memory_history import project_request, retained_messages, user_proof
+ 
+ 
+ class MemoryAdmissionError(RuntimeError):
+@@ -144,13 +145,14 @@ class MemoryRuntime:
+             raise MemoryAdmissionError('The rendered LifeOS prompt contains a removed or superseded claim. Refresh the LifeOS prompt before starting a conversation.')
+         return hashlib.sha256(content.encode()).hexdigest()
+ 
+-    def _stamp(self, configuration: dict[str, Any], context: SessionContext, connection) -> dict[str, Any]:
++    def _stamp(self, configuration: dict[str, Any], context: SessionContext, connection, user_input=None) -> dict[str, Any]:
+         scope = self._scope(configuration, replace(context, session_id=''))
+         retained = [tuple(row) for row in connection.execute("SELECT id, revision, status FROM records WHERE status != 'active' ORDER BY id")]
+         applied = [tuple(row) for row in connection.execute("SELECT id, revision, status FROM proposals WHERE status IN ('accepted','edited','auto-applied') ORDER BY id")]
+         rendered = self._rendered_prompt(configuration,scope,connection)
+         generation = hashlib.sha256(json.dumps({'retained':retained,'applied':applied,'rendered':rendered}, separators=(',', ':')).encode()).hexdigest()
+-        return {'scope': scope.signature, 'generation': generation, 'context': json.loads(json.dumps(asdict(context)))}
++        return {'scope': scope.signature, 'generation': generation, 'rendered': rendered,
++                'context': json.loads(json.dumps(asdict(context))), 'user_input':user_input}
+ 
+     def _states(self) -> dict[str, Any]:
+         if not self.state_path.exists() and not self.state_path.is_symlink():
+@@ -183,12 +185,12 @@ class MemoryRuntime:
+             raise MemoryAdmissionError('Memory needs a host-bound conversation identifier')
+         memory = NativeMemory(Path(configuration['root']))
+         with memory._transaction() as connection:
+-            stamp = self._stamp(configuration, context, connection)
++            stamp = self._stamp(configuration, context, connection,user_proof(kwargs.get('user_message')))
+             states = self._states()
+             previous = states.get(context.session_id)
+             if previous is None and not is_first_turn:
+                 raise MemoryAdmissionError('This conversation has no verified memory context. Start a new conversation.')
+-            if previous is not None and previous != stamp:
++            if previous is not None and any(previous.get(key)!=stamp.get(key) for key in ('scope','generation','rendered','context')):
+                 raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+             states[context.session_id] = stamp
+             publish(self.state_path, (json.dumps(states, sort_keys=True) + '\n').encode())
+@@ -212,9 +214,16 @@ class MemoryRuntime:
+         if context is not None:
+             environment['LIFEOS_MEMORY_CONTEXT'] = json.dumps(asdict(context))
+ 
+-    def check_call(self, *, request: dict[str, Any], provider: str = '', model: str = '', base_url: str = '',
++    def check_call(self, **kwargs) -> None:
++        self._check_call(**kwargs)
++
++    def project_call(self, *, request, next_call, **kwargs):
++        projected = self._check_call(request=request, project=True, **kwargs)
++        return next_call(projected)
++
++    def _check_call(self, *, request: dict[str, Any], provider: str = '', model: str = '', base_url: str = '',
+                    api_mode: str = '', session_id: str = '', platform: str = '',
+-                   metadata: Mapping[str, str] | None = None, **kwargs) -> None:
++                   metadata: Mapping[str, str] | None = None, project: bool = False, **kwargs):
+         bound = _BOUND.get()
+         metadata = current_host_metadata() if metadata is None else metadata
+         session_id = session_id or (metadata or {}).get('HERMES_SESSION_ID', '') or os.environ.get('LIFEOS_MEMORY_SESSION', '')
+@@ -227,7 +236,7 @@ class MemoryRuntime:
+         if not self.enabled():
+             if (bound and bound[0] == self.key) or (session_id and session_id in states) or os.environ.get('LIFEOS_MEMORY_CONTEXT'):
+                 raise MemoryAdmissionError('Memory ownership changed for retained context. Start a new conversation.')
+-            return
++            return request
+         configuration = self.configuration.load()
+         if bound is None or bound[0] != self.key:
+             try:
+@@ -261,9 +270,25 @@ class MemoryRuntime:
+         self._scope(configuration, replace(context, model_route=route))
+         memory = NativeMemory(Path(configuration['root']))
+         with memory._transaction() as connection:
+-            current = self._stamp(configuration, context, connection)
+-            if current != admitted or states.get(context.session_id) != admitted:
++            states = self._states()
++            current = self._stamp(configuration, context, connection,admitted.get('user_input'))
++            saved = states.get(context.session_id)
++            can_refresh = (project and saved in (admitted,current)
++                           and all(current.get(key)==admitted.get(key) for key in ('scope','context','rendered','user_input')))
++            if (current != admitted or saved != admitted) and not can_refresh:
+                 raise MemoryAdmissionError('The model call contains an invalidated memory context. Start a new conversation.')
++            scope = self._scope(configuration,context)
++            timestamp = datetime.now(timezone.utc).isoformat()
++            excluded = lambda content: memory._filter_history(connection,scope,content,timestamp)['excluded']
++            if project and ('messages' in body or current != admitted):
++                try:
++                    projected = project_request(body,excluded,admitted.get('user_input'))
++                except ValueError as error:
++                    raise MemoryAdmissionError(str(error)) from error
++                request = {**request,'messages':projected['messages']}
++                if isinstance(request.get('extra_body'),ContentMapping) and 'messages' in request['extra_body']:
++                    request['extra_body'] = {**request['extra_body'],'messages':projected['messages']}
++                body = _request_body(request)
+             content = _system_text(body)
+             if content and memory._filter_history(connection,self._scope(configuration,context),content,
+                                                   datetime.now(timezone.utc).isoformat())['excluded']:
+@@ -274,4 +299,19 @@ class MemoryRuntime:
+                 if content and memory._filter_history(connection,self._scope(configuration,context),content,
+                                                       datetime.now(timezone.utc).isoformat())['excluded']:
+                     raise MemoryAdmissionError('The compression prompt contains a removed or superseded claim. Rebuild the conversation before compressing it.')
++            # Retained user turns and generated messages must not recreate a
++            # removed fact. The current explicit user quote remains permitted.
++            messages = list(_messages(body))
++            try:
++                content = '\n'.join(text for _,message in retained_messages(messages,admitted.get('user_input'))
++                                    for text in _generated_text(message))
++            except ValueError as error:
++                raise MemoryAdmissionError(str(error)) from error
++            if content and excluded(content):
++                raise MemoryAdmissionError('The model history contains a removed or superseded claim. Rebuild the conversation before continuing.')
++            if project and current != admitted:
++                states[context.session_id] = current
++                publish(self.state_path,(json.dumps(states,sort_keys=True)+'\n').encode())
++                bound = (self.key,context,current)
+         _BOUND.set(bound)
++        return request
+diff --git a/tests/memory_host_calls.py b/tests/memory_host_calls.py
+index 906f4b0..b4dfd66 100644
+--- a/tests/memory_host_calls.py
++++ b/tests/memory_host_calls.py
+@@ -4,6 +4,7 @@ import json
+ import io
+ import logging
+ import os
++from contextlib import redirect_stdout
+ from pathlib import Path
+ import sys
+ 
+@@ -35,8 +36,10 @@ def main():
+         providers = [provider.name for provider in agent._memory_manager.providers] if agent._memory_manager else []
+         tools = sorted(agent.valid_tool_names)
+         conversation = None
++        diagnostics = io.StringIO()
+         if settings.get('operation') == 'conversation':
+-            conversation = agent.run_conversation(settings['message'])
++            with redirect_stdout(diagnostics):
++                conversation = agent.run_conversation(settings['message'])
+         denied_writes = []
+         if agent._memory_store is None:
+             from tools.memory_tool import memory_tool,load_on_disk_store
+@@ -48,7 +51,7 @@ def main():
+         print(json.dumps({'memory_enabled':agent._memory_enabled,'user_profile_enabled':agent._user_profile_enabled,
+                           'has_builtin_store':agent._memory_store is not None,'providers':providers,'tools':tools,
+                           'prompt':prompt,'skill_nudge_interval':agent._skill_nudge_interval,'disabled_writes':denied_writes,
+-                          'warnings':warnings.getvalue(),'conversation':conversation}))
++                          'warnings':warnings.getvalue(),'conversation':conversation,'diagnostics':diagnostics.getvalue()}))
+     finally:
+         if agent is not None:
+             agent.close()
+diff --git a/tests/test_memory_agent.py b/tests/test_memory_agent.py
+index d072398..7d078fb 100644
+--- a/tests/test_memory_agent.py
++++ b/tests/test_memory_agent.py
+@@ -1,6 +1,8 @@
+ # ABOUTME: Drives a complete Hermes model and native memory tool turn over local HTTP.
+ # ABOUTME: Verifies committed receipt propagation and preserved disabled built-in memory files.
+ import json
++from pathlib import Path
++import sys
+ import unittest
+ 
+ from test_memory_native import OWNER
+@@ -29,6 +31,7 @@ class MemoryAgentTests(unittest.TestCase):
+                                          operation='conversation',message='Remember a synthetic lab fact and report its saved reference.')
+         turn = result['conversation']
+         self.assertFalse(turn.get('failed'),turn)
++        self.assertEqual(result['diagnostics'],'')
+         receipt = json.loads(turn['final_response'])
+         self.assertEqual(receipt['status'],'committed')
+         self.assertEqual(receipt['writer'],'chat-a:100')
+@@ -53,6 +56,70 @@ class MemoryAgentTests(unittest.TestCase):
+         self.assertEqual(self.fixture.fixture.fixture.fixture.memory.recall(OWNER,'synthetic denied fact'),[])
+         self.outcome = result
+ 
++    def change_fact(self, operation, *, native_recall=False):
++        marker = 'Synthetic superseded agent conversation claim'
++        replacement = 'Synthetic corrected agent conversation claim'
++        native = self.fixture.fixture.fixture.fixture
++        prefix = 'RULE: ' if native_recall else ''
++        saved = native.remember(prefix+marker, 'conversation-original','principal' if native_recall else 'project')
++        if native_recall:
++            connector = native.root/'LIFEOS/USER/CONFIG/memory-access.json'
++            connector.parent.mkdir()
++            connector.write_text(json.dumps({'version':1,'command':[sys.executable,
++                str(Path(__file__).parents[1]/'lifeos_hook_bridge/memory_rpc.py'),
++                '--configuration',str(self.fixture.fixture.fixture.path)]}))
++            connector.chmod(0o600)
++            (native.root/'settings.json').write_text(json.dumps({'hooks':{'UserPromptSubmit':[{'hooks':[
++                {'type':'command','command':'bun --no-install '+str(native.root/'hooks/LoadMemory.hook.ts')}]}]}}))
++        def respond(request):
++            results = [message for message in request['messages'] if message.get('role')=='tool']
++            if not results:
++                name = 'lifeos_memory_get'
++                arguments = {'reference':saved['reference']}
++                content = None
++            elif len(results) == 1:
++                name = 'lifeos_memory_'+operation
++                arguments = {'reference':saved['reference'],'request_id':'conversation-'+operation}
++                if operation == 'correct':
++                    arguments['content'] = prefix+replacement
++                content = marker
++            else:
++                receipt = json.loads(results[-1]['content'])
++                return {'role':'assistant','content':json.dumps({'status':receipt['status'],'reference':receipt['reference']})}
++            return {'role':'assistant','content':content,'tool_calls':[{'id':'synthetic-'+name,'type':'function',
++                    'function':{'name':name,'arguments':json.dumps(arguments)}}]}
++        self.fixture.fixture.response_message = respond
++        result = self.fixture.initialize({'provider':'lifeos-hook-bridge','memory_enabled':False,'user_profile_enabled':False},
++                                         operation='conversation',message=operation.title()+' the referenced synthetic lab fact.')
++        turn = result['conversation']
++        self.assertFalse(turn.get('failed'),turn)
++        self.assertEqual(result['diagnostics'],'')
++        receipt = json.loads(turn['final_response'])
++        self.assertEqual(receipt['status'],'committed')
++        calls = [request for request in self.fixture.fixture.received if request['path']=='/v1/chat/completions']
++        self.assertEqual(len(calls),3)
++        self.assertIn(marker,json.dumps(calls[1]['body']))
++        self.assertNotIn(marker,json.dumps(calls[2]['body']))
++        self.assertIn(marker,json.dumps(turn['messages']))
++        current = native.memory.recall(OWNER,'agent conversation claim')
++        self.assertEqual([row['content'] for row in current],[prefix+replacement] if operation == 'correct' else [])
++        if native_recall:
++            self.assertIn('<lifeos-memory>',json.dumps(calls[0]['body']))
++            self.assertIn(marker,json.dumps(calls[0]['body']))
++        self.outcome = result
++
++    def test_actual_correction_turn_refreshes_model_history_and_preserves_transcript(self):
++        self.change_fact('correct')
++
++    def test_actual_forget_turn_refreshes_model_history_and_preserves_transcript(self):
++        self.change_fact('forget')
++
++    def test_actual_native_recall_correction_turn_removes_cached_hook_context(self):
++        self.change_fact('correct',native_recall=True)
++
++    def test_actual_native_recall_forget_turn_removes_cached_hook_context(self):
++        self.change_fact('forget',native_recall=True)
++
+ 
+ if __name__ == '__main__':
+     unittest.main()
+diff --git a/tests/test_memory_host.py b/tests/test_memory_host.py
+index 9925c42..d2ff657 100644
+--- a/tests/test_memory_host.py
++++ b/tests/test_memory_host.py
+@@ -40,7 +40,9 @@ class MemoryHostTests(unittest.TestCase):
+                                 capture_output=True,text=True,timeout=45)
+         self.assertEqual(result.returncode,0,result.stderr)
+         self.assertEqual(result.stderr,'')
++        self.last_process_output = result.stdout
+         outcome = json.loads(result.stdout)
++        self.last_outcome = outcome
+         if expected_warning:
+             self.assertIn(expected_warning,outcome['warnings'])
+         else:

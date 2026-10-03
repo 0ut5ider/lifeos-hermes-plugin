@@ -1,0 +1,8 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+Exact test env/argv in run_tests.sh;105tests, exit0.
+Archived runner: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-cortex-health-review/closure/raw/run_archived.py
+Additional probe env: PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-cortex-closure/lifeos/LifeOS/install
+Interpreter: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+Additional probe scripts (all exit0): probe_clock_shapes.py, probe_unmanaged_clock.py, probe_request_bounds.py. Raw outputs share the names clock-shapes.txt, unmanaged-clock.txt, request-bounds.txt.
+Unmanaged comparison additionally invokes initial owned public prepared source-gate-20260930-cortex-health/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts against the same private synthetic HOME, never an installed live environment.
+Source reads: current memory_diagnostics.py, memory_sources.py, memory_rpc.py diff, native MemoryHealthCheck preflight and publication/filter wrappers, Cortex tests.

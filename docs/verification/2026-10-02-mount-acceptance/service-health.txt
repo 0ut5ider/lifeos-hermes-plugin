@@ -1,0 +1,27 @@
+Id=lifeos-acceptance-dashboard.service
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+MainPID=2477579
+
+Id=hermes-gateway.service
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+MainPID=2477580
+
+Id=lifeos-acceptance-native.service
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+MainPID=2446184
+
+Id=lifeos-acceptance-pulse.service
+ActiveState=active
+SubState=running
+UnitFileState=enabled
+MainPID=2447272
+rule family="ipv4" source address="192.168.8.0/24" port port="8921" protocol="tcp" accept
+rule family="ipv4" source address="192.168.8.0/24" port port="8922" protocol="tcp" accept
+rule family="ipv4" source address="192.168.8.0/24" port port="8921" protocol="tcp" accept
+rule family="ipv4" source address="192.168.8.0/24" port port="8922" protocol="tcp" accept

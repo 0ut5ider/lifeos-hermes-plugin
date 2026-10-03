@@ -1,0 +1,15 @@
+test_staged_native_identifier_cannot_duplicate_a_current_note (test_memory_staging.MemoryStagingTests.test_staged_native_identifier_cannot_duplicate_a_current_note) ... FAIL
+
+======================================================================
+FAIL: test_staged_native_identifier_cannot_duplicate_a_current_note (test_memory_staging.MemoryStagingTests.test_staged_native_identifier_cannot_duplicate_a_current_note)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 253, in test_staged_native_identifier_cannot_duplicate_a_current_note
+    with self.assertRaisesRegex(MemoryUnavailable,'duplicate'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.674s
+
+FAILED (failures=1)

@@ -1,0 +1,97 @@
+{
+  "kind": "primary source and documentation verification",
+  "source_digests": [
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/KnowledgeSchema.ts",
+      "digest_matches": true,
+      "bytes": 31279
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/LoadMemory.hook.ts",
+      "digest_matches": true,
+      "bytes": 3349
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemoryRetriever.ts",
+      "digest_matches": true,
+      "bytes": 35412
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemoryReview.ts",
+      "digest_matches": true,
+      "bytes": 0
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemoryReviewFire.hook.ts",
+      "digest_matches": true,
+      "bytes": 11767
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemorySystem.ts",
+      "digest_matches": true,
+      "bytes": 47786
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemoryTurnStart.hook.ts",
+      "digest_matches": true,
+      "bytes": 6133
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemoryTypes.ts",
+      "digest_matches": true,
+      "bytes": 27432
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/MemoryWriter.ts",
+      "digest_matches": true,
+      "bytes": 29661
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/ProposalSurfacer.ts",
+      "digest_matches": true,
+      "bytes": 0
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/agent-agent_init.py",
+      "digest_matches": true,
+      "bytes": 131909
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/agent-memory_manager.py",
+      "digest_matches": true,
+      "bytes": 45824
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/agent-memory_provider.py",
+      "digest_matches": true,
+      "bytes": 10503
+    },
+    {
+      "path": "docs/agents/2026-09-30-memory-design-review/raw/plugins-memory-__init__.py",
+      "digest_matches": true,
+      "bytes": 24411
+    }
+  ],
+  "authored_prose_has_no_em_dash": true,
+  "runtime_tests_run": false,
+  "limits": "Source inspection and documentation checks do not verify runtime memory behavior.",
+  "independently_checked_host_revision": "a01564231eb587a28ceca75f7ad6fe8d2fba4b04",
+  "native_source_hashes_match_live_source": [
+    "MemorySystem.ts",
+    "MemoryWriter.ts",
+    "MemoryRetriever.ts",
+    "MemoryTurnStart.hook.ts",
+    "MemoryReviewFire.hook.ts",
+    "LoadMemory.hook.ts"
+  ],
+  "independently_checked_claims": [
+    "Native hook context reads do not receive the proposed access policy.",
+    "Ordinary retrieval includes historical learning records and hot files.",
+    "Hot read-modify-write begins outside publication lock.",
+    "Native successful writes expose dropped-entry counts.",
+    "Hermes provider initialization is independent of built-in store flags.",
+    "Installed provider discovery scans user/project directories and package entry points."
+  ],
+  "followup_report_exists": true,
+  "followup_prose_has_no_em_dash": true
+}

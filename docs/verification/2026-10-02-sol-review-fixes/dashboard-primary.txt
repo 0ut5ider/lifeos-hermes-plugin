@@ -1,0 +1,82 @@
+TAP version 13
+# Subtest: model picker starts with the current Hermes model and saves every tier
+ok 1 - model picker starts with the current Hermes model and saves every tier
+  ---
+  duration_ms: 13.42004
+  type: 'test'
+  ...
+# Subtest: an explicit existing child route stays selected after reloading
+ok 2 - an explicit existing child route stays selected after reloading
+  ---
+  duration_ms: 2.979872
+  type: 'test'
+  ...
+# Subtest: missing LifeOS shows preparation without active model settings
+ok 3 - missing LifeOS shows preparation without active model settings
+  ---
+  duration_ms: 3.803486
+  type: 'test'
+  ...
+# Subtest: installed LifeOS on stock Hermes shows the reduced safety limits
+ok 4 - installed LifeOS on stock Hermes shows the reduced safety limits
+  ---
+  duration_ms: 6.622077
+  type: 'test'
+  ...
+# Subtest: memory status names incomplete gates and does not offer activation
+ok 5 - memory status names incomplete gates and does not offer activation
+  ---
+  duration_ms: 9.436009
+  type: 'test'
+  ...
+# Subtest: agent correction guidance requires active memory ownership
+ok 6 - agent correction guidance requires active memory ownership
+  ---
+  duration_ms: 4.30271
+  type: 'test'
+  ...
+# Subtest: pending changes show their target and exact revision for manual decisions
+ok 7 - pending changes show their target and exact revision for manual decisions
+  ---
+  duration_ms: 3.196284
+  type: 'test'
+  ...
+# Subtest: conflicted proposal remains visible and edit decisions send the owner draft
+ok 8 - conflicted proposal remains visible and edit decisions send the owner draft
+  ---
+  duration_ms: 1.840511
+  type: 'test'
+  ...
+# Subtest: valid minimal revoked grants do not break the preferences page
+ok 9 - valid minimal revoked grants do not break the preferences page
+  ---
+  duration_ms: 2.404259
+  type: 'test'
+  ...
+# Subtest: owner search displays references and new connections default to read-only project access
+ok 10 - owner search displays references and new connections default to read-only project access
+  ---
+  duration_ms: 2.000706
+  type: 'test'
+  ...
+# Subtest: source adoption previews historical records and sends exact project assignments
+ok 11 - source adoption previews historical records and sends exact project assignments
+  ---
+  duration_ms: 3.69056
+  type: 'test'
+  ...
+# Subtest: source adoption retains a conflicted preview and reuses its request identifier
+ok 12 - source adoption retains a conflicted preview and reuses its request identifier
+  ---
+  duration_ms: 2.248612
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 86.91198

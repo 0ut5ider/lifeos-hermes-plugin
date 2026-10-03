@@ -1,0 +1,58 @@
+{
+  "environment": {
+    "PYTHONPATH": ".:tests",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-delta-bytes/lifeos/LifeOS/install"
+  },
+  "results": [
+    {
+      "argv": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-09-30-memory-native-delta-review/raw/probe_delta_shapes.py"
+      ],
+      "script_sha256": "e3956751582cec4bed516792a5b72b486bb2a4f3698f00ac7e1595ec79de3e68",
+      "returncode": 0,
+      "stdout_file": "archived-shapes.txt",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-09-30-memory-native-delta-review/raw/probe_delta_volume.py"
+      ],
+      "script_sha256": "4fc120ca41ea75b1971fb063684589161238d97432df4eb59da3dddae1e5769d",
+      "returncode": 0,
+      "stdout_file": "archived-volume.txt",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-09-30-memory-native-delta-review/closure/raw/probe_controls.py"
+      ],
+      "script_sha256": "e083141011255e47307321f4893dc04edf26b32873dad2d5f147ac5cdb8fd6ee",
+      "returncode": 0,
+      "stdout_file": "archived-controls.txt",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-09-30-memory-native-delta-review/closure/raw/probe_delta_bytes.py"
+      ],
+      "script_sha256": "a6f0557b806137bcdfb6aab5cdc56f16d0f0bb8117fcf0928f26de4e47b34c7f",
+      "returncode": 0,
+      "stdout_file": "archived-bytes.txt",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "docs/agents/2026-09-30-memory-native-delta-review/byte-closure/raw/probe_cursor_samples.py"
+      ],
+      "script_sha256": "03c3c31aa530610d9fdae3922d8f508407c890d990752dd98b41c6022151718b",
+      "returncode": 0,
+      "stdout_file": "archived-cursor.txt",
+      "stderr": ""
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "aliases": {
+    "shared_basic_list": {
+      "bare_secret_leak": false,
+      "bare_secret_learned": true,
+      "encoded_secret_leak": false,
+      "ordinary_prompt_preserved": true
+    },
+    "shared_cookie_list": {
+      "bare_secret_leak": false,
+      "bare_secret_learned": true,
+      "encoded_secret_leak": false,
+      "ordinary_prompt_preserved": true
+    },
+    "shared_dataclass_list": {
+      "bare_secret_leak": false,
+      "bare_secret_learned": true,
+      "encoded_secret_leak": false,
+      "ordinary_prompt_preserved": true
+    },
+    "shared_list": {
+      "bare_secret_leak": false,
+      "bare_secret_learned": true,
+      "encoded_secret_leak": false,
+      "ordinary_prompt_preserved": true
+    },
+    "shared_nested_dict": {
+      "bare_secret_leak": false,
+      "bare_secret_learned": true,
+      "encoded_secret_leak": false,
+      "ordinary_prompt_preserved": true
+    }
+  },
+  "cycles": {
+    "dict": {
+      "cyclic_event_returns_none": true,
+      "discovery_terminates_and_learns_secret": true,
+      "following_event_written": true,
+      "recorder_failures": 1,
+      "summary": {
+        "capture_failure_processes": 1,
+        "capture_gaps": 0,
+        "events": 1,
+        "hooks": [],
+        "incomplete_invocations": 0,
+        "integrity_issues": {},
+        "known_lost_events": 1,
+        "known_registrations": 0,
+        "note": "Completion is execution evidence, not semantic parity.",
+        "partial_tails": 0,
+        "statuses": {},
+        "unexercised_registrations": []
+      }
+    },
+    "list": {
+      "cyclic_event_returns_none": true,
+      "discovery_terminates_and_learns_secret": true,
+      "following_event_written": true,
+      "recorder_failures": 1,
+      "summary": {
+        "capture_failure_processes": 1,
+        "capture_gaps": 0,
+        "events": 1,
+        "hooks": [],
+        "incomplete_invocations": 0,
+        "integrity_issues": {},
+        "known_lost_events": 1,
+        "known_registrations": 0,
+        "note": "Completion is execution evidence, not semantic parity.",
+        "partial_tails": 0,
+        "statuses": {},
+        "unexercised_registrations": []
+      }
+    }
+  },
+  "source_hashes": {
+    "__init__.py": "75209740d116cd2eda684af2c4f6428caf36a09eba399c04b3319d12a65d610a",
+    "analysis.py": "6d2d23be5778b99976018fab81597fec905fda2f3d490c41afc22e3720779dc4",
+    "bootstrap.py": "e00c116420401da60cc657fcefa8747b9bbd8dd7b7524ee042bfea3aa03e3ff4",
+    "instrument.py": "e4cb288785b4ca9a0e07206fd6924a1d3e464ae1c38d96fe803e8a2ae27699ca",
+    "setup.py": "113c41f06d14b5e59dfc5edf96740a491bb6627d198d730614c1569614ef30b3",
+    "store.py": "24f18190afecd2088f0aec0824c840aa73a378e2aee16b9a9f805278c2932385"
+  }
+}

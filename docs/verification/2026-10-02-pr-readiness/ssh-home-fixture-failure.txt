@@ -1,0 +1,24 @@
+test_enrolled_key_restricts_real_ssh_session_and_revocation (test_memory_ssh.MemorySSHTests.test_enrolled_key_restricts_real_ssh_session_and_revocation) ... ERROR
+
+======================================================================
+ERROR: test_enrolled_key_restricts_real_ssh_session_and_revocation (test_memory_ssh.MemorySSHTests.test_enrolled_key_restricts_real_ssh_session_and_revocation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_ssh.py", line 29, in test_enrolled_key_restricts_real_ssh_session_and_revocation
+    fixture.setUp()
+    ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_native.py", line 31, in setUp
+    self.directory = tempfile.TemporaryDirectory(prefix="native-memory-", dir=getattr(self, 'temporary_parent', None))
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/tempfile.py", line 907, in __init__
+    self.name = mkdtemp(suffix, prefix, dir)
+                ~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/tempfile.py", line 381, in mkdtemp
+    _os.mkdir(file, 0o700)
+    ~~~~~~~~~^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/pr-readiness-final-36727e5-2/home/.cache/native-memory-6vuceua1'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.125s
+
+FAILED (errors=1)

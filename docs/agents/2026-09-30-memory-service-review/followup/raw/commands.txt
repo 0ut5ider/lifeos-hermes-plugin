@@ -1,0 +1,21 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+SDK interpreter: /home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python
+
+Source reads:
+cat lifeos_hook_bridge/memory_service.py lifeos_hook_bridge/memory_mcp.py
+sed -n '/    def get(/,/    def correct(/p' lifeos_hook_bridge/memory_access.py
+cat tests/test_memory_service.py tests/test_memory_mcp.py
+
+Service tests, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p test_memory_service.py -v > docs/agents/2026-09-30-memory-service-review/followup/raw/service-tests.txt 2>&1
+
+MCP tests, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python -m unittest discover -s tests -p test_memory_mcp.py -v > docs/agents/2026-09-30-memory-service-review/followup/raw/mcp-tests.txt 2>&1
+
+Original service probes, rerun unchanged, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-service-review/raw/probe_service.py > docs/agents/2026-09-30-memory-service-review/followup/raw/service-probes.jsonl
+
+Original installed-copy MCP probes, rerun unchanged, exit status 0:
+/home/outsider/.cache/lifeos-plugin-memory/sdk-env/bin/python docs/agents/2026-09-30-memory-service-review/raw/probe_mcp.py > docs/agents/2026-09-30-memory-service-review/followup/raw/mcp-probes.json
+
+Probe scripts remain in the original review raw directory. The follow-up raw directory contains their full new results. Reviewed service/MCP source files and tests were copied before execution. Only the get method was captured from memory_access.py because other methods were under active development outside this review. Hashes are recorded in reviewed-hashes.json.

@@ -1,0 +1,115 @@
+{
+  "forget": {
+    "status": "committed",
+    "reference": {
+      "id": "d894ee0bbd244166af6a2c79f385ff30",
+      "revision": 2
+    },
+    "retained": [
+      "native history",
+      "audit evidence",
+      "backups",
+      "conversation history",
+      "development logs"
+    ],
+    "writer": "local:owner",
+    "request_id": "retired-label-forget"
+  },
+  "adopted": {
+    "status": "committed",
+    "facts_adopted": 1,
+    "proposals_adopted": 0,
+    "references": [
+      {
+        "id": "9144fe6e0a2b429fa717831724ee047b",
+        "revision": 1
+      }
+    ],
+    "excluded_sources": 0,
+    "native_files_changed": false,
+    "writer": "local:owner",
+    "request_id": "adopt-retired-label"
+  },
+  "canonical": {
+    "ok": true,
+    "root": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-pr-fresh-review/raw/fixture-home/tmp/native-memory-2kr6spq5/.config/LIFEOS/USER/MEMORY",
+    "files": [
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-pr-fresh-review/raw/fixture-home/tmp/native-memory-2kr6spq5/.config/LIFEOS/USER/MEMORY/KNOWLEDGE/Research/Synthetic_retired_canonical_label.md"
+    ],
+    "records": [
+      {
+        "id": "path:2c82fde981c1f1b9",
+        "type": "research",
+        "title": "Safe Synthetic Note",
+        "created": "2026-10-02T00:00:00Z",
+        "updated": "2026-10-02T00:00:00Z",
+        "provenance": {
+          "source": "canonical",
+          "session": null,
+          "path": "KNOWLEDGE/Research/Synthetic_retired_canonical_label.md"
+        },
+        "content": "---\ntitle: Safe Synthetic Note\ntype: research\ncreated: 2026-10-02T00:00:00Z\nupdated: 2026-10-02T00:00:00Z\n---\n\nSafeSyntheticCurrentBody",
+        "related": [],
+        "valid_from": null,
+        "valid_until": null
+      }
+    ]
+  },
+  "knowledge": {
+    "status": 200,
+    "body": {
+      "domains": [
+        {
+          "name": "People",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Companies",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Ideas",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Research",
+          "count": 1,
+          "avgQuality": 5,
+          "lowCount": 0,
+          "midCount": 1,
+          "highCount": 0
+        }
+      ],
+      "notes": [
+        {
+          "title": "Safe Synthetic Note",
+          "domain": "research",
+          "type": "research",
+          "quality": 5,
+          "tags": [],
+          "created": "2026-10-02T00:00:00Z",
+          "updated": "2026-10-02T00:00:00Z",
+          "slug": "Synthetic_retired_canonical_label"
+        }
+      ],
+      "totalNotes": 1,
+      "avgQuality": 5,
+      "topTags": [],
+      "lastHarvest": null
+    }
+  },
+  "normalized_label_excluded": true,
+  "retired_label_in_response": true
+}

@@ -1,0 +1,144 @@
+test_corrected_note_is_still_queryable (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_corrected_note_is_still_queryable) ... ok
+test_directory_argument_cannot_select_files_outside_knowledge (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_directory_argument_cannot_select_files_outside_knowledge) ... FAIL
+test_forgotten_fact_does_not_leave_a_queryable_note (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_forgotten_fact_does_not_leave_a_queryable_note) ... FAIL
+test_managed_owner_preserves_native_query_filters_and_output (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_managed_owner_preserves_native_query_filters_and_output) ... ok
+test_missing_context_refuses_before_metadata_output (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_missing_context_refuses_before_metadata_output) ... FAIL
+test_project_only_grant_cannot_query_unclassified_metadata (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_project_only_grant_cannot_query_unclassified_metadata) ... FAIL
+test_retired_note_title_is_not_queryable (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_retired_note_title_is_not_queryable) ... FAIL
+test_revoked_account_cannot_query_note_metadata (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_revoked_account_cannot_query_note_metadata) ... FAIL
+test_unmanaged_filters_and_json_preserve_native_metadata (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_unmanaged_filters_and_json_preserve_native_metadata) ... ok
+test_unregistered_note_is_not_in_the_managed_query (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_unregistered_note_is_not_in_the_managed_query) ... FAIL
+
+======================================================================
+FAIL: test_directory_argument_cannot_select_files_outside_knowledge (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_directory_argument_cannot_select_files_outside_knowledge)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 92, in test_directory_argument_cannot_select_files_outside_knowledge
+    self.assertEqual(json.loads(result.stdout),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'slug': 'secret', 'dir': '../foreign', '[264 chars] []}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'slug': 'secret', 'dir': '../foreign', 'type': 'research', 'title': 'SyntheticForeignMetadata', 'tags': [], 'source_name': '', 'source_author': '', 'source_date': '', 'source_kind': '', 'source_session': '', 'status': '', 'created': '', 'updated': '', 'quality': None, 'relatedSlugs': [], 'relatedTypes': []}
+
++ []
+- [{'created': '',
+-   'dir': '../foreign',
+-   'quality': None,
+-   'relatedSlugs': [],
+-   'relatedTypes': [],
+-   'slug': 'secret',
+-   'source_author': '',
+-   'source_date': '',
+-   'source_kind': '',
+-   'source_name': '',
+-   'source_session': '',
+-   'status': '',
+-   'tags': [],
+-   'title': 'SyntheticForeignMetadata',
+-   'type': 'research',
+-   'updated': ''}]
+
+======================================================================
+FAIL: test_forgotten_fact_does_not_leave_a_queryable_note (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_forgotten_fact_does_not_leave_a_queryable_note)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 65, in test_forgotten_fact_does_not_leave_a_queryable_note
+    self.assertEqual(json.loads(result.stdout),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'slug': 'synthetic-lab-routing', 'dir': [345 chars] []}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'slug': 'synthetic-lab-routing', 'dir': 'Research', 'type': 'research', 'title': 'Synthetic lab routing', 'tags': ['untagged'], 'source_name': '', 'source_author': '', 'source_date': '', 'source_kind': 'internal', 'source_session': '', 'status': 'seedling', 'created': '2026-10-01T16:17:58.264Z', 'updated': '2026-10-01T16:17:58.264Z', 'quality': 2, 'relatedSlugs': [], 'relatedTypes': []}
+
++ []
+- [{'created': '2026-10-01T16:17:58.264Z',
+-   'dir': 'Research',
+-   'quality': 2,
+-   'relatedSlugs': [],
+-   'relatedTypes': [],
+-   'slug': 'synthetic-lab-routing',
+-   'source_author': '',
+-   'source_date': '',
+-   'source_kind': 'internal',
+-   'source_name': '',
+-   'source_session': '',
+-   'status': 'seedling',
+-   'tags': ['untagged'],
+-   'title': 'Synthetic lab routing',
+-   'type': 'research',
+-   'updated': '2026-10-01T16:17:58.264Z'}]
+
+======================================================================
+FAIL: test_missing_context_refuses_before_metadata_output (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_missing_context_refuses_before_metadata_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 52, in test_missing_context_refuses_before_metadata_output
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_project_only_grant_cannot_query_unclassified_metadata (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_project_only_grant_cannot_query_unclassified_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 98, in test_project_only_grant_cannot_query_unclassified_metadata
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_retired_note_title_is_not_queryable (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_retired_note_title_is_not_queryable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 84, in test_retired_note_title_is_not_queryable
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_revoked_account_cannot_query_note_metadata (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_revoked_account_cannot_query_note_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 58, in test_revoked_account_cannot_query_note_metadata
+    self.assertNotEqual(result.returncode,0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_unregistered_note_is_not_in_the_managed_query (test_memory_knowledge_query.MemoryKnowledgeQueryTests.test_unregistered_note_is_not_in_the_managed_query)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_query.py", line 78, in test_unregistered_note_is_not_in_the_managed_query
+    self.assertEqual(json.loads(result.stdout),[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'slug': 'syntheticunregisteredtitle', 'd[355 chars] []}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'slug': 'syntheticunregisteredtitle', 'dir': 'Research', 'type': 'research', 'title': 'SyntheticUnregisteredTitle', 'tags': ['untagged'], 'source_name': '', 'source_author': '', 'source_date': '', 'source_kind': 'internal', 'source_session': '', 'status': 'seedling', 'created': '2026-10-01T16:18:02.715Z', 'updated': '2026-10-01T16:18:02.715Z', 'quality': 2, 'relatedSlugs': [], 'relatedTypes': []}
+
++ []
+- [{'created': '2026-10-01T16:18:02.715Z',
+-   'dir': 'Research',
+-   'quality': 2,
+-   'relatedSlugs': [],
+-   'relatedTypes': [],
+-   'slug': 'syntheticunregisteredtitle',
+-   'source_author': '',
+-   'source_date': '',
+-   'source_kind': 'internal',
+-   'source_name': '',
+-   'source_session': '',
+-   'status': 'seedling',
+-   'tags': ['untagged'],
+-   'title': 'SyntheticUnregisteredTitle',
+-   'type': 'research',
+-   'updated': '2026-10-01T16:18:02.715Z'}]
+
+----------------------------------------------------------------------
+Ran 10 tests in 6.391s
+
+FAILED (failures=7)

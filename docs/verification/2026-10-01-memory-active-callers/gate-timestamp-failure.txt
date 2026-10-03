@@ -1,0 +1,14 @@
+...................................................F...................................................................................
+======================================================================
+FAIL: test_managed_categories_slugs_and_groups_match_native_standalone (test_memory_wiki_corpus.MemoryWikiCorpusTests.test_managed_categories_slugs_and_groups_match_native_standalone)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_wiki_corpus.py", line 57, in test_managed_categories_slugs_and_groups_match_native_standalone
+    self.assertEqual(int(actual_time.timestamp() * 1000), int(native_time.timestamp() * 1000))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1790905907388 != 1790905907387
+
+----------------------------------------------------------------------
+Ran 135 tests in 104.484s
+
+FAILED (failures=1)

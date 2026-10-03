@@ -1,0 +1,15 @@
+test_dynamic_harvest_timestamp_cannot_enter_a_derived_index (test_memory_staging.MemoryStagingTests.test_dynamic_harvest_timestamp_cannot_enter_a_derived_index) ... FAIL
+
+======================================================================
+FAIL: test_dynamic_harvest_timestamp_cannot_enter_a_derived_index (test_memory_staging.MemoryStagingTests.test_dynamic_harvest_timestamp_cannot_enter_a_derived_index)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_staging.py", line 181, in test_dynamic_harvest_timestamp_cannot_enter_a_derived_index
+    with self.assertRaisesRegex(MemoryUnavailable,'harvest state'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 1 test in 0.305s
+
+FAILED (failures=1)

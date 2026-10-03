@@ -1,0 +1,11 @@
+Working directory: /home/outsider/Projects/Hermes_agent/LifeOS_plugin
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-history-repair/third-closure/raw/run_review.py > docs/agents/2026-09-30-memory-history-repair/third-closure/raw/tests.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-history-repair/third-closure/raw/rerun_archived.py > docs/agents/2026-09-30-memory-history-repair/third-closure/raw/archived-results.txt 2>&1
+
+PYTHONPATH=.:tests LIFEOS_MEMORY_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/lifeos/LifeOS/install LIFEOS_HERMES_SOURCE=/home/outsider/.cache/lifeos-plugin-memory/source-gate-20260930-app-startup/hermes /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python docs/agents/2026-09-30-memory-history-repair/third-closure/raw/probe_allowed_responses.py > docs/agents/2026-09-30-memory-history-repair/third-closure/raw/allowed-responses.txt 2>&1
+
+The archived children are executed unchanged. Only the driver supplies current fixture settings and verifies the corrected expected outcomes.
+
+One preliminary control-launch command had a malformed environment assignment and attempted to execute /dev/null, returning shell status 126 with Permission denied before any Python or fixture execution. The corrected command above then ran successfully. This was a reviewer command error, not a test or product failure.

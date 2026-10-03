@@ -1,0 +1,57 @@
+test_changed_binding_revokes_native_canonical_reads (test_memory_canonical.MemoryCanonicalTests.test_changed_binding_revokes_native_canonical_reads) ... FAIL
+test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section) ... FAIL
+test_missing_caller_context_cannot_read_managed_canonical_records (test_memory_canonical.MemoryCanonicalTests.test_missing_caller_context_cannot_read_managed_canonical_records) ... FAIL
+test_native_root_option_does_not_grant_foreign_source_authority (test_memory_canonical.MemoryCanonicalTests.test_native_root_option_does_not_grant_foreign_source_authority) ... FAIL
+test_owner_preserves_native_canonical_identity_and_content (test_memory_canonical.MemoryCanonicalTests.test_owner_preserves_native_canonical_identity_and_content) ... ok
+test_unmanaged_control_retains_native_read_behavior (test_memory_canonical.MemoryCanonicalTests.test_unmanaged_control_retains_native_read_behavior) ... ok
+test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted) ... FAIL
+
+======================================================================
+FAIL: test_changed_binding_revokes_native_canonical_reads (test_memory_canonical.MemoryCanonicalTests.test_changed_binding_revokes_native_canonical_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 78, in test_changed_binding_revokes_native_canonical_reads
+    self.assertFalse(result['status']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'status': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'search', 'data': {'items': [{'id': 'kb_b636b0c76b89', 'type': 'research', 'created': '2026-10-01T15:45:27.772Z', 'updated': '2026-10-01T15:45:27.772Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 0.287682, 'est_tokens': 80}], 'total': 1, 'page': 1, 'page_size': 10}, 'error': None}}, 'result': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'export', 'data': {'format': 'lifeos-cortex-export/v1', 'items': [{'id': 'kb_b636b0c76b89', 'type': 'research', 'title': 'Synthetic lab routing', 'created': '2026-10-01T15:45:27.772Z', 'updated': '2026-10-01T15:45:27.772Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'content': '---\nid: kb_b636b0c76b89\ntype: research\ntitle: "Synthetic lab routing"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T15:45:27.772Z\nupdated: 2026-10-01T15:45:27.772Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSyntheticCanonicalCurrentMarker\n', 'related': [], 'valid_from': None, 'valid_until': None}]}, 'error': None}}}
+
+======================================================================
+FAIL: test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 59, in test_correction_exports_current_fact_without_retired_native_section
+    self.assertNotIn('SyntheticCanonicalCurrentMarker',json.dumps(result))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticCanonicalCurrentMarker' unexpectedly found in '{"status": {"exitCode": 0, "envelope": {"schema": "lifeos-cortex/v1", "ok": true, "command": "search", "data": {"items": [{"id": "kb_6324b67b7486", "type": "research", "created": "2026-10-01T15:45:28.226Z", "updated": "2026-10-01T15:45:28.226Z", "provenance": {"source": "internal", "session": null, "path": "KNOWLEDGE/Research/synthetic-lab-routing.md"}, "score": 0.575364, "est_tokens": 111}], "total": 1, "page": 1, "page_size": 10}, "error": null}}, "result": {"exitCode": 0, "envelope": {"schema": "lifeos-cortex/v1", "ok": true, "command": "export", "data": {"format": "lifeos-cortex-export/v1", "items": [{"id": "kb_6324b67b7486", "type": "research", "title": "Synthetic lab routing", "created": "2026-10-01T15:45:28.226Z", "updated": "2026-10-01T15:45:28.226Z", "provenance": {"source": "internal", "session": null, "path": "KNOWLEDGE/Research/synthetic-lab-routing.md"}, "content": "---\\nid: kb_6324b67b7486\\ntype: research\\ntitle: \\"Synthetic lab routing\\"\\ntags: [untagged]\\nstatus: seedling\\nquality: 2\\nquality_inferred: true\\nsource_kind: internal\\ncreated: 2026-10-01T15:45:28.226Z\\nupdated: 2026-10-01T15:45:28.226Z\\nrelated: []\\nconvention: kb-v3\\n---\\n\\n# Synthetic lab routing\\n\\nSyntheticCanonicalCurrentMarker\\n\\n## Appended 2026-10-01T15:45:28.581Z\\n<!-- source_session: none \\u00b7 confidence: 1 -->\\n\\nSyntheticCanonicalReplacementMarker\\n", "related": [], "valid_from": null, "valid_until": null}]}, "error": null}}}'
+
+======================================================================
+FAIL: test_missing_caller_context_cannot_read_managed_canonical_records (test_memory_canonical.MemoryCanonicalTests.test_missing_caller_context_cannot_read_managed_canonical_records)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 40, in test_missing_caller_context_cannot_read_managed_canonical_records
+    self.assertFalse(result['status']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'status': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'search', 'data': {'items': [{'id': 'kb_75386d7bfda8', 'type': 'research', 'created': '2026-10-01T15:45:29.177Z', 'updated': '2026-10-01T15:45:29.177Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 0.287682, 'est_tokens': 80}], 'total': 1, 'page': 1, 'page_size': 10}, 'error': None}}, 'result': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'export', 'data': {'format': 'lifeos-cortex-export/v1', 'items': [{'id': 'kb_75386d7bfda8', 'type': 'research', 'title': 'Synthetic lab routing', 'created': '2026-10-01T15:45:29.177Z', 'updated': '2026-10-01T15:45:29.177Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'content': '---\nid: kb_75386d7bfda8\ntype: research\ntitle: "Synthetic lab routing"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T15:45:29.177Z\nupdated: 2026-10-01T15:45:29.177Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSyntheticCanonicalCurrentMarker\n', 'related': [], 'valid_from': None, 'valid_until': None}]}, 'error': None}}}
+
+======================================================================
+FAIL: test_native_root_option_does_not_grant_foreign_source_authority (test_memory_canonical.MemoryCanonicalTests.test_native_root_option_does_not_grant_foreign_source_authority)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 72, in test_native_root_option_does_not_grant_foreign_source_authority
+    self.assertFalse(result['status']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'status': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'search', 'data': {'items': [], 'total': 0, 'page': 1, 'page_size': 10}, 'error': None}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+======================================================================
+FAIL: test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 65, in test_unregistered_native_fact_is_not_silently_admitted
+    self.assertFalse(result['status']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'status': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'search', 'data': {'items': [{'id': 'kb_c27334f2c61f', 'type': 'research', 'created': '2026-10-01T15:45:30.892Z', 'updated': '2026-10-01T15:45:30.892Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 0.672048, 'est_tokens': 80}], 'total': 1, 'page': 1, 'page_size': 10}, 'error': None}}, 'result': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'export', 'data': {'format': 'lifeos-cortex-export/v1', 'items': [{'id': 'kb_c27334f2c61f', 'type': 'research', 'title': 'Synthetic lab routing', 'created': '2026-10-01T15:45:30.892Z', 'updated': '2026-10-01T15:45:30.892Z', 'provenance': {'source': 'internal', 'session': None, 'path': 'KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'content': '---\nid: kb_c27334f2c61f\ntype: research\ntitle: "Synthetic lab routing"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-01T15:45:30.892Z\nupdated: 2026-10-01T15:45:30.892Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSyntheticCanonicalCurrentMarker\n', 'related': [], 'valid_from': None, 'valid_until': None}]}, 'error': None}}}
+
+----------------------------------------------------------------------
+Ran 7 tests in 3.769s
+
+FAILED (failures=5)

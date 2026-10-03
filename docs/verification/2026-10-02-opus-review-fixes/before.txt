@@ -1,0 +1,158 @@
+FFFFFFFFFFFFFFFF
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='configuration')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='new environment')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='removed prompt')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='file permissions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin edit')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin addition')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin removal')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='plugin directory')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) (change='directory permissions')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 184, in test_restore_preserves_later_profile_edits_and_modes
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_requires_post_update_profile_metadata (test_update_transaction.UpdateTransactionTests.test_restore_requires_post_update_profile_metadata)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 203, in test_restore_requires_post_update_profile_metadata
+    with self.assertRaisesRegex(UpdateTransactionError, 'profile restore metadata'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_restore_rechecks_profile_after_stopping_the_gateway (test_update_transaction.UpdateTransactionTests.test_restore_rechecks_profile_after_stopping_the_gateway)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 218, in test_restore_rechecks_profile_after_stopping_the_gateway
+    with self.assertRaisesRegex(UpdateTransactionError, 'Hermes profile changed'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: UpdateTransactionError not raised
+
+======================================================================
+FAIL: test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content (test_memory_children.MemoryChildTests.test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content) (system='Synthetic forgotten direct child marker', content='Synthetic generated request')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_children.py", line 51, in test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"result": "CHILD-OK", "is_error": false, "stop_reason": null, "modelUsage": {"child-model": {"outputTokens": 0}}}
+
+
+======================================================================
+FAIL: test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content (test_memory_children.MemoryChildTests.test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content) (system='Synthetic current system', content='Synthetic forgotten direct child marker')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_children.py", line 51, in test_actual_child_gateway_refuses_forgotten_system_and_generated_user_content
+    self.assertNotEqual(result.returncode, 0, result.stdout)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : {"result": "CHILD-OK", "is_error": false, "stop_reason": null, "modelUsage": {"child-model": {"outputTokens": 0}}}
+
+
+======================================================================
+FAIL: test_completed_mounts_remove_credential_bearing_snapshots (test_mount_transaction.MountTransactionTests.test_completed_mounts_remove_credential_bearing_snapshots)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 166, in test_completed_mounts_remove_credential_bearing_snapshots
+    self.assertFalse(Path(result['snapshot']).exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_pending_recovery_retains_copies_until_rollback_completes (test_mount_transaction.MountTransactionTests.test_pending_recovery_retains_copies_until_rollback_completes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 178, in test_pending_recovery_retains_copies_until_rollback_completes
+    self.assertFalse(snapshot.exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_failed_preparation_removes_unneeded_credential_copies (test_mount_transaction.MountTransactionTests.test_failed_preparation_removes_unneeded_credential_copies)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_mount_transaction.py", line 187, in test_failed_preparation_removes_unneeded_credential_copies
+    self.assertEqual([path for path in self.transaction().state.iterdir() if path.is_dir()], [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [PosixPath('/tmp/native-memory-sq4tjwsf/.l[42 chars]7b')] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+PosixPath('/tmp/native-memory-sq4tjwsf/.lifeos-mount/2af2b1e5cb9347b6a70574f89e68577b')
+
+- [PosixPath('/tmp/native-memory-sq4tjwsf/.lifeos-mount/2af2b1e5cb9347b6a70574f89e68577b')]
++ []
+
+----------------------------------------------------------------------
+Ran 7 tests in 7.956s
+
+FAILED (failures=16)
