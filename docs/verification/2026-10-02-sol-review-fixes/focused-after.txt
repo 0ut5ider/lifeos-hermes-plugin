@@ -1,0 +1,72 @@
+test_applies_update_and_immediate_restore (test_update_transaction.UpdateTransactionTests.test_applies_update_and_immediate_restore) ... ok
+test_capability_record_applies_and_restores_with_native_hook_files (test_update_transaction.UpdateTransactionTests.test_capability_record_applies_and_restores_with_native_hook_files) ... skipped 'Prepared native TaskGovernance is required'
+test_failed_restart_keeps_restore_stop_intent_recoverable (test_update_transaction.UpdateTransactionTests.test_failed_restart_keeps_restore_stop_intent_recoverable) ... ok
+test_profile_and_baseline_restore_across_filesystems (test_update_transaction.UpdateTransactionTests.test_profile_and_baseline_restore_across_filesystems) ... ok
+test_recovers_process_death_between_directory_renames (test_update_transaction.UpdateTransactionTests.test_recovers_process_death_between_directory_renames) ... ok
+test_restore_archive_survives_process_death_before_profile_replacement (test_update_transaction.UpdateTransactionTests.test_restore_archive_survives_process_death_before_profile_replacement) ... ok
+test_restore_archives_a_write_that_races_with_profile_replacement (test_update_transaction.UpdateTransactionTests.test_restore_archives_a_write_that_races_with_profile_replacement) ... ok
+test_restore_preserves_external_memory_and_audit_changes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_external_memory_and_audit_changes) ... ok
+test_restore_preserves_later_profile_edits_and_modes (test_update_transaction.UpdateTransactionTests.test_restore_preserves_later_profile_edits_and_modes) ... ok
+test_restore_rechecks_profile_after_stopping_the_gateway (test_update_transaction.UpdateTransactionTests.test_restore_rechecks_profile_after_stopping_the_gateway) ... ok
+test_restore_refuses_embedded_memory_and_audit_changes (test_update_transaction.UpdateTransactionTests.test_restore_refuses_embedded_memory_and_audit_changes) ... ok
+test_restore_refuses_replaced_external_data_bindings (test_update_transaction.UpdateTransactionTests.test_restore_refuses_replaced_external_data_bindings) ... ok
+test_restore_requires_post_update_profile_metadata (test_update_transaction.UpdateTransactionTests.test_restore_requires_post_update_profile_metadata) ... ok
+test_restore_retains_a_profile_edit_after_the_program_swap (test_update_transaction.UpdateTransactionTests.test_restore_retains_a_profile_edit_after_the_program_swap) ... ok
+test_restore_stop_crash_recovery_preserves_the_selected_installation (test_update_transaction.UpdateTransactionTests.test_restore_stop_crash_recovery_preserves_the_selected_installation) ... ok
+test_second_directory_rename_failure_restores_installed_tree (test_update_transaction.UpdateTransactionTests.test_second_directory_rename_failure_restores_installed_tree) ... ok
+test_verification_failure_restores_all_prior_state (test_update_transaction.UpdateTransactionTests.test_verification_failure_restores_all_prior_state) ... ok
+test_changed_generated_templates_need_a_reviewed_migration (test_update_worker.UpdateWorkerTests.test_changed_generated_templates_need_a_reviewed_migration) ... ok
+test_prior_source_must_match_installed_hook_manifest (test_update_worker.UpdateWorkerTests.test_prior_source_must_match_installed_hook_manifest) ... ok
+test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) ... ok
+test_dead_restore_stop_worker_can_queue_authenticated_recovery (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_restore_stop_worker_can_queue_authenticated_recovery) ... ok
+test_forgotten_filename_is_excluded_from_adoption (test_memory_source_labels.MemorySourceLabelTests.test_forgotten_filename_is_excluded_from_adoption) ... ok
+test_previously_registered_forgotten_labels_do_not_enter_owner_responses (test_memory_source_labels.MemorySourceLabelTests.test_previously_registered_forgotten_labels_do_not_enter_owner_responses) ... ok
+test_previously_registered_private_sources_do_not_enter_owner_responses (test_memory_source_labels.MemorySourceLabelTests.test_previously_registered_private_sources_do_not_enter_owner_responses) ... ok
+test_private_filename_and_metadata_are_excluded_from_adoption (test_memory_source_labels.MemorySourceLabelTests.test_private_filename_and_metadata_are_excluded_from_adoption) ... ok
+test_adoption_does_not_reactivate_forgotten_native_sections (test_memory_adoption.MemoryAdoptionTests.test_adoption_does_not_reactivate_forgotten_native_sections) ... ok
+test_adoption_keeps_native_files_and_truthful_unknown_provenance (test_memory_adoption.MemoryAdoptionTests.test_adoption_keeps_native_files_and_truthful_unknown_provenance) ... ok
+test_discovery_does_not_drop_learning_notes_after_hot_limit (test_memory_adoption.MemoryAdoptionTests.test_discovery_does_not_drop_learning_notes_after_hot_limit) ... ok
+test_hot_quotation_of_forgotten_claim_is_not_adopted (test_memory_adoption.MemoryAdoptionTests.test_hot_quotation_of_forgotten_claim_is_not_adopted) ... ok
+test_learning_body_reference_excludes_frontmatter_and_preserves_spaces (test_memory_adoption.MemoryAdoptionTests.test_learning_body_reference_excludes_frontmatter_and_preserves_spaces) ... ok
+test_learning_correction_recovers_new_destination_after_process_interruption (test_memory_adoption.MemoryAdoptionTests.test_learning_correction_recovers_new_destination_after_process_interruption) ... ok
+test_learning_notes_remain_historical_and_can_be_corrected (test_memory_adoption.MemoryAdoptionTests.test_learning_notes_remain_historical_and_can_be_corrected) ... ok
+test_malformed_hot_markers_are_reported_without_exposing_entries (test_memory_adoption.MemoryAdoptionTests.test_malformed_hot_markers_are_reported_without_exposing_entries) ... ok
+test_native_appended_sections_have_distinct_stable_references (test_memory_adoption.MemoryAdoptionTests.test_native_appended_sections_have_distinct_stable_references) ... ok
+test_pending_native_proposal_adoption_preserves_approval_checks (test_memory_adoption.MemoryAdoptionTests.test_pending_native_proposal_adoption_preserves_approval_checks) ... ok
+test_private_markup_and_invalid_native_notes_are_excluded_from_preview (test_memory_adoption.MemoryAdoptionTests.test_private_markup_and_invalid_native_notes_are_excluded_from_preview) ... ok
+test_restricted_reader_cannot_adopt_or_preview_owner_sources (test_memory_adoption.MemoryAdoptionTests.test_restricted_reader_cannot_adopt_or_preview_owner_sources) ... ok
+test_source_mtime_changes_cannot_adopt_unpreviewed_learning (test_memory_adoption.MemoryAdoptionTests.test_source_mtime_changes_cannot_adopt_unpreviewed_learning) ... ok
+test_stale_preview_never_indexes_changed_native_content (test_memory_adoption.MemoryAdoptionTests.test_stale_preview_never_indexes_changed_native_content) ... ok
+test_unknown_native_project_assignment_is_private_until_owner_classifies_it (test_memory_adoption.MemoryAdoptionTests.test_unknown_native_project_assignment_is_private_until_owner_classifies_it) ... ok
+test_wrapped_forgotten_claim_cannot_return_through_archive_adoption (test_memory_adoption.MemoryAdoptionTests.test_wrapped_forgotten_claim_cannot_return_through_archive_adoption) ... ok
+test_changed_binding_revokes_native_canonical_reads (test_memory_canonical.MemoryCanonicalTests.test_changed_binding_revokes_native_canonical_reads) ... ok
+test_changed_native_fact_cannot_be_admitted_under_an_old_reference (test_memory_canonical.MemoryCanonicalTests.test_changed_native_fact_cannot_be_admitted_under_an_old_reference) ... ok
+test_correction_exports_current_fact_without_retired_native_section (test_memory_canonical.MemoryCanonicalTests.test_correction_exports_current_fact_without_retired_native_section) ... ok
+test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora (test_memory_canonical.MemoryCanonicalTests.test_duplicate_native_ids_refuse_in_managed_and_standalone_corpora) ... ok
+test_fixed_native_metadata_names_are_not_retired_facts (test_memory_canonical.MemoryCanonicalTests.test_fixed_native_metadata_names_are_not_retired_facts) ... ok
+test_forgotten_archive_fact_is_not_exported_from_retained_file (test_memory_canonical.MemoryCanonicalTests.test_forgotten_archive_fact_is_not_exported_from_retained_file) ... ok
+test_known_knowledge_root_preserves_native_relative_provenance (test_memory_canonical.MemoryCanonicalTests.test_known_knowledge_root_preserves_native_relative_provenance) ... ok
+test_missing_caller_context_cannot_read_managed_canonical_records (test_memory_canonical.MemoryCanonicalTests.test_missing_caller_context_cannot_read_managed_canonical_records) ... ok
+test_native_root_option_does_not_grant_foreign_source_authority (test_memory_canonical.MemoryCanonicalTests.test_native_root_option_does_not_grant_foreign_source_authority) ... ok
+test_native_status_timeline_and_rebuild_use_the_governed_corpus (test_memory_canonical.MemoryCanonicalTests.test_native_status_timeline_and_rebuild_use_the_governed_corpus) ... ok
+test_native_type_directory_is_operational_metadata (test_memory_canonical.MemoryCanonicalTests.test_native_type_directory_is_operational_metadata) ... ok
+test_oversized_source_refuses_before_native_fact_read (test_memory_canonical.MemoryCanonicalTests.test_oversized_source_refuses_before_native_fact_read) ... ok
+test_owner_preserves_native_canonical_identity_and_content (test_memory_canonical.MemoryCanonicalTests.test_owner_preserves_native_canonical_identity_and_content) ... ok
+test_project_only_context_cannot_collect_unclassified_canonical_metadata (test_memory_canonical.MemoryCanonicalTests.test_project_only_context_cannot_collect_unclassified_canonical_metadata) ... ok
+test_retired_dynamic_title_remains_excluded (test_memory_canonical.MemoryCanonicalTests.test_retired_dynamic_title_remains_excluded) ... FAIL
+test_unmanaged_control_retains_native_read_behavior (test_memory_canonical.MemoryCanonicalTests.test_unmanaged_control_retains_native_read_behavior) ... ok
+test_unregistered_native_fact_is_not_silently_admitted (test_memory_canonical.MemoryCanonicalTests.test_unregistered_native_fact_is_not_silently_admitted) ... ok
+
+======================================================================
+FAIL: test_retired_dynamic_title_remains_excluded (test_memory_canonical.MemoryCanonicalTests.test_retired_dynamic_title_remains_excluded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_canonical.py", line 98, in test_retired_dynamic_title_remains_excluded
+    self.assertFalse(result['status']['envelope']['ok'],result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false : {'status': {'exitCode': 0, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': True, 'command': 'search', 'data': {'items': [], 'total': 0, 'page': 1, 'page_size': 10}, 'error': None}}, 'result': {'exitCode': 4, 'envelope': {'schema': 'lifeos-cortex/v1', 'ok': False, 'command': 'export', 'data': None, 'error': {'code': 'invalid_input', 'message': 'export requires one or more explicit IDs (maximum 100)'}}}}
+
+----------------------------------------------------------------------
+Ran 58 tests in 49.400s
+
+FAILED (failures=1, skipped=1)

@@ -1,0 +1,19 @@
+522: @router.get("/installation/update")
+523: def get_lifeos_update_status():
+524:     job = _latest_lifeos_update()
+525:     if job is None:
+526:         return {"state": "none"}
+527:     try:
+528:         status = json.loads((job / "status.json").read_text(encoding="utf-8"))
+529:         snapshot = job / "snapshot/manifest.json"
+530:         if snapshot.is_file():
+531:             transaction = json.loads(snapshot.read_text(encoding="utf-8"))
+532:             status["transaction_state"] = transaction.get("state")
+533:             if transaction.get("state") in {"applied", "rolled_back"} and status.get("state") in {"queued", "preparing", "applying"}:
+534:                 status["state"] = transaction["state"]
+535:         if status.get("state") in {"preparing", "applying", "restoring", "recovering"} and status.get("unit"):
+536:             active = subprocess.run(["systemctl", "--user", "is-active", status["unit"]],
+537:                                     text=True, capture_output=True, timeout=15)
+538:             if active.returncode or active.stdout.strip() != "active":
+539:                 status["state"] = "interrupted"
+540:         return {**status, "job": str(job)}

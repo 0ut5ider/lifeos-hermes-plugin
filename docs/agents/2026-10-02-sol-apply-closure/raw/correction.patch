@@ -1,0 +1,61 @@
+diff --git a/docs/update-policy.md b/docs/update-policy.md
+index d0f889a..c24fca3 100644
+--- a/docs/update-policy.md
++++ b/docs/update-policy.md
+@@ -56,6 +56,8 @@ The long-term way to reduce this maintenance cost is to contribute the generic H
+ 
+ Restore records a durable `restore_stopping` state before it stops the gateway. If the worker dies in this state, the authenticated recovery action restarts and verifies the selected installation. It does not replace program files, the profile, the baseline, or user data. It then records `applied`. A later restore request must pass the current data and profile checks again. Once the worker records `restoring`, recovery uses the prior installation snapshot. Status reads use a completed durable state if a worker dies before it writes its final status.
+ 
++Update apply records the recoverable `stopped` intent after it saves the mount snapshot and before it calls the gateway stop operation. Recovery can restart the prior installation if process death occurs during that stop operation.
++
+ The dashboard rejects installation mutations from another origin. Fixed installation actions also reject query parameters and request bodies. Authenticated admission and detached code workers share a private installation lock. A competing action receives a conflict before it creates a job or owner grant. Process termination releases the lock; the transaction journal still determines whether recovery is required.
+ 
+ The [PR readiness record](verification/2026-10-02-pr-readiness/README.md) verifies real lock contention, process termination, browser apply, and version restore with later external audit data. These checks use the pinned revisions. They do not establish compatibility with a newer upstream version.
+diff --git a/lifeos_hook_bridge/update_transaction.py b/lifeos_hook_bridge/update_transaction.py
+index 6c7a29a..3ac91df 100644
+--- a/lifeos_hook_bridge/update_transaction.py
++++ b/lifeos_hook_bridge/update_transaction.py
+@@ -231,9 +231,9 @@ def apply_update(installed: Path, hermes_home: Path, prior_source: Path,
+     try:
+         _snapshot_mount(hermes_home, snapshot, baseline_path)
+         stopped = True
+-        stop()
+         manifest["state"] = "stopped"
+         _write_json(manifest_path, manifest)
++        stop()
+         plan = plan_system_files(installed, baseline, selected_source, reference)
+         _copy_tree(installed, snapshot / "staged")
+         staged = snapshot / "staged"
+diff --git a/tests/test_update_transaction.py b/tests/test_update_transaction.py
+index 0a36ea4..a648482 100644
+--- a/tests/test_update_transaction.py
++++ b/tests/test_update_transaction.py
+@@ -25,6 +25,28 @@ def digest(path):
+ 
+ 
+ class UpdateTransactionTests(unittest.TestCase):
++    def test_apply_stop_crash_has_a_recoverable_durable_journal(self):
++        with tempfile.TemporaryDirectory() as directory:
++            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++            code = ('import os, signal, sys\nfrom pathlib import Path\n'
++                    'from lifeos_hook_bridge.update_transaction import apply_update\n'
++                    'def stopped():\n    os.kill(os.getpid(), signal.SIGKILL)\n'
++                    'apply_update(*[Path(arg) for arg in sys.argv[1:]], stop=stopped, start=lambda: None, '
++                    'mount=lambda: None, renew=lambda a,b: None, verify=lambda: None)\n')
++            process = subprocess.run([sys.executable, '-c', code, *map(str,
++                (installed, hermes, prior, selected, reference, baseline, snapshot))],
++                capture_output=True, text=True, timeout=30)
++            self.assertEqual(process.returncode, -signal.SIGKILL, process.stderr)
++            self.assertEqual(process.stderr, '')
++            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'stopped')
++            events, stop, start, _, _, _ = self.callbacks(hermes, baseline)
++            result = recover_update(snapshot, stop=stop, start=start, verify=lambda: events.append('verify'))
++            self.assertEqual(result['state'], 'rolled_back')
++            self.assertEqual(events, ['stop', 'start', 'verify'])
++            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
++            self.assertEqual((hermes / 'config.yaml').read_text(), 'prior config')
++            self.assertEqual((installed / 'LIFEOS/MEMORY/user.txt').read_text(), 'private memory')
++
+     def test_restore_stop_crash_recovery_preserves_the_selected_installation(self):
+         with tempfile.TemporaryDirectory() as directory:
+             installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))

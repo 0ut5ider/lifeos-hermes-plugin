@@ -1,0 +1,37 @@
+{
+  "revision": "eed9bdb745ac56824a4b3e2a3ba08d09e8839cfe",
+  "parent": "30906ed68586556e57eb381f6e4889732a9caec9",
+  "environment": {
+    "HOME": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home",
+    "TMPDIR": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home/tmp",
+    "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "commands": {
+    "apply-closure": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-apply-closure/raw/probe-apply-closure.py"
+    ],
+    "prior-closures": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-review-fix-followup/raw/probe-closures.py"
+    ],
+    "regression": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_update_transaction.UpdateTransactionTests.test_apply_stop_crash_has_a_recoverable_durable_journal"
+    ]
+  },
+  "results": {
+    "apply-closure": 0,
+    "prior-closures": 0,
+    "regression": 0
+  }
+}

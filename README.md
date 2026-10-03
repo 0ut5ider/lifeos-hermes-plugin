@@ -25,6 +25,8 @@ The [installation and removal plan](docs/memory-implementation-plan.md#installat
 
 [PR review corrections](docs/verification/2026-10-02-opus-review-fixes/README.md) protect later Hermes settings during version restore and check complete direct child prompts. Restore archives support separate profile and baseline filesystems. Worker errors keep unfinished swaps available for authenticated recovery. Temporary mount copies are removed after completed operations. Pending recovery copies remain available. The private development recorder retains environment names and filters values outside its diagnostic allowlist. These corrections do not enable memory ownership.
 
+[Fresh PR review corrections](docs/verification/2026-10-02-sol-review-fixes/README.md) record durable stop intent before apply and restore operations. Interrupted restore recovery preserves the current version and later data when no swap has occurred. Source admission excludes private and forgotten filename labels from owner responses and rejected-source diagnostics. These corrections add no Hermes or LifeOS patches and remain separate from ownership activation and full hook parity.
+
 - Load LifeOS context and skills from a configurable installation path.
 - Map each LifeOS hook behavior to a Hermes lifecycle point and verify its effect, including blocks, approvals, context injection, and stop gates.
 - Keep the LifeOS installation unchanged where possible. Record any Hermes core extension needed for behavior the plugin API cannot express.

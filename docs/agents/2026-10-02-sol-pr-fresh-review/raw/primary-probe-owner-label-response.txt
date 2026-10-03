@@ -1,0 +1,98 @@
+{
+  "ownership_enabled": false,
+  "sharing_enabled": false,
+  "adopted": {
+    "status": "committed",
+    "facts_adopted": 1,
+    "proposals_adopted": 0,
+    "references": [
+      {
+        "id": "d432b447a8d14258bc076a261bf4ddb6",
+        "revision": 1
+      }
+    ],
+    "excluded_sources": 0,
+    "native_files_changed": false,
+    "writer": "dashboard:owner",
+    "request_id": "adopt-private-owner-label"
+  },
+  "knowledge_response": {
+    "status": 200,
+    "body": {
+      "domains": [
+        {
+          "name": "People",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Companies",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Ideas",
+          "count": 0,
+          "avgQuality": 0,
+          "lowCount": 0,
+          "midCount": 0,
+          "highCount": 0
+        },
+        {
+          "name": "Research",
+          "count": 1,
+          "avgQuality": 5,
+          "lowCount": 0,
+          "midCount": 1,
+          "highCount": 0
+        }
+      ],
+      "notes": [
+        {
+          "title": "Safe Synthetic Note",
+          "domain": "research",
+          "type": "research",
+          "quality": 5,
+          "tags": [],
+          "created": "2026-10-02T00:00:00Z",
+          "updated": "2026-10-02T00:00:00Z",
+          "slug": "<private>SYNTHETIC_OWNER_PRIVATE_LABEL"
+        }
+      ],
+      "totalNotes": 1,
+      "avgQuality": 5,
+      "topTags": [],
+      "lastHarvest": null
+    }
+  },
+  "search_response": {
+    "status": "ok",
+    "results": [
+      {
+        "reference": {
+          "id": "d432b447a8d14258bc076a261bf4ddb6",
+          "revision": 1
+        },
+        "content": "SafeSyntheticCurrentBody",
+        "category": "project",
+        "project": "lab",
+        "writer": "native:unattributed",
+        "status": "active",
+        "source": {
+          "kind": "adopted",
+          "session": "",
+          "path": "LIFEOS/MEMORY/KNOWLEDGE/Research/<private>SYNTHETIC_OWNER_PRIVATE_LABEL.md"
+        },
+        "score": 1
+      }
+    ]
+  },
+  "private_marker_in_knowledge": true,
+  "private_marker_in_owner_search": true
+}

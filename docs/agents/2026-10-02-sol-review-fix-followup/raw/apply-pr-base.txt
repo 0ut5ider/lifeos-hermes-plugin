@@ -1,0 +1,9 @@
+revision 648fe30a5c5f40551c9a3d73f0d80f527dbd7412
+136:     try:
+137:         _snapshot_mount(hermes_home, snapshot, baseline_path)
+138:         stopped = True
+139:         stop()
+140:         manifest["state"] = "stopped"
+141:         _write_json(manifest_path, manifest)
+142:         plan = plan_system_files(installed, baseline, selected_source, reference)
+143:         _copy_tree(installed, snapshot / "staged")

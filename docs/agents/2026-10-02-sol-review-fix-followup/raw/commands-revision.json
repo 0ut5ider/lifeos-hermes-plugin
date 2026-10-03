@@ -1,0 +1,48 @@
+{
+  "revision": "30906ed68586556e57eb381f6e4889732a9caec9",
+  "review_base": "85c09023235fb358af18516b67bd5d012b2578ab",
+  "environment": {
+    "HOME": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home",
+    "TMPDIR": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home/tmp",
+    "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/hermes",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-plugin-memory/source-gate-20261002-mount-release/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "PYTHONDONTWRITEBYTECODE": "1"
+  },
+  "commands": {
+    "focused": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_update_transaction",
+      "test_update_worker",
+      "test_memory_admin_dashboard",
+      "test_memory_source_labels",
+      "test_memory_canonical"
+    ],
+    "dashboard": [
+      "node",
+      "--test",
+      "tests/test_dashboard_ui.cjs",
+      "tests/test_memory_dashboard_ui.cjs"
+    ],
+    "probe-closures": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-review-fix-followup/raw/probe-closures.py"
+    ],
+    "probe-journal-windows": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-review-fix-followup/raw/probe-journal-windows.py"
+    ]
+  },
+  "results": {
+    "focused": 0,
+    "dashboard": 0,
+    "probe-closures": 0,
+    "probe-journal-windows": 0
+  }
+}

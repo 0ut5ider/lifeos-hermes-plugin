@@ -1,0 +1,169 @@
+test_restore_stop_crash_recovery_preserves_the_selected_installation (test_update_transaction.UpdateTransactionTests.test_restore_stop_crash_recovery_preserves_the_selected_installation) ... FAIL
+test_failed_restart_keeps_restore_stop_intent_recoverable (test_update_transaction.UpdateTransactionTests.test_failed_restart_keeps_restore_stop_intent_recoverable) ... FAIL
+test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) ... 
+  test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='restore_stopping') ... FAIL
+test_dead_restore_stop_worker_can_queue_authenticated_recovery (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_restore_stop_worker_can_queue_authenticated_recovery) ... FAIL
+test_forgotten_filename_is_excluded_from_adoption (test_memory_source_labels.MemorySourceLabelTests.test_forgotten_filename_is_excluded_from_adoption) ... FAIL
+test_previously_registered_forgotten_labels_do_not_enter_owner_responses (test_memory_source_labels.MemorySourceLabelTests.test_previously_registered_forgotten_labels_do_not_enter_owner_responses) ... FAIL
+test_previously_registered_private_sources_do_not_enter_owner_responses (test_memory_source_labels.MemorySourceLabelTests.test_previously_registered_private_sources_do_not_enter_owner_responses) ... FAIL
+test_private_filename_and_metadata_are_excluded_from_adoption (test_memory_source_labels.MemorySourceLabelTests.test_private_filename_and_metadata_are_excluded_from_adoption) ... FAIL
+test_changed_section_cannot_keep_an_obsolete_prefix_active (test_memory_native.NativeMemoryTests.test_changed_section_cannot_keep_an_obsolete_prefix_active) ... ok
+test_changed_section_cannot_resolve_to_retained_quotations (test_memory_native.NativeMemoryTests.test_changed_section_cannot_resolve_to_retained_quotations) ... ok
+test_concurrent_native_writes_do_not_lose_acknowledged_facts (test_memory_native.NativeMemoryTests.test_concurrent_native_writes_do_not_lose_acknowledged_facts) ... ok
+test_conflict_retry_reports_the_same_outcome (test_memory_native.NativeMemoryTests.test_conflict_retry_reports_the_same_outcome) ... ok
+test_correct_and_forget_exclude_retained_claims (test_memory_native.NativeMemoryTests.test_correct_and_forget_exclude_retained_claims) ... ok
+test_correction_cannot_reactivate_forgotten_text (test_memory_native.NativeMemoryTests.test_correction_cannot_reactivate_forgotten_text) ... ok
+test_correction_to_existing_hot_fact_keeps_one_reference (test_memory_native.NativeMemoryTests.test_correction_to_existing_hot_fact_keeps_one_reference) ... ok
+test_crash_before_journal_cannot_leave_an_unknown_reservation (test_memory_native.NativeMemoryTests.test_crash_before_journal_cannot_leave_an_unknown_reservation) ... ok
+test_hot_corpus_cache_preserves_changes_and_native_duplicate_normalization (test_memory_native.NativeMemoryTests.test_hot_corpus_cache_preserves_changes_and_native_duplicate_normalization) ... ok
+test_hot_corpus_reuses_real_native_reads_and_respects_category_grants (test_memory_native.NativeMemoryTests.test_hot_corpus_reuses_real_native_reads_and_respects_category_grants) ... ok
+test_hot_correction_validates_before_mutation (test_memory_native.NativeMemoryTests.test_hot_correction_validates_before_mutation) ... ok
+test_hot_project_metadata_cannot_create_aliases (test_memory_native.NativeMemoryTests.test_hot_project_metadata_cannot_create_aliases) ... ok
+test_interrupted_hot_edits_recover_their_audit_prefix (test_memory_native.NativeMemoryTests.test_interrupted_hot_edits_recover_their_audit_prefix) ... ok
+test_interrupted_native_publication_recovers_before_retry (test_memory_native.NativeMemoryTests.test_interrupted_native_publication_recovers_before_retry) ... ok
+test_invalid_hot_entry_is_not_reported_saved (test_memory_native.NativeMemoryTests.test_invalid_hot_entry_is_not_reported_saved) ... ok
+test_native_child_holds_recovery_lock_after_parent_dies (test_memory_native.NativeMemoryTests.test_native_child_holds_recovery_lock_after_parent_dies) ... ok
+test_native_ranking_uses_only_the_authorized_corpus (test_memory_native.NativeMemoryTests.test_native_ranking_uses_only_the_authorized_corpus) ... ok
+test_native_write_and_recall_share_the_authoritative_record (test_memory_native.NativeMemoryTests.test_native_write_and_recall_share_the_authoritative_record) ... ok
+test_opening_current_metadata_preserves_database_bytes (test_memory_native.NativeMemoryTests.test_opening_current_metadata_preserves_database_bytes) ... ok
+test_private_title_is_rejected_before_native_routing (test_memory_native.NativeMemoryTests.test_private_title_is_rejected_before_native_routing) ... ok
+test_reader_cannot_write_and_project_grant_excludes_hot_memory (test_memory_native.NativeMemoryTests.test_reader_cannot_write_and_project_grant_excludes_hot_memory) ... ok
+test_reference_binds_body_when_title_contains_the_same_text (test_memory_native.NativeMemoryTests.test_reference_binds_body_when_title_contains_the_same_text) ... ok
+test_rejected_physical_user_boundary_is_explicit (test_memory_native.NativeMemoryTests.test_rejected_physical_user_boundary_is_explicit) ... ok
+test_reordered_hot_entries_keep_their_saved_reference (test_memory_native.NativeMemoryTests.test_reordered_hot_entries_keep_their_saved_reference) ... ok
+test_retry_is_idempotent_and_changed_request_is_rejected (test_memory_native.NativeMemoryTests.test_retry_is_idempotent_and_changed_request_is_rejected) ... ok
+test_user_heading_does_not_act_as_a_native_append_boundary (test_memory_native.NativeMemoryTests.test_user_heading_does_not_act_as_a_native_append_boundary) ... ok
+
+======================================================================
+FAIL: test_restore_stop_crash_recovery_preserves_the_selected_installation (test_update_transaction.UpdateTransactionTests.test_restore_stop_crash_recovery_preserves_the_selected_installation)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 42, in test_restore_stop_crash_recovery_preserves_the_selected_installation
+    self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restore_stopping')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'applied' != 'restore_stopping'
+- applied
++ restore_stopping
+
+
+======================================================================
+FAIL: test_failed_restart_keeps_restore_stop_intent_recoverable (test_update_transaction.UpdateTransactionTests.test_failed_restart_keeps_restore_stop_intent_recoverable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_transaction.py", line 68, in test_failed_restart_keeps_restore_stop_intent_recoverable
+    self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restore_stopping')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'applied' != 'restore_stopping'
+- applied
++ restore_stopping
+
+
+======================================================================
+FAIL: test_worker_error_retains_recoverable_transaction_status (test_update_worker.UpdateWorkerTests.test_worker_error_retains_recoverable_transaction_status) (state='restore_stopping')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_update_worker.py", line 37, in test_worker_error_retains_recoverable_transaction_status
+    self.assertEqual(data['state'], status)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'failed' != 'interrupted'
+- failed
++ interrupted
+
+
+======================================================================
+FAIL: test_dead_restore_stop_worker_can_queue_authenticated_recovery (test_memory_admin_dashboard.MemoryAdminDashboardTests.test_dead_restore_stop_worker_can_queue_authenticated_recovery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_admin_dashboard.py", line 346, in test_dead_restore_stop_worker_can_queue_authenticated_recovery
+    self.assertEqual(response.status_code, 200, response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"There is no interrupted LifeOS swap to recover"}
+
+======================================================================
+FAIL: test_forgotten_filename_is_excluded_from_adoption (test_memory_source_labels.MemorySourceLabelTests.test_forgotten_filename_is_excluded_from_adoption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 56, in test_forgotten_filename_is_excluded_from_adoption
+    self.assertEqual(preview['records'], [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'path': 'LIFEOS/MEMORY/KNOWLEDGE/Researc[153 chars] ''}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/Synthetic_retired_source_label.md', 'position': 112, 'content': 'SafeSyntheticCurrentBody', 'category': 'project', 'source_kind': 'adopted', 'project': ''}
+
++ []
+- [{'category': 'project',
+-   'content': 'SafeSyntheticCurrentBody',
+-   'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/Synthetic_retired_source_label.md',
+-   'position': 112,
+-   'project': '',
+-   'source_kind': 'adopted'}]
+
+======================================================================
+FAIL: test_previously_registered_forgotten_labels_do_not_enter_owner_responses (test_memory_source_labels.MemorySourceLabelTests.test_previously_registered_forgotten_labels_do_not_enter_owner_responses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 66, in test_previously_registered_forgotten_labels_do_not_enter_owner_responses
+    self.assert_registered_source_excluded(path, 'Synthetic_retired_source_label')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 74, in assert_registered_source_excluded
+    self.assertEqual(canonical['records'], [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'id': 'path:124ea9649de672e3', 'type': '[443 chars]one}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'id': 'path:124ea9649de672e3', 'type': 'research', 'title': 'Safe synthetic title', 'created': '2026-10-02T00:00:00Z', 'updated': '2026-10-02T00:00:00Z', 'provenance': {'source': 'canonical', 'session': None, 'path': 'KNOWLEDGE/Research/Synthetic_retired_source_label.md'}, 'content': '---\ntitle: Safe synthetic title\ntype: research\ncreated: 2026-10-02T00:00:00Z\nupdated: 2026-10-02T00:00:00Z\n---\n\nSafeSyntheticCurrentBody', 'related': [], 'valid_from': None, 'valid_until': None}
+
+Diff is 698 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_previously_registered_private_sources_do_not_enter_owner_responses (test_memory_source_labels.MemorySourceLabelTests.test_previously_registered_private_sources_do_not_enter_owner_responses)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 61, in test_previously_registered_private_sources_do_not_enter_owner_responses
+    self.assert_registered_source_excluded(path, 'SYNTHETIC_PRIVATE_LABEL')
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 74, in assert_registered_source_excluded
+    self.assertEqual(canonical['records'], [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'id': 'path:6f64d2ac15a33fe6', 'type': '[445 chars]one}] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+{'id': 'path:6f64d2ac15a33fe6', 'type': 'research', 'title': 'Safe synthetic title', 'created': '2026-10-02T00:00:00Z', 'updated': '2026-10-02T00:00:00Z', 'provenance': {'source': 'canonical', 'session': None, 'path': 'KNOWLEDGE/Research/<private>SYNTHETIC_PRIVATE_LABEL.md'}, 'content': '---\ntitle: Safe synthetic title\ntype: research\ncreated: 2026-10-02T00:00:00Z\nupdated: 2026-10-02T00:00:00Z\n---\n\nSafeSyntheticCurrentBody', 'related': [], 'valid_from': None, 'valid_until': None}
+
+Diff is 700 characters long. Set self.maxDiff to None to see it.
+
+======================================================================
+FAIL: test_private_filename_and_metadata_are_excluded_from_adoption (test_memory_source_labels.MemorySourceLabelTests.test_private_filename_and_metadata_are_excluded_from_adoption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 45, in test_private_filename_and_metadata_are_excluded_from_adoption
+    self.assertEqual(preview['records'], [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [{'path': 'LIFEOS/MEMORY/KNOWLEDGE/Researc[334 chars] ''}] != []
+
+First list contains 2 additional elements.
+First extra element 0:
+{'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/<private>SYNTHETIC_PRIVATE_LABEL.md', 'position': 112, 'content': 'SafeSyntheticCurrentBody', 'category': 'project', 'source_kind': 'adopted', 'project': ''}
+
++ []
+- [{'category': 'project',
+-   'content': 'SafeSyntheticCurrentBody',
+-   'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/<private>SYNTHETIC_PRIVATE_LABEL.md',
+-   'position': 112,
+-   'project': '',
+-   'source_kind': 'adopted'},
+-  {'category': 'project',
+-   'content': 'SafeSyntheticCurrentBody',
+-   'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/safe-name.md',
+-   'position': 124,
+-   'project': '',
+-   'source_kind': 'adopted'}]
+
+----------------------------------------------------------------------
+Ran 34 tests in 48.702s
+
+FAILED (failures=8)

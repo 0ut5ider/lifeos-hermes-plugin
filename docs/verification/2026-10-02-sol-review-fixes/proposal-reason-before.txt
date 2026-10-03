@@ -1,0 +1,15 @@
+test_rejected_proposal_reason_does_not_expose_a_retired_target (test_memory_source_labels.MemorySourceLabelTests.test_rejected_proposal_reason_does_not_expose_a_retired_target) ... FAIL
+
+======================================================================
+FAIL: test_rejected_proposal_reason_does_not_expose_a_retired_target (test_memory_source_labels.MemorySourceLabelTests.test_rejected_proposal_reason_does_not_expose_a_retired_target)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 86, in test_rejected_proposal_reason_does_not_expose_a_retired_target
+    self.assertNotIn('Synthetic_retired_source_label', json.dumps(preview))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Synthetic_retired_source_label' unexpectedly found in '{"signature": "a032ff6c8722de9938d22c89dcac1132792896daba4954a7ef7f44cc0944deaa", "records": [], "proposals": [], "excluded": [{"path": "LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl", "reference": "synthetic-foreign-proposal", "reason": "\'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s088924y/Synthetic_retired_source_label.md\' is not in the subpath of \'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s088924y/.claude\'"}], "scanned_files": 3}'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.321s
+
+FAILED (failures=1)

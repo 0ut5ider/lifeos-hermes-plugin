@@ -1,0 +1,15 @@
+test_early_body_rejection_does_not_expose_a_private_filename (test_memory_source_labels.MemorySourceLabelTests.test_early_body_rejection_does_not_expose_a_private_filename) ... FAIL
+
+======================================================================
+FAIL: test_early_body_rejection_does_not_expose_a_private_filename (test_memory_source_labels.MemorySourceLabelTests.test_early_body_rejection_does_not_expose_a_private_filename)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_source_labels.py", line 67, in test_early_body_rejection_does_not_expose_a_private_filename
+    self.assertNotIn('SYNTHETIC_PRIVATE_REJECTED_LABEL', json.dumps(preview))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC_PRIVATE_REJECTED_LABEL' unexpectedly found in '{"signature": "f7f8ce3d045c5c164df05fff60a61c3758e4e9cf19d5afafd53886c2e4c50515", "records": [], "proposals": [], "excluded": [{"path": "LIFEOS/MEMORY/KNOWLEDGE/Research/<private>SYNTHETIC_PRIVATE_REJECTED_LABEL.md", "reason": "This retained claim requires explicit reactivation"}], "scanned_files": 3}'
+
+----------------------------------------------------------------------
+Ran 1 test in 1.210s
+
+FAILED (failures=1)

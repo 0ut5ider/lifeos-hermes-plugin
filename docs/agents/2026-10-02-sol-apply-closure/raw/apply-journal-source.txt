@@ -1,0 +1,20 @@
+222:     snapshot.mkdir(mode=0o700, parents=False)
+223:     manifest = {"state": "prepared", "installed": str(installed.resolve()),
+224:                 "hermes_home": str(hermes_home.resolve()), "baseline": str(baseline_path.resolve()),
+225:                 "plan_counts": {key: len(plan[key]) for key in ("add", "replace", "remove")},
+226:                 "hook_counts": hook_counts}
+227:     manifest_path = snapshot / "manifest.json"
+228:     _write_json(manifest_path, manifest)
+229:     stopped = False
+230:     swapped = False
+231:     try:
+232:         _snapshot_mount(hermes_home, snapshot, baseline_path)
+233:         stopped = True
+234:         manifest["state"] = "stopped"
+235:         _write_json(manifest_path, manifest)
+236:         stop()
+237:         plan = plan_system_files(installed, baseline, selected_source, reference)
+238:         _copy_tree(installed, snapshot / "staged")
+239:         staged = snapshot / "staged"
+240:         apply_system_plan(staged, selected_source, plan)
+241:         dependency_report = sync_dependencies(staged, prior_source, selected_source, reference)

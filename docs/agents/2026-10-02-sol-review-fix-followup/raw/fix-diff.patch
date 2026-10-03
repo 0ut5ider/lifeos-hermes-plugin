@@ -1,0 +1,475 @@
+diff --git a/README.md b/README.md
+index c89463b..909e1b0 100644
+--- a/README.md
++++ b/README.md
+@@ -11,6 +11,8 @@ This plugin is a translation layer that allows a full replacement of Claude code
+ 
+ [PR readiness corrections](docs/verification/2026-10-02-pr-readiness/README.md) add request origin checks and a shared installation lock. The isolated browser installation verifies apply, version restore with a later audit entry, and recovery after process termination. The [integrated review](docs/agents/2026-10-02-pr-ready-integrated-review/pr-ready-integrated-review.md) closes six findings. Memory ownership and full hook parity remain unavailable.
+ 
++Restore records its stop intent before it stops the gateway. Recovery before file replacement restarts the selected version and preserves later data and profile edits. Memory adoption and retrieval exclude private source filenames and normalized forgotten filename labels. The [update policy](docs/update-policy.md) describes the restore recovery states.
++
+ ## Compatibility target
+ 
+ The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.
+diff --git a/docs/update-policy.md b/docs/update-policy.md
+index b0e62a3..d0f889a 100644
+--- a/docs/update-policy.md
++++ b/docs/update-policy.md
+@@ -54,6 +54,8 @@ The long-term way to reduce this maintenance cost is to contribute the generic H
+ 
+ ## Operation admission
+ 
++Restore records a durable `restore_stopping` state before it stops the gateway. If the worker dies in this state, the authenticated recovery action restarts and verifies the selected installation. It does not replace program files, the profile, the baseline, or user data. It then records `applied`. A later restore request must pass the current data and profile checks again. Once the worker records `restoring`, recovery uses the prior installation snapshot. Status reads use a completed durable state if a worker dies before it writes its final status.
++
+ The dashboard rejects installation mutations from another origin. Fixed installation actions also reject query parameters and request bodies. Authenticated admission and detached code workers share a private installation lock. A competing action receives a conflict before it creates a job or owner grant. Process termination releases the lock; the transaction journal still determines whether recovery is required.
+ 
+ The [PR readiness record](verification/2026-10-02-pr-readiness/README.md) verifies real lock contention, process termination, browser apply, and version restore with later external audit data. These checks use the pinned revisions. They do not establish compatibility with a newer upstream version.
+diff --git a/lifeos_hook_bridge/dashboard/dist/index.js b/lifeos_hook_bridge/dashboard/dist/index.js
+index 16f1c6f..9ee0a81 100644
+--- a/lifeos_hook_bridge/dashboard/dist/index.js
++++ b/lifeos_hook_bridge/dashboard/dist/index.js
+@@ -550,7 +550,7 @@
+       setInstallationBusy(true);
+       setInstallationStatus("");
+       SDK.fetchJSON(lifeosUpdateEndpoint + "/recover", { method: "POST" }).then(function () {
+-        setInstallationStatus("LifeOS recovery started. The worker will restore the prior installation and restart Hermes.");
++        setInstallationStatus("LifeOS recovery started. If no files were replaced, the worker restarts the current version. Otherwise, it restores the prior version and restarts Hermes.");
+         refreshLifeOSUpdate(0);
+       }).catch(function (error) {
+         setInstallationStatus("Could not start LifeOS recovery: " + error.message);
+diff --git a/lifeos_hook_bridge/dashboard/plugin_api.py b/lifeos_hook_bridge/dashboard/plugin_api.py
+index 7821447..81f500c 100644
+--- a/lifeos_hook_bridge/dashboard/plugin_api.py
++++ b/lifeos_hook_bridge/dashboard/plugin_api.py
+@@ -536,7 +536,8 @@ def get_lifeos_update_status():
+             active = subprocess.run(["systemctl", "--user", "is-active", status["unit"]],
+                                     text=True, capture_output=True, timeout=15)
+             if active.returncode or active.stdout.strip() != "active":
+-                status["state"] = "interrupted"
++                status["state"] = (status.get('transaction_state') if status.get('transaction_state')
++                                   in {'applied', 'rolled_back'} else 'interrupted')
+         return {**status, "job": str(job)}
+     except (OSError, ValueError, TypeError):
+         return {"state": "error", "job": str(job), "error": "Update status could not be read"}
+@@ -638,7 +639,7 @@ def _recover_lifeos_update(account: str):
+ def _recover_lifeos_update_locked(account: str):
+     previous = get_lifeos_update_status()
+     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
+-        "stopped", "swapped", "restoring", "rollback_failed"
++        "stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"
+     }:
+         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
+     return _resume_lifeos_update(previous, account, 'recover')
+diff --git a/lifeos_hook_bridge/memory_access.py b/lifeos_hook_bridge/memory_access.py
+index c979938..19a632e 100644
+--- a/lifeos_hook_bridge/memory_access.py
++++ b/lifeos_hook_bridge/memory_access.py
+@@ -628,14 +628,19 @@ class NativeMemory:
+             return [{**records[item["path"]], "score": item["score"]} for item in ranked["results"]]
+ 
+     def _corpus(self, connection: sqlite3.Connection, scope: MemoryScope) -> tuple[dict[str, Any], list[dict[str, Any]]]:
++        from .memory_sources import source_labels, source_projection
+         records = {}
+         corpus = []
++        declared = []
+         hot_entries = {}
+         for row in connection.execute("SELECT * FROM records WHERE status='active' ORDER BY updated DESC"):
+             if not self._allowed(scope, row):
+                 continue
+             # Reuse native parsing inside this locked retrieval, keeping each reference's digest check.
+             content = self._content(row, hot_entries)
++            if row['category'] == 'project' and self._filter_history(connection, scope,
++                    source_labels(row['path']), _now())['excluded']:
++                continue
+             records[row["id"]] = {"reference": {"id": row["id"], "revision": row["revision"]},
+                                   "content": content, "category": row["category"], "project": row["project"],
+                                   "writer": row["writer"], "status": 'historical' if row['source_kind']=='learning' else row["status"],
+@@ -644,6 +649,11 @@ class NativeMemory:
+                                                                  "title": row["project"] or row["category"]},
+                            "body": content, "wordCount": max(1, len(content.split())),
+                            "noteClass": 'learning' if row['source_kind']=='learning' else "knowledge" if row["category"] == "project" else "memory"})
++            declared.append(source_projection(self, row['path'], content))
++        if declared:
++            checked = self._native('validate_source_batch', contents=declared)['accepted']
++            corpus = [item for item, accepted in zip(corpus, checked, strict=True) if accepted is True]
++            records = {item['filePath']: records[item['filePath']] for item in corpus}
+         return records, corpus
+ 
+     def relevant_context(self, scope: MemoryScope, query: str, options: dict[str, Any]) -> dict[str, Any]:
+diff --git a/lifeos_hook_bridge/memory_adoption.py b/lifeos_hook_bridge/memory_adoption.py
+index 4f28137..29d047b 100644
+--- a/lifeos_hook_bridge/memory_adoption.py
++++ b/lifeos_hook_bridge/memory_adoption.py
+@@ -12,6 +12,7 @@ from uuid import uuid4
+ from .memory_access import HOT_FILES, MemoryUnavailable, _claim_digest, _claim_words, _digest, _now
+ from .memory_policy import CATEGORIES, MemoryScope
+ from .memory_proposals import QUEUE
++from .memory_sources import source_labels, source_projection
+ 
+ 
+ def _owner(scope: MemoryScope) -> bool:
+@@ -110,9 +111,15 @@ def _snapshot(memory, connection, scope: MemoryScope) -> dict[str, Any]:
+ 
+     if items:
+         checked = memory._native('validate_batch',items=items)['results']
++        source_checked = memory._native('validate_source_batch', contents=[
++            source_projection(memory, candidate['path'], candidate['content']) for candidate in candidates])['accepted']
+         accepted = []
+-        for candidate, item, result in zip(candidates,items,checked,strict=True):
+-            if result.get('ok') and result.get('item') == item:
++        for candidate, item, result, source_valid in zip(candidates,items,checked,source_checked,strict=True):
++            labels_excluded = (candidate['category'] == 'project' and memory._filter_history(
++                connection, scope, source_labels(candidate['path']), _now())['excluded'])
++            if source_valid is not True or labels_excluded:
++                excluded.append({'path':'[excluded source]','reason':'Source labels or metadata are excluded'})
++            elif result.get('ok') and result.get('item') == item:
+                 accepted.append(candidate)
+             else:
+                 excluded.append({'path':candidate['path'],'reason':'Native validation rejected this source text'})
+diff --git a/lifeos_hook_bridge/memory_canonical.py b/lifeos_hook_bridge/memory_canonical.py
+index 05484f9..e7a13e8 100644
+--- a/lifeos_hook_bridge/memory_canonical.py
++++ b/lifeos_hook_bridge/memory_canonical.py
+@@ -7,7 +7,7 @@ from pathlib import Path
+ import re
+ 
+ from .memory_access import MemoryUnavailable
+-from .memory_sources import authorize, _strings
++from .memory_sources import authorize, _strings, source_labels
+ 
+ 
+ RESPONSE_LIMIT = 3 * 1024 * 1024
+@@ -51,11 +51,16 @@ def corpus(memory, scope, root: str, *, connection=None) -> dict:
+             sources.append(source)
+             if source_bytes>RESPONSE_LIMIT:
+                 raise MemoryUnavailable('The declared canonical sources exceed their transport limit')
++        if sources:
++            checked = memory._native('validate_source_batch', contents=[
++                source['content'] + '\n' + source['path'] for source in sources])['accepted']
++            sources = [source for source, accepted in zip(sources, checked, strict=True) if accepted is True]
+         parsed=memory._native('canonical_records',root=str(requested),sources=sources)
+         if len(parsed['records'])!=len(sources) or len(parsed['metadata'])!=len(sources):
+             raise MemoryUnavailable('Native canonical parsing changed its declared sources')
+         if len({record['id'] for record in parsed['records']})!=len(parsed['records']):
+             raise MemoryUnavailable('The canonical source declares duplicate native record identifiers')
++        admitted_sources, admitted_records = [], []
+         for source,record,metadata in zip(sources,parsed['records'],parsed['metadata'],strict=True):
+             if record['content']!=source['content']:
+                 raise MemoryUnavailable('Native canonical parsing changes the declared source text')
+@@ -64,8 +69,14 @@ def corpus(memory, scope, root: str, *, connection=None) -> dict:
+                               record['provenance']['session'] or ''])
+             if memory._filter_history(connection,scope,labels,datetime.now(timezone.utc).isoformat())['excluded']:
+                 raise MemoryUnavailable('Canonical metadata contains an excluded claim')
+-        result={'ok':True,'root':str(requested),'files':[source['path'] for source in sources],
+-                'records':parsed['records']}
++            relative = 'LIFEOS/MEMORY/' + Path(source['path']).relative_to(physical).as_posix()
++            if memory._filter_history(connection, scope, source_labels(relative),
++                    datetime.now(timezone.utc).isoformat())['excluded']:
++                continue
++            admitted_sources.append(source)
++            admitted_records.append(record)
++        result={'ok':True,'root':str(requested),'files':[source['path'] for source in admitted_sources],
++                'records':admitted_records}
+         if len(json.dumps(result).encode())>RESPONSE_LIMIT:
+             raise MemoryUnavailable('The governed canonical response exceeds its transport limit')
+         return result
+diff --git a/lifeos_hook_bridge/memory_sources.py b/lifeos_hook_bridge/memory_sources.py
+index e18569a..7ae8a5d 100644
+--- a/lifeos_hook_bridge/memory_sources.py
++++ b/lifeos_hook_bridge/memory_sources.py
+@@ -101,6 +101,22 @@ def _admit(memory, connection, scope, content, relative, timestamp):
+                                   reviewed=is_reviewed(memory, connection, scope, relative, content))
+ 
+ 
++def source_labels(relative: str) -> str:
++    parts = Path(relative).parts
++    # Knowledge type directories name native formats, not user claims.
++    start = 4 if parts[:3] == ('LIFEOS', 'MEMORY', 'KNOWLEDGE') else 3
++    dynamic = '/'.join(parts[start:])
++    normalized = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', dynamic).replace('-', ' ').replace('_', ' ')
++    return '\n'.join((dynamic, normalized))
++
++
++def source_projection(memory, relative: str, content: str) -> str:
++    path = memory._path(relative)
++    text = path.read_text(encoding='utf-8')
++    front = re.match(r'^---\n.*?\n---\n', text, re.DOTALL)
++    return '\n'.join((front.group() if front else '', content, str(path)))
++
++
+ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
+     authorize(scope)
+     if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
+diff --git a/lifeos_hook_bridge/update_transaction.py b/lifeos_hook_bridge/update_transaction.py
+index 7928eed..6c7a29a 100644
+--- a/lifeos_hook_bridge/update_transaction.py
++++ b/lifeos_hook_bridge/update_transaction.py
+@@ -36,6 +36,7 @@ def _write_json(path: Path, data: dict) -> None:
+         stream.flush()
+         os.fsync(stream.fileno())
+     os.replace(temporary, path)
++    _sync_directory(path.parent)
+ 
+ 
+ def _copy_tree(source: Path, target: Path) -> None:
+@@ -289,6 +290,12 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
+     target = Path(manifest['installed'])
+     if installed is not None and target.absolute() != installed.absolute():
+         raise UpdateTransactionError('The restore snapshot belongs to another installation')
++    _validate_restore_data(snapshot, manifest)
++    return manifest
++
++
++def _validate_restore_data(snapshot: Path, manifest: dict) -> None:
++    target = Path(manifest['installed'])
+     external = _external_user_data(target, excluded=(snapshot,))
+     if external != manifest.get('user_data_links', {}) or external != _external_user_data(
+             snapshot / 'live-prior', excluded=(target, snapshot)):
+@@ -299,18 +306,21 @@ def validate_restore(snapshot: Path, *, installed: Path | None = None) -> dict:
+         raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
+     if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
+         raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+-    return manifest
+ 
+ 
+ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+     manifest = validate_restore(snapshot)
+     manifest_path = snapshot / "manifest.json"
+     installed = Path(manifest['installed'])
+-    stop()
++    manifest['state'] = 'restore_stopping'
++    _write_json(manifest_path, manifest)
+     try:
+-        manifest = validate_restore(snapshot)
++        stop()
++        _validate_restore_data(snapshot, manifest)
+     except Exception:
+         start()
++        manifest['state'] = 'applied'
++        _write_json(manifest_path, manifest)
+         raise
+     manifest["state"] = "restoring"
+     _write_json(manifest_path, manifest)
+@@ -328,6 +338,15 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
+ def recover_update(snapshot: Path, *, stop, start, verify) -> dict:
+     manifest_path = snapshot / "manifest.json"
+     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
++    if manifest['state'] == 'restore_stopping':
++        if not Path(manifest['installed']).is_dir() or (snapshot / 'restored-selected').exists():
++            raise UpdateTransactionError('The interrupted restore-stop installation changed its program tree')
++        # No program or profile swap starts before the restoring journal is durable.
++        start()
++        verify()
++        manifest['state'] = 'applied'
++        _write_json(manifest_path, manifest)
++        return manifest
+     if manifest["state"] not in {"stopped", "swapped", "restoring", "rollback_failed"}:
+         raise UpdateTransactionError("Update snapshot does not need interrupted recovery")
+     installed = Path(manifest["installed"])
+diff --git a/lifeos_hook_bridge/update_worker.py b/lifeos_hook_bridge/update_worker.py
+index 6c076ad..d298b6c 100644
+--- a/lifeos_hook_bridge/update_worker.py
++++ b/lifeos_hook_bridge/update_worker.py
+@@ -254,7 +254,7 @@ def _main() -> int:
+         try:
+             manifest = args.job / "snapshot/manifest.json"
+             state = json.loads(manifest.read_text())["state"] if manifest.is_file() else "failed"
+-            if state in {"stopped", "swapped", "restoring", "rollback_failed"}:
++            if state in {"stopped", "swapped", "restore_stopping", "restoring", "rollback_failed"}:
+                 state = 'interrupted'
+             elif state not in {'applied', 'rolled_back'}:
+                 state = 'failed'
+diff --git a/tests/test_memory_admin_dashboard.py b/tests/test_memory_admin_dashboard.py
+index f6d3c5d..b88ab9a 100644
+--- a/tests/test_memory_admin_dashboard.py
++++ b/tests/test_memory_admin_dashboard.py
+@@ -334,6 +334,32 @@ class MemoryAdminDashboardTests(unittest.TestCase):
+         self.fixture.fixture.admin().validate(self.configuration, authorization,
+             binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True, purpose='recover')
+ 
++    def test_dead_restore_stop_worker_can_queue_authenticated_recovery(self):
++        self.login()
++        job = self.interrupted_job()
++        (job / 'status.json').write_text(json.dumps({'state': 'restoring', 'unit': 'synthetic-dead-worker'}))
++        (job / 'snapshot/manifest.json').write_text(json.dumps({'state': 'restore_stopping'}))
++        with patch.object(self.api.subprocess, 'run', return_value=subprocess.CompletedProcess([], 3, '', '')):
++            self.assertEqual(self.api.get_lifeos_update_status()['state'], 'interrupted')
++            with patch.object(self.api, '_launch_lifeos_update') as launched:
++                response = self.post('/update/recover')
++        self.assertEqual(response.status_code, 200, response.text)
++        launched.assert_called_once_with(job, 'recover')
++        request = json.loads((job / 'request.json').read_text())
++        authorization = Path(request['memory_authorization'])
++        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration, authorization)
++        self.fixture.fixture.admin().validate(self.configuration, authorization,
++            binding=self.fixture.fixture.admin().job_binding(job, request, 'recover'), check_binding=True, purpose='recover')
++
++    def test_dead_recovery_worker_reports_its_durable_completed_state(self):
++        job = self.interrupted_job()
++        for state in ('applied', 'rolled_back'):
++            with self.subTest(state=state):
++                (job / 'status.json').write_text(json.dumps({'state': 'recovering', 'unit': 'synthetic-dead-worker'}))
++                (job / 'snapshot/manifest.json').write_text(json.dumps({'state': state}))
++                with patch.object(self.api.subprocess, 'run', return_value=subprocess.CompletedProcess([], 3, '', '')):
++                    self.assertEqual(self.api.get_lifeos_update_status()['state'], state)
++
+     def applied_job(self):
+         job = self.interrupted_job()
+         (job / 'status.json').write_text(json.dumps({'state': 'applied'}) + '\n')
+diff --git a/tests/test_memory_source_labels.py b/tests/test_memory_source_labels.py
+new file mode 100644
+index 0000000..3fe87b7
+--- /dev/null
++++ b/tests/test_memory_source_labels.py
+@@ -0,0 +1,83 @@
++# ABOUTME: Checks excluded source filenames in adoption and current owner responses.
++# ABOUTME: Uses native memory with ownership and external sharing disabled.
++import json
++import os
++from pathlib import Path
++import sys
++import unittest
++
++from lifeos_hook_bridge.memory_canonical import corpus
++from lifeos_hook_bridge.memory_preferences import MemoryPreferences
++from lifeos_hook_bridge.memory_service import MemoryConfiguration
++import test_memory_native as native_fixture
++from test_memory_native import OWNER
++
++
++class MemorySourceLabelTests(unittest.TestCase):
++    def setUp(self):
++        self.fixture = native_fixture.NativeMemoryTests(); self.fixture.setUp()
++        self.addCleanup(self.fixture.doCleanups)
++        self.memory = self.fixture.memory
++        self.root = self.fixture.root
++        (self.root / 'LIFEOS/PULSE').symlink_to(Path(os.environ['LIFEOS_MEMORY_SOURCE']) / 'LIFEOS/PULSE')
++        profile = self.fixture.home / 'hermes'; profile.mkdir(mode=0o700)
++        self.configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
++        self.configuration.save({'version': 1, 'root': str(self.root), 'principal': 'owner',
++            'ownership_enabled': False, 'sharing_enabled': False,
++            'accounts': {'dashboard:synthetic-owner': 'owner'}, 'destinations': {}, 'clients': {}})
++        self.preferences = MemoryPreferences(self.configuration.path, self.root,
++            self.fixture.home / '.ssh/authorized_keys', Path(sys.executable), self.fixture.home / 'unused-program')
++
++    def note(self, name, title='Safe synthetic title'):
++        path = self.root / 'LIFEOS/MEMORY/KNOWLEDGE/Research' / (name + '.md')
++        path.parent.mkdir(parents=True, exist_ok=True)
++        path.write_text('---\ntitle: ' + title + '\ntype: research\ncreated: 2026-10-02T00:00:00Z\n'
++                        'updated: 2026-10-02T00:00:00Z\n---\n\nSafeSyntheticCurrentBody\n')
++        return path
++
++    def retire(self):
++        saved = self.fixture.remember('RULE: Synthetic retired source label', 'label-save', 'principal')
++        self.assertEqual(self.memory.forget(OWNER, saved['reference'], 'label-forget')['status'], 'committed')
++
++    def test_private_filename_and_metadata_are_excluded_from_adoption(self):
++        self.note('<private>SYNTHETIC_PRIVATE_LABEL')
++        self.note('safe-name', '<private>SYNTHETIC_PRIVATE_TITLE')
++        preview = self.preferences.preview_adoption(account='dashboard:synthetic-owner')
++        self.assertEqual(preview['records'], [])
++        self.assertNotIn('SYNTHETIC_PRIVATE', json.dumps(preview))
++        receipt = self.preferences.adopt({'signature': preview['signature'], 'projects': {},
++            'request_id': 'exclude-labels'}, account='dashboard:synthetic-owner')
++        self.assertEqual(receipt['status'], 'committed')
++        self.assertEqual(receipt['facts_adopted'], 0)
++
++    def test_forgotten_filename_is_excluded_from_adoption(self):
++        self.retire()
++        self.note('Synthetic_retired_source_label')
++        preview = self.preferences.preview_adoption(account='dashboard:synthetic-owner')
++        self.assertEqual(preview['records'], [])
++        self.assertNotIn('Synthetic_retired_source_label', json.dumps(preview))
++
++    def test_previously_registered_private_sources_do_not_enter_owner_responses(self):
++        path = self.note('<private>SYNTHETIC_PRIVATE_LABEL')
++        self.assert_registered_source_excluded(path, 'SYNTHETIC_PRIVATE_LABEL')
++
++    def test_previously_registered_forgotten_labels_do_not_enter_owner_responses(self):
++        self.retire()
++        path = self.note('Synthetic_retired_source_label')
++        self.assert_registered_source_excluded(path, 'Synthetic_retired_source_label')
++
++    def assert_registered_source_excluded(self, path, marker):
++        # A persisted registration represents adoption before source-label admission.
++        with self.memory._transaction() as connection:
++            self.memory._record(connection, OWNER, path, 'SafeSyntheticCurrentBody', 'project', 'lab',
++                                {'kind': 'adopted'})
++        canonical = corpus(self.memory, OWNER, str(self.root / 'LIFEOS/MEMORY'))
++        self.assertEqual(canonical['records'], [])
++        knowledge, _ = self.preferences.knowledge_response('/api/knowledge', account='dashboard:synthetic-owner')
++        self.assertEqual(knowledge['body']['totalNotes'], 0)
++        search = self.preferences.review('lifeos_memory_search', {'query': 'SafeSyntheticCurrentBody'},
++                                         account='dashboard:synthetic-owner')
++        self.assertEqual(search['results'], [])
++        self.assertNotIn(marker, json.dumps([canonical, knowledge, search]))
++        self.assertFalse(self.configuration.load()['ownership_enabled'])
++        self.assertFalse(self.configuration.load()['sharing_enabled'])
+diff --git a/tests/test_update_transaction.py b/tests/test_update_transaction.py
+index cfa86e3..0a36ea4 100644
+--- a/tests/test_update_transaction.py
++++ b/tests/test_update_transaction.py
+@@ -25,6 +25,51 @@ def digest(path):
+ 
+ 
+ class UpdateTransactionTests(unittest.TestCase):
++    def test_restore_stop_crash_recovery_preserves_the_selected_installation(self):
++        with tempfile.TemporaryDirectory() as directory:
++            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
++            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
++                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
++            code = ('import os, signal, sys\nfrom pathlib import Path\n'
++                    'from lifeos_hook_bridge.update_transaction import restore_update\n'
++                    'def stopped():\n    os.kill(os.getpid(), signal.SIGKILL)\n'
++                    'restore_update(Path(sys.argv[1]), stop=stopped, start=lambda: None, verify=lambda: None)\n')
++            process = subprocess.run([sys.executable, '-c', code, str(snapshot)],
++                                     capture_output=True, text=True, timeout=30)
++            self.assertEqual(process.returncode, -signal.SIGKILL, process.stderr)
++            self.assertEqual(process.stderr, '')
++            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restore_stopping')
++            (hermes / 'config.yaml').write_text('Synthetic edit after interruption')
++            (installed / 'LIFEOS/MEMORY/user.txt').write_text('Synthetic later memory')
++            events.clear()
++            result = recover_update(snapshot, stop=stop, start=start, verify=lambda: events.append('verify'))
++            self.assertEqual(result['state'], 'applied')
++            self.assertEqual(events, ['start', 'verify'])
++            self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v2')
++            self.assertEqual((hermes / 'config.yaml').read_text(), 'Synthetic edit after interruption')
++            self.assertEqual((installed / 'LIFEOS/MEMORY/user.txt').read_text(), 'Synthetic later memory')
++            self.assertTrue((snapshot / 'live-prior').is_dir())
++            self.assertFalse((snapshot / 'restored-selected').exists())
++
++    def test_failed_restart_keeps_restore_stop_intent_recoverable(self):
++        with tempfile.TemporaryDirectory() as directory:
++            installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
++            events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
++            apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
++                         stop=stop, start=start, mount=mount, renew=renew, verify=verify)
++            def stopped_and_changed():
++                stop()
++                (hermes / 'config.yaml').write_text('Synthetic stop edit')
++            def unavailable():
++                raise RuntimeError('Synthetic start failure')
++            with self.assertRaisesRegex(RuntimeError, 'Synthetic start failure'):
++                restore_update(snapshot, stop=stopped_and_changed, start=unavailable, verify=lambda: None)
++            self.assertEqual(json.loads((snapshot / 'manifest.json').read_text())['state'], 'restore_stopping')
++            recovered = recover_update(snapshot, stop=stop, start=start, verify=lambda: None)
++            self.assertEqual(recovered['state'], 'applied')
++            self.assertEqual((hermes / 'config.yaml').read_text(), 'Synthetic stop edit')
++
+     @unittest.skipUnless(os.environ.get("LIFEOS_TASK_HOOK_PATH"), "Prepared native TaskGovernance is required")
+     def test_capability_record_applies_and_restores_with_native_hook_files(self):
+         with tempfile.TemporaryDirectory() as directory:
+diff --git a/tests/test_update_worker.py b/tests/test_update_worker.py
+index 0e101fe..b27a5ba 100644
+--- a/tests/test_update_worker.py
++++ b/tests/test_update_worker.py
+@@ -18,6 +18,7 @@ from lifeos_hook_bridge.update_worker import check_prior_source, check_template_
+ class UpdateWorkerTests(unittest.TestCase):
+     def test_worker_error_retains_recoverable_transaction_status(self):
+         expected = {'stopped': 'interrupted', 'swapped': 'interrupted', 'restoring': 'interrupted',
++                    'restore_stopping': 'interrupted',
+                     'rollback_failed': 'interrupted', 'applied': 'applied', 'rolled_back': 'rolled_back',
+                     'prepared': 'failed', 'failed_before_stop': 'failed'}
+         for state, status in expected.items():

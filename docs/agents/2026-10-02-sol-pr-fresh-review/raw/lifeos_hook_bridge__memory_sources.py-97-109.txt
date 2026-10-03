@@ -1,0 +1,13 @@
+97: def _admit(memory, connection, scope, content, relative, timestamp):
+98:     from .memory_source_review import is_reviewed
+99:     labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
+100:     return memory._filter_history(connection, scope, '\n'.join((content, relative, labels)), timestamp,
+101:                                   reviewed=is_reviewed(memory, connection, scope, relative, content))
+102: 
+103: 
+104: def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=None) -> list[dict[str, Any]]:
+105:     authorize(scope)
+106:     if len(paths) > SOURCE_COUNT_LIMIT or len(set(paths)) != len(paths):
+107:         raise MemoryUnavailable('The declared native sources exceed their count limit or repeat a path')
+108:     with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
+109:         sources = []

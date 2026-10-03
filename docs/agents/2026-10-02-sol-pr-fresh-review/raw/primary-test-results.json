@@ -1,0 +1,76 @@
+{
+  "commands": {
+    "transactions": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_installation_lock",
+      "test_update_transaction",
+      "test_update_worker",
+      "test_mount_transaction",
+      "test_memory_admin_dashboard",
+      "test_memory_administration",
+      "test_memory_prompt",
+      "test_memory_source_review"
+    ],
+    "memory-boundaries": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_hermes_memory_provider",
+      "test_memory_service",
+      "test_memory_native",
+      "test_memory_model_calls",
+      "test_memory_runtime",
+      "test_memory_history",
+      "test_memory_authorization",
+      "test_memory_context",
+      "test_memory_knowledge_query",
+      "test_memory_wiki_corpus"
+    ],
+    "recorder": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "discover",
+      "-v",
+      "-s",
+      "development/tests"
+    ],
+    "dashboard": [
+      "node",
+      "--test",
+      "tests/test_dashboard_ui.cjs",
+      "tests/test_memory_dashboard_ui.cjs"
+    ],
+    "source-neighbors": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "-W",
+      "error::ResourceWarning",
+      "-m",
+      "unittest",
+      "-v",
+      "test_memory_adoption",
+      "test_memory_canonical",
+      "test_memory_knowledge_render",
+      "test_memory_staging",
+      "test_update_transaction"
+    ]
+  },
+  "results": {
+    "transactions": 0,
+    "memory-boundaries": 0,
+    "recorder": 0,
+    "dashboard": 0,
+    "source-neighbors": 0
+  },
+  "revision": "85c09023235fb358af18516b67bd5d012b2578ab"
+}

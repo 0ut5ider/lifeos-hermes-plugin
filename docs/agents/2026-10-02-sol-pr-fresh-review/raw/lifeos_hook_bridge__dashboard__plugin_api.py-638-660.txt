@@ -1,0 +1,23 @@
+638: def _recover_lifeos_update_locked(account: str):
+639:     previous = get_lifeos_update_status()
+640:     if previous["state"] != "interrupted" or previous.get("transaction_state") not in {
+641:         "stopped", "swapped", "restoring", "rollback_failed"
+642:     }:
+643:         raise HTTPException(status_code=409, detail="There is no interrupted LifeOS swap to recover")
+644:     return _resume_lifeos_update(previous, account, 'recover')
+645: 
+646: 
+647: @router.post("/installation/update/restore")
+648: async def restore_lifeos_update(request: Request, account: str = Depends(_memory_account)):
+649:     await _fixed_mount_request(request)
+650:     return await run_in_threadpool(_restore_lifeos_update, account)
+651: 
+652: 
+653: def _restore_lifeos_update(account: str):
+654:     return _installation_action(lambda: _restore_lifeos_update_locked(account), resume_update=True)
+655: 
+656: 
+657: def _restore_lifeos_update_locked(account: str):
+658:     previous = get_lifeos_update_status()
+659:     if previous['state'] != 'applied' or previous.get('transaction_state') != 'applied':
+660:         raise HTTPException(status_code=409, detail='There is no applied LifeOS update to restore')

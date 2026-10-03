@@ -1,0 +1,24 @@
+{
+  "normalized_label_excluded": true,
+  "preview": {
+    "signature": "3d3acc2fdd943d1802b3258a6e4b53c3c379d463c9560394234d6432ad19d2a7",
+    "records": [],
+    "proposals": [],
+    "excluded": [
+      {
+        "path": "LIFEOS/MEMORY/OBSERVABILITY/pending-proposals.jsonl",
+        "reference": "synthetic-foreign-proposal",
+        "reason": "'/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home/tmp/native-memory-vmnuw8ud/Synthetic_retired_source_label.md' is not in the subpath of '/home/outsider/.cache/lifeos-plugin-memory/sol-review-followup-home/tmp/native-memory-vmnuw8ud/.claude'"
+      }
+    ],
+    "scanned_files": 3
+  },
+  "marker_in_response": true,
+  "ownership_enabled": false,
+  "sharing_enabled": false
+}
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-02-sol-diagnostic-closure/raw/probe-foreign-proposal-reason.py", line 17, in <module>
+    assert not result['marker_in_response'],'Retired filename enters the excluded proposal reason'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Retired filename enters the excluded proposal reason

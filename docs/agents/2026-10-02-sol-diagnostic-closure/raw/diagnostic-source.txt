@@ -1,0 +1,34 @@
+141:             if row.get('status') not in ('pending','sent'):
+142:                 continue
+143:             try:
+144:                 item = {key:row[key] for key in ('target_file','edit','confidence','rationale')}
+145:                 item.update(type='proposal',target_kind=row.get('target_kind','identity'))
+146:                 result = memory._native('validate',item=item)
+147:                 if not result.get('ok') or result.get('item') != item:
+148:                     raise ValueError('Native validation rejected this proposal')
+149:                 target = Path(row['target_file'])
+150:                 if not target.is_absolute():
+151:                     target = memory.root / target
+152:                 relative = target.relative_to(memory.root).as_posix()
+153:                 target = memory._path(relative)
+154:                 if not target.is_file() or memory._blocked(connection,row['edit']):
+155:                     raise ValueError('The proposal target is missing or the claim requires reactivation')
+156:                 paths[relative] = _digest(target.read_text())
+157:                 pending.append({'reference':{'id':identifier,'revision':1},'row':row,
+158:                                 'target':relative,'target_digest':paths[relative]})
+159:             except (KeyError, ValueError, MemoryUnavailable) as error:
+160:                 excluded.append({'path':QUEUE,'reference':identifier,'reason':str(error)})
+161: 
+162:     if excluded:
+163:         checked_labels = memory._native('validate_source_batch',
+164:             contents=[item['path'] for item in excluded])['accepted']
+165:         for item, valid in zip(excluded, checked_labels, strict=True):
+166:             if valid is not True or memory._filter_history(connection, scope,
+167:                     source_labels(item['path']), _now())['excluded']:
+168:                 item['path'] = '[excluded source]'
+169: 
+170:     signature = _digest(json.dumps({'root':str(memory.root),'principal':scope.principal,
+171:                                      'files':paths,'mtimes':{name:memory._path(name).stat().st_mtime_ns for name in paths},
+172:                                      'records':records,'proposals':proposals,'candidates':candidates,
+173:                                      'pending':pending,'excluded':excluded},sort_keys=True))
+174:     return {'signature':signature,'records':candidates,'proposals':pending,'excluded':excluded,'scanned_files':len(paths)}
