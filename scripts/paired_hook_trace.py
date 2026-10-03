@@ -130,6 +130,7 @@ def run_hook(identifier: str, trace_path: Path, encoded_command: str) -> int:
         payload = {}
     row = {"id": identifier, "event": payload.get("hook_event_name"),
            "tool_name": payload.get("tool_name"), "session_id": payload.get("session_id"),
+           "stdin_base64": base64.b64encode(request).decode("ascii"),
            "payload_keys": sorted(payload),
            "last_assistant_message": payload.get("last_assistant_message"),
            "stop_hook_active": payload.get("stop_hook_active"),
