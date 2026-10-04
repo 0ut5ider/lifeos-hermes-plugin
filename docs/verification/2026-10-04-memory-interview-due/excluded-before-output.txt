@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewDueTests.test_later_edit_to_an_already_excluded_completion_state_is_preserved _
+tests/test_memory_interview_due.py:227: in test_later_edit_to_an_already_excluded_completion_state_is_preserved
+    self.assertFalse(json.loads(result.stdout)['ok'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_later_edit_to_an_already_excluded_completion_state_is_preserved
+1 failed, 18 deselected in 1.07s

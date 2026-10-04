@@ -39,7 +39,7 @@ SOURCE_LIMIT = 256 * 1024
 CORPUS_LIMIT = 3 * 1024 * 1024
 SOURCE_COUNT_LIMIT = 2048
 EVIDENCE_FILES = frozenset({'LIFEOS/USER/HEALTH/current.json', 'LIFEOS/USER/FINANCES/expenses.json',
-                            'LIFEOS/MEMORY/STATE/work.json'})
+                            'LIFEOS/MEMORY/STATE/work.json', 'LIFEOS/MEMORY/STATE/interview.json'})
 EVIDENCE_DIRECTORIES = frozenset({'LIFEOS/USER/HEALTH/DATA/oura', 'LIFEOS/USER/CONDUIT/daily'})
 
 

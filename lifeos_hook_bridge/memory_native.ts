@@ -26,7 +26,52 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "state_evidence") {
+  if (input.action === "interview_completion") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewDue.ts")).href);
+    if (!object(module) || typeof module.renderInterviewCompletion !== "function" || typeof input.now !== "string") {
+      throw new Error("Native interview completion needs its declared date");
+    }
+    result = {content: module.renderInterviewCompletion(new Date(input.now))};
+  } else if (input.action === "interview_due") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewDue.ts")).href);
+    const freshness: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/TelosFreshness.ts")).href);
+    const evidence: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/StateEvidence.ts")).href);
+    if (!object(module) || typeof module.buildInputs !== "function" || typeof module.computeVerdict !== "function"
+        || !object(freshness) || typeof freshness.readContextFreshness !== "function" || typeof freshness.readStateFreshness !== "function"
+        || !object(evidence) || typeof evidence.gatherEvidence !== "function" || typeof input.now !== "string"
+        || !Array.isArray(input.context_sources) || !Array.isArray(input.state_sources) || !Array.isArray(input.interview_sources)
+        || !(input.evidence_sources === null || object(input.evidence_sources) && Array.isArray(input.evidence_sources.sources)
+          && (input.evidence_sources.gitCommits === null || Array.isArray(input.evidence_sources.gitCommits)
+            && input.evidence_sources.gitCommits.every(date => typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date))))) {
+      throw new Error("Native interview inputs require declared current sources and a date");
+    }
+    function declared(values: unknown[]): Record<string, {path: string; content: string; lastModified: string}> {
+      const sources: Record<string, {path: string; content: string; lastModified: string}> = {};
+      for (const source of values) {
+        if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
+            || typeof source.lastModified !== "string" || Object.hasOwn(sources, source.path)) {
+          throw new Error("Native interview inputs require distinct declared source bytes and dates");
+        }
+        sources[source.path] = {path: source.path, content: source.content, lastModified: source.lastModified};
+      }
+      return sources;
+    }
+    const now = new Date(input.now);
+    if (Number.isNaN(now.getTime())) throw new Error("Native interview inputs require a valid calculation date");
+    const context = freshness.readContextFreshness(declared(input.context_sources));
+    const state = freshness.readStateFreshness(declared(input.state_sources));
+    let observed = null;
+    if (object(input.evidence_sources)) {
+      const values: Record<string, string> = {};
+      for (const source of Object.values(declared(input.evidence_sources.sources))) values[source.path] = source.content;
+      observed = evidence.gatherEvidence(now, {sources: values, gitCommits: input.evidence_sources.gitCommits});
+    }
+    const lastSources = Object.values(declared(input.interview_sources));
+    const last = lastSources.length ? JSON.parse(lastSources[0].content) : null;
+    const inputs = module.buildInputs(observed, now, {context, state, last});
+    const verdict = module.computeVerdict(inputs, now);
+    result = {inputs, verdict, verdict_content: JSON.stringify(verdict, null, 2) + "\n"};
+  } else if (input.action === "state_evidence") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/StateEvidence.ts")).href);
     if (!object(module) || typeof module.gatherEvidence !== "function" || typeof module.gatherDomain !== "function"
         || !Array.isArray(input.sources) || typeof input.now !== "string"

@@ -1731,6 +1731,109 @@ index 2ae55d8..2ac8e2f 100755
 -console.error(`📋 TELOS summary regenerated: ${lineCount} lines from source files`);
 +
 +if (import.meta.main) main();
+diff --git a/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts b/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts
+index 130c96c..246c93a 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts
+@@ -27,7 +27,8 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  */
+ 
+ import { readFileSync, existsSync, writeFileSync, renameSync, mkdirSync } from "fs";
+-import { join } from "path";
++import { join, resolve } from "path";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { homedir } from "node:os";
+ import * as Freshness from "./TelosFreshness";
+ import { readContextFreshness } from "./TelosFreshness";
+@@ -216,6 +217,25 @@ export function computeVerdict(inputs: VerdictInputs, now: Date = new Date()): V
+   };
+ }
+ 
++export interface InterviewInput {
++  context: ContextFreshness | null;
++  state: ContextFreshness | null;
++  last: {last_interview?: string} | null;
++}
++
++function isVerdictInputs(value: unknown): value is VerdictInputs {
++  return memoryObject(value) && Array.isArray(value.domains)
++    && value.domains.every(domain => memoryObject(domain) && typeof domain.domain === "string"
++      && typeof domain.never_reviewed === "boolean" && typeof domain.source_live === "boolean")
++    && typeof value.stale_constitutional === "number" && typeof value.stale_state === "number"
++    && (value.days_since_last_interview === null || typeof value.days_since_last_interview === "number")
++    && typeof value.evidence_available === "boolean";
++}
++
++export function renderInterviewCompletion(now: Date): string {
++  return `${JSON.stringify({ last_interview: now.toISOString(), marked_by: "interview-skill" }, null, 2)}\n`;
++}
++
+ // ---------- gathering ----------
+ 
+ function readJson<T>(path: string): T | null {
+@@ -282,9 +302,19 @@ function metricString(evidence: Evidence | null, domain: string, key: string): s
+   return typeof value === "string" ? value : null;
+ }
+ 
+-export function buildInputs(evidence: Evidence | null, now: Date = new Date()): VerdictInputs {
+-  const context = safeContextFreshness();
+-  const state = readStateFreshnessSafe();
++export function buildInputs(evidence: Evidence | null, now: Date = new Date(), input?: InterviewInput): VerdictInputs {
++  if (!input) {
++    const governed = memoryAccess("interview_due_inputs", {now: now.toISOString(), evidence_present: evidence !== null},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (governed !== undefined) {
++      if (governed.ok !== true || !isVerdictInputs(governed.value)) {
++        throw new Error("Interview inputs are unavailable under the current policy");
++      }
++      return governed.value;
++    }
++  }
++  const context = input ? input.context : safeContextFreshness();
++  const state = input ? input.state : readStateFreshnessSafe();
+ 
+   const domains: DomainSkew[] = [];
+   for (const [domain, slug] of Object.entries(DOMAIN_CLAIM_SLUGS)) {
+@@ -329,7 +359,7 @@ export function buildInputs(evidence: Evidence | null, now: Date = new Date()):
+     });
+   }
+ 
+-  const last = readJson<{ last_interview?: string }>(INTERVIEW_STATE);
++  const last = input ? input.last : readJson<{ last_interview?: string }>(INTERVIEW_STATE);
+ 
+   return {
+     domains,
+@@ -341,14 +371,25 @@ export function buildInputs(evidence: Evidence | null, now: Date = new Date()):
+ }
+ 
+ export function writeVerdictCache(verdict: Verdict, path: string = CACHE_PATH): boolean {
+-  return atomicWrite(path, `${JSON.stringify(verdict, null, 2)}\n`);
++  try {
++    const governed = memoryAccess("interview_due_cache_write", {path: resolve(path), verdict},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (governed !== undefined) return governed.ok === true;
++    return atomicWrite(path, `${JSON.stringify(verdict, null, 2)}\n`);
++  } catch {
++    return false;
++  }
+ }
+ 
+ export function markInterviewDone(now: Date = new Date(), path: string = INTERVIEW_STATE): boolean {
+-  return atomicWrite(
+-    path,
+-    `${JSON.stringify({ last_interview: now.toISOString(), marked_by: "interview-skill" }, null, 2)}\n`,
+-  );
++  try {
++    const governed = memoryAccess("interview_due_mark", {path: resolve(path), now: now.toISOString()},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (governed !== undefined) return governed.ok === true;
++    return atomicWrite(path, renderInterviewCompletion(now));
++  } catch {
++    return false;
++  }
+ }
+ 
+ // ---------- CLI ----------
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
 index 310662c..efd332b 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts

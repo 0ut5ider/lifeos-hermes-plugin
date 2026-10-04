@@ -258,6 +258,21 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation in {'interview_due_inputs', 'interview_due_mark', 'interview_due_cache_write'}:
+                from .memory_interview import read, write
+                handlers = {'interview_due_inputs': (read, {'now', 'evidence_present'}),
+                            'interview_due_mark': (write, {'now', 'path'}),
+                            'interview_due_cache_write': (write, {'verdict', 'path'})}
+                handler, fields = handlers[operation]
+                if set(arguments) != fields:
+                    raise ValueError('Interview calculation requires its declared native arguments')
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Interview authority changed during rendering')
+
+                return handler(memory, scope, **arguments, check_current=check_current)
             if operation in {'state_evidence_read', 'state_evidence_cache_read', 'state_evidence_cache_write'}:
                 from .memory_evidence import read, cache_read, cache_write
                 handlers = {'state_evidence_read': (read, {'domain', 'now'}),

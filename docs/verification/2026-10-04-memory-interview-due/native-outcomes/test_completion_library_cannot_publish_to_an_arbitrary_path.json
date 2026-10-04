@@ -1,0 +1,124 @@
+{
+  "case": "test_completion_library_cannot_publish_to_an_arbitrary_path",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-due-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/interview.json": {
+        "content": "{\"last_interview\": \"2026-10-04T00:00:00Z\", \"marked_by\": \"synthetic-interview\"}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/GOALS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-09-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic current health\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/interview.json": {
+        "content": "{\"last_interview\": \"2026-10-04T00:00:00Z\", \"marked_by\": \"synthetic-interview\"}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/GOALS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-09-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic current health\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m.markInterviewDone(new Date(),process.argv[2])));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9y3evs5h/.claude/LIFEOS/TOOLS/InterviewDue.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9y3evs5h/foreign-completion.json"
+      ],
+      "status": 0,
+      "stdout": "false\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}
