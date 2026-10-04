@@ -6,7 +6,7 @@ The four LifeOS tiers retain private FlashNext with different effort levels. Voi
 
 | Workstream | Required result | Current state |
 | --- | --- | --- |
-| Hook compatibility | Paired effects, decisions, state, and model/user delivery for the claimed contract; explicit resolution of unavailable native controls | In progress; 65 dispatch controls and selected cases for 11 registrations |
+| Hook compatibility | Paired effects, decisions, state, and model/user delivery for the claimed contract; explicit resolution of unavailable native controls | In progress; 65 dispatch controls and equal selected cases for 12 registrations; remote Kitty isolation difference retained |
 | Fresh memory ownership | Complete reader/writer and prompt policy, lifecycle repair, coherent backup, recoverable ownership setup, and independent acceptance | Foundation implemented; activation disabled |
 | Personal context and import | Reviewed identity setup and supported import/export with complete item accounting, provenance, conflicts, interruption recovery, and return to Hermes | Identity remains synthetic; Hermes importer unimplemented; cross-server archives and selected conversation history need explicit supported formats |
 | Optional sharing | Authenticated clients access the same native references under separate read/write grants; revocation stops active access | Foundation implemented; sharing disabled |

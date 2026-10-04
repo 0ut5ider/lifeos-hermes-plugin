@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "/var/tmp/paired-startup-driver-20261004.py", line 615, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/var/tmp/paired-startup-driver-20261004.py", line 611, in main
+    return run_controls(read_json(args.configuration), args.output, args.case or list(CASES))
+  File "/var/tmp/paired-startup-driver-20261004.py", line 579, in run_controls
+    paired[side] = run_side(side, config[side], case, output, endpoint, guard)
+                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/paired-startup-driver-20261004.py", line 487, in run_side
+    definitions = make_fixture(home, case, Path(spec['hook_root']), Path(spec['trace_script']))
+  File "/var/tmp/paired-startup-driver-20261004.py", line 469, in make_fixture
+    'source_files': {str(path): digest(path) for path in paths}}
+                                ~~~~~~^^^^^^
+  File "/var/tmp/paired-startup-driver-20261004.py", line 63, in digest
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+                          ~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/lifeos-claude-ref/.claude/LIFEOS/TOOLS/lib/MemoryAccess.ts'

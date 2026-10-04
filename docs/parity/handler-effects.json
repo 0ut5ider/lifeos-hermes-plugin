@@ -289,7 +289,136 @@
     "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/hooks.jsonl": "02db5a1e00c8a4021ac91d9efc4306678c57bcc509098f7e2770fd6d6e9a5f3e",
     "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/result.json": "23cbf597f8304cfb687aaffe133768b0fd9293940201c6eec04c26f092a5809c",
     "docs/verification/2026-10-04-paired-lifecycle-effects/README.md": "2869bb1b114ad3b252022da5a4a75d983aebadcbb9b7c13f0b890104aa2d1457",
-    "docs/verification/2026-10-04-paired-lifecycle-effects/paired-lifecycle-driver.py": "70f80ebc9d485c066cca7a09eac188bee72a6b9d6c8d39a96eac8658756c4445"
+    "docs/verification/2026-10-04-paired-lifecycle-effects/paired-lifecycle-driver.py": "70f80ebc9d485c066cca7a09eac188bee72a6b9d6c8d39a96eac8658756c4445",
+    "docs/verification/2026-10-04-paired-startup-effects/README.md": "0d5376b7b977e97943eabea87dce447bca37d23b9d23068a6819b8a263ae09c5",
+    "docs/verification/2026-10-04-paired-startup-effects/configuration.json": "390b069fc11187a61ddee6ced0c7bbe27984469fdcb7cce9b561bf7a5da5ed92",
+    "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json": "ed25b90568653dcd70ac6cffd3722bea98116c5b5b555565e650e1afc51d87ae",
+    "docs/verification/2026-10-04-paired-startup-effects/paired-results.json": "e8c685453a22007031a64c2770eab214300c2781ff804958676c15f6c0da085f",
+    "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py": "04c599e34a19df4521560c6ae8a041102756a30d231c4c6d92b6c80a43ef3d1d",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/after-state.json": "4618b68ce506f1ddd35550e117652d8c30145c58f1dbf81490cc4eb1e3a6b917",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/cli.log": "265e223f88951934ec3ec40c5a91974166bfd775565445e437aacb1a7057c7fa",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/context-sources.json": "7218a7dc9740ee16a6134c0fb4f4a8d9c5c2faf1d3e4ffc2b06bed0f3c930266",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/fixture-events.jsonl": "75db39a0be57baf2d2e29598fa8b7f3188add8a95e7e646bee27a90eae60348b",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/fixture-files-after.json": "d89b79e6b27452daa9de88f08e59d40f89f17c57d746fdae471686da96327a31",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/fixture-files-before.json": "cb1ab6be506c8a835f42f6a34176a39fff060f15faeb988a7966d9ad399ace24",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/hooks.jsonl": "61d92b84ccfdc958bdfd3308c691ad17b040d7865686f5aefb971176dd62129d",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/result.json": "058ef230844d4a38383e3cfb8ee256e3ba86a6b6f7771f32ffdbb26631cf5fe0",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/after-state.json": "4618b68ce506f1ddd35550e117652d8c30145c58f1dbf81490cc4eb1e3a6b917",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/cli.log": "e1b752da32df7010a168121880b4c4dc6bf862cba4dea65d13ad03ccd0121b16",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/context-sources.json": "9774b5c517583481445b6034e65103c54e961b532d40c0c91c640b613f60e1d9",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/fixture-events.jsonl": "65bcff8e7428bab40afaeeac7f937b23fab170215ee4ee1ee0831ba2ee090da0",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/fixture-files-after.json": "1937fa0c657d0c22738e45b3444d194e83a450df39d9aa63104ee35ca6e2659c",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/fixture-files-before.json": "0842649ed3ef3dd04481485e577ba293573e44badf77775d1729d10aed43ce1b",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/hooks.jsonl": "bef32780bdb9f3015c22abc8398ee60b70cd704a688ae596947c692be7c351cf",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/result.json": "ef61ad5bc0794dcdc16fb5344a2b8843049669aaaddb22af5c9a8dfb47de4037",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/after-state.json": "9935aa4cd775dfdde800a335389d7cf746462b7f76b498fc2ac5ccbeec2ae828",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/cli.log": "d388eaf7a0b9404dae86922b0e433eda8c1c372e8abb078bea11894730dc7850",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/context-sources.json": "dc08e0d5ea59e3d79fcb93e83b16158f03e0d11d4e0d527a5cbb48dfabbaa2ff",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/fixture-events.jsonl": "df0887c7100163b89bc062dfb9ff48259d7b09174dd92d5538c77f1d13873cb0",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/fixture-files-after.json": "822de3c3f3f3c61d6af6dc64a4ec04cc9e4c1dd219239d9d188efde6d02b9d3c",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/fixture-files-before.json": "822de3c3f3f3c61d6af6dc64a4ec04cc9e4c1dd219239d9d188efde6d02b9d3c",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/hooks.jsonl": "778514014b5af3a78597d6729586449d488c7d8c03676117ec3facde567946f8",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/result.json": "a60c96e58b979603fecea22ae4619f2caa2731d787d864422053414f83242a59",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/after-state.json": "9935aa4cd775dfdde800a335389d7cf746462b7f76b498fc2ac5ccbeec2ae828",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/cli.log": "d6cf47fde86e4b84bc279f2f5e81c6dbc965a1d250c971d62e68362c3326d5d3",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/context-sources.json": "42bff932fb4fb36454ca9f279819af4af47b03fd5d7c8820a6bb6ea769f98438",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/fixture-events.jsonl": "8fb516cc7cee85d46dedcdba43dfcec1aecdb3ca84aca6e7708f3c207cc3fb30",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/fixture-files-after.json": "62b716339e2d95097d73499c776774266b8ef43075335e8eb9f860fa0ff9a3fe",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/fixture-files-before.json": "62b716339e2d95097d73499c776774266b8ef43075335e8eb9f860fa0ff9a3fe",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/hooks.jsonl": "11020d9b690fdc63b91ccab3426d6658f87e5a4303bdca3a4464218aae306011",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/result.json": "84fb243dc2f14634674f3d1e91327155ca7660ea4d0a8791ca1df90d75807455",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/after-state.json": "9935aa4cd775dfdde800a335389d7cf746462b7f76b498fc2ac5ccbeec2ae828",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/cli.log": "a10b69a41f970ebd9fe5406aeebe58e763c549233cc719ffe589e757f7868fd3",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/context-sources.json": "dc9b69aee2615c59cf030cce9f79105f4362defb8485edb8fb76b0afaed41b74",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/fixture-events.jsonl": "08fc169fa7bfe23e8b90172a4752ed15dd3353d86aa63e45dd2018451fa88645",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/fixture-files-after.json": "6a258e6972a064730d6d23b028e804a1c13407e8796ac4326e02333a418cf29f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/fixture-files-before.json": "6a258e6972a064730d6d23b028e804a1c13407e8796ac4326e02333a418cf29f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/hooks.jsonl": "77f1f016a3dfb229b8671e76e99b3203e97882dbf2ac2d0ed343a2462db3478a",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/result.json": "36f03b6c0a45b851a9dc388215ab761bfb31f0b6dea83f86d561a386f4642c69",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/after-state.json": "9935aa4cd775dfdde800a335389d7cf746462b7f76b498fc2ac5ccbeec2ae828",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/cli.log": "b41f1abb1cbe77c7c3b57be4bd4d13495f463c7be955554140eb5fc503befbce",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/context-sources.json": "0235298218b29f59fd8364151225b96ffd0d4c2f02ffb71d7bf0132d29be855d",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/fixture-events.jsonl": "2af79579609b32a6347cfbccc0ef07caa8c1c6ae3b09bf6bb92ebe3c3a226d68",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/fixture-files-after.json": "9c983639f29a466896a5d8fd37e9c9068a939b5282b99de086313c3d64f6e173",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/fixture-files-before.json": "9c983639f29a466896a5d8fd37e9c9068a939b5282b99de086313c3d64f6e173",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/hooks.jsonl": "44b040a24f2465d1edc2c9399715d09c7607116e50791cb8119be85f989f0edf",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/result.json": "03e56677cde2a2ac0a5ec36b70403cbfd25d3b8a4715ea39d4550cebeb398d6c",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/after-state.json": "0bd562d6bace20fdbe415626c47343b542e5a6d0722e633b8d5c6e81569e9432",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/cli.log": "c868fecf8c49f2a999a1e68c4b4d26a7df8fb84ca6380b1770cff5523b6ffffd",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/context-sources.json": "71bbb0e13e7176992703a8d34cb784d1609be23a97aaf40c086b60745a03959a",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/fixture-events.jsonl": "bc13060ac931f4e237b2ae7752f8acdd0ec6f72dec4ea8c9a7b3b0798a60150f",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/fixture-files-after.json": "c412eeca5ddfcd473ff4ad19456819ade045444fc02e72ac2d1003a2d253cb09",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/fixture-files-before.json": "c412eeca5ddfcd473ff4ad19456819ade045444fc02e72ac2d1003a2d253cb09",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/hooks.jsonl": "ea251db4edd775427dfd4db5309cbe443883c400478d0a9d646d18bba5aae436",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/result.json": "cb5ea3e78441b45c5212326806c62508160bc2967430123e2800087127d40a82",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/after-state.json": "0bd562d6bace20fdbe415626c47343b542e5a6d0722e633b8d5c6e81569e9432",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/cli.log": "6df89769f3bc939db3e883bb0249be408e026f77afa2487053ec69df75a02a7b",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/context-sources.json": "306011d7703f5d369bf01025ec13afa18468d07684cce84aba9bbc572777135b",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/fixture-events.jsonl": "a744dd8a011dece375c17319f0c774e31203c7b74c79c1f9526e5e29c4dcacbf",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/fixture-files-after.json": "1cdab24aa6662593deff2724b83290dd71665e441efb5867bc0f7c3cea50a8fb",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/fixture-files-before.json": "1cdab24aa6662593deff2724b83290dd71665e441efb5867bc0f7c3cea50a8fb",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/hooks.jsonl": "84d6e4aa6c552cde424b287e9db45c06f2862c8b3bad6082bab30c42c0713249",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/result.json": "5def70cdd0a895c048ed079e61c079b510e9123d5d32412058b0780d09dfb3ad",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/after-state.json": "ee46113836123ad9c3fb313bb5be886ba9170111933feb3cb674244408c71f46",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/before-state.json": "66d9c4ddbc64967313ccd26e4b219c5b7f3e017e06a439c80a1291de5e817328",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/cli.log": "c51b09d92f965b456291458b157d2aaf5aaff0e59936fe7db4bfb331b5268cb9",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/context-sources.json": "c0693246b2b15c9986bbc0a18001a4cdce670d7bd85fa4e61c1d7eeb2c14c0f3",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/fixture-events.jsonl": "c6e427f80eb788384b18094b675e16197d188091a760614362e6327139d1ae49",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/fixture-files-after.json": "01acbd47d50ee27f6c60bf2f0d746a952a717460ea1e5561f24ebc60aeeaca87",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/fixture-files-before.json": "283efa5257db322e028838ff7f8c555d1546ba52bc114fea1516661a04b9bf23",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/hooks.jsonl": "2bfbbe5e479b24d8bfa7d823b1249cd5f79711a7f2a8c410869322ec0b8d5a82",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/result.json": "c7b8750f3b7470e80aa3cf33c8d2742a8b1aaa3b06bd30d6d1576a55c0fd3176",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/after-state.json": "ee46113836123ad9c3fb313bb5be886ba9170111933feb3cb674244408c71f46",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/before-state.json": "66d9c4ddbc64967313ccd26e4b219c5b7f3e017e06a439c80a1291de5e817328",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/cli.log": "58bcb4358e5d1a52365c18a18964914ea642d4a99244f0ae513e08532057985f",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/context-sources.json": "d7846f2e61f99c87e892b9d842a670ffa1d1d3399c855d071629da7b04be3c04",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/fixture-events.jsonl": "6c8ef3127877f50c28ec039c477944a3ac92b6cf88095e7c631023bc707b47ac",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/fixture-files-after.json": "c42ebc399fccd475e58a6dcb9d336c7a804afc8e339b44cc9cd23a993668d477",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/fixture-files-before.json": "430f49343ddca6c3d91fa40b3fab79695b14738caae9420bac26aba425e2cefb",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/hooks.jsonl": "f1d193f1f606bbd52adf0bc1446e4b9083c34bbb1efdc67473d9a6efe1c900c7",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/result.json": "561714b40b1f2fcd6c7f884a1f1c79eab9386861539a65334526949c2158d323",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/after-state.json": "249c329a3209a163e56a8070afea930ecfc6c5678bfdb7aa9d2274a13c73debf",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/before-state.json": "66d9c4ddbc64967313ccd26e4b219c5b7f3e017e06a439c80a1291de5e817328",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/cli.log": "fabbbff6390c6647f125886309e8bce4095c9d31bb12af651090cfac82e8f2da",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/context-sources.json": "0795ebe613f6fb795e6fa86092c8348a4594fb1bf0b0751544f113dd6e069c4d",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/fixture-events.jsonl": "c1c738f175843c86c5c44d0d99f08d065435891590712f963f39871155adaa75",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/fixture-files-after.json": "a30c6ba92380ced8b62c263eeddd03e676cc03ef436029be87fc5710d561d1af",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/fixture-files-before.json": "9d0efda13fef5d3a6bd3024e4bd13316b6a60f3ba147dbaf5fb8d4f433819efd",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/hooks.jsonl": "c12a0689a73e24e8131df2c382813bb560208f0daeb4bcaf86708e8313aa170c",
+    "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/result.json": "b4acd4f4d3a1ab757fc4055c01afca0365f8e93eb07c08e8d234a153522d075a",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/after-state.json": "249c329a3209a163e56a8070afea930ecfc6c5678bfdb7aa9d2274a13c73debf",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/before-state.json": "66d9c4ddbc64967313ccd26e4b219c5b7f3e017e06a439c80a1291de5e817328",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/cli.log": "72398fb39ad12af677bbafbaedd5f6471d83d1b5684006b5833ef72e654d7d9f",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/context-sources.json": "a9ed858ac77a3d4740e4187c6fe4848eac9fb85a1332eeb56d091d06dbe58ac6",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/fixture-events.jsonl": "2dbbbb4d50dd0a26da19a517080913177c8e138aaca96caebc57007af273f11b",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/fixture-files-after.json": "9fa2b7b9cf04b49f33a7db3ab85bdf95b6c7ab9469c753e54472b31ee6148fa5",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/fixture-files-before.json": "3d8053457985035b9b89af3f37660abc2f2d2f6584214c56c1b30d7b55ae5582",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/hooks.jsonl": "e107eca43a0a0339a43bf60cdd38f8d1d3b5ac4d045d5a9041ce3eef4b80a6a5",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/result.json": "c202e73e4489c53bd80cd43240d7fc09256f30c30634bc76e3c4caea527a5ed5",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/after-state.json": "76358dea12f388430af47da8e2be986242a57cd9af0e4c33e0319d06e71178bd",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/before-state.json": "e8e75dc09b4c72d6f92c27cf3b4cce6dd92ee5e253a9e783a0e32d9b8cd3b065",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/cli.log": "5adb99bc8e7c78b26add702336aaf2e6f27063e8936d5cf717ba9c38238dbe21",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/fixture-events.jsonl": "3100ba3041fd4e20905c77dae223f4f6cb379b1259fdee4aa08b9bc8397a6731",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/fixture-files-after.json": "10ccf2e62e67125d0ca4a0a177d8907b9a2b31f7d26a8a250cf1dc86e2f69325",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/fixture-files-before.json": "10ccf2e62e67125d0ca4a0a177d8907b9a2b31f7d26a8a250cf1dc86e2f69325",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/hooks.jsonl": "152e341e42e682575901515f638781da1f8f05546dcdebf46f8d8bc85005cbea",
+    "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/result.json": "12cf685b344d5c904d3b7d83994ee0959f42abcd9ca12258916ca987761dc177",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/after-state.json": "76358dea12f388430af47da8e2be986242a57cd9af0e4c33e0319d06e71178bd",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/before-state.json": "e8e75dc09b4c72d6f92c27cf3b4cce6dd92ee5e253a9e783a0e32d9b8cd3b065",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/cli.log": "20fcf8354e8828d1ebdb294cf31f8f4a2f41bdf68915d25978d58835bbe8dc40",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/fixture-events.jsonl": "ff7b8f687c57b5f3a63aa97fb75dd93ea45f7ea3885686c431283ff35a31d8e8",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/fixture-files-after.json": "d9cf44008594d4f89a0e57cdb47ac5c22eb9780fa3e318acd1d1e0d1ee99bc85",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/fixture-files-before.json": "d9cf44008594d4f89a0e57cdb47ac5c22eb9780fa3e318acd1d1e0d1ee99bc85",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/hooks.jsonl": "09878cdb4432a15d09de4c23dd37b99279d7dcf177571c12a974e23b7db8d1ea",
+    "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/result.json": "5868f280262ac55cef97162ce257ca3fef46a771c0cb87ad0760939b4a68a6fe"
   },
   "registrations": [
     {
@@ -1960,12 +2089,72 @@
             "cli_exit_code": 0,
             "model_generation_requests": 0
           }
+        },
+        {
+          "id": "kitty-subagent",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "stale_title_present": true
+            },
+            "after": {
+              "shared_environment_present": false,
+              "session_environment_present": false,
+              "stale_title_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "stale_title_present": true
+            },
+            "after": {
+              "shared_environment_present": false,
+              "session_environment_present": false,
+              "stale_title_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/kitty-subagent/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/kitty-subagent/result.json"
+          ]
         }
       ],
       "related_native_tests": [
         "tests/test_native_kitty_channel.py"
       ],
-      "remaining": "Verify compaction, subagent and remote-channel branches, actual terminal delivery, and the complete startup group."
+      "remaining": "Selected paired branches pass. Complete installed hook groups, other branches, and actual model/user delivery remain open."
     },
     {
       "id": "SessionStart.1.3",
@@ -1974,10 +2163,475 @@
       "handler": "$HOME/.claude/hooks/LoadContext.hook.ts",
       "expected_effect": "Load the applicable native identity, system, and admitted user context.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "context-desktop",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": true,
+              "wisdom_present": true,
+              "low_confidence_present": false,
+              "advisory_present": true,
+              "sources_preserved": true,
+              "marker": {
+                "keys": [
+                  "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+                ],
+                "sessions_since_emit": 0,
+                "last_emitted_at_present": true
+              },
+              "timing_recorded": true,
+              "ready_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": true,
+              "wisdom_present": true,
+              "low_confidence_present": false,
+              "advisory_present": true,
+              "sources_preserved": true,
+              "marker": {
+                "keys": [
+                  "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+                ],
+                "sessions_since_emit": 0,
+                "last_emitted_at_present": true
+              },
+              "timing_recorded": true,
+              "ready_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-desktop/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-desktop/result.json"
+          ]
+        },
+        {
+          "id": "context-disabled",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": null,
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": null,
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-disabled/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-disabled/result.json"
+          ]
+        },
+        {
+          "id": "context-remote",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": null,
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": null,
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-remote/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-remote/result.json"
+          ]
+        },
+        {
+          "id": "context-subagent",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": null,
+              "timing_recorded": false,
+              "ready_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "marker_present": false
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": null,
+              "timing_recorded": false,
+              "ready_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-subagent/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-subagent/result.json"
+          ]
+        },
+        {
+          "id": "context-advisory-steady",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "marker_present": true
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": {
+                "keys": [
+                  "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+                ],
+                "sessions_since_emit": 1,
+                "last_emitted_at_present": true
+              },
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "marker_present": true
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": {
+                "keys": [
+                  "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+                ],
+                "sessions_since_emit": 1,
+                "last_emitted_at_present": true
+              },
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-steady/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-steady/result.json"
+          ]
+        },
+        {
+          "id": "context-advisory-cleared",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+          "native": {
+            "before": {
+              "marker_present": true
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": {
+                "keys": [],
+                "sessions_since_emit": 0,
+                "last_emitted_at_present": true
+              },
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "marker_present": true
+            },
+            "after": {
+              "relationship_present": false,
+              "wisdom_present": false,
+              "low_confidence_present": false,
+              "advisory_present": false,
+              "sources_preserved": true,
+              "marker": {
+                "keys": [],
+                "sessions_since_emit": 0,
+                "last_emitted_at_present": true
+              },
+              "timing_recorded": true,
+              "ready_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-startup-effects/README.md",
+            "docs/verification/2026-10-04-paired-startup-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-startup-effects/runtime-manifest.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-startup-effects/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/native/context-advisory-cleared/result.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/after-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/before-state.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/cli.log",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/context-sources.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-startup-effects/hermes/context-advisory-cleared/result.json"
+          ]
+        }
+      ],
       "related_native_tests": [],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Selected paired branches pass. Complete installed hook groups, other branches, and actual model/user delivery remain open."
     },
     {
       "id": "SessionStart.1.4",

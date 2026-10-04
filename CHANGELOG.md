@@ -16,6 +16,8 @@ Keep it equal to the version in both plugin manifests.
   with exact synthetic file captures and assertions checked by the evidence gate.
 - Six further paired lifecycle cases for repair containment, terminal persistence,
   memory-health reporting, and documentation inventory. Twelve real CLI runs pass.
+- Eight paired startup cases cover context readback, advisory markers, and terminal
+  gates. Seven have equal effects. The remote terminal isolation difference remains explicit.
 - A full-experience release plan with private FlashNext tiers and Discord voice
   input and spoken replies. Voice follows the core functionality.
 

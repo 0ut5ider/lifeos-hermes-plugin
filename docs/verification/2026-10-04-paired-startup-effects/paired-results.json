@@ -1,0 +1,427 @@
+{
+  "cases": [
+    {
+      "id": "context-desktop",
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "native": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": true,
+          "wisdom_present": true,
+          "low_confidence_present": false,
+          "advisory_present": true,
+          "sources_preserved": true,
+          "marker": {
+            "keys": [
+              "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+            ],
+            "sessions_since_emit": 0,
+            "last_emitted_at_present": true
+          },
+          "timing_recorded": true,
+          "ready_present": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": true,
+          "wisdom_present": true,
+          "low_confidence_present": false,
+          "advisory_present": true,
+          "sources_preserved": true,
+          "marker": {
+            "keys": [
+              "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+            ],
+            "sessions_since_emit": 0,
+            "last_emitted_at_present": true
+          },
+          "timing_recorded": true,
+          "ready_present": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "context-disabled",
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "native": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": null,
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": null,
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "context-remote",
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "native": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": null,
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": null,
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "context-subagent",
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "native": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": null,
+          "timing_recorded": false,
+          "ready_present": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "marker_present": false
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": null,
+          "timing_recorded": false,
+          "ready_present": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "context-advisory-steady",
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "native": {
+        "before": {
+          "marker_present": true
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": {
+            "keys": [
+              "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+            ],
+            "sessions_since_emit": 1,
+            "last_emitted_at_present": true
+          },
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "marker_present": true
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": {
+            "keys": [
+              "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+            ],
+            "sessions_since_emit": 1,
+            "last_emitted_at_present": true
+          },
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "context-advisory-cleared",
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "native": {
+        "before": {
+          "marker_present": true
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": {
+            "keys": [],
+            "sessions_since_emit": 0,
+            "last_emitted_at_present": true
+          },
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "marker_present": true
+        },
+        "after": {
+          "relationship_present": false,
+          "wisdom_present": false,
+          "low_confidence_present": false,
+          "advisory_present": false,
+          "sources_preserved": true,
+          "marker": {
+            "keys": [],
+            "sessions_since_emit": 0,
+            "last_emitted_at_present": true
+          },
+          "timing_recorded": true,
+          "ready_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "kitty-remote",
+      "registrations": [
+        "SessionStart.1.2"
+      ],
+      "native": {
+        "before": {
+          "stale_title_present": true
+        },
+        "after": {
+          "shared_environment_present": true,
+          "session_environment_present": true,
+          "stale_title_preserved": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "stale_title_present": true
+        },
+        "after": {
+          "shared_environment_present": false,
+          "session_environment_present": false,
+          "stale_title_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": [
+        "kitty-remote: paired state differs",
+        "kitty-remote: terminal gate effect is missing"
+      ]
+    },
+    {
+      "id": "kitty-subagent",
+      "registrations": [
+        "SessionStart.1.2"
+      ],
+      "native": {
+        "before": {
+          "stale_title_present": true
+        },
+        "after": {
+          "shared_environment_present": false,
+          "session_environment_present": false,
+          "stale_title_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "stale_title_present": true
+        },
+        "after": {
+          "shared_environment_present": false,
+          "session_environment_present": false,
+          "stale_title_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    }
+  ]
+}
