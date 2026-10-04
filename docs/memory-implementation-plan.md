@@ -443,3 +443,9 @@ The broad candidate gate passes 350 tests and 233 subtests. A subsequent exclude
 The [migration gate](verification/2026-10-04-memory-freshness-migration/README.md) supplies admitted context and state sources to the original native transformations. Source changes and original-byte backups share one publication journal. Failed managed preflight blocks the batch. Actual user and system interruptions recover previous sources and backups. Read-only owners retain previews. Current owner checks, source conflicts, registry aliases, fixed destinations, private permissions, complete large ASCII/UTF-8 bodies, and native reports pass.
 
 The final gate passes 212 tests and 152 subtests without failures, errors, skips, or warnings. All 23 native controls are recorded. The distributed patch contains 38 native files. Interview evidence and reminders, other publishers, aggregate service recovery, restricted delivery, ownership, and the combined release remain open. No active server changes occur.
+
+## 2026-10-04 native StateEvidence
+
+The [StateEvidence gate](verification/2026-10-04-memory-state-evidence/README.md) admits decoded JSON strings before native calculation. Exact source review retains original bytes and refuses decoded private or retired claims. All four domain payloads match the pinned original implementation at the same calculation date. Current source and owner checks govern reads and recoverable private cache publication. Managed cache reads recalculate from admitted current sources when a cache exists.
+
+The final regression gate passes 183 tests and 124 subtests without failures, errors, skips, or warnings. The corrected recorder captures 24 passing native controls. All 39 distributed native files match the scratch candidate. Interview reminders and scan, other publishers, aggregate recovery, restricted delivery, ownership activation, import, and the combined release remain open. No external feeds or active server changes occur.

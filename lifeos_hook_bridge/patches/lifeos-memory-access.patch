@@ -3106,6 +3106,255 @@ index a53b2b6..02354ed 100755
 -  main();
 +  process.exit(main());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts b/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts
+index d634d2d..972caf3 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts
+@@ -25,7 +25,8 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  */
+ 
+ import { readFileSync, readdirSync, existsSync, writeFileSync, renameSync, mkdirSync } from "fs";
+-import { join } from "path";
++import { join, resolve } from "path";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { homedir } from "node:os";
+ import { execFileSync } from "node:child_process";
+ 
+@@ -81,6 +82,37 @@ export interface Evidence {
+ 
+ export const DOMAIN_NAMES: DomainName[] = ["health", "activity", "work", "money"];
+ 
++export interface EvidenceInput {
++  sources: Record<string, string>;
++  gitCommits: string[] | null;
++}
++
++function isDomainEvidence(value: unknown): value is DomainEvidence {
++  return memoryObject(value) && memoryObject(value.metrics) && Array.isArray(value.sources)
++    && value.sources.every(source => memoryObject(source) && typeof source.id === "string"
++      && typeof source.status === "string" && ["live", "stale", "dead", "unavailable"].includes(source.status)
++      && (source.reason === undefined || typeof source.reason === "string")
++      && (source.last_observation === undefined || source.last_observation === null || typeof source.last_observation === "string"));
++}
++
++function isEvidence(value: unknown): value is Evidence {
++  return memoryObject(value) && value.schema === 1 && typeof value.generated_at === "string"
++    && memoryObject(value.domains) && DOMAIN_NAMES.every(name => isDomainEvidence(value.domains[name]));
++}
++
++function managedEvidence(domain: null, now: Date): Evidence | undefined;
++function managedEvidence(domain: DomainName, now: Date): DomainEvidence | undefined;
++function managedEvidence(domain: DomainName | null, now: Date): Evidence | DomainEvidence | undefined {
++  const governed = memoryAccess("state_evidence_read", {domain, now: now.toISOString()},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return undefined;
++  if (governed.ok === true) {
++    if (domain === null && isEvidence(governed.value)) return governed.value;
++    if (domain !== null && isDomainEvidence(governed.value)) return governed.value;
++  }
++  throw new Error("State evidence is unavailable under the current policy");
++}
++
+ // ---------- date helpers (local calendar days) ----------
+ 
+ const DAY_FILE_RE = /^(\d{4}-\d{2}-\d{2})\.json$/;
+@@ -116,8 +148,9 @@ function avg(values: Array<number | null | undefined>, places = 2): number | nul
+   return round(nums.reduce((s, v) => s + v, 0) / nums.length, places);
+ }
+ 
+-function readJson<T>(path: string): T | null {
++function readJson<T>(path: string, input?: EvidenceInput): T | null {
+   try {
++    if (input) return Object.hasOwn(input.sources, path) ? JSON.parse(input.sources[path]) as T : null;
+     if (!existsSync(path)) return null;
+     return JSON.parse(readFileSync(path, "utf8")) as T;
+   } catch {
+@@ -126,11 +159,15 @@ function readJson<T>(path: string): T | null {
+ }
+ 
+ /** Every YYYY-MM-DD.json in a dir, oldest first. Unreadable dir → empty. */
+-function readDayFiles<T>(dir: string): Array<{ day: string; data: T }> {
++function readDayFiles<T>(dir: string, input?: EvidenceInput): Array<{ day: string; data: T }> {
+   let names: string[];
+   try {
+-    if (!existsSync(dir)) return [];
+-    names = readdirSync(dir);
++    if (input) names = Object.keys(input.sources).filter(path => path.startsWith(dir + "/")
++      && !path.slice(dir.length + 1).includes("/")).map(path => path.slice(dir.length + 1));
++    else {
++      if (!existsSync(dir)) return [];
++      names = readdirSync(dir);
++    }
+   } catch {
+     return [];
+   }
+@@ -138,7 +175,7 @@ function readDayFiles<T>(dir: string): Array<{ day: string; data: T }> {
+   for (const name of names.sort()) {
+     const m = DAY_FILE_RE.exec(name);
+     if (!m) continue;
+-    const data = readJson<T>(join(dir, name));
++    const data = readJson<T>(join(dir, name), input);
+     if (data === null) continue;
+     out.push({ day: m[1], data });
+   }
+@@ -202,8 +239,12 @@ interface HealthCurrent {
+   sources?: Record<string, { status?: string; lastError?: string | null; note?: string }>;
+ }
+ 
+-export function gatherHealth(now: Date = new Date()): DomainEvidence {
+-  const days = readDayFiles<OuraDay>(OURA_DIR);
++export function gatherHealth(now: Date = new Date(), input?: EvidenceInput): DomainEvidence {
++  if (!input) {
++    const governed = managedEvidence("health", now);
++    if (governed !== undefined) return governed;
++  }
++  const days = readDayFiles<OuraDay>(OURA_DIR, input);
+   const sources: SourceStatus[] = [];
+   const metrics: Record<string, MetricValue> = {};
+ 
+@@ -251,7 +292,7 @@ export function gatherHealth(now: Date = new Date()): DomainEvidence {
+     sources.push(liveness("oura", days[days.length - 1].day, 3, now));
+   }
+ 
+-  const current = readJson<HealthCurrent>(HEALTH_CURRENT);
++  const current = readJson<HealthCurrent>(HEALTH_CURRENT, input);
+   for (const id of ["apple", "eightsleep", "function"]) {
+     const entry = current?.sources?.[id];
+     if (!entry) {
+@@ -279,8 +320,12 @@ interface ConduitDay {
+   blocks?: Array<{ label?: string; kind?: string; minutes?: number }>;
+ }
+ 
+-export function gatherActivity(now: Date = new Date()): DomainEvidence {
+-  const days = readDayFiles<ConduitDay>(CONDUIT_DIR);
++export function gatherActivity(now: Date = new Date(), input?: EvidenceInput): DomainEvidence {
++  if (!input) {
++    const governed = managedEvidence("activity", now);
++    if (governed !== undefined) return governed;
++  }
++  const days = readDayFiles<ConduitDay>(CONDUIT_DIR, input);
+   const metrics: Record<string, MetricValue> = {};
+   const sources: SourceStatus[] = [];
+ 
+@@ -356,11 +401,15 @@ function daysSinceIso(iso: string | undefined, now: Date): number | null {
+   return Math.floor((now.getTime() - t) / 86_400_000);
+ }
+ 
+-export function gatherWork(now: Date = new Date()): DomainEvidence {
++export function gatherWork(now: Date = new Date(), input?: EvidenceInput): DomainEvidence {
++  if (!input) {
++    const governed = managedEvidence("work", now);
++    if (governed !== undefined) return governed;
++  }
+   const metrics: Record<string, MetricValue> = {};
+   const sources: SourceStatus[] = [];
+ 
+-  const state = readJson<WorkState>(WORK_STATE);
++  const state = readJson<WorkState>(WORK_STATE, input);
+   const sessions = state?.sessions ? Object.values(state.sessions) : null;
+ 
+   if (!sessions) {
+@@ -404,7 +453,8 @@ export function gatherWork(now: Date = new Date()): DomainEvidence {
+   }
+ 
+   // Local repo history. execFile with an argument array — never shell interpolation.
+-  let commits: string[] | null = null;
++  let commits: string[] | null = input?.gitCommits ?? null;
++  if (!input) {
+   try {
+     const out = execFileSync(
+       "git",
+@@ -415,6 +465,7 @@ export function gatherWork(now: Date = new Date()): DomainEvidence {
+   } catch {
+     commits = null;
+   }
++  }
+ 
+   if (commits === null) {
+     metrics.commits_14d = null;
+@@ -459,11 +510,15 @@ interface ExpenseLedger {
+   oneoffs?: ExpenseLine[];
+ }
+ 
+-export function gatherMoney(now: Date = new Date()): DomainEvidence {
++export function gatherMoney(now: Date = new Date(), input?: EvidenceInput): DomainEvidence {
++  if (!input) {
++    const governed = managedEvidence("money", now);
++    if (governed !== undefined) return governed;
++  }
+   const metrics: Record<string, MetricValue> = {};
+   const sources: SourceStatus[] = [];
+ 
+-  const ledger = readJson<ExpenseLedger>(EXPENSES);
++  const ledger = readJson<ExpenseLedger>(EXPENSES, input);
+   if (!ledger) {
+     metrics.monthly_recurring_total = null;
+     metrics.entries_total = null;
+@@ -504,24 +559,28 @@ export function gatherMoney(now: Date = new Date()): DomainEvidence {
+ 
+ // ---------- assembly ----------
+ 
+-export function gatherDomain(domain: DomainName, now: Date = new Date()): DomainEvidence {
++export function gatherDomain(domain: DomainName, now: Date = new Date(), input?: EvidenceInput): DomainEvidence {
+   switch (domain) {
+-    case "health": return gatherHealth(now);
+-    case "activity": return gatherActivity(now);
+-    case "work": return gatherWork(now);
+-    case "money": return gatherMoney(now);
++    case "health": return gatherHealth(now, input);
++    case "activity": return gatherActivity(now, input);
++    case "work": return gatherWork(now, input);
++    case "money": return gatherMoney(now, input);
+   }
+ }
+ 
+-export function gatherEvidence(now: Date = new Date()): Evidence {
++export function gatherEvidence(now: Date = new Date(), input?: EvidenceInput): Evidence {
++  if (!input) {
++    const governed = managedEvidence(null, now);
++    if (governed !== undefined) return governed;
++  }
+   return {
+     schema: 1,
+     generated_at: now.toISOString(),
+     domains: {
+-      health: gatherHealth(now),
+-      activity: gatherActivity(now),
+-      work: gatherWork(now),
+-      money: gatherMoney(now),
++      health: gatherHealth(now, input),
++      activity: gatherActivity(now, input),
++      work: gatherWork(now, input),
++      money: gatherMoney(now, input),
+     },
+   };
+ }
+@@ -529,6 +588,10 @@ export function gatherEvidence(now: Date = new Date()): Evidence {
+ /** Atomic write via temp file + rename, mirroring FreshnessCache. */
+ export function writeEvidenceCache(evidence: Evidence, path: string = EVIDENCE_CACHE_PATH): boolean {
+   try {
++    const governed = memoryAccess("state_evidence_cache_write", {path: resolve(path), evidence},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (governed !== undefined) return governed.ok === true;
++
+     mkdirSync(join(path, ".."), { recursive: true });
+     const tmp = `${path}.tmp`;
+     writeFileSync(tmp, `${JSON.stringify(evidence, null, 2)}\n`, "utf8");
+@@ -540,6 +603,14 @@ export function writeEvidenceCache(evidence: Evidence, path: string = EVIDENCE_C
+ }
+ 
+ export function readEvidenceCache(path: string = EVIDENCE_CACHE_PATH): Evidence | null {
++  const governed = memoryAccess("state_evidence_cache_read", {path: resolve(path)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (governed.ok !== true || !(governed.value === null || isEvidence(governed.value))) {
++      throw new Error("State evidence cache is unavailable under the current policy");
++    }
++    return governed.value;
++  }
+   return readJson<Evidence>(path);
+ }
+ 
 diff --git a/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts b/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts
 index 7148c0c..6df88bd 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts

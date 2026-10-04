@@ -1,0 +1,85 @@
+{
+  "case": "test_supplied_cache_payload_must_match_current_sources",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CACHE/state-evidence.json": {
+        "content": "{\"synthetic_previous\":\"preserved\"}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-gyepb69_/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "work"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"metrics\": {\n    \"sessions_14d\": 1,\n    \"sessions_30d\": 1,\n    \"recent_session_names\": [\n      \"Synthetic Current Work\"\n    ],\n    \"phases_14d\": {\n      \"BUILD\": 1\n    },\n    \"commits_14d\": null,\n    \"commit_days_14d\": null\n  },\n  \"sources\": [\n    {\n      \"id\": \"work-registry\",\n      \"status\": \"live\",\n      \"last_observation\": null\n    },\n    {\n      \"id\": \"git\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"git log unavailable\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-gyepb69_/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "writeEvidenceCache",
+        "[{\"schema\": 1, \"generated_at\": \"2026-10-04T00:00:00Z\", \"domains\": {\"health\": {\"metrics\": {\"sessions_14d\": 1, \"sessions_30d\": 1, \"recent_session_names\": [\"Synthetic Current Work\"], \"phases_14d\": {\"BUILD\": 1}, \"commits_14d\": null, \"commit_days_14d\": null}, \"sources\": [{\"id\": \"work-registry\", \"status\": \"live\", \"last_observation\": null}, {\"id\": \"git\", \"status\": \"unavailable\", \"last_observation\": null, \"reason\": \"git log unavailable\"}]}, \"activity\": {\"metrics\": {\"sessions_14d\": 1, \"sessions_30d\": 1, \"recent_session_names\": [\"Synthetic Current Work\"], \"phases_14d\": {\"BUILD\": 1}, \"commits_14d\": null, \"commit_days_14d\": null}, \"sources\": [{\"id\": \"work-registry\", \"status\": \"live\", \"last_observation\": null}, {\"id\": \"git\", \"status\": \"unavailable\", \"last_observation\": null, \"reason\": \"git log unavailable\"}]}, \"work\": {\"metrics\": {\"sessions_14d\": 1, \"sessions_30d\": 1, \"recent_session_names\": [\"Synthetic Current Work\"], \"phases_14d\": {\"BUILD\": 1}, \"commits_14d\": null, \"commit_days_14d\": null}, \"sources\": [{\"id\": \"work-registry\", \"status\": \"live\", \"last_observation\": null}, {\"id\": \"git\", \"status\": \"unavailable\", \"last_observation\": null, \"reason\": \"git log unavailable\"}]}, \"money\": {\"metrics\": {\"sessions_14d\": 1, \"sessions_30d\": 1, \"recent_session_names\": [\"Synthetic Current Work\"], \"phases_14d\": {\"BUILD\": 1}, \"commits_14d\": null, \"commit_days_14d\": null}, \"sources\": [{\"id\": \"work-registry\", \"status\": \"live\", \"last_observation\": null}, {\"id\": \"git\", \"status\": \"unavailable\", \"last_observation\": null, \"reason\": \"git log unavailable\"}]}}}]"
+      ],
+      "status": 0,
+      "stdout": "false\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

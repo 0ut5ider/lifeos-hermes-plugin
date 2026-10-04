@@ -38,6 +38,35 @@ SYSTEM_FILES = {'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'}
 SOURCE_LIMIT = 256 * 1024
 CORPUS_LIMIT = 3 * 1024 * 1024
 SOURCE_COUNT_LIMIT = 2048
+EVIDENCE_FILES = frozenset({'LIFEOS/USER/HEALTH/current.json', 'LIFEOS/USER/FINANCES/expenses.json',
+                            'LIFEOS/MEMORY/STATE/work.json'})
+EVIDENCE_DIRECTORIES = frozenset({'LIFEOS/USER/HEALTH/DATA/oura', 'LIFEOS/USER/CONDUIT/daily'})
+
+
+def is_evidence_source(relative):
+    return relative in EVIDENCE_FILES or (str(Path(relative).parent) in EVIDENCE_DIRECTORIES
+        and re.fullmatch(r'\d{4}-\d{2}-\d{2}\.json', Path(relative).name) is not None)
+
+
+def json_projection(content):
+    try:
+        value = json.loads(content)
+        normalized = json.dumps(value, ensure_ascii=False, allow_nan=False)
+        normalized.encode()
+        strings = []
+        pending = [value]
+        while pending:
+            item = pending.pop()
+            if isinstance(item, str):
+                strings.append(item)
+            elif isinstance(item, dict):
+                pending.extend(item.keys())
+                pending.extend(item.values())
+            elif isinstance(item, list):
+                pending.extend(item)
+        return '\n'.join((normalized, *strings))
+    except (ValueError, RecursionError, UnicodeError):
+        return None
 
 
 def is_state_source(relative: str) -> bool:
@@ -52,7 +81,7 @@ def authorize(scope: MemoryScope) -> dict[str, Any]:
 
 
 def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = False,
-                 require_file: bool = True) -> tuple[Path, str]:
+                 require_file: bool = True, evidence: bool = False) -> tuple[Path, str]:
     authorize(scope)
     if not isinstance(path,str):
         raise MemoryUnavailable('A supported native source path is required')
@@ -61,7 +90,10 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         raise MemoryUnavailable('The native source cannot leave its installed root')
     system = (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
               or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative) is not None)
-    if diagnostic:
+    if evidence:
+        directory = False
+        permitted = is_evidence_source(relative)
+    elif diagnostic:
         from .memory_diagnostics import DIAGNOSTIC_FILES, DIAGNOSTIC_DIRECTORIES
         directory = not require_file and relative in DIAGNOSTIC_DIRECTORIES
         report = not require_file and re.fullmatch(
@@ -92,9 +124,9 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
-def _markdown_source(memory, scope: MemoryScope, path: str):
-    source, relative = _source_path(memory, scope, path)
-    if source.suffix != '.md':
+def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False):
+    source, relative = _source_path(memory, scope, path, evidence=evidence)
+    if source.suffix != suffix:
         raise MemoryUnavailable('The declared wiki source must be native Markdown')
     before = source.stat()
     if before.st_size > SOURCE_LIMIT:
@@ -107,17 +139,22 @@ def _markdown_source(memory, scope: MemoryScope, path: str):
     if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
             != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
         raise MemoryUnavailable('The native wiki source changed during collection')
-    _source_path(memory, scope, path)
+    _source_path(memory, scope, path, evidence=evidence)
     if len(content.encode()) > SOURCE_LIMIT:
         raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
     return ({'path': path, 'relative': relative, 'content': content,
              'lastModified': _source_time(after, milliseconds=True)}, _source_time(after))
 
 
-def _admit(memory, connection, scope, content, relative, timestamp):
+def _markdown_source(memory, scope: MemoryScope, path: str):
+    return _text_source(memory, scope, path)
+
+
+def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None):
     from .memory_source_review import is_reviewed
     labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
-    return memory._filter_history(connection, scope, '\n'.join((content, relative, labels)), timestamp,
+    return memory._filter_history(connection, scope, '\n'.join((content if projection is None else projection,
+                                                              relative, labels)), timestamp,
                                   reviewed=is_reviewed(memory, connection, scope, relative, content))
 
 

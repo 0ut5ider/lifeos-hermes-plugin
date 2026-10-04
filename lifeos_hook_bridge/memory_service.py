@@ -258,6 +258,21 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation in {'state_evidence_read', 'state_evidence_cache_read', 'state_evidence_cache_write'}:
+                from .memory_evidence import read, cache_read, cache_write
+                handlers = {'state_evidence_read': (read, {'domain', 'now'}),
+                            'state_evidence_cache_read': (cache_read, {'path'}),
+                            'state_evidence_cache_write': (cache_write, {'path', 'evidence'})}
+                handler, fields = handlers[operation]
+                if set(arguments) != fields:
+                    raise ValueError('State evidence requires its declared native arguments')
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('State evidence authority changed during rendering')
+
+                return handler(memory, scope, **arguments, check_current=check_current)
             if operation == 'freshness_migration' and set(arguments) == {'dry_run', 'state'}:
                 from .memory_freshness_migration import run
 

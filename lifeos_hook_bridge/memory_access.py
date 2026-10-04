@@ -349,6 +349,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'state_evidence_cache':
+            from .memory_evidence import publication_paths
+            return publication_paths(self, scope)
         if payload['operation'] == 'freshness_migration':
             from .memory_freshness_migration import publication_paths
             return publication_paths(self, connection, scope, payload)

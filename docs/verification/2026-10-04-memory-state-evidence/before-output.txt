@@ -1,0 +1,70 @@
+.FFF..FFFFFF                                                         [100%]
+=================================== FAILURES ===================================
+_ MemoryStateEvidenceTests.test_foreign_cache_directory_preserves_foreign_bytes _
+tests/test_memory_state_evidence.py:144: in test_foreign_cache_directory_preserves_foreign_bytes
+    self.assertEqual(path.read_text(), '{"synthetic_foreign":"preserved"}')
+E   AssertionError: '{\n  "schema": 1,\n  "generated_at": "2026[3368 chars]n}\n' != '{"synthetic_foreign":"preserved"}'
+E   Diff is 3581 characters long. Set self.maxDiff to None to see it.
+_ MemoryStateEvidenceTests.test_foreign_source_link_refuses_without_disclosing_foreign_note _
+tests/test_memory_state_evidence.py:130: in test_foreign_source_link_refuses_without_disclosing_foreign_note
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_missing_context_does_not_create_the_cache_directory _
+tests/test_memory_state_evidence.py:94: in test_missing_context_does_not_create_the_cache_directory
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_missing_context_refuses_all_domain_reads (domain='health') _
+tests/test_memory_state_evidence.py:87: in test_missing_context_refuses_all_domain_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_missing_context_refuses_all_domain_reads (domain='activity') _
+tests/test_memory_state_evidence.py:87: in test_missing_context_refuses_all_domain_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_missing_context_refuses_all_domain_reads (domain='work') _
+tests/test_memory_state_evidence.py:87: in test_missing_context_refuses_all_domain_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_missing_context_refuses_all_domain_reads (domain='money') _
+tests/test_memory_state_evidence.py:87: in test_missing_context_refuses_all_domain_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_read_only_owner_can_read_without_replacing_previous_cache _
+tests/test_memory_state_evidence.py:102: in test_read_only_owner_can_read_without_replacing_previous_cache
+    self.assertEqual(self.cache.read_bytes(), before)
+E   AssertionError: b'{\n  "schema": 1,\n  "generated_at": "2026[3368 chars]n}\n' != b'{"synthetic_previous":"preserved"}'
+_ MemoryStateEvidenceTests.test_retired_work_name_does_not_reach_current_metrics _
+tests/test_memory_state_evidence.py:121: in test_retired_work_name_does_not_reach_current_metrics
+    self.assertNotIn('Synthetic retired evidence work', result.stdout)
+E   AssertionError: 'Synthetic retired evidence work' unexpectedly found in '{\n  "metrics": {\n    "sessions_14d": 1,\n    "sessions_30d": 1,\n    "recent_session_names": [\n      "Synthetic retired evidence work"\n    ],\n    "phases_14d": {\n      "unknown": 1\n    },\n    "commits_14d": null,\n    "commit_days_14d": null\n  },\n  "sources": [\n    {\n      "id": "work-registry",\n      "status": "live",\n      "last_observation": null\n    },\n    {\n      "id": "git",\n      "status": "unavailable",\n      "last_observation": null,\n      "reason": "git log unavailable"\n    }\n  ]\n}\n'
+_____ MemoryStateEvidenceTests.test_revoked_owner_cannot_read_source_notes _____
+tests/test_memory_state_evidence.py:107: in test_revoked_owner_cannot_read_source_notes
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateEvidenceTests.test_stale_file_cache_cannot_restore_a_retired_work_name _
+tests/test_memory_state_evidence.py:163: in test_stale_file_cache_cannot_restore_a_retired_work_name
+    self.assertNotIn('Synthetic retired evidence work', result.stdout)
+E   AssertionError: 'Synthetic retired evidence work' unexpectedly found in '{"schema":1,"generated_at":"2026-10-04T22:39:08.381Z","domains":{"health":{"metrics":{"sleep_h_avg_7d":7.5,"sleep_efficiency_avg_7d":null,"hrv_avg_7d":null,"sleep_hr_avg_7d":null,"rhr_avg_7d":null,"steps_avg_7d":321,"sleep_score_avg_7d":null,"readiness_avg_7d":null,"sleep_h_avg_30d":7.5,"sleep_efficiency_avg_30d":null,"hrv_avg_30d":null,"sleep_hr_avg_30d":null,"rhr_avg_30d":null,"steps_avg_30d":321,"sleep_score_avg_30d":null,"readiness_avg_30d":null,"latest_sleep_record_day":"2026-10-04","days_with_data_30d":1,"newest_observation":"2026-10-04","oldest_observation_30d":"2026-10-04"},"sources":[{"id":"oura","status":"live","last_observation":"2026-10-04"},{"id":"apple","status":"dead","last_observation":null,"reason":"SYNTHETIC_CURRENT_SOURCE_NOTE"},{"id":"eightsleep","status":"unavailable","last_observation":null,"reason":"not present in health current.json"},{"id":"function","status":"unavailable","last_observation":null,"reason":"not present in health current.json"}]},"activity":{"metrics":{"total_minutes_avg_7d":60,"creation_minutes_avg_7d":20,"consumption_minutes_avg_7d":null,"creation_ratio_7d":0.333,"total_minutes_avg_30d":60,"creation_minutes_avg_30d":20,"consumption_minutes_avg_30d":null,"creation_ratio_30d":0.333,"top_apps_7d":[{"label":"Synthetic editor","minutes":20}],"days_with_data_30d":1,"newest_observation":"2026-10-04","oldest_observation_30d":"2026-10-04"},"sources":[{"id":"conduit","status":"live","last_observation":"2026-10-04"}]},"work":{"metrics":{"sessions_14d":1,"sessions_30d":1,"recent_session_names":["Synthetic retired evidence work"],"phases_14d":{"unknown":1},"commits_14d":null,"commit_days_14d":null},"sources":[{"id":"work-registry","status":"live","last_observation":null},{"id":"git","status":"unavailable","last_observation":null,"reason":"git log unavailable"}]},"money":{"metrics":{"monthly_recurring_total":22,"entries_total":2,"entries_needing_amount":0,"meta_updated":"2026-10-04","newest_observation":"2026-10-04","oldest_observation_30d":"2026-10-04"},"sources":[{"id":"expenses","status":"live","last_observation":"2026-10-04"}]}}}\n'
+____ MemoryStateEvidenceTests.test_successful_cache_has_private_permissions ____
+tests/test_memory_state_evidence.py:135: in test_successful_cache_has_private_permissions
+    self.assertEqual(self.cache.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryStateEvidenceTests.test_write_library_cannot_publish_to_an_arbitrary_path _
+tests/test_memory_state_evidence.py:152: in test_write_library_cannot_publish_to_an_arbitrary_path
+    self.assertEqual(json.loads(result.stdout), False)
+E   AssertionError: True != False
+=========================== short test summary info ============================
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_foreign_cache_directory_preserves_foreign_bytes
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_foreign_source_link_refuses_without_disclosing_foreign_note
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_missing_context_does_not_create_the_cache_directory
+SUBFAILED(domain='health') tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_missing_context_refuses_all_domain_reads
+SUBFAILED(domain='activity') tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_missing_context_refuses_all_domain_reads
+SUBFAILED(domain='work') tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_missing_context_refuses_all_domain_reads
+SUBFAILED(domain='money') tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_missing_context_refuses_all_domain_reads
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_read_only_owner_can_read_without_replacing_previous_cache
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_retired_work_name_does_not_reach_current_metrics
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_revoked_owner_cannot_read_source_notes
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_stale_file_cache_cannot_restore_a_retired_work_name
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_successful_cache_has_private_permissions
+FAILED tests/test_memory_state_evidence.py::MemoryStateEvidenceTests::test_write_library_cannot_publish_to_an_arbitrary_path
+13 failed, 3 passed in 4.56s

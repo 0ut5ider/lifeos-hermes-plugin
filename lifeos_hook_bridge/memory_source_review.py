@@ -8,7 +8,8 @@ from .memory_access import MemoryUnavailable, _now
 from .memory_policy import CATEGORIES
 from .memory_sources import (CONTEXT_FILES, TELOS_SOURCES, FRESHNESS_TELOS_SOURCES, is_state_source,
                              SYSTEM_FILES, SYSTEM_PREFIXES, CORPUS_LIMIT,
-                             SOURCE_COUNT_LIMIT, _markdown_source, authorize)
+                             SOURCE_COUNT_LIMIT, _markdown_source, _text_source, authorize,
+                             is_evidence_source, json_projection)
 
 
 def _digest(value):
@@ -21,6 +22,8 @@ def _source_digest(memory, scope, relative, content):
 
 
 def _classification(relative):
+    if is_evidence_source(relative):
+        return 'evidence'
     if relative in CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES or is_state_source(relative):
         return 'owner_context'
     if (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
@@ -61,19 +64,22 @@ def _snapshot(memory, connection, scope, paths):
         if relative.startswith('/') or any(part in ('.', '..', '') for part in relative.split('/')):
             raise ValueError('Source review needs exact installation-relative paths')
         classification = _classification(relative)
-        source, timestamp = _markdown_source(memory, scope, str(memory.root / relative))
+        source, timestamp = (_text_source(memory, scope, str(memory.root / relative), suffix='.json', evidence=True)
+                             if classification == 'evidence' else
+                             _markdown_source(memory, scope, str(memory.root / relative)))
+        projection = json_projection(source['content']) if classification == 'evidence' else source['content']
         total += len(source['content'].encode())
         if total > CORPUS_LIMIT:
             raise MemoryUnavailable('The reviewed sources exceed their transport limit')
-        sources.append({**source, 'classification': classification, 'timestamp': timestamp})
+        sources.append({**source, 'classification': classification, 'timestamp': timestamp, 'projection': projection})
     checked = memory._native('validate_source_batch',
-        contents=[source['content'] + '\n' + source['path'] for source in sources])['accepted']
+        contents=[(source['projection'] or '') + '\n' + source['path'] for source in sources])['accepted']
     result = []
     for source, valid in zip(sources, checked, strict=True):
         relative = source['relative']
         labels = relative.replace('-', ' ').replace('_', ' ')
-        accepted = (valid is True and not memory._filter_history(connection, scope,
-            '\n'.join((source['content'], relative, labels)), source['timestamp'], reviewed=True)['excluded'])
+        accepted = (valid is True and source['projection'] is not None and not memory._filter_history(connection, scope,
+            '\n'.join((source['projection'], relative, labels)), source['timestamp'], reviewed=True)['excluded'])
         result.append({'path': relative, 'classification': source['classification'],
                        'digest': _source_digest(memory, scope, relative, source['content']),
                        'lastModified': source['lastModified'],

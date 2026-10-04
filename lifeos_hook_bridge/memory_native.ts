@@ -26,7 +26,29 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "freshness_write") {
+  if (input.action === "state_evidence") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/StateEvidence.ts")).href);
+    if (!object(module) || typeof module.gatherEvidence !== "function" || typeof module.gatherDomain !== "function"
+        || !Array.isArray(input.sources) || typeof input.now !== "string"
+        || !(input.domain === null || typeof input.domain === "string" && ["health", "activity", "work", "money"].includes(input.domain))
+        || !(input.gitCommits === null || Array.isArray(input.gitCommits)
+          && input.gitCommits.every(date => typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date)))) {
+      throw new Error("Native state evidence needs declared source bytes, Git dates, and a domain");
+    }
+    const sources: Record<string, string> = {};
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
+          || Object.hasOwn(sources, source.path)) {
+        throw new Error("Native state evidence needs distinct declared source text");
+      }
+      sources[source.path] = source.content;
+    }
+    const now = new Date(input.now);
+    if (Number.isNaN(now.getTime())) throw new Error("Native state evidence requires a valid calculation date");
+    const declared = {sources, gitCommits: input.gitCommits};
+    const value = input.domain === null ? module.gatherEvidence(now, declared) : module.gatherDomain(input.domain, now, declared);
+    result = {value, content: JSON.stringify(value, null, 2) + "\n"};
+  } else if (input.action === "freshness_write") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/TelosFreshness.ts")).href);
     if (!object(module) || typeof module.renderFreshnessWrite !== "function" || typeof input.kind !== "string"
         || typeof input.path !== "string" || typeof input.by !== "string"

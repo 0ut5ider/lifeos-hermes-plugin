@@ -1,0 +1,81 @@
+{
+  "case": "test_source_and_authority_changes_during_read_refuse_delivery",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}, \"synthetic_later\": \"Synthetic later evidence edit\"}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_evidence_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-qpi55zcp/memory.json",
+        "source",
+        "state_evidence_read",
+        "LIFEOS/USER/HEALTH/current.json"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"The evidence sources changed during calculation\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_evidence_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-qpi55zcp/memory.json",
+        "authority",
+        "state_evidence_read",
+        "LIFEOS/USER/HEALTH/current.json"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"State evidence authority changed during rendering\"}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}
