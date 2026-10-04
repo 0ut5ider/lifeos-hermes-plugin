@@ -30,6 +30,9 @@ CASES = {
     'context-subagent': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
     'context-advisory-steady': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
     'context-advisory-cleared': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
+    'context-delivery-desktop': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
+    'context-delivery-remote': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
+    'context-delivery-disabled': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
     'freshness-reviewed': [('SessionStart.1.4', 'LIFEOS/TOOLS/FreshnessCache.ts')],
     'settings-merge': [('SessionStart.1.5', 'LIFEOS/TOOLS/MergeSettings.ts')],
     'settings-backport': [('SessionStart.1.5', 'LIFEOS/TOOLS/SettingsBackport.ts')],
@@ -68,11 +71,12 @@ def check_pair(case: dict) -> list[str]:
     if name not in CASES:
         return [f'{name}: unknown case']
     errors = []
+    delivery = name.startswith('context-delivery-')
     native, hermes = case['native'], case['hermes']
     if native['before'] != hermes['before'] or native['after'] != hermes['after']:
         errors.append(f'{name}: paired state differs')
     for side in (native, hermes):
-        if side.get('cli_exit_code') != 0:
+        if side.get('cli_exit_code') != (1 if delivery else 0):
             errors.append(f'{name}: CLI failed')
         if side.get('event') != CASES[name][0][0].split('.')[0]:
             errors.append(f'{name}: lifecycle event differs')
@@ -80,11 +84,13 @@ def check_pair(case: dict) -> list[str]:
             errors.append(f'{name}: hook invocation count differs')
         if not side.get('hook_exit_codes') or any(code != 0 for code in side['hook_exit_codes']):
             errors.append(f'{name}: hook failed')
-        if side.get('model_generation_requests') != 0:
+        if delivery and side.get('model_generation_requests') != 1:
+            errors.append(f'{name}: model delivery was not observed')
+        elif not delivery and side.get('model_generation_requests') != 0:
             errors.append(f'{name}: model generation was attempted')
         before, after = side['before'], side['after']
         if name.startswith('context-'):
-            loaded = name == 'context-desktop'
+            loaded = name in {'context-desktop', 'context-delivery-desktop'}
             marker = None
             if loaded or name in {'context-advisory-steady', 'context-advisory-cleared'}:
                 marker = {'keys': [] if name == 'context-advisory-cleared' else [ADVISORY_KEY],
@@ -95,6 +101,9 @@ def check_pair(case: dict) -> list[str]:
                         'sources_preserved': True, 'marker': marker,
                         'timing_recorded': name != 'context-subagent',
                         'ready_present': not loaded and name != 'context-subagent'}
+            if delivery:
+                expected['model_context_contains'] = {'relationship': loaded, 'wisdom': loaded,
+                                                      'advisory': loaded, 'low_confidence': False}
             if before != {'marker_present': name in {'context-advisory-steady', 'context-advisory-cleared'}} or after != expected:
                 errors.append(f'{name}: context effect is missing')
         elif name in {'kitty-remote', 'kitty-subagent'}:
@@ -326,7 +335,7 @@ def fixture_event(case: str) -> None:
         seed_work(home, case, payload['session_id'])
         write_json(home / 'before-state.json', state_snapshot(home, case, payload['session_id']))
         write_json(home / 'fixture-files-before.json', fixture_files(home))
-    if event == 'UserPromptSubmit':
+    if event == 'UserPromptSubmit' and not case.startswith('context-delivery-'):
         print(json.dumps({'decision': 'block', 'reason': BLOCK_REASON}))
 
 
@@ -422,10 +431,10 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
                    {'title': 'Old session title', 'state': 'working'})
     if case.startswith('context-'):
         seed_context(home, case)
-        if case in {'context-disabled', 'context-advisory-steady', 'context-advisory-cleared'}:
+        if case in {'context-disabled', 'context-delivery-disabled', 'context-advisory-steady', 'context-advisory-cleared'}:
             settings['dynamicContext'] = {key: False for key in (
                 'relationshipContext', 'learningReadback', 'advisoryReadback', 'activeWorkSummary')}
-            if case != 'context-disabled':
+            if case not in {'context-disabled', 'context-delivery-disabled'}:
                 settings['dynamicContext']['advisoryReadback'] = True
     if case == 'memory-health-critical':
         tools = root / 'LIFEOS/TOOLS'
@@ -476,7 +485,8 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
 class RequestGuard(http.server.BaseHTTPRequestHandler):
     def do_POST(self):
         body = self.rfile.read(int(self.headers.get('Content-Length', 0)))
-        self.server.observed.append({'path': self.path, 'body': json.loads(body)})
+        self.server.observed.append({'path': self.path, 'body': json.loads(body),
+                                     'body_sha256': hashlib.sha256(body).hexdigest()})
         self.send_response(401)
         self.end_headers()
         self.wfile.write(b'{"error":{"type":"authentication_error","message":"MODEL_CALL_NOT_EXPECTED"}}')
@@ -518,7 +528,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                 os.chown(item, spec['uid'], spec['gid'])
         for parent in (home.parent, home.parent.parent):
             os.chown(parent, spec['uid'], spec['gid'])
-    command = [*spec['command'], BLOCK_REASON]
+    delivery = case.startswith('context-delivery-')
+    command = [*spec['command'], 'Reply with READY.' if delivery else BLOCK_REASON]
     if spec.get('isolate_tmp'):
         command = ['bwrap', '--ro-bind', '/', '/', '--dev-bind', '/dev', '/dev', '--bind', str(home), str(home),
                    '--tmpfs', '/tmp', *command]
@@ -550,6 +561,20 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
     generation = [row for row in requests if row['path'] != '/api/show' or
                   set(row['body']) - {'name', 'model', 'verbose'}]
     after = state_snapshot(home, case, session_id, after=True)
+    if delivery:
+        combined = json.dumps([row['body'] for row in generation])
+        after['model_context_contains'] = {
+            'relationship': 'PAIR_RELATIONSHIP_NOTE' in combined,
+            'wisdom': 'PAIR_WISDOM_GUIDANCE' in combined,
+            'advisory': 'PAIR_ADVISORY_FINDING' in combined,
+            'low_confidence': 'PAIR_LOW_CONFIDENCE' in combined}
+        private_requests = home / 'requests-private.json'
+        descriptor = os.open(private_requests, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+        with os.fdopen(descriptor, 'w') as stream:
+            stream.write(json.dumps(requests, indent=2) + '\n')
+        requests = [{'path': row['path'], 'body_sha256': row['body_sha256'],
+                     'model': row['body'].get('model'),
+                     'body_keys': sorted(row['body'])} for row in requests]
     record = {'before': read_json(home / 'before-state.json'), 'after': after,
               'hook_exit_codes': [row['exit_code'] for row in traces],
               'event': traces[0]['event'], 'cli_exit_code': exit_code,

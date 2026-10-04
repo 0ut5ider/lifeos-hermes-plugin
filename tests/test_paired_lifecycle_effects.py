@@ -21,6 +21,35 @@ class PairedLifecycleEffectTests(unittest.TestCase):
         case['native']['after']['wisdom_present'] = False
         self.assertIn('context-desktop: context effect is missing', check_pair(case))
 
+    def delivery_case(self, name, loaded):
+        case = self.context_case(name, loaded=loaded,
+                                 marker={'keys': ['doc.integrity.memory_dir missing_active:KNOWLEDGE'],
+                                         'sessions_since_emit': 0, 'last_emitted_at_present': True} if loaded else None)
+        for side in ('native', 'hermes'):
+            case[side]['cli_exit_code'] = 1
+            case[side]['model_generation_requests'] = 1
+            case[side]['after']['model_context_contains'] = {
+                'relationship': loaded, 'wisdom': loaded, 'advisory': loaded, 'low_confidence': False}
+        return case
+
+    def test_context_delivery_requires_a_real_model_request_containing_the_hook_output(self):
+        case = self.delivery_case('context-delivery-desktop', True)
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['model_context_contains']['advisory'] = False
+        self.assertIn('context-delivery-desktop: context effect is missing', check_pair(case))
+
+    def test_remote_delivery_requires_a_model_request_without_owner_context(self):
+        case = self.delivery_case('context-delivery-remote', False)
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['model_context_contains']['relationship'] = True
+        self.assertIn('context-delivery-remote: context effect is missing', check_pair(case))
+
+    def test_disabled_delivery_cannot_pass_without_reaching_the_model_boundary(self):
+        case = self.delivery_case('context-delivery-disabled', False)
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['model_generation_requests'] = 0
+        self.assertIn('context-delivery-disabled: model delivery was not observed', check_pair(case))
+
     def test_disabled_context_requires_neutral_output_and_no_marker(self):
         case = self.context_case('context-disabled')
         self.assertEqual(check_pair(case), [])
