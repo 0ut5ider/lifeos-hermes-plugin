@@ -1,0 +1,17 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ ProfileRecoveryTests.test_recovery_uses_captured_profile_tools_when_the_original_program_is_unavailable _
+tests/test_profile_backup_recovery.py:162: in test_recovery_uses_captured_profile_tools_when_the_original_program_is_unavailable
+    result = self.recover(signature)
+             ^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_profile_backup_recovery.py:35: in recover
+    return recover(self.configuration, self.backup, signature, self.destination)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_backup_recovery.py:75: in recover
+    native = recover_native(memory, MemoryPreferences._owner_scope(config), backup / 'native',
+lifeos_hook_bridge/memory_backup_recovery.py:51: in recover
+    raise MemoryUnavailable('Native recovery needs the installed memory tools')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: Native recovery needs the installed memory tools
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup_recovery.py::ProfileRecoveryTests::test_recovery_uses_captured_profile_tools_when_the_original_program_is_unavailable
+1 failed, 9 deselected in 3.40s

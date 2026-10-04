@@ -121,3 +121,32 @@ class MemoryBackupCommandTests(unittest.TestCase):
         self.assertEqual((self.fixture.home / 'config.yaml').read_bytes(), before)
         self.assertEqual(self.fixture.fixture.received, [])
         self.assertNotIn('Synthetic private command backup marker', created.stdout + verified.stdout)
+
+    def test_command_recovers_profile_history_and_native_data_without_selecting_ownership(self):
+        from lifeos_hook_bridge.memory_access import NativeMemory
+        from lifeos_hook_bridge.memory_service import MemoryConfiguration
+        from test_memory_native import OWNER
+        created = self.run_command('--scope', 'profile', '--create', self.destination)
+        self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
+        signature = json.loads(created.stdout)['signature']
+        target = self.native.home / 'profile-recovery/command-one'
+        result = self.run_command('--scope', 'profile', '--recover', self.destination,
+                                  '--signature', signature, '--destination', target)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(result.stderr, '')
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt['status'], 'recovered')
+        self.assertFalse(receipt['ownership_enabled'])
+        self.assertFalse(receipt['sharing_enabled'])
+        profile = Path(receipt['profile'])
+        configuration = MemoryConfiguration(profile / 'lifeos-memory.json').load()
+        self.assertEqual(configuration['root'], receipt['root'])
+        self.assertFalse(configuration['ownership_enabled'])
+        self.assertFalse(configuration['sharing_enabled'])
+        for name, data in self.fixture.original.items():
+            self.assertEqual((profile / 'memories' / name).read_bytes(), data)
+            self.assertEqual((self.fixture.home / 'memories' / name).read_bytes(), data)
+        facts = NativeMemory(Path(receipt['root'])).recall(OWNER, 'private command backup marker')
+        self.assertEqual([fact['content'] for fact in facts], ['Synthetic private command backup marker'])
+        self.assertEqual(self.fixture.fixture.received, [])
+        self.assertNotIn('Synthetic private command backup marker', result.stdout)

@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupCommandTests.test_command_recovers_profile_history_and_native_data_without_selecting_ownership _
+tests/test_memory_backup_command.py:135: in test_command_recovers_profile_history_and_native_data_without_selecting_ownership
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+E   AssertionError: 1 != 0 : {"status": "rejected", "message": "The backup is unavailable under the selected profile. Check its configuration, store, permissions, and destination."}
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup_command.py::MemoryBackupCommandTests::test_command_recovers_profile_history_and_native_data_without_selecting_ownership
+1 failed, 6 deselected in 4.10s

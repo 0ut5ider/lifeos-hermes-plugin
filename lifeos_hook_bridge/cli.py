@@ -31,11 +31,11 @@ def configure_backup(parser: argparse.ArgumentParser) -> None:
     parser.add_argument('--scope', choices=('native', 'profile'), default='native',
                         help='Select native data or the selected Hermes profile together with native data.')
     actions = parser.add_mutually_exclusive_group(required=True)
-    actions.add_argument('--create', metavar='DIRECTORY', help='Create a private native data snapshot.')
-    actions.add_argument('--inspect', metavar='DIRECTORY', help='Verify a native data snapshot without restoring it.')
-    actions.add_argument('--recover', metavar='DIRECTORY', help='Recover a native snapshot into a separate tree without selecting ownership.')
+    actions.add_argument('--create', metavar='DIRECTORY', help='Create a private snapshot for the selected scope.')
+    actions.add_argument('--inspect', metavar='DIRECTORY', help='Verify a snapshot without restoring it.')
+    actions.add_argument('--recover', metavar='DIRECTORY', help='Recover a snapshot into a separate tree without selecting ownership.')
     parser.add_argument('--signature', help='Require the recorded manifest signature during inspection or recovery.')
-    parser.add_argument('--destination', metavar='DIRECTORY', help='Create the separate native recovery tree at this path.')
+    parser.add_argument('--destination', metavar='DIRECTORY', help='Create the separate recovery tree at this path.')
 
 
 def run_backup(args: argparse.Namespace) -> int:
@@ -47,24 +47,27 @@ def run_backup(args: argparse.Namespace) -> int:
     from .memory_preferences import MemoryPreferences
     from .memory_service import MemoryConfiguration
     from . import profile_backup
+    from .profile_backup_recovery import recover as recover_profile
     configuration = MemoryConfiguration(get_hermes_home() / 'lifeos-memory.json')
     if args.recover and (not args.signature or not args.destination):
-        print(json.dumps({'status': 'rejected', 'message': 'Native recovery requires --signature and --destination.'}), file=sys.stderr)
+        print(json.dumps({'status': 'rejected', 'message': 'Recovery requires --signature and --destination.'}), file=sys.stderr)
         return 1
     if args.destination and not args.recover:
-        print(json.dumps({'status': 'rejected', 'message': '--destination applies to native recovery.'}), file=sys.stderr)
+        print(json.dumps({'status': 'rejected', 'message': '--destination applies to recovery.'}), file=sys.stderr)
         return 1
     try:
         if args.create and args.signature:
             raise ValueError('Manifest signatures apply to inspection')
-        if args.scope == 'profile' and args.create:
-            result = profile_backup.create(configuration, Path(args.create).expanduser())
+        if args.scope == 'profile' and (args.create or args.recover):
+            if args.create:
+                result = profile_backup.create(configuration, Path(args.create).expanduser())
+            else:
+                result = recover_profile(configuration, Path(args.recover).expanduser(), args.signature,
+                                         Path(args.destination).expanduser())
         else:
             with installation_lock(configuration.path.parent), configuration._lock():
                 config = configuration.load()
                 if args.scope == 'profile':
-                    if args.recover:
-                        raise ValueError('Profile recovery requires its separate recovery capability')
                     manifest = profile_backup.inspect(configuration, Path(args.inspect).expanduser(), args.signature)
                     result = {'status': 'verified', 'profile_files': len(manifest['files']), 'created': manifest['created']}
                 else:

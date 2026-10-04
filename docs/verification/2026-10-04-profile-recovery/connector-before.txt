@@ -1,0 +1,19 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ ProfileRecoveryTests.test_recovered_native_connector_uses_the_disabled_candidate_configuration _
+tests/test_profile_backup_recovery.py:101: in test_recovered_native_connector_uses_the_disabled_candidate_configuration
+    self.assertEqual(rebound['command'][3], str(Path(result['profile']) / self.configuration.path.name))
+E   AssertionError: '/hom[91 chars]emory-825pujhc/hermes/lifeos-memory.json' != '/hom[91 chars]emory-825pujhc/profile-recovery/one/profile/lifeos-memory.json'
+E   - /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-825pujhc/hermes/lifeos-memory.json
+E   ?                                                                                                               ^  ^ ^
+E   + /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-825pujhc/profile-recovery/one/profile/lifeos-memory.json
+E   ?                                                                                                               ^^^^^^^^^^^^^  ^^^^ ^^^^^^^^
+_ ProfileRecoveryTests.test_recovery_refuses_an_unrecognized_native_connector_without_replacing_live_data _
+tests/test_profile_backup_recovery.py:112: in test_recovery_refuses_an_unrecognized_native_connector_without_replacing_live_data
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup_recovery.py::ProfileRecoveryTests::test_recovered_native_connector_uses_the_disabled_candidate_configuration
+FAILED tests/test_profile_backup_recovery.py::ProfileRecoveryTests::test_recovery_refuses_an_unrecognized_native_connector_without_replacing_live_data
+2 failed, 6 deselected in 2.13s

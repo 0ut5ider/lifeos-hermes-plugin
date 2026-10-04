@@ -1,0 +1,29 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ ProfileRecoveryTests.test_recovery_uses_captured_profile_tools_when_the_original_program_is_unavailable _
+tests/test_profile_backup_recovery.py:158: in test_recovery_uses_captured_profile_tools_when_the_original_program_is_unavailable
+    signature = self.snapshot()
+                ^^^^^^^^^^^^^^^
+tests/test_profile_backup_recovery.py:32: in snapshot
+    return self.fixture.snapshot()[0]['signature']
+           ^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_profile_backup.py:49: in snapshot
+    result = create(self.configuration, self.destination)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_backup.py:147: in create
+    native, native_signature = capture(memory, scope, connection, stage / 'native')
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_backup.py:127: in capture
+    _check_references(memory, connection)
+lifeos_hook_bridge/memory_backup.py:119: in _check_references
+    hot_entries = {memory._path(relative): memory._hot_snapshot(connection, category)['entries']
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_access.py:402: in _hot_snapshot
+    snapshot = self._native("read_hot", path=str(path))
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_access.py:151: in _native
+    raise MemoryUnavailable("Native memory operation failed: " + result.stderr.strip()[:500])
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: Native memory operation failed: ResolveMessage: Cannot find package 'yaml' from '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-se8i41ln/hermes/hooks/lib/identity.ts'
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup_recovery.py::ProfileRecoveryTests::test_recovery_uses_captured_profile_tools_when_the_original_program_is_unavailable
+1 failed, 9 deselected in 0.81s

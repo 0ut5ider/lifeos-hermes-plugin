@@ -32,7 +32,7 @@ def _sync_tree(root):
             os.close(descriptor)
 
 
-def recover(memory, scope, backup, signature, destination):
+def recover(memory, scope, backup, signature, destination, *, program_tools=None):
     _authorize(scope)
     if not isinstance(signature, str) or re.fullmatch('[0-9a-f]{64}', signature) is None:
         raise MemoryUnavailable('Native recovery requires the reviewed backup signature')
@@ -46,7 +46,7 @@ def recover(memory, scope, backup, signature, destination):
         raise MemoryUnavailable('An existing native recovery tree cannot be replaced')
     if destination.parent.resolve() != destination.parent:
         raise MemoryUnavailable('The native recovery destination changes its physical path')
-    tools = memory.root / 'LIFEOS/TOOLS'
+    tools = Path(program_tools).absolute() if program_tools is not None else memory.root / 'LIFEOS/TOOLS'
     if not (tools / 'MemorySystem.ts').is_file():
         raise MemoryUnavailable('Native recovery needs the installed memory tools')
     destination.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
@@ -69,7 +69,7 @@ def recover(memory, scope, backup, signature, destination):
         (root / 'LIFEOS').mkdir(parents=True, mode=0o700)
         (root / 'LIFEOS/USER').symlink_to('../../.config/LIFEOS/USER', target_is_directory=True)
         (root / 'LIFEOS/MEMORY').symlink_to('../../.config/LIFEOS/USER/MEMORY', target_is_directory=True)
-        (root / 'LIFEOS/TOOLS').symlink_to(tools.resolve(), target_is_directory=True)
+        (root / 'LIFEOS/TOOLS').symlink_to(os.path.relpath(tools.resolve(), root / 'LIFEOS'), target_is_directory=True)
         candidate = NativeMemory(root, bun=memory.bun)
         with candidate._transaction() as connection:
             _check_references(candidate, connection)
