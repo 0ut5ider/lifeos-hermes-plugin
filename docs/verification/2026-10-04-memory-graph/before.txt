@@ -1,0 +1,89 @@
+.FFFFFFF.F                                                      [100%]
+=================================== FAILURES ===================================
+_ MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (command=('build',)) _
+tests/test_memory_graph.py:93: in test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (command=('build', '--all')) _
+tests/test_memory_graph.py:93: in test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (command=('validate',)) _
+tests/test_memory_graph.py:93: in test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (command=('stats',)) _
+tests/test_memory_graph.py:93: in test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (command=('patterns',)) _
+tests/test_memory_graph.py:93: in test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (command=('related', 'synthetic-lab-routing')) _
+tests/test_memory_graph.py:93: in test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_changed_registered_source_refuses_before_overwriting_artifacts _
+tests/test_memory_graph.py:143: in test_changed_registered_source_refuses_before_overwriting_artifacts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_correction_removes_superseded_wikilink_but_keeps_current_tag_edge _
+tests/test_memory_graph.py:118: in test_correction_removes_superseded_wikilink_but_keeps_current_tag_edge
+    self.assertNotIn('[wikilink]', result)
+E   AssertionError: '[wikilink]' unexpectedly found in '\n🔗 Synthetic lab routing (synthetic-lab-routing)\n  → Synthetic current target [wikilink]\n'
+_ MemoryGraphTests.test_foreign_work_link_refuses_before_delivery_or_publication _
+tests/test_memory_graph.py:153: in test_foreign_work_link_refuses_before_delivery_or_publication
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_forgotten_target_leaves_fresh_patterns_and_statistics __
+tests/test_memory_graph.py:111: in test_forgotten_target_leaves_fresh_patterns_and_statistics
+    self.assertNotIn('Synthetic current target', self.successful('patterns'))
+E   AssertionError: 'Synthetic current target' unexpectedly found in '# Memory Graph — Patterns\n\n> Generated 2026-10-04T18:29:22.950Z · DECLARED edges only (trustworthy baseline)\n\n**Graph:** 2 nodes (knowledge 2), 1 edges, 0 cross-silo, 1 communities.\n\n> ⚠️ Cross-silo edges are thin (0/1). The "all your memory" graph is currently mostly within-silo — declared links rarely cross WORK↔KNOWLEDGE. Inferred/semantic edges (next slice) are what light up cross-silo structure.\n\n## Communities (top 15 by size)\n\n- **untagged** — 2 items (knowledge 2); lead: _Synthetic lab routing_\n\n## God-nodes (top by PageRank — the gravitational centers)\n\n- **Synthetic lab routing** `synthetic-lab-routing` — knowledge, degree 1\n- **Synthetic current target** `synthetic-current-target` — knowledge, degree 1\n\n## Bridges (high betweenness, low degree — the secret connectors)\n\n- **Synthetic lab routing** `synthetic-lab-routing` — knowledge, degree 1\n- **Synthetic current target** `synthetic-current-target` — knowledge, degree 1\n\n## Orphans (unconnected — captured then abandoned)\n\n0 orphan nodes. Oldest 20:\n\n\n## Contradictions (declared `contradicts` links)\n\n_None declared. Semantic-opposition detection is a later slice._\n\n'
+_ MemoryGraphTests.test_owner_build_preserves_actual_algorithms_and_standalone_graph _
+tests/test_memory_graph.py:73: in test_owner_build_preserves_actual_algorithms_and_standalone_graph
+    self.assertEqual(managed['edgeCount'], 8)
+E   AssertionError: 11 != 8
+_________ MemoryGraphTests.test_poisoned_cache_is_not_a_current_source _________
+tests/test_memory_graph.py:161: in test_poisoned_cache_is_not_a_current_source
+    self.assertNotIn('Synthetic foreign cache claim', self.successful('patterns'))
+E   AssertionError: 'Synthetic foreign cache claim' unexpectedly found in 'Synthetic foreign cache claim\n'
+_ MemoryGraphTests.test_retired_claim_in_work_history_cannot_enter_current_patterns _
+tests/test_memory_graph.py:133: in test_retired_claim_in_work_history_cannot_enter_current_patterns
+    self.assertNotIn('Synthetic retained work', self.successful('patterns'))
+E   AssertionError: 'Synthetic retained work' unexpectedly found in '# Memory Graph — Patterns\n\n> Generated 2026-10-04T18:29:25.901Z · DECLARED edges only (trustworthy baseline)\n\n**Graph:** 3 nodes (knowledge 2, work 1), 1 edges, 0 cross-silo, 2 communities.\n\n> ⚠️ Cross-silo edges are thin (0/1). The "all your memory" graph is currently mostly within-silo — declared links rarely cross WORK↔KNOWLEDGE. Inferred/semantic edges (next slice) are what light up cross-silo structure.\n\n## Communities (top 15 by size)\n\n- **untagged** — 2 items (knowledge 2); lead: _Synthetic lab routing_\n- **synthetic** — 1 items (work 1); lead: _Synthetic retained work_\n\n## God-nodes (top by PageRank — the gravitational centers)\n\n- **Synthetic lab routing** `synthetic-lab-routing` — knowledge, degree 1\n- **Synthetic current target** `synthetic-current-target` — knowledge, degree 1\n- **Synthetic retained work** `work:synthetic-retired` — work, degree 0\n\n## Bridges (high betweenness, low degree — the secret connectors)\n\n- **Synthetic lab routing** `synthetic-lab-routing` — knowledge, degree 1\n- **Synthetic current target** `synthetic-current-target` — knowledge, degree 1\n\n## Orphans (unconnected — captured then abandoned)\n\n1 orphan nodes. Oldest 20:\n\n- Synthetic retained work `work:synthetic-retired` — work\n\n## Contradictions (declared `contradicts` links)\n\n_None declared. Semantic-opposition detection is a later slice._\n\n'
+_ MemoryGraphTests.test_revocation_refuses_even_fresh_pattern_cache (command=('patterns',)) _
+tests/test_memory_graph.py:104: in test_revocation_refuses_even_fresh_pattern_cache
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_revocation_refuses_even_fresh_pattern_cache (command=('stats',)) _
+tests/test_memory_graph.py:104: in test_revocation_refuses_even_fresh_pattern_cache
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphTests.test_revocation_refuses_even_fresh_pattern_cache (command=('related', 'synthetic-lab-routing')) _
+tests/test_memory_graph.py:104: in test_revocation_refuses_even_fresh_pattern_cache
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_____ MemoryGraphTests.test_unregistered_note_does_not_enter_current_graph _____
+tests/test_memory_graph.py:126: in test_unregistered_note_does_not_enter_current_graph
+    self.assertEqual(graph['nodeCount'], 2)
+E   AssertionError: 3 != 2
+=========================== short test summary info ============================
+SUBFAILED(command=('build',)) tests/test_memory_graph.py::MemoryGraphTests::test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+SUBFAILED(command=('build', '--all')) tests/test_memory_graph.py::MemoryGraphTests::test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+SUBFAILED(command=('validate',)) tests/test_memory_graph.py::MemoryGraphTests::test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+SUBFAILED(command=('stats',)) tests/test_memory_graph.py::MemoryGraphTests::test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+SUBFAILED(command=('patterns',)) tests/test_memory_graph.py::MemoryGraphTests::test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+SUBFAILED(command=('related', 'synthetic-lab-routing')) tests/test_memory_graph.py::MemoryGraphTests::test_all_commands_refuse_missing_context_and_preserve_existing_artifacts
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_changed_registered_source_refuses_before_overwriting_artifacts
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_correction_removes_superseded_wikilink_but_keeps_current_tag_edge
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_foreign_work_link_refuses_before_delivery_or_publication
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_forgotten_target_leaves_fresh_patterns_and_statistics
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_owner_build_preserves_actual_algorithms_and_standalone_graph
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_poisoned_cache_is_not_a_current_source
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_retired_claim_in_work_history_cannot_enter_current_patterns
+SUBFAILED(command=('patterns',)) tests/test_memory_graph.py::MemoryGraphTests::test_revocation_refuses_even_fresh_pattern_cache
+SUBFAILED(command=('stats',)) tests/test_memory_graph.py::MemoryGraphTests::test_revocation_refuses_even_fresh_pattern_cache
+SUBFAILED(command=('related', 'synthetic-lab-routing')) tests/test_memory_graph.py::MemoryGraphTests::test_revocation_refuses_even_fresh_pattern_cache
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_unregistered_note_does_not_enter_current_graph
+17 failed, 2 passed in 10.33s

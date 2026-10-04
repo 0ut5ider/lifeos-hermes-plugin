@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryGraphBoundaryTests.test_artifact_alias_to_the_locked_registry_refuses_before_journal_collection _
+tests/test_memory_graph_boundaries.py:25: in test_artifact_alias_to_the_locked_registry_refuses_before_journal_collection
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_artifact_alias_to_the_locked_registry_refuses_before_journal_collection
+1 failed, 3 deselected in 1.57s

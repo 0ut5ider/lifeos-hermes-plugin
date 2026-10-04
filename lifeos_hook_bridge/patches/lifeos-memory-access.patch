@@ -1427,6 +1427,237 @@ index ecfbbeb..4809978 100755
      const abs = pathJoin(KNOWLEDGE_DIR, dir);
      if (!existsSync(abs)) continue;
      for (const f of readdirSync(abs)) {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts
+index b5c0b6d..8bb486c 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Builds native memory graph patterns from standalone files or declared admitted sources.
++// ABOUTME: Delegates managed commands and artifact publication to the governed memory service.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -35,6 +37,7 @@ import pagerank from "graphology-metrics/centrality/pagerank";
+ import * as fs from "fs";
+ import * as path from "path";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -240,6 +243,34 @@ function ingest(): Raw[] {
+   return raws;
+ }
+ 
++export interface GraphSource { path: string; content: string; }
++
++function ingestDeclared(sources: GraphSource[]): Raw[] {
++  return sources.map(source => {
++    const parts = path.relative(MEMORY, source.path).split(path.sep);
++    const { fm } = readFront(source.content);
++    const slug = path.basename(source.path, ".md");
++    let id: string, silo: string, type: string, title: string, updated: string | null;
++    if (parts.length === 3 && parts[0] === "KNOWLEDGE" && KNOWLEDGE_DOMAINS.includes(parts[1])) {
++      id = slug; silo = "knowledge"; type = fm.type || parts[1].toLowerCase();
++      title = fm.title || slug; updated = fm.last_updated || fm.updated || fm.created || null;
++    } else if (parts.length === 3 && parts[0] === "WORK" && ["ISA.md", "PRD.md"].includes(parts[2])) {
++      id = `work:${parts[1]}`; silo = "work"; type = "isa";
++      title = fm.task || fm.title || parts[1]; updated = fm.updated || fm.started || null;
++    } else if (parts.length >= 3 && ((parts[0] === "WISDOM" && ["FRAMES", "PRINCIPLES"].includes(parts[1]))
++        || (parts[0] === "LEARNING" && parts[1] === "SYNTHESIS"))) {
++      const rel = parts.slice(2).join("--").replace(/\.md$/, "");
++      id = `${parts[1]}--${rel}`; silo = parts[0] === "WISDOM" ? "wisdom" : "synthesis";
++      type = silo === "wisdom" ? "wisdom" : "lesson";
++      title = fm.title || source.content.match(/^#\s+(.+)$/m)?.[1] || rel;
++      updated = fm.last_updated || fm.updated || fm.created || null;
++    } else {
++      throw new Error("The declared graph source is outside its native memory silos");
++    }
++    return {node: {id, silo, type, title, path: source.path, tags: parseTags(fm), updated}, content: source.content};
++  });
++}
++
+ // ============================================================================
+ // Lexical inference (ISC-9) — connects the orphans that declared edges can't.
+ // WORK ISAs have no tags but rich task/goal text, so we infer from IDF-weighted
+@@ -332,7 +363,7 @@ function computeInferred(raws: Raw[], opts: { topK?: number; minScore?: number }
+ // Graph build
+ // ============================================================================
+ 
+-function buildGraph(raws: Raw[], layer: EdgeLayer = "declared"): { graph: Graph; edges: MemEdge[] } {
++function buildGraph(raws: Raw[], layer: EdgeLayer = "declared", warn: (message: string) => void = console.warn): { graph: Graph; edges: MemEdge[] } {
+   const graph = new Graph({ type: "undirected", multi: false });
+ 
+   // bare-slug -> id resolver (knowledge slug is bare; work id is "work:slug")
+@@ -343,7 +374,7 @@ function buildGraph(raws: Raw[], layer: EdgeLayer = "declared"): { graph: Graph;
+     // the first, warn on the id→path collision so the duplicate is visible.
+     if (graph.hasNode(node.id)) {
+       const existingPath = graph.getNodeAttribute(node.id, "path");
+-      console.warn(`[MemoryGraph] duplicate node id "${node.id}" — keeping ${existingPath}, ignoring ${node.path}`);
++      warn(`[MemoryGraph] duplicate node id "${node.id}" — keeping ${existingPath}, ignoring ${node.path}`);
+       continue;
+     }
+     graph.addNode(node.id, { ...node });
+@@ -411,7 +442,7 @@ function computePatterns(graph: Graph) {
+   louvain.assign(graph, { resolution: 1 });
+ 
+   // PageRank (influence) + degree
+-  pagerank.assign(graph, { getEdgeWeight: "weight" });
++  if (graph.order > 0) pagerank.assign(graph, { getEdgeWeight: "weight" });
+ 
+   const degree = new Map<string, number>();
+   graph.forEachNode((n) => degree.set(n, graph.degree(n)));
+@@ -492,15 +523,13 @@ function computePatterns(graph: Graph) {
+ // Emit
+ // ============================================================================
+ 
+-function emit(graph: Graph, edges: MemEdge[], p: ReturnType<typeof computePatterns>) {
+-  fs.mkdirSync(OUT_DIR, { recursive: true });
++function emit(graph: Graph, edges: MemEdge[], p: ReturnType<typeof computePatterns>, write = true) {
+ 
+   const nodes = graph.mapNodes((n, attr) => ({
+     id: n, silo: attr.silo, type: attr.type, title: attr.title,
+     community: attr.community, pagerank: attr.pagerank, degree: graph.degree(n), tags: attr.tags,
+   }));
+-  fs.writeFileSync(path.join(OUT_DIR, "graph.json"),
+-    JSON.stringify({ generated: new Date().toISOString(), nodeCount: graph.order, edgeCount: graph.size, nodes, edges }, null, 0));
++  const graphText = JSON.stringify({ generated: new Date().toISOString(), nodeCount: graph.order, edgeCount: graph.size, nodes, edges }, null, 0);
+ 
+   const siloCounts: Record<string, number> = {};
+   graph.forEachNode((_n, a) => { siloCounts[a.silo] = (siloCounts[a.silo] || 0) + 1; });
+@@ -539,29 +568,33 @@ function emit(graph: Graph, edges: MemEdge[], p: ReturnType<typeof computePatter
+   else L.push(`_None declared. Semantic-opposition detection is a later slice._`);
+   L.push(``);
+ 
+-  fs.writeFileSync(path.join(OUT_DIR, "PATTERNS.md"), L.join("\n"));
++  const patterns = L.join("\n");
++  if (write) {
++    fs.mkdirSync(OUT_DIR, {recursive: true});
++    fs.writeFileSync(path.join(OUT_DIR, "graph.json"), graphText);
++    fs.writeFileSync(path.join(OUT_DIR, "PATTERNS.md"), patterns);
++  }
++  return {graph: graphText, patterns};
+ }
+ 
+ // ============================================================================
+ // Commands
+ // ============================================================================
+ 
+-function build(layer: EdgeLayer = "declared"): { order: number; size: number; communities: number; orphans: number; inferred: number } {
+-  const raws = ingest();
+-  const { graph, edges } = buildGraph(raws, layer);
++function build(layer: EdgeLayer = "declared", raws = ingest(), write = true, warn: (message: string) => void = console.warn) {
++  const { graph, edges } = buildGraph(raws, layer, warn);
+   const p = computePatterns(graph);
+-  emit(graph, edges, p);
++  const artifacts = emit(graph, edges, p, write);
+   const inferred = edges.filter((e) => e.kind === "inferred").length;
+-  return { order: graph.order, size: graph.size, communities: p.communities.length, orphans: p.orphans.length, inferred };
++  return { order: graph.order, size: graph.size, communities: p.communities.length, orphans: p.orphans.length, inferred, artifacts };
+ }
+ 
+ // Validation gate (ISC-36): does lexical inference recover human-declared links,
+ // and how clean is it? Honest framing: precision-against-declared understates quality
+ // (a missing declared edge is not a wrong inference), so we report recall as the trust
+ // signal + a spot-check sample, and the cross-silo payoff inference unlocks.
+-function validate() {
+-  const raws = ingest();
+-  const { graph: declaredG } = buildGraph(raws, "declared");
++function validate(raws = ingest(), log: (message: string) => void = console.log, warn: (message: string) => void = console.warn) {
++  const { graph: declaredG } = buildGraph(raws, "declared", warn);
+   // Ground truth: human-asserted edges (related + wikilink), as undirected pairs
+   const truth = new Set<string>();
+   declaredG.forEachEdge((_e, attr, s, t) => {
+@@ -589,19 +622,19 @@ function validate() {
+   const crossSilo = inferred.filter((i) => sBilo(i.from) !== sBilo(i.to));
+   const PRECISION_FLOOR = 0.05; // proxy floor; low by design (declared is sparse ground truth)
+ 
+-  console.log(`\n🔬 Inference Validation (lexical, IDF token-overlap)`);
+-  console.log("─".repeat(60));
+-  console.log(`  Declared (human) edges (ground truth): ${truth.size}`);
+-  console.log(`  Inferred edges total:                  ${inferred.length}`);
+-  console.log(`  Recall (declared pairs inference also finds): ${(recall * 100).toFixed(1)}%  ← trust signal`);
+-  console.log(`  Precision-proxy (KK-inferred that are declared): ${(precisionProxy * 100).toFixed(1)}%  (floor ${PRECISION_FLOOR * 100}% — low by design; declared is sparse)`);
+-  console.log(`  NEW cross-silo edges inference unlocks: ${crossSilo.length}  ← the payoff for the 75% orphans`);
+-  console.log(`  Gate: ${precisionProxy >= PRECISION_FLOOR ? "PASS — inferred edges safe to surface behind the `all` layer" : "HOLD — keep inferred filtered until threshold tuned"}`);
+-  console.log(`\n  Top cross-silo inferred edges (spot-check these — AI suggests, you ratify):`);
++  log(`\n🔬 Inference Validation (lexical, IDF token-overlap)`);
++  log("─".repeat(60));
++  log(`  Declared (human) edges (ground truth): ${truth.size}`);
++  log(`  Inferred edges total:                  ${inferred.length}`);
++  log(`  Recall (declared pairs inference also finds): ${(recall * 100).toFixed(1)}%  ← trust signal`);
++  log(`  Precision-proxy (KK-inferred that are declared): ${(precisionProxy * 100).toFixed(1)}%  (floor ${PRECISION_FLOOR * 100}% — low by design; declared is sparse)`);
++  log(`  NEW cross-silo edges inference unlocks: ${crossSilo.length}  ← the payoff for the 75% orphans`);
++  log(`  Gate: ${precisionProxy >= PRECISION_FLOOR ? "PASS — inferred edges safe to surface behind the `all` layer" : "HOLD — keep inferred filtered until threshold tuned"}`);
++  log(`\n  Top cross-silo inferred edges (spot-check these — AI suggests, you ratify):`);
+   for (const c of crossSilo.sort((a, b) => b.score - a.score).slice(0, 12)) {
+-    console.log(`    ${c.score.toFixed(2)}  ${declaredG.getNodeAttribute(c.from, "title")}  ⟷  ${declaredG.getNodeAttribute(c.to, "title")}`);
++    log(`    ${c.score.toFixed(2)}  ${declaredG.getNodeAttribute(c.from, "title")}  ⟷  ${declaredG.getNodeAttribute(c.to, "title")}`);
+   }
+-  console.log("─".repeat(60));
++  log("─".repeat(60));
+ }
+ 
+ function cacheAgeMin(): number | null {
+@@ -610,10 +643,50 @@ function cacheAgeMin(): number | null {
+   return (Date.now() - fs.statSync(f).mtimeMs) / 60000;
+ }
+ 
++export function renderMemoryGraph(sources: GraphSource[], command: string, layer: EdgeLayer, target: string | null):
++    {stdout: string; stderr: string; writes: Array<{name: string; content: string}>} {
++  const raws = ingestDeclared(sources);
++  const lines: string[] = [], warnings: string[] = [];
++  const warn = (message: string): void => { warnings.push(message); };
++  const writes: Array<{name: string; content: string}> = [];
++  if (["build", "patterns", "stats"].includes(command)) {
++    const t0 = performance.now();
++    const r = build(layer, raws, false, warn);
++    if (command !== "stats") writes.push({name: "graph.json", content: r.artifacts.graph},
++      {name: "PATTERNS.md", content: r.artifacts.patterns});
++    if (command === "build") {
++      lines.push(`✅ Memory graph rebuilt (${layer} edges) in ${((performance.now() - t0) / 1000).toFixed(1)}s`,
++        `   ${r.order} nodes, ${r.size} edges${layer === "all" ? ` (${r.inferred} inferred)` : ""}, ${r.communities} communities, ${r.orphans} orphans`,
++        `   → ${path.join(OUT_DIR, "PATTERNS.md")}`);
++    } else if (command === "stats") {
++      lines.push(`🕸️  Memory graph: ${r.order} nodes, ${r.size} edges, ${r.communities} communities, ${r.orphans} orphans · cache 0m old`);
++    } else lines.push(r.artifacts.patterns);
++  } else if (command === "validate") {
++    validate(raws, line => lines.push(line), warn);
++  } else if (command === "related" && target !== null) {
++    const {graph} = buildGraph(raws, "declared", warn);
++    const node = graph.hasNode(target) ? target : graph.hasNode(`work:${target}`) ? `work:${target}`
++      : graph.nodes().find(n => n.includes(target));
++    if (!node) throw new Error("The requested graph node is unavailable");
++    lines.push(`\n🔗 ${graph.getNodeAttribute(node, "title")} (${node})`);
++    graph.forEachNeighbor(node, nb => {
++      const edge = graph.edge(node, nb);
++      lines.push(`  → ${graph.getNodeAttribute(nb, "title")} [${graph.getEdgeAttribute(edge, "kind")}${graph.getEdgeAttribute(edge, "label") ? ":" + graph.getEdgeAttribute(edge, "label") : ""}]`);
++    });
++  } else throw new Error("The requested graph command is unavailable");
++  return {stdout: lines.join("\n") + "\n", stderr: warnings.length ? warnings.join("\n") + "\n" : "", writes};
++}
++
++if (import.meta.main) {
+ const cmd = process.argv[2] || "patterns";
+ const layer: EdgeLayer = process.argv.includes("--all") ? "all" : "declared";
+ 
+-if (cmd === "build") {
++const governed = memoryAccess("memory_graph", {root: MEMORY, command: cmd, layer, target: cmd === "related" ? process.argv[3] ?? null : null}, memoryObject);
++if (governed !== undefined) {
++  if (governed.ok !== true || typeof governed.stdout !== "string" || typeof governed.stderr !== "string") throw new Error("Memory graph navigation is unavailable under the current policy");
++  process.stdout.write(governed.stdout);
++  process.stderr.write(governed.stderr);
++} else if (cmd === "build") {
+   const t0 = performance.now();
+   const r = build(layer);
+   console.log(`✅ Memory graph rebuilt (${layer} edges) in ${((performance.now() - t0) / 1000).toFixed(1)}s`);
+@@ -646,3 +719,5 @@ if (cmd === "build") {
+ } else {
+   console.log("Usage: bun MemoryGraph.ts [build|patterns|stats|related <slug>]");
+ }
++
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
 index a46c7b2..5b31fc2 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryHealthCheck.ts
@@ -2000,12 +2231,57 @@ index 30db06e..7c1ca94 100644
    saveState(st);
    return { created: true, id };
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/bun.lock b/LifeOS/install/LIFEOS/TOOLS/bun.lock
+new file mode 100644
+index 0000000..a8d4be5
+--- /dev/null
++++ b/LifeOS/install/LIFEOS/TOOLS/bun.lock
+@@ -0,0 +1,39 @@
++{
++  "lockfileVersion": 1,
++  "configVersion": 1,
++  "workspaces": {
++    "": {
++      "name": "lifeos-tools",
++      "dependencies": {
++        "graphology": "^0.26.0",
++        "graphology-communities-louvain": "^2.0.2",
++        "graphology-metrics": "^2.4.0",
++      },
++    },
++  },
++  "packages": {
++    "@yomguithereal/helpers": ["@yomguithereal/helpers@1.1.1", "", {}, "sha512-UYvAq/XCA7xoh1juWDYsq3W0WywOB+pz8cgVnE1b45ZfdMhBvHDrgmSFG3jXeZSr2tMTYLGHFHON+ekG05Jebg=="],
++
++    "events": ["events@3.3.0", "", {}, "sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q=="],
++
++    "graphology": ["graphology@0.26.0", "", { "dependencies": { "events": "^3.3.0" }, "peerDependencies": { "graphology-types": ">=0.24.0" } }, "sha512-8SSImzgUUYC89Z042s+0r/vMibY7GX/Emz4LDO5e7jYXhuoWfHISPFJYjpRLUSJGq6UQ6xlenvX1p/hJdfXuXg=="],
++
++    "graphology-communities-louvain": ["graphology-communities-louvain@2.0.2", "", { "dependencies": { "graphology-indices": "^0.17.0", "graphology-utils": "^2.4.4", "mnemonist": "^0.39.0", "pandemonium": "^2.4.1" }, "peerDependencies": { "graphology-types": ">=0.19.0" } }, "sha512-zt+2hHVPYxjEquyecxWXoUoIuN/UvYzsvI7boDdMNz0rRvpESQ7+e+Ejv6wK7AThycbZXuQ6DkG8NPMCq6XwoA=="],
++
++    "graphology-indices": ["graphology-indices@0.17.0", "", { "dependencies": { "graphology-utils": "^2.4.2", "mnemonist": "^0.39.0" }, "peerDependencies": { "graphology-types": ">=0.20.0" } }, "sha512-A7RXuKQvdqSWOpn7ZVQo4S33O0vCfPBnUSf7FwE0zNCasqwZVUaCXePuWo5HBpWw68KJcwObZDHpFk6HKH6MYQ=="],
++
++    "graphology-metrics": ["graphology-metrics@2.4.2", "", { "dependencies": { "graphology-indices": "^0.17.0", "graphology-shortest-path": "^2.0.0", "graphology-utils": "^2.4.4", "mnemonist": "^0.39.0", "pandemonium": "2.4.1" }, "peerDependencies": { "graphology-types": ">=0.20.0" } }, "sha512-6/ykELkmU2RuicM5zzUaIIvHPwfE94uyhpPkpQm+a9UvHU/2hkJHHIOkj4CFYKyuXNfzMw/xHZiuQfOr3nWLUw=="],
++
++    "graphology-shortest-path": ["graphology-shortest-path@2.1.0", "", { "dependencies": { "@yomguithereal/helpers": "^1.1.1", "graphology-indices": "^0.17.0", "graphology-utils": "^2.4.3", "mnemonist": "^0.39.0" }, "peerDependencies": { "graphology-types": ">=0.20.0" } }, "sha512-KbT9CTkP/u72vGEJzyRr24xFC7usI9Es3LMmCPHGwQ1KTsoZjxwA9lMKxfU0syvT/w+7fZUdB/Hu2wWYcJBm6Q=="],
++
++    "graphology-types": ["graphology-types@0.24.8", "", {}, "sha512-hDRKYXa8TsoZHjgEaysSRyPdT6uB78Ci8WnjgbStlQysz7xR52PInxNsmnB7IBOM1BhikxkNyCVEFgmPKnpx3Q=="],
++
++    "graphology-utils": ["graphology-utils@2.5.2", "", { "peerDependencies": { "graphology-types": ">=0.23.0" } }, "sha512-ckHg8MXrXJkOARk56ZaSCM1g1Wihe2d6iTmz1enGOz4W/l831MBCKSayeFQfowgF8wd+PQ4rlch/56Vs/VZLDQ=="],
++
++    "mnemonist": ["mnemonist@0.39.8", "", { "dependencies": { "obliterator": "^2.0.1" } }, "sha512-vyWo2K3fjrUw8YeeZ1zF0fy6Mu59RHokURlld8ymdUPjMlD9EC9ov1/YPqTgqRvUN9nTr3Gqfz29LYAmu0PHPQ=="],
++
++    "obliterator": ["obliterator@2.0.5", "", {}, "sha512-42CPE9AhahZRsMNslczq0ctAEtqk8Eka26QofnqC346BZdHDySk3LWka23LI7ULIw11NmltpiLagIq8gBozxTw=="],
++
++    "pandemonium": ["pandemonium@2.4.1", "", { "dependencies": { "mnemonist": "^0.39.2" } }, "sha512-wRqjisUyiUfXowgm7MFH2rwJzKIr20rca5FsHXCMNm1W5YPP1hCtrZfgmQ62kP7OZ7Xt+cR858aB28lu5NX55g=="],
++  }
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..f008c5d
+index 0000000..d5052a1
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,205 @@
+@@ -0,0 +1,207 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -2022,13 +2298,15 @@ index 0000000..f008c5d
 +
 +export function hasMemoryAccess(): boolean {
 +  if (process.env.LIFEOS_MEMORY_INTERNAL === "1") return false;
-+  try {
-+    lstatSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG/memory-access.json"));
-+    return true;
-+  } catch (error: unknown) {
-+    if (memoryObject(error) && error.code === "ENOENT") return false;
-+    throw error;
++  for (const name of ["memory-access.json", "memory-http.json"]) {
++    try {
++      lstatSync(resolve(homedir(), ".claude/LIFEOS/USER/CONFIG", name));
++      return true;
++    } catch (error: unknown) {
++      if (!memoryObject(error) || error.code !== "ENOENT") throw error;
++    }
 +  }
++  return false;
 +}
 +
 +export function observedMemoryRevision(path: string): string {

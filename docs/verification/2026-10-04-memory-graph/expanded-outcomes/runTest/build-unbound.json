@@ -1,0 +1,9 @@
+{
+  "arguments": [
+    "build"
+  ],
+  "context": false,
+  "status": 1,
+  "stdout": "",
+  "stderr": "120 | \n121 |     iteration++;\n122 |   }\n123 | \n124 |   if (!converged)\n125 |     throw Error('graphology-metrics/centrality/pagerank: failed to converge.');\n                ^\nerror: graphology-metrics/centrality/pagerank: failed to converge.\n      at abstractPagerank (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/node_modules/graphology-metrics/centrality/pagerank.js:125:11)\n      at computePatterns (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts:445:12)\n      at build (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts:586:13)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts:689:13\n\nBun v1.3.14 (Linux x64)\n"
+}

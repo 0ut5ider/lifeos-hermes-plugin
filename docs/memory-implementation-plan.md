@@ -389,6 +389,12 @@ Native KnowledgeGraph navigation also uses the registered current-note corpus. I
 
 The [graph gate](verification/2026-10-04-memory-knowledge-graph/README.md) passes 92 tests and 38 subtests. KnowledgeGraph is the 29th native file in the memory patch; the previous 28 files remain identical. MemoryGraph caches, other publishers, complete inventory, restricted delivery, ownership, and the remaining release plan stay open. No active server changes.
 
+## 2026-10-04 native graph publication
+
+MemoryGraph supplies current registered Knowledge notes and admitted WORK, WISDOM, and synthesis text to its native algorithms. Native metadata, typed relationships, lexical inference, communities, centrality, and pattern reports retain their behavior. Statistics and patterns use current sources. Duplicate slugs preserve native domain selection and warnings. Both graph commands and KnowledgeGraph retain managed mode after connector loss when the durable marker remains.
+
+The existing memory journal publishes both graph artifacts and restores the previous pair after a real interrupted write. Source or authority changes after rendering refuse publication. Artifacts cannot alias the open registry. The [distributed gate](verification/2026-10-04-memory-graph/README.md) passes 229 tests and 154 subtests without skips or failures. The patch changes 31 native files and fixes the existing TOOLS dependencies with a Bun lockfile. The authenticated graph view, other publishers, complete inventory, restricted delivery, ownership, migration, and remaining release work stay open. No active server changes.
+
 ## 2026-10-04 profile backup and separate recovery
 
 The selected-profile backup captures Hermes configuration, history, memory files, skills, installed profile files, and covered links together with native data. Real competing SQLite and native writers remain blocked through collection. Closing a direct database descriptor initially breaks the SQLite barrier. Both collectors now serialize their open connection without direct file reads. Physical replacement and hard-link aliases refuse collection. The [backup gate](verification/2026-10-04-profile-backup/README.md) passes 47 tests and 20 subtests.

@@ -26,7 +26,22 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "prompt_bundle") {
+  if (input.action === "memory_graph") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryGraph.ts")).href);
+    if (!object(module) || typeof module.renderMemoryGraph !== "function" || !Array.isArray(input.sources)
+        || typeof input.command !== "string" || !["declared", "all"].includes(String(input.layer))
+        || !(input.target === null || typeof input.target === "string")) {
+      throw new Error("Native graph rendering needs its declared sources and command");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native graph rendering needs declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = module.renderMemoryGraph(sources, input.command, input.layer, input.target);
+  } else if (input.action === "prompt_bundle") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/HERMES/RenderSoul.ts")).href);
     if (!object(module) || typeof module.renderSoulFromSources !== "function") {
       throw new Error("Native prompt rendering is unavailable");

@@ -1,0 +1,9 @@
+{
+  "arguments": [
+    "stats"
+  ],
+  "context": false,
+  "status": 1,
+  "stdout": "",
+  "stderr": "680 | const cmd = process.argv[2] || \"patterns\";\n681 | const layer: EdgeLayer = process.argv.includes(\"--all\") ? \"all\" : \"declared\";\n682 | \n683 | const governed = memoryAccess(\"memory_graph\", {root: MEMORY, command: cmd, layer, target: cmd === \"related\" ? process.argv[3] ?? null : null}, memoryObject);\n684 | if (governed !== undefined) {\n685 |   if (governed.ok !== true || typeof governed.stdout !== \"string\") throw new Error(\"Memory graph navigation is unavailable under the current policy\");\n                                                                                   ^\nerror: Memory graph navigation is unavailable under the current policy\n      at /home/outsider/.cache/lifeos-full-experience-20261004/memory-graph-fixture/LIFEOS/TOOLS/MemoryGraph.ts:685:78\n\nBun v1.3.14 (Linux x64)\n"
+}

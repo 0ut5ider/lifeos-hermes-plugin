@@ -249,6 +249,15 @@ class MemoryService:
             if operation == 'canonical_corpus' and set(arguments) == {'root'}:
                 from .memory_canonical import corpus
                 return corpus(memory,scope,arguments['root'])
+            if operation == 'memory_graph' and set(arguments) == {'root', 'command', 'layer', 'target'}:
+                from .memory_graph import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Graph authority changed during rendering')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == "check_sources" and not arguments:
                 from .memory_sources import authorize
                 return authorize(scope)
