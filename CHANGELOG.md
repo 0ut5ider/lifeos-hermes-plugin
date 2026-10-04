@@ -25,6 +25,10 @@ Keep it equal to the version in both plugin manifests.
 
 ### Fixed
 
+- Resume verified conversations after a native correction or forget operation.
+  Require foreground history repair before auxiliary calls can continue.
+- Refuse history refresh after an applied identity proposal. Bind its recorded
+  state separately from fact retirements.
 - Repair readable Responses history after a native correction or forget operation.
   Preserve protocol identifiers, current user quotes, and stored transcripts.
 

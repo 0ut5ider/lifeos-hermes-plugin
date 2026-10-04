@@ -153,7 +153,8 @@ class MemoryRuntime:
         applied = [tuple(row) for row in connection.execute("SELECT id, revision, status FROM proposals WHERE status IN ('accepted','edited','auto-applied') ORDER BY id")]
         rendered = self._rendered_prompt(configuration,scope,connection)
         generation = hashlib.sha256(json.dumps({'retained':retained,'applied':applied,'rendered':rendered}, separators=(',', ':')).encode()).hexdigest()
-        return {'scope': scope.signature, 'generation': generation, 'rendered': rendered,
+        proposal_generation = hashlib.sha256(json.dumps(applied, separators=(',', ':')).encode()).hexdigest()
+        return {'scope': scope.signature, 'generation': generation, 'proposal_generation': proposal_generation, 'rendered': rendered,
                 'context': json.loads(json.dumps(asdict(context))), 'user_input':user_input}
 
     def _states(self) -> dict[str, Any]:
@@ -192,8 +193,13 @@ class MemoryRuntime:
             previous = states.get(context.session_id)
             if previous is None and not is_first_turn:
                 raise MemoryAdmissionError('This conversation has no verified memory context. Start a new conversation.')
-            if previous is not None and any(previous.get(key)!=stamp.get(key) for key in ('scope','generation','rendered','context')):
-                raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+            if previous is not None:
+                if (not isinstance(previous,dict) or not isinstance(previous.get('generation'),str)
+                        or any(previous.get(key)!=stamp.get(key) for key in ('scope','proposal_generation','rendered','context'))):
+                    raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+                # Keep the fact generation stale until foreground projection
+                # repairs readable history and final admission accepts it.
+                stamp['generation'] = previous['generation']
             states[context.session_id] = stamp
             publish(self.state_path, (json.dumps(states, sort_keys=True) + '\n').encode())
         _BOUND.set((self.key, context, stamp))
@@ -280,12 +286,12 @@ class MemoryRuntime:
             saved = states.get(context.session_id)
             # Prompt workers publish the next human input without changing this thread's binding.
             if (project and isinstance(saved,dict) and saved.get('user_input') is not None
-                    and all(saved.get(key)==admitted.get(key) for key in ('scope','generation','rendered','context'))):
+                    and all(saved.get(key)==admitted.get(key) for key in ('scope','generation','proposal_generation','rendered','context'))):
                 admitted = saved
                 bound = (self.key,context,admitted)
             current = self._stamp(configuration, context, connection,admitted.get('user_input'))
             can_refresh = (project and saved in (admitted,current)
-                           and all(current.get(key)==admitted.get(key) for key in ('scope','context','rendered','user_input')))
+                           and all(current.get(key)==admitted.get(key) for key in ('scope','proposal_generation','context','rendered','user_input')))
             if (current != admitted or saved != admitted) and not can_refresh:
                 raise MemoryAdmissionError('The model call contains an invalidated memory context. Start a new conversation.')
             scope = self._scope(configuration,context)

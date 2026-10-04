@@ -7,7 +7,7 @@ The four LifeOS tiers retain private FlashNext with different effort levels. Voi
 | Workstream | Required result | Current state |
 | --- | --- | --- |
 | Hook compatibility | Paired effects, decisions, state, and model/user delivery for the claimed contract; explicit resolution of unavailable native controls | In progress; 65 dispatch controls and equal selected cases for 12 registrations; remote Kitty isolation difference retained |
-| Fresh memory ownership | Complete reader/writer and prompt policy, lifecycle repair, coherent backup, recoverable ownership setup, and independent acceptance | Foundation implemented; activation disabled |
+| Fresh memory ownership | Complete reader/writer and prompt policy, lifecycle repair, coherent backup, recoverable ownership setup, and independent acceptance | In progress; verified fact-only resume repair implemented; activation disabled |
 | Personal context and import | Reviewed identity setup and supported import/export with complete item accounting, provenance, conflicts, interruption recovery, and return to Hermes | Identity remains synthetic; Hermes importer unimplemented; cross-server archives and selected conversation history need explicit supported formats |
 | Optional sharing | Authenticated clients access the same native references under separate read/write grants; revocation stops active access | Foundation implemented; sharing disabled |
 | Installation and update from Hermes | Normal installer admission, capability validation, coordinated pinned sources and dependencies, detached restart/recovery, and verified later-version update/restore | Scanner and validator blockers remain; full management workflow unimplemented |
@@ -20,7 +20,7 @@ The October 4 [startup controls](verification/2026-10-04-paired-startup-effects/
 
 ## Execution and evidence
 
-Continue the existing paired hook fixtures first. Complete source and lifecycle memory gaps before enabling ownership or memory-writing jobs. Build reviewed migration and sharing on the completed native operations. Finish the Hermes management workflow after the compatibility contract is established. Verify background jobs and private-model routing, then complete voice in the isolated acceptance profile. Test the combined release before deploying it.
+Adrian directs work to continue through steps 2 to 7 on October 4. Advance memory, migration, Hermes management, background jobs, routing, and voice in that order. Hook compatibility remains a combined release requirement. Complete source and lifecycle memory gaps before enabling ownership or memory-writing jobs. Build reviewed migration and sharing on the completed native operations. Verify the combined package before deployment to `.212`.
 
 Each passing case retains its source revisions, command, synthetic input, expected effect, actual output, and limits. Registration, clean unit tests, and a selected passing branch do not close a complete effect claim. Native control failures remain visible and do not count as passes. A new mismatch requires measurement and a failing regression before a product fix.
 

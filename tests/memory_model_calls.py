@@ -36,7 +36,10 @@ def main():
                       user_message=settings['marker'] if settings.get('bind_input') else None)
         messages = ([{'role':'system','content':soul}] if soul else []) + [{'role':'user','content':settings['marker']}]
         variant = settings.get('request_variant','')
-        if variant == 'tuple-messages':
+        if variant == 'chat-history':
+            messages = [{'role': 'assistant', 'content': settings['marker']},
+                        {'role': 'user', 'content': 'Synthetic current resumed request'}]
+        elif variant == 'tuple-messages':
             messages = tuple(messages)
         elif variant == 'tuple-blocks' and soul:
             messages[0]['content'] = ({'type':'text','text':soul},)

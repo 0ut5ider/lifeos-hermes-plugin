@@ -121,6 +121,42 @@ class MemoryAgentTests(unittest.TestCase):
     def test_actual_native_recall_forget_turn_removes_cached_hook_context(self):
         self.change_fact('forget',native_recall=True)
 
+    def resume_after_change(self, operation):
+        marker = 'Synthetic retired claim in a persisted conversation'
+        replacement = 'Synthetic current claim after conversation restart'
+        native = self.fixture.fixture.fixture.fixture
+        saved = native.remember(marker, 'persisted-conversation-original')
+        self.fixture.fixture.response_message = lambda _: {'role': 'assistant', 'content': marker}
+        flags = {'provider': 'lifeos-hook-bridge', 'memory_enabled': False, 'user_profile_enabled': False}
+        first = self.fixture.initialize(flags, operation='conversation', message='Read the synthetic current lab fact.')
+        history = first['conversation']['messages']
+        original = json.dumps(history, sort_keys=True)
+        if operation == 'correct':
+            changed = native.memory.correct(OWNER, saved['reference'], replacement, 'persisted-conversation-correct')
+        else:
+            changed = native.memory.forget(OWNER, saved['reference'], 'persisted-conversation-forget')
+        self.assertEqual(changed['status'], 'committed')
+        self.fixture.fixture.received.clear()
+        self.fixture.fixture.response_message = lambda _: {'role': 'assistant', 'content': 'Synthetic resumed turn complete.'}
+        result = self.fixture.initialize(flags, operation='conversation', message='Continue the synthetic lab conversation.',
+                                         conversation_history=history)
+        self.assertEqual(result['diagnostics'], '')
+        self.assertFalse(result['conversation'].get('failed'), result['conversation'])
+        self.assertEqual(result['conversation']['final_response'], 'Synthetic resumed turn complete.')
+        calls = [request for request in self.fixture.fixture.received if request['path'] == '/v1/chat/completions']
+        self.assertEqual(len(calls), 1)
+        self.assertNotIn(marker, json.dumps(calls[0]['body']))
+        self.assertEqual(json.dumps(history, sort_keys=True), original)
+        self.assertIn(marker, json.dumps(result['conversation']['messages']))
+        current = native.memory.recall(OWNER, 'conversation')
+        self.assertEqual([row['content'] for row in current], [replacement] if operation == 'correct' else [])
+
+    def test_actual_agent_restarts_and_repairs_a_forgotten_conversation(self):
+        self.resume_after_change('forget')
+
+    def test_actual_agent_restarts_and_repairs_a_corrected_conversation(self):
+        self.resume_after_change('correct')
+
 
 if __name__ == '__main__':
     unittest.main()

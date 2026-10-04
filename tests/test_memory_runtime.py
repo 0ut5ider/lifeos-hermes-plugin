@@ -58,8 +58,9 @@ class MemoryRuntimeTests(unittest.TestCase):
         with self.assertRaises(MemoryAdmissionError):
             self.runtime.check_call(request={}, **self.route, session_id='session')
         other = MemoryRuntime(self.path)
-        with self.assertRaises(MemoryAdmissionError):
-            other.admit(self.metadata(), **self.route, is_first_turn=False)
+        other.admit(self.metadata(), **self.route, is_first_turn=False)
+        with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
+            other.check_call(request={}, **self.route, session_id='session')
         other.admit(self.metadata(session='fresh'), **self.route, is_first_turn=True)
 
     def test_rendered_soul_cannot_restore_forgotten_native_memory_in_a_fresh_session(self):
