@@ -1,0 +1,139 @@
+{
+  "date": "2026-10-04",
+  "base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "reason": "The earlier MEMORY-focused candidate heuristic omits these TELOS-only readers and writers. The historical 227 candidates are not complete coverage.",
+  "entries": [
+    {
+      "path": "LIFEOS/TOOLS/UpdateLifeosState.ts",
+      "base_sha256": "d86a14de776850d28789b64cf213dd72193faabbf8b787e4a30117447e3717e3",
+      "candidate_sha256": "7e648c1a4cf8b223c9cdbc5124fc26111d8ff406e73199f4c89f3ad565fb1361",
+      "entry_point": "native_cli_and_generator_subprocess",
+      "behavioral_status": "governed_native_state_publication_verified",
+      "behavioral_evidence": "docs/verification/2026-10-04-memory-state/README.md",
+      "source_evidence": [
+        {
+          "line": 36,
+          "text": "import { readFileSync, writeFileSync, existsSync, mkdirSync } from \"fs\";"
+        },
+        {
+          "line": 51,
+          "text": "const STATE_FILE = join(LIFEOS_DIR, \"USER\", \"TELOS\", \"LIFEOS_STATE.json\");"
+        },
+        {
+          "line": 89,
+          "text": "  const content = readFileSync(path, \"utf-8\");"
+        },
+        {
+          "line": 123,
+          "text": "  const content = readFileSync(path, \"utf-8\");"
+        },
+        {
+          "line": 151,
+          "text": "  const dir = dirname(STATE_FILE);"
+        },
+        {
+          "line": 153,
+          "text": "  writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + \"\\n\");"
+        },
+        {
+          "line": 157,
+          "text": "    console.log(`LIFEOS_STATE.json updated: ${STATE_FILE}`);"
+        }
+      ],
+      "callers": [
+        {
+          "path": "LIFEOS/TOOLS/DerivedSync.ts",
+          "kind": "planned_subprocess",
+          "limits": "Static source evidence. Complete orchestration remains open."
+        },
+        {
+          "path": "skills/LifeOS/Tools/SeedPulse.ts",
+          "kind": "generator_list_subprocess",
+          "limits": "Static source evidence. Managed installation caller acceptance remains open."
+        }
+      ]
+    },
+    {
+      "path": "LIFEOS/TOOLS/GenerateTelosSummary.ts",
+      "base_sha256": "94ae6b51a59490ba32a26842d1d79958533be84fffea47f184cb77c6cb4137f4",
+      "candidate_sha256": "828ff81f1ed9b3b005c66b2499a135b17c39202188a8c9251527fec5f50fdc71",
+      "entry_point": "native_cli_and_generator_subprocess",
+      "behavioral_status": "governed_native_telos_summary_publication_verified",
+      "behavioral_evidence": "docs/verification/2026-10-04-memory-telos/README.md",
+      "source_evidence": [
+        {
+          "line": 18,
+          "text": "import { readFileSync, writeFileSync, existsSync } from 'fs';"
+        },
+        {
+          "line": 23,
+          "text": "const TELOS_DIR = join(paiUserDir(), 'TELOS');"
+        },
+        {
+          "line": 24,
+          "text": "const OUTPUT_PATH = join(TELOS_DIR, 'PRINCIPAL_TELOS.md');"
+        },
+        {
+          "line": 64,
+          "text": "  const telosPath = join(TELOS_DIR, 'TELOS.md');"
+        },
+        {
+          "line": 69,
+          "text": "  const content = readFileSync(telosPath, 'utf-8');"
+        },
+        {
+          "line": 143,
+          "text": "  const path = join(TELOS_DIR, filename);"
+        },
+        {
+          "line": 145,
+          "text": "    return readFileSync(path, 'utf-8').replace(/^---\\n[\\s\\S]*?\\n---\\n?/, '');"
+        },
+        {
+          "line": 576,
+          "text": " *   1. PRINCIPAL_IDENTITY.md frontmatter core.full_name"
+        },
+        {
+          "line": 577,
+          "text": " *   2. PRINCIPAL_IDENTITY.md H1 (\"# Principal Identity \u2014 <name>\")"
+        },
+        {
+          "line": 578,
+          "text": " *   3. PRINCIPAL_IDENTITY.md frontmatter core.name"
+        },
+        {
+          "line": 584,
+          "text": "  const idPath = join(paiUserDir(), 'PRINCIPAL', 'PRINCIPAL_IDENTITY.md');"
+        },
+        {
+          "line": 587,
+          "text": "    const content = readFileSync(idPath, 'utf-8');"
+        },
+        {
+          "line": 600,
+          "text": "    const settings = JSON.parse(readFileSync(join(homedir(), '.claude', 'settings.json'), 'utf-8'));"
+        },
+        {
+          "line": 817,
+          "text": "writeFileSync(OUTPUT_PATH, summary);"
+        },
+        {
+          "line": 819,
+          "text": "console.log(`\u2705 Generated PRINCIPAL_TELOS.md (${lineCount} lines) at ${OUTPUT_PATH}`);"
+        }
+      ],
+      "callers": [
+        {
+          "path": "LIFEOS/TOOLS/DerivedSync.ts",
+          "kind": "planned_subprocess",
+          "limits": "Static source evidence. Complete orchestration remains open."
+        },
+        {
+          "path": "skills/LifeOS/Tools/SeedPulse.ts",
+          "kind": "generator_list_subprocess",
+          "limits": "Static source evidence. Managed installation caller acceptance remains open."
+        }
+      ]
+    }
+  ]
+}

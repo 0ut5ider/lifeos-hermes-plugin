@@ -1,0 +1,100 @@
+{
+  "case": "MemoryStateTests.test_process_death_recovers_previous_state_before_fresh_publication",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [],
+      "options": {
+        "context": true
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": null
+      },
+      "status": 0,
+      "stdout": "LIFEOS_STATE.json updated: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-o8xz5bpa/.claude/LIFEOS/USER/TELOS/LIFEOS_STATE.json\n  health           50%  (1 TBDs, updated 2026-10-04)\n  money            80%  (2 TBDs, updated 2026-10-04)\n  freedom            \u2014  (0 TBDs, updated unknown)\n  creative           \u2014  (0 TBDs, updated unknown)\n  relationships      \u2014  (0 TBDs, updated unknown)\n  rhythms            \u2014  (0 TBDs, updated unknown)\n  infrastructure     \u2014  (0 TBDs, updated unknown)\n",
+      "stderr": "",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "f6a768f6090ab0679650bb6bd265736bc05e8f97cc41b9bb247568bbb5563674",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.449Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      }
+    },
+    {
+      "kind": "native_interleaving",
+      "mode": "interrupt",
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "f6a768f6090ab0679650bb6bd265736bc05e8f97cc41b9bb247568bbb5563674",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.449Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      },
+      "status": 73,
+      "stdout": "",
+      "stderr": "",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "efa4306bd8d871d52faa5ccab4f55ae852175af1535aa908a363ec7a99c89657",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.774Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 100,\n      \"tbd_count\": 0,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      }
+    },
+    {
+      "kind": "native_cli",
+      "arguments": [
+        "--json"
+      ],
+      "options": {
+        "context": true
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "f6a768f6090ab0679650bb6bd265736bc05e8f97cc41b9bb247568bbb5563674",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.449Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      },
+      "status": 0,
+      "stdout": "{\n  \"generated_at\": \"2026-10-04T20:05:41.097Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 100,\n      \"tbd_count\": 0,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+      "stderr": "",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "1f5c18785f211f91ae7e0dce335fe03858c7767ecc66e5cf051f0671eb6b4fa8",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:41.097Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 100,\n      \"tbd_count\": 0,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

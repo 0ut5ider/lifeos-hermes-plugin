@@ -1,0 +1,31 @@
+{
+  "case": "MemoryTelosTests.test_restricted_owner_refuses_before_publication",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [],
+      "options": {},
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/TELOS.md": "## Mission\n### M0: Synthetic unified mission\n\n## Goals\n### G0: Synthetic current goal\n\n## Context Filter\nSynthetic owner context filter.\n",
+          "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\ncore:\n  full_name: SyntheticOperator\n---\n# Principal Identity\n"
+        },
+        "artifact": null
+      },
+      "status": 1,
+      "stdout": "",
+      "stderr": "833 | function main(): void {\n834 |   const governed = memoryAccess('telos_summary', {root: TELOS_DIR},\n835 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === 'boolean');\n836 |   if (governed !== undefined) {\n837 |     if (governed.ok !== true || typeof governed.stdout !== 'string' || typeof governed.stderr !== 'string') {\n838 |       throw new Error('TELOS summary publication is unavailable under current memory policy');\n                      ^\nerror: TELOS summary publication is unavailable under current memory policy\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:838:17)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:851:23\n\nBun v1.3.14 (Linux x64)\n",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/TELOS.md": "## Mission\n### M0: Synthetic unified mission\n\n## Goals\n### G0: Synthetic current goal\n\n## Context Filter\nSynthetic owner context filter.\n",
+          "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\ncore:\n  full_name: SyntheticOperator\n---\n# Principal Identity\n"
+        },
+        "artifact": null
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

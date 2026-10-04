@@ -333,6 +333,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'telos_summary':
+            from .memory_telos import publication_paths
+            return publication_paths(self, scope)
         if payload['operation'] == 'lifeos_state':
             from .memory_state import publication_paths
             return publication_paths(self, scope)

@@ -26,7 +26,14 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "lifeos_state") {
+  if (input.action === "telos_summary") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/GenerateTelosSummary.ts")).href);
+    if (!object(module) || typeof module.renderTelosSummary !== "function" || !object(input.sources)
+        || Object.values(input.sources).some(value => typeof value !== "string")) {
+      throw new Error("Native TELOS rendering needs declared source text");
+    }
+    result = module.renderTelosSummary(input.sources);
+  } else if (input.action === "lifeos_state") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/UpdateLifeosState.ts")).href);
     if (!object(module) || typeof module.renderLifeosState !== "function" || !object(input.sources)
         || Object.values(input.sources).some(value => typeof value !== "string")

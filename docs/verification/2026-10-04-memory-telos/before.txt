@@ -1,0 +1,39 @@
+FFF.FF..FF.                                                              [100%]
+=================================== FAILURES ===================================
+_____ MemoryTelosTests.test_foreign_source_link_refuses_before_publication _____
+tests/test_memory_telos.py:101: in test_foreign_source_link_refuses_before_publication
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryTelosTests.test_forgotten_unified_source_uses_fresh_legacy_without_modifying_source _
+tests/test_memory_telos.py:123: in test_forgotten_unified_source_uses_fresh_legacy_without_modifying_source
+    self.assertNotIn('Synthetic unified mission', text)
+E   AssertionError: 'Synthetic unified mission' unexpectedly found in '---\nlast_updated: 2026-10-04T19:44:28.037Z\nlast_updated_by: GenerateTelosSummary\nconvention: pai-freshness-v1\nderived_from: LIFEOS/USER/TELOS/TELOS.md\ngenerator: LIFEOS/TOOLS/GenerateTelosSummary.ts\n---\n\n# Principal TELOS — SyntheticOperator\n\n> Auto-generated from TELOS source files. Do not edit manually.\n> Generated: 2026-10-04T19:44:28.037Z | Sources: MISSION, GOALS, PROBLEMS, STRATEGIES, PROJECTS, NARRATIVES, CHALLENGES, WRONG, TRAUMAS, MODELS, WISDOM\n\n## Missions\n\n- **M0**: Synthetic unified mission\n\n## Active Goals (2026)\n\n- **G0**: Synthetic current goal\n\n## Problems Being Solved\n\n\n## Strategies\n\n\n## Active Narratives\n\n\n## Personal Challenges\n\n\n## Context Filter\n\nSynthetic owner context filter.\n'
+_______ MemoryTelosTests.test_missing_context_refuses_before_publication _______
+tests/test_memory_telos.py:81: in test_missing_context_refuses_before_publication
+    self.assertNotEqual(self.call(context=False).returncode, 0)
+E   AssertionError: 0 == 0
+___________________ MemoryTelosTests.test_output_is_private ____________________
+tests/test_memory_telos.py:113: in test_output_is_private
+    self.assertEqual(self.output.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+___ MemoryTelosTests.test_output_link_refuses_without_modifying_foreign_file ___
+tests/test_memory_telos.py:108: in test_output_link_refuses_without_modifying_foreign_file
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+______ MemoryTelosTests.test_restricted_owner_refuses_before_publication _______
+tests/test_memory_telos.py:94: in test_restricted_owner_refuses_before_publication
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_________ MemoryTelosTests.test_revocation_preserves_previous_summary __________
+tests/test_memory_telos.py:88: in test_revocation_preserves_previous_summary
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_foreign_source_link_refuses_before_publication
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_forgotten_unified_source_uses_fresh_legacy_without_modifying_source
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_missing_context_refuses_before_publication
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_output_is_private
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_output_link_refuses_without_modifying_foreign_file
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_restricted_owner_refuses_before_publication
+FAILED tests/test_memory_telos.py::MemoryTelosTests::test_revocation_preserves_previous_summary
+7 failed, 4 passed in 1.55s

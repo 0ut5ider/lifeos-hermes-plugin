@@ -21,6 +21,8 @@ The [authenticated native graph view](docs/verification/2026-10-04-memory-graph-
 
 The [TELOS state writer](docs/verification/2026-10-04-memory-state/README.md) keeps native percentage calculations and publishes from admitted current dimension sources. It rechecks authority and sources before a private journaled write. A real process interruption restores the previous artifact before fresh publication. Other derivatives and memory ownership remain open.
 
+The [TELOS summary writer](docs/verification/2026-10-04-memory-telos/README.md) retains native parsing and publishes from admitted TELOS and identity text. It rechecks sources and authority before a private journaled write. The distributed gate passes 182 tests and 79 subtests. Freshness, other derivatives, and memory ownership remain open.
+
 ## Compatibility target
 
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.

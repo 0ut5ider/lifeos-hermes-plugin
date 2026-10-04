@@ -1,0 +1,31 @@
+{
+  "case": "MemoryStateTests.test_directory_link_refuses_before_native_source_read",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [
+        "--json"
+      ],
+      "options": {},
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": null
+      },
+      "status": 1,
+      "stdout": "",
+      "stderr": "176 |   const jsonOutput = process.argv.includes(\"--json\");\n177 |   const governed = memoryAccess(\"lifeos_state\", {root: LIFEOS_DIR, json_output: jsonOutput},\n178 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n179 |   if (governed !== undefined) {\n180 |     if (governed.ok !== true || typeof governed.stdout !== \"string\" || typeof governed.stderr !== \"string\") {\n181 |       throw new Error(\"TELOS state publication is unavailable under current memory policy\");\n                      ^\nerror: TELOS state publication is unavailable under current memory policy\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:181:17)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:194:23\n\nBun v1.3.14 (Linux x64)\n",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": null
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

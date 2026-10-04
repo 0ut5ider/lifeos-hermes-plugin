@@ -1157,6 +1157,411 @@ index 58270db..68741d7 100644
      proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts b/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts
+index 2ae55d8..2ac8e2f 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Parses native TELOS sections into a compressed principal summary.
++// ABOUTME: Renders managed summaries from declared admitted sources before journaled publication.
+ /**
+  * GenerateTelosSummary.ts — Reads TELOS source files and generates a compressed
+  * ~60-line summary for boot context loading.
+@@ -18,8 +20,12 @@
+ import { readFileSync, writeFileSync, existsSync } from 'fs';
+ import { join } from 'path';
+ import { paiUserDir } from './LifeosConfig';
++import { memoryAccess, memoryObject } from './lib/MemoryAccess';
++
+ import { homedir } from "node:os";
+ 
++type TelosSources = Record<string, string>;
++
+ const TELOS_DIR = join(paiUserDir(), 'TELOS');
+ const OUTPUT_PATH = join(TELOS_DIR, 'PRINCIPAL_TELOS.md');
+ 
+@@ -59,14 +65,14 @@ const LEGACY_FILE_TO_SECTION: Record<string, string> = {
+ };
+ 
+ let _telosSectionsCache: Record<string, string> | null = null;
+-function loadTelosSections(): Record<string, string> {
+-  if (_telosSectionsCache) return _telosSectionsCache;
++function loadTelosSections(sources?: TelosSources): Record<string, string> {
++  if (!sources && _telosSectionsCache) return _telosSectionsCache;
+   const telosPath = join(TELOS_DIR, 'TELOS.md');
+-  if (!existsSync(telosPath)) {
+-    _telosSectionsCache = {};
+-    return _telosSectionsCache;
++  const content = sources ? sources['TELOS.md'] : existsSync(telosPath) ? readFileSync(telosPath, 'utf-8') : undefined;
++  if (content === undefined) {
++    if (!sources) _telosSectionsCache = {};
++    return {};
+   }
+-  const content = readFileSync(telosPath, 'utf-8');
+   const sections: Record<string, string> = {};
+   const lines = content.split('\n');
+   let title: string | null = null;
+@@ -86,7 +92,7 @@ function loadTelosSections(): Record<string, string> {
+     }
+   }
+   flush();
+-  _telosSectionsCache = sections;
++  if (!sources) _telosSectionsCache = sections;
+   return sections;
+ }
+ 
+@@ -118,7 +124,7 @@ function hasRealContent(text: string): boolean {
+     });
+ }
+ 
+-function readTelosFile(filename: string): string {
++function readTelosFile(filename: string, sources?: TelosSources): string {
+   // Unified-TELOS section first, legacy per-file path as the fallback.
+   // TELOS.md is the single source of truth as of 2026-05-01, so a section
+   // carrying real content has to WIN over the legacy file rather than lose to
+@@ -134,15 +140,16 @@ function readTelosFile(filename: string): string {
+   // missed the singular 'mission' lookup — the section rendered empty and
+   // the fail-loud guard below couldn't see it (same lookup, same miss).
+   const sectionKey = LEGACY_FILE_TO_SECTION[filename];
+-  const sections = sectionKey ? loadTelosSections() : {};
++  const sections = sectionKey ? loadTelosSections(sources) : {};
+   const unified = sectionKey ? (sections[sectionKey] ?? sections[sectionKey + 's'] ?? '') : '';
+   if (hasRealContent(unified)) return unified;
+   // Legacy per-file path. Strip leading YAML frontmatter (public issue #1496):
+   // in files with no ID-form items, paragraphItems() otherwise swallows the
+   // frontmatter block as a garbage first entry (e.g. "M0: --- provenance: ...").
+   const path = join(TELOS_DIR, filename);
+-  if (existsSync(path)) {
+-    return readFileSync(path, 'utf-8').replace(/^---\n[\s\S]*?\n---\n?/, '');
++  const content = sources ? sources[filename] : existsSync(path) ? readFileSync(path, 'utf-8') : undefined;
++  if (content !== undefined) {
++    return content.replace(/^---\n[\s\S]*?\n---\n?/, '');
+   }
+   return unified;
+ }
+@@ -268,8 +275,8 @@ function paragraphItems(content: string, prefix: string): ParsedItem[] {
+  * person's value statement shipped as every install's steering filter.
+  * public PR #1808, @0bsolescence
+  */
+-function readContextFilter(): string {
+-  return (loadTelosSections()['context filter'] ?? '')
++function readContextFilter(sources?: TelosSources): string {
++  return (loadTelosSections(sources)['context filter'] ?? '')
+     .replace(/<!--[\s\S]*?-->/g, '')
+     .split('\n')
+     .filter(l => !/\(sample\b/i.test(l))
+@@ -280,8 +287,8 @@ function readContextFilter(): string {
+ /**
+  * Parse mission items from MISSION.md
+  */
+-function parseMissions(): string[] {
+-  const content = readTelosFile('MISSION.md');
++function parseMissions(sources?: TelosSources): string[] {
++  const content = readTelosFile('MISSION.md', sources);
+   const items = parseItems(content, 'M');
+   return items.map(i => `- **${i.id}**: ${truncate(i.text, 75)}`);
+ }
+@@ -298,8 +305,8 @@ function parseMissions(): string[] {
+  * silently dropped. (Replaces the old num>=9/[0,1] numeric heuristic, which
+  * encoded one personal file's history and misclassified everyone else's goals.)
+  */
+-function parseGoals(): { active: string[]; deferred: string[]; completed: string[] } {
+-  const content = readTelosFile('GOALS.md');
++function parseGoals(sources?: TelosSources): { active: string[]; deferred: string[]; completed: string[] } {
++  const content = readTelosFile('GOALS.md', sources);
+ 
+   type Bucket = 'active' | 'deferred' | 'completed';
+   const bucketOf = (heading: string): Bucket | null => {
+@@ -389,8 +396,8 @@ function parseGoals(): { active: string[]; deferred: string[]; completed: string
+ /**
+  * Parse problems from PROBLEMS.md (uses ## headers, not list items)
+  */
+-function parseProblems(): string[] {
+-  const content = readTelosFile('PROBLEMS.md');
++function parseProblems(sources?: TelosSources): string[] {
++  const content = readTelosFile('PROBLEMS.md', sources);
+   const lines: string[] = [];
+ 
+   // Format: ## P0: Title (optional parenthetical)
+@@ -421,8 +428,8 @@ function parseProblems(): string[] {
+ /**
+  * Parse strategies from STRATEGIES.md
+  */
+-function parseStrategies(): string[] {
+-  const content = readTelosFile('STRATEGIES.md');
++function parseStrategies(sources?: TelosSources): string[] {
++  const content = readTelosFile('STRATEGIES.md', sources);
+   const lines: string[] = [];
+ 
+   // Extract strategy headers: ## S0: name or ### S1: name
+@@ -456,8 +463,8 @@ function parseStrategies(): string[] {
+  * IDs use a PJ prefix: the summary already renders Problems as P0…Pn, and a
+  * second P-series in the same @-imported file would be ambiguous on sight.
+  */
+-function parseProjects(): string[] {
+-  const content = readTelosFile('PROJECTS.md');
++function parseProjects(sources?: TelosSources): string[] {
++  const content = readTelosFile('PROJECTS.md', sources);
+   const lines: string[] = [];
+ 
+   // Same parenthetical-laundering gap as parseProblems — public issue #1815,
+@@ -483,8 +490,8 @@ function parseProjects(): string[] {
+  * Quotes are referenced by their text, not by a number.
+  * public issue #1710, @PaulWaldo
+  */
+-function parseWisdom(): string[] {
+-  const content = readTelosFile('WISDOM.md');
++function parseWisdom(sources?: TelosSources): string[] {
++  const content = readTelosFile('WISDOM.md', sources);
+   // Own bullet scan, so it needs its own isPlaceholder call, and its own
+   // pre-filter fallback count — a wholly-sample bullet list must yield nothing
+   // rather than fall through to the template's guidance prose.
+@@ -508,8 +515,8 @@ function parseWisdom(): string[] {
+ /**
+  * Parse narratives from NARRATIVES.md
+  */
+-function parseNarratives(): { primary: string[]; secondary: string[] } {
+-  const content = readTelosFile('NARRATIVES.md');
++function parseNarratives(sources?: TelosSources): { primary: string[]; secondary: string[] } {
++  const content = readTelosFile('NARRATIVES.md', sources);
+   const items = parseItems(content, 'N');
+ 
+   const primary: string[] = [];
+@@ -531,8 +538,8 @@ function parseNarratives(): { primary: string[]; secondary: string[] } {
+ /**
+  * Parse challenges from CHALLENGES.md (all items — truncation was hiding real scope)
+  */
+-function parseChallenges(): string[] {
+-  const content = readTelosFile('CHALLENGES.md');
++function parseChallenges(sources?: TelosSources): string[] {
++  const content = readTelosFile('CHALLENGES.md', sources);
+   const items = parseItems(content, 'C');
+   return items.map(i => `- **${i.id}**: ${truncate(i.text, 90)}`);
+ }
+@@ -540,8 +547,8 @@ function parseChallenges(): string[] {
+ /**
+  * Parse WRONG.md — plain bullets without IDs. Each bullet is a past mistake.
+  */
+-function parseWrong(): string[] {
+-  const content = readTelosFile('WRONG.md');
++function parseWrong(sources?: TelosSources): string[] {
++  const content = readTelosFile('WRONG.md', sources);
+   // Same own-bullet-scan gap as parseWisdom — public issue #1815, @tzioup
+   // (adjacent: sample text leaked through the plain-bullet and wisdom paths).
+   const bullets = content.split('\n')
+@@ -562,8 +569,8 @@ function parseWrong(): string[] {
+ /**
+  * Parse TRAUMAS.md — formative experiences with TR0/TR1/TR2 IDs.
+  */
+-function parseTraumas(): string[] {
+-  const content = readTelosFile('TRAUMAS.md');
++function parseTraumas(sources?: TelosSources): string[] {
++  const content = readTelosFile('TRAUMAS.md', sources);
+   const items = parseItems(content, 'TR');
+   return items.map(i => `- **${i.id}**: ${truncate(i.text, 90)}`);
+ }
+@@ -579,12 +586,12 @@ function parseTraumas(): string[] {
+  *   4. settings.json principal.name
+  * Returns '' when nothing resolves (title renders without the suffix).
+  */
+-function principalDisplayName(): string {
++function principalDisplayName(sources?: TelosSources): string {
+   const looksLikeToken = (s: string) => s.includes('{{') || s.includes('<INTERVIEW');
+   const idPath = join(paiUserDir(), 'PRINCIPAL', 'PRINCIPAL_IDENTITY.md');
+   let coreName = '';
+-  if (existsSync(idPath)) {
+-    const content = readFileSync(idPath, 'utf-8');
++  const content = sources ? sources.principalIdentity : existsSync(idPath) ? readFileSync(idPath, 'utf-8') : undefined;
++  if (content !== undefined) {
+     const fm = content.match(/^---\n([\s\S]*?)\n---/);
+     if (fm) {
+       const fullName = fm[1].match(/^\s*full_name:\s*["']?(.+?)["']?\s*$/m);
+@@ -596,6 +603,7 @@ function principalDisplayName(): string {
+     if (h1 && !looksLikeToken(h1[1])) return h1[1].trim();
+   }
+   if (coreName) return coreName;
++  if (sources) return '';
+   try {
+     const settings = JSON.parse(readFileSync(join(homedir(), '.claude', 'settings.json'), 'utf-8'));
+     const name = settings?.principal?.name;
+@@ -607,8 +615,8 @@ function principalDisplayName(): string {
+ /**
+  * Parse models from MODELS.md (first sentence only)
+  */
+-function parseModels(): string[] {
+-  const content = readTelosFile('MODELS.md');
++function parseModels(sources?: TelosSources): string[] {
++  const content = readTelosFile('MODELS.md', sources);
+   const items = parseItems(content, 'MD');
+   return items.slice(0, 3).map(i => {
+     const first = i.text.split(/\.\s/)[0].trim();
+@@ -616,20 +624,20 @@ function parseModels(): string[] {
+   });
+ }
+ 
+-function generate(): string {
++function generate(sources?: TelosSources, warn = (text: string) => warn(text)): string {
+   const now = new Date().toISOString();
+-  const principalName = principalDisplayName();
+-  const missions = parseMissions();
+-  const goals = parseGoals();
+-  const problems = parseProblems();
+-  const strategies = parseStrategies();
+-  const projects = parseProjects();
+-  const wisdom = parseWisdom();
+-  const narratives = parseNarratives();
+-  const challenges = parseChallenges();
+-  const wrong = parseWrong();
+-  const traumas = parseTraumas();
+-  const models = parseModels();
++  const principalName = principalDisplayName(sources);
++  const missions = parseMissions(sources);
++  const goals = parseGoals(sources);
++  const problems = parseProblems(sources);
++  const strategies = parseStrategies(sources);
++  const projects = parseProjects(sources);
++  const wisdom = parseWisdom(sources);
++  const narratives = parseNarratives(sources);
++  const challenges = parseChallenges(sources);
++  const wrong = parseWrong(sources);
++  const traumas = parseTraumas(sources);
++  const models = parseModels(sources);
+ 
+   // Per-section fail-loud guard: a core section whose SOURCE text is non-empty
+   // but parses to zero items means the format drifted past the parser for that
+@@ -642,20 +650,20 @@ function generate(): string {
+   // filter — so a fresh, wholly-templated tree exited 1 before the user had any
+   // content at all. Same resolution now, and a sample-blind re-parse separates
+   // "only placeholders here" from "real content the parser can no longer see".
+-  const sections = loadTelosSections();
++  const sections = loadTelosSections(sources);
+   const coreChecks: Array<[string, string, number, () => number]> = [
+-    ['MISSION.md', 'Missions', missions.length, () => parseMissions().length],
++    ['MISSION.md', 'Missions', missions.length, () => parseMissions(sources).length],
+     ['GOALS.md', 'Goals', goals.active.length + goals.deferred.length + goals.completed.length,
+-      () => { const g = parseGoals(); return g.active.length + g.deferred.length + g.completed.length; }],
+-    ['PROBLEMS.md', 'Problems', problems.length, () => parseProblems().length],
+-    ['STRATEGIES.md', 'Strategies', strategies.length, () => parseStrategies().length],
+-    ['CHALLENGES.md', 'Challenges', challenges.length, () => parseChallenges().length],
++      () => { const g = parseGoals(sources); return g.active.length + g.deferred.length + g.completed.length; }],
++    ['PROBLEMS.md', 'Problems', problems.length, () => parseProblems(sources).length],
++    ['STRATEGIES.md', 'Strategies', strategies.length, () => parseStrategies(sources).length],
++    ['CHALLENGES.md', 'Challenges', challenges.length, () => parseChallenges(sources).length],
+   ];
+   for (const [filename, label, count, reparse] of coreChecks) {
+     if (count > 0) continue;
+-    if (!readTelosFile(filename).trim()) continue;   // no source for this section at all
++    if (!readTelosFile(filename, sources).trim()) continue;   // no source for this section at all
+     if (withSamples(reparse) > 0) continue;          // source is placeholders only
+-    console.error(`❌ TELOS section "${label}" has source content but parsed to zero items — refusing to write a summary that silently drops it.`);
++    warn(`❌ TELOS section "${label}" has source content but parsed to zero items — refusing to write a summary that silently drops it.`);
+     process.exit(1);
+   }
+ 
+@@ -676,7 +684,7 @@ function generate(): string {
+     const tokens = heading.split(/[^a-z]+/).filter(Boolean);
+     const hit = tokens.find(t => knownKeys.has(t) || knownKeys.has(t.replace(/s$/, '')));
+     if (hit) {
+-      console.error(`⚠️  TELOS heading "${heading}" has content but matches no known section — its "${hit}" content will be missing from the summary. Known sections: ${[...knownKeys].join(', ')}.`);
++      warn(`⚠️  TELOS heading "${heading}" has content but matches no known section — its "${hit}" content will be missing from the summary. Known sections: ${[...knownKeys].join(', ')}.`);
+     }
+   }
+ 
+@@ -780,41 +788,64 @@ function generate(): string {
+     '',
+     // public PR #1808, @0bsolescence — the principal's own filter wins; the
+     // literal below only stands in when TELOS.md defines no such section.
+-    readContextFilter() ||
++    readContextFilter(sources) ||
+       'When steering work, bias toward: human flourishing, Human 3.0 transition, AI augmentation strategies, becoming one\'s full self, correct framing.',
+   );
+ 
+   return lines.join('\n') + '\n';
+ }
+ 
+-// Main — fail-loud guard: never blank a populated summary. Zero parsed items
+-// means the source format drifted beyond the parser; keep the existing file.
+-const summary = generate();
+-const countItems = (text: string) => text.split('\n').filter(l => l.startsWith('- ')).length;
+-const itemLines = countItems(summary);
+-if (itemLines === 0) {
+-  // A fresh install legitimately parses to zero: every entry in the tree is
+-  // still a shipped placeholder, and now that those are filtered out there is
+-  // nothing left to render. Same test the per-section guard uses — if the
+-  // sample-blind parse WOULD have produced items, no real content is being
+-  // dropped and an empty summary is the correct output.
+-  // public issue #1815, @tzioup (adjacent: sample text leaked through the
+-  // plain-bullet and wisdom paths)
+-  const realError = console.error;
+-  console.error = () => {};   // the re-parse would duplicate every warning
+-  let sampleBlind = 0;
+-  try {
+-    sampleBlind = countItems(withSamples(generate));
+-  } finally {
+-    console.error = realError;
++function summarize(sources?: TelosSources, warn = (text: string) => console.error(text)): string {
++  const summary = generate(sources, warn);
++  const countItems = (text: string) => text.split('\n').filter(l => l.startsWith('- ')).length;
++  const itemLines = countItems(summary);
++  if (itemLines === 0) {
++    // A fresh install legitimately parses to zero: every entry in the tree is
++    // still a shipped placeholder, and now that those are filtered out there is
++    // nothing left to render. Same test the per-section guard uses — if the
++    // sample-blind parse WOULD have produced items, no real content is being
++    // dropped and an empty summary is the correct output.
++    // public issue #1815, @tzioup (adjacent: sample text leaked through the
++    // plain-bullet and wisdom paths)
++    const sampleBlind = countItems(withSamples(() => generate(sources, () => {})));
++    if (sampleBlind === 0) {
++      warn('❌ TELOS parse produced zero items — refusing to overwrite PRINCIPAL_TELOS.md. Fix the parser or the source format.');
++      process.exit(1);
++    }
++    warn('ℹ️  TELOS sources are still shipped templates — writing an empty summary until they are filled in.');
+   }
+-  if (sampleBlind === 0) {
+-    console.error('❌ TELOS parse produced zero items — refusing to overwrite PRINCIPAL_TELOS.md. Fix the parser or the source format.');
+-    process.exit(1);
++  return summary;
++}
++
++export function renderTelosSummary(sources: TelosSources) {
++  const allowed = new Set(['TELOS.md', 'principalIdentity', ...Object.keys(LEGACY_FILE_TO_SECTION)]);
++  if (!memoryObject(sources) || Object.entries(sources).some(([name, content]) => !allowed.has(name) || typeof content !== 'string')) {
++    throw new Error('TELOS summary rendering needs declared native source text');
++  }
++  const warnings: string[] = [];
++  const content = summarize(sources, text => { warnings.push(text); });
++  const lineCount = content.split('\n').length;
++  warnings.push(`📋 TELOS summary regenerated: ${lineCount} lines from source files`);
++  return {content, stdout: `✅ Generated PRINCIPAL_TELOS.md (${lineCount} lines) at ${OUTPUT_PATH}\n`,
++          stderr: warnings.join('\n') + (warnings.length ? '\n' : '')};
++}
++
++function main(): void {
++  const governed = memoryAccess('telos_summary', {root: TELOS_DIR},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === 'boolean');
++  if (governed !== undefined) {
++    if (governed.ok !== true || typeof governed.stdout !== 'string' || typeof governed.stderr !== 'string') {
++      throw new Error('TELOS summary publication is unavailable under current memory policy');
++    }
++    process.stdout.write(governed.stdout);
++    process.stderr.write(governed.stderr);
++    return;
+   }
+-  console.error('ℹ️  TELOS sources are still shipped templates — writing an empty summary until they are filled in.');
++  const summary = summarize();
++  writeFileSync(OUTPUT_PATH, summary);
++  const lineCount = summary.split('\n').length;
++  console.log(`✅ Generated PRINCIPAL_TELOS.md (${lineCount} lines) at ${OUTPUT_PATH}`);
++  console.error(`📋 TELOS summary regenerated: ${lineCount} lines from source files`);
+ }
+-writeFileSync(OUTPUT_PATH, summary);
+-const lineCount = summary.split('\n').length;
+-console.log(`✅ Generated PRINCIPAL_TELOS.md (${lineCount} lines) at ${OUTPUT_PATH}`);
+-console.error(`📋 TELOS summary regenerated: ${lineCount} lines from source files`);
++
++if (import.meta.main) main();
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
 index 310662c..efd332b 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts

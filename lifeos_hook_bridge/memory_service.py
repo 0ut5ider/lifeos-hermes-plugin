@@ -267,6 +267,15 @@ class MemoryService:
                         raise MemoryUnavailable('State authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
+            if operation == 'telos_summary' and set(arguments) == {'root'}:
+                from .memory_telos import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('TELOS summary authority changed during rendering')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == "check_sources" and not arguments:
                 from .memory_sources import authorize
                 return authorize(scope)

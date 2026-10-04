@@ -1,0 +1,17 @@
+# Current TELOS summary publication
+
+Date: 2026-10-04. This record covers the native GenerateTelosSummary writer and its fixed source files. It does not activate memory ownership or close the combined release gate.
+
+The [baseline](before.txt) records seven failed boundary cases and four passing native controls. The native writer ignores missing, revoked, or restricted session authority, follows redirected source and output files, includes forgotten content, and creates an output with mode 0644. Its original parsing controls preserve unified section precedence, legacy fallback, plural headings, sample filtering, identity naming, and owner versus standalone output.
+
+The candidate supplies admitted source text to the native parsers. The fixed source set includes TELOS.md, the eleven legacy sections that the generator reads, and principal identity. The managed writer requires unrestricted current owner read and write authority. It rechecks source bytes and authority after rendering. The existing memory journal protects PRINCIPAL_TELOS.md. Publication creates a file with mode 0600 and refuses redirected paths or an output alias to the registry.
+
+The [expanded control](expanded.txt) passes 20 tests and eleven subtests. It includes all eleven summary sections, exact older-source review, empty-source preservation, native sample-only behavior, actual source and owner changes during rendering, and a real child exit after publication. Recovery restores the previous summary before a fresh render. Managed names use admitted principal identity text. The standalone generator keeps its native settings fallback. Unadmitted settings cannot supply a managed name.
+
+The [distributed gate](gate.txt) adds owner read-without-write and durable marker controls. It passes 182 tests and 79 subtests in 205.12 seconds with no skips, errors, failures, or warnings. The [command](gate-command.json) records input and source hashes. [Fresh preparation](prepared.json) verifies all 34 native patch files byte for byte and installs declared TOOLS and PULSE dependencies from frozen locks. The native Bun build bundles three modules successfully. No new dependency is added.
+
+The [caller supplement](caller-supplement.json) records two writers that the earlier MEMORY-focused search omitted. Their original source uses TELOS paths. Both have direct CLI entry points, plus DerivedSync and SeedPulse subprocess callers. The historical count of 227 candidates is a search result, not complete source-boundary coverage. Static callers do not establish complete orchestration or installation acceptance.
+
+The control recorder executes the existing synthetic regressions and retains actual CLI and interleaving calls. It does not substitute native results. Its outcomes retain source text, artifact contents and modes, exit status, stdout, and stderr. Registry aliases and redirected artifacts are not read by the recorder. These traces supplement the distributed pytest results.
+
+Remaining work includes freshness readers and writers, the alternate soul generator, PULSE data-plane adapters, deny hashes, digest and synthesis publishers, complete source inventory, service and installation caller acceptance, restricted delivery, ownership, migration, installation management, background jobs, private model acceptance, voice, and the combined release. No active server or configuration changes occur in this unit.

@@ -1,0 +1,33 @@
+{
+  "case": "MemoryTelosTests.test_durable_marker_refuses_connector_loss_after_restart",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [],
+      "options": {
+        "context": false
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/TELOS.md": "## Mission\n### M0: Synthetic unified mission\n\n## Goals\n### G0: Synthetic current goal\n\n## Context Filter\nSynthetic owner context filter.\n",
+          "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\ncore:\n  full_name: SyntheticOperator\n---\n# Principal Identity\n"
+        },
+        "artifact": null
+      },
+      "status": 1,
+      "stdout": "",
+      "stderr": "31 | \n32 | export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,\n33 |                                 valid: (value: unknown) => value is T): T | undefined {\n34 |   if (operation !== \"pulse_http\" && !hasMemoryAccess()) return undefined;\n35 |   const path = resolve(homedir(), \".claude/LIFEOS/USER/CONFIG/memory-access.json\");\n36 |   const info = lstatSync(path);\n                    ^\nENOENT: no such file or directory, statx '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-g8m78axh/.claude/LIFEOS/USER/CONFIG/memory-access.json'\n    path: \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-g8m78axh/.claude/LIFEOS/USER/CONFIG/memory-access.json\",\n syscall: \"statx\",\n   errno: -2,\n    code: \"ENOENT\"\n\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:36:16)\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:834:20)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:851:23\n\nBun v1.3.14 (Linux x64)\n",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/TELOS.md": "## Mission\n### M0: Synthetic unified mission\n\n## Goals\n### G0: Synthetic current goal\n\n## Context Filter\nSynthetic owner context filter.\n",
+          "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\ncore:\n  full_name: SyntheticOperator\n---\n# Principal Identity\n"
+        },
+        "artifact": null
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

@@ -25,6 +25,9 @@ CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
 STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'
     for directory in ('IDEAL_STATE', 'CURRENT_STATE')
     for name in ('HEALTH', 'MONEY', 'FREEDOM', 'CREATIVE', 'RELATIONSHIPS', 'RHYTHMS', 'INFRASTRUCTURE'))
+TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
+    ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'PROJECTS', 'CHALLENGES',
+     'NARRATIVES', 'TRAUMAS', 'WRONG', 'MODELS', 'WISDOM'))
 SYSTEM_PREFIXES = ('LIFEOS/DOCUMENTATION/', 'LIFEOS/ALGORITHM/')
 SYSTEM_FILES = {'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'}
 SOURCE_LIMIT = 256 * 1024
@@ -56,7 +59,7 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | STATE_SOURCES
+        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | STATE_SOURCES | TELOS_SOURCES
                      or relative.startswith(PREFIXES) or system)
     if not permitted:
         raise MemoryUnavailable('This is not a supported native history or context source')
