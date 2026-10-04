@@ -1,0 +1,61 @@
+{
+  "case": "MemoryFreshnessRelayTests.test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-http-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T20:52:53.890Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T20:52:53.890Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    }
+  },
+  "events": [
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:42193/api/telos/freshness",
+      "status": 401,
+      "body": "{\"error\": \"An authenticated Hermes session is required\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:42193/api/telos/freshness/stale",
+      "status": 401,
+      "body": "{\"error\": \"An authenticated Hermes session is required\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:42193/api/telos/freshness/summary",
+      "status": 401,
+      "body": "{\"error\": \"An authenticated Hermes session is required\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:42193/api/freshness",
+      "status": 401,
+      "body": "{\"error\": \"An authenticated Hermes session is required\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:42193/api/freshness/summary",
+      "status": 401,
+      "body": "{\"error\": \"An authenticated Hermes session is required\"}",
+      "cache-control": "no-store"
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

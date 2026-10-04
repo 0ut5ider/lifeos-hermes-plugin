@@ -1,0 +1,141 @@
+{
+  "case": "MemoryFreshnessRelayTests.test_queries_writes_and_foreign_origins_refuse_before_delivery",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-http-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T20:53:05.358Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T20:53:05.358Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    }
+  },
+  "events": [
+    {
+      "kind": "native_http",
+      "method": "POST",
+      "url": "http://127.0.0.1:38089/api/telos/freshness",
+      "status": 405,
+      "body": "{\"error\":\"Freshness views require GET\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/telos/freshness?root=foreign",
+      "status": 400,
+      "body": "{\"error\":\"Freshness views use the installed owner configuration\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/telos/freshness",
+      "status": 403,
+      "body": "{\"error\":\"Freshness views require the current origin\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "POST",
+      "url": "http://127.0.0.1:38089/api/telos/freshness/stale",
+      "status": 405,
+      "body": "{\"error\":\"Freshness views require GET\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/telos/freshness/stale?root=foreign",
+      "status": 400,
+      "body": "{\"error\":\"Freshness views use the installed owner configuration\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/telos/freshness/stale",
+      "status": 403,
+      "body": "{\"error\":\"Freshness views require the current origin\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "POST",
+      "url": "http://127.0.0.1:38089/api/telos/freshness/summary",
+      "status": 405,
+      "body": "{\"error\":\"Freshness views require GET\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/telos/freshness/summary?root=foreign",
+      "status": 400,
+      "body": "{\"error\":\"Freshness views use the installed owner configuration\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/telos/freshness/summary",
+      "status": 403,
+      "body": "{\"error\":\"Freshness views require the current origin\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "POST",
+      "url": "http://127.0.0.1:38089/api/freshness",
+      "status": 405,
+      "body": "{\"error\":\"Freshness views require GET\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/freshness?root=foreign",
+      "status": 400,
+      "body": "{\"error\":\"Freshness views use the installed owner configuration\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/freshness",
+      "status": 403,
+      "body": "{\"error\":\"Freshness views require the current origin\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "POST",
+      "url": "http://127.0.0.1:38089/api/freshness/summary",
+      "status": 405,
+      "body": "{\"error\":\"Freshness views require GET\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/freshness/summary?root=foreign",
+      "status": 400,
+      "body": "{\"error\":\"Freshness views use the installed owner configuration\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38089/api/freshness/summary",
+      "status": 403,
+      "body": "{\"error\":\"Freshness views require the current origin\"}",
+      "cache-control": "no-store"
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

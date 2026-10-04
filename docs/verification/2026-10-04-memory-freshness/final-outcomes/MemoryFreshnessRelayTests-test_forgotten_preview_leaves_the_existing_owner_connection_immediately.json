@@ -1,0 +1,37 @@
+{
+  "case": "MemoryFreshnessRelayTests.test_forgotten_preview_leaves_the_existing_owner_connection_immediately",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-http-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T21:05:07.730Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: local:owner\nlast_updated: 2026-10-04T21:05:09.380Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    }
+  },
+  "events": [
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38035/api/telos/freshness",
+      "status": 200,
+      "body": "{\"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q4qkwa7m/.claude/LIFEOS/USER/TELOS/TELOS.md\", \"fileUpdated\": \"2020-01-01T00:00:00.000Z\", \"fileAgeDays\": 2468, \"sections\": [{\"name\": \"Mission\", \"slug\": \"mission\", \"updated\": null, \"ageDays\": null, \"thresholdDays\": 90, \"stale\": true, \"preview\": \"Synthetic HTTP freshness mission\", \"line\": 6}], \"staleSections\": [{\"name\": \"Mission\", \"slug\": \"mission\", \"updated\": null, \"ageDays\": null, \"thresholdDays\": 90, \"stale\": true, \"preview\": \"Synthetic HTTP freshness mission\", \"line\": 6}], \"hasStale\": true, \"totalSections\": 1}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:38035/api/telos/freshness",
+      "status": 200,
+      "body": "{\"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q4qkwa7m/.claude/LIFEOS/USER/TELOS/TELOS.md\", \"fileUpdated\": null, \"fileAgeDays\": null, \"sections\": [], \"staleSections\": [], \"hasStale\": true, \"totalSections\": 0}",
+      "cache-control": "no-store"
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

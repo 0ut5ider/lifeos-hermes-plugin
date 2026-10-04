@@ -28,11 +28,21 @@ STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'
 TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
     ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'PROJECTS', 'CHALLENGES',
      'NARRATIVES', 'TRAUMAS', 'WRONG', 'MODELS', 'WISDOM'))
+FRESHNESS_TELOS_SOURCES = frozenset('LIFEOS/USER/TELOS/' + name + '.md' for name in
+    ('TELOS', 'MISSION', 'GOALS', 'PROBLEMS', 'STRATEGIES', 'CHALLENGES', 'NARRATIVES',
+     'TRAUMAS', 'WRONG', 'MODELS', 'BELIEFS', 'FRAMES', 'WISDOM', 'PREDICTIONS', 'IDEAS',
+     'SPARKS', 'BOOKS', 'AUTHORS', 'BANDS', 'MOVIES', 'RESTAURANTS', 'FOOD_PREFERENCES',
+     'MEETUPS', 'CIVIC', 'LEARNING', 'TEAM'))
 SYSTEM_PREFIXES = ('LIFEOS/DOCUMENTATION/', 'LIFEOS/ALGORITHM/')
 SYSTEM_FILES = {'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'}
 SOURCE_LIMIT = 256 * 1024
 CORPUS_LIMIT = 3 * 1024 * 1024
 SOURCE_COUNT_LIMIT = 2048
+
+
+def is_state_source(relative: str) -> bool:
+    return (re.fullmatch(r'LIFEOS/USER/TELOS/(?:CURRENT_STATE|IDEAL_STATE)/[^/]+\.md', relative) is not None
+            and Path(relative).name not in ('README.md', 'INDEX.md'))
 
 
 def authorize(scope: MemoryScope) -> dict[str, Any]:
@@ -59,7 +69,8 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | STATE_SOURCES | TELOS_SOURCES
+        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES
+                     or is_state_source(relative)
                      or relative.startswith(PREFIXES) or system)
     if not permitted:
         raise MemoryUnavailable('This is not a supported native history or context source')

@@ -26,7 +26,39 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "telos_summary") {
+  if (input.action === "read_freshness" || input.action === "freshness_view") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/TelosFreshness.ts")).href);
+    if (!object(module) || !Array.isArray(input.sources)) {
+      throw new Error("Native freshness reads need declared sources and a view");
+    }
+    const sources: Record<string, {path: string; content: string; lastModified: string}> = {};
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
+          || typeof source.lastModified !== "string" || Object.hasOwn(sources, source.path)) {
+        throw new Error("Native freshness reads need distinct declared source bytes and times");
+      }
+      sources[source.path] = {path: source.path, content: source.content, lastModified: source.lastModified};
+    }
+    if (input.action === "freshness_view") {
+      const view: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/telos.ts")).href);
+      if (!object(view) || typeof view.renderFreshnessView !== "function" || typeof input.target !== "string") {
+        throw new Error("Native freshness HTTP rendering needs declared sources and a route");
+      }
+      const response: unknown = await view.renderFreshnessView(sources, input.target);
+      if (!(response instanceof Response)) throw new Error("Native freshness rendering did not return a response");
+      result = {status: response.status, body: await response.json()};
+    } else {
+      if (typeof input.view !== "string") throw new Error("Native freshness reads need a view");
+      const functions: Record<string, string> = {telos: "readTelosFreshness", context: "readContextFreshness",
+        state: "readStateFreshness", registry: "stateFreshnessRegistry", frontmatter: "readFileFrontmatter",
+        legacy_path: "legacyTelosFilePath", legacy_date: "legacyTelosFileDate"};
+      const name = functions[input.view];
+      if (!name || typeof module[name] !== "function") throw new Error("This native freshness view is unavailable");
+      const args = ["telos", "frontmatter"].includes(input.view) ? [input.path, sources]
+        : ["legacy_path", "legacy_date"].includes(input.view) ? [input.slug, input.path, sources] : [sources];
+      result = {value: module[name](...args)};
+    }
+  } else if (input.action === "telos_summary") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/GenerateTelosSummary.ts")).href);
     if (!object(module) || typeof module.renderTelosSummary !== "function" || !object(input.sources)
         || Object.values(input.sources).some(value => typeof value !== "string")) {

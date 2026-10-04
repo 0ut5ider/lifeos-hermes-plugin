@@ -25,6 +25,8 @@ The [TELOS summary writer](docs/verification/2026-10-04-memory-telos/README.md) 
 
 The [source alias gate](docs/verification/2026-10-04-memory-source-alias/README.md) prevents registry hard links from releasing SQLite transaction locks during content reads. It passes 264 tests and 111 subtests across current readers, derivatives, adoption, and recovery.
 
+The [freshness reader gate](docs/verification/2026-10-04-memory-freshness/README.md) preserves native dates and review grades while checking current source and request authority. Its final gate passes 263 tests and 180 subtests. Timestamp and cache publication remain open.
+
 ## Compatibility target
 
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.

@@ -79,6 +79,17 @@ class MemoryPreferences:
         from .memory_pulse import snapshot
         from .memory_http import installation_binding
         config = self._configuration(account=account)
+        from .memory_freshness import HTTP_VIEWS
+        if isinstance(view, str) and view in HTTP_VIEWS:
+            from .memory_freshness import view as freshness_view
+
+            def check_current():
+                if self._configuration(account=account) != config:
+                    raise MemoryUnavailable('The memory configuration changed during freshness rendering')
+
+            return (freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
+                                   check_current=check_current),
+                    installation_binding(config, self.configuration.path))
         if view == 'graph':
             from .memory_graph import view as graph_view
 

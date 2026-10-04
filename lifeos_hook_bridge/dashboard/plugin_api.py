@@ -224,7 +224,9 @@ async def recover_mount(request: Request, account: str = Depends(_memory_account
 
 
 @router.get('/memory/pulse/{view}')
-def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs', 'graph'], request: Request,
+def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs', 'graph', 'telos_freshness',
+                                  'telos_stale', 'telos_freshness_summary', 'context_freshness',
+                                  'context_freshness_summary'], request: Request,
                      account: str = Depends(_memory_account)):
     headers = {'Cache-Control': 'no-store'}
     if request.query_params:

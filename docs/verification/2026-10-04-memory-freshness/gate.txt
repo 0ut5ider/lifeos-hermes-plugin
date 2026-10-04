@@ -1,0 +1,40 @@
+............................................................................................................................................... [ 54%]
+....................................................... [ 75%]
+.................................................................                                                              [100%]
+=================================== FAILURES ===================================
+_ MemoryPulseTests.test_unknown_view_cannot_become_an_arbitrary_file_read (view='graph') _
+tests/test_memory_pulse.py:160: in test_unknown_view_cannot_become_an_arbitrary_file_read
+    with self.subTest(view=view), self.assertRaises(ValueError):
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: ValueError not raised
+_ MemoryPulseTests.test_unknown_view_cannot_become_an_arbitrary_file_read (view={}) _
+tests/test_memory_pulse.py:161: in test_unknown_view_cannot_become_an_arbitrary_file_read
+    self.snapshot(view)
+tests/test_memory_pulse.py:25: in snapshot
+    return self.preferences.pulse_snapshot(view)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_preferences.py:76: in pulse_snapshot
+    return self.pulse_response(view,account=account)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_preferences.py:83: in pulse_response
+    if view in HTTP_VIEWS:
+       ^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'dict' as a dict key (unhashable type: 'dict')
+_ MemoryPulseTests.test_unknown_view_cannot_become_an_arbitrary_file_read (view=[]) _
+tests/test_memory_pulse.py:161: in test_unknown_view_cannot_become_an_arbitrary_file_read
+    self.snapshot(view)
+tests/test_memory_pulse.py:25: in snapshot
+    return self.preferences.pulse_snapshot(view)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_preferences.py:76: in pulse_snapshot
+    return self.pulse_response(view,account=account)[0]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_preferences.py:83: in pulse_response
+    if view in HTTP_VIEWS:
+       ^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'list' as a dict key (unhashable type: 'list')
+=========================== short test summary info ============================
+SUBFAILED(view='graph') tests/test_memory_pulse.py::MemoryPulseTests::test_unknown_view_cannot_become_an_arbitrary_file_read
+SUBFAILED(view={}) tests/test_memory_pulse.py::MemoryPulseTests::test_unknown_view_cannot_become_an_arbitrary_file_read
+SUBFAILED(view=[]) tests/test_memory_pulse.py::MemoryPulseTests::test_unknown_view_cannot_become_an_arbitrary_file_read
+3 failed, 263 passed, 177 subtests passed in 324.58s (0:05:24)

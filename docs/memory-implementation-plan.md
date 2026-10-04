@@ -425,3 +425,9 @@ The [distributed gate](verification/2026-10-04-memory-telos/README.md) passes 18
 ## 2026-10-04 source registry lock preservation
 
 Source paths now reject aliases to the SQLite registry before content reads. Actual competing writers stay blocked until the transaction closes. The [gate](verification/2026-10-04-memory-source-alias/README.md) passes 264 tests and 111 subtests without skips, failures, errors, or warnings. Freshness, other publishers, ownership, and the combined release remain open. No active server changes occur.
+
+## 2026-10-04 current freshness reads
+
+The native freshness CLI, exported readers, and five authenticated PULSE views use current admitted source text and file times. Native Date objects, all 25 legacy section files, review-age grades, source inheritance, and custom state dimensions remain intact. Post-render source, owner, and installation changes refuse delivery. Managed startup and invalidation preserve the file cache instead of using ambient authority.
+
+The [final gate](verification/2026-10-04-memory-freshness/README.md) passes 263 tests and 180 subtests without skips, failures, errors, or warnings. Thirty-five actual native controls are recorded, and all 36 native patch files match the distributed preparation. Timestamp and cache writers, Interview and migration callers, other publishers, restricted delivery, ownership, and the combined release remain open. Managed source health omits ambient cache details and needs final service acceptance. No active server changes occur.

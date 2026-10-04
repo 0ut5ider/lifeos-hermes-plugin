@@ -249,6 +249,15 @@ class MemoryService:
             if operation == 'canonical_corpus' and set(arguments) == {'root'}:
                 from .memory_canonical import corpus
                 return corpus(memory,scope,arguments['root'])
+            if operation == 'read_freshness' and set(arguments) == {'view', 'path', 'slug'}:
+                from .memory_freshness import read
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Freshness authority changed during rendering')
+
+                return read(memory, scope, **arguments, check_current=check_current)
             if operation == 'memory_graph' and set(arguments) == {'root', 'command', 'layer', 'target'}:
                 from .memory_graph import run
 

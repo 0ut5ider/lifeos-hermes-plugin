@@ -156,7 +156,7 @@ class MemoryPulseTests(unittest.TestCase):
             self.snapshot()
 
     def test_unknown_view_cannot_become_an_arbitrary_file_read(self):
-        for view in ('../CONFIG', 'graph', '/api/memory', '', {}, []):
+        for view in ('../CONFIG', 'unsupported', '/api/memory', '', {}, []):
             with self.subTest(view=view), self.assertRaises(ValueError):
                 self.snapshot(view)
 

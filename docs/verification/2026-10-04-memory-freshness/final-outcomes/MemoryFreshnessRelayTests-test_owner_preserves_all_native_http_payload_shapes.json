@@ -1,0 +1,126 @@
+{
+  "case": "MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-http-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T21:05:11.707Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T21:05:11.707Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    }
+  },
+  "events": [
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:39157/api/telos/freshness",
+      "status": 200,
+      "body": "{\"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/TELOS.md\", \"fileUpdated\": \"2020-01-01T00:00:00.000Z\", \"fileAgeDays\": 2468, \"sections\": [{\"name\": \"Mission\", \"slug\": \"mission\", \"updated\": null, \"ageDays\": null, \"thresholdDays\": 90, \"stale\": true, \"preview\": \"Synthetic HTTP freshness mission\", \"line\": 6}], \"staleSections\": [{\"name\": \"Mission\", \"slug\": \"mission\", \"updated\": null, \"ageDays\": null, \"thresholdDays\": 90, \"stale\": true, \"preview\": \"Synthetic HTTP freshness mission\", \"line\": 6}], \"hasStale\": true, \"totalSections\": 1}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {handleRequest} from \"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/PULSE/modules/telos.ts\";\nconst r=await handleRequest(new Request(process.argv[1]),new URL(process.argv[1]).pathname);console.log(await r.text());",
+        "http://localhost/api/telos/freshness"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/TELOS.md\",\"fileUpdated\":\"2020-01-01T00:00:00.000Z\",\"fileAgeDays\":2468,\"sections\":[{\"name\":\"Mission\",\"slug\":\"mission\",\"updated\":null,\"ageDays\":null,\"thresholdDays\":90,\"stale\":true,\"preview\":\"Synthetic HTTP freshness mission\",\"line\":6}],\"staleSections\":[{\"name\":\"Mission\",\"slug\":\"mission\",\"updated\":null,\"ageDays\":null,\"thresholdDays\":90,\"stale\":true,\"preview\":\"Synthetic HTTP freshness mission\",\"line\":6}],\"hasStale\":true,\"totalSections\":1}\n",
+      "stderr": ""
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:39157/api/telos/freshness/stale",
+      "status": 200,
+      "body": "{\"count\": 1, \"sections\": [{\"name\": \"Mission\", \"slug\": \"mission\", \"updated\": null, \"ageDays\": null, \"thresholdDays\": 90, \"stale\": true, \"preview\": \"Synthetic HTTP freshness mission\", \"line\": 6}]}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {handleRequest} from \"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/PULSE/modules/telos.ts\";\nconst r=await handleRequest(new Request(process.argv[1]),new URL(process.argv[1]).pathname);console.log(await r.text());",
+        "http://localhost/api/telos/freshness/stale"
+      ],
+      "status": 0,
+      "stdout": "{\"count\":1,\"sections\":[{\"name\":\"Mission\",\"slug\":\"mission\",\"updated\":null,\"ageDays\":null,\"thresholdDays\":90,\"stale\":true,\"preview\":\"Synthetic HTTP freshness mission\",\"line\":6}]}\n",
+      "stderr": ""
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:39157/api/telos/freshness/summary",
+      "status": 200,
+      "body": "{\"file_updated\": \"2020-01-01T00:00:00.000Z\", \"file_age_days\": 2468, \"total\": 1, \"stale_count\": 1, \"most_stale_section\": {\"name\": \"Mission\", \"slug\": \"mission\", \"age_days\": null, \"threshold_days\": 90}}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {handleRequest} from \"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/PULSE/modules/telos.ts\";\nconst r=await handleRequest(new Request(process.argv[1]),new URL(process.argv[1]).pathname);console.log(await r.text());",
+        "http://localhost/api/telos/freshness/summary"
+      ],
+      "status": 0,
+      "stdout": "{\"file_updated\":\"2020-01-01T00:00:00.000Z\",\"file_age_days\":2468,\"total\":1,\"stale_count\":1,\"most_stale_section\":{\"name\":\"Mission\",\"slug\":\"mission\",\"age_days\":null,\"threshold_days\":90}}\n",
+      "stderr": ""
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:39157/api/freshness",
+      "status": 200,
+      "body": "{\"files\": [{\"slug\": \"telos\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/TELOS.md\", \"name\": \"TELOS.md\", \"updated\": \"2020-01-01T00:00:00.000Z\", \"age_days\": 2468, \"threshold_days\": 30, \"reviewed\": \"2020-01-01T00:00:00.000Z\", \"reviewed_age_days\": 2468, \"reviewed_by\": null, \"effective_updated\": \"2020-01-01T00:00:00.000Z\", \"effective_age_days\": 2468, \"effective_threshold_days\": 30, \"effective_reviewed\": \"2020-01-01T00:00:00.000Z\", \"effective_reviewed_age_days\": 2468, \"stale\": true, \"why\": \"review overdue\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"da_identity\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\", \"name\": \"DA_IDENTITY.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 180, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 180, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"no frontmatter\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"principal_identity\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md\", \"name\": \"PRINCIPAL_IDENTITY.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 90, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 90, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"no frontmatter\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"projects\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/PROJECTS.md\", \"name\": \"PROJECTS.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 30, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 30, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"no frontmatter\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"lifeos_system_prompt\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md\", \"name\": \"LIFEOS_SYSTEM_PROMPT.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 90, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 90, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"no frontmatter\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"principal_telos\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md\", \"name\": \"PRINCIPAL_TELOS.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 30, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"derived_from\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/TELOS.md\", \"effective_updated\": \"2020-01-01T00:00:00.000Z\", \"effective_age_days\": 2468, \"effective_threshold_days\": 30, \"effective_reviewed\": \"2020-01-01T00:00:00.000Z\", \"effective_reviewed_age_days\": 2468, \"stale\": true, \"why\": \"review overdue\", \"is_auto_generated\": true, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"architecture_summary\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md\", \"name\": \"ARCHITECTURE_SUMMARY.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 30, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"derived_from\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md\", \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 90, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"source missing\", \"is_auto_generated\": true, \"pct\": 0, \"grade\": \"F\"}, {\"slug\": \"lifeos_system_architecture\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md\", \"name\": \"LifeosSystemArchitecture.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 90, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 90, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"no frontmatter\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}], \"total\": 8, \"fresh_count\": 0, \"stale_count\": 8, \"most_stale\": {\"slug\": \"projects\", \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/PROJECTS.md\", \"name\": \"PROJECTS.md\", \"updated\": null, \"age_days\": null, \"threshold_days\": 30, \"reviewed\": null, \"reviewed_age_days\": null, \"reviewed_by\": null, \"effective_updated\": null, \"effective_age_days\": null, \"effective_threshold_days\": 30, \"effective_reviewed\": null, \"effective_reviewed_age_days\": null, \"stale\": true, \"why\": \"no frontmatter\", \"is_auto_generated\": false, \"pct\": 0, \"grade\": \"F\"}, \"generated_at\": \"2026-10-04T21:05:13.346Z\", \"overall_pct\": 0, \"overall_grade\": \"F\"}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {handleRequest} from \"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/PULSE/modules/telos.ts\";\nconst r=await handleRequest(new Request(process.argv[1]),new URL(process.argv[1]).pathname);console.log(await r.text());",
+        "http://localhost/api/freshness"
+      ],
+      "status": 0,
+      "stdout": "{\"files\":[{\"slug\":\"telos\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/TELOS.md\",\"name\":\"TELOS.md\",\"updated\":\"2020-01-01T00:00:00.000Z\",\"age_days\":2468,\"threshold_days\":30,\"reviewed\":\"2020-01-01T00:00:00.000Z\",\"reviewed_age_days\":2468,\"reviewed_by\":null,\"effective_updated\":\"2020-01-01T00:00:00.000Z\",\"effective_age_days\":2468,\"effective_threshold_days\":30,\"effective_reviewed\":\"2020-01-01T00:00:00.000Z\",\"effective_reviewed_age_days\":2468,\"stale\":true,\"why\":\"review overdue\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"da_identity\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\",\"name\":\"DA_IDENTITY.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":180,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":180,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"no frontmatter\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"principal_identity\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md\",\"name\":\"PRINCIPAL_IDENTITY.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":90,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":90,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"no frontmatter\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"projects\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/PROJECTS.md\",\"name\":\"PROJECTS.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":30,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":30,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"no frontmatter\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"lifeos_system_prompt\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md\",\"name\":\"LIFEOS_SYSTEM_PROMPT.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":90,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":90,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"no frontmatter\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"principal_telos\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md\",\"name\":\"PRINCIPAL_TELOS.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":30,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"derived_from\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/TELOS/TELOS.md\",\"effective_updated\":\"2020-01-01T00:00:00.000Z\",\"effective_age_days\":2468,\"effective_threshold_days\":30,\"effective_reviewed\":\"2020-01-01T00:00:00.000Z\",\"effective_reviewed_age_days\":2468,\"stale\":true,\"why\":\"review overdue\",\"is_auto_generated\":true,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"architecture_summary\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md\",\"name\":\"ARCHITECTURE_SUMMARY.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":30,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"derived_from\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md\",\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":90,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"source missing\",\"is_auto_generated\":true,\"pct\":0,\"grade\":\"F\"},{\"slug\":\"lifeos_system_architecture\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md\",\"name\":\"LifeosSystemArchitecture.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":90,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":90,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"no frontmatter\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"}],\"total\":8,\"fresh_count\":0,\"stale_count\":8,\"most_stale\":{\"slug\":\"projects\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s892rm0j/.claude/LIFEOS/USER/PROJECTS.md\",\"name\":\"PROJECTS.md\",\"updated\":null,\"age_days\":null,\"threshold_days\":30,\"reviewed\":null,\"reviewed_age_days\":null,\"reviewed_by\":null,\"effective_updated\":null,\"effective_age_days\":null,\"effective_threshold_days\":30,\"effective_reviewed\":null,\"effective_reviewed_age_days\":null,\"stale\":true,\"why\":\"no frontmatter\",\"is_auto_generated\":false,\"pct\":0,\"grade\":\"F\"},\"generated_at\":\"2026-10-04T21:05:13.479Z\",\"overall_pct\":0,\"overall_grade\":\"F\"}\n",
+      "stderr": ""
+    },
+    {
+      "kind": "native_http",
+      "method": "GET",
+      "url": "http://127.0.0.1:39157/api/freshness/summary",
+      "status": 200,
+      "body": "{\"total\": 8, \"fresh_count\": 0, \"stale_count\": 8, \"overall_pct\": 0, \"overall_grade\": \"F\", \"most_stale\": {\"slug\": \"projects\", \"name\": \"PROJECTS.md\", \"age_days\": null, \"threshold_days\": 30, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"why\": \"no frontmatter\"}, \"files\": [{\"slug\": \"telos\", \"name\": \"TELOS.md\", \"age_days\": 2468, \"threshold_days\": 30, \"reviewed_age_days\": 2468, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"review overdue\"}, {\"slug\": \"da_identity\", \"name\": \"DA_IDENTITY.md\", \"age_days\": null, \"threshold_days\": 180, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"no frontmatter\"}, {\"slug\": \"principal_identity\", \"name\": \"PRINCIPAL_IDENTITY.md\", \"age_days\": null, \"threshold_days\": 90, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"no frontmatter\"}, {\"slug\": \"projects\", \"name\": \"PROJECTS.md\", \"age_days\": null, \"threshold_days\": 30, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"no frontmatter\"}, {\"slug\": \"lifeos_system_prompt\", \"name\": \"LIFEOS_SYSTEM_PROMPT.md\", \"age_days\": null, \"threshold_days\": 90, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"no frontmatter\"}, {\"slug\": \"principal_telos\", \"name\": \"PRINCIPAL_TELOS.md\", \"age_days\": 2468, \"threshold_days\": 30, \"reviewed_age_days\": 2468, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"review overdue\"}, {\"slug\": \"architecture_summary\", \"name\": \"ARCHITECTURE_SUMMARY.md\", \"age_days\": null, \"threshold_days\": 90, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"source missing\"}, {\"slug\": \"lifeos_system_architecture\", \"name\": \"LifeosSystemArchitecture.md\", \"age_days\": null, \"threshold_days\": 90, \"reviewed_age_days\": null, \"pct\": 0, \"grade\": \"F\", \"stale\": true, \"why\": \"no frontmatter\"}]}",
+      "cache-control": "no-store"
+    },
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {handleRequest} from \"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/PULSE/modules/telos.ts\";\nconst r=await handleRequest(new Request(process.argv[1]),new URL(process.argv[1]).pathname);console.log(await r.text());",
+        "http://localhost/api/freshness/summary"
+      ],
+      "status": 0,
+      "stdout": "{\"total\":8,\"fresh_count\":0,\"stale_count\":8,\"overall_pct\":0,\"overall_grade\":\"F\",\"most_stale\":{\"slug\":\"projects\",\"name\":\"PROJECTS.md\",\"age_days\":null,\"threshold_days\":30,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"why\":\"no frontmatter\"},\"files\":[{\"slug\":\"telos\",\"name\":\"TELOS.md\",\"age_days\":2468,\"threshold_days\":30,\"reviewed_age_days\":2468,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"review overdue\"},{\"slug\":\"da_identity\",\"name\":\"DA_IDENTITY.md\",\"age_days\":null,\"threshold_days\":180,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"no frontmatter\"},{\"slug\":\"principal_identity\",\"name\":\"PRINCIPAL_IDENTITY.md\",\"age_days\":null,\"threshold_days\":90,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"no frontmatter\"},{\"slug\":\"projects\",\"name\":\"PROJECTS.md\",\"age_days\":null,\"threshold_days\":30,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"no frontmatter\"},{\"slug\":\"lifeos_system_prompt\",\"name\":\"LIFEOS_SYSTEM_PROMPT.md\",\"age_days\":null,\"threshold_days\":90,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"no frontmatter\"},{\"slug\":\"principal_telos\",\"name\":\"PRINCIPAL_TELOS.md\",\"age_days\":2468,\"threshold_days\":30,\"reviewed_age_days\":2468,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"review overdue\"},{\"slug\":\"architecture_summary\",\"name\":\"ARCHITECTURE_SUMMARY.md\",\"age_days\":null,\"threshold_days\":90,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"source missing\"},{\"slug\":\"lifeos_system_architecture\",\"name\":\"LifeosSystemArchitecture.md\",\"age_days\":null,\"threshold_days\":90,\"reviewed_age_days\":null,\"pct\":0,\"grade\":\"F\",\"stale\":true,\"why\":\"no frontmatter\"}]}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

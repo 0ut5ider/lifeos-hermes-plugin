@@ -1,0 +1,103 @@
+.FFF..F                                                     [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessRelayTests.test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag (route='/api/telos/freshness') _
+tests/test_memory_freshness_relay.py:77: in test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 200 != 401 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+_ MemoryFreshnessRelayTests.test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag (route='/api/telos/freshness/stale') _
+tests/test_memory_freshness_relay.py:77: in test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 200 != 401 : {"count":1,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}]}
+_ MemoryFreshnessRelayTests.test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag (route='/api/telos/freshness/summary') _
+tests/test_memory_freshness_relay.py:77: in test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 200 != 401 : {"file_updated":"2020-01-01T00:00:00.000Z","file_age_days":2468,"total":1,"stale_count":1,"most_stale_section":{"name":"Mission","slug":"mission","age_days":null,"threshold_days":90}}
+_ MemoryFreshnessRelayTests.test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag (route='/api/freshness') _
+tests/test_memory_freshness_relay.py:77: in test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 200 != 401 : {"files":[{"slug":"telos","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/TELOS/TELOS.md","name":"TELOS.md","updated":"2020-01-01T00:00:00.000Z","age_days":2468,"threshold_days":30,"reviewed":"2020-01-01T00:00:00.000Z","reviewed_age_days":2468,"reviewed_by":null,"effective_updated":"2020-01-01T00:00:00.000Z","effective_age_days":2468,"effective_threshold_days":30,"effective_reviewed":"2020-01-01T00:00:00.000Z","effective_reviewed_age_days":2468,"stale":true,"why":"review overdue","is_auto_generated":false,"pct":0,"grade":"F"},{"slug":"da_identity","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md","name":"DA_IDENTITY.md","updated":null,"age_days":null,"threshold_days":180,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"effective_updated":null,"effective_age_days":null,"effective_threshold_days":180,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"no frontmatter","is_auto_generated":false,"pct":0,"grade":"F"},{"slug":"principal_identity","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md","name":"PRINCIPAL_IDENTITY.md","updated":null,"age_days":null,"threshold_days":90,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"effective_updated":null,"effective_age_days":null,"effective_threshold_days":90,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"no frontmatter","is_auto_generated":false,"pct":0,"grade":"F"},{"slug":"projects","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/PROJECTS.md","name":"PROJECTS.md","updated":null,"age_days":null,"threshold_days":30,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"effective_updated":null,"effective_age_days":null,"effective_threshold_days":30,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"no frontmatter","is_auto_generated":false,"pct":0,"grade":"F"},{"slug":"lifeos_system_prompt","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/LIFEOS_SYSTEM_PROMPT.md","name":"LIFEOS_SYSTEM_PROMPT.md","updated":null,"age_days":null,"threshold_days":90,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"effective_updated":null,"effective_age_days":null,"effective_threshold_days":90,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"no frontmatter","is_auto_generated":false,"pct":0,"grade":"F"},{"slug":"principal_telos","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md","name":"PRINCIPAL_TELOS.md","updated":null,"age_days":null,"threshold_days":30,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"derived_from":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/TELOS/TELOS.md","effective_updated":"2020-01-01T00:00:00.000Z","effective_age_days":2468,"effective_threshold_days":30,"effective_reviewed":"2020-01-01T00:00:00.000Z","effective_reviewed_age_days":2468,"stale":true,"why":"review overdue","is_auto_generated":true,"pct":0,"grade":"F"},{"slug":"architecture_summary","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md","name":"ARCHITECTURE_SUMMARY.md","updated":null,"age_days":null,"threshold_days":30,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"derived_from":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md","effective_updated":null,"effective_age_days":null,"effective_threshold_days":90,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"source missing","is_auto_generated":true,"pct":0,"grade":"F"},{"slug":"lifeos_system_architecture","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md","name":"LifeosSystemArchitecture.md","updated":null,"age_days":null,"threshold_days":90,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"effective_updated":null,"effective_age_days":null,"effective_threshold_days":90,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"no frontmatter","is_auto_generated":false,"pct":0,"grade":"F"}],"total":8,"fresh_count":0,"stale_count":8,"most_stale":{"slug":"projects","path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tgvwmn9j/.claude/LIFEOS/USER/PROJECTS.md","name":"PROJECTS.md","updated":null,"age_days":null,"threshold_days":30,"reviewed":null,"reviewed_age_days":null,"reviewed_by":null,"effective_updated":null,"effective_age_days":null,"effective_threshold_days":30,"effective_reviewed":null,"effective_reviewed_age_days":null,"stale":true,"why":"no frontmatter","is_auto_generated":false,"pct":0,"grade":"F"},"generated_at":"2026-10-04T20:42:23.087Z","overall_pct":0,"overall_grade":"F"}
+_ MemoryFreshnessRelayTests.test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag (route='/api/freshness/summary') _
+tests/test_memory_freshness_relay.py:77: in test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 200 != 401 : {"total":8,"fresh_count":0,"stale_count":8,"overall_pct":0,"overall_grade":"F","most_stale":{"slug":"projects","name":"PROJECTS.md","age_days":null,"threshold_days":30,"reviewed_age_days":null,"pct":0,"grade":"F","why":"no frontmatter"},"files":[{"slug":"telos","name":"TELOS.md","age_days":2468,"threshold_days":30,"reviewed_age_days":2468,"pct":0,"grade":"F","stale":true,"why":"review overdue"},{"slug":"da_identity","name":"DA_IDENTITY.md","age_days":null,"threshold_days":180,"reviewed_age_days":null,"pct":0,"grade":"F","stale":true,"why":"no frontmatter"},{"slug":"principal_identity","name":"PRINCIPAL_IDENTITY.md","age_days":null,"threshold_days":90,"reviewed_age_days":null,"pct":0,"grade":"F","stale":true,"why":"no frontmatter"},{"slug":"projects","name":"PROJECTS.md","age_days":null,"threshold_days":30,"reviewed_age_days":null,"pct":0,"grade":"F","stale":true,"why":"no frontmatter"},{"slug":"lifeos_system_prompt","name":"LIFEOS_SYSTEM_PROMPT.md","age_days":null,"threshold_days":90,"reviewed_age_days":null,"pct":0,"grade":"F","stale":true,"why":"no frontmatter"},{"slug":"principal_telos","name":"PRINCIPAL_TELOS.md","age_days":2468,"threshold_days":30,"reviewed_age_days":2468,"pct":0,"grade":"F","stale":true,"why":"review overdue"},{"slug":"architecture_summary","name":"ARCHITECTURE_SUMMARY.md","age_days":null,"threshold_days":90,"reviewed_age_days":null,"pct":0,"grade":"F","stale":true,"why":"source missing"},{"slug":"lifeos_system_architecture","name":"LifeosSystemArchitecture.md","age_days":null,"threshold_days":90,"reviewed_age_days":null,"pct":0,"grade":"F","stale":true,"why":"no frontmatter"}]}
+_ MemoryFreshnessRelayTests.test_backend_shutdown_refuses_even_after_a_successful_owner_read _
+tests/test_memory_freshness_relay.py:149: in test_backend_shutdown_refuses_even_after_a_successful_owner_read
+    self.assertEqual(response.status_code, 503, response.text)
+E   AssertionError: 200 != 503 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_yisc1nx/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+_ MemoryFreshnessRelayTests.test_forgotten_preview_leaves_the_existing_owner_connection_immediately _
+tests/test_memory_freshness_relay.py:114: in test_forgotten_preview_leaves_the_existing_owner_connection_immediately
+    self.assertEqual(response.json()['sections'], [])
+E   AssertionError: Lists differ: [{'name': 'Mission', 'slug': 'mission', 'u[121 chars]: 6}] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   {'name': 'Mission', 'slug': 'mission', 'updated': None, 'ageDays': None, 'thresholdDays': 90, 'stale': True, 'preview': 'Synthetic HTTP freshness mission', 'line': 6}
+E   
+E   + []
+E   - [{'ageDays': None,
+E   -   'line': 6,
+E   -   'name': 'Mission',
+E   -   'preview': 'Synthetic HTTP freshness mission',
+E   -   'slug': 'mission',
+E   -   'stale': True,
+E   -   'thresholdDays': 90,
+E   -   'updated': None}]
+_ MemoryFreshnessRelayTests.test_invalid_bearer_cannot_borrow_valid_owner_cookies _
+tests/test_memory_freshness_relay.py:156: in test_invalid_bearer_cannot_borrow_valid_owner_cookies
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 200 != 401 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-k5bl73qs/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+_ MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes (route='/api/telos/freshness') _
+tests/test_memory_freshness_relay.py:88: in test_owner_preserves_all_native_http_payload_shapes
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+E   AssertionError: None != 'no-store'
+_ MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes (route='/api/telos/freshness/stale') _
+tests/test_memory_freshness_relay.py:88: in test_owner_preserves_all_native_http_payload_shapes
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+E   AssertionError: None != 'no-store'
+_ MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes (route='/api/telos/freshness/summary') _
+tests/test_memory_freshness_relay.py:88: in test_owner_preserves_all_native_http_payload_shapes
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+E   AssertionError: None != 'no-store'
+_ MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes (route='/api/freshness') _
+tests/test_memory_freshness_relay.py:88: in test_owner_preserves_all_native_http_payload_shapes
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+E   AssertionError: None != 'no-store'
+_ MemoryFreshnessRelayTests.test_owner_preserves_all_native_http_payload_shapes (route='/api/freshness/summary') _
+tests/test_memory_freshness_relay.py:88: in test_owner_preserves_all_native_http_payload_shapes
+    self.assertEqual(response.headers.get('cache-control'), 'no-store')
+E   AssertionError: None != 'no-store'
+_ MemoryFreshnessRelayTests.test_queries_writes_and_foreign_origins_refuse_before_delivery (method='POST', suffix='') _
+tests/test_memory_freshness_relay.py:138: in test_queries_writes_and_foreign_origins_refuse_before_delivery
+    self.assertEqual(response.status_code, status, response.text)
+E   AssertionError: 200 != 405 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-c0uy49zd/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+_ MemoryFreshnessRelayTests.test_queries_writes_and_foreign_origins_refuse_before_delivery (method='GET', suffix='?root=foreign') _
+tests/test_memory_freshness_relay.py:138: in test_queries_writes_and_foreign_origins_refuse_before_delivery
+    self.assertEqual(response.status_code, status, response.text)
+E   AssertionError: 200 != 400 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-c0uy49zd/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+_ MemoryFreshnessRelayTests.test_queries_writes_and_foreign_origins_refuse_before_delivery (method='GET', suffix='') _
+tests/test_memory_freshness_relay.py:138: in test_queries_writes_and_foreign_origins_refuse_before_delivery
+    self.assertEqual(response.status_code, status, response.text)
+E   AssertionError: 200 != 403 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-c0uy49zd/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+_ MemoryFreshnessRelayTests.test_revocation_and_missing_connector_refuse_without_process_cache _
+tests/test_memory_freshness_relay.py:124: in test_revocation_and_missing_connector_refuse_without_process_cache
+    self.assertEqual(response.status_code, 403, response.text)
+E   AssertionError: 200 != 403 : {"path":"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-7xqi15ff/.claude/LIFEOS/USER/TELOS/TELOS.md","fileUpdated":"2020-01-01T00:00:00.000Z","fileAgeDays":2468,"sections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"staleSections":[{"name":"Mission","slug":"mission","updated":null,"ageDays":null,"thresholdDays":90,"stale":true,"preview":"Synthetic HTTP freshness mission","line":6}],"hasStale":true,"totalSections":1}
+=========================== short test summary info ============================
+SUBFAILED(route='/api/telos/freshness') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+SUBFAILED(route='/api/telos/freshness/stale') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+SUBFAILED(route='/api/telos/freshness/summary') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+SUBFAILED(route='/api/freshness') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+SUBFAILED(route='/api/freshness/summary') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_anonymous_reads_cannot_borrow_ambient_owner_or_internal_flag
+FAILED tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_backend_shutdown_refuses_even_after_a_successful_owner_read
+FAILED tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_forgotten_preview_leaves_the_existing_owner_connection_immediately
+FAILED tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_invalid_bearer_cannot_borrow_valid_owner_cookies
+SUBFAILED(route='/api/telos/freshness') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_owner_preserves_all_native_http_payload_shapes
+SUBFAILED(route='/api/telos/freshness/stale') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_owner_preserves_all_native_http_payload_shapes
+SUBFAILED(route='/api/telos/freshness/summary') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_owner_preserves_all_native_http_payload_shapes
+SUBFAILED(route='/api/freshness') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_owner_preserves_all_native_http_payload_shapes
+SUBFAILED(route='/api/freshness/summary') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_owner_preserves_all_native_http_payload_shapes
+SUBFAILED(method='POST', suffix='') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_queries_writes_and_foreign_origins_refuse_before_delivery
+SUBFAILED(method='GET', suffix='?root=foreign') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_queries_writes_and_foreign_origins_refuse_before_delivery
+SUBFAILED(method='GET', suffix='') tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_queries_writes_and_foreign_origins_refuse_before_delivery
+FAILED tests/test_memory_freshness_relay.py::MemoryFreshnessRelayTests::test_revocation_and_missing_connector_refuse_without_process_cache
+17 failed, 3 passed in 8.74s

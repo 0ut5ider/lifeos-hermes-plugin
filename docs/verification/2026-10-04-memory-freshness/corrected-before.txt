@@ -1,0 +1,115 @@
+F.FFF..F....FFF                                                [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessTests.test_custom_dimension_source_can_receive_exact_owner_review _
+tests/test_memory_freshness.py:158: in test_custom_dimension_source_can_receive_exact_owner_review
+    plan = preview(self.memory, OWNER, [relative])
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:88: in preview
+    return _snapshot(memory, connection, scope, paths)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:62: in _snapshot
+    classification = _classification(relative)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:28: in _classification
+    raise ValueError('Source review supports installed system Markdown, owner identity, and TELOS sources')
+E   ValueError: Source review supports installed system Markdown, owner identity, and TELOS sources
+_ MemoryFreshnessTests.test_direct_frontmatter_and_legacy_helpers_require_current_authority (function='readFileFrontmatter') _
+tests/test_memory_freshness.py:195: in test_direct_frontmatter_and_legacy_helpers_require_current_authority
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_direct_frontmatter_and_legacy_helpers_require_current_authority (function='legacyTelosFilePath') _
+tests/test_memory_freshness.py:195: in test_direct_frontmatter_and_legacy_helpers_require_current_authority
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_direct_frontmatter_and_legacy_helpers_require_current_authority (function='legacyTelosFileDate') _
+tests/test_memory_freshness.py:195: in test_direct_frontmatter_and_legacy_helpers_require_current_authority
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_direct_frontmatter_and_legacy_helpers_require_current_authority (function='stateFreshnessRegistry') _
+tests/test_memory_freshness.py:195: in test_direct_frontmatter_and_legacy_helpers_require_current_authority
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_excluded_state_dimension_body_and_label_leave_dynamic_registry _
+tests/test_memory_freshness.py:144: in test_excluded_state_dimension_body_and_label_leave_dynamic_registry
+    self.assertEqual([row['slug'] for row in body['files']], ['current_state_synthetic_custom'])
+E   AssertionError: Lists differ: ['cur[23 chars]stom', 'current_state_synthetic-retired-dimens[22 chars]lth'] != ['cur[23 chars]stom']
+E   
+E   First list contains 2 additional elements.
+E   First extra element 1:
+E   'current_state_synthetic-retired-dimension'
+E   
+E   - ['current_state_synthetic_custom',
+E   ?                                  ^
+E   
+E   + ['current_state_synthetic_custom']
+E   ?                                  ^
+E   
+E   -  'current_state_synthetic-retired-dimension',
+E   -  'ideal_state_health']
+_ MemoryFreshnessTests.test_foreign_dimension_directory_refuses_before_collection _
+tests/test_memory_freshness.py:178: in test_foreign_dimension_directory_refuses_before_collection
+    self.assertNotEqual(self.call('--state').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_foreign_source_link_refuses_before_content_delivery _
+tests/test_memory_freshness.py:171: in test_foreign_source_link_refuses_before_content_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_missing_connector_durable_marker_refuses_after_restart _
+tests/test_memory_freshness.py:185: in test_missing_connector_durable_marker_refuses_after_restart
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_missing_context_refuses_all_cli_reads (mode='--json') _
+tests/test_memory_freshness.py:107: in test_missing_context_refuses_all_cli_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_missing_context_refuses_all_cli_reads (mode='--context') _
+tests/test_memory_freshness.py:107: in test_missing_context_refuses_all_cli_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_missing_context_refuses_all_cli_reads (mode='--state') _
+tests/test_memory_freshness.py:107: in test_missing_context_refuses_all_cli_reads
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessTests.test_private_legacy_source_cannot_date_an_admitted_section _
+tests/test_memory_freshness.py:150: in test_private_legacy_source_cannot_date_an_admitted_section
+    self.assertIsNone(body['sections'][1]['updated'])
+E   AssertionError: '2026-10-02T00:00:00.000Z' is not None
+__ MemoryFreshnessTests.test_retired_telos_does_not_restore_section_previews ___
+tests/test_memory_freshness.py:132: in test_retired_telos_does_not_restore_section_previews
+    self.assertEqual(body['sections'], [])
+E   AssertionError: Lists differ: [{'name': 'Mission', 'slug': 'mission', 'u[124 chars]: 7}] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   {'name': 'Mission', 'slug': 'mission', 'updated': None, 'ageDays': None, 'thresholdDays': 90, 'stale': True, 'preview': 'Synthetic retired freshness mission', 'line': 7}
+E   
+E   + []
+E   - [{'ageDays': None,
+E   -   'line': 7,
+E   -   'name': 'Mission',
+E   -   'preview': 'Synthetic retired freshness mission',
+E   -   'slug': 'mission',
+E   -   'stale': True,
+E   -   'thresholdDays': 90,
+E   -   'updated': None}]
+_ MemoryFreshnessTests.test_revoked_and_restricted_owner_cannot_read_unclassified_sources _
+tests/test_memory_freshness.py:114: in test_revoked_and_restricted_owner_cannot_read_unclassified_sources
+    self.assertNotEqual(restricted.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_custom_dimension_source_can_receive_exact_owner_review
+SUBFAILED(function='readFileFrontmatter') tests/test_memory_freshness.py::MemoryFreshnessTests::test_direct_frontmatter_and_legacy_helpers_require_current_authority
+SUBFAILED(function='legacyTelosFilePath') tests/test_memory_freshness.py::MemoryFreshnessTests::test_direct_frontmatter_and_legacy_helpers_require_current_authority
+SUBFAILED(function='legacyTelosFileDate') tests/test_memory_freshness.py::MemoryFreshnessTests::test_direct_frontmatter_and_legacy_helpers_require_current_authority
+SUBFAILED(function='stateFreshnessRegistry') tests/test_memory_freshness.py::MemoryFreshnessTests::test_direct_frontmatter_and_legacy_helpers_require_current_authority
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_excluded_state_dimension_body_and_label_leave_dynamic_registry
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_foreign_dimension_directory_refuses_before_collection
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_foreign_source_link_refuses_before_content_delivery
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_missing_connector_durable_marker_refuses_after_restart
+SUBFAILED(mode='--json') tests/test_memory_freshness.py::MemoryFreshnessTests::test_missing_context_refuses_all_cli_reads
+SUBFAILED(mode='--context') tests/test_memory_freshness.py::MemoryFreshnessTests::test_missing_context_refuses_all_cli_reads
+SUBFAILED(mode='--state') tests/test_memory_freshness.py::MemoryFreshnessTests::test_missing_context_refuses_all_cli_reads
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_private_legacy_source_cannot_date_an_admitted_section
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_retired_telos_does_not_restore_section_previews
+FAILED tests/test_memory_freshness.py::MemoryFreshnessTests::test_revoked_and_restricted_owner_cannot_read_unclassified_sources
+15 failed, 7 passed, 3 subtests passed in 5.23s
