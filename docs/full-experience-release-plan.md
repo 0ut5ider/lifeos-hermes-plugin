@@ -16,6 +16,8 @@ The four LifeOS tiers retain private FlashNext with different effort levels. Voi
 | Voice | Discord voice input and spoken replies work through actual speech and messaging adapters, including native notification channel handling | Confirmed requirements; service unconfigured; last feature workstream |
 | Release and return workflows | Full suite, actual service and browser acceptance, independent review, versioned release, preservation of later data, and verified return/removal | Open |
 
+The October 4 [startup controls](verification/2026-10-04-paired-startup-effects/README.md) and [request-delivery controls](verification/2026-10-04-paired-context-delivery/README.md) add ten equal selected cases. The cumulative ledger contains 27 equal selected cases for 12 registrations. The remote Kitty case separately retains the existing isolation difference. Request delivery uses an expected HTTP 401 and does not verify a generated response. Full hook groups, remaining branches, managed-memory admission, and unavailable native controls still prevent completion of the first workstream.
+
 ## Execution and evidence
 
 Continue the existing paired hook fixtures first. Complete source and lifecycle memory gaps before enabling ownership or memory-writing jobs. Build reviewed migration and sharing on the completed native operations. Finish the Hermes management workflow after the compatibility contract is established. Verify background jobs and private-model routing, then complete voice in the isolated acceptance profile. Test the combined release before deploying it.
