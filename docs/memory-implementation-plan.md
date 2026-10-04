@@ -383,6 +383,12 @@ The isolated `.212` service and browser checks now verify native setup, private-
 
 The first corrected complete memory regression passes 592 cases without skips. The final regression records the later restore and database-read corrections separately. Full PULSE reader governance, remaining derivatives, restricted delivery, retained-session reconstruction, source-review page controls, schema rollback compatibility, ownership activation, installation trials and removal, and the independent release gate remain open. Do not activate lasting-memory ownership during this acceptance batch.
 
+## 2026-10-04 current KnowledgeGraph navigation
+
+Native KnowledgeGraph navigation also uses the registered current-note corpus. Its five commands retain native output under owner admission. Positive tag lookup and adopted typed relationships preserve labels and traversal weights. Missing context, revoked or restricted authority, invalid connectors, changed sources, and redirected paths refuse delivery. Forgotten targets and superseded wikilinks leave navigation. Shared tags remain independent current edges.
+
+The [graph gate](verification/2026-10-04-memory-knowledge-graph/README.md) passes 92 tests and 38 subtests. KnowledgeGraph is the 29th native file in the memory patch; the previous 28 files remain identical. MemoryGraph caches, other publishers, complete inventory, restricted delivery, ownership, and the remaining release plan stay open. No active server changes.
+
 ## 2026-10-04 profile backup and separate recovery
 
 The selected-profile backup captures Hermes configuration, history, memory files, skills, installed profile files, and covered links together with native data. Real competing SQLite and native writers remain blocked through collection. Closing a direct database descriptor initially breaks the SQLite barrier. Both collectors now serialize their open connection without direct file reads. Physical replacement and hard-link aliases refuse collection. The [backup gate](verification/2026-10-04-profile-backup/README.md) passes 47 tests and 20 subtests.

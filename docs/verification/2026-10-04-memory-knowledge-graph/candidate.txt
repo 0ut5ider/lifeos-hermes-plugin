@@ -1,0 +1,24 @@
+.F.F.F...F...........................                               [100%]
+=================================== FAILURES ===================================
+_ KnowledgeGraphTests.test_correction_removes_the_superseded_wikilink_from_the_current_graph _
+tests/test_memory_knowledge_graph.py:108: in test_correction_removes_the_superseded_wikilink_from_the_current_graph
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : Slug not found: "synthetic-lab-routing"
+_ KnowledgeGraphTests.test_forgotten_note_and_its_edge_leave_current_graph_navigation _
+tests/test_memory_knowledge_graph.py:98: in test_forgotten_note_and_its_edge_leave_current_graph_navigation
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : Slug not found: "synthetic-lab-routing"
+_ KnowledgeGraphTests.test_owner_navigation_preserves_the_native_link_and_all_command_outputs _
+tests/test_memory_knowledge_graph.py:57: in test_owner_navigation_preserves_the_native_link_and_all_command_outputs
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : Slug not found: "synthetic-lab-routing"
+_ KnowledgeGraphTests.test_unregistered_note_does_not_enter_the_managed_graph __
+tests/test_memory_knowledge_graph.py:121: in test_unregistered_note_does_not_enter_the_managed_graph
+    self.assertIn('Nodes: 2', result.stdout)
+E   AssertionError: 'Nodes: 2' not found in '\n📊 Knowledge Graph Statistics\n──────────────────────────────────────────────────\n  Nodes: 0 (People: 0, Companies: 0, Ideas: 0, Research: 0)\n  Edges: 0 (tag: 0, wikilink: 0, related: 0)\n  Avg connections per node: 0.0\n  Isolated nodes: 0 (no connections)\n──────────────────────────────────────────────────\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_correction_removes_the_superseded_wikilink_from_the_current_graph
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_forgotten_note_and_its_edge_leave_current_graph_navigation
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_owner_navigation_preserves_the_native_link_and_all_command_outputs
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_unregistered_note_does_not_enter_the_managed_graph
+4 failed, 33 passed, 5 subtests passed in 35.10s

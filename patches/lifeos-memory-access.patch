@@ -1082,6 +1082,83 @@ index 58270db..68741d7 100644
      proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
+index 310662c..efd332b 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Builds native Knowledge navigation from admitted current notes under managed memory authority.
++// ABOUTME: Preserves native graph parsing, edge weights, traversal, and standalone file collection.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -34,6 +36,8 @@ import { parseArgs } from "util";
+ import * as fs from "fs";
+ import * as path from "path";
+ import { homedir } from "node:os";
++import { hasMemoryAccess } from "./lib/MemoryAccess";
++import { enumerateCanonicalCorpus } from "./Cortex";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -213,24 +217,38 @@ function buildGraph(): KnowledgeGraph {
+   const nodes = new Map<string, GraphNode>();
+   const edges: GraphEdge[] = [];
+   const adjacency = new Map<string, GraphEdge[]>();
++  const corpus = hasMemoryAccess() ? enumerateCanonicalCorpus(KNOWLEDGE_DIR) : undefined;
++  const declared = corpus === undefined ? undefined : new Map<string, string>();
++  if (corpus !== undefined && declared !== undefined) {
++    for (const [index, file] of corpus.files.entries()) {
++      const record = corpus.records[index];
++      if (record === undefined) throw new Error("The managed Knowledge graph source is missing");
++      declared.set(file, record.content);
++    }
++  }
+ 
+   // Phase 1: Collect all nodes
+   for (const domain of DOMAINS) {
+-    const domainDir = path.join(KNOWLEDGE_DIR, domain);
+-    if (!fs.existsSync(domainDir)) continue;
++    const domainDir = path.join(corpus?.root ?? KNOWLEDGE_DIR, domain);
++    if (declared === undefined && !fs.existsSync(domainDir)) continue;
+ 
+-    for (const entry of fs.readdirSync(domainDir)) {
++    const entries = declared === undefined ? fs.readdirSync(domainDir)
++      : [...declared.keys()].filter((file) => path.dirname(file) === domainDir).map((file) => path.basename(file));
++    for (const entry of entries) {
+       if (SKIP_FILES.has(entry) || !entry.endsWith(".md")) continue;
+       // Skip subdirectories
+       const fullPath = path.join(domainDir, entry);
+-      try {
+-        if (!fs.statSync(fullPath).isFile()) continue;
+-      } catch {
+-        continue;
++      if (declared === undefined) {
++        try {
++          if (!fs.statSync(fullPath).isFile()) continue;
++        } catch {
++          continue;
++        }
+       }
+ 
+       const slug = entry.replace(/\.md$/, "");
+-      const content = fs.readFileSync(fullPath, "utf-8");
++      const content = declared === undefined ? fs.readFileSync(fullPath, "utf-8") : declared.get(fullPath);
++      if (content === undefined) throw new Error("The managed Knowledge graph source is missing");
+       const fm = parseFrontmatter(content);
+ 
+       const tags = Array.isArray(fm.tags)
+@@ -260,7 +278,8 @@ function buildGraph(): KnowledgeGraph {
+ 
+   // Phase 2: Build edges from wikilinks and related fields
+   for (const [slug, node] of nodes) {
+-    const content = fs.readFileSync(node.path, "utf-8");
++    const content = declared === undefined ? fs.readFileSync(node.path, "utf-8") : declared.get(node.path);
++    if (content === undefined) throw new Error("The managed Knowledge graph source is missing");
+ 
+     // Wikilink edges
+     const wikilinks = extractWikilinks(content);
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
 index 0975c2f..0c15cb8 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeHarvester.ts
