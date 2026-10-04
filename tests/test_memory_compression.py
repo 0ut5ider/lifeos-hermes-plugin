@@ -18,7 +18,10 @@ class MemoryCompressionTests(unittest.TestCase):
     def test_actual_in_place_compression_keeps_the_verified_conversation(self):
         self.compression(in_place=True)
 
-    def compression(self, *, in_place):
+    def test_actual_process_restarts_after_native_child_commit_before_lineage_publication(self):
+        self.compression(in_place=False, interruption=True)
+
+    def compression(self, *, in_place, interruption=False):
         fixture = host_fixture.MemoryHostTests()
         fixture.setUp()
         self.addCleanup(fixture.doCleanups)
@@ -33,11 +36,22 @@ class MemoryCompressionTests(unittest.TestCase):
                            LIFEOS_HERMES_SOURCE=str(model_fixture.HOST),
                            LIFEOS_HOOK_SETTINGS=str(fixture.fixture.fixture.fixture.root / 'settings.json'),
                            BUN_CONFIG_NO_AUTO_INSTALL='1')
-        result = subprocess.run([sys.executable, str(Path(__file__).with_name('memory_compression_calls.py'))],
-                                input=json.dumps({'route': fixture.fixture.route}), env=environment,
+        command = [sys.executable, str(Path(__file__).with_name('memory_compression_calls.py'))]
+        result = subprocess.run(command,
+                                input=json.dumps({'route': fixture.fixture.route, 'interrupt_lineage': interruption}), env=environment,
                                 capture_output=True, text=True, timeout=60)
+        if interruption:
+            self.assertEqual(result.returncode, 73, result.stderr)
+            self.assertEqual(result.stderr, '')
+            marker = json.loads((fixture.home / 'interrupted-compression.json').read_text())
+            states = json.loads((fixture.home / 'lifeos-memory-contexts.json').read_text())
+            self.assertIn(marker['parent'], states)
+            self.assertNotIn(marker['child'], states)
+            result = subprocess.run(command, input=json.dumps({'route': fixture.fixture.route, 'restart': True}),
+                env=environment, capture_output=True, text=True, timeout=60)
         if os.environ.get('LIFEOS_COMPRESSION_EVIDENCE_DIR'):
-            directory = Path(os.environ['LIFEOS_COMPRESSION_EVIDENCE_DIR']) / ('in-place' if in_place else 'rotation')
+            name = 'interrupted' if interruption else 'in-place' if in_place else 'rotation'
+            directory = Path(os.environ['LIFEOS_COMPRESSION_EVIDENCE_DIR']) / name
             directory.mkdir(parents=True, exist_ok=True)
             (directory / 'outcome.json').write_text(result.stdout)
             (directory / 'requests.json').write_text(json.dumps(fixture.fixture.received, indent=2) + '\n')
@@ -61,7 +75,8 @@ class MemoryCompressionTests(unittest.TestCase):
         self.assertEqual(outcome['continuation']['final_response'], 'SYNTHETIC-MODEL-OK')
         self.assertNotIn('failed', outcome['diagnostics'])
         self.assertEqual(outcome['admission_trace'], [])
-        self.assertIn('Compacting context', outcome['diagnostics'])
+        if not interruption:
+            self.assertIn('Compacting context', outcome['diagnostics'])
         calls = [request for request in fixture.fixture.received if request['path'] == '/v1/chat/completions']
         foreground = [request for request in calls if 'LifeOS owns lasting memory' in
                       str(request['body'].get('messages', [{}])[0].get('content'))]

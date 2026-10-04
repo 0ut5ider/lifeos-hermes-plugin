@@ -27,6 +27,8 @@ Keep it equal to the version in both plugin manifests.
 
 ### Fixed
 
+- Recover missing child admission after an interrupted native compression handoff.
+  Require verified native lineage and unchanged parent authority.
 - Preserve user whitespace in Hermes model requests so input proofs remain exact.
 - Preserve verified memory authority when compression rotates a conversation.
   Require recorded lineage and unchanged authority before the caller adopts the child.

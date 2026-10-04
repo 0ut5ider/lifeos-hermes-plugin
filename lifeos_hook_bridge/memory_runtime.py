@@ -195,10 +195,10 @@ class MemoryRuntime:
             stamp = self._stamp(configuration, context, connection,user_proof(kwargs.get('user_message')))
             states = self._states()
             previous = states.get(context.session_id)
+            if previous is None and not is_first_turn:
+                previous = self._recover_compression(configuration,context,connection,states)
             if isinstance(previous,dict) and 'compression_parent' in previous:
                 stamp['compression_parent'] = previous['compression_parent']
-            if previous is None and not is_first_turn:
-                raise MemoryAdmissionError('This conversation has no verified memory context. Start a new conversation.')
             if previous is not None:
                 if (not isinstance(previous,dict) or not isinstance(previous.get('generation'),str)
                         or any(previous.get(key)!=stamp.get(key) for key in ('scope','proposal_generation','rendered','context'))):
@@ -209,6 +209,23 @@ class MemoryRuntime:
             states[context.session_id] = stamp
             publish(self.state_path, (json.dumps(states, sort_keys=True) + '\n').encode())
         _BOUND.set((self.key, context, stamp))
+
+    def _recover_compression(self, configuration, context, connection, states):
+        from .memory_lineage import compression_parent
+        try:
+            parent_id = compression_parent(self.configuration.path.parent, context)
+            previous = states.get(parent_id)
+            if not isinstance(previous,dict) or not isinstance(previous.get('generation'),str):
+                raise ValueError('The parent has no verified admission')
+            parent = parse_context(previous.get('context'))
+            if parent.session_id != parent_id or replace(parent,session_id=context.session_id) != context:
+                raise ValueError('The parent authority differs from the current host')
+            current = self._stamp(configuration,parent,connection,previous.get('user_input'),previous.get('compression_parent'))
+            if any(previous.get(key)!=current.get(key) for key in ('scope','proposal_generation','rendered','context')):
+                raise ValueError('The parent authority changed')
+            return {**previous, 'context':json.loads(json.dumps(asdict(context))), 'compression_parent':parent_id}
+        except (MemoryUnavailable, ValueError) as error:
+            raise MemoryAdmissionError('This conversation has no verified memory context. Compression recovery requires unchanged parent authority and verified native lineage.') from error
 
     def rotate_session(self, new_session_id: str, parent_session_id: str, *, metadata=None) -> None:
         if not self.enabled():

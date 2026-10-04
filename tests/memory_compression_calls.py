@@ -19,7 +19,10 @@ from run_agent import AIAgent
 
 def main():
     settings = json.loads(sys.stdin.read())
-    tokens = set_session_vars(platform='chat-a', user_id='100', chat_id='200', chat_type='dm', session_id='session')
+    interruption = Path(os.environ['HERMES_HOME']) / 'interrupted-compression.json'
+    interrupted = json.loads(interruption.read_text()) if settings.get('restart') else None
+    selected_session = interrupted['child'] if interrupted else 'session'
+    tokens = set_session_vars(platform='chat-a', user_id='100', chat_id='200', chat_type='dm', session_id=selected_session)
     manager = get_plugin_manager()
     database_warnings = io.StringIO()
     logger = logging.getLogger('hermes_state')
@@ -32,6 +35,13 @@ def main():
     diagnostics = io.StringIO()
     admission_trace = []
     def trace(frame, event, arg):
+        if settings.get('interrupt_lineage') and frame.f_code.co_name == 'rotate_session' and event == 'call':
+            with interruption.open('w') as stream:
+                os.fchmod(stream.fileno(), 0o600)
+                json.dump({'child': frame.f_locals['new_session_id'], 'parent': frame.f_locals['parent_session_id']}, stream)
+                stream.flush()
+                os.fsync(stream.fileno())
+            os._exit(73)
         if frame.f_code.co_name == '_check_call' and event == 'exception':
             values = frame.f_locals
             context = values.get('context')
@@ -43,12 +53,12 @@ def main():
     threading.settrace(trace)
     try:
         with redirect_stdout(diagnostics):
-            agent = AIAgent(**settings['route'], api_key='synthetic-key', session_id='session', session_db=database,
+            agent = AIAgent(**settings['route'], api_key='synthetic-key', session_id=selected_session, session_db=database,
                             platform='chat-a', user_id='100', chat_id='200', chat_type='dm', quiet_mode=True,
                             enabled_toolsets=['memory', 'skills'], skip_context_files=True, skip_background_review=True,
                             cwd=os.environ['HERMES_HOME'])
             history = None
-            for index in range(6):
+            for index in range(0 if interrupted else 6):
                 turn = agent.run_conversation((f'Synthetic owner turn {index}: ' + ('Synthetic retained work context. ' * 200)).rstrip(),
                                               conversation_history=history)
                 if turn.get('failed') or turn.get('turn_exit_reason') == 'prompt_blocked':
@@ -56,8 +66,12 @@ def main():
                         'reason': turn.get('turn_exit_reason'), 'api_calls': turn.get('api_calls'),
                         'response': turn.get('final_response'), 'diagnostics': diagnostics.getvalue()}))
                 history = turn['messages']
-            parent = agent.session_id
-            compressed, system_prompt = agent._compress_context(history, agent._cached_system_prompt, force=True)
+            parent = interrupted['parent'] if interrupted else agent.session_id
+            if interrupted:
+                compressed = database.get_messages_as_conversation(selected_session)
+                system_prompt = None
+            else:
+                compressed, system_prompt = agent._compress_context(history, agent._cached_system_prompt, force=True)
             child = agent.session_id
             parent_row = database.get_session(parent)
             child_row = database.get_session(child)

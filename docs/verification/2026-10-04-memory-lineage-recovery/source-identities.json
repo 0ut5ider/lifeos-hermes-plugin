@@ -1,0 +1,13 @@
+{
+  "candidate_parent": "79258f5ae63da23f0601255a5d8334c27b939774",
+  "hermes_base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "files": {
+    "lifeos_hook_bridge/memory_lineage.py": "0685c679ef7da7ae3ae4f805e8e1eac681fe1ecaebf50e4e61189dcc2554b0fd",
+    "lifeos_hook_bridge/memory_runtime.py": "05f0f008463c0ede41ae4f21fdb1c4a36ced372cbb1ddd8067b160a38a848bb0",
+    "tests/test_memory_lineage_recovery.py": "085b07d3f9885044f1820d0b1211ad5ddce3cd6fa5a08168650c909bba5b0dfe",
+    "tests/test_memory_compression.py": "10e5697f0806de420402e25336f6adb9652c6595f20737ca2f490d2fa304dbfe",
+    "tests/memory_compression_calls.py": "c7511af3d4628d6273aa33a4524c7ef587b439810f40c8f9eca4f5a664ad9337"
+  },
+  "fault_boundary": "os._exit(73) on rotate_session entry after the native child commit and before LifeOS lineage publication"
+}
