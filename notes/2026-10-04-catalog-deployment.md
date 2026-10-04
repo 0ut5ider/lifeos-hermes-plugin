@@ -1,0 +1,13 @@
+# Catalog callback deployment
+
+Date: 2026-10-04. Adrian authorizes deploying the latest code to `.212` and asks which functions remain unavailable.
+
+Both existing installations use merged revision `d5dafbc` before this update. The latest tested revision is `02d7ac8`. Its product delta is the catalog result callback in Hermes `model_tools.py` and the bundled compatibility patch. The installed pre-fix control performs a real catalog search but never invokes native Safety. Twenty-four focused source, callback, footprint, and evidence cases pass against the candidate.
+
+The first Discord deployment reaches the native hook and returns its warning. The verifier incorrectly requires surrounding blank lines to remain byte-identical in the caller result. Native context contains 167 UTF-8 bytes; its stripped text contains 163. The caller retains all 163 warning bytes. Existing augmentation trims this whitespace. Automatic rollback restores the old host file, old package pin, and old recorder revision, then restarts the services. This is a verifier defect, not an absent hook result. The corrected verifier compares the complete stripped warning text and still requires one real Safety invocation and a successful native exit.
+
+The operator snapshots code and metadata before replacement, journals intent before stopping services, verifies stable process IDs, and preserves profile and native data. A filesystem rehearsal verifies copy and restore, preservation of later user data and unrelated metadata, and refusal of a later code edit. The release retains private failed and successful controls for inspection. No memory ownership or sharing switch is part of this deployment.
+
+Both final applies pass. Each installed package matches all 75 candidate files. Actual Hermes plugin registration loads nine hooks and both required middleware callbacks. Native Safety runs once and returns its warning. Both profiles complete a real private-model turn with a successful `pwd` call and the requested final marker. Each turn produces 431 recorder events with 24 hook starts, 24 completions, and no reported capture gaps. Restarted gateways and dashboards initialize with the new plugin pin and matching recorder source manifests. Dashboard HTTP and protected profile checks pass.
+
+Two other probe assumptions need correction: the CLI launcher lives inside the Hermes checkout, and the Discord dashboard binds the LAN address rather than loopback. Neither discrepancy requires a product or configuration change. Failed probe artifacts remain private. The [public release record](../docs/verification/2026-10-04-catalog-release-212/README.md) contains the final evidence, practical feature limits, and restore commands.

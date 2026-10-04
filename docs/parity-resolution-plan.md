@@ -51,7 +51,7 @@ Nine registrations lack a successful native event control:
 
 Native ToolSearch runs its hook, then the next model request fails because the private gateway rejects `tool_reference` content. Its Safety comparison is valid for that tool event. It does not prove a complete search-and-MCP-call session. StopFailure requires the tested interactive native control; print mode does not emit that event. No missing native event is replaced by a synthetic event or counted as passed.
 
-The staged Hermes patch now applies result transforms and augmentation to catalog search results. The real-dispatch regression fails before this fix and passes afterward. The fix remains outside the active `.212` profiles. The bundle records local tests, live SSH and Docker tests, temporary fixture cleanup, and unresolved validation limits.
+The Hermes patch now applies result transforms and augmentation to catalog search results. The real-dispatch regression fails before this fix and passes afterward. The [October 4 deployment](verification/2026-10-04-catalog-release-212/README.md) installs the fix on both active `.212` profiles and verifies native Safety context delivery. The October 3 evidence bundle records local tests, live SSH and Docker tests, temporary fixture cleanup, and unresolved validation limits.
 
 Completion still requires paired state and user/model delivery assertions for the remaining handler branches, the unresolved contract scenarios below, and the complete installation and update gate. The [Hermes-managed installation task](../TODO.md) is deferred. A green local regression suite cannot close these requirements.
 

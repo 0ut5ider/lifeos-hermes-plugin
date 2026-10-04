@@ -20,8 +20,10 @@ Keep it equal to the version in both plugin manifests.
 - Hermes catalog search results run the existing result transform and augmentation
   callbacks. LifeOS Safety context reaches the tool caller.
 
-The catalog fix is staged. The active `.212` profiles still use merged version
-`0.1.0`. Complete hook compatibility remains unverified.
+The [October 4 deployment](docs/verification/2026-10-04-catalog-release-212/README.md)
+installs the catalog fix on both active `.212` profiles at tested commit
+`02d7ac8`. The plugin still declares version `0.1.0`; the exact commit records
+this test deployment. Complete hook compatibility remains unverified.
 
 ## 0.1.0 (2026-10-03)
 
@@ -75,5 +77,5 @@ documentation only. This entry summarizes that existing evidence.
 - Existing-memory import is planned and unimplemented.
 - The recorded local correction gate does not establish compatibility with newer
   upstream revisions or complete Docker and remote workspace behavior.
-- The PR #1 corrections are not deployed to `.212`, `.211`, or `.213`. Earlier
-  isolated `.212` browser acceptance has its own scope and limitations.
+- The October 3 release deploys the PR #1 corrections to both active `.212`
+  profiles. The `.211` and `.213` installations remain unchanged.

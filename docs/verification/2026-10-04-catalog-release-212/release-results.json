@@ -1,0 +1,202 @@
+{
+  "date": "2026-10-04",
+  "plugin_revision": "02d7ac85d96fb416b3c8832928d274ec9ddab4cf",
+  "previous_plugin_revision": "d5dafbcac41434eb9aac2c4c7880a9b9be8135a4",
+  "focused_regression": {
+    "tests": 24,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0
+  },
+  "automatic_rollback_verified": true,
+  "initial_verifier_defect": "Context comparison requires the complete stripped warning, because Hermes trims surrounding whitespace.",
+  "targets": [
+    {
+      "target": "discord",
+      "revision": "02d7ac85d96fb416b3c8832928d274ec9ddab4cf",
+      "plugin_version": "0.1.0",
+      "plugin_files_verified": 75,
+      "runtime_files_changed": 2,
+      "model_tools_sha256": "ca07054ca98d5bd2b28b9e45d2efacddea5e583330f4daa8efd4d327c31734dc",
+      "services": {
+        "hermes-gateway.service": 3709094,
+        "hermes-dashboard.service": 3709095,
+        "com.lifeos.pulse.service": 3709096
+      },
+      "runtime": {
+        "loaded": true,
+        "required_middleware": {
+          "llm_execution": true,
+          "llm_admission": true
+        },
+        "hooks": [
+          "api_request_error",
+          "augment_tool_result",
+          "on_session_finalize",
+          "on_turn_result",
+          "post_tool_call",
+          "pre_command_approval",
+          "pre_prompt_admission",
+          "pre_tool_call",
+          "pre_turn_stop"
+        ],
+        "dependencies": {
+          "tree-sitter": "0.26.0",
+          "tree-sitter-bash": "0.25.1",
+          "pathspec": "1.1.1",
+          "mcp": "2.0.0"
+        },
+        "profile_and_ssh_state_unchanged": true
+      },
+      "http": {
+        "/chat": 200,
+        "/lifeos-bridge": 200,
+        "/api/plugins": 401
+      },
+      "catalog": {
+        "exit_code": 0,
+        "hook_invocations": 1,
+        "native_safety_exit": 0,
+        "native_safety_context_delivered": true,
+        "model_completion_used": false,
+        "stdout_sha256": "c226b048200471a85c3bf18c3c6fe60a7d00859e138add63393431d156f8c5bf",
+        "fixture": "/home/lifeos-hermes/workspace/releases/20261004-catalog-02d7ac8/catalog-control-erpe9xzj",
+        "model_tools_sha256": "ca07054ca98d5bd2b28b9e45d2efacddea5e583330f4daa8efd4d327c31734dc"
+      },
+      "profile_preserved": true,
+      "user_data_preserved_at_apply": true,
+      "tool": {
+        "target": "discord",
+        "exit_code": 0,
+        "tool": "terminal",
+        "command": "pwd",
+        "tool_succeeded": true,
+        "final_reply_marker": "CATALOG-212-DISCORD-TOOL-READY",
+        "session_id": "20261004_082640_0a7a5a",
+        "started": 1791116795.0373437,
+        "finished": 1791116831.2320821
+      },
+      "recorder": {
+        "enabled": true,
+        "plugin_revision": "02d7ac85d96fb416b3c8832928d274ec9ddab4cf",
+        "source_fingerprints_verified": 9,
+        "initialized_service_processes": [
+          3709094,
+          3709095
+        ],
+        "tool_processes": [
+          3717322
+        ],
+        "tool_events": 431,
+        "hook_starts": 24,
+        "hook_completions": 24,
+        "capture_gaps": 0
+      },
+      "disabled_pulse_jobs": [
+        "cost-aggregation",
+        "healthcheck",
+        "memory-consolidation",
+        "proposal-gc",
+        "life-morning-brief"
+      ],
+      "host_git_head": "6056259cc67cb6daeaf8d6ceffabbc524598e418",
+      "expected_catalog_overlay": "3\t1\tmodel_tools.py"
+    },
+    {
+      "target": "acceptance",
+      "revision": "02d7ac85d96fb416b3c8832928d274ec9ddab4cf",
+      "plugin_version": "0.1.0",
+      "plugin_files_verified": 75,
+      "runtime_files_changed": 2,
+      "model_tools_sha256": "ca07054ca98d5bd2b28b9e45d2efacddea5e583330f4daa8efd4d327c31734dc",
+      "services": {
+        "hermes-gateway.service": 3712701,
+        "lifeos-acceptance-dashboard.service": 3712702,
+        "lifeos-acceptance-native.service": 3712703,
+        "lifeos-acceptance-pulse.service": 3712704
+      },
+      "runtime": {
+        "loaded": true,
+        "required_middleware": {
+          "llm_execution": true,
+          "llm_admission": true
+        },
+        "hooks": [
+          "api_request_error",
+          "augment_tool_result",
+          "on_session_finalize",
+          "on_turn_result",
+          "post_tool_call",
+          "pre_command_approval",
+          "pre_prompt_admission",
+          "pre_tool_call",
+          "pre_turn_stop"
+        ],
+        "dependencies": {
+          "tree-sitter": "0.26.0",
+          "tree-sitter-bash": "0.25.1",
+          "pathspec": "1.1.1",
+          "mcp": "2.0.0"
+        },
+        "profile_and_ssh_state_unchanged": true
+      },
+      "http": {
+        "/chat": 200,
+        "/lifeos-bridge": 200,
+        "/api/plugins": 401
+      },
+      "catalog": {
+        "exit_code": 0,
+        "hook_invocations": 1,
+        "native_safety_exit": 0,
+        "native_safety_context_delivered": true,
+        "model_completion_used": false,
+        "stdout_sha256": "c226b048200471a85c3bf18c3c6fe60a7d00859e138add63393431d156f8c5bf",
+        "fixture": "/home/lifeos-plugin-install-probe/acceptance-20261002/workspace/releases/20261004-catalog-02d7ac8/catalog-control-0vmo2cao",
+        "model_tools_sha256": "ca07054ca98d5bd2b28b9e45d2efacddea5e583330f4daa8efd4d327c31734dc"
+      },
+      "profile_preserved": true,
+      "user_data_preserved_at_apply": true,
+      "tool": {
+        "target": "acceptance",
+        "exit_code": 0,
+        "tool": "terminal",
+        "command": "pwd",
+        "tool_succeeded": true,
+        "final_reply_marker": "CATALOG-212-ACCEPTANCE-TOOL-READY",
+        "session_id": "20261004_082636_a772f7",
+        "started": 1791116795.033479,
+        "finished": 1791116821.558663
+      },
+      "recorder": {
+        "enabled": true,
+        "plugin_revision": "02d7ac85d96fb416b3c8832928d274ec9ddab4cf",
+        "source_fingerprints_verified": 9,
+        "initialized_service_processes": [
+          3712701,
+          3712702
+        ],
+        "tool_processes": [
+          3717321
+        ],
+        "tool_events": 431,
+        "hook_starts": 24,
+        "hook_completions": 24,
+        "capture_gaps": 0
+      },
+      "disabled_pulse_jobs": [
+        "cost-aggregation",
+        "healthcheck",
+        "memory-consolidation",
+        "proposal-gc",
+        "assistant-heartbeat",
+        "assistant-tasks",
+        "assistant-diary",
+        "assistant-growth",
+        "life-morning-brief"
+      ],
+      "host_git_head": "758ad514eb0e800547e015edf05aa18f78b78d82",
+      "expected_catalog_overlay": "32\t6\tmodel_tools.py"
+    }
+  ]
+}
