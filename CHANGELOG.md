@@ -25,6 +25,9 @@ Keep it equal to the version in both plugin manifests.
 
 ### Fixed
 
+- Repair readable Responses history after a native correction or forget operation.
+  Preserve protocol identifiers, current user quotes, and stored transcripts.
+
 - Hermes catalog search results run the existing result transform and augmentation
   callbacks. LifeOS Safety context reaches the tool caller.
 

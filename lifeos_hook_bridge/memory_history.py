@@ -72,15 +72,17 @@ def retained_messages(messages,user_input=None):
 
 
 def project_request(request: dict[str,Any], excluded: Callable[[str],bool], user_input=None) -> dict[str,Any]:
-    messages = request.get('messages')
+    field = 'messages' if 'messages' in request else 'input'
+    messages = request.get(field)
     if not isinstance(messages,(list,tuple)) or any(not isinstance(message,Mapping) for message in messages):
-        raise ValueError('Memory history repair requires materialized chat messages')
+        label = 'chat messages' if field == 'messages' else 'Responses input'
+        raise ValueError(f'Memory history repair requires materialized {label}')
     projected = deepcopy(list(messages))
     for index,derived in retained_messages(projected,user_input):
         message = projected[index]
         if message.get('role') in ('system','developer'):
             continue
-        for key in ('content','reasoning','reasoning_content'):
+        for key in ('content','reasoning','reasoning_content','arguments','output','summary'):
             if key in derived:
                 value = project_value(derived[key],excluded)
                 if key == 'content' and derived is not message:
@@ -92,4 +94,4 @@ def project_request(request: dict[str,Any], excluded: Callable[[str],bool], user
                 function = call['function']
                 if 'arguments' in function:
                     function['arguments'] = project_value(function['arguments'],excluded)
-    return {**request,'messages':projected}
+    return {**request,field:projected}

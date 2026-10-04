@@ -65,7 +65,7 @@ class MemoryModelCallTests(unittest.TestCase):
         self.host_config = {'plugins':{'enabled':[]},'model':dict(self.route,default='synthetic-model',api_key='synthetic-key'),
                             'auxiliary':{'compression':dict(self.route,api_key='synthetic-key')}}
 
-    def run_call(self, operation, *, route=None, first=True, author='100', refresh_after_load=False, request_variant='',bind_input=False,aux_task='compression'):
+    def run_call(self, operation, *, route=None, first=True, author='100', refresh_after_load=False, request_variant='',bind_input=False,aux_task='compression', project_history=False):
         route = route or self.route
         self.host_config['auxiliary']['compression'] = dict(route,api_key='synthetic-key')
         (self.fixture.home/'config.yaml').write_text(json.dumps(self.host_config))
@@ -75,7 +75,8 @@ class MemoryModelCallTests(unittest.TestCase):
                            BUN_CONFIG_NO_AUTO_INSTALL='1')
         settings = dict(operation=operation,route=route,parent_route=self.route,first=first,
                         author=author,marker='Synthetic admitted private model marker',refresh_after_load=refresh_after_load,
-                        request_variant=request_variant,bind_input=bind_input,aux_task=aux_task)
+                        request_variant=request_variant,bind_input=bind_input,aux_task=aux_task,
+                        project_history=project_history)
         return subprocess.run([sys.executable,str(PROGRAM)],input=json.dumps(settings),env=environment,
                               capture_output=True,text=True,timeout=30)
 
@@ -123,6 +124,30 @@ class MemoryModelCallTests(unittest.TestCase):
         self.assertNotEqual(result.returncode,0)
         self.assertIn('model system prompt',result.stderr)
         self.assertEqual(self.received,[])
+
+    def test_actual_responses_sdk_repairs_history_before_transport(self):
+        route = self.retire_responses_marker()
+        for variant in ('responses-history', 'responses-history-extra'):
+            with self.subTest(variant=variant):
+                result = self.run_call('responses-primary', route=route, request_variant=variant,
+                                       project_history=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stderr, '')
+                self.assertEqual(self.received[-1]['path'], '/v1/responses')
+                body = self.received[-1]['body']
+                self.assertNotIn('Synthetic admitted private model marker', json.dumps(body))
+                self.assertEqual(body['input'][1]['id'], 'message-one')
+                self.assertEqual(body['input'][2]['call_id'], body['input'][3]['call_id'])
+                self.assertEqual(json.loads(body['input'][3]['output'])['reference'], 'native:synthetic-reference')
+        self.assertEqual(len(self.received), 2)
+
+    def test_actual_responses_sdk_refuses_retired_protocol_id_before_transport(self):
+        route = self.retire_responses_marker()
+        result = self.run_call('responses-primary', route=route, request_variant='responses-history-id',
+                               project_history=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('model history', result.stderr)
+        self.assertEqual(self.received, [])
 
     def test_actual_primary_and_auxiliary_requests_reject_unapproved_routes(self):
         for operation in ('primary','sync','async','compression'):

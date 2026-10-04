@@ -22,6 +22,8 @@ def main():
     manager.discover_and_load()
     context = PluginContext(PluginManifest(name='memory-model-fixture', version='1.0.0', description='Synthetic fixture'), manager)
     context.register_middleware('llm_admission', runtime.check_call, required=True)
+    if settings.get('project_history'):
+        context.register_middleware('llm_execution', runtime.project_call, required=True)
     try:
         from agent.prompt_builder import load_soul_md
         soul = load_soul_md(home_override=Path(os.environ['HERMES_HOME']))
@@ -61,6 +63,19 @@ def main():
                            else client.chat.completions.create)
                 if variant == 'responses-instructions-json':
                     request['instructions'] = json.dumps({'fact':settings['marker'].replace('private ','private\n')})
+                if variant.startswith('responses-history'):
+                    request['input'] = [{'role': 'user', 'content': 'Synthetic current Responses request'},
+                        {'type': 'message', 'role': 'assistant', 'id': 'message-one',
+                         'content': [{'type': 'output_text', 'text': settings['marker']}]},
+                        {'type': 'function_call', 'call_id': 'call-one', 'name': 'read_context',
+                         'arguments': json.dumps({'query': settings['marker']})},
+                        {'type': 'function_call_output', 'call_id': 'call-one',
+                         'output': json.dumps({'content': settings['marker'], 'reference': 'native:synthetic-reference'})}]
+                    if variant == 'responses-history-extra':
+                        request['extra_body'] = {'input': request['input']}
+                        request['input'] = [{'role': 'user', 'content': 'Synthetic typed request'}]
+                    elif variant == 'responses-history-id':
+                        request['input'][3]['call_id'] = settings['marker']
                 auxiliary = {'aux_task':settings.get('aux_task','compression')} if settings['operation']=='responses-compression' else {}
                 response = run_llm_execution_middleware(
                     request,

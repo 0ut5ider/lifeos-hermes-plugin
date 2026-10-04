@@ -45,6 +45,52 @@ class MemoryHistoryTests(unittest.TestCase):
         self.assertEqual(self.project(request),original)
         self.assertEqual(request,original)
 
+    def test_responses_projection_removes_retired_content_and_preserves_protocol_ids(self):
+        request = {'input': [{'role': 'user', 'content': 'Synthetic current request'},
+            {'type': 'message', 'role': 'assistant', 'id': 'message-one',
+             'content': [{'type': 'output_text', 'text': self.marker}]},
+            {'type': 'function_call', 'id': 'call-item', 'call_id': 'call-one', 'name': 'lifeos_memory_get',
+             'arguments': json.dumps({'query': self.marker, 'request_id': 'stable-request'})},
+            {'type': 'function_call_output', 'call_id': 'call-one',
+             'output': json.dumps({'content': self.marker, 'reference': self.saved['reference']})}]}
+        original = deepcopy(request)
+        self.forget()
+        result = self.project(request)
+        self.assertEqual(request, original)
+        self.assertNotIn(self.marker, json.dumps(result))
+        self.assertEqual(result['input'][1]['id'], 'message-one')
+        self.assertEqual(result['input'][1]['content'][0]['text'], REMOVED)
+        self.assertEqual(result['input'][2]['call_id'], result['input'][3]['call_id'])
+        self.assertEqual(json.loads(result['input'][2]['arguments'])['request_id'], 'stable-request')
+        self.assertEqual(json.loads(result['input'][3]['output'])['reference'], self.saved['reference'])
+
+    def test_responses_extra_body_projects_effective_input_and_preserves_other_options(self):
+        self.forget()
+        request = {'input': [{'role': 'user', 'content': 'Synthetic typed input'}],
+                   'extra_body': {'input': [{'role': 'assistant', 'content': self.marker}], 'temperature': 0.2}}
+        original = deepcopy(request)
+        result = self.project(request)
+        self.assertEqual(result['input'], result['extra_body']['input'])
+        self.assertEqual(result['extra_body']['temperature'], 0.2)
+        self.assertNotIn(self.marker, json.dumps(result))
+        self.assertEqual(request, original)
+
+    def test_responses_projection_preserves_the_current_quote_and_removes_appended_context(self):
+        original = [{'type': 'input_text', 'text': self.marker}]
+        self.fixture.runtime.admit(self.fixture.metadata(), **self.fixture.route, is_first_turn=True,
+                                   user_message=original)
+        self.forget()
+        result = self.project({'input': [{'role': 'user', 'content': original + [
+            {'type': 'input_text', 'text': self.marker}]}]})
+        self.assertEqual(result['input'][0]['content'][0], original[0])
+        self.assertEqual(result['input'][0]['content'][1]['text'], REMOVED)
+
+    def test_responses_projection_refuses_to_rewrite_protocol_identifiers(self):
+        self.forget()
+        with self.assertRaisesRegex(MemoryAdmissionError, 'model history'):
+            self.project({'input': [{'type': 'function_call_output', 'call_id': self.marker,
+                                     'output': self.marker}]})
+
     def worker_turn(self):
         self.fixture.runtime.admit(self.fixture.metadata(),**self.fixture.route,is_first_turn=True,
                                    user_message='Synthetic previous user input')

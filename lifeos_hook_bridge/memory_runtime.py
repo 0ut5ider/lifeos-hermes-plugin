@@ -292,14 +292,15 @@ class MemoryRuntime:
             user_input = None if auxiliary else admitted.get('user_input')
             timestamp = datetime.now(timezone.utc).isoformat()
             excluded = lambda content: memory._filter_history(connection,scope,content,timestamp)['excluded']
-            if project and ('messages' in body or current != admitted):
+            if project and ('messages' in body or isinstance(body.get('input'),(list,tuple)) or current != admitted):
                 try:
                     projected = project_request(body,excluded,user_input)
                 except ValueError as error:
                     raise MemoryAdmissionError(str(error)) from error
-                request = {**request,'messages':projected['messages']}
-                if isinstance(request.get('extra_body'),ContentMapping) and 'messages' in request['extra_body']:
-                    request['extra_body'] = {**request['extra_body'],'messages':projected['messages']}
+                field = 'messages' if 'messages' in body else 'input'
+                request = {**request,field:projected[field]}
+                if isinstance(request.get('extra_body'),ContentMapping) and field in request['extra_body']:
+                    request['extra_body'] = {**request['extra_body'],field:projected[field]}
                 body = _request_body(request)
             content = _system_text(body)
             if content and memory._filter_history(connection,self._scope(configuration,context),content,
