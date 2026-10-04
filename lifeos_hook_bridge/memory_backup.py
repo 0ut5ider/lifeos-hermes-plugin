@@ -58,6 +58,8 @@ def _read(path, *, private=False):
 def _collect(memory, connection, stage=None):
     user = memory.root.parent / '.config/LIFEOS/USER'
     _directory(user)
+    database_info = memory.database.stat()
+    database_identity = (database_info.st_dev, database_info.st_ino)
     files, directories = [], []
     total = 0
     visited = 0
@@ -84,9 +86,22 @@ def _collect(memory, connection, stage=None):
                 continue
             if relative in EXCLUDED:
                 continue
-            data, metadata = _read(path)
             if relative == DATABASE:
+                info = path.lstat()
+                if not stat.S_ISREG(info.st_mode) or info.st_uid != os.getuid() or info.st_size > FILE_LIMIT:
+                    raise MemoryUnavailable('The native backup database requires a bounded regular owner file')
+                metadata = {'mode': stat.S_IMODE(info.st_mode), 'mtime_ns': info.st_mtime_ns}
+                # Direct descriptor closure would release this process's SQLite record locks.
                 data = standalone(connection)
+                current = path.lstat()
+                if (info.st_dev, info.st_ino, info.st_mtime_ns, info.st_mode) != (
+                        current.st_dev, current.st_ino, current.st_mtime_ns, current.st_mode):
+                    raise MemoryUnavailable('The native backup database changed during collection')
+            else:
+                info = path.lstat()
+                if (info.st_dev, info.st_ino) == database_identity:
+                    raise MemoryUnavailable('A native backup source aliases its governance database')
+                data, metadata = _read(path)
             total += len(data)
             if len(data) > FILE_LIMIT or total > TOTAL_LIMIT:
                 raise MemoryUnavailable('The native backup exceeds its byte limit')
@@ -107,6 +122,22 @@ def _check_references(memory, connection):
         memory._content(row, hot_entries)
 
 
+def capture(memory, scope, connection, stage):
+    _authorize(scope)
+    _check_references(memory, connection)
+    snapshot = _collect(memory, connection, stage)
+    _check_references(memory, connection)
+    if _collect(memory, connection) != snapshot:
+        raise MemoryUnavailable('The native backup sources changed during collection')
+    manifest = {'version': 1, 'root': str(memory.root), 'principal': scope.principal,
+                'schema': SCHEMA_VERSION, 'created': datetime.now(timezone.utc).isoformat(), **snapshot}
+    data = (json.dumps(manifest, sort_keys=True, indent=2) + '\n').encode()
+    publish(stage / 'manifest.json', data)
+    signature = hashlib.sha256(data).hexdigest()
+    inspect(memory, scope, stage, signature)
+    return manifest, signature
+
+
 def create(memory, scope, destination):
     _authorize(scope)
     destination = Path(destination).absolute()
@@ -120,17 +151,7 @@ def create(memory, scope, destination):
     stage = Path(tempfile.mkdtemp(prefix='.backup-', dir=destination.parent))
     try:
         with memory._transaction() as connection:
-            _check_references(memory, connection)
-            snapshot = _collect(memory, connection, stage)
-            _check_references(memory, connection)
-            if _collect(memory, connection) != snapshot:
-                raise MemoryUnavailable('The native backup sources changed during collection')
-            manifest = {'version': 1, 'root': str(memory.root), 'principal': scope.principal,
-                        'schema': SCHEMA_VERSION, 'created': datetime.now(timezone.utc).isoformat(), **snapshot}
-            data = (json.dumps(manifest, sort_keys=True, indent=2) + '\n').encode()
-            publish(stage / 'manifest.json', data)
-            signature = hashlib.sha256(data).hexdigest()
-            inspect(memory, scope, stage, signature)
+            manifest, signature = capture(memory, scope, connection, stage)
             _directory(destination.parent)
             if destination.exists() or destination.is_symlink():
                 raise MemoryUnavailable('An existing native backup cannot be replaced')
@@ -141,7 +162,7 @@ def create(memory, scope, destination):
             finally:
                 os.close(descriptor)
         return {'status': 'committed', 'snapshot': str(destination), 'signature': signature,
-                'files': len(snapshot['files']), 'schema': SCHEMA_VERSION}
+                'files': len(manifest['files']), 'schema': SCHEMA_VERSION}
     finally:
         if stage.exists():
             shutil.rmtree(stage)

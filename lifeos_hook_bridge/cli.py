@@ -28,6 +28,8 @@ def run_probe(args: argparse.Namespace) -> int:
 
 
 def configure_backup(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument('--scope', choices=('native', 'profile'), default='native',
+                        help='Select native data or the selected Hermes profile together with native data.')
     actions = parser.add_mutually_exclusive_group(required=True)
     actions.add_argument('--create', metavar='DIRECTORY', help='Create a private native data snapshot.')
     actions.add_argument('--inspect', metavar='DIRECTORY', help='Verify a native data snapshot without restoring it.')
@@ -44,6 +46,7 @@ def run_backup(args: argparse.Namespace) -> int:
     from .memory_backup_recovery import recover
     from .memory_preferences import MemoryPreferences
     from .memory_service import MemoryConfiguration
+    from . import profile_backup
     configuration = MemoryConfiguration(get_hermes_home() / 'lifeos-memory.json')
     if args.recover and (not args.signature or not args.destination):
         print(json.dumps({'status': 'rejected', 'message': 'Native recovery requires --signature and --destination.'}), file=sys.stderr)
@@ -54,21 +57,30 @@ def run_backup(args: argparse.Namespace) -> int:
     try:
         if args.create and args.signature:
             raise ValueError('Manifest signatures apply to inspection')
-        with installation_lock(configuration.path.parent), configuration._lock():
-            config = configuration.load()
-            memory = NativeMemory(Path(config['root']))
-            scope = MemoryPreferences._owner_scope(config)
-            if args.create:
-                result = create(memory, scope, Path(args.create).expanduser())
-            elif args.recover:
-                result = recover(memory, scope, Path(args.recover).expanduser(), args.signature, Path(args.destination).expanduser())
-            else:
-                manifest = inspect(memory, scope, Path(args.inspect).expanduser(), args.signature)
-                result = {'status': 'verified', 'files': len(manifest['files']),
-                          'schema': manifest['schema'], 'created': manifest['created']}
+        if args.scope == 'profile' and args.create:
+            result = profile_backup.create(configuration, Path(args.create).expanduser())
+        else:
+            with installation_lock(configuration.path.parent), configuration._lock():
+                config = configuration.load()
+                if args.scope == 'profile':
+                    if args.recover:
+                        raise ValueError('Profile recovery requires its separate recovery capability')
+                    manifest = profile_backup.inspect(configuration, Path(args.inspect).expanduser(), args.signature)
+                    result = {'status': 'verified', 'profile_files': len(manifest['files']), 'created': manifest['created']}
+                else:
+                    memory = NativeMemory(Path(config['root']))
+                    scope = MemoryPreferences._owner_scope(config)
+                    if args.create:
+                        result = create(memory, scope, Path(args.create).expanduser())
+                    elif args.recover:
+                        result = recover(memory, scope, Path(args.recover).expanduser(), args.signature, Path(args.destination).expanduser())
+                    else:
+                        manifest = inspect(memory, scope, Path(args.inspect).expanduser(), args.signature)
+                        result = {'status': 'verified', 'files': len(manifest['files']),
+                                  'schema': manifest['schema'], 'created': manifest['created']}
     except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
         print(json.dumps({'status': 'rejected', 'message':
-                         'Native backup is unavailable under the selected profile. Check its configuration, store, permissions, and destination.'}),
+                         'The backup is unavailable under the selected profile. Check its configuration, store, permissions, and destination.'}),
               file=sys.stderr)
         return 1
     print(json.dumps(result))
@@ -85,6 +97,6 @@ def register_commands(ctx) -> None:
         setup_fn=configure_probe, handler_fn=run_probe,
     )
     ctx.register_cli_command(
-        'lifeos-backup', help='Create or verify a private native LifeOS data backup.',
+        'lifeos-backup', help='Create or verify private LifeOS data and selected-profile backups.',
         setup_fn=configure_backup, handler_fn=run_backup,
     )
