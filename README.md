@@ -17,6 +17,8 @@ The [October 4 deployment](docs/verification/2026-10-04-catalog-release-212/READ
 
 Restore records its stop intent before it stops the gateway. Recovery before file replacement restarts the selected version and preserves later data and profile edits. Memory adoption and retrieval exclude private source filenames and normalized forgotten filename labels. The [update policy](docs/update-policy.md) describes the restore recovery states.
 
+The [authenticated native graph view](docs/verification/2026-10-04-memory-graph-relay/README.md) restores the managed browser graph from current admitted sources. Both native routers require current request authority and ignore the raw cache. Tooltip titles and categories render as literal text. Actual HTTP and Chromium function controls pass. Complete page and deployed service acceptance remain open.
+
 ## Compatibility target
 
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.

@@ -26,7 +26,26 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "memory_graph") {
+  if (input.action === "memory_graph_view") {
+    const graph: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryGraph.ts")).href);
+    const view: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/Observability/observability.ts")).href);
+    if (!object(graph) || typeof graph.renderMemoryGraphData !== "function"
+        || !object(view) || typeof view.renderMemoryGraphView !== "function" || !Array.isArray(input.sources)) {
+      throw new Error("Native graph views need declared sources and rendering capabilities");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native graph views need declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    const content: unknown = graph.renderMemoryGraphData(sources, "all");
+    if (typeof content !== "string") throw new Error("Native graph rendering returns an invalid graph");
+    const response: unknown = view.renderMemoryGraphView(content);
+    if (!(response instanceof Response)) throw new Error("Native graph rendering did not return a response");
+    result = {status: response.status, body: await response.json()};
+  } else if (input.action === "memory_graph") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryGraph.ts")).href);
     if (!object(module) || typeof module.renderMemoryGraph !== "function" || !Array.isArray(input.sources)
         || typeof input.command !== "string" || !["declared", "all"].includes(String(input.layer))

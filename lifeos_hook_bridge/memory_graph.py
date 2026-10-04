@@ -17,6 +17,19 @@ OUTPUTS = ('LIFEOS/MEMORY/GRAPH/graph.json', 'LIFEOS/MEMORY/GRAPH/PATTERNS.md')
 COMMANDS = {'build', 'patterns', 'stats', 'related', 'validate'}
 
 
+def view(memory, scope, *, check_current):
+    with memory._transaction() as connection:
+        sources = _collect(memory, scope, connection)
+        result = memory._native('memory_graph_view', sources=sources)
+        if (set(result) != {'status', 'body'} or result['status'] != 200
+                or not isinstance(result['body'], dict) or len(json.dumps(result).encode()) > RESPONSE_LIMIT):
+            raise MemoryUnavailable('Native graph rendering returns an invalid read view')
+        if _collect(memory, scope, connection) != sources:
+            raise MemoryUnavailable('The graph sources changed during rendering')
+        check_current()
+        return result['body']
+
+
 def publication_paths(memory, scope):
     authorize(scope)
     if not {'principal', 'assistant', 'project'} <= set(scope.write):

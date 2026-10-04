@@ -79,6 +79,15 @@ class MemoryPreferences:
         from .memory_pulse import snapshot
         from .memory_http import installation_binding
         config = self._configuration(account=account)
+        if view == 'graph':
+            from .memory_graph import view as graph_view
+
+            def check_current():
+                if self._configuration(account=account) != config:
+                    raise MemoryUnavailable('The memory configuration changed during graph rendering')
+
+            return (graph_view(NativeMemory(self.root), self._owner_scope(config), check_current=check_current),
+                    installation_binding(config, self.configuration.path))
         return (snapshot(NativeMemory(self.root), self._owner_scope(config), view),
                 installation_binding(config,self.configuration.path))
 
