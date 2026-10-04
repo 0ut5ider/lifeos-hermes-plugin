@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sqlite3
 import sys
 import tempfile
 import unittest
@@ -84,6 +85,23 @@ class MemoryBackupTests(unittest.TestCase):
         create(self.fixture.memory, native_fixture.OWNER, self.destination)
         for path in [self.destination, *self.destination.rglob('*')]:
             self.assertEqual(path.stat().st_mode & 0o777, 0o700 if path.is_dir() else 0o600, path)
+
+    def test_snapshot_reconstructs_committed_wal_data_as_a_standalone_database(self):
+        connection = sqlite3.connect(self.fixture.memory.database)
+        self.addCleanup(connection.close)
+        if hasattr(sqlite3, 'SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE'):
+            connection.setconfig(sqlite3.SQLITE_DBCONFIG_NO_CKPT_ON_CLOSE, True)
+        self.assertEqual(connection.execute('PRAGMA journal_mode=WAL').fetchone()[0], 'wal')
+        later = self.fixture.remember('Synthetic committed WAL backup fact', 'backup-wal-later')
+        self.assertEqual(connection.serialize()[18:20], bytes([2, 2]))
+        result = create(self.fixture.memory, native_fixture.OWNER, self.destination)
+        manifest = inspect(self.fixture.memory, native_fixture.OWNER, self.destination, result['signature'])
+        database = next(item for item in manifest['files'] if item['path'] == 'MEMORY/STATE/memory-access.sqlite')
+        self.assertEqual((self.destination / 'files' / str(database['copy'])).read_bytes()[18:20], bytes([1, 1]))
+        recovered = self.recover_fixture(manifest)
+        self.assertEqual(recovered.get(native_fixture.OWNER, later['reference'])['content'],
+                         'Synthetic committed WAL backup fact')
+        self.assertEqual(connection.execute('PRAGMA journal_mode').fetchone()[0], 'wal')
 
     def test_reader_cannot_collect_or_inspect_an_owner_backup(self):
         with self.assertRaisesRegex(MemoryUnavailable, 'owner'):

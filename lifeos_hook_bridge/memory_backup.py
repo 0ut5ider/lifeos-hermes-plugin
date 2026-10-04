@@ -13,6 +13,7 @@ import tempfile
 from .memory_access import HOT_FILES, MemoryUnavailable, SCHEMA_VERSION
 from .memory_adoption import _owner
 from .memory_transaction import publish
+from .sqlite_snapshot import standalone
 
 
 FILE_LIMIT = 64 * 1024 * 1024
@@ -85,7 +86,7 @@ def _collect(memory, connection, stage=None):
                 continue
             data, metadata = _read(path)
             if relative == DATABASE:
-                data = connection.serialize()
+                data = standalone(connection)
             total += len(data)
             if len(data) > FILE_LIMIT or total > TOTAL_LIMIT:
                 raise MemoryUnavailable('The native backup exceeds its byte limit')

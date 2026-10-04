@@ -29,6 +29,8 @@ Keep it equal to the version in both plugin manifests.
 
 ### Fixed
 
+- Make serialized WAL-mode backups readable as standalone SQLite snapshots.
+  Preserve the live database journal mode and committed facts.
 - Recover missing child admission after an interrupted native compression handoff.
   Require verified native lineage and unchanged parent authority.
 - Preserve user whitespace in Hermes model requests so input proofs remain exact.
