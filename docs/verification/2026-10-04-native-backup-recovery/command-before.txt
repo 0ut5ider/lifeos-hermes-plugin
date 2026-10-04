@@ -1,0 +1,25 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupCommandTests.test_command_recovers_a_native_backup_into_a_separate_tree_without_ownership _
+tests/test_memory_backup_command.py:68: in test_command_recovers_a_native_backup_into_a_separate_tree_without_ownership
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+E   AssertionError: 2 != 0 : usage: hermes lifeos-backup [-h] (--create DIRECTORY | --inspect DIRECTORY)
+E                               [--signature SIGNATURE]
+E   hermes lifeos-backup: error: one of the arguments --create --inspect is required
+_ MemoryBackupCommandTests.test_command_requires_the_reviewed_signature_and_a_separate_recovery_destination _
+tests/test_memory_backup_command.py:87: in test_command_requires_the_reviewed_signature_and_a_separate_recovery_destination
+    self.assertEqual(json.loads(result.stderr)['status'], 'rejected')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/json/__init__.py:352: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/json/decoder.py:345: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/json/decoder.py:363: in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup_command.py::MemoryBackupCommandTests::test_command_recovers_a_native_backup_into_a_separate_tree_without_ownership
+FAILED tests/test_memory_backup_command.py::MemoryBackupCommandTests::test_command_requires_the_reviewed_signature_and_a_separate_recovery_destination
+2 failed, 3 deselected in 7.12s

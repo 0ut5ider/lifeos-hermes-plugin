@@ -31,7 +31,9 @@ def configure_backup(parser: argparse.ArgumentParser) -> None:
     actions = parser.add_mutually_exclusive_group(required=True)
     actions.add_argument('--create', metavar='DIRECTORY', help='Create a private native data snapshot.')
     actions.add_argument('--inspect', metavar='DIRECTORY', help='Verify a native data snapshot without restoring it.')
-    parser.add_argument('--signature', help='Require the recorded manifest signature during inspection.')
+    actions.add_argument('--recover', metavar='DIRECTORY', help='Recover a native snapshot into a separate tree without selecting ownership.')
+    parser.add_argument('--signature', help='Require the recorded manifest signature during inspection or recovery.')
+    parser.add_argument('--destination', metavar='DIRECTORY', help='Create the separate native recovery tree at this path.')
 
 
 def run_backup(args: argparse.Namespace) -> int:
@@ -39,9 +41,16 @@ def run_backup(args: argparse.Namespace) -> int:
     from .installation_lock import installation_lock
     from .memory_access import NativeMemory
     from .memory_backup import create, inspect
+    from .memory_backup_recovery import recover
     from .memory_preferences import MemoryPreferences
     from .memory_service import MemoryConfiguration
     configuration = MemoryConfiguration(get_hermes_home() / 'lifeos-memory.json')
+    if args.recover and (not args.signature or not args.destination):
+        print(json.dumps({'status': 'rejected', 'message': 'Native recovery requires --signature and --destination.'}), file=sys.stderr)
+        return 1
+    if args.destination and not args.recover:
+        print(json.dumps({'status': 'rejected', 'message': '--destination applies to native recovery.'}), file=sys.stderr)
+        return 1
     try:
         if args.create and args.signature:
             raise ValueError('Manifest signatures apply to inspection')
@@ -51,6 +60,8 @@ def run_backup(args: argparse.Namespace) -> int:
             scope = MemoryPreferences._owner_scope(config)
             if args.create:
                 result = create(memory, scope, Path(args.create).expanduser())
+            elif args.recover:
+                result = recover(memory, scope, Path(args.recover).expanduser(), args.signature, Path(args.destination).expanduser())
             else:
                 manifest = inspect(memory, scope, Path(args.inspect).expanduser(), args.signature)
                 result = {'status': 'verified', 'files': len(manifest['files']),

@@ -1,0 +1,25 @@
+F......                                                               [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupRecoveryTests.test_recovery_preserves_later_facts_and_retirement_in_the_original_store _
+tests/test_memory_backup_recovery.py:64: in test_recovery_preserves_later_facts_and_retirement_in_the_original_store
+    self.assertEqual(self.fixture.memory.recall(native_fixture.OWNER, 'complete native recovery fact'), [])
+E   AssertionError: Lists differ: [{'reference': {'id': 'dd99f26831a9403b83f[299 chars]: 2}] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   {'reference': {'id': 'dd99f26831a9403b83fd68d1e611e804', 'revision': 1}, 'content': 'Synthetic later live fact survives recovery', 'category': 'project', 'project': 'lab', 'writer': 'local:owner', 'status': 'active', 'source': {'kind': 'explicit', 'session': '', 'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 2}
+E   
+E   + []
+E   - [{'category': 'project',
+E   -   'content': 'Synthetic later live fact survives recovery',
+E   -   'project': 'lab',
+E   -   'reference': {'id': 'dd99f26831a9403b83fd68d1e611e804', 'revision': 1},
+E   -   'score': 2,
+E   -   'source': {'kind': 'explicit',
+E   -              'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md',
+E   -              'session': ''},
+E   -   'status': 'active',
+E   -   'writer': 'local:owner'}]
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup_recovery.py::MemoryBackupRecoveryTests::test_recovery_preserves_later_facts_and_retirement_in_the_original_store
+1 failed, 6 passed, 3 subtests passed in 6.99s

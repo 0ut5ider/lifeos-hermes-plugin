@@ -57,6 +57,35 @@ class MemoryBackupCommandTests(unittest.TestCase):
         self.assertEqual(result.stdout, '')
         self.assertEqual(marker.read_text(), 'Preserve this synthetic prior backup.\n')
 
+    def test_command_recovers_a_native_backup_into_a_separate_tree_without_ownership(self):
+        from lifeos_hook_bridge.memory_access import NativeMemory
+        from test_memory_native import OWNER
+        created = self.run_command('--create', self.destination)
+        self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
+        signature = json.loads(created.stdout)['signature']
+        target = self.native.home / 'recovery/command-one'
+        result = self.run_command('--recover', self.destination, '--destination', target, '--signature', signature)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertEqual(result.stderr, '')
+        receipt = json.loads(result.stdout)
+        self.assertEqual(receipt['status'], 'recovered')
+        self.assertFalse(receipt['ownership_enabled'])
+        recovered = NativeMemory(Path(receipt['root']))
+        facts = recovered.recall(OWNER, 'private command backup marker')
+        self.assertEqual([fact['content'] for fact in facts], ['Synthetic private command backup marker'])
+        self.assertNotIn('Synthetic private command backup marker', result.stdout)
+        for name, data in self.fixture.original.items():
+            self.assertEqual((self.fixture.home / 'memories' / name).read_bytes(), data)
+        self.assertEqual(self.fixture.fixture.received, [])
+
+    def test_command_requires_the_reviewed_signature_and_a_separate_recovery_destination(self):
+        created = self.run_command('--create', self.destination)
+        self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
+        result = self.run_command('--recover', self.destination)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, '')
+        self.assertEqual(json.loads(result.stderr)['status'], 'rejected')
+
     def test_selected_profile_cannot_verify_another_profiles_native_backup(self):
         created = self.run_command('--create', self.destination)
         self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
