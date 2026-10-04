@@ -1,0 +1,15 @@
+# Current TELOS dimension publication
+
+Date: 2026-10-04. This unit governs the native UpdateLifeosState writer. It does not activate memory ownership or close the combined release gate.
+
+The [corrected baseline](before-corrected.txt) records eight boundary failures and three passing native controls. The native writer publishes without session authority, follows foreign source and output links, ignores retirement and revocation, and creates a file with mode 0644. The original calculation controls cover current-state percentages, ideal-state fallback, missing dimensions, standalone output, and unknown-status warnings. The [first baseline](before.txt) also includes a fixture error that omits required fact metadata.
+
+The managed writer supplies admitted text for the 14 fixed current-state and ideal-state files. It retains native calculations and output formats. Publication requires unrestricted current owner read and write authority. The existing journal protects the fixed LIFEOS_STATE.json artifact. The writer checks source bytes and authority after rendering and before publication. Source and output paths cannot leave their physical destinations. Output cannot alias the open registry. Published files use mode 0600.
+
+The [expanded cases](expanded.txt) pass 20 tests and two subtests in 10.86 seconds. They exercise real native code and actual process interruption. A child exits with status 73 after publication. The next memory transaction restores the previous artifact. A fresh run then publishes the current 100 percent health calculation. Actual source and authority changes after rendering refuse publication and preserve the previous bytes. Both structured and console reports match standalone behavior under admitted owner sources.
+
+The source-age policy also applies to TELOS dimensions. A source written before a retirement remains excluded until exact current review. The [review baseline](review-before.txt) records unsupported dimension review. The candidate permits exact fixed dimension sources through the existing owner review operation. Known retired content still cannot pass review. Approvals bind source and retirement digests. The first [candidate](candidate.txt) contains an incorrect fixture expectation about an older ideal-state file. The corrected fresh fallback and separate exact older-source review cases pass in the expanded control.
+
+The [distributed regression](gate.txt) passes 160 tests and 68 subtests in 193.47 seconds. It has no skips, errors, failures, or warnings. The [command](gate-command.json) records the exact inputs and source hashes. [Preparation](prepared.json) verifies all 33 native patch files byte for byte and installs the declared TOOLS and PULSE dependencies from frozen locks. A native Bun build bundles the state writer successfully. No new dependency is added.
+
+Remaining work includes other TELOS generators, derivative refresh orchestration, downstream PULSE readers, restricted delivery, ownership activation, migration, installation management, background jobs, private model acceptance, voice, and the combined release. No active server or configuration changes occur in this unit.

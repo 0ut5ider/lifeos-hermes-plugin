@@ -26,7 +26,15 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "memory_graph_view") {
+  if (input.action === "lifeos_state") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/UpdateLifeosState.ts")).href);
+    if (!object(module) || typeof module.renderLifeosState !== "function" || !object(input.sources)
+        || Object.values(input.sources).some(value => typeof value !== "string")
+        || typeof input.json_output !== "boolean") {
+      throw new Error("Native state rendering needs declared sources and an output format");
+    }
+    result = module.renderLifeosState(input.sources, input.json_output);
+  } else if (input.action === "memory_graph_view") {
     const graph: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryGraph.ts")).href);
     const view: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/Observability/observability.ts")).href);
     if (!object(graph) || typeof graph.renderMemoryGraphData !== "function"

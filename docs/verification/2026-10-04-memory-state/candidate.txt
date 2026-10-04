@@ -1,0 +1,9 @@
+........F..                                                              [100%]
+=================================== FAILURES ===================================
+_ MemoryStateTests.test_retired_source_falls_back_without_reading_retained_claim _
+tests/test_memory_state.py:94: in test_retired_source_falls_back_without_reading_retained_claim
+    self.assertEqual(result['dimensions']['health']['pct'], 90)
+E   AssertionError: None != 90
+=========================== short test summary info ============================
+FAILED tests/test_memory_state.py::MemoryStateTests::test_retired_source_falls_back_without_reading_retained_claim
+1 failed, 10 passed in 3.78s

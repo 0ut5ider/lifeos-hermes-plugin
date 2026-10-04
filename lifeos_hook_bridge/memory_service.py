@@ -258,6 +258,15 @@ class MemoryService:
                         raise MemoryUnavailable('Graph authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
+            if operation == 'lifeos_state' and set(arguments) == {'root', 'json_output'}:
+                from .memory_state import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('State authority changed during rendering')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == "check_sources" and not arguments:
                 from .memory_sources import authorize
                 return authorize(scope)

@@ -22,6 +22,9 @@ CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
 CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
                  'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
                  'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'LIFEOS/USER/PROJECTS.md'}
+STATE_SOURCES = frozenset('LIFEOS/USER/TELOS/' + directory + '/' + name + '.md'
+    for directory in ('IDEAL_STATE', 'CURRENT_STATE')
+    for name in ('HEALTH', 'MONEY', 'FREEDOM', 'CREATIVE', 'RELATIONSHIPS', 'RHYTHMS', 'INFRASTRUCTURE'))
 SYSTEM_PREFIXES = ('LIFEOS/DOCUMENTATION/', 'LIFEOS/ALGORITHM/')
 SYSTEM_FILES = {'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'}
 SOURCE_LIMIT = 256 * 1024
@@ -53,13 +56,13 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         permitted = relative in DIAGNOSTIC_FILES or directory or report
     else:
         directory = False
-        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES
+        permitted = (relative in FILES | LOG_FILES | CACHE_FILES | CONTEXT_FILES | STATE_SOURCES
                      or relative.startswith(PREFIXES) or system)
     if not permitted:
         raise MemoryUnavailable('This is not a supported native history or context source')
     source = memory.root / relative if system else memory._path(relative)
     physical = source.absolute() if system else memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
-        'LIFEOS/USER' if relative in CACHE_FILES | CONTEXT_FILES else 'LIFEOS')
+        'LIFEOS/USER' if relative.startswith('LIFEOS/USER/') else 'LIFEOS')
     if (source.resolve() != physical.absolute() or (require_file and not source.is_file())
             or (not require_file and source.exists() and not (source.is_dir() if directory else source.is_file()))):
         raise MemoryUnavailable('The native source is missing or changes its permitted physical path')

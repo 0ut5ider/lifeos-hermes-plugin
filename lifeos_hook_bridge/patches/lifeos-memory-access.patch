@@ -2274,6 +2274,141 @@ index 5122376..a53aa26 100755
    const pathCheck = validatePath(filePath);
    if (!("abs" in pathCheck)) return pathCheck;
    const abs = pathCheck.abs;
+diff --git a/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts b/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts
+index 8162267..5fafe9a 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Computes native TELOS dimension percentages from current or ideal state text.
++// ABOUTME: Delegates managed publication to the governed memory transaction.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -36,6 +38,7 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "fs";
+ import { join, dirname } from "path";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -83,10 +86,11 @@ function readFrontmatterDate(content: string): string | null {
+   return m ? m[1].replace(/^["']|["']$/g, "") : null;
+ }
+ 
+-function computeFromCurrent(file: string): DimensionState | null {
++function computeFromCurrent(file: string, sources?: Record<string, string>,
++                            warn = (text: string) => { process.stderr.write(text); }): DimensionState | null {
+   const path = join(CURRENT_DIR, file);
+-  if (!existsSync(path)) return null;
+-  const content = readFileSync(path, "utf-8");
++  const content = sources ? sources[`CURRENT_STATE/${file}`] : existsSync(path) ? readFileSync(path, "utf-8") : undefined;
++  if (content === undefined) return null;
+   const have    = (content.match(/\bstatus:\s*have\b/g)    || []).length;
+   const partial = (content.match(/\bstatus:\s*partial\b/g) || []).length;
+   const missing = (content.match(/\bstatus:\s*missing\b/g) || []).length;
+@@ -99,7 +103,7 @@ function computeFromCurrent(file: string): DimensionState | null {
+     .filter((kw) => !RECOGNIZED.has(kw));
+   if (unrecognized.length > 0) {
+     const uniq = [...new Set(unrecognized)].join(", ");
+-    process.stderr.write(
++    warn(
+       `[UpdateLifeosState] WARNING: ${file} has ${unrecognized.length} unrecognized status keyword(s) (${uniq}) — ` +
+       `only have/partial/missing count toward coverage, so the reported percentage is wrong until fixed.\n`,
+     );
+@@ -115,12 +119,12 @@ function computeFromCurrent(file: string): DimensionState | null {
+   };
+ }
+ 
+-function computeFromIdeal(file: string): DimensionState {
++function computeFromIdeal(file: string, sources?: Record<string, string>): DimensionState {
+   const path = join(IDEAL_DIR, file);
+-  if (!existsSync(path)) {
++  const content = sources ? sources[`IDEAL_STATE/${file}`] : existsSync(path) ? readFileSync(path, "utf-8") : undefined;
++  if (content === undefined) {
+     return { pct: null, tbd_count: 0, last_updated: null, source_file: file };
+   }
+-  const content = readFileSync(path, "utf-8");
+   const tbd_count = (content.match(/\bTBD\b/g) || []).length;
+   const pct = Math.max(0, Math.min(100, 100 - tbd_count * 10));
+   return {
+@@ -131,14 +135,14 @@ function computeFromIdeal(file: string): DimensionState {
+   };
+ }
+ 
+-function computeState(file: string): DimensionState {
+-  return computeFromCurrent(file) ?? computeFromIdeal(file);
++function computeState(file: string, sources?: Record<string, string>, warn?: (text: string) => void): DimensionState {
++  return computeFromCurrent(file, sources, warn) ?? computeFromIdeal(file, sources);
+ }
+ 
+-function build(): LifeosState {
++function build(sources?: Record<string, string>, warn?: (text: string) => void): LifeosState {
+   const dimensions = {} as Record<DimensionId, DimensionState>;
+   for (const d of DIMENSIONS) {
+-    dimensions[d.id] = computeState(d.file);
++    dimensions[d.id] = computeState(d.file, sources, warn);
+   }
+   return {
+     generated_at: new Date().toISOString(),
+@@ -146,21 +150,45 @@ function build(): LifeosState {
+   };
+ }
+ 
++function formatState(state: LifeosState, jsonOutput: boolean): string {
++  if (jsonOutput) return JSON.stringify(state, null, 2) + "\n";
++  const lines = [`LIFEOS_STATE.json updated: ${STATE_FILE}`];
++  for (const d of DIMENSIONS) {
++    const s = state.dimensions[d.id];
++    const pctStr = s.pct === null ? "—" : `${s.pct}%`;
++    lines.push(`  ${d.id.padEnd(14)} ${pctStr.padStart(5)}  (${s.tbd_count} TBDs, updated ${s.last_updated ?? "unknown"})`);
++  }
++  return lines.join("\n") + "\n";
++}
++
++export function renderLifeosState(sources: Record<string, string>, jsonOutput: boolean) {
++  const allowed = new Set(DIMENSIONS.flatMap(d => [`IDEAL_STATE/${d.file}`, `CURRENT_STATE/${d.file}`]));
++  if (!memoryObject(sources) || Object.entries(sources).some(([name, text]) => !allowed.has(name) || typeof text !== "string")
++      || typeof jsonOutput !== "boolean") {
++    throw new Error("State rendering needs declared dimension source text");
++  }
++  const warnings: string[] = [];
++  const state = build(sources, text => { warnings.push(text); });
++  return {content: JSON.stringify(state, null, 2) + "\n", stdout: formatState(state, jsonOutput), stderr: warnings.join("")};
++}
++
+ function main(): void {
++  const jsonOutput = process.argv.includes("--json");
++  const governed = memoryAccess("lifeos_state", {root: LIFEOS_DIR, json_output: jsonOutput},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (governed.ok !== true || typeof governed.stdout !== "string" || typeof governed.stderr !== "string") {
++      throw new Error("TELOS state publication is unavailable under current memory policy");
++    }
++    process.stdout.write(governed.stdout);
++    process.stderr.write(governed.stderr);
++    return;
++  }
+   const state = build();
+   const dir = dirname(STATE_FILE);
+   if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+   writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + "\n");
+-  if (process.argv.includes("--json")) {
+-    console.log(JSON.stringify(state, null, 2));
+-  } else {
+-    console.log(`LIFEOS_STATE.json updated: ${STATE_FILE}`);
+-    for (const d of DIMENSIONS) {
+-      const s = state.dimensions[d.id];
+-      const pctStr = s.pct === null ? "—" : `${s.pct}%`;
+-      console.log(`  ${d.id.padEnd(14)} ${pctStr.padStart(5)}  (${s.tbd_count} TBDs, updated ${s.last_updated ?? "unknown"})`);
+-    }
+-  }
++  process.stdout.write(formatState(state, jsonOutput));
+ }
+ 
+-main();
++if (import.meta.main) main();
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts b/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
 index 30db06e..7c1ca94 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/Upgrades.ts
