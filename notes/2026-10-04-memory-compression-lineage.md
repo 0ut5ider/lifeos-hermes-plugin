@@ -1,0 +1,19 @@
+# Compression and memory lineage
+
+Date: 2026-10-04. The complete compression probe uses the actual Hermes session database, six complete owner turns, native compression, and a scripted local HTTP model. The initial fixture uses an unsupported 32,768-token context and never reaches a turn. The corrected fixture uses the supported 131,072-token configuration. Hermes detects the fixture interpreter's SQLite 3.51.2 and selects DELETE journal mode. The test captures and checks that warning.
+
+A controlled input change identifies a separate proof boundary. Setup fails on its first request when the synthetic user text ends in a space. Removing that trailing space lets all six setup turns complete. The exact native transformation still needs a request trace before a product fix.
+
+Native compression defaults to in-place publication. The first successful compression keeps the parent identifier. Explicit child rotation then commits a child with the expected parent reference, but its next foreground turn blocks with no verified memory context. The LifeOS provider clears its binding for every session switch. It does not record verified compression lineage. The retained evidence is under `~/.cache/lifeos-full-experience-20261004/lifecycle/compression-rotation-before/`.
+
+The same run reports three denied background title calls without a fact or permission change. The runtime permits a worker to adopt a newly recorded human-input proof only on foreground execution. A generated title call cannot use that proof as a quote exception, but it still needs the unchanged context binding. Two focused regressions fail before the change. The fact-generation refusal remains a passing control.
+
+The correction will carry a verified parent into the current host-bound compression destination. It will preserve current permission, identity, prompt, proposal, fact, and original-input checks. In-place compression keeps the recorded binding. Ordinary session switches still clear it. Auxiliary execution can adopt an unchanged context's current input proof while retaining generated-content checks and refusal of stale fact generations.
+
+The first rotation implementation records the child but still fails its continuation. A trace records three MainThread requests with the child session identifier and the parent LifeOS binding. Native compression runs its provider callback in a worker. Native code rebinds the caller's Hermes session variable after publication, but the caller's LifeOS ContextVar retains the parent. The correction records `compression_parent` in the same private admission publication. Foreground execution transfers only through that recorded parent, matching authority fields and current host metadata. An ordinary admission to another session cannot transfer the caller.
+
+The title calls use direct final admission, rather than execution middleware. The first auxiliary execution correction therefore leaves all three title failures. Final auxiliary admission now adopts only an unchanged context's published input proof. The generated-content policy does not permit human quote exceptions or stale fact generations.
+
+One added test initially expects every fact retirement after rotation to refuse foreground dispatch. That expectation conflicts with the verified fact-only history repair contract. The corrected case checks removal before foreground dispatch and preserves the source request. A separate auxiliary case requires refusal before dispatch.
+
+The native whitespace transformation is now identified in `agent/turn_request_assembly.py`. It strips every string message in the API copy. A complete owner turn with a leading and trailing whitespace quote of a forgotten fact fails before any model completion request. Preserving the original user bytes requires a host patch; weakening the input proof would obscure the transformation.

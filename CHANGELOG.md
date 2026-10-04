@@ -27,6 +27,11 @@ Keep it equal to the version in both plugin manifests.
 
 ### Fixed
 
+- Preserve user whitespace in Hermes model requests so input proofs remain exact.
+- Preserve verified memory authority when compression rotates a conversation.
+  Require recorded lineage and unchanged authority before the caller adopts the child.
+- Let auxiliary admission adopt an unchanged context's published input proof.
+  Continue to refuse retired generated content and stale fact generations.
 - Resume verified conversations after a native correction or forget operation.
   Require foreground history repair before auxiliary calls can continue.
 - Refuse history refresh after an applied identity proposal. Bind its recorded

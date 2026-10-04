@@ -14,7 +14,7 @@ The bundle uses nine Hermes patch groups and ten LifeOS patches. It targets the 
 | `hermes-strict-inference.patch` | Selected-provider inference without provider fallback |
 | `hermes-remote-files.patch` | Remote whole-file stale-write protection |
 | `hermes-cron-bootstrap.patch` | Installation-bound scheduled worker startup |
-| `hermes-required-middleware.patch` | Required admission before model requests and rejection of asynchronous required callbacks |
+| `hermes-required-middleware.patch` | Required admission before model requests, exact user text, and rejection of asynchronous required callbacks |
 
 The groups replace the earlier 20-patch development sequence. Each changed file belongs to one group. Required callback registration belongs to the plugin-event group, and actual turn-route metadata belongs to the turn-gate group. The required-middleware group supplies model-request admission and its tests. It does not remove the required host behavior.
 

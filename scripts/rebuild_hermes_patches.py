@@ -47,7 +47,7 @@ GROUPS = {
     ),
     "hermes-cron-bootstrap.patch": ("cron/scheduler.py",),
     "hermes-required-middleware.patch": (
-        "agent/auxiliary_hooks.py", "hermes_cli/middleware.py", "tests/hermes_cli/test_required_middleware.py",
+        "agent/auxiliary_hooks.py", "agent/turn_request_assembly.py", "hermes_cli/middleware.py", "tests/hermes_cli/test_required_middleware.py",
     ),
 }
 

@@ -108,14 +108,40 @@ class MemoryHistoryTests(unittest.TestCase):
         with self.assertRaisesRegex(MemoryAdmissionError,'verify the current user input'):
             self.project({'messages':[{'role':'user','content':'Synthetic previous user input'}]})
 
-    def test_worker_input_proof_does_not_refresh_auxiliary_or_direct_final_checks(self):
+    def test_worker_input_proof_rebinds_auxiliary_execution_and_keeps_direct_checks_closed(self):
         self.worker_turn()
         request = {'messages':[{'role':'user','content':'Synthetic admitted next user input'}]}
         with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
             self.fixture.runtime.check_call(request=request,**self.fixture.route,session_id='session')
-        with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
-            self.fixture.runtime.project_call(request=request,next_call=lambda _:self.fail('Dispatch reached'),
-                **self.fixture.route,session_id='session',aux_task='compression')
+        sent = []
+        def dispatch(projected):
+            self.fixture.runtime.check_call(request=projected, **self.fixture.route, session_id='session', aux_task='compression')
+            sent.append(projected)
+        self.fixture.runtime.project_call(request=request, next_call=dispatch,
+                                         **self.fixture.route, session_id='session', aux_task='compression')
+        self.assertEqual(sent, [request])
+
+    def test_worker_input_proof_does_not_authorize_retired_auxiliary_content(self):
+        self.forget()
+        self.project({'messages': [{'role': 'user', 'content': 'Synthetic clean current request'}]})
+        self.worker_turn()
+        with self.assertRaisesRegex(MemoryAdmissionError, 'compression prompt'):
+            self.fixture.runtime.project_call(request={'messages': [{'role': 'user', 'content': self.marker}]},
+                next_call=lambda _: self.fail('Auxiliary dispatch reached'),
+                **self.fixture.route, session_id='session', aux_task='compression')
+
+    def test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof(self):
+        self.worker_turn()
+        self.fixture.runtime.check_call(request={'messages': [{'role': 'user', 'content': 'Synthetic generated title request'}]},
+            **self.fixture.route, session_id='session', aux_task='title_generation')
+
+    def test_worker_input_proof_does_not_refresh_a_retired_generation_for_auxiliary_calls(self):
+        self.worker_turn()
+        self.forget()
+        with self.assertRaisesRegex(MemoryAdmissionError, 'invalidated memory context'):
+            self.fixture.runtime.project_call(request={'messages': [{'role': 'user', 'content': 'Synthetic generated request'}]},
+                next_call=lambda _: self.fail('Auxiliary dispatch reached'),
+                **self.fixture.route, session_id='session', aux_task='compression')
 
     def test_generation_refresh_removes_retired_tool_and_assistant_content(self):
         request = {'messages':[{'role':'user','content':'Synthetic current request'},

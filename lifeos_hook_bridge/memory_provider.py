@@ -78,6 +78,17 @@ class LifeOSMemoryProvider(MemoryProvider):
             return {'configuration': 'unavailable'}
 
     def on_session_switch(self, new_session_id: str, **kwargs) -> None:
+        if kwargs.get('reason') == 'compression' and not kwargs.get('reset'):
+            parent = kwargs.get('parent_session_id')
+            try:
+                if not parent or parent != self.session_id:
+                    raise MemoryAdmissionError('Compression belongs to a different provider conversation')
+                self.runtime.rotate_session(new_session_id,parent)
+            except Exception:
+                self.runtime.clear()
+                raise
+            self.session_id = new_session_id
+            return
         self.session_id = new_session_id
         self.runtime.clear()
 

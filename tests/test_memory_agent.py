@@ -57,6 +57,24 @@ class MemoryAgentTests(unittest.TestCase):
         self.assertEqual(self.fixture.fixture.fixture.fixture.memory.recall(OWNER,'synthetic denied fact'),[])
         self.outcome = result
 
+    def test_actual_agent_preserves_whitespace_and_the_current_quote_of_a_forgotten_fact(self):
+        marker = 'Synthetic forgotten quoted whitespace claim'
+        native = self.fixture.fixture.fixture.fixture
+        saved = native.remember(marker, 'whitespace-original')
+        native.memory.forget(OWNER, saved['reference'], 'whitespace-forget')
+        message = '  Explain this exact quote: ' + marker + '  \n'
+        result = self.fixture.initialize({'provider': 'lifeos-hook-bridge', 'memory_enabled': False, 'user_profile_enabled': False},
+            operation='conversation', message=message)
+        turn = result['conversation']
+        self.assertFalse(turn.get('failed'), turn)
+        self.assertNotEqual(turn.get('turn_exit_reason'), 'prompt_blocked', turn)
+        self.assertEqual(result['diagnostics'], '')
+        calls = [request for request in self.fixture.fixture.received if request['path'] == '/v1/chat/completions']
+        self.assertEqual(len(calls), 1)
+        users = [item['content'] for item in calls[0]['body']['messages'] if item['role'] == 'user']
+        self.assertEqual(users[-1], message)
+        self.assertEqual(native.memory.recall(OWNER, marker), [])
+
     def change_fact(self, operation, *, native_recall=False):
         marker = 'Synthetic superseded agent conversation claim'
         replacement = 'Synthetic corrected agent conversation claim'

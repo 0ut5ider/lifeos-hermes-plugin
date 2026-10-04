@@ -49,6 +49,36 @@ class HermesMemoryProviderTests(unittest.TestCase):
         self.assertNotEqual(before, self.provider.identity_signature())
         self.assertFalse(self.provider.is_available())
 
+    def test_compression_provider_keeps_verified_lineage_and_tools_on_the_child(self):
+        from gateway.session_context import set_session_vars, clear_session_vars
+        self.provider.initialize('session', hermes_home=str(self.fixture.home))
+        self.fixture.admit()
+        tokens = set_session_vars(platform='chat-a', user_id='100', chat_id='200', chat_type='dm', session_id='child')
+        try:
+            self.provider.on_session_switch('child', parent_session_id='session', reset=False, reason='compression')
+            self.assertEqual(self.provider.session_id, 'child')
+            result = json.loads(self.provider.handle_tool_call('lifeos_memory_status', {}, session_id='child'))
+            self.assertEqual(result['status'], 'ok', result)
+            stale = json.loads(self.provider.handle_tool_call('lifeos_memory_status', {}, session_id='session'))
+            self.assertEqual(stale['status'], 'rejected')
+        finally:
+            clear_session_vars(tokens)
+
+    def test_compression_provider_failure_clears_authority_and_does_not_switch(self):
+        from gateway.session_context import set_session_vars, clear_session_vars
+        self.provider.initialize('session', hermes_home=str(self.fixture.home))
+        self.fixture.admit()
+        before = self.fixture.runtime.state_path.read_bytes()
+        tokens = set_session_vars(platform='chat-a', user_id='100', chat_id='200', chat_type='dm', session_id='child')
+        try:
+            with self.assertRaisesRegex(RuntimeError, 'provider conversation'):
+                self.provider.on_session_switch('child', parent_session_id='other', reset=False, reason='compression')
+            self.assertIsNone(self.fixture.runtime.context())
+            self.assertEqual(self.provider.session_id, 'session')
+            self.assertEqual(self.fixture.runtime.state_path.read_bytes(), before)
+        finally:
+            clear_session_vars(tokens)
+
     def test_actual_host_worker_admission_reaches_model_guard_and_provider_tools(self):
         from unittest.mock import patch
         from hermes_cli.plugins import PluginContext, PluginManifest, get_plugin_manager

@@ -20,3 +20,4 @@ class HermesPatchRegenerationTests(unittest.TestCase):
             self.assertIn('admit_llm_request', patch)
             self.assertIn('test_required_middleware.py', patch)
             self.assertIn('REQUIRED_MIDDLEWARE_API_VERSION', patch)
+            self.assertIn('agent/turn_request_assembly.py', patch)

@@ -1,0 +1,23 @@
+........F.F.........................                          [100%]
+=================================== FAILURES ===================================
+_ MemoryRotationTests.test_compression_worker_rebinds_the_caller_only_through_verified_lineage _
+tests/test_memory_rotation.py:61: in test_compression_worker_rebinds_the_caller_only_through_verified_lineage
+    self.fixture.runtime.project_call(request=request, next_call=dispatch, **self.fixture.route,
+lifeos_hook_bridge/memory_runtime.py:265: in project_call
+    projected = self._check_call(request=request, project=True, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_runtime.py:311: in _check_call
+    raise MemoryAdmissionError('The model call belongs to a different conversation')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: The model call belongs to a different conversation
+_ MemoryHistoryTests.test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof _
+tests/test_memory_history.py:135: in test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof
+    self.fixture.runtime.check_call(request={'messages': [{'role': 'user', 'content': 'Synthetic generated title request'}]},
+lifeos_hook_bridge/memory_runtime.py:262: in check_call
+    self._check_call(**kwargs)
+lifeos_hook_bridge/memory_runtime.py:333: in _check_call
+    raise MemoryAdmissionError('The model call contains an invalidated memory context. Start a new conversation.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: The model call contains an invalidated memory context. Start a new conversation.
+=========================== short test summary info ============================
+FAILED tests/test_memory_rotation.py::MemoryRotationTests::test_compression_worker_rebinds_the_caller_only_through_verified_lineage
+FAILED tests/test_memory_history.py::MemoryHistoryTests::test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof
+2 failed, 34 passed, 11 subtests passed in 18.88s
