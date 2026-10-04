@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-freshness-migration/probe_large_publication.py"
+  ],
+  "status": 0,
+  "stdout": "{\n  \"result\": {\n    \"ok\": false,\n    \"result\": null\n  },\n  \"measurements\": [\n    {\n      \"source_count\": 7,\n      \"source_bytes\": 1720327,\n      \"maximum_source_bytes\": 245761,\n      \"source_limit\": 262144,\n      \"native_status\": 0,\n      \"render_json_bytes\": 3447548,\n      \"corpus_limit\": 3145728,\n      \"publication_count\": 14\n    },\n    {\n      \"receipt\": {\n        \"status\": \"unknown\",\n        \"reason\": \"Native freshness migration returns an invalid publication result\",\n        \"writer\": \"chat-a:100\",\n        \"request_id\": \"freshness-migration-883a5794ff384efea8c8fbd668860f4e\"\n      }\n    }\n  ]\n}\n",
+  "stderr": ""
+}

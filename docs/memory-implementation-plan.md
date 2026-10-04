@@ -437,3 +437,9 @@ The [final gate](verification/2026-10-04-memory-freshness/README.md) passes 263 
 The [publication gate](verification/2026-10-04-memory-freshness-writes/README.md) preserves native timestamp transformations and the constitutional cache payload. It journals source and cache changes after current source and owner checks. Read-only cache printing creates no publication directory. Actual interrupted publication restores previous user and fixed system sources. Source conflicts preserve later edits, including edits that admission excludes.
 
 The broad candidate gate passes 350 tests and 233 subtests. A subsequent excluded-edit probe finds a separate recovery defect. The final correction gate passes 90 tests and 60 subtests after its fix. All 38 native controls are recorded. The distributed patch contains 37 native files. Interview and migration callers, other publishers, aggregate service recovery, restricted delivery, ownership, and the combined release remain open. No active server changes occur.
+
+## 2026-10-04 native freshness migration
+
+The [migration gate](verification/2026-10-04-memory-freshness-migration/README.md) supplies admitted context and state sources to the original native transformations. Source changes and original-byte backups share one publication journal. Failed managed preflight blocks the batch. Actual user and system interruptions recover previous sources and backups. Read-only owners retain previews. Current owner checks, source conflicts, registry aliases, fixed destinations, private permissions, complete large ASCII/UTF-8 bodies, and native reports pass.
+
+The final gate passes 212 tests and 152 subtests without failures, errors, skips, or warnings. All 23 native controls are recorded. The distributed patch contains 38 native files. Interview evidence and reminders, other publishers, aggregate service recovery, restricted delivery, ownership, and the combined release remain open. No active server changes occur.

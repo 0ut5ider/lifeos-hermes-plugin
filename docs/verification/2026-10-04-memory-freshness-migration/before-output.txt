@@ -1,0 +1,54 @@
+F...F...F                                                [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessMigrationTests.test_foreign_backup_directory_refuses_before_source_publication _
+tests/test_memory_freshness_migration.py:110: in test_foreign_backup_directory_refuses_before_source_publication
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessMigrationTests.test_owner_read_without_write_refuses_migration _
+tests/test_memory_freshness_migration.py:59: in test_owner_read_without_write_refuses_migration
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='DA_IDENTITY.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='PRINCIPAL_IDENTITY.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='PROJECTS.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='LIFEOS_SYSTEM_PROMPT.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='PRINCIPAL_TELOS.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='ARCHITECTURE_SUMMARY.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryFreshnessMigrationTests.test_private_permissions_cover_sources_and_original_byte_backups (path='LifeosSystemArchitecture.md') _
+tests/test_memory_freshness_migration.py:100: in test_private_permissions_cover_sources_and_original_byte_backups
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+___ MemoryFreshnessMigrationTests.test_state_stamp_requires_write_authority ____
+tests/test_memory_freshness_migration.py:92: in test_state_stamp_requires_write_authority
+    self.assertNotEqual(self.call('--state').returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_foreign_backup_directory_refuses_before_source_publication
+FAILED tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_owner_read_without_write_refuses_migration
+SUBFAILED(path='DA_IDENTITY.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+SUBFAILED(path='PRINCIPAL_IDENTITY.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+SUBFAILED(path='PROJECTS.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+SUBFAILED(path='LIFEOS_SYSTEM_PROMPT.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+SUBFAILED(path='PRINCIPAL_TELOS.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+SUBFAILED(path='ARCHITECTURE_SUMMARY.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+SUBFAILED(path='LifeosSystemArchitecture.md') tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_private_permissions_cover_sources_and_original_byte_backups
+FAILED tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_state_stamp_requires_write_authority
+10 failed, 6 passed, 9 subtests passed in 34.48s

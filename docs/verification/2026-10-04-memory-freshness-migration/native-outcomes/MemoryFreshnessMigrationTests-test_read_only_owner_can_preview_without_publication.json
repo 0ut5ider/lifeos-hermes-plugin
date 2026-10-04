@@ -1,0 +1,65 @@
+{
+  "case": "MemoryFreshnessMigrationTests.test_read_only_owner_can_preview_without_publication",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-migration-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+      "LIFEOS/USER/TELOS/GOALS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": "# Synthetic migration body for PRINCIPAL_TELOS.md\n",
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "# Synthetic migration body for PRINCIPAL_IDENTITY.md\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": "# Synthetic migration body for DA_IDENTITY.md\n",
+      "LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md": "# Synthetic migration body for LifeosSystemArchitecture.md\n",
+      "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md": "# Synthetic migration body for ARCHITECTURE_SUMMARY.md\n",
+      "LIFEOS/USER/PROJECTS.md": {
+        "content": "# Synthetic migration body for PROJECTS.md\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/LIFEOS_SYSTEM_PROMPT.md": {
+        "content": "# Synthetic migration body for LIFEOS_SYSTEM_PROMPT.md\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+      "LIFEOS/USER/TELOS/GOALS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": "# Synthetic migration body for PRINCIPAL_TELOS.md\n",
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "# Synthetic migration body for PRINCIPAL_IDENTITY.md\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": "# Synthetic migration body for DA_IDENTITY.md\n",
+      "LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md": "# Synthetic migration body for LifeosSystemArchitecture.md\n",
+      "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md": "# Synthetic migration body for ARCHITECTURE_SUMMARY.md\n",
+      "LIFEOS/USER/PROJECTS.md": {
+        "content": "# Synthetic migration body for PROJECTS.md\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/LIFEOS_SYSTEM_PROMPT.md": {
+        "content": "# Synthetic migration body for LIFEOS_SYSTEM_PROMPT.md\n",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-b93wtn9w/.claude/LIFEOS/TOOLS/MigrateContextFreshness.ts",
+        "--dry-run"
+      ],
+      "status": 0,
+      "stdout": "\n--- DA_IDENTITY.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\n---\n\n# Synthetic migration body for DA_IDENTITY.md\n\n\n--- PRINCIPAL_IDENTITY.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\n---\n\n# Synthetic migration body for PRINCIPAL_IDENTITY.md\n\n\n--- PROJECTS.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\n---\n\n# Synthetic migration body for PROJECTS.md\n\n\n--- LIFEOS_SYSTEM_PROMPT.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\n---\n\n# Synthetic migration body for LIFEOS_SYSTEM_PROMPT.md\n\n\n--- PRINCIPAL_TELOS.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\nderived_from: LIFEOS/USER/TELOS/TELOS.md\ngenerator: LIFEOS/TOOLS/GenerateTelosSummary.ts\n---\n\n# Synthetic migration body for PRINCIPAL_TELOS.md\n\n\n--- ARCHITECTURE_SUMMARY.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\nderived_from: LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md\ngenerator: LIFEOS/TOOLS/ArchitectureSummaryGenerator.ts\n---\n\n# Synthetic migration body for ARCHITECTURE_SUMMARY.md\n\n\n--- LifeosSystemArchitecture.md (new-block) ---\n---\nlast_updated: 2026-05-03T23:00:00-07:00\nlast_updated_by: migration\nconvention: pai-freshness-v1\n---\n\n# Synthetic migration body for LifeosSystemArchitecture.md\n\n\n(dry-run - no files written)\n\nfile                                 | action          | sha256 match | bytes before -> after\n-------------------------------------|-----------------|--------------|---------------------\nDA_IDENTITY.md                       | new-block       | yes          | 46 -> 151\nPRINCIPAL_IDENTITY.md                | new-block       | yes          | 53 -> 158\nPROJECTS.md                          | new-block       | yes          | 43 -> 148\nLIFEOS_SYSTEM_PROMPT.md              | new-block       | yes          | 55 -> 160\nPRINCIPAL_TELOS.md                   | new-block       | yes          | 50 -> 244\nARCHITECTURE_SUMMARY.md              | new-block       | yes          | 55 -> 279\nLifeosSystemArchitecture.md          | new-block       | yes          | 59 -> 164\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

@@ -25,7 +25,7 @@ The [TELOS summary writer](docs/verification/2026-10-04-memory-telos/README.md) 
 
 The [source alias gate](docs/verification/2026-10-04-memory-source-alias/README.md) prevents registry hard links from releasing SQLite transaction locks during content reads. It passes 264 tests and 111 subtests across current readers, derivatives, adoption, and recovery.
 
-The [freshness reader gate](docs/verification/2026-10-04-memory-freshness/README.md) preserves native dates and review grades while checking current source and request authority. Its final gate passes 263 tests and 180 subtests. The [timestamp and cache gate](docs/verification/2026-10-04-memory-freshness-writes/README.md) adds recoverable native publication and preserves later source edits after refusal. Its final correction gate passes 90 tests and 60 subtests. Interview and migration callers remain open.
+The [freshness reader gate](docs/verification/2026-10-04-memory-freshness/README.md) preserves native dates and review grades while checking current source and request authority. Its final gate passes 263 tests and 180 subtests. The [timestamp and cache gate](docs/verification/2026-10-04-memory-freshness-writes/README.md) adds recoverable native publication and preserves later source edits after refusal. Its final correction gate passes 90 tests and 60 subtests. The [migration gate](docs/verification/2026-10-04-memory-freshness-migration/README.md) adds recoverable source and backup publication. It passes 212 tests and 152 subtests. Interview evidence and reminder callers remain open.
 
 ## Compatibility target
 

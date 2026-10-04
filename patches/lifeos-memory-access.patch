@@ -2848,6 +2848,264 @@ index 5122376..a53aa26 100755
    const pathCheck = validatePath(filePath);
    if (!("abs" in pathCheck)) return pathCheck;
    const abs = pathCheck.abs;
+diff --git a/LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts b/LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts
+index a53b2b6..02354ed 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts
+@@ -19,11 +19,13 @@ import { createHash } from "crypto";
+ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+ import { basename, dirname, join, relative } from "path";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import {
+   CONTEXT_FRESHNESS_REGISTRY,
+   MARKER_RE,
+   readFileFrontmatter,
+   type ContextFile,
++  type FreshnessSources,
+ } from "./TelosFreshness";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+@@ -52,6 +54,27 @@ interface MigrationResult {
+   error?: string;
+ }
+ 
++interface MigrationInput {
++  sources: FreshnessSources;
++  publications: Array<{path: string; content: string}>;
++}
++
++function sourceExists(path: string, input?: MigrationInput): boolean {
++  return input ? Object.hasOwn(input.sources, path) : existsSync(path);
++}
++
++function sourceText(path: string, input?: MigrationInput): string {
++  if (!input) return readFileSync(path, "utf-8");
++  const source = input.sources[path];
++  if (!source) throw new Error("The declared migration source is unavailable");
++  return source.content;
++}
++
++function publishMigration(path: string, content: string, input?: MigrationInput): void {
++  if (input) input.publications.push({path, content});
++  else writeFileSync(path, content);
++}
++
+ function strippedContent(content: string): string {
+   let stripped = content;
+   if (stripped.startsWith("---\n")) {
+@@ -134,11 +157,11 @@ function migrateContent(entry: ContextFile, content: string): { content: string;
+   return { content: block + "\n" + content, action: "new-block" };
+ }
+ 
+-function writeBackup(path: string, content: string): string {
++function writeBackup(path: string, content: string, input?: MigrationInput): string {
+   const backupDir = join(dirname(path), "Backups");
+-  if (!existsSync(backupDir)) mkdirSync(backupDir, { recursive: true });
++  if (!input && !existsSync(backupDir)) mkdirSync(backupDir, { recursive: true });
+   const backupPath = join(backupDir, `${basename(path, ".md")}-${BACKUP_TS}.md`);
+-  writeFileSync(backupPath, content);
++  publishMigration(backupPath, content, input);
+   return backupPath;
+ }
+ 
+@@ -146,9 +169,9 @@ function previewLines(content: string): string[] {
+   return content.split("\n").slice(0, 12);
+ }
+ 
+-function migrateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
++function migrateFile(entry: ContextFile, dryRun: boolean, input?: MigrationInput): MigrationResult {
+   const file = basename(entry.path);
+-  if (!existsSync(entry.path)) {
++  if (!sourceExists(entry.path, input)) {
+     return {
+       file,
+       path: entry.path,
+@@ -163,13 +186,13 @@ function migrateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
+     };
+   }
+ 
+-  const original = readFileSync(entry.path, "utf-8");
++  const original = sourceText(entry.path, input);
+   const preHash = strippedHash(original);
+ 
+   let next: string;
+   let action: string;
+   try {
+-    readFileFrontmatter(entry.path);
++    readFileFrontmatter(entry.path, input?.sources);
+     const migrated = migrateContent(entry, original);
+     next = migrated.content;
+     action = migrated.action;
+@@ -207,8 +230,8 @@ function migrateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
+   }
+ 
+   if (!dryRun && next !== original) {
+-    writeBackup(entry.path, original);
+-    writeFileSync(entry.path, next);
++    writeBackup(entry.path, original, input);
++    publishMigration(entry.path, next, input);
+   }
+ 
+   return {
+@@ -224,24 +247,24 @@ function migrateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
+   };
+ }
+ 
+-function printPreview(result: MigrationResult): void {
+-  console.log(`\n--- ${result.file} (${result.action}) ---`);
++function printPreview(result: MigrationResult, output: (line: string) => void): void {
++  output(`\n--- ${result.file} (${result.action}) ---`);
+   if (result.error) {
+-    console.log(result.error);
++    output(result.error);
+     return;
+   }
+   for (const line of result.preview) {
+-    console.log(line);
++    output(line);
+   }
+ }
+ 
+-function printSummary(results: MigrationResult[]): void {
+-  console.log("\nfile                                 | action          | sha256 match | bytes before -> after");
+-  console.log("-------------------------------------|-----------------|--------------|---------------------");
++function printSummary(results: MigrationResult[], output: (line: string) => void): void {
++  output("\nfile                                 | action          | sha256 match | bytes before -> after");
++  output("-------------------------------------|-----------------|--------------|---------------------");
+   for (const result of results) {
+     const match = result.sha256Match ? "yes" : "no";
+     const bytes = `${result.bytesBefore} -> ${result.bytesAfter}`;
+-    console.log(`${result.file.padEnd(36)} | ${result.action.padEnd(15)} | ${match.padEnd(12)} | ${bytes}`);
++    output(`${result.file.padEnd(36)} | ${result.action.padEnd(15)} | ${match.padEnd(12)} | ${bytes}`);
+   }
+ }
+ 
+@@ -252,9 +275,9 @@ function printSummary(results: MigrationResult[]): void {
+ // membership fields (convention + last_updated_by) into the existing block,
+ // preserving every existing field. Body content is sha256-verified unchanged.
+ 
+-function stampStateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
++function stampStateFile(entry: ContextFile, dryRun: boolean, input?: MigrationInput): MigrationResult {
+   const file = basename(entry.path);
+-  const original = readFileSync(entry.path, "utf-8");
++  const original = sourceText(entry.path, input);
+   const preHash = strippedHash(original);
+ 
+   const end = original.indexOf("\n---\n", 4);
+@@ -287,7 +310,7 @@ function stampStateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
+   }
+ 
+   if (!dryRun && next !== original) {
+-    writeFileSync(entry.path, next);
++    publishMigration(entry.path, next, input);
+   }
+ 
+   return { file, path: entry.path, action, sha256Match,
+@@ -295,55 +318,82 @@ function stampStateFile(entry: ContextFile, dryRun: boolean): MigrationResult {
+     preHash, postHash, preview: previewLines(next) };
+ }
+ 
+-function main(): void {
+-  const dryRun = process.argv.includes("--dry-run");
+-
+-  if (process.argv.includes("--state")) {
++function executeMigration(dryRun: boolean, state: boolean, input?: MigrationInput) {
++  const stdout: string[] = [];
++  const stderr: string[] = [];
++  const output = (line: string) => stdout.push(line);
++  const error = (line: string) => stderr.push(line);
++  if (state) {
+     const { stateFreshnessRegistry } = require("./TelosFreshness") as typeof import("./TelosFreshness");
+-    const results = stateFreshnessRegistry().map((entry) => stampStateFile(entry, dryRun));
+-    printSummary(results);
++    const results = stateFreshnessRegistry(input?.sources).map((entry) => stampStateFile(entry, dryRun, input));
++    printSummary(results, output);
+     const failed = results.some((result) => result.error || !result.sha256Match);
+     if (failed) {
+-      console.error("State migration completed with failures");
+-      process.exit(1);
++      error("State migration completed with failures");
++      return {status: 1, stdout: stdout.join("\n") + "\n", stderr: stderr.join("\n") + "\n", publications: input?.publications ?? []};
+     }
+-    console.log(dryRun ? "\n(dry-run - no files written)" : "\nState files stamped.");
+-    return;
++    output(dryRun ? "\n(dry-run - no files written)" : "\nState files stamped.");
++    return {status: 0, stdout: stdout.join("\n") + "\n", stderr: "", publications: input?.publications ?? []};
+   }
+ 
+   const targets = CONTEXT_FRESHNESS_REGISTRY.filter((entry) => entry.slug !== "telos");
+-  const results = targets.map((entry) => migrateFile(entry, dryRun));
++  const results = targets.map((entry) => migrateFile(entry, dryRun, input));
+ 
+   if (dryRun) {
+     for (const result of results) {
+-      printPreview(result);
++      printPreview(result, output);
+     }
+-    console.log("\n(dry-run - no files written)");
++    output("\n(dry-run - no files written)");
+   } else {
+     for (const result of results) {
+       if (result.error) {
+-        console.error(result.error);
++        error(result.error);
+       } else if (result.action === "unchanged") {
+-        console.log(`UNCHANGED: ${result.path}`);
++        output(`UNCHANGED: ${result.path}`);
+       } else {
+-        console.log(`WROTE: ${result.path}`);
++        output(`WROTE: ${result.path}`);
+       }
+       if (!result.error) {
+         const status = result.sha256Match ? "match" : "mismatch";
+-        console.log(`  sha256 ${status}: ${result.preHash} -> ${result.postHash}`);
++        output(`  sha256 ${status}: ${result.preHash} -> ${result.postHash}`);
+       }
+     }
+   }
+ 
+-  printSummary(results);
++  printSummary(results, output);
+ 
+   const failed = results.some((result) => result.error || !result.sha256Match);
+   if (failed) {
+-    console.error("Migration completed with failures");
+-    process.exit(1);
++    error("Migration completed with failures");
++    return {status: 1, stdout: stdout.join("\n") + "\n", stderr: stderr.join("\n") + "\n", publications: input?.publications ?? []};
++  }
++  return {status: 0, stdout: stdout.join("\n") + "\n", stderr: stderr.length ? stderr.join("\n") + "\n" : "", publications: input?.publications ?? []};
++}
++
++export function renderFreshnessMigration(sources: FreshnessSources, dryRun: boolean, state: boolean) {
++  return executeMigration(dryRun, state, {sources, publications: []});
++}
++
++function main(): number {
++  const dry_run = process.argv.includes("--dry-run");
++  const state = process.argv.includes("--state");
++  const governed = memoryAccess("freshness_migration", {dry_run, state},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (!memoryObject(governed.result) || typeof governed.result.stdout !== "string"
++        || typeof governed.result.stderr !== "string" || ![0, 1].includes(governed.result.status as number)) {
++      throw new Error("Freshness migration is unavailable under the current policy");
++    }
++    process.stdout.write(governed.result.stdout);
++    process.stderr.write(governed.result.stderr);
++    return governed.result.status as number;
+   }
++  const result = executeMigration(dry_run, state);
++  process.stdout.write(result.stdout);
++  process.stderr.write(result.stderr);
++  return result.status;
+ }
+ 
+ if (import.meta.main) {
+-  main();
++  process.exit(main());
+ }
 diff --git a/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts b/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts
 index 7148c0c..6df88bd 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts

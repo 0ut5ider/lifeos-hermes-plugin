@@ -258,6 +258,15 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation == 'freshness_migration' and set(arguments) == {'dry_run', 'state'}:
+                from .memory_freshness_migration import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Freshness migration authority changed during rendering')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == 'freshness_cache' and not arguments:
                 from .memory_freshness_cache import run
 

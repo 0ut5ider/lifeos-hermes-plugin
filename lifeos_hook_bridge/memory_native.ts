@@ -35,7 +35,7 @@ async function main(): Promise<void> {
       throw new Error("Native timestamp rendering needs a declared source and mutation");
     }
     result = module.renderFreshnessWrite(input.kind, input.content, input.by, input.slug, input.path);
-  } else if (input.action === "read_freshness" || input.action === "freshness_view" || input.action === "freshness_cache") {
+  } else if (["read_freshness", "freshness_view", "freshness_cache", "freshness_migration"].includes(input.action as string)) {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/TelosFreshness.ts")).href);
     if (!object(module) || !Array.isArray(input.sources)) {
       throw new Error("Native freshness reads need declared sources and a view");
@@ -48,7 +48,14 @@ async function main(): Promise<void> {
       }
       sources[source.path] = {path: source.path, content: source.content, lastModified: source.lastModified};
     }
-    if (input.action === "freshness_cache") {
+    if (input.action === "freshness_migration") {
+      const migration: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MigrateContextFreshness.ts")).href);
+      if (!object(migration) || typeof migration.renderFreshnessMigration !== "function"
+          || typeof input.dry_run !== "boolean" || typeof input.state !== "boolean") {
+        throw new Error("Native freshness migration needs declared sources and boolean options");
+      }
+      result = migration.renderFreshnessMigration(sources, input.dry_run, input.state);
+    } else if (input.action === "freshness_cache") {
       const cache: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/FreshnessCache.ts")).href);
       if (!object(cache) || typeof cache.buildFreshnessPayload !== "function") {
         throw new Error("Native freshness cache rendering needs a declared source builder");

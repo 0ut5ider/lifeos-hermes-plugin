@@ -173,7 +173,8 @@ class NativeMemory:
         if name.startswith(("LIFEOS/USER/", "LIFEOS/MEMORY/")):
             return self._path(name)
         from .memory_freshness import SYSTEM_PUBLICATIONS
-        if name not in SYSTEM_PUBLICATIONS:
+        from .memory_freshness_migration import SYSTEM_BACKUPS
+        if name not in SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS:
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != path.absolute() or path.is_symlink()
@@ -348,6 +349,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'freshness_migration':
+            from .memory_freshness_migration import publication_paths
+            return publication_paths(self, connection, scope, payload)
         if payload['operation'] == 'freshness_cache':
             from .memory_freshness_cache import publication_paths
             return publication_paths(self, scope)
