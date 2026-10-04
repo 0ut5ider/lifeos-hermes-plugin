@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from .memory_access import MemoryUnavailable
+from .memory_access import MemoryConflict, MemoryUnavailable, _now
 from .memory_sources import (CONTEXT_FILES, CORPUS_LIMIT, FRESHNESS_TELOS_SOURCES,
                              authorize, is_state_source, read_markdown)
 
@@ -92,3 +92,105 @@ def view(memory, scope, name, *, check_current):
             raise MemoryUnavailable('Freshness sources changed during HTTP rendering')
         check_current()
         return result['body']
+
+
+SYSTEM_PUBLICATIONS = frozenset(CONTEXT - CONTEXT_FILES - {TELOS})
+WRITE_KINDS = frozenset({'telos', 'context', 'review', 'stamp'})
+
+
+def _write_request(memory, kind, path, slug, by, scope):
+    authorize(scope)
+    if not {'principal', 'assistant', 'project'} <= set(scope.write):
+        raise MemoryUnavailable('Timestamp publication requires unrestricted owner write access')
+    if not isinstance(kind, str) or kind not in WRITE_KINDS:
+        raise ValueError('Choose a native timestamp mutation')
+    _request(memory, 'telos' if kind == 'telos' else 'frontmatter', path, None)
+    if slug is not None and (kind != 'telos' or not isinstance(slug, str) or len(slug) > 128):
+        raise ValueError('Choose a bounded native TELOS section slug')
+    if by is None:
+        by = scope.writer
+    if not isinstance(by, str) or not by or len(by) > 256 or any(ord(char) < 32 for char in by):
+        raise ValueError('Use a bounded single-line timestamp writer label')
+    return by
+
+
+def _source_signature(sources):
+    from .memory_access import _digest
+    return _digest(json.dumps(sources, sort_keys=True))
+
+
+def _write_sources(memory, scope, connection, path):
+    sources = _collect(memory, scope, connection, 'frontmatter', path)
+    if Path(path).exists() and not sources:
+        raise MemoryUnavailable('The timestamp source is excluded under the current policy')
+    return sources
+
+
+def publication_paths(memory, connection, scope, payload):
+    import os
+    from .memory_sources import SOURCE_LIMIT
+    _write_request(memory, payload['kind'], payload['path'], payload['slug'], payload['by'], scope)
+    sources = _write_sources(memory, scope, connection, payload['path'])
+    if _source_signature(sources) != payload['source_signature']:
+        raise MemoryConflict('The timestamp source changed before publication preparation')
+    relative = Path(payload['path']).relative_to(memory.root).as_posix()
+    path = memory._publication_path(relative)
+    if path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
+                          or path.stat().st_size > SOURCE_LIMIT):
+        raise MemoryUnavailable('The timestamp source needs a bounded owner publication path')
+    return [relative] if sources else []
+
+
+def write(memory, scope, kind, path, slug, by, *, check_current):
+    from uuid import uuid4
+    from .memory_transaction import publish
+    by = _write_request(memory, kind, path, slug, by, scope)
+    with memory._transaction() as connection:
+        sources = _write_sources(memory, scope, connection, path)
+        signature = _source_signature(sources)
+    payload = {'operation': 'freshness_write', 'kind': kind, 'path': path, 'slug': slug,
+               'by': by, 'source_signature': signature}
+    output = []
+
+    def current_sources(connection):
+        try:
+            return _write_sources(memory, scope, connection, path)
+        except MemoryUnavailable as error:
+            # A later excluded edit also remains the current source before any publication.
+            raise MemoryConflict(str(error)) from error
+
+    def apply(connection):
+        current = current_sources(connection)
+        if _source_signature(current) != signature:
+            raise MemoryConflict('The timestamp source changed before native rendering')
+        result = memory._native('freshness_write', kind=kind, path=path, slug=slug, by=by,
+                                content=current[0]['content'] if current else None)
+        required = {'changed'} | ({'sectionFound'} if kind == 'telos' else
+                                 {'provenanceFlipped'} if kind == 'stamp' else set())
+        if (set(result) != {'report', 'content'} or not isinstance(result['report'], dict)
+                or set(result['report']) != required or any(type(value) is not bool for value in result['report'].values())
+                or (not isinstance(result['content'], str) if result['report']['changed'] else result['content'] is not None)
+                or len(json.dumps(result).encode()) > CORPUS_LIMIT):
+            raise MemoryUnavailable('Native timestamp rendering changes its publication contract')
+        if result['content'] is not None:
+            accepted = memory._native('validate_source_batch', contents=[result['content']])['accepted']
+            if accepted != [True] or memory._filter_history(connection, scope, result['content'], _now(), reviewed=True)['excluded']:
+                raise MemoryUnavailable('The rendered timestamp source contains excluded text')
+        if _source_signature(current_sources(connection)) != signature:
+            raise MemoryConflict('The timestamp source changed during rendering')
+        try:
+            check_current()
+        except MemoryUnavailable as error:
+            raise MemoryConflict(str(error)) from error
+        try:
+            publication_paths(memory, connection, scope, payload)
+        except MemoryUnavailable as error:
+            raise MemoryConflict(str(error)) from error
+        if result['content'] is not None:
+            publish(memory._publication_path(Path(path).relative_to(memory.root).as_posix()), result['content'].encode())
+        output.append(result['report'])
+        return {'status': 'committed' if result['report']['changed'] else 'unchanged',
+                'artifacts': int(result['report']['changed'])}
+
+    receipt = memory._operation(scope, 'freshness-' + uuid4().hex, payload, apply)
+    return {'ok': receipt['status'] in ('committed', 'unchanged'), 'report': output[0] if output else None}

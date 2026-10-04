@@ -1,0 +1,11 @@
+# Timestamp conflicts must preserve later source edits
+
+Date: 2026-10-04. The native timestamp candidate passes 14 tests and 20 subtests. The cache candidate passes nine tests. These controls do not establish what happens when a source changes during rendering.
+
+The new child-process control calls the actual native timestamp renderer, then appends `Synthetic later source edit` before publication. The service refuses publication. The next transaction restores the old file from the publication journal and removes the later edit. The first interleaving gate reports one failed test, two passed tests, and four passed subtests.
+
+The timestamp destination is also its input. A `MemoryUnavailable` exception leaves an unknown operation receipt. Recovery restores the journal copy. A source signature conflict before publication must instead commit a conflict receipt. That receipt preserves the later source and requires a fresh request. Actual process death after publication still needs recovery of the previous source. The candidate keeps these two outcomes distinct through the existing operation receipt mechanism. It does not change the journal schema.
+
+The first corrected controls pass three tests and four subtests. A further actual-render probe adds private markup to the later source. Admission excludes that source before the signature comparison, so the old exception still leaves an unknown receipt. Recovery removes the later edit again. The collector now converts that pre-publication admission refusal into a conflict. The same probe preserves the excluded edit after the correction.
+
+The broad candidate gate passes 350 tests and 233 subtests. It predates the new excluded-edit regression. The final correction gate passes 90 tests and 60 subtests. All 38 native controls are recorded against the corrected code. Evidence: [ordinary edit failure](../docs/verification/2026-10-04-memory-freshness-writes/interleaving-before-output.txt), [excluded edit failure](../docs/verification/2026-10-04-memory-freshness-writes/excluded-source-before.json), and [excluded edit correction](../docs/verification/2026-10-04-memory-freshness-writes/excluded-source-after.json). Production is unchanged.

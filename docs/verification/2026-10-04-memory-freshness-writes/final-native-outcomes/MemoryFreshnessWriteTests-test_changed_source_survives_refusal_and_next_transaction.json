@@ -1,0 +1,59 @@
+{
+  "case": "MemoryFreshnessWriteTests.test_changed_source_survives_refusal_and_next_transaction",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-cache-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nprovenance: template\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+      "LIFEOS/USER/TELOS/GOALS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic assistant\n",
+      "LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture\n",
+      "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture summary\n",
+      "LIFEOS/LIFEOS_SYSTEM_PROMPT.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic system\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nprovenance: template\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n\nSynthetic later source edit\n",
+      "LIFEOS/USER/TELOS/GOALS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic assistant\n",
+      "LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture\n",
+      "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture summary\n",
+      "LIFEOS/LIFEOS_SYSTEM_PROMPT.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic system\n",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "kind": "native_process",
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_freshness_write_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-g_7mw6js/memory.json",
+        "source",
+        "write_freshness",
+        "LIFEOS/USER/TELOS/TELOS.md"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"report\": null}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

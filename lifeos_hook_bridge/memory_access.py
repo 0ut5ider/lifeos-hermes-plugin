@@ -60,7 +60,7 @@ class NativeMemory:
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
-        self.transaction = MemoryTransaction(self.database.parent, self._path)
+        self.transaction = MemoryTransaction(self.database.parent, self._publication_path)
 
     def _boundary(self) -> None:
         user = self.root.parent / ".config/LIFEOS/USER"
@@ -167,6 +167,19 @@ class NativeMemory:
             raise MemoryUnavailable("Native memory reference leaves the user boundary")
         if path.exists() and self.database.exists() and path.samefile(self.database):
             raise MemoryUnavailable("Native memory content cannot alias its SQLite registry")
+        return path
+
+    def _publication_path(self, name: str) -> Path:
+        if name.startswith(("LIFEOS/USER/", "LIFEOS/MEMORY/")):
+            return self._path(name)
+        from .memory_freshness import SYSTEM_PUBLICATIONS
+        if name not in SYSTEM_PUBLICATIONS:
+            raise MemoryUnavailable("This is not a journaled native system publication")
+        path = self.root / name
+        if (path.resolve() != path.absolute() or path.is_symlink()
+                or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
+                                      or path.samefile(self.database))):
+            raise MemoryUnavailable("The system publication changes its permitted owner path")
         return path
 
     @staticmethod
@@ -335,6 +348,12 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'freshness_cache':
+            from .memory_freshness_cache import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'freshness_write':
+            from .memory_freshness import publication_paths
+            return publication_paths(self, connection, scope, payload)
         if payload['operation'] == 'telos_summary':
             from .memory_telos import publication_paths
             return publication_paths(self, scope)

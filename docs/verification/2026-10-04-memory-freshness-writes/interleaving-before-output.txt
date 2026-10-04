@@ -1,0 +1,23 @@
+F..                                                                  [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessWriteTests.test_changed_source_survives_refusal_and_next_transaction _
+tests/test_memory_freshness_writes.py:167: in test_changed_source_survives_refusal_and_next_transaction
+    self.assertEqual(self.path.read_text(), expected)
+E   AssertionError: '---\[224 chars]als\nSynthetic freshness goal\n' != '---\[224 chars]als\nSynthetic freshness goal\n\nSynthetic later source edit\n'
+E     ---
+E     provenance: template
+E     last_updated: 2026-10-02
+E     last_reviewed: 2026-10-01
+E     last_reviewed_by: synthetic-owner
+E     ---
+E     # Synthetic TELOS
+E     ## Mission
+E     <!-- updated: 2026-10-01 by:synthetic -->
+E     Synthetic freshness mission
+E     ## Goals
+E     Synthetic freshness goal
+E   + 
+E   + Synthetic later source edit
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness_writes.py::MemoryFreshnessWriteTests::test_changed_source_survives_refusal_and_next_transaction
+1 failed, 2 passed, 14 deselected, 4 subtests passed in 13.08s

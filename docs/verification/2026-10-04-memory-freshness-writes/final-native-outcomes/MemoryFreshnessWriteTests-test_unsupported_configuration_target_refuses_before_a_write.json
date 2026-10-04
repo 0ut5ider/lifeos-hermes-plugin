@@ -1,0 +1,60 @@
+{
+  "case": "MemoryFreshnessWriteTests.test_unsupported_configuration_target_refuses_before_a_write",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-cache-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nprovenance: template\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+      "LIFEOS/USER/TELOS/GOALS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic assistant\n",
+      "LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture\n",
+      "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture summary\n",
+      "LIFEOS/LIFEOS_SYSTEM_PROMPT.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic system\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nprovenance: template\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+      "LIFEOS/USER/TELOS/GOALS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic assistant\n",
+      "LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture\n",
+      "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic architecture summary\n",
+      "LIFEOS/LIFEOS_SYSTEM_PROMPT.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic system\n",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]); const value=m[process.argv[2]](...JSON.parse(process.argv[3]));console.log(JSON.stringify(value));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ptos3gqg/.claude/LIFEOS/TOOLS/TelosFreshness.ts",
+        "bumpContextTimestamp",
+        "[\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ptos3gqg/.claude/LIFEOS/USER/CONFIG/synthetic-unsupported.md\", \"synthetic-writer\"]"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "869 |     valid: (value: unknown) => value is T): T | undefined {\n870 |   const response = memoryAccess(\"write_freshness\", {kind, path: resolve(path), by: by ?? null, slug: slug ?? null},\n871 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n872 |   if (response === undefined) return undefined;\n873 |   if (response.ok !== true || !valid(response.report)) {\n874 |     throw new Error(\"Freshness publication is unavailable under the current memory policy\");\n                    ^\nerror: Freshness publication is unavailable under the current memory policy\n      at managedMutation (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-cache-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts:874:15)\n      at bumpContextTimestamp (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-cache-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts:984:21)\n      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:67\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

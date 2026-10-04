@@ -26,7 +26,16 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "read_freshness" || input.action === "freshness_view") {
+  if (input.action === "freshness_write") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/TelosFreshness.ts")).href);
+    if (!object(module) || typeof module.renderFreshnessWrite !== "function" || typeof input.kind !== "string"
+        || typeof input.path !== "string" || typeof input.by !== "string"
+        || !(input.slug === null || typeof input.slug === "string")
+        || !(input.content === null || typeof input.content === "string")) {
+      throw new Error("Native timestamp rendering needs a declared source and mutation");
+    }
+    result = module.renderFreshnessWrite(input.kind, input.content, input.by, input.slug, input.path);
+  } else if (input.action === "read_freshness" || input.action === "freshness_view" || input.action === "freshness_cache") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/TelosFreshness.ts")).href);
     if (!object(module) || !Array.isArray(input.sources)) {
       throw new Error("Native freshness reads need declared sources and a view");
@@ -39,7 +48,15 @@ async function main(): Promise<void> {
       }
       sources[source.path] = {path: source.path, content: source.content, lastModified: source.lastModified};
     }
-    if (input.action === "freshness_view") {
+    if (input.action === "freshness_cache") {
+      const cache: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/FreshnessCache.ts")).href);
+      if (!object(cache) || typeof cache.buildFreshnessPayload !== "function") {
+        throw new Error("Native freshness cache rendering needs a declared source builder");
+      }
+      const payload = cache.buildFreshnessPayload(sources);
+      const content = JSON.stringify(payload);
+      result = {content, bytes: content.length, generated_at: payload.generated_at};
+    } else if (input.action === "freshness_view") {
       const view: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/modules/telos.ts")).href);
       if (!object(view) || typeof view.renderFreshnessView !== "function" || typeof input.target !== "string") {
         throw new Error("Native freshness HTTP rendering needs declared sources and a route");

@@ -258,6 +258,24 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation == 'freshness_cache' and not arguments:
+                from .memory_freshness_cache import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Freshness cache authority changed during rendering')
+
+                return run(memory, scope, check_current=check_current)
+            if operation == 'write_freshness' and set(arguments) == {'kind', 'path', 'slug', 'by'}:
+                from .memory_freshness import write
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Timestamp authority changed during rendering')
+
+                return write(memory, scope, **arguments, check_current=check_current)
             if operation == 'memory_graph' and set(arguments) == {'root', 'command', 'layer', 'target'}:
                 from .memory_graph import run
 

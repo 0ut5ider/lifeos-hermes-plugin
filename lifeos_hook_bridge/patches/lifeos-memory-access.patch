@@ -1284,6 +1284,48 @@ index 58270db..68741d7 100644
      proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts b/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts
+index fc60fa7..bf55519 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts
+@@ -22,7 +22,8 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  */
+ import { writeFileSync, renameSync, mkdirSync, existsSync } from "fs";
+ import { join } from "path";
+-import { readContextFreshness } from "./TelosFreshness";
++import { readContextFreshness, type FreshnessSources } from "./TelosFreshness";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { homedir } from "node:os";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+@@ -67,8 +68,8 @@ export interface FreshnessCachePayload {
+   generated_at: string;
+ }
+ 
+-export function buildFreshnessPayload(): FreshnessCachePayload {
+-  const c = readContextFreshness();
++export function buildFreshnessPayload(sources?: FreshnessSources): FreshnessCachePayload {
++  const c = readContextFreshness(sources);
+   return {
+     total: c.total,
+     fresh_count: c.fresh_count,
+@@ -109,6 +110,16 @@ export interface WriteResult {
+ }
+ 
+ export function writeFreshnessCache(): WriteResult {
++  const governed = memoryAccess("freshness_cache", {},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (governed.ok !== true || !memoryObject(governed.result)
++        || typeof governed.result.path !== "string" || typeof governed.result.bytes !== "number"
++        || typeof governed.result.generated_at !== "string") {
++      throw new Error("Freshness cache publication is unavailable under the current policy");
++    }
++    return governed.result as unknown as WriteResult;
++  }
+   if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
+   const payload = buildFreshnessPayload();
+   const json = JSON.stringify(payload);
 diff --git a/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts b/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts
 index 2ae55d8..2ac8e2f 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts
@@ -2807,7 +2849,7 @@ index 5122376..a53aa26 100755
    if (!("abs" in pathCheck)) return pathCheck;
    const abs = pathCheck.abs;
 diff --git a/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts b/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts
-index 7148c0c..b706669 100755
+index 7148c0c..6df88bd 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts
 @@ -32,7 +32,8 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
@@ -3128,6 +3170,201 @@ index 7148c0c..b706669 100755
    return assembleContextFreshness(files, now);
  }
  
+@@ -736,6 +860,41 @@ function refreshFreshnessCache(): void {
+   }
+ }
+ 
++// ABOUTME: Collects native timestamp transformations without publishing during rendering.
++// ABOUTME: Keeps the managed caller's journal responsible for durable source changes.
++interface FreshnessWriteSource { content: string | null; capture: (content: string) => void }
++interface FreshnessWriteReport { changed: boolean; sectionFound?: boolean; provenanceFlipped?: boolean }
++
++function managedMutation<T>(kind: string, path: string, by: string | undefined, slug: string | undefined,
++    valid: (value: unknown) => value is T): T | undefined {
++  const response = memoryAccess("write_freshness", {kind, path: resolve(path), by: by ?? null, slug: slug ?? null},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (response === undefined) return undefined;
++  if (response.ok !== true || !valid(response.report)) {
++    throw new Error("Freshness publication is unavailable under the current memory policy");
++  }
++  return response.report;
++}
++
++function mutationExists(path: string, source?: FreshnessWriteSource): boolean {
++  return source === undefined ? existsSync(path) : source.content !== null;
++}
++
++function mutationText(path: string, source?: FreshnessWriteSource): string {
++  if (source === undefined) return readFileSync(path, "utf-8");
++  if (source.content === null) throw new Error("The declared timestamp source is missing");
++  return source.content;
++}
++
++function captureMutation(path: string, text: string, source?: FreshnessWriteSource): void {
++  if (source === undefined) {
++    writeFileSync(path, text);
++    refreshFreshnessCache();
++  } else {
++    source.capture(text);
++  }
++}
++
+ /**
+  * Update the per-section marker (and bump the file frontmatter) to today.
+  * When `slug` is omitted, only the file-level marker is bumped.
+@@ -744,14 +903,25 @@ function refreshFreshnessCache(): void {
+  */
+ export function bumpTelosTimestamp(
+   slug?: string,
+-  by: string = getDAName(),
++  by?: string,
+   path: string = TELOS_PATH,
++  source?: FreshnessWriteSource,
+ ): { changed: boolean; sectionFound: boolean } {
+-  if (!existsSync(path)) return { changed: false, sectionFound: false };
++  if (source === undefined) {
++    const managed = managedMutation("telos", path, by, slug,
++      (value): value is {changed: boolean; sectionFound: boolean} => memoryObject(value)
++        && typeof value.changed === "boolean" && typeof value.sectionFound === "boolean");
++    if (managed !== undefined) {
++      if (managed.changed) refreshFreshnessCache();
++      return managed;
++    }
++  }
++  by ??= getDAName();
++  if (!mutationExists(path, source)) return { changed: false, sectionFound: false };
+ 
+   const today = new Date().toISOString().slice(0, 10);
+   const isoNow = new Date().toISOString();
+-  let raw = readFileSync(path, "utf-8");
++  let raw = mutationText(path, source);
+ 
+   // ─── Bump frontmatter (always) ───
+   if (raw.startsWith("---\n")) {
+@@ -804,20 +974,28 @@ export function bumpTelosTimestamp(
+     raw = lines.join("\n");
+   }
+ 
+-  writeFileSync(path, raw);
+-  refreshFreshnessCache();
++  captureMutation(path, raw, source);
+   return { changed: true, sectionFound };
+ }
+ 
+-export function bumpContextTimestamp(filePath: string, by: string = getDAName()): { changed: boolean } {
+-  if (!existsSync(filePath)) return { changed: false };
++export function bumpContextTimestamp(filePath: string, by?: string,
++    source?: FreshnessWriteSource): { changed: boolean } {
++  if (source === undefined) {
++    const managed = managedMutation("context", filePath, by, undefined,
++      (value): value is {changed: boolean} => memoryObject(value) && typeof value.changed === "boolean");
++    if (managed !== undefined) {
++      if (managed.changed) refreshFreshnessCache();
++      return managed;
++    }
++  }
++  by ??= getDAName();
++  if (!mutationExists(filePath, source)) return { changed: false };
+ 
+-  const raw = readFileSync(filePath, "utf-8");
++  const raw = mutationText(filePath, source);
+   const next = bumpFileFrontmatter(raw, new Date().toISOString(), by);
+   if (next === raw) return { changed: false };
+ 
+-  writeFileSync(filePath, next);
+-  refreshFreshnessCache();
++  captureMutation(filePath, next, source);
+   return { changed: true };
+ }
+ 
+@@ -828,10 +1006,19 @@ export function bumpContextTimestamp(filePath: string, by: string = getDAName())
+  * Only the Interview skill (or equivalent principal-driven review flow) should bump
+  * `last_reviewed`. Freshness grades A-F are computed against this field.
+  */
+-export function bumpReviewedTimestamp(filePath: string, by: string = "user"): { changed: boolean } {
+-  if (!existsSync(filePath)) return { changed: false };
++export function bumpReviewedTimestamp(filePath: string, by: string = "user",
++    source?: FreshnessWriteSource): { changed: boolean } {
++  if (source === undefined) {
++    const managed = managedMutation("review", filePath, by, undefined,
++      (value): value is {changed: boolean} => memoryObject(value) && typeof value.changed === "boolean");
++    if (managed !== undefined) {
++      if (managed.changed) refreshFreshnessCache();
++      return managed;
++    }
++  }
++  if (!mutationExists(filePath, source)) return { changed: false };
+ 
+-  const raw = readFileSync(filePath, "utf-8");
++  const raw = mutationText(filePath, source);
+   const isoNow = new Date().toISOString();
+ 
+   let next = raw;
+@@ -858,8 +1045,7 @@ export function bumpReviewedTimestamp(filePath: string, by: string = "user"): {
+   }
+ 
+   if (next === raw) return { changed: false };
+-  writeFileSync(filePath, next);
+-  refreshFreshnessCache();
++  captureMutation(filePath, next, source);
+   return { changed: true };
+ }
+ 
+@@ -890,11 +1076,21 @@ export function bumpReviewedTimestamp(filePath: string, by: string = "user"): {
+ export function stampContextWrite(
+   filePath: string,
+   by: string,
++  source?: FreshnessWriteSource,
+ ): { changed: boolean; provenanceFlipped: boolean } {
+   try {
+-    if (!existsSync(filePath)) return { changed: false, provenanceFlipped: false };
++    if (source === undefined) {
++      const managed = managedMutation("stamp", filePath, by, undefined,
++        (value): value is {changed: boolean; provenanceFlipped: boolean} => memoryObject(value)
++          && typeof value.changed === "boolean" && typeof value.provenanceFlipped === "boolean");
++      if (managed !== undefined) {
++        if (managed.changed) refreshFreshnessCache();
++        return managed;
++      }
++    }
++    if (!mutationExists(filePath, source)) return { changed: false, provenanceFlipped: false };
+ 
+-    const raw = readFileSync(filePath, "utf-8");
++    const raw = mutationText(filePath, source);
+     let next = bumpFileFrontmatter(raw, new Date().toISOString(), by);
+ 
+     let provenanceFlipped = false;
+@@ -912,8 +1108,7 @@ export function stampContextWrite(
+     }
+ 
+     if (next === raw) return { changed: false, provenanceFlipped: false };
+-    writeFileSync(filePath, next);
+-    refreshFreshnessCache();
++    captureMutation(filePath, next, source);
+     return { changed: true, provenanceFlipped };
+   } catch {
+     // Never fail a caller's write because the header could not be stamped.
+@@ -921,6 +1116,20 @@ export function stampContextWrite(
+   }
+ }
+ 
++export function renderFreshnessWrite(kind: string, content: string | null, by: string,
++    slug: string | null, path: string): {report: FreshnessWriteReport; content: string | null} {
++  const captured: string[] = [];
++  const source: FreshnessWriteSource = {content, capture: text => captured.push(text)};
++  const report = kind === "telos" ? bumpTelosTimestamp(slug ?? undefined, by, path, source)
++    : kind === "context" ? bumpContextTimestamp(path, by, source)
++    : kind === "review" ? bumpReviewedTimestamp(path, by, source)
++    : kind === "stamp" ? stampContextWrite(path, by, source) : null;
++  if (report === null || captured.length > 1 || report.changed !== (captured.length === 1)) {
++    throw new Error("Native timestamp rendering changes its publication contract");
++  }
++  return {report, content: captured[0] ?? null};
++}
++
+ // ─── CLI ──────────────────────────────────────────────────────────────────
+ 
+ function formatHuman(f: TelosFreshness): string {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts b/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts
 index 8162267..5fafe9a 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts
