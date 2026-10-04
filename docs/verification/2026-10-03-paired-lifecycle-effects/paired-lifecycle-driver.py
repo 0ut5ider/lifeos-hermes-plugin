@@ -20,8 +20,6 @@ import time
 
 CASES = {
     'healer-executable': [('SessionStart.1.1', 'hooks/HookHealer.hook.ts')],
-    'healer-containment': [('SessionStart.1.1', 'hooks/HookHealer.hook.ts')],
-    'kitty-cli': [('SessionStart.1.2', 'hooks/KittyEnvPersist.hook.ts')],
     'freshness-reviewed': [('SessionStart.1.4', 'LIFEOS/TOOLS/FreshnessCache.ts')],
     'settings-merge': [('SessionStart.1.5', 'LIFEOS/TOOLS/MergeSettings.ts')],
     'settings-backport': [('SessionStart.1.5', 'LIFEOS/TOOLS/SettingsBackport.ts')],
@@ -31,10 +29,6 @@ CASES = {
     'cleanup-learning-parallel': [('SessionEnd.1.1', 'hooks/WorkCompletionLearning.hook.ts'),
                                   ('SessionEnd.1.2', 'hooks/SessionCleanup.hook.ts')],
     'update-counts-no-oauth': [('SessionEnd.1.3', 'hooks/UpdateCounts.hook.ts')],
-    'memory-health-critical': [('SessionEnd.1.4', 'hooks/MemoryHealthGate.hook.ts')],
-    'doc-inventory-drift': [('SessionEnd.1.5', 'hooks/DocIntegrity.hook.ts')],
-    'doc-inventory-clean': [('SessionEnd.1.5', 'hooks/DocIntegrity.hook.ts')],
-    'doc-inventory-unparseable': [('SessionEnd.1.5', 'hooks/DocIntegrity.hook.ts')],
 }
 BLOCK_REASON = 'PAIR_BLOCK_BEFORE_MODEL'
 
@@ -76,28 +70,6 @@ def check_pair(case: dict) -> list[str]:
             if before.get('executable') is not False or not all(after.get(key) is True for key in
                     ('executable', 'healed_target', 'unrelated_preserved')):
                 errors.append(f'{name}: executable repair is missing')
-        elif name == 'healer-containment':
-            if not (before.get('target_executable') is False and after.get('target_executable') is False
-                    and after.get('containment_refused') is True and after.get('target_content_preserved') is True):
-                errors.append(f'{name}: containment effect is missing')
-        elif name == 'kitty-cli':
-            if not (before.get('environment_present') is False and before.get('stale_title_present') is True
-                    and after.get('shared_environment_matches') is True
-                    and after.get('session_environment_matches') is True and after.get('stale_title_present') is False):
-                errors.append(f'{name}: terminal persistence effect is missing')
-        elif name == 'memory-health-critical':
-            if not (before.get('health_rows') == 0 and after.get('health_rows') == 1
-                    and after.get('overall') == 'critical' and after.get('critical_count', 0) > 0
-                    and after.get('critical_count_matches') is True
-                    and after.get('required_hook_missing') is True and after.get('warning_present') is True):
-                errors.append(f'{name}: health effect is missing')
-        elif name.startswith('doc-inventory-'):
-            expected = {'doc-inventory-drift': ['missing_active:KNOWLEDGE', 'unknown_on_disk:SURPRISE'],
-                        'doc-inventory-clean': [], 'doc-inventory-unparseable': ['inventory_unparseable:doc']}[name]
-            if not (before.get('inventory_events') == 0 and after.get('inventory_events') == 1
-                    and after.get('ok') is (not expected) and after.get('finding_count') == len(expected)
-                    and after.get('finding_keys') == expected and after.get('unrelated_event_preserved') is True):
-                errors.append(f'{name}: inventory effect is missing')
         elif name == 'freshness-reviewed':
             if before.get('cache_present') is not False or not (
                     after.get('telos_stale') is False and after.get('total_matches_files') is True
@@ -159,53 +131,6 @@ def seed_work(home: Path, case: str, session_id: str) -> None:
 def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool = False) -> dict:
     root = home / '.claude'
     lifeos = root / 'LIFEOS'
-    if case == 'healer-containment':
-        target = home / 'outside.sh'
-        result = {'target_executable': bool(target.stat().st_mode & 0o111)}
-        if after:
-            audit = lifeos / 'MEMORY/OBSERVABILITY/hook-healer.jsonl'
-            rows = [json.loads(line) for line in audit.read_text().splitlines()] if audit.exists() else []
-            result.update(containment_refused=any(row.get('event') == 'containment-refused'
-                          and row.get('path') == str(root / 'hooks/Registered.hook.sh') for row in rows),
-                          target_content_preserved=target.read_text() == '#!/bin/sh\nexit 0\n')
-        return result
-    if case == 'kitty-cli':
-        state = lifeos / 'MEMORY/STATE'
-        stale = state / 'tab-titles/777.json'
-        shared = state / 'kitty-env.json'
-        if not after:
-            return {'environment_present': shared.exists(), 'stale_title_present': stale.exists()}
-        session = state / 'kitty-sessions' / (session_id + '.json')
-        listen = 'unix:' + str(home / 'no-kitty.sock')
-        return {'shared_environment_matches': shared.exists() and read_json(shared) == {
-                    'KITTY_LISTEN_ON': listen, 'KITTY_WINDOW_ID': '777'},
-                'session_environment_matches': session.exists() and read_json(session) == {
-                    'listenOn': listen, 'windowId': '777'}, 'stale_title_present': stale.exists()}
-    if case == 'memory-health-critical':
-        path = lifeos / 'MEMORY/OBSERVABILITY/memory-health.jsonl'
-        rows = [json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []
-        if not after:
-            return {'health_rows': len(rows)}
-        report = rows[-1] if rows else {}
-        findings = report.get('findings', [])
-        traces = [json.loads(line) for line in (home / 'hooks.jsonl').read_text().splitlines()]
-        critical = report.get('counts', {}).get('critical', 0)
-        return {'health_rows': len(rows), 'overall': report.get('overall'), 'critical_count': critical,
-                'critical_count_matches': critical == sum(row.get('severity') == 'critical' for row in findings),
-                'required_hook_missing': any(row.get('id') == 'hook-file-missing:MemoryTurnStart.hook.ts'
-                                            for row in findings),
-                'warning_present': any('Memory health: CRITICAL' in row['stderr'] for row in traces)}
-    if case.startswith('doc-inventory-'):
-        path = lifeos / 'MEMORY/STATE/events.jsonl'
-        rows = [json.loads(line) for line in path.read_text().splitlines()]
-        inventory = [row for row in rows if row.get('type') == 'doc.integrity.memory_dir']
-        if not after:
-            return {'inventory_events': len(inventory)}
-        report = inventory[-1] if inventory else {}
-        return {'inventory_events': len(inventory), 'ok': report.get('ok'),
-                'finding_count': report.get('finding_count'),
-                'finding_keys': sorted(row['key'] for row in report.get('findings', [])),
-                'unrelated_event_preserved': rows[0] == {'type': 'fixture.unrelated', 'value': 'Keep existing event'}}
     if case == 'healer-executable':
         target = root / 'hooks/Registered.hook.sh'
         if not after:
@@ -279,8 +204,6 @@ def hook_commands(home: Path, case: str, source: Path, trace_script: Path) -> li
     for identifier, relative in CASES[case]:
         path = source / relative
         source_files = [path]
-        if case == 'memory-health-critical':
-            source_files.append(source / 'LIFEOS/TOOLS/MemoryHealthCheck.ts')
         command = f'bun {shlex.quote(str(path))}'
         if case == 'freshness-reviewed':
             command += ' --quiet'
@@ -314,7 +237,7 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
     hooks[event].append({'hooks': [{'type': 'command', 'command': command, 'timeout': 30}
                                    for _, command, _ in commands]})
     settings = {'hooks': hooks}
-    if case in {'healer-executable', 'healer-containment'}:
+    if case == 'healer-executable':
         folder = root / 'hooks'
         folder.mkdir()
         for name in ('Registered.hook.sh', 'Unregistered.sh'):
@@ -322,38 +245,6 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
             target.write_text('#!/bin/sh\nexit 0\n')
             target.chmod(0o644)
         hooks['Stop'] = [{'hooks': [{'type': 'command', 'command': str(folder / 'Registered.hook.sh')}]}]
-        if case == 'healer-containment':
-            external = home / 'outside.sh'
-            external.write_text('#!/bin/sh\nexit 0\n')
-            external.chmod(0o644)
-            (folder / 'Registered.hook.sh').unlink()
-            (folder / 'Registered.hook.sh').symlink_to(external)
-    if case == 'kitty-cli':
-        write_json(root / 'LIFEOS/MEMORY/STATE/tab-titles/777.json',
-                   {'title': 'Old session title', 'state': 'working'})
-    if case == 'memory-health-critical':
-        tools = root / 'LIFEOS/TOOLS'
-        tools.mkdir(parents=True)
-        (tools / 'MemoryHealthCheck.ts').symlink_to(source / 'LIFEOS/TOOLS/MemoryHealthCheck.ts')
-    if case.startswith('doc-inventory-'):
-        document = root / 'LIFEOS/DOCUMENTATION/Memory/MemorySystem.md'
-        document.parent.mkdir(parents=True)
-        content = '# Synthetic inventory\n'
-        if case != 'doc-inventory-unparseable':
-            content += ('\n## Directory Inventory\n\n| Directory | Class | Status | Purpose | Primary writers |\n'
-                        '| --- | --- | --- | --- | --- |\n| `STATE/` | core | active | State | Fixture |\n'
-                        '| `KNOWLEDGE/` | core | active | Notes | Fixture |\n'
-                        '| `LEARNING/` | core | on-demand | Learning | Fixture |\n')
-        document.write_text(content)
-        memory = root / 'LIFEOS/MEMORY'
-        (memory / '_PRIVATE').mkdir(parents=True)
-        if case == 'doc-inventory-drift':
-            (memory / 'SURPRISE').mkdir()
-        elif case == 'doc-inventory-clean':
-            (memory / 'KNOWLEDGE').mkdir()
-        events = memory / 'STATE/events.jsonl'
-        events.parent.mkdir(parents=True)
-        events.write_text(json.dumps({'type': 'fixture.unrelated', 'value': 'Keep existing event'}) + '\n')
     if case == 'freshness-reviewed':
         telos = root / 'LIFEOS/USER/TELOS/TELOS.md'
         telos.parent.mkdir(parents=True)
@@ -369,7 +260,7 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
             write_json(root / 'LIFEOS/MEMORY/STATE/settings-merge-snapshot.json', settings)
             settings['env']['USER_VALUE'] = 'edited'
     write_json(root / 'settings.json', settings)
-    if event == 'SessionStart' or case in {'update-counts-no-oauth', 'memory-health-critical'} or case.startswith('doc-inventory-'):
+    if event == 'SessionStart' or case == 'update-counts-no-oauth':
         write_json(home / 'before-state.json', state_snapshot(home, case))
         write_json(home / 'fixture-files-before.json', fixture_files(home))
     return [{'id': identifier, 'command': command,
@@ -401,9 +292,6 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                        ANTHROPIC_BASE_URL=endpoint, ANTHROPIC_AUTH_TOKEN='PAIR_LIFECYCLE',
                        ANTHROPIC_MODEL='lifecycle-fixture', CLAUDE_CODE_MAX_RETRIES='0',
                        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1', DISABLE_TELEMETRY='1', DISABLE_ERROR_REPORTING='1')
-    if case == 'kitty-cli':
-        environment.update(LIFEOS_NOTIFICATION_CHANNEL='desktop', TERM='xterm-kitty',
-                           KITTY_LISTEN_ON='unix:' + str(home / 'no-kitty.sock'), KITTY_WINDOW_ID='777')
     if side == 'hermes':
         profile = home / '.hermes'
         profile.mkdir()

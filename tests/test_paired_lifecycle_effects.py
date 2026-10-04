@@ -6,6 +6,60 @@ from scripts.paired_lifecycle_effects import CASES, check_pair
 
 
 class PairedLifecycleEffectTests(unittest.TestCase):
+    def new_case(self, name, event, before, after):
+        side = {'before': before, 'after': after, 'hook_exit_codes': [0],
+                'event': event, 'cli_exit_code': 0, 'model_generation_requests': 0}
+        return {'id': name, 'native': side, 'hermes': dict(side)}
+
+    def test_containment_requires_a_refusal_and_unchanged_external_file(self):
+        after = {'target_executable': False, 'containment_refused': True, 'target_content_preserved': True}
+        case = self.new_case('healer-containment', 'SessionStart', {'target_executable': False}, after)
+        self.assertEqual(check_pair(case), [])
+        after['target_executable'] = True
+        self.assertIn('healer-containment: containment effect is missing', check_pair(case))
+
+    def test_kitty_requires_current_session_persistence_and_stale_title_removal(self):
+        after = {'shared_environment_matches': True, 'session_environment_matches': True,
+                 'stale_title_present': False}
+        case = self.new_case('kitty-cli', 'SessionStart', {'environment_present': False,
+                             'stale_title_present': True}, after)
+        self.assertEqual(check_pair(case), [])
+        after['session_environment_matches'] = False
+        self.assertIn('kitty-cli: terminal persistence effect is missing', check_pair(case))
+
+    def test_health_requires_a_real_report_and_nonblocking_warning(self):
+        after = {'health_rows': 1, 'overall': 'critical', 'required_hook_missing': True,
+                 'critical_count': 3, 'critical_count_matches': True, 'warning_present': True}
+        case = self.new_case('memory-health-critical', 'SessionEnd', {'health_rows': 0}, after)
+        self.assertEqual(check_pair(case), [])
+        after['health_rows'] = 0
+        self.assertIn('memory-health-critical: health effect is missing', check_pair(case))
+
+    def test_document_inventory_requires_exact_findings_and_preserved_existing_event(self):
+        after = {'inventory_events': 1, 'ok': False, 'finding_count': 2,
+                 'finding_keys': ['missing_active:KNOWLEDGE', 'unknown_on_disk:SURPRISE'],
+                 'unrelated_event_preserved': True}
+        case = self.new_case('doc-inventory-drift', 'SessionEnd', {'inventory_events': 0}, after)
+        self.assertEqual(check_pair(case), [])
+        after['finding_keys'] = ['unknown_on_disk:SURPRISE']
+        self.assertIn('doc-inventory-drift: inventory effect is missing', check_pair(case))
+
+    def test_clean_inventory_requires_an_explicit_empty_finding_set(self):
+        after = {'inventory_events': 1, 'ok': True, 'finding_count': 0, 'finding_keys': [],
+                 'unrelated_event_preserved': True}
+        case = self.new_case('doc-inventory-clean', 'SessionEnd', {'inventory_events': 0}, after)
+        self.assertEqual(check_pair(case), [])
+        after['inventory_events'] = 0
+        self.assertIn('doc-inventory-clean: inventory effect is missing', check_pair(case))
+
+    def test_unparseable_inventory_requires_a_report_rather_than_silence(self):
+        after = {'inventory_events': 1, 'ok': False, 'finding_count': 1,
+                 'finding_keys': ['inventory_unparseable:doc'], 'unrelated_event_preserved': True}
+        case = self.new_case('doc-inventory-unparseable', 'SessionEnd', {'inventory_events': 0}, after)
+        self.assertEqual(check_pair(case), [])
+        after['ok'] = True
+        self.assertIn('doc-inventory-unparseable: inventory effect is missing', check_pair(case))
+
     def case(self, name, before, after):
         side = {'before': before, 'after': after, 'hook_exit_codes': [0] * len(CASES[name]),
                 'event': CASES[name][0][0].split('.')[0], 'cli_exit_code': 0,
