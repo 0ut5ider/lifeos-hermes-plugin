@@ -1,0 +1,69 @@
+{
+  "before": {
+    "inventory_events": 0
+  },
+  "after": {
+    "inventory_events": 1,
+    "ok": true,
+    "finding_count": 0,
+    "finding_keys": [],
+    "unrelated_event_preserved": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261004_125918_f3d8de",
+  "seconds": 5.251,
+  "command": [
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.5",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.5 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261004/run-v1/doc-inventory-clean/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvRG9jSW50ZWdyaXR5Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/DocIntegrity.hook.ts": "a0b979619ea27bcc3b9dbafe4e04c5922137e02a6458e36536d53ac776aa542f"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "267dd916873dc04b18892fde5c66b78ca0be789873200a88d9ffc2c568b318c6",
+    "fixture-events.jsonl": "7c29c6cc2cfc13b2b447f8b628cab8e1ece0221d72d2f5fb7fc8af7c1dc73352",
+    "cli.log": "6a1c97c3a45113967675a5106026d3ca9a66689fd5b0aae58dbfe26926364c03",
+    "before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "after-state.json": "da22a14c827d864b1fb0b2da220535242473f36577a96accfae85d3e0e3a2d88",
+    "fixture-files-before.json": "388c083ae94778f465843120e4fb6163d49dd62f808da24b303c52e539fd470f",
+    "fixture-files-after.json": "912cfdff9f1b4fdbc8276b62c25c06d1e7230bdbd68372e98225402608131565"
+  }
+}

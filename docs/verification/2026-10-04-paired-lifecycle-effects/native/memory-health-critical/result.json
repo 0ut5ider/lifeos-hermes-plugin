@@ -1,0 +1,57 @@
+{
+  "before": {
+    "health_rows": 0
+  },
+  "after": {
+    "health_rows": 1,
+    "overall": "critical",
+    "critical_count": 14,
+    "critical_count_matches": true,
+    "required_hook_missing": true,
+    "warning_present": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "04c0694b-f809-4973-a534-e4a6d19d3c65",
+  "seconds": 0.669,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.4",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.4 /home/lifeos-claude-ref/workspace/paired-effects-20261004/run-v1/memory-health-critical/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTWVtb3J5SGVhbHRoR2F0ZS5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/MemoryHealthGate.hook.ts": "644d7e2d5ef3e9c5ac462d775b45a202f8735b9ee86a21215b1b5996f8381290",
+        "/home/lifeos-claude-ref/.claude/LIFEOS/TOOLS/MemoryHealthCheck.ts": "16ef7a3ee163c91f39eab9d420fd7c8ec53b4876b9cde5b3af3625b07771ddcb"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "cca91a4f87c40b062235d92098ed3602b807c14303686b56ad5ac60abddd810f",
+    "fixture-events.jsonl": "1c0f06a0dd031ebd33a807524f538a5547953da15af97e8b6cc26a9410e1b4c1",
+    "cli.log": "14274f98fd64f8d593ccbb45e3af96b967de6091b146b4d193abd4d0a40e01a6",
+    "before-state.json": "266df2716154f440894d97c87a923a7194aae7e5d85744d29555004911712035",
+    "after-state.json": "91808c4aa25aff71f35e217abd0b97549a952bb70947149bde074cf2998e5544",
+    "fixture-files-before.json": "2bc543fdb1aa7716da1350458643c7eaf06223f0adf7d45c7f7bf1d4edc7e0f8",
+    "fixture-files-after.json": "1b66e816c0d5666d75ac11b4f1d18885b32f496296ab81a253d6f6d50b7b3d8b"
+  }
+}

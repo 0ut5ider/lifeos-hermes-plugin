@@ -1,0 +1,57 @@
+{
+  "before": {
+    "inventory_events": 0
+  },
+  "after": {
+    "inventory_events": 1,
+    "ok": false,
+    "finding_count": 1,
+    "finding_keys": [
+      "inventory_unparseable:doc"
+    ],
+    "unrelated_event_preserved": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "edccadb9-f6bb-4025-86c3-aab51932916f",
+  "seconds": 0.77,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.5",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.5 /home/lifeos-claude-ref/workspace/paired-effects-20261004/run-v1/doc-inventory-unparseable/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvRG9jSW50ZWdyaXR5Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/DocIntegrity.hook.ts": "a0b979619ea27bcc3b9dbafe4e04c5922137e02a6458e36536d53ac776aa542f"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "1320864794bd4e36c25c1570afd37b140952ce650f4958c17f073441b10ea546",
+    "fixture-events.jsonl": "712bdeff36f2907025b7a393874d4997e254fad95dead81b54c092fa79ef9e46",
+    "cli.log": "28bab1e8dfdea71554819b33493e47f7703f9075ec5263a4e8866fbcc57b85eb",
+    "before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "after-state.json": "5dda90dd256b7d02a5830c74915eeab12bc1b8cefb77e4561a404fa6dbdc0230",
+    "fixture-files-before.json": "c047d6495dfd910fdc38eb40888f3be7639885fb0d78483a1669da33861f7f0f",
+    "fixture-files-after.json": "a1499679fb938bad83cbc91922106d528dd75bab1b78436703f622691da4d2d6"
+  }
+}

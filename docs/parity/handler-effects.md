@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-03. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Eleven selected cases cover eight registrations. Nine lifecycle cases use real client events and synthetic file assertions; the earlier two cases retain their original scope.
+Date: 2026-10-04. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Seventeen selected cases cover 11 registrations. Fifteen lifecycle cases use real client events and synthetic file assertions; the earlier two cases retain their original scope.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -45,8 +45,8 @@ Date: 2026-10-03. This table gives each of the 74 pinned registrations an expect
 | SessionEnd.1.1 | WorkCompletionLearning | Read session completion evidence and persist eligible native learning. | Selected cases verified |
 | SessionEnd.1.2 | SessionCleanup | Close native session state and remove the applicable transient work state. | Selected cases verified |
 | SessionEnd.1.3 | UpdateCounts | Refresh the configured usage counts or remain neutral without OAuth credentials. | Selected cases verified |
-| SessionEnd.1.4 | MemoryHealthGate | Check native memory health and publish the applicable result without losing async delivery. | Pending |
-| SessionEnd.1.5 | DocIntegrity | Check documentation integrity and report applicable stale documentation. | Pending |
+| SessionEnd.1.4 | MemoryHealthGate | Check native memory health and publish the applicable result without losing async delivery. | Selected cases verified |
+| SessionEnd.1.5 | DocIntegrity | Check documentation integrity and report applicable stale documentation. | Selected cases verified |
 | SessionEnd.1.6 | IntegrityCheck | Compare installed files with the native integrity baseline and report changes. | Pending |
 | UserPromptSubmit.1.1 | PromptProcessing | Create and persist the session name, including the configured child inference result. | Pending |
 | UserPromptSubmit.2.1 | SatisfactionCapture | Capture eligible satisfaction feedback from the submitted prompt. | Pending |
@@ -63,7 +63,7 @@ Date: 2026-10-03. This table gives each of the 74 pinned registrations an expect
 | TaskCreated.1.1 | TaskGovernance | Apply the task quality and count rules to the actual task creation event. | Pending |
 | ConfigChange.1.1 | EventLogger | Write the native settings-change audit row and applicable configuration difference. | Pending |
 | SessionStart.1.1 | HookHealer | Repair interpreter and executable permissions for installed registered hooks. | Selected cases verified |
-| SessionStart.1.2 | KittyEnvPersist | Persist applicable terminal environment state and remain neutral on remote channels. | Pending |
+| SessionStart.1.2 | KittyEnvPersist | Persist applicable terminal environment state and remain neutral on remote channels. | Selected cases verified |
 | SessionStart.1.3 | LoadContext | Load the applicable native identity, system, and admitted user context. | Pending |
 | SessionStart.1.4 | FreshnessCache.ts --quiet | Write the native freshness cache for the installed source tree. | Selected cases verified |
 | SessionStart.1.5 | SettingsBackport and MergeSettings | Backport applicable settings and atomically merge system and user settings. | Selected cases verified |

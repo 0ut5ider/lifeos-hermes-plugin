@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-03",
+  "date": "2026-10-04",
   "complete": false,
   "scope": "Pinned local, SSH, and Docker evidence. Eleven selected paired cases cover eight registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
@@ -188,7 +188,108 @@
     "patches/hermes-plugin-events.patch": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2",
     "scripts/check_hook_evidence.py": "3fe8328a699091a1c1609a75f47e1f57dc871ef5211609de43ff488fa562cb97",
     "scripts/paired_hook_trace.py": "ec389ce6f6a69e78681addb94b2bf3d912c07af05f8f609a2e6fba4a812048f1",
-    "docs/verification/2026-10-03-paired-lifecycle-effects/paired-lifecycle-driver.py": "f7d33cdf8c8ae30af8c23d88b4c2b565decc97f3e00a2dc1a1c92b8b8d4be88c"
+    "docs/verification/2026-10-03-paired-lifecycle-effects/paired-lifecycle-driver.py": "f7d33cdf8c8ae30af8c23d88b4c2b565decc97f3e00a2dc1a1c92b8b8d4be88c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json": "86a71dcce69af7e79d7d75c235a918896863230bcc9cb0eb86222bae59dff68b",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json": "4fe44b4e1bce2410ed24db331bf0efec63012a949a9f361758fac2d6de76f5cc",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json": "4bf7da851f973cff759d40507a1998d2dbfe3b21ef5b4bd4acac21b1f38a9d29",
+    "scripts/paired_lifecycle_effects.py": "70f80ebc9d485c066cca7a09eac188bee72a6b9d6c8d39a96eac8658756c4445",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/after-state.json": "9fe10f7f45db0b5431ad454b88c034123274e99f37680bdb0993a502600fa064",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/before-state.json": "b2970933c741ec1b7f6c515a351c9ee6d1255b8618054dc15961e2c389bca5ed",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/cli.log": "f16556dea6dd8a73bbe793745070230c83e3341c4c4b21306c2395e20da45f54",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/fixture-events.jsonl": "ef545c51a08912d4470cb3217ab9389af8702f829065ba988f7cafa0c2d13ab4",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/fixture-files-after.json": "161787083db3542495ddc05d074d891d0214021465af26b579ad92ff8bbbf384",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/fixture-files-before.json": "0cdcfc3e6681f57ca55d308df3c7d4bded86bc7ea5b229acf4410937a0a9161c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/hooks.jsonl": "8944434680bd21695eecc951251320d725b5ffe680023e7137b89d4c2cf627a0",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/result.json": "7979f5153ae7b2d9143531df87fb96642144919348e04e5edc10fbf4e0add6e4",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/after-state.json": "9fe10f7f45db0b5431ad454b88c034123274e99f37680bdb0993a502600fa064",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/before-state.json": "b2970933c741ec1b7f6c515a351c9ee6d1255b8618054dc15961e2c389bca5ed",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/cli.log": "ffc8d64e1dec61718f640173e05efb9392dfff3ab1d0be99d417aa09caf3e87c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/fixture-events.jsonl": "43dae6cd083f8edf48b0c2d8e0c4cac7baa088f6b5f908a93ccde36693b9df35",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/fixture-files-after.json": "a386bc334750a1c9e966215aa22378cec506475b25d9cce12188cb78f3ccc8f9",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/fixture-files-before.json": "7143ed755d15c0a0e7cb4390ad98ba5287a6fb5bafdcb9a23357a04d1bb53d23",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/hooks.jsonl": "d356ade83f5e98d9e490d411c5d12dcb54f67f641f4698000d373ef3c815bc56",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/result.json": "98eda84c72212068b111416d912409ee6b4e6365302f3d209fad3184cd001a27",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/after-state.json": "fc78dd84fbe9741c6a2fd909e8c1fc94e6145d3d4f6a45d81ac8dfc11be942a9",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/before-state.json": "655f5f6250ba388963ffa95b85b9055572bdaab5e76c0ba9bc367335e65e6005",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/cli.log": "710d4695ec7d8e43859ec6a0f21c6c036c59bf96a988e935069e81e0a40ee785",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/fixture-events.jsonl": "a6dbf8ca6d3d51f89e6d2b1864ab2f3a41e96826b25f9482ea6751e34dec87f8",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/fixture-files-after.json": "a3cbe5650d32f1803831f3e87ae855ffed5c9e701bb11201674723b9ded060f4",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/fixture-files-before.json": "efc6c978e643a2c24e25fb5643f50f9ee04335d2c905d0847016bb3119d1a078",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/hooks.jsonl": "19d248572d8e2e9f7e104f28b7d5387e3f25263fa54419940a9c5bf51b0ec770",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/result.json": "c7103661c3b851b1b95f731ab7eba37e09849a28549aee67ee58361ee15f267b",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/after-state.json": "fc78dd84fbe9741c6a2fd909e8c1fc94e6145d3d4f6a45d81ac8dfc11be942a9",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/before-state.json": "655f5f6250ba388963ffa95b85b9055572bdaab5e76c0ba9bc367335e65e6005",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/cli.log": "d85a73d9df9c257b14807682d36179cfdd42d4665484e8f36d296d0614649690",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/fixture-events.jsonl": "123f6983068ea4c45376e1be2c3119deb6aa61c60bde74c0bb2316675b6dfc78",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/fixture-files-after.json": "6344ff2d97a837772027cf02014bb6267ee9bb3c4c726e41fcc2c78a14c8a630",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/fixture-files-before.json": "ec00e78a9582d4d0a9133895856b584d38d25999b5317b2f4559df7586c0a188",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/hooks.jsonl": "95838877e880308f66aaa18348f8a60cad010bb4e6d661a5b135800ccbc296d8",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/result.json": "198c37fd1d7fcde1522bcef61faec04ce315c74507201a0d1acd57dccc755d26",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/after-state.json": "91808c4aa25aff71f35e217abd0b97549a952bb70947149bde074cf2998e5544",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/before-state.json": "266df2716154f440894d97c87a923a7194aae7e5d85744d29555004911712035",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/cli.log": "14274f98fd64f8d593ccbb45e3af96b967de6091b146b4d193abd4d0a40e01a6",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/fixture-events.jsonl": "1c0f06a0dd031ebd33a807524f538a5547953da15af97e8b6cc26a9410e1b4c1",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/fixture-files-after.json": "1b66e816c0d5666d75ac11b4f1d18885b32f496296ab81a253d6f6d50b7b3d8b",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/fixture-files-before.json": "2bc543fdb1aa7716da1350458643c7eaf06223f0adf7d45c7f7bf1d4edc7e0f8",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/hooks.jsonl": "cca91a4f87c40b062235d92098ed3602b807c14303686b56ad5ac60abddd810f",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/result.json": "35fba60b8125eba970142e2cbab833c60375850366f6f5422df1c42f7fe61d27",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/after-state.json": "91808c4aa25aff71f35e217abd0b97549a952bb70947149bde074cf2998e5544",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/before-state.json": "266df2716154f440894d97c87a923a7194aae7e5d85744d29555004911712035",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/cli.log": "523419201acdc98a25c97bc36ee878e38c44b3a35b66b12b69e9460f8d13fdcb",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/fixture-events.jsonl": "09cdfddcf1057946f20b1d57506fc098568b76e07e7b93f4d13856203ff08674",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/fixture-files-after.json": "3ec9711d1d48ea8d11b1b80877399e10ca197e886a840a8286f73fd9d4c97684",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/fixture-files-before.json": "b197d2cfc9c2c8978884adb164f9470fecf07d862b359122de9d65c1faad8deb",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/hooks.jsonl": "98bb3f703639128e075f4a9b85d26f4caff686a13c8a745f5872f917f087f67c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/result.json": "4656ff5f8b87f046f4aab2262ca80633a25697e1011654d8f0161361fab35a7b",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/after-state.json": "2fcc320aef6ee3c34dfc577a4bd743be2b675fad39b17d7ffd9e01690185321e",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/cli.log": "2f302f7770edd7a4bb81e5635ceb98a99c21222865ee87cdef7be1ff028eb94f",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/fixture-events.jsonl": "85ffbb100d92b0f2c8c99c99815040ed3b7ec1e373be9f71c42faad3d9f74603",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/fixture-files-after.json": "7fa2793b3886d2a3fd6fcc0834409ae1cb07d9f075fda45602f49389cb5c5acf",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/fixture-files-before.json": "3a81e6fd2c1dd0483fce604fb70d6047440fc8e78f00bb3de6a97d8a54e7b4b0",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/hooks.jsonl": "b80280e2415b7825bc26341a3ba8724e9b7cc4168349339555735dcdb3b32565",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/result.json": "21a32da9dfd10dbaf093b44fb644fbebeeaa4eeec3be9a7621e60d3a2e0b8e94",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/after-state.json": "2fcc320aef6ee3c34dfc577a4bd743be2b675fad39b17d7ffd9e01690185321e",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/cli.log": "b3039690848f7226e866ef3a465c7a39a690cab100a31f68a7aa69fb8eac7c92",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/fixture-events.jsonl": "083d3145a214de82e99d5197d71aedf0aff42dc790c1c3c1cb94ea707c5e0d84",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/fixture-files-after.json": "23a3093b5d1b26e9210edecb85b60b2ecab6f4d160d7e0adf736c9da493bf71a",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/fixture-files-before.json": "88ff0e275f06a946b556d61974419b10a5c3fb8ddfbe78a87a385b64d73ed40a",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/hooks.jsonl": "288ce9acfbe1d3883e2ea73c909b393cc4beebce34eb10e3a64eef19ad432147",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/result.json": "faa551d4b251708ae7f913562f1fb5bf42b105dec18cae774cbc72589a3b7006",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/after-state.json": "da22a14c827d864b1fb0b2da220535242473f36577a96accfae85d3e0e3a2d88",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/cli.log": "c36d6147957060db01666159fd789d869c849c8a36df56081e0b341fbd1b9668",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/fixture-events.jsonl": "684c7073f52b80d988a55997ce074eb8ecafbda5a92332b8525153b229f46e39",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/fixture-files-after.json": "2f04f6f56f4904e0b77c87644baab57c5ed6905b6a5a494423dd5e6b305e2aba",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/fixture-files-before.json": "50b879736dc8ddf75e57120988b8fb46e68fe60fbf1322c24bb9c95433da28c2",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/hooks.jsonl": "7b1508a59ffcdd5c1e51f7d96823524b0f2c95ca1fdd3cd8a1507821b5274b98",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/result.json": "153885dd128be2d3e0f80c281a040aa588125170fbbb39359f00c7204cdd873e",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/after-state.json": "da22a14c827d864b1fb0b2da220535242473f36577a96accfae85d3e0e3a2d88",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/cli.log": "6a1c97c3a45113967675a5106026d3ca9a66689fd5b0aae58dbfe26926364c03",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/fixture-events.jsonl": "7c29c6cc2cfc13b2b447f8b628cab8e1ece0221d72d2f5fb7fc8af7c1dc73352",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/fixture-files-after.json": "912cfdff9f1b4fdbc8276b62c25c06d1e7230bdbd68372e98225402608131565",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/fixture-files-before.json": "388c083ae94778f465843120e4fb6163d49dd62f808da24b303c52e539fd470f",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/hooks.jsonl": "267dd916873dc04b18892fde5c66b78ca0be789873200a88d9ffc2c568b318c6",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/result.json": "55f87566e4a31e08acdf3ca7739826b8fd8d257f55012af0021e297a5dee5b5c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/after-state.json": "5dda90dd256b7d02a5830c74915eeab12bc1b8cefb77e4561a404fa6dbdc0230",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/cli.log": "28bab1e8dfdea71554819b33493e47f7703f9075ec5263a4e8866fbcc57b85eb",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/fixture-events.jsonl": "712bdeff36f2907025b7a393874d4997e254fad95dead81b54c092fa79ef9e46",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/fixture-files-after.json": "a1499679fb938bad83cbc91922106d528dd75bab1b78436703f622691da4d2d6",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/fixture-files-before.json": "c047d6495dfd910fdc38eb40888f3be7639885fb0d78483a1669da33861f7f0f",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/hooks.jsonl": "1320864794bd4e36c25c1570afd37b140952ce650f4958c17f073441b10ea546",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/result.json": "9d92ce376753316f393db590a9046c0a71e77b6507083db6cf0f8650729c4e6a",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/after-state.json": "5dda90dd256b7d02a5830c74915eeab12bc1b8cefb77e4561a404fa6dbdc0230",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/cli.log": "a61d3854eaafee9467554cc312a8591c205fb87fd7b737b1df46fc5666efe9b1",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/fixture-events.jsonl": "170746676011a3c3e570283c129dbf54f5b032f3caee598edc91ff51d68696c4",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/fixture-files-after.json": "e6cd5f8c585d60e5e71060d793889e656e06c6914ce6099c30b39a3803b2a922",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/fixture-files-before.json": "3fad818d8303a58255d7e144984286353e2b03b6949268d6098fa43a04449e9c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/hooks.jsonl": "02db5a1e00c8a4021ac91d9efc4306678c57bcc509098f7e2770fd6d6e9a5f3e",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/result.json": "23cbf597f8304cfb687aaffe133768b0fd9293940201c6eec04c26f092a5809c",
+    "docs/verification/2026-10-04-paired-lifecycle-effects/README.md": "2869bb1b114ad3b252022da5a4a75d983aebadcbb9b7c13f0b890104aa2d1457"
   },
   "registrations": [
     {
@@ -1152,12 +1253,80 @@
       "handler": "$HOME/.claude/hooks/MemoryHealthGate.hook.ts",
       "expected_effect": "Check native memory health and publish the applicable result without losing async delivery.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "memory-health-critical",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/memory-health-critical/result.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/memory-health-critical/result.json"
+          ],
+          "native": {
+            "before": {
+              "health_rows": 0
+            },
+            "after": {
+              "health_rows": 1,
+              "overall": "critical",
+              "critical_count": 14,
+              "critical_count_matches": true,
+              "required_hook_missing": true,
+              "warning_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "health_rows": 0
+            },
+            "after": {
+              "health_rows": 1,
+              "overall": "critical",
+              "critical_count": 14,
+              "critical_count_matches": true,
+              "required_hook_missing": true,
+              "warning_present": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_session_end_all.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify healthy and warning reports, unavailable tools, managed source policy, and all registered event placements."
     },
     {
       "id": "SessionEnd.1.5",
@@ -1166,12 +1335,218 @@
       "handler": "$HOME/.claude/hooks/DocIntegrity.hook.ts",
       "expected_effect": "Check documentation integrity and report applicable stale documentation.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "doc-inventory-drift",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-drift/result.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-drift/result.json"
+          ],
+          "native": {
+            "before": {
+              "inventory_events": 0
+            },
+            "after": {
+              "inventory_events": 1,
+              "ok": false,
+              "finding_count": 2,
+              "finding_keys": [
+                "missing_active:KNOWLEDGE",
+                "unknown_on_disk:SURPRISE"
+              ],
+              "unrelated_event_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "inventory_events": 0
+            },
+            "after": {
+              "inventory_events": 1,
+              "ok": false,
+              "finding_count": 2,
+              "finding_keys": [
+                "missing_active:KNOWLEDGE",
+                "unknown_on_disk:SURPRISE"
+              ],
+              "unrelated_event_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        },
+        {
+          "id": "doc-inventory-clean",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-clean/result.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-clean/result.json"
+          ],
+          "native": {
+            "before": {
+              "inventory_events": 0
+            },
+            "after": {
+              "inventory_events": 1,
+              "ok": true,
+              "finding_count": 0,
+              "finding_keys": [],
+              "unrelated_event_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "inventory_events": 0
+            },
+            "after": {
+              "inventory_events": 1,
+              "ok": true,
+              "finding_count": 0,
+              "finding_keys": [],
+              "unrelated_event_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        },
+        {
+          "id": "doc-inventory-unparseable",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/doc-inventory-unparseable/result.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/doc-inventory-unparseable/result.json"
+          ],
+          "native": {
+            "before": {
+              "inventory_events": 0
+            },
+            "after": {
+              "inventory_events": 1,
+              "ok": false,
+              "finding_count": 1,
+              "finding_keys": [
+                "inventory_unparseable:doc"
+              ],
+              "unrelated_event_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "inventory_events": 0
+            },
+            "after": {
+              "inventory_events": 1,
+              "ok": false,
+              "finding_count": 1,
+              "finding_keys": [
+                "inventory_unparseable:doc"
+              ],
+              "unrelated_event_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionEnd",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_session_end_all.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify the other documentation handlers, inference branches, changed-file detection, and concurrent lifecycle effects."
     },
     {
       "id": "SessionEnd.1.6",
@@ -1446,6 +1821,67 @@
             "cli_exit_code": 0,
             "model_generation_requests": 0
           }
+        },
+        {
+          "id": "healer-containment",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/healer-containment/result.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/healer-containment/result.json"
+          ],
+          "native": {
+            "before": {
+              "target_executable": false
+            },
+            "after": {
+              "target_executable": false,
+              "containment_refused": true,
+              "target_content_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "target_executable": false
+            },
+            "after": {
+              "target_executable": false,
+              "containment_refused": true,
+              "target_content_preserved": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
         }
       ],
       "related_native_tests": [
@@ -1460,12 +1896,76 @@
       "handler": "$HOME/.claude/hooks/KittyEnvPersist.hook.ts",
       "expected_effect": "Persist applicable terminal environment state and remain neutral on remote channels.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "kitty-cli",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/configuration.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/runtime-manifest.json",
+            "scripts/paired_lifecycle_effects.py",
+            "scripts/paired_hook_trace.py",
+            "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/native/kitty-cli/result.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/after-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/before-state.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/cli.log",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/fixture-events.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/fixture-files-after.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/fixture-files-before.json",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/hooks.jsonl",
+            "docs/verification/2026-10-04-paired-lifecycle-effects/hermes/kitty-cli/result.json"
+          ],
+          "native": {
+            "before": {
+              "environment_present": false,
+              "stale_title_present": true
+            },
+            "after": {
+              "shared_environment_matches": true,
+              "session_environment_matches": true,
+              "stale_title_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          },
+          "hermes": {
+            "before": {
+              "environment_present": false,
+              "stale_title_present": true
+            },
+            "after": {
+              "shared_environment_matches": true,
+              "session_environment_matches": true,
+              "stale_title_present": false
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "SessionStart",
+            "cli_exit_code": 0,
+            "model_generation_requests": 0
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_kitty_channel.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify compaction, subagent and remote-channel branches, actual terminal delivery, and the complete startup group."
     },
     {
       "id": "SessionStart.1.3",

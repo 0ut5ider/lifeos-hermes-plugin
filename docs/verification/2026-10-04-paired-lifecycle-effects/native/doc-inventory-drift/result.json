@@ -1,0 +1,58 @@
+{
+  "before": {
+    "inventory_events": 0
+  },
+  "after": {
+    "inventory_events": 1,
+    "ok": false,
+    "finding_count": 2,
+    "finding_keys": [
+      "missing_active:KNOWLEDGE",
+      "unknown_on_disk:SURPRISE"
+    ],
+    "unrelated_event_preserved": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "cc607c54-22ea-4795-9ac9-1b15c059bdc5",
+  "seconds": 0.769,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.5",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.5 /home/lifeos-claude-ref/workspace/paired-effects-20261004/run-v1/doc-inventory-drift/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvRG9jSW50ZWdyaXR5Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/DocIntegrity.hook.ts": "a0b979619ea27bcc3b9dbafe4e04c5922137e02a6458e36536d53ac776aa542f"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "b80280e2415b7825bc26341a3ba8724e9b7cc4168349339555735dcdb3b32565",
+    "fixture-events.jsonl": "85ffbb100d92b0f2c8c99c99815040ed3b7ec1e373be9f71c42faad3d9f74603",
+    "cli.log": "2f302f7770edd7a4bb81e5635ceb98a99c21222865ee87cdef7be1ff028eb94f",
+    "before-state.json": "0810265ff46de6f7fb077ec699a12987457c1dd61097ead909cbba3bc399c232",
+    "after-state.json": "2fcc320aef6ee3c34dfc577a4bd743be2b675fad39b17d7ffd9e01690185321e",
+    "fixture-files-before.json": "3a81e6fd2c1dd0483fce604fb70d6047440fc8e78f00bb3de6a97d8a54e7b4b0",
+    "fixture-files-after.json": "7fa2793b3886d2a3fd6fcc0834409ae1cb07d9f075fda45602f49389cb5c5acf"
+  }
+}

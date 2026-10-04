@@ -14,6 +14,10 @@ Keep it equal to the version in both plugin manifests.
 - Paired ToolSearch Safety and StopFailure audit controls on disposable profiles.
 - Nine paired lifecycle effect cases through real Claude Code and Hermes events,
   with exact synthetic file captures and assertions checked by the evidence gate.
+- Six further paired lifecycle cases for repair containment, terminal persistence,
+  memory-health reporting, and documentation inventory. Twelve real CLI runs pass.
+- A full-experience release plan with private FlashNext tiers and Discord voice
+  input and spoken replies. Voice follows the core functionality.
 
 ### Fixed
 

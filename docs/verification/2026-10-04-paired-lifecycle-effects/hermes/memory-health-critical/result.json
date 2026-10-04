@@ -1,0 +1,71 @@
+{
+  "before": {
+    "health_rows": 0
+  },
+  "after": {
+    "health_rows": 1,
+    "overall": "critical",
+    "critical_count": 14,
+    "critical_count_matches": true,
+    "required_hook_missing": true,
+    "warning_present": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261004_125905_a921c0",
+  "seconds": 5.932,
+  "command": [
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.4",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.4 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261004/run-v1/memory-health-critical/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvTWVtb3J5SGVhbHRoR2F0ZS5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/MemoryHealthGate.hook.ts": "644d7e2d5ef3e9c5ac462d775b45a202f8735b9ee86a21215b1b5996f8381290",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/LIFEOS/TOOLS/MemoryHealthCheck.ts": "d6b248278701510055fb3e157ff6b903ec0696557ba4a61138e364850764e6b3"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "98bb3f703639128e075f4a9b85d26f4caff686a13c8a745f5872f917f087f67c",
+    "fixture-events.jsonl": "09cdfddcf1057946f20b1d57506fc098568b76e07e7b93f4d13856203ff08674",
+    "cli.log": "523419201acdc98a25c97bc36ee878e38c44b3a35b66b12b69e9460f8d13fdcb",
+    "before-state.json": "266df2716154f440894d97c87a923a7194aae7e5d85744d29555004911712035",
+    "after-state.json": "91808c4aa25aff71f35e217abd0b97549a952bb70947149bde074cf2998e5544",
+    "fixture-files-before.json": "b197d2cfc9c2c8978884adb164f9470fecf07d862b359122de9d65c1faad8deb",
+    "fixture-files-after.json": "3ec9711d1d48ea8d11b1b80877399e10ca197e886a840a8286f73fd9d4c97684"
+  }
+}
