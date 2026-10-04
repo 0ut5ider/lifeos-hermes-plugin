@@ -22,14 +22,6 @@ CASES = {
     'healer-executable': [('SessionStart.1.1', 'hooks/HookHealer.hook.ts')],
     'healer-containment': [('SessionStart.1.1', 'hooks/HookHealer.hook.ts')],
     'kitty-cli': [('SessionStart.1.2', 'hooks/KittyEnvPersist.hook.ts')],
-    'kitty-remote': [('SessionStart.1.2', 'hooks/KittyEnvPersist.hook.ts')],
-    'kitty-subagent': [('SessionStart.1.2', 'hooks/KittyEnvPersist.hook.ts')],
-    'context-desktop': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
-    'context-disabled': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
-    'context-remote': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
-    'context-subagent': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
-    'context-advisory-steady': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
-    'context-advisory-cleared': [('SessionStart.1.3', 'hooks/LoadContext.hook.ts')],
     'freshness-reviewed': [('SessionStart.1.4', 'LIFEOS/TOOLS/FreshnessCache.ts')],
     'settings-merge': [('SessionStart.1.5', 'LIFEOS/TOOLS/MergeSettings.ts')],
     'settings-backport': [('SessionStart.1.5', 'LIFEOS/TOOLS/SettingsBackport.ts')],
@@ -45,9 +37,6 @@ CASES = {
     'doc-inventory-unparseable': [('SessionEnd.1.5', 'hooks/DocIntegrity.hook.ts')],
 }
 BLOCK_REASON = 'PAIR_BLOCK_BEFORE_MODEL'
-ADVISORY_KEY = 'doc.integrity.memory_dir missing_active:KNOWLEDGE'
-RELATIONSHIP_TEXT = '- PAIR_RELATIONSHIP_NOTE\n'
-WISDOM_TEXT = '### PAIR_WISDOM_GUIDANCE [CRYSTAL: 95%]\n### PAIR_LOW_CONFIDENCE [CRYSTAL: 50%]\n'
 
 
 def read_json(path: Path):
@@ -83,26 +72,7 @@ def check_pair(case: dict) -> list[str]:
         if side.get('model_generation_requests') != 0:
             errors.append(f'{name}: model generation was attempted')
         before, after = side['before'], side['after']
-        if name.startswith('context-'):
-            loaded = name == 'context-desktop'
-            marker = None
-            if loaded or name in {'context-advisory-steady', 'context-advisory-cleared'}:
-                marker = {'keys': [] if name == 'context-advisory-cleared' else [ADVISORY_KEY],
-                          'sessions_since_emit': 1 if name == 'context-advisory-steady' else 0,
-                          'last_emitted_at_present': True}
-            expected = {'relationship_present': loaded, 'wisdom_present': loaded,
-                        'low_confidence_present': False, 'advisory_present': loaded,
-                        'sources_preserved': True, 'marker': marker,
-                        'timing_recorded': name != 'context-subagent',
-                        'ready_present': not loaded and name != 'context-subagent'}
-            if before != {'marker_present': name in {'context-advisory-steady', 'context-advisory-cleared'}} or after != expected:
-                errors.append(f'{name}: context effect is missing')
-        elif name in {'kitty-remote', 'kitty-subagent'}:
-            if before != {'stale_title_present': True} or after != {
-                    'shared_environment_present': False, 'session_environment_present': False,
-                    'stale_title_preserved': True}:
-                errors.append(f'{name}: terminal gate effect is missing')
-        elif name == 'healer-executable':
+        if name == 'healer-executable':
             if before.get('executable') is not False or not all(after.get(key) is True for key in
                     ('executable', 'healed_target', 'unrelated_preserved')):
                 errors.append(f'{name}: executable repair is missing')
@@ -189,33 +159,6 @@ def seed_work(home: Path, case: str, session_id: str) -> None:
 def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool = False) -> dict:
     root = home / '.claude'
     lifeos = root / 'LIFEOS'
-    if case.startswith('context-'):
-        marker_path = lifeos / 'MEMORY/STATE/advisory-readback.json'
-        if not after:
-            return {'marker_present': marker_path.exists()}
-        trace = read_json_lines(home / 'hooks.jsonl')[0]
-        stdout = trace['stdout']
-        marker = read_json(marker_path) if marker_path.exists() else None
-        if marker is not None:
-            marker = {'keys': marker['keys'], 'sessions_since_emit': marker['sessions_since_emit'],
-                      'last_emitted_at_present': bool(marker['last_emitted_at'])}
-        sources = read_json(home / 'context-sources.json')
-        return {'relationship_present': 'PAIR_RELATIONSHIP_NOTE' in stdout,
-                'wisdom_present': 'PAIR_WISDOM_GUIDANCE' in stdout,
-                'low_confidence_present': 'PAIR_LOW_CONFIDENCE' in stdout,
-                'advisory_present': 'PAIR_ADVISORY_FINDING' in stdout,
-                'sources_preserved': all((root / name).read_text() == content for name, content in sources.items()),
-                'marker': marker, 'timing_recorded': 'Session start time recorded' in trace['stderr'],
-                'ready_present': 'LifeOS session ready' in stdout}
-    if case in {'kitty-remote', 'kitty-subagent'}:
-        state = lifeos / 'MEMORY/STATE'
-        stale = state / 'tab-titles/777.json'
-        if not after:
-            return {'stale_title_present': stale.exists()}
-        return {'shared_environment_present': (state / 'kitty-env.json').exists(),
-                'session_environment_present': (state / 'kitty-sessions' / (session_id + '.json')).exists(),
-                'stale_title_preserved': stale.exists() and read_json(stale) == {
-                    'title': 'Old session title', 'state': 'working'}}
     if case == 'healer-containment':
         target = home / 'outside.sh'
         result = {'target_executable': bool(target.stat().st_mode & 0o111)}
@@ -330,31 +273,6 @@ def fixture_event(case: str) -> None:
         print(json.dumps({'decision': 'block', 'reason': BLOCK_REASON}))
 
 
-def read_json_lines(path: Path) -> list[dict]:
-    return [json.loads(line) for line in path.read_text().splitlines()]
-
-
-def seed_context(home: Path, case: str) -> None:
-    root = home / '.claude'
-    today = datetime.now(timezone.utc)
-    relationship = f'LIFEOS/MEMORY/RELATIONSHIP/{today:%Y-%m}/{today:%Y-%m-%d}.md'
-    event = {'type': 'doc.integrity.memory_dir', 'source': 'fixture',
-             'timestamp': today.isoformat(), 'ok': case == 'context-advisory-cleared',
-             'findings': [] if case == 'context-advisory-cleared' else [
-                 {'key': 'missing_active:KNOWLEDGE', 'detail': 'PAIR_ADVISORY_FINDING'}]}
-    sources = {relationship: RELATIONSHIP_TEXT, 'LIFEOS/MEMORY/WISDOM/FRAMES/fixture.md': WISDOM_TEXT,
-               'LIFEOS/MEMORY/STATE/events.jsonl': json.dumps(event) + '\n'}
-    for name, content in sources.items():
-        path = root / name
-        path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(content)
-    write_json(home / 'context-sources.json', sources)
-    if case in {'context-advisory-steady', 'context-advisory-cleared'}:
-        write_json(root / 'LIFEOS/MEMORY/STATE/advisory-readback.json', {
-            'v': 1, 'keys': [ADVISORY_KEY], 'sessions_since_emit': 0,
-            'last_emitted_at': '2026-10-01T00:00:00.000Z'})
-
-
 def hook_commands(home: Path, case: str, source: Path, trace_script: Path) -> list[tuple[str, str, list[Path]]]:
     root = home / '.claude'
     commands = []
@@ -363,10 +281,6 @@ def hook_commands(home: Path, case: str, source: Path, trace_script: Path) -> li
         source_files = [path]
         if case == 'memory-health-critical':
             source_files.append(source / 'LIFEOS/TOOLS/MemoryHealthCheck.ts')
-        if case.startswith('context-'):
-            source_files.extend(source / name for name in (
-                'hooks/lib/learning-readback.ts', 'hooks/lib/advisory-readback.ts',
-                'hooks/lib/notifications.ts', 'LIFEOS/TOOLS/lib/MemoryAccess.ts'))
         command = f'bun {shlex.quote(str(path))}'
         if case == 'freshness-reviewed':
             command += ' --quiet'
@@ -414,16 +328,9 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
             external.chmod(0o644)
             (folder / 'Registered.hook.sh').unlink()
             (folder / 'Registered.hook.sh').symlink_to(external)
-    if case.startswith('kitty-'):
+    if case == 'kitty-cli':
         write_json(root / 'LIFEOS/MEMORY/STATE/tab-titles/777.json',
                    {'title': 'Old session title', 'state': 'working'})
-    if case.startswith('context-'):
-        seed_context(home, case)
-        if case in {'context-disabled', 'context-advisory-steady', 'context-advisory-cleared'}:
-            settings['dynamicContext'] = {key: False for key in (
-                'relationshipContext', 'learningReadback', 'advisoryReadback', 'activeWorkSummary')}
-            if case != 'context-disabled':
-                settings['dynamicContext']['advisoryReadback'] = True
     if case == 'memory-health-critical':
         tools = root / 'LIFEOS/TOOLS'
         tools.mkdir(parents=True)
@@ -494,12 +401,9 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                        ANTHROPIC_BASE_URL=endpoint, ANTHROPIC_AUTH_TOKEN='PAIR_LIFECYCLE',
                        ANTHROPIC_MODEL='lifecycle-fixture', CLAUDE_CODE_MAX_RETRIES='0',
                        CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC='1', DISABLE_TELEMETRY='1', DISABLE_ERROR_REPORTING='1')
-    if case.startswith(('kitty-', 'context-')):
-        environment.update(LIFEOS_NOTIFICATION_CHANNEL='discord' if case.endswith('-remote') else 'desktop',
-                           TERM='xterm-kitty',
+    if case == 'kitty-cli':
+        environment.update(LIFEOS_NOTIFICATION_CHANNEL='desktop', TERM='xterm-kitty',
                            KITTY_LISTEN_ON='unix:' + str(home / 'no-kitty.sock'), KITTY_WINDOW_ID='777')
-        if case.endswith('-subagent'):
-            environment['CLAUDE_CODE_FORK_SUBAGENT'] = '1'
     if side == 'hermes':
         profile = home / '.hermes'
         profile.mkdir()
@@ -516,9 +420,6 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
         for parent in (home.parent, home.parent.parent):
             os.chown(parent, spec['uid'], spec['gid'])
     command = [*spec['command'], BLOCK_REASON]
-    if spec.get('isolate_tmp'):
-        command = ['bwrap', '--ro-bind', '/', '/', '--bind', str(home), str(home),
-                   '--tmpfs', '/tmp', *command]
     before_requests = len(guard.observed)
     started = time.monotonic()
     execution = {'user': spec['uid'], 'group': spec['gid'], 'extra_groups': []} if os.geteuid() == 0 else {}

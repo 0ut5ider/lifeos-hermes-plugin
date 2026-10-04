@@ -6,6 +6,70 @@ from scripts.paired_lifecycle_effects import CASES, check_pair
 
 
 class PairedLifecycleEffectTests(unittest.TestCase):
+    def context_case(self, name, *, loaded=False, marker=None, timing=True):
+        after = {'relationship_present': loaded, 'wisdom_present': loaded,
+                 'low_confidence_present': False, 'advisory_present': loaded,
+                 'sources_preserved': True, 'timing_recorded': timing,
+                 'marker': marker, 'ready_present': not loaded and timing}
+        return self.new_case(name, 'SessionStart', {'marker_present': marker is not None and not loaded}, after)
+
+    def test_context_requires_all_admitted_sources_and_exact_advisory_marker(self):
+        case = self.context_case('context-desktop', loaded=True,
+                                 marker={'keys': ['doc.integrity.memory_dir missing_active:KNOWLEDGE'],
+                                         'sessions_since_emit': 0, 'last_emitted_at_present': True})
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['wisdom_present'] = False
+        self.assertIn('context-desktop: context effect is missing', check_pair(case))
+
+    def test_disabled_context_requires_neutral_output_and_no_marker(self):
+        case = self.context_case('context-disabled')
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['advisory_present'] = True
+        self.assertIn('context-disabled: context effect is missing', check_pair(case))
+
+    def test_remote_context_requires_no_owner_content_or_marker(self):
+        case = self.context_case('context-remote')
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['relationship_present'] = True
+        self.assertIn('context-remote: context effect is missing', check_pair(case))
+
+    def test_subagent_context_requires_no_context_or_session_timing(self):
+        case = self.context_case('context-subagent', timing=False)
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['timing_recorded'] = True
+        self.assertIn('context-subagent: context effect is missing', check_pair(case))
+
+    def test_steady_advisory_requires_suppression_and_incremented_marker(self):
+        case = self.context_case('context-advisory-steady',
+                                 marker={'keys': ['doc.integrity.memory_dir missing_active:KNOWLEDGE'],
+                                         'sessions_since_emit': 1, 'last_emitted_at_present': True})
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['marker']['sessions_since_emit'] = 0
+        self.assertIn('context-advisory-steady: context effect is missing', check_pair(case))
+
+    def test_cleared_advisory_requires_empty_marker_and_no_old_warning(self):
+        case = self.context_case('context-advisory-cleared',
+                                 marker={'keys': [], 'sessions_since_emit': 0, 'last_emitted_at_present': True})
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['marker']['keys'] = ['doc.integrity.memory_dir missing_active:KNOWLEDGE']
+        self.assertIn('context-advisory-cleared: context effect is missing', check_pair(case))
+
+    def test_remote_terminal_requires_preserved_existing_state(self):
+        case = self.new_case('kitty-remote', 'SessionStart', {'stale_title_present': True},
+                             {'shared_environment_present': False, 'session_environment_present': False,
+                              'stale_title_preserved': True})
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['stale_title_preserved'] = False
+        self.assertIn('kitty-remote: terminal gate effect is missing', check_pair(case))
+
+    def test_subagent_terminal_requires_no_session_environment_write(self):
+        case = self.new_case('kitty-subagent', 'SessionStart', {'stale_title_present': True},
+                             {'shared_environment_present': False, 'session_environment_present': False,
+                              'stale_title_preserved': True})
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['session_environment_present'] = True
+        self.assertIn('kitty-subagent: terminal gate effect is missing', check_pair(case))
+
     def new_case(self, name, event, before, after):
         side = {'before': before, 'after': after, 'hook_exit_codes': [0],
                 'event': event, 'cli_exit_code': 0, 'model_generation_requests': 0}
