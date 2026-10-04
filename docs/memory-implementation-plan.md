@@ -1,5 +1,13 @@
 # Memory implementation and activation gates
 
+## October 4 continuation
+
+Adrian directs work to proceed through steps 2 to 7 of the [full experience plan](full-experience-release-plan.md). Hook compatibility remains a combined release gate. Candidate feature work proceeds without changing the active `.212` installation.
+
+The [verified resume gate](verification/2026-10-04-memory-resume/README.md) passes 100 tests and 68 subtests. Fact-only restart admission preserves a stale generation until foreground request repair. Applied identity proposals cannot use that refresh. Actual SDK and complete Hermes process checks preserve the transcript while excluding the retired claim from the next model request.
+
+The [native backup note](../notes/2026-10-04-native-memory-backup.md) records coherent private snapshots and the Hermes create and inspect commands. Its final gate passes 47 tests and 14 subtests. Snapshot reconstruction in a disposable store preserves current references and forgotten status. Full ownership backup, product restore, configuration and service recovery, compression rotation, and the remaining source and delivery gates remain open. Ownership activation stays disabled.
+
 Date: 2026-09-30. Adrian authorizes implementation of the reviewed memory design now. This authorization changes the earlier implementation sequence. Hook parity remains a separate completion gate. Memory ownership and remote sharing require their acceptance evidence before activation.
 
 ## Work sequence

@@ -1,0 +1,25 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupCommandTests.test_command_creates_and_verifies_the_selected_native_store _
+tests/test_memory_backup_command.py:36: in test_command_creates_and_verifies_the_selected_native_store
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+E   AssertionError: 2 != 0 : hermes: 'lifeos-backup' is not a `hermes` command.
+E   Did you mean: lifeos-probe, backup?
+E   Run `hermes --help` to see all commands.
+_ MemoryBackupCommandTests.test_command_refuses_an_existing_destination_without_replacing_it _
+tests/test_memory_backup_command.py:56: in test_command_refuses_an_existing_destination_without_replacing_it
+    self.assertEqual(json.loads(result.stderr)['status'], 'rejected')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/json/__init__.py:352: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/json/decoder.py:345: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/json/decoder.py:363: in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+E   json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup_command.py::MemoryBackupCommandTests::test_command_creates_and_verifies_the_selected_native_store
+FAILED tests/test_memory_backup_command.py::MemoryBackupCommandTests::test_command_refuses_an_existing_destination_without_replacing_it
+2 failed in 9.80s

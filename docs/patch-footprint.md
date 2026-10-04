@@ -18,7 +18,7 @@ The bundle uses nine Hermes patch groups and ten LifeOS patches. It targets the 
 
 The groups replace the earlier 20-patch development sequence. Each changed file belongs to one group. Required callback registration belongs to the plugin-event group, and actual turn-route metadata belongs to the turn-gate group. The required-middleware group supplies model-request admission and its tests. It does not remove the required host behavior.
 
-The redundant hook lookup helper is removed. Hermes's stock source launcher remains unchanged. The plugin registers `hermes lifeos-infer` and `hermes lifeos-probe` through the existing command API. These commands register before LifeOS is installed.
+The redundant hook lookup helper is removed. Hermes's stock source launcher remains unchanged. The plugin registers `hermes lifeos-infer`, `hermes lifeos-probe`, and `hermes lifeos-backup` through the existing command API. These commands register before LifeOS is installed. Backup execution requires the selected profile's private memory configuration and an available native store.
 
 ## LifeOS model observations
 

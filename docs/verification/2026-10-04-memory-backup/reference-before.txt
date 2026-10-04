@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupTests.test_changed_registered_content_cannot_be_reported_as_a_verified_backup _
+tests/test_memory_backup.py:151: in test_changed_registered_content_cannot_be_reported_as_a_verified_backup
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup.py::MemoryBackupTests::test_changed_registered_content_cannot_be_reported_as_a_verified_backup
+1 failed, 8 deselected in 2.33s
