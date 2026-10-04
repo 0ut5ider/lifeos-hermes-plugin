@@ -18,6 +18,8 @@ Keep it equal to the version in both plugin manifests.
   memory-health reporting, and documentation inventory. Twelve real CLI runs pass.
 - Eight paired startup cases cover context readback, advisory markers, and terminal
   gates. Seven have equal effects. The remote terminal isolation difference remains explicit.
+- Three paired request-delivery cases verify selected startup content inside real
+  model requests. The loopback endpoint returns the expected authentication failure.
 - A full-experience release plan with private FlashNext tiers and Discord voice
   input and spoken replies. Voice follows the core functionality.
 

@@ -1,0 +1,109 @@
+{
+  "before": {
+    "marker_present": false
+  },
+  "after": {
+    "relationship_present": false,
+    "wisdom_present": false,
+    "low_confidence_present": false,
+    "advisory_present": false,
+    "sources_preserved": true,
+    "marker": null,
+    "timing_recorded": true,
+    "ready_present": true,
+    "model_context_contains": {
+      "relationship": false,
+      "wisdom": false,
+      "advisory": false,
+      "low_confidence": false
+    }
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 1,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "session_id": "20261004_135951_5111e3",
+  "seconds": 5.0,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-disabled",
+    "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-disabled",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.3",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.3 /home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-disabled/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvTG9hZENvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/LoadContext.hook.ts": "fad2cf437beab40ac8b143374940f5d9a381a6935e1e557fa4332506f5c77253",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/learning-readback.ts": "52403f16d92d74fd253f5f64bd2f60ad78b4c1532af01f59a77f87459d85cb6b",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/advisory-readback.ts": "cd06025d13590aae1a76de1bc050314be55c6157d0ce9f6e93d665db667c2a47",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/notifications.ts": "91315d1e4eef6a1cee4d16ebd236edb3a3b3f437911aa65ecab9a3c611e21127",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/LIFEOS/TOOLS/lib/MemoryAccess.ts": "449229fbd3d5a786aefc70cc593f87523f60d2f3f0358ce2f3aa2aa7d4fb6fb0"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "770dc9a16ec1099c0865a3d1e79779516633f02d8e7b851599ee6e81b5c7f32a",
+      "model": "lifecycle-fixture",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "c1b22edf31cef46060293c91f7d43ff39b56cd8ca5cfc09f795746b676300814",
+    "fixture-events.jsonl": "186a0fe1f6bd4d07965e2b383fb3d470c6a17b8d504cea71e0e522eca9b818d6",
+    "cli.log": "9c360d0dd5304c2439d5e39b259c003f9e4184bd1713859e41e306a642c950d9",
+    "before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "after-state.json": "be011ea5f57a8b00052d19f7ac870fd2352f8abc0466480917a15a16768c2ef8",
+    "fixture-files-before.json": "ba45928570c55f889fd4d8e776fe331434e8d01891d70e9b498f403cb12d8429",
+    "fixture-files-after.json": "cfcca66a777e420c98c1730cc1a4734814f89ed265d0278cd131bc3d562ec68f"
+  }
+}

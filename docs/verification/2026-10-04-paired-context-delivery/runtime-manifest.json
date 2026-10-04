@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-04",
+  "driver_sha256": "2df0d07cb4328e4c8ec7e00252e58bdc7e3dbc3d1965297d613d2722f04ffe0b",
+  "trace_sha256": "ec389ce6f6a69e78681addb94b2bf3d912c07af05f8f609a2e6fba4a812048f1",
+  "native_binary": {
+    "path": "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "sha256": "d81396a668eb76fbddb49a2a5841f1b5d7af96b4c1f6500ced92f2c988f5bcd4"
+  },
+  "hermes_module_resolution": {
+    "hermes_cli.main": {
+      "path": "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/hermes/hermes_cli/main.py",
+      "sha256": "e8c79860b4c5aa39ac578e10841fe5909db89e56ff0c3f3797b1faf2a263f4de"
+    },
+    "run_agent": {
+      "path": "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/hermes/run_agent.py",
+      "sha256": "72f2fe8a2c6113e6c1033f920f00036bc6d757d4f566b376ab8c1a557b70ae1e"
+    },
+    "model_tools": {
+      "path": "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/hermes/model_tools.py",
+      "sha256": "ca07054ca98d5bd2b28b9e45d2efacddea5e583330f4daa8efd4d327c31734dc"
+    }
+  },
+  "plugin_path": "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.hermes/plugins/lifeos-hook-bridge",
+  "plugin_files": {
+    "__init__.py": "e57d608592a09e1a15bf3a4351e5b152cab8d085d2f5003b258c9674512244c6",
+    "bash_permissions.py": "915eb5c32b3ff779e83279d0d82aad9d23d173af918b74473b37f3f291275795",
+    "bridge.py": "a570fdb6d34414404859ecead46946be5c897ff88111caff5690d19d7709d9b7",
+    "carrier_probe.py": "786ade6e0bc324fd227384d87386eda2503531e900ed378441d934cf3c180e7c",
+    "cli.py": "20bf0e8d94132fd3f85f585b0f74dcd0d62a16c530cc07e5c7591303ca6eefa7",
+    "file_permissions.py": "abbf27fa8b52852a32ed9ebe1eac0fbbf5061ffc85972e36a2bb2ddde52b52c9",
+    "install_source.py": "4103ea1abd5c9ee097ff8568fff6a0010b7baa9463dcb5ddc97ce60b6215ad56",
+    "installation_lock.py": "4538712c46be7d6697329c36c4a4e8eda577f828b67447c28706aa216da0da14",
+    "memory_access.py": "469d3b471c7510f78f80b20f309f6607a8ee5289af70b53bb59a406616ea771d",
+    "memory_administration.py": "0f3166ac9e67d970348b1c12c9f36666c33958c6ef08e108e77a879f638a3466",
+    "memory_adoption.py": "d5b095b404142babb813a5667e63f5938a9c5d76ab1b5c3d2c0727f35ac74b62",
+    "memory_canonical.py": "25e0c2baac599391dfac6eaac27f1a7fad971e805c69240181e667d1055fbbb9",
+    "memory_context.py": "a8ebc7293d1647e977c6348a537da6975c4517c6affdea28d1cc7c4baafcd9f4",
+    "memory_diagnostics.py": "249b2b2a585a41cfdc2b9b7826a249d3181f250547dd74b56114467e01633844",
+    "memory_history.py": "3d4214ca98577fb133c46d06b4d2d69f7add4bb102fa6ab2f4b96db00d3369b2",
+    "memory_http.py": "6942a24681f50fecc0a5178c366b0c46cad67d7f71b61f88491fc94d4006b6dc",
+    "memory_knowledge.py": "26b4e04eb5f466ffee5cc66a7d011da19a422c08d209c919eab68969780b1875",
+    "memory_mcp.py": "53ce3967dcc45f8d4bee9d9ea480cda19c14b91940c289a846328250762a4901",
+    "memory_policy.py": "7d73b82e876580991a765d8a8aa760e3d74ab869463b2e4167d7becdae38161b",
+    "memory_preferences.py": "e0520b880d6d2708597d88f60210169585600cf2ec3524ab889749d9c7072fff",
+    "memory_prompt.py": "e3ce0be975d5d7c84131593b03bc0f22a1c33e62fb9998f7a286550f18169673",
+    "memory_proposals.py": "ee86c510a3309ae16127d34c865a9024792c6391730d1671916d7d09c773ae78",
+    "memory_provider.py": "b6ecdf633ce16a7bca88709db1a4f872748c2ccdc57427e0b0fa58cd6b4ef77c",
+    "memory_pulse.py": "634953117fd3b30acd27fb3b486b34101408c38d48cc9dbb797a0902c457c7ae",
+    "memory_restore.py": "4fc61a824765381650902949e790247fccae099189ab58d00e1743f9730ea950",
+    "memory_rpc.py": "9b32d66cfb8265e2e5dfd55d1c3c203ec7348b2cf4c3e61e8e17dc1f0feee9c6",
+    "memory_runtime.py": "65c34a391eb073231e05b359d281c04df86321946e4df864699793a411f62564",
+    "memory_service.py": "f8948dd40a98721969ea4589332d45adbf906c2b6301961f4e0842c9f47e89d7",
+    "memory_sharing.py": "a8d84bcb30f0f066e15f9e3f6497676338102489517f7a58cfdd6de2945f6eb0",
+    "memory_source_review.py": "9513432eb6420d5b06a3012ec11e8b3b9e16bd34393c7f3b7ec267d7b7fce647",
+    "memory_sources.py": "57b7580a319daf652ef838292eb8124dc55c42a07527be84dc1a6ab8aaa57149",
+    "memory_staging.py": "36d85d8490f6936eedc41751a6fa7d79b2a52f6b7ca2f1509e68cd8d8208ab48",
+    "memory_transaction.py": "c9d6d41c8234708fa441085eea58f476aaf6bc8c92919b959c559fd81b7aa882",
+    "memory_wiki.py": "80ede1e1571718a10b9b3b5d465ff7a723ac59e501b34591d0cc5f0f1df2390e",
+    "model_tiers.py": "0a1e10be52efddb30fbcf071f9078caaf3597611224d3200fec832eea3e7b18e",
+    "mount_transaction.py": "edc04e1415bcf08028f110bfaaa488ef64a26e939ac8a2552a0efa03dbb02700",
+    "native_capabilities.py": "73fbfd823fffad8d59b5716acbf8f1bbee125efb1528b0fe43c359ddba3c7ff9",
+    "remote_hooks.py": "7335cb146664da7ec588c5b09d5f836cef0b4da4cb72d8ec06d99a93bf5923cc",
+    "update_dependencies.py": "5740c7754b458e2bebfa301cdf9a50a3050e7210c92407724ce058675fd6c7ee",
+    "update_hooks.py": "c5b411e4980c7eb6adc825b416ab8eb35282233e90780e06cc26652a43755d06",
+    "update_plan.py": "63388cb1e373b325b0d9752d7b7fa7f2cf92702accb15d309e113767f3d61465",
+    "update_transaction.py": "a0d7486b0099f6b617c82f5c413b98f7c558c65bf472ec593495bd43cce04e6b",
+    "update_worker.py": "a56cd01e0fc2f47fa9f28d68127fb355210a7d3368f11a34c2d85d23b8d206a5",
+    "version_drift.py": "0b31c13a70a3dd68283c93ce781aed2affeb94ecc8925598420d427f0aa8f919"
+  },
+  "pinned_source_manifest": "docs/verification/2026-10-03-hook-compatibility/source-manifest.json",
+  "isolate_tmp": true
+}

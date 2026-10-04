@@ -1,0 +1,109 @@
+{
+  "before": {
+    "marker_present": false
+  },
+  "after": {
+    "relationship_present": false,
+    "wisdom_present": false,
+    "low_confidence_present": false,
+    "advisory_present": false,
+    "sources_preserved": true,
+    "marker": null,
+    "timing_recorded": true,
+    "ready_present": true,
+    "model_context_contains": {
+      "relationship": false,
+      "wisdom": false,
+      "advisory": false,
+      "low_confidence": false
+    }
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 1,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "session_id": "20261004_135946_987a32",
+  "seconds": 4.852,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-remote",
+    "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-remote",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.3",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.3 /home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-remote/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvTG9hZENvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/LoadContext.hook.ts": "fad2cf437beab40ac8b143374940f5d9a381a6935e1e557fa4332506f5c77253",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/learning-readback.ts": "52403f16d92d74fd253f5f64bd2f60ad78b4c1532af01f59a77f87459d85cb6b",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/advisory-readback.ts": "cd06025d13590aae1a76de1bc050314be55c6157d0ce9f6e93d665db667c2a47",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/notifications.ts": "91315d1e4eef6a1cee4d16ebd236edb3a3b3f437911aa65ecab9a3c611e21127",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/LIFEOS/TOOLS/lib/MemoryAccess.ts": "449229fbd3d5a786aefc70cc593f87523f60d2f3f0358ce2f3aa2aa7d4fb6fb0"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "06178cbab959d1f6ed3156d00f60e2ef6b4708e2c99b57108f1b18c5d5c1eef2",
+      "model": "lifecycle-fixture",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "09ebbc4b260567c693e53ec12668adb92b610804e3bd94c5ecdbf699b6f7bc29",
+    "fixture-events.jsonl": "6d3d712d363b8cdc2149884f3d62e6ce6ff62b4fa72c48574783dd74a2ff9121",
+    "cli.log": "1f72961834531fab476dfea43f1bdb642d325e30240a7183e612cdfdbb497622",
+    "before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "after-state.json": "be011ea5f57a8b00052d19f7ac870fd2352f8abc0466480917a15a16768c2ef8",
+    "fixture-files-before.json": "2953e933588cd9eddeb028013641cea69690dd192adf5142273464eabfc04611",
+    "fixture-files-after.json": "5c18ded3858f41ba6187d538d5ad9eb5acb8e6995f3f76cf9f1ea4cb5f09f5bd"
+  }
+}

@@ -41,6 +41,8 @@ The [October 3 lifecycle bundle](verification/2026-10-03-paired-lifecycle-effect
 
 The [startup extension](verification/2026-10-04-paired-startup-effects/README.md) adds eight real paired cases. Seven establish equal context readback, advisory marker, or subagent effects. The remaining case reproduces standalone LifeOS's remote Kitty writes and the existing patch's deliberate isolation. The ledger retains 24 equal selected cases for 12 registrations. Neither blocked-prompt bundle establishes delivery into an actual model request.
 
+The [request-delivery extension](verification/2026-10-04-paired-context-delivery/README.md) adds three cases that reach the actual model request boundary. Both clients deliver the selected desktop content and withhold it for remote or disabled sources. An expected HTTP 401 ends each client run without a generated response. Exact wire bytes remain private, with verified public hashes and marker assertions. The cumulative ledger retains 27 equal selected cases for 12 registrations. Complete managed-memory admission and generated user delivery remain open.
+
 The first command checks the recorded inventory and artifacts. The second command currently fails. The check validates evidence structure and equal recorded outcomes. A reviewer must still assess scenario coverage and the underlying measurements.
 
 Nine registrations lack a successful native event control:

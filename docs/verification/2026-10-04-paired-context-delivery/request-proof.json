@@ -1,0 +1,98 @@
+[
+  {
+    "side": "native",
+    "case": "context-delivery-desktop",
+    "raw_file": "/home/lifeos-claude-ref/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop/requests-private.json",
+    "raw_file_sha256": "b8fe0a9e049d4d06250d22616e608222a34b999a32100198c8aa0a2e8942405d",
+    "generation_path": "/v1/messages?beta=true",
+    "wire_body_sha256": "22706945af7511a9b6d82eb40503bc1d128c149a41e824e09dbda970eab67d2e",
+    "context_contains": {
+      "relationship": true,
+      "wisdom": true,
+      "advisory": true,
+      "low_confidence": false
+    },
+    "exact_bytes_verified": true,
+    "expected_http_status": 401
+  },
+  {
+    "side": "native",
+    "case": "context-delivery-remote",
+    "raw_file": "/home/lifeos-claude-ref/workspace/paired-delivery-20261004/run-v2/context-delivery-remote/requests-private.json",
+    "raw_file_sha256": "47121b1df1bf25077c7abd847d1c42f67baf4ad2074fd18c483cf719b4acb842",
+    "generation_path": "/v1/messages?beta=true",
+    "wire_body_sha256": "c0cb02718cf39e6eb78755ac3cd8a700647504151717e7d1a1fca3e319d27577",
+    "context_contains": {
+      "relationship": false,
+      "wisdom": false,
+      "advisory": false,
+      "low_confidence": false
+    },
+    "exact_bytes_verified": true,
+    "expected_http_status": 401
+  },
+  {
+    "side": "native",
+    "case": "context-delivery-disabled",
+    "raw_file": "/home/lifeos-claude-ref/workspace/paired-delivery-20261004/run-v2/context-delivery-disabled/requests-private.json",
+    "raw_file_sha256": "2f9913eb4003c0d8591c13f12d8ab025f7729e977567b7eb208b5d61d72f57cb",
+    "generation_path": "/v1/messages?beta=true",
+    "wire_body_sha256": "f8fd11b64aba5da5870be21fc9f164243515b3f8d3e8109fc06170b771c09e26",
+    "context_contains": {
+      "relationship": false,
+      "wisdom": false,
+      "advisory": false,
+      "low_confidence": false
+    },
+    "exact_bytes_verified": true,
+    "expected_http_status": 401
+  },
+  {
+    "side": "hermes",
+    "case": "context-delivery-desktop",
+    "raw_file": "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop/requests-private.json",
+    "raw_file_sha256": "9646a4f84227188307b1dca000530173ab1ab596dfc6e1dc183ba40bc3ea5a08",
+    "generation_path": "/v1/chat/completions",
+    "wire_body_sha256": "19fbbc950fa2e942fd0a33730bedf73138d1c8f3180619434e2b65314c258928",
+    "context_contains": {
+      "relationship": true,
+      "wisdom": true,
+      "advisory": true,
+      "low_confidence": false
+    },
+    "exact_bytes_verified": true,
+    "expected_http_status": 401
+  },
+  {
+    "side": "hermes",
+    "case": "context-delivery-remote",
+    "raw_file": "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-remote/requests-private.json",
+    "raw_file_sha256": "00287e662bbc4cba7e1e189c38f3d8ceb9a33650cfce1486e25534d262455bf9",
+    "generation_path": "/v1/chat/completions",
+    "wire_body_sha256": "06178cbab959d1f6ed3156d00f60e2ef6b4708e2c99b57108f1b18c5d5c1eef2",
+    "context_contains": {
+      "relationship": false,
+      "wisdom": false,
+      "advisory": false,
+      "low_confidence": false
+    },
+    "exact_bytes_verified": true,
+    "expected_http_status": 401
+  },
+  {
+    "side": "hermes",
+    "case": "context-delivery-disabled",
+    "raw_file": "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-disabled/requests-private.json",
+    "raw_file_sha256": "e2d5e07d9d75b2c6bb7ffca6834bad36fb46b6a45021dead77c0eb93e357f744",
+    "generation_path": "/v1/chat/completions",
+    "wire_body_sha256": "770dc9a16ec1099c0865a3d1e79779516633f02d8e7b851599ee6e81b5c7f32a",
+    "context_contains": {
+      "relationship": false,
+      "wisdom": false,
+      "advisory": false,
+      "low_confidence": false
+    },
+    "exact_bytes_verified": true,
+    "expected_http_status": 401
+  }
+]
