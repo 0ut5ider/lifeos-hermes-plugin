@@ -165,6 +165,8 @@ class NativeMemory:
         user = (self.root.parent / ".config/LIFEOS/USER").resolve()
         if not path.resolve().is_relative_to(user):
             raise MemoryUnavailable("Native memory reference leaves the user boundary")
+        if path.exists() and self.database.exists() and path.samefile(self.database):
+            raise MemoryUnavailable("Native memory content cannot alias its SQLite registry")
         return path
 
     @staticmethod

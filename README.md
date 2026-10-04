@@ -23,6 +23,8 @@ The [TELOS state writer](docs/verification/2026-10-04-memory-state/README.md) ke
 
 The [TELOS summary writer](docs/verification/2026-10-04-memory-telos/README.md) retains native parsing and publishes from admitted TELOS and identity text. It rechecks sources and authority before a private journaled write. The distributed gate passes 182 tests and 79 subtests. Freshness, other derivatives, and memory ownership remain open.
 
+The [source alias gate](docs/verification/2026-10-04-memory-source-alias/README.md) prevents registry hard links from releasing SQLite transaction locks during content reads. It passes 264 tests and 111 subtests across current readers, derivatives, adoption, and recovery.
+
 ## Compatibility target
 
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.

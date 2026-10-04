@@ -69,6 +69,9 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     if (source.resolve() != physical.absolute() or (require_file and not source.is_file())
             or (not require_file and source.exists() and not (source.is_dir() if directory else source.is_file()))):
         raise MemoryUnavailable('The native source is missing or changes its permitted physical path')
+    # Closing another descriptor for the SQLite inode releases this process's transaction locks.
+    if system and source.exists() and memory.database.exists() and source.samefile(memory.database):
+        raise MemoryUnavailable('Native memory content cannot alias its SQLite registry')
     return source, relative
 
 
