@@ -1,0 +1,12 @@
+F.........                                        [100%]
+=================================== FAILURES ===================================
+_ OwnershipSetupTests.test_a_second_setup_can_recover_before_replacing_the_previous_return_journal _
+tests/test_ownership_setup.py:190: in test_a_second_setup_can_recover_before_replacing_the_previous_return_journal
+    result = self.setup_operation().recover(account='dashboard:owner')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/ownership_setup.py:183: in recover
+    raise MemoryUnavailable('The ownership configuration journal belongs to another setup')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The ownership configuration journal belongs to another setup
+=========================== short test summary info ============================
+FAILED tests/test_ownership_setup.py::OwnershipSetupTests::test_a_second_setup_can_recover_before_replacing_the_previous_return_journal
+1 failed, 9 passed, 23 subtests passed in 45.90s

@@ -210,23 +210,53 @@ class ProfileServices:
         document['state'] = 'stopped'
         self._publish(document)
 
-    def drain(self):
+    def _admission(self):
+        services = {}
+        for role in STOP_ORDER:
+            values, definition = self._inspect(role)
+            if values['ActiveState'] not in {'active', 'inactive'}:
+                raise MemoryUnavailable('Profile services require a stable active or inactive state before draining')
+            if values['ActiveState'] == 'active' and int(values['MainPID']) == 0:
+                raise MemoryUnavailable('The active profile service has no verifiable main process')
+            services[role] = {'unit': self.units[role], 'definition': definition,
+                'active': values['ActiveState'] == 'active', 'control_group': values['ControlGroup']}
+        return {'version': 1, 'profile': str(self.profile), 'installed': str(self.installed),
+            'installed_physical': str(self.physical_root), 'state': 'stopping', 'services': services}
+
+    @staticmethod
+    def _signature(document):
+        selected = {key: value for key, value in document.items() if key != 'state'}
+        selected['services'] = {role: {key: value for key, value in item.items() if key != 'control_group'}
+            for role, item in document['services'].items()}
+        return _digest(selected)
+
+    def preview(self):
+        with self._lock():
+            previous = self._load()
+            if previous is not None and previous['state'] != 'active':
+                raise MemoryUnavailable('Recover the interrupted profile service operation before review')
+            return {'signature': self._signature(self._admission())}
+
+    def drain(self, *, signature=None):
         with self._lock():
             previous = self._load()
             if previous is not None and previous['state'] != 'active':
                 raise MemoryUnavailable('Recover the interrupted profile service operation before another drain')
-            services = {}
+            document = self._admission()
+            if signature is not None and signature != self._signature(document):
+                raise MemoryUnavailable('The reviewed profile service state changes before draining')
+            self._publish(document)
+            self._drain(document)
+            return {'state': 'stopped', 'services_stopped': list(STOP_ORDER), 'owner_turn_verified': False}
+
+    def quiesce(self):
+        with self._lock():
+            document = self._load()
+            if document is None:
+                raise MemoryUnavailable('The selected profile services have no recovery state')
             for role in STOP_ORDER:
-                values, definition = self._inspect(role)
-                if values['ActiveState'] not in {'active', 'inactive'}:
-                    raise MemoryUnavailable('Profile services require a stable active or inactive state before draining')
-                if values['ActiveState'] == 'active' and int(values['MainPID']) == 0:
-                    raise MemoryUnavailable('The active profile service has no verifiable main process')
-                services[role] = {'unit': self.units[role], 'definition': definition,
-                    'active': values['ActiveState'] == 'active', 'control_group': values['ControlGroup']}
-            document = {'version': 1, 'profile': str(self.profile), 'installed': str(self.installed),
-                'installed_physical': str(self.physical_root),
-                'state': 'stopping', 'services': services}
+                self._check_definition(document, role)
+            document['state'] = 'stopping'
             self._publish(document)
             self._drain(document)
             return {'state': 'stopped', 'services_stopped': list(STOP_ORDER), 'owner_turn_verified': False}

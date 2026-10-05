@@ -37,9 +37,12 @@ def _signature(value):
 
 
 class OwnershipTransaction:
-    def __init__(self, configuration, *, installation_lease=None):
+    def __init__(self, configuration, *, installation_lease=None, verify_writers=None):
         self.configuration = configuration
         self.installation_lease = installation_lease
+        if verify_writers is not None and not callable(verify_writers):
+            raise ValueError('Ownership publication requires a callable writer barrier')
+        self.verify_writers = verify_writers
         self.profile = configuration.path.parent.absolute()
         if configuration.path.absolute() != self.profile / 'lifeos-memory.json':
             raise MemoryUnavailable('Ownership setup requires the fixed profile configuration')
@@ -190,6 +193,8 @@ class OwnershipTransaction:
                 _, metadata = read_target(self.profile / entry['name'])
                 if metadata != entry['before']:
                     raise MemoryUnavailable('Ownership setup preserves a configuration change during publication')
+                if self.verify_writers is not None:
+                    self.verify_writers()
                 publish(self.profile / entry['name'], targets[entry['name']])
             self._check_targets(document, ('after',))
             document['state'] = 'committed'
@@ -201,7 +206,8 @@ class OwnershipTransaction:
             document = self._load(configuration)
             state = document['state'] if document is not None else 'none'
             return {'state': state, 'recovery_required': state in {'prepared', 'applying', 'restoring'},
-                'restart_required': state != 'none', 'service_verified': False}
+                'restart_required': state != 'none', 'service_verified': False,
+                'signature': document['signature'] if document is not None else None}
 
     def rollback(self, *, account=None):
         with self._lock(account) as configuration:
@@ -230,6 +236,8 @@ class OwnershipTransaction:
             # Revoke native ownership before either built-in store can resume.
             for entry, content in reversed(copies):
                 self._check_targets({'entries': [entry]}, acceptable, restoring=True)
+                if self.verify_writers is not None:
+                    self.verify_writers()
                 publish(self.profile / entry['name'], content)
                 (self.profile / entry['name']).chmod(entry['before']['mode'])
                 with (self.profile / entry['name']).open('rb') as stream:

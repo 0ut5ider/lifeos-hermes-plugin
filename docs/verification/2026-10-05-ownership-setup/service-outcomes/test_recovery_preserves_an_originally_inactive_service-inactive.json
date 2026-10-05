@@ -1,0 +1,30 @@
+{
+  "resume": {
+    "state": "active",
+    "services_started": [
+      "dashboard",
+      "gateway"
+    ],
+    "owner_turn_verified": false
+  },
+  "after": {
+    "gateway": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-366dc3c4de334b4f841ebfcffaaf11ab-gateway.service",
+      "MainPID": "920019",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-366dc3c4de334b4f841ebfcffaaf11ab-gateway.service"
+    },
+    "dashboard": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-3f96bc9efecd442c868b4e5de0294118-dashboard.service",
+      "MainPID": "920014",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-3f96bc9efecd442c868b4e5de0294118-dashboard.service"
+    },
+    "pulse": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-4f4ca894b24e427ab649b56f6c8497f6-pulse.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    }
+  }
+}

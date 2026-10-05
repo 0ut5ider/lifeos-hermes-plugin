@@ -1,0 +1,49 @@
+{
+  "after": {
+    "gateway": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-15340f94e2e6472ea63bcdec04230837-gateway.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    },
+    "dashboard": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-c661b895020447ac8a128db9d698e6c4-dashboard.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    },
+    "pulse": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-c15c781e114643fea257e5834a03cb06-pulse.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    }
+  },
+  "journal": {
+    "installed": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-pc7g1o4b/.claude",
+    "installed_physical": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-pc7g1o4b/.claude",
+    "profile": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-pc7g1o4b/.hermes",
+    "services": {
+      "dashboard": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-c661b895020447ac8a128db9d698e6c4-dashboard.service",
+        "definition": "c01a2f8053b7bfdaefb8f53591eb7634c3558221bf657c4ca79edb42e79048ba",
+        "unit": "lifeos-ownership-test-c661b895020447ac8a128db9d698e6c4-dashboard.service"
+      },
+      "gateway": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-15340f94e2e6472ea63bcdec04230837-gateway.service",
+        "definition": "eb95ec55f0ab6a39ef316191f0d7bb1fb02f0681f36de18e60733d9fd35de449",
+        "unit": "lifeos-ownership-test-15340f94e2e6472ea63bcdec04230837-gateway.service"
+      },
+      "pulse": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-c15c781e114643fea257e5834a03cb06-pulse.service",
+        "definition": "116ef6d7e5891f377d49b1c81f54c865ce96e8b0e570851ace60171aca0924ff",
+        "unit": "lifeos-ownership-test-c15c781e114643fea257e5834a03cb06-pulse.service"
+      }
+    },
+    "state": "stopped",
+    "version": 1
+  }
+}

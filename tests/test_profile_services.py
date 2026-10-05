@@ -205,6 +205,25 @@ ProfileServices(Path(settings['profile']), Path(settings['installed']), units=se
             self.barrier().verify_stopped()
         self.record('external-start', {'after': {role: self.properties(role) for role in self.units}})
 
+    def test_reviewed_service_state_refuses_a_change_before_any_stop(self):
+        reviewed = self.barrier().preview()
+        self.command('systemctl', '--user', 'stop', self.units['pulse'])
+        before = {role: self.properties(role)['MainPID'] for role in self.units}
+        with self.assertRaisesRegex(MemoryUnavailable, 'review'):
+            self.barrier().drain(signature=reviewed['signature'])
+        self.assertEqual({role: self.properties(role)['MainPID'] for role in self.units}, before)
+
+    def test_recovery_quiesces_restarted_services_without_losing_original_selection(self):
+        self.command('systemctl', '--user', 'stop', self.units['pulse'])
+        self.barrier().drain()
+        self.barrier().resume()
+        self.command('systemctl', '--user', 'start', self.units['pulse'])
+        self.barrier().quiesce()
+        self.assertEqual({self.properties(role)['MainPID'] for role in self.units}, {'0'})
+        result = self.barrier().resume()
+        self.assertEqual(result['services_started'], ['dashboard', 'gateway'])
+        self.assertEqual(self.properties('pulse')['MainPID'], '0')
+
     def test_invalid_service_binding_values_refuse_without_stopping_units(self):
         from lifeos_hook_bridge.profile_services import ProfileServices
         before = {role: self.properties(role)['MainPID'] for role in self.units}
