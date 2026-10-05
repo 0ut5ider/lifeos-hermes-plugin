@@ -8,6 +8,8 @@ On October 5, Adrian selects a fresh start on `.212` without importing existing 
 
 Use a separate fresh native store with no adoption of existing facts or personal context. The fresh-start review identifies the new store, retained originals, template initialization, and return destination. Existing LifeOS data remains retained outside the selected fresh store. A no-import choice must not silently activate old LifeOS context.
 
+Later on October 5, Adrian authorizes using data from `.211` and `.213` for importer and reverse-migration implementation and tests. Use isolated destinations and preserve the source stores. This authorization leaves `.212` on the fresh-start path. Reach shared Cortex records through the memory MCP tools. Do not place real personal-data test fixtures in Git or public evidence.
+
 ## Original proposal
 
 1. Detect existing built-in memory in the selected Hermes profile.

@@ -2,7 +2,7 @@
 
 Date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. The active `.212` profiles retain the October 4 tested code while candidate work proceeds in isolated fixtures.
 
-The four LifeOS tiers retain private FlashNext with different effort levels. Voice is the only selected optional integration. It includes Discord voice input and spoken replies. Adrian puts voice last among feature work, after core LifeOS functionality. GitHub, Cloudflare, Claude subscription quota reporting, and remote project enrollment are outside the final account configuration. Existing supported remote behavior remains part of the compatibility checks.
+The four LifeOS tiers retain private FlashNext and the existing model-dependent effort mapping: Haiku low, Sonnet medium, Opus xhigh, and Fable xhigh. Adrian directs this mapping to remain unchanged on October 5. Voice is the only selected optional integration. It includes Discord voice input and spoken replies. Adrian puts voice last among feature work, after core LifeOS functionality. GitHub, Cloudflare, Claude subscription quota reporting, and remote project enrollment are outside the final account configuration. Existing supported remote behavior remains part of the compatibility checks.
 
 On October 5, Adrian selects a fresh start on `.212` without importing existing personal data. The deployment selects no Hermes memory, cross-server archive, or conversation history for import. Preserve existing Hermes files and any existing LifeOS data. This choice does not authorize deletion or bypass memory activation checks. Prepare the owner identity, fresh-start preview, and return workflow for review. Supported optional migration remains product work for established profiles.
 
@@ -24,10 +24,12 @@ The October 4 [startup controls](verification/2026-10-04-paired-startup-effects/
 
 ## Execution and evidence
 
-Adrian directs work to continue through steps 2 to 7 on October 4. Advance memory, migration, Hermes management, background jobs, routing, and voice in that order. Hook compatibility remains a combined release requirement. Complete source and lifecycle memory gaps before enabling ownership or memory-writing jobs. Build reviewed migration and sharing on the completed native operations. Verify the combined package before deployment to `.212`.
+Adrian directs work to continue through steps 2 to 7 on October 4. On October 5, he changes the immediate order to the remaining step 1 hook checks, then steps 3, 4, and 5. Resume the remaining memory activation gates before enabling ownership or memory-writing jobs. Voice remains the last feature workstream. Verify the combined package before deployment to `.212`.
+
+Adrian authorizes using existing data from `.211` and `.213` to implement and test import and reverse migration. Use isolated destinations and preserve source data. This testing authorization does not change the fresh-start selection for `.212`. Shared Cortex records still use the memory MCP tools. If that connector is unavailable, report the failure and continue independent work.
 
 Each passing case retains its source revisions, command, synthetic input, expected effect, actual output, and limits. Registration, clean unit tests, and a selected passing branch do not close a complete effect claim. Native control failures remain visible and do not count as passes. A new mismatch requires measurement and a failing regression before a product fix.
 
 Use the existing [hook plan](parity-resolution-plan.md), [memory activation plan](memory-implementation-plan.md), [import plan](memory-import-plan.md), and [Hermes management assessment](../notes/2026-10-03-hermes-managed-install-update.md). The consolidated plan tracks the full deliverable; it does not replace their acceptance requirements.
 
-Actual personal-data publication requires a concrete reviewed selection. Preserve original stores and avoid automatically copying `.211` or `.213` data. The existing shared-memory MCP returns `integrity_error`; diagnose that connector before using it as a source. No record access bypass is part of this work.
+Production personal-data publication requires a concrete reviewed selection. Preserve original stores. Isolated migration tests may use `.211` and `.213` under Adrian's October 5 authorization. The existing shared-memory MCP returns `integrity_error`; restore that connector before using its records as a source. No record access bypass is part of this work.
