@@ -1,0 +1,119 @@
+{
+  "before": {
+    "project_files": []
+  },
+  "after": {
+    "project_files": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "f9d0f448-cf7b-4b2f-9c56-45914c47b6f1",
+  "seconds": 3.626,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plain",
+    "/home/lifeos-claude-ref/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plain",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-claude-ref/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plain/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "a0d7616ca81dde5746390029fc43b1bf3143143f4bf47e1f36f2c08e698fcd01",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "91670c37240ac377a9e924b03e9b3bc589d49630f6ca38ce2c3be36f155c17b4",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "ce2604ed5b838f7f6ef47b2ad254848ba96337eb6539f2b72145df8d824b5984",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "222093b5cfd4bfd30dbd96adc8efbf0cb2623494986b96a143da2b6a7418da48",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "17922cb72f7f69690c80f64cbc4959c407783bbcfb8f2278b241b38391accc99",
+    "fixture-events.jsonl": "805d58aadaeb8608d4327a0d54c37ebd463871c2c7cfa14e5da59bb17b53549d",
+    "cli.log": "417147407e5ecaebe60d9c57641af7651758cb99292003844e0ec9eb80bf5fc2",
+    "before-state.json": "71485beb888060de88147e6d7b9f9ca87b224ed9b5ca009f63cffd44eeab4009",
+    "after-state.json": "427c14322d44c6857aab93f61d0b63c86627ff6ea5d1ad20fc555cb6fca1d160",
+    "fixture-files-before.json": "c9ac83b64429af31063d5372badc3b9d3d28cc0a88a245d9c4a94ac727b3f24e",
+    "fixture-files-after.json": "c9ac83b64429af31063d5372badc3b9d3d28cc0a88a245d9c4a94ac727b3f24e"
+  }
+}

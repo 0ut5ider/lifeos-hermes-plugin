@@ -1,0 +1,119 @@
+{
+  "before": {
+    "project_files": []
+  },
+  "after": {
+    "project_files": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "df977245-fed5-4b45-b0cf-e40fda32c81f",
+  "seconds": 3.928,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plutil-safe",
+    "/home/lifeos-claude-ref/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plutil-safe",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: printf 'PAIR_%s plutil -extract key raw -o - fixture.plist' GUARD_OUTPUT"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-claude-ref/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plutil-safe/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "4dac1266586966ac17df58fbf5d3df292dc3ef0dcceb34fbd42269f08ded62b8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "75d8dbb7dbc374601ee92ca3f921657544cc5b4eba432ab554b7981c8c56e47f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "efb4396fb9bfde9444552a62748fc22ec19ca9be38ac013d4e4758a193767b1e",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "971569b69867292dca7ae749a30158c550b3dbd1fda75b2996830618b10abee2",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "3364fc569287b0f329fcb22bc1146245ea6632d129e65c6ebc3882080fdf1029",
+    "fixture-events.jsonl": "f00c9bcadb5dfdb2786e854db50aa23b313b3c24b6c90cfebf42329567c40c96",
+    "cli.log": "539f4f80a6735042b28b1e167df8babbbe9c27d995c905c0e4a8b787747d761d",
+    "before-state.json": "71485beb888060de88147e6d7b9f9ca87b224ed9b5ca009f63cffd44eeab4009",
+    "after-state.json": "427c14322d44c6857aab93f61d0b63c86627ff6ea5d1ad20fc555cb6fca1d160",
+    "fixture-files-before.json": "d08380ebacb9870c5c86320ea15cc10e15d31b5a5e87535183dc1fe92d1c46e6",
+    "fixture-files-after.json": "d08380ebacb9870c5c86320ea15cc10e15d31b5a5e87535183dc1fe92d1c46e6"
+  }
+}

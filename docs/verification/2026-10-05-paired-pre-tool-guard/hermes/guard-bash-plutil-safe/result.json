@@ -1,0 +1,116 @@
+{
+  "before": {
+    "project_files": []
+  },
+  "after": {
+    "project_files": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261005_180019_31ca4a",
+  "seconds": 10.801,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plutil-safe",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plutil-safe",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s plutil -extract key raw -o - fixture.plist' GUARD_OUTPUT"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plutil-safe/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "c9dde6f078d7293a2fa9638ad93bbd3bddbd412d712dec131a9ef2d46343323d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "5fbf3630bbc7a4a4d6b60e50bbb33f0e1ebfc04b57f29d018cf5c908e9c8d3b0",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "4b17ae91f2300765b5171f78a1d19ad5f3838f8863b70b76441e6bbaecf0409b",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "873e1cf9c2693292c7ca100286f0741eb75b109ebdb2e82667304c62c9f71cfa",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "6d9429c3408e43a1eda19ed1462ff21e4ff5be9b18b13090a0deca9798bff328",
+    "fixture-events.jsonl": "81dc355ab1d6c580ab4bca86bd82badc96f2553ec3b38ebcde5c27947a365086",
+    "cli.log": "fd70de832a20aee510d6b050642cb719560fc8d06309636089103a84f02ef952",
+    "before-state.json": "71485beb888060de88147e6d7b9f9ca87b224ed9b5ca009f63cffd44eeab4009",
+    "after-state.json": "427c14322d44c6857aab93f61d0b63c86627ff6ea5d1ad20fc555cb6fca1d160",
+    "fixture-files-before.json": "d27fc1aca7a790fe30b3c5a1b85a42cbaead0d2090d63b81ef70eb1627b6bb0c",
+    "fixture-files-after.json": "d36910976351deb1eac04d77684d93a2f996c883dc12cc66faa4b70ce43dd5a6"
+  }
+}

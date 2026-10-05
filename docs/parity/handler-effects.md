@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Sixty-eight equal selected cases cover 19 registrations. Sixty-six lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, and three mutation hint cases with real tool calls; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Seventy-one equal selected cases cover 20 registrations. Sixty-nine lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, and three pre-tool guard cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -9,7 +9,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | PreToolUse.3.1 | agent-guard | Validate the selected agent and return its Pulse guard decision. | Pending |
 | PreToolUse.3.2 | AgentInvocation | Record and validate agent invocation and completion state. | Pending |
 | PreToolUse.4.1 | TabState | Set the terminal state for a question awaiting a user answer. | Pending |
-| PreToolUse.5.1 | PreToolGuard | Run the nested pre-tool guards and preserve deny, ask, and changed-input decisions. | Pending |
+| PreToolUse.5.1 | PreToolGuard | Run the nested pre-tool guards and preserve deny, ask, and changed-input decisions. | Selected Bash cases pass; file guards and the other Bash guards remain open |
 | PostToolUse.1.1 | AgentInvocation | Record and validate agent invocation and completion state. | Pending |
 | PostToolUse.2.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Pending |
 | PostToolUse.3.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Pending |

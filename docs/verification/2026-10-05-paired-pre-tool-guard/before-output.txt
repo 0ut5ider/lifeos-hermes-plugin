@@ -1,0 +1,113 @@
+.........................................................FFFFFFFEF...........
+======================================================================
+ERROR: test_fixture_uses_the_pinned_matcher (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_fixture_uses_the_pinned_matcher)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 801, in test_fixture_uses_the_pinned_matcher
+    make_fixture(home, 'guard-bash-plain', source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 810, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 770, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'guard-bash-plain'
+
+======================================================================
+FAIL: test_block_requires_exit_two_the_message_and_no_execution (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_block_requires_exit_two_the_message_and_no_execution) (key='tool_output_in_model')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 780, in test_block_requires_exit_two_the_message_and_no_execution
+    self.assertIn('guard-bash-plutil-block: guard decision is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'guard-bash-plutil-block: guard decision is missing' not found in ['guard-bash-plutil-block: unknown case']
+
+======================================================================
+FAIL: test_block_requires_exit_two_the_message_and_no_execution (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_block_requires_exit_two_the_message_and_no_execution) (key='model_received_block')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 780, in test_block_requires_exit_two_the_message_and_no_execution
+    self.assertIn('guard-bash-plutil-block: guard decision is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'guard-bash-plutil-block: guard decision is missing' not found in ['guard-bash-plutil-block: unknown case']
+
+======================================================================
+FAIL: test_block_requires_exit_two_the_message_and_no_execution (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_block_requires_exit_two_the_message_and_no_execution) (key='block_message_emitted')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 780, in test_block_requires_exit_two_the_message_and_no_execution
+    self.assertIn('guard-bash-plutil-block: guard decision is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'guard-bash-plutil-block: guard decision is missing' not found in ['guard-bash-plutil-block: unknown case']
+
+======================================================================
+FAIL: test_block_requires_exit_two_the_message_and_no_execution (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_block_requires_exit_two_the_message_and_no_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 783, in test_block_requires_exit_two_the_message_and_no_execution
+    self.assertIn('guard-bash-plutil-block: hook exit code differs', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'guard-bash-plutil-block: hook exit code differs' not found in ['guard-bash-plutil-block: unknown case']
+
+======================================================================
+FAIL: test_every_selected_command_accepts_only_its_required_decision (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_every_selected_command_accepts_only_its_required_decision) (name='guard-bash-plutil-block')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 772, in test_every_selected_command_accepts_only_its_required_decision
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['guard-bash-plutil-block: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'guard-bash-plutil-block: unknown case'
+
+- ['guard-bash-plutil-block: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_command_accepts_only_its_required_decision (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_every_selected_command_accepts_only_its_required_decision) (name='guard-bash-plutil-safe')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 772, in test_every_selected_command_accepts_only_its_required_decision
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['guard-bash-plutil-safe: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'guard-bash-plutil-safe: unknown case'
+
+- ['guard-bash-plutil-safe: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_command_accepts_only_its_required_decision (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_every_selected_command_accepts_only_its_required_decision) (name='guard-bash-plain')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 772, in test_every_selected_command_accepts_only_its_required_decision
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['guard-bash-plain: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'guard-bash-plain: unknown case'
+
+- ['guard-bash-plain: unknown case']
++ []
+
+======================================================================
+FAIL: test_safe_form_rejects_a_block_and_requires_execution (test_paired_lifecycle_effects.PairedPreToolGuardTests.test_safe_form_rejects_a_block_and_requires_execution)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 788, in test_safe_form_rejects_a_block_and_requires_execution
+    self.assertIn('guard-bash-plutil-safe: hook failed', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'guard-bash-plutil-safe: hook failed' not found in ['guard-bash-plutil-safe: unknown case']
+
+----------------------------------------------------------------------
+Ran 72 tests in 0.181s
+
+FAILED (failures=8, errors=1)
+exit 1

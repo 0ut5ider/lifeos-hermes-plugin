@@ -1,0 +1,116 @@
+{
+  "before": {
+    "project_files": []
+  },
+  "after": {
+    "project_files": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261005_180033_2b66b2",
+  "seconds": 10.951,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plain",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plain",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-pre-tool-guard-20261005/results/guard-bash-plain/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "0180d2a6869df80bd14529a8c08d9c9368d10d825a1082c8d545b03b05e6d6f8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "ccf5fec2f73f59a9544323232be229dbd42a7c476eeabede81a41aa710e5d5fb",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "69816588fea5f57a80e09cf8ed9fb8b62ee95af26bafe82d4034602f56beb4de",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "540bf28a2967020cba701e58b4da5ee97d65a1fcf7fd32da5e56de7a56c41197",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "53fd2cd4fd3e292a7f41d4d5d992e8f860793a21b2e3288144f962f5dba4b34a",
+    "fixture-events.jsonl": "f614abf80c805590889be8d9ee28c86dce8cb5b5b3eb463236a596de33246385",
+    "cli.log": "7ef2715e58af7f4408125c92183a8a5e10b22b3acbcf28f2cb42b2da344ebc24",
+    "before-state.json": "71485beb888060de88147e6d7b9f9ca87b224ed9b5ca009f63cffd44eeab4009",
+    "after-state.json": "427c14322d44c6857aab93f61d0b63c86627ff6ea5d1ad20fc555cb6fca1d160",
+    "fixture-files-before.json": "5513c6e213146201ecbf6a60ac90ff1dd45eae237a7186261cb1cea583df4d53",
+    "fixture-files-after.json": "faaa68f5fca46a82e23f4fce1e999dda6b082a4f34703b751780d7ea417b7ee5"
+  }
+}

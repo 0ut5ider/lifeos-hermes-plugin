@@ -1,0 +1,152 @@
+[
+  {
+    "case": "guard-bash-plutil-block",
+    "side": "native",
+    "session_id": "b6f5d749-1979-4bb8-b2aa-a9c7648ef892",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "34e18278b00f7bebb79cad363dfc0869c62352fd3a5cfb454ed29287418d7124",
+      "912d166d03074b7b9161e9ddbdd7868996dc4ebc9cb001a7694d69b6e2c8895f"
+    ],
+    "response_sha256": [
+      "257547344b24323cc50e9da4b339afe9603aecaa26cc751f7483420d092b097d",
+      "7357a4c2ef28ef2244dfbcae2a99da4efaa24145900a3445c98504a2cdd9473d"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' GUARD_OUTPUT; plutil -extract key raw fixture.plist",
+    "hook_exit_code": 2,
+    "block_message_in_next_request": true,
+    "tool_output_in_next_request": false
+  },
+  {
+    "case": "guard-bash-plutil-block",
+    "side": "hermes",
+    "session_id": "20261005_180005_795c36",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "7f2aaf321ae31df10e2eadda6e4dfe9afe27c1036dfcd77f118d3ad5456ab259",
+      "9ad8c7101f6fff435d8381411357013379d442eee917391a4670c82d95cc2762"
+    ],
+    "response_sha256": [
+      "ccb8dd52842879ee57491e39d6caada24f43ba94fcd5aa63ec0f1dd8f3c70a70",
+      "745719f16cecad6876cac60e84915e32a19e2ca50b0134244dc71ec14cdf9d90"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' GUARD_OUTPUT; plutil -extract key raw fixture.plist",
+    "hook_exit_code": 2,
+    "block_message_in_next_request": true,
+    "tool_output_in_next_request": false
+  },
+  {
+    "case": "guard-bash-plutil-safe",
+    "side": "native",
+    "session_id": "df977245-fed5-4b45-b0cf-e40fda32c81f",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "4dac1266586966ac17df58fbf5d3df292dc3ef0dcceb34fbd42269f08ded62b8",
+      "efb4396fb9bfde9444552a62748fc22ec19ca9be38ac013d4e4758a193767b1e"
+    ],
+    "response_sha256": [
+      "75d8dbb7dbc374601ee92ca3f921657544cc5b4eba432ab554b7981c8c56e47f",
+      "971569b69867292dca7ae749a30158c550b3dbd1fda75b2996830618b10abee2"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s plutil -extract key raw -o - fixture.plist' GUARD_OUTPUT",
+    "hook_exit_code": 0,
+    "block_message_in_next_request": false,
+    "tool_output_in_next_request": true
+  },
+  {
+    "case": "guard-bash-plutil-safe",
+    "side": "hermes",
+    "session_id": "20261005_180019_31ca4a",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "c9dde6f078d7293a2fa9638ad93bbd3bddbd412d712dec131a9ef2d46343323d",
+      "4b17ae91f2300765b5171f78a1d19ad5f3838f8863b70b76441e6bbaecf0409b"
+    ],
+    "response_sha256": [
+      "5fbf3630bbc7a4a4d6b60e50bbb33f0e1ebfc04b57f29d018cf5c908e9c8d3b0",
+      "873e1cf9c2693292c7ca100286f0741eb75b109ebdb2e82667304c62c9f71cfa"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s plutil -extract key raw -o - fixture.plist' GUARD_OUTPUT",
+    "hook_exit_code": 0,
+    "block_message_in_next_request": false,
+    "tool_output_in_next_request": true
+  },
+  {
+    "case": "guard-bash-plain",
+    "side": "native",
+    "session_id": "f9d0f448-cf7b-4b2f-9c56-45914c47b6f1",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "a0d7616ca81dde5746390029fc43b1bf3143143f4bf47e1f36f2c08e698fcd01",
+      "ce2604ed5b838f7f6ef47b2ad254848ba96337eb6539f2b72145df8d824b5984"
+    ],
+    "response_sha256": [
+      "91670c37240ac377a9e924b03e9b3bc589d49630f6ca38ce2c3be36f155c17b4",
+      "222093b5cfd4bfd30dbd96adc8efbf0cb2623494986b96a143da2b6a7418da48"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' GUARD_OUTPUT",
+    "hook_exit_code": 0,
+    "block_message_in_next_request": false,
+    "tool_output_in_next_request": true
+  },
+  {
+    "case": "guard-bash-plain",
+    "side": "hermes",
+    "session_id": "20261005_180033_2b66b2",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "0180d2a6869df80bd14529a8c08d9c9368d10d825a1082c8d545b03b05e6d6f8",
+      "69816588fea5f57a80e09cf8ed9fb8b62ee95af26bafe82d4034602f56beb4de"
+    ],
+    "response_sha256": [
+      "ccf5fec2f73f59a9544323232be229dbd42a7c476eeabede81a41aa710e5d5fb",
+      "540bf28a2967020cba701e58b4da5ee97d65a1fcf7fd32da5e56de7a56c41197"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' GUARD_OUTPUT",
+    "hook_exit_code": 0,
+    "block_message_in_next_request": false,
+    "tool_output_in_next_request": true
+  }
+]

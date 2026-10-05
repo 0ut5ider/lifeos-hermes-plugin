@@ -753,3 +753,52 @@ class PairedAtlasHintTests(unittest.TestCase):
         self.assertEqual(group['matcher'], 'Bash')
         self.assertIn('PostToolUse.13.1', group['hooks'][0]['command'])
         self.assertEqual(json.loads((home / 'before-state.json').read_text()), {'event_rows': 1})
+
+
+class PairedPreToolGuardTests(unittest.TestCase):
+    def case(self, name):
+        blocked = name == 'guard-bash-plutil-block'
+        side = {'before': {'project_files': []},
+                'after': {'project_files': [], 'tool_name': 'Bash', 'command_matches': True,
+                          'block_message_emitted': blocked, 'model_received_block': blocked,
+                          'tool_output_in_model': not blocked, 'user_response_delivered': True},
+                'hook_exit_codes': [2 if blocked else 0], 'event': 'PreToolUse', 'cli_exit_code': 0,
+                'model_generation_requests': 2, 'model_successful_responses': 2}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_every_selected_command_accepts_only_its_required_decision(self):
+        for name in ('guard-bash-plutil-block', 'guard-bash-plutil-safe', 'guard-bash-plain'):
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_block_requires_exit_two_the_message_and_no_execution(self):
+        for key, value in (('tool_output_in_model', True), ('model_received_block', False),
+                           ('block_message_emitted', False)):
+            with self.subTest(key=key):
+                case = self.case('guard-bash-plutil-block')
+                case['native']['after'][key] = case['hermes']['after'][key] = value
+                self.assertIn('guard-bash-plutil-block: guard decision is missing', check_pair(case))
+        case = self.case('guard-bash-plutil-block')
+        case['native']['hook_exit_codes'] = case['hermes']['hook_exit_codes'] = [0]
+        self.assertIn('guard-bash-plutil-block: hook exit code differs', check_pair(case))
+
+    def test_safe_form_rejects_a_block_and_requires_execution(self):
+        case = self.case('guard-bash-plutil-safe')
+        case['native']['hook_exit_codes'] = case['hermes']['hook_exit_codes'] = [2]
+        self.assertIn('guard-bash-plutil-safe: hook failed', check_pair(case))
+        case = self.case('guard-bash-plutil-safe')
+        case['native']['after']['tool_output_in_model'] = case['hermes']['after']['tool_output_in_model'] = False
+        self.assertIn('guard-bash-plutil-safe: guard decision is missing', check_pair(case))
+
+    def test_fixture_uses_the_pinned_matcher(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        source = base / 'source'
+        (source / 'hooks').mkdir(parents=True)
+        (source / 'hooks/PreToolGuard.hook.ts').write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, 'guard-bash-plain', source, base / 'trace.py')
+        group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PreToolUse'][0]
+        self.assertEqual(group['matcher'], 'Bash|Write|Edit|MultiEdit')
+        self.assertIn('PreToolUse.5.1', group['hooks'][0]['command'])
