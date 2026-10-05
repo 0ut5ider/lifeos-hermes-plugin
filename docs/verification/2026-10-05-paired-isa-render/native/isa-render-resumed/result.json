@@ -1,0 +1,107 @@
+{
+  "before": {
+    "state_present": true,
+    "page": "absent",
+    "isa_phase": "execute",
+    "isa_iteration": 2
+  },
+  "after": {
+    "state_present": false,
+    "page": "rendered",
+    "isa_preserved": true,
+    "hook_output": {
+      "continue": true
+    },
+    "log": [
+      {
+        "session_matches": true,
+        "rendered": [
+          "paired-work/ISA.md"
+        ],
+        "skipped": []
+      }
+    ],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "Stop",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "a578d049-3d61-490d-a9bb-993d58882213",
+  "seconds": 2.025,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-isa-render-20261005/results/isa-render-resumed",
+    "/home/lifeos-claude-ref/workspace/paired-isa-render-20261005/results/isa-render-resumed",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "Stop.1.4",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run Stop.1.4 /home/lifeos-claude-ref/workspace/paired-isa-render-20261005/results/isa-render-resumed/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvSVNBUmVuZGVyT25TdG9wLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/ISARenderOnStop.hook.ts": "afe5b80c94006771a7f046c01d41df1d9ba0573edfeba2616cd4e8945917986a"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "8a408a5aa3a39ab3aa5364929aa37fd97c7e27fe1e5f4c4adfb34ab42527cca1",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "e81e81c96eda9c9267e94d698e8b2acbcbc29d49d2a3195c6538112fee8d96ff",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "644bda80609b7f92feec2a8eb2891dd8049d2ad6cc58a80fb37d094f63e4fbde",
+    "fixture-events.jsonl": "3194a8b870d8541d8e01933cf3d43ca6559652be57f7b7fafa56d491324fb690",
+    "cli.log": "80d636b56a37d38f66b772283b789036b11bf41f9905399dfeff671dacdac0ed",
+    "before-state.json": "896538cfa1d006a0bff221aa6b6b46701872607bb1aa2d33b8e35bf8304305c6",
+    "after-state.json": "2b7fefbd0efc9f4e32ce60407719d07cb06cee2decf12d28d2e7693dff581116",
+    "fixture-files-before.json": "c470b0077edcffb59490d748e727ff598febbcde3635b3e29f0344244ca0d0d8",
+    "fixture-files-after.json": "8da14218ccd3e2d747babebf0c53ef397890c25e40e1709418ba77106ecc7f5b"
+  }
+}

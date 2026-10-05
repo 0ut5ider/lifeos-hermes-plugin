@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Fifty-two equal selected cases cover 16 registrations. Fifty lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, and four current-time cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Sixty-five equal selected cases cover 18 registrations. Sixty-three lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, and six end-of-turn render cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -70,7 +70,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | Stop.1.1 | LastResponseCache | Persist the final assistant response in the native response cache. | Selected cases verified |
 | Stop.1.2 | TabState | Set the applicable completed-turn terminal state. | Pending |
 | Stop.1.3 | VoiceCompletion | Record final-answer voice state and apply the configured remote-channel desktop gate. | Pending |
-| Stop.1.4 | ISARenderOnStop | Render the applicable active ISA after the completed response. | Pending |
+| Stop.1.4 | ISARenderOnStop | Render the applicable active ISA after the completed response. | Selected cases pass; spawn failure and fresh-page branches remain open |
 | Stop.1.5 | SpendAuditor | Update and check the native session spending record under the configured cost policy. | Pending |
 | Stop.1.6 | StopGates | Run nested completion gates and return required continuation or blocking feedback. | Pending |
 | Stop.1.7 | MemoryReviewFire | Trigger the eligible native memory review and preserve proposal approval rules. | Pending |

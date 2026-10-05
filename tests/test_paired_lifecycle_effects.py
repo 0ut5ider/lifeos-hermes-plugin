@@ -602,3 +602,100 @@ class PairedVersionDriftFixtureTests(unittest.TestCase):
             'worktree_preserved': True})
         (home / '.claude/hooks/core-0.txt').write_text('changed by a client\n')
         self.assertFalse(state_snapshot(home, 'version-drift-recent', 'current-session', after=True)['worktree_preserved'])
+
+
+class PairedISARenderTests(unittest.TestCase):
+    # case: seeded phase, iteration, prior page, expected log entry, expected page
+    SHAPES = {'isa-render-absent': (None, None, False, None, 'absent'),
+              'isa-render-first-authoring': ('execute', 1, False, ('skipped', 'paired-work/ISA.md:pre-completion'), 'absent'),
+              'isa-render-missing': (None, None, False, ('skipped', 'absent-work/ISA.md:missing'), 'absent'),
+              'isa-render-complete': ('complete', 1, False, ('rendered', 'paired-work/ISA.md'), 'rendered'),
+              'isa-render-resumed': ('execute', 2, False, ('rendered', 'paired-work/ISA.md'), 'rendered'),
+              'isa-render-existing-page': ('execute', 1, True, ('rendered', 'paired-work/ISA.md'), 'rendered')}
+
+    def case(self, name):
+        phase, iteration, prior, entry, page = self.SHAPES[name]
+        log = []
+        if entry:
+            log = [{'session_matches': True, 'rendered': [], 'skipped': [], entry[0]: [entry[1]]}]
+        side = {'before': {'state_present': name != 'isa-render-absent', 'isa_phase': phase,
+                           'isa_iteration': iteration, 'page': 'prior' if prior else 'absent'},
+                'after': {'state_present': False, 'log': log, 'page': page,
+                          'isa_preserved': True, 'hook_output': {'continue': True},
+                          'user_response_delivered': True},
+                'hook_exit_codes': [0], 'event': 'Stop', 'cli_exit_code': 0,
+                'model_generation_requests': 1, 'model_successful_responses': 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_every_selected_branch_accepts_only_its_required_effect(self):
+        for name in self.SHAPES:
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_completed_work_requires_a_rendered_page_and_cleared_state(self):
+        for key, value in (('page', 'absent'), ('state_present', True), ('log', [])):
+            with self.subTest(key=key):
+                case = self.case('isa-render-complete')
+                case['native']['after'][key] = case['hermes']['after'][key] = value
+                self.assertIn('isa-render-complete: render effect is missing', check_pair(case))
+
+    def test_first_authoring_rejects_a_rendered_page(self):
+        case = self.case('isa-render-first-authoring')
+        for side in ('native', 'hermes'):
+            case[side]['after']['page'] = 'rendered'
+        self.assertIn('isa-render-first-authoring: render effect is missing', check_pair(case))
+
+    def test_existing_page_requires_replacement_of_the_prior_content(self):
+        case = self.case('isa-render-existing-page')
+        for side in ('native', 'hermes'):
+            case[side]['after']['page'] = 'prior'
+        self.assertIn('isa-render-existing-page: render effect is missing', check_pair(case))
+
+
+class PairedISARenderFixtureTests(unittest.TestCase):
+    def fixture(self, name):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        source = base / 'source'
+        (source / 'hooks').mkdir(parents=True)
+        (source / 'LIFEOS/TOOLS').mkdir(parents=True)
+        (source / 'hooks/ISARenderOnStop.hook.ts').write_text('Fixture source identity\n')
+        (source / 'LIFEOS/TOOLS/ISARender.ts').write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, name, source, base / 'trace.py')
+        return home, json.loads((home / '.claude/settings.json').read_text())
+
+    def test_fixture_binds_the_hook_to_stop_and_links_the_native_renderer(self):
+        home, settings = self.fixture('isa-render-complete')
+        self.assertIn('Stop.1.4', settings['hooks']['Stop'][0]['hooks'][0]['command'])
+        self.assertTrue((home / '.claude/LIFEOS/TOOLS').is_symlink())
+
+    def test_session_start_seeds_the_edit_state_for_the_real_session(self):
+        from scripts.paired_lifecycle_effects import seed_render_state
+        for name, expected in (('isa-render-absent', {'state_present': False, 'isa_phase': None,
+                                                      'isa_iteration': None, 'page': 'absent'}),
+                               ('isa-render-existing-page', {'state_present': True, 'isa_phase': 'execute',
+                                                             'isa_iteration': 1, 'page': 'prior'}),
+                               ('isa-render-resumed', {'state_present': True, 'isa_phase': 'execute',
+                                                       'isa_iteration': 2, 'page': 'absent'})):
+            with self.subTest(name=name):
+                home, _ = self.fixture(name)
+                seed_render_state(home, name, 'current-session')
+                self.assertEqual(state_snapshot(home, name, 'current-session'), expected)
+
+    def test_after_state_normalizes_paths_and_classifies_the_page(self):
+        from scripts.paired_lifecycle_effects import seed_render_state
+        home, _ = self.fixture('isa-render-existing-page')
+        seed_render_state(home, 'isa-render-existing-page', 'current-session')
+        (home / 'fixture-files-before.json').write_text(json.dumps(
+            __import__('scripts.paired_lifecycle_effects', fromlist=['fixture_files']).fixture_files(home)))
+        work = home / '.claude/LIFEOS/MEMORY/WORK/paired-work'
+        log = home / '.claude/LIFEOS/MEMORY/OBSERVABILITY/isa-render.jsonl'
+        log.parent.mkdir(parents=True)
+        log.write_text(json.dumps({'ts': 'now', 'session_id': 'current-session',
+                                   'rendered': [str(work / 'ISA.md')], 'skipped': []}) + '\n')
+        (home / 'hooks.jsonl').write_text(json.dumps({'stdout': '{"continue":true}\n'}) + '\n')
+        self.assertEqual(state_snapshot(home, 'isa-render-existing-page', 'current-session', after=True), {
+            'state_present': True, 'page': 'prior', 'isa_preserved': True, 'hook_output': {'continue': True},
+            'log': [{'session_matches': True, 'rendered': ['paired-work/ISA.md'], 'skipped': []}]})
