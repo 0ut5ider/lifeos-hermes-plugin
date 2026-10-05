@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Seventy-four equal selected cases cover 24 registrations. Seventy-two lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, and three tool logging cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Seventy-seven equal selected cases cover 28 registrations. Seventy-five lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, three tool logging cases, and three file hint cases with real Write and Edit calls; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -20,15 +20,15 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | PostToolUse.8.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Pending |
 | PostToolUse.8.2 | ISAStaleWriteGuard | Prevent ISA writes based on a stale session view of the actual local or backend file. | Pending |
 | PostToolUse.8.3 | CheckpointPerISC | Commit eligible verified ISC state and write a retrievable checkpoint record. | Pending |
-| PostToolUse.8.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Pending |
-| PostToolUse.8.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Pending |
+| PostToolUse.8.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Only the non-sentinel Write branch passes; the sentinel branch is deferred after a Hermes hang |
+| PostToolUse.8.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Write cases pass; other tracked file patterns remain open |
 | PostToolUse.8.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Pending |
 | PostToolUse.8.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Pending |
 | PostToolUse.9.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Pending |
 | PostToolUse.9.2 | ISAStaleWriteGuard | Prevent ISA writes based on a stale session view of the actual local or backend file. | Pending |
 | PostToolUse.9.3 | CheckpointPerISC | Commit eligible verified ISC state and write a retrievable checkpoint record. | Pending |
-| PostToolUse.9.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Pending |
-| PostToolUse.9.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Pending |
+| PostToolUse.9.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Only the non-sentinel Edit branch passes; the sentinel branch is open |
+| PostToolUse.9.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Edit case passes; other tracked file patterns remain open |
 | PostToolUse.9.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Pending |
 | PostToolUse.9.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Pending |
 | PostToolUse.10.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Pending |

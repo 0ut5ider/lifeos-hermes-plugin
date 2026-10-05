@@ -903,3 +903,68 @@ class PairedToolLogTests(unittest.TestCase):
         self.assertNotIn('matcher', group)
         self.assertEqual([(hook.get('async', False), hook['timeout']) for hook in group['hooks']],
                          [(True, 5), (False, 30)])
+
+
+class PairedFileHintTests(unittest.TestCase):
+    SHAPES = {'file-hint-write-projects': ('Write', ['projects']), 'file-hint-write-plain': ('Write', []),
+              'file-hint-edit-gear': ('Edit', ['gear'])}
+
+    def case(self, name):
+        tool, sources = self.SHAPES[name]
+        event = 'PostToolUse'
+        side = {'before': {'atlas_rows': 1, 'target_present': tool == 'Edit', 'evaluation_state_present': False},
+                'after': {'prior_event_preserved': True, 'hint_sources': sources,
+                          'hint_tools': [tool] if sources else [], 'hints_current': True, 'one_hint_per_call': True,
+                          'target_content_matches': True, 'tool_names': [tool], 'file_path_matches': True,
+                          'hook_outputs_empty': True, 'evaluation_state_preserved': True,
+                          'user_response_delivered': True},
+                'hook_exit_codes': [0, 0], 'event': event, 'cli_exit_code': 0,
+                'model_generation_requests': 3, 'model_successful_responses': 3}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_every_selected_file_operation_accepts_only_its_required_effect(self):
+        for name in self.SHAPES:
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path(self):
+        for key, value in (('hint_sources', []), ('one_hint_per_call', False),
+                           ('target_content_matches', False), ('file_path_matches', False),
+                           ('tool_names', ['Bash'])):
+            with self.subTest(key=key):
+                case = self.case('file-hint-edit-gear')
+                case['native']['after'][key] = case['hermes']['after'][key] = value
+                self.assertIn('file-hint-edit-gear: file hint effect is missing', check_pair(case))
+
+    def test_untracked_file_rejects_a_hint_or_an_evaluation_state_change(self):
+        for key, value in (('hint_sources', ['projects']),
+                           ('evaluation_state_preserved', False)):
+            with self.subTest(key=key):
+                case = self.case('file-hint-write-plain')
+                case['native']['after'][key] = case['hermes']['after'][key] = value
+                self.assertIn('file-hint-write-plain: file hint effect is missing', check_pair(case))
+
+    def test_repeated_file_call_is_accepted_and_a_missing_call_is_rejected(self):
+        case = self.case('file-hint-edit-gear')
+        for side in ('native', 'hermes'):
+            case[side]['hook_exit_codes'] = [0] * 4
+        self.assertEqual(check_pair(case), [])
+        case['native']['hook_exit_codes'] = [0]
+        self.assertIn('file-hint-edit-gear: hook invocation count differs', check_pair(case))
+
+    def test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target(self):
+        for name, (tool, _) in self.SHAPES.items():
+            with self.subTest(name=name):
+                folder = tempfile.TemporaryDirectory()
+                self.addCleanup(folder.cleanup)
+                base = Path(folder.name)
+                source = base / 'source'
+                (source / 'hooks').mkdir(parents=True)
+                for hook in ('AtlasEventCapture', 'ConfigEvalFire'):
+                    (source / f'hooks/{hook}.hook.ts').write_text('Fixture source identity\n')
+                home = base / 'home'
+                make_fixture(home, name, source, base / 'trace.py')
+                group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
+                self.assertEqual(group['matcher'], tool)
+                self.assertEqual(json.loads((home / 'before-state.json').read_text()),
+                                 {'atlas_rows': 1, 'target_present': tool == 'Edit', 'evaluation_state_present': False})
