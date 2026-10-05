@@ -1,0 +1,109 @@
+/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+  _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+FEEEEEEEE
+======================================================================
+ERROR: test_altered_review_is_reported_without_its_unverified_content (test_fresh_store_status.FreshStoreStatusTests.test_altered_review_is_reported_without_its_unverified_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 65, in test_altered_review_is_reported_without_its_unverified_content
+    self.assertEqual(self.status()['stores'],[{'identifier':'c'*32,'state':'invalid'},
+                     ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_listing_orders_the_latest_preparation_first (test_fresh_store_status.FreshStoreStatusTests.test_listing_orders_the_latest_preparation_first)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 86, in test_listing_orders_the_latest_preparation_first
+    self.assertEqual([row['identifier'][0] for row in self.status()['stores']],['2','3','1'])
+                                                      ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_listing_refuses_a_linked_store_and_preserves_every_file (test_fresh_store_status.FreshStoreStatusTests.test_listing_refuses_a_linked_store_and_preserves_every_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 100, in test_listing_refuses_a_linked_store_and_preserves_every_file
+    self.status()
+    ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_listing_requires_the_installation_owner (test_fresh_store_status.FreshStoreStatusTests.test_listing_requires_the_installation_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 91, in test_listing_requires_the_installation_owner
+    self.operation().status(account='dashboard:guest')
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_profile_without_preparations_reports_an_empty_idle_listing (test_fresh_store_status.FreshStoreStatusTests.test_profile_without_preparations_reports_an_empty_idle_listing)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 52, in test_profile_without_preparations_reports_an_empty_idle_listing
+    self.assertEqual(self.status(),{'busy':False,'stores':[]})
+                     ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_signed_review_reports_names_and_inactive_selection (test_fresh_store_status.FreshStoreStatusTests.test_signed_review_reports_names_and_inactive_selection)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 56, in test_signed_review_reports_names_and_inactive_selection
+    self.assertEqual(self.status(),{'busy':False,'stores':[{
+                     ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs (test_fresh_store_status.FreshStoreStatusTests.test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 70, in test_unfinished_preparation_is_interrupted_when_no_installation_operation_runs
+    self.assertEqual(self.status(),{'busy':False,'stores':[{
+                     ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+ERROR: test_unfinished_preparation_is_running_while_the_installation_lock_is_held (test_fresh_store_status.FreshStoreStatusTests.test_unfinished_preparation_is_running_while_the_installation_lock_is_held)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 77, in test_unfinished_preparation_is_running_while_the_installation_lock_is_held
+    result=self.status()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 49, in status
+    return self.operation().status(account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'status'
+
+======================================================================
+FAIL: test_owner_reads_the_listing_and_other_requests_are_refused (test_fresh_store_status.FreshStoreStatusRouteTests.test_owner_reads_the_listing_and_other_requests_are_refused)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_status.py", line 125, in test_owner_reads_the_listing_and_other_requests_are_refused
+    self.assertEqual(response.status_code,200,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.490s
+
+FAILED (failures=1, errors=8)
+exit 1

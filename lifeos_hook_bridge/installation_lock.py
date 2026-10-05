@@ -9,6 +9,10 @@ import stat
 import threading
 
 
+class InstallationBusy(RuntimeError):
+    pass
+
+
 class _InstallationLease:
     def __init__(self, profile, descriptor):
         self.profile = profile
@@ -70,7 +74,7 @@ def installation_lock(profile: Path, *, wait: bool = False, lease=None):
         try:
             fcntl.flock(descriptor, fcntl.LOCK_EX | (0 if wait else fcntl.LOCK_NB))
         except BlockingIOError as error:
-            raise RuntimeError('Another installation operation is running') from error
+            raise InstallationBusy('Another installation operation is running') from error
         issued = _InstallationLease(profile, descriptor)
         try:
             yield issued

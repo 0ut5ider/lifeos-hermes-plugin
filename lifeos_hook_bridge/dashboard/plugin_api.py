@@ -324,6 +324,13 @@ async def prepare_fresh_store(request: dict, account: str = Depends(_memory_acco
         INSTALL_CANDIDATE, **request, account=account))
 
 
+@router.get('/memory/fresh/status')
+def get_fresh_store_status(request: Request, account: str = Depends(_memory_account)):
+    if request.query_params:
+        raise HTTPException(status_code=400, detail='Fresh store status uses the installed owner configuration')
+    return _memory_action(lambda preferences: preferences.fresh_status(account=account))
+
+
 @router.post('/memory/sources/preview')
 def preview_memory_sources(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'paths'}:

@@ -147,6 +147,11 @@ class MemoryPreferences:
         except IncompatibleLifeOS as error:
             raise MemoryUnavailable('Fresh store preparation requires a verified native candidate') from error
 
+    def fresh_status(self, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).status(account=account)
+
     def prepare_import(self, request, *, account=None):
         import hashlib
         from uuid import uuid4

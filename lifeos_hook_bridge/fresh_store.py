@@ -9,7 +9,7 @@ import stat
 import tomllib
 from uuid import uuid4
 
-from .installation_lock import installation_lock
+from .installation_lock import installation_lock,InstallationBusy
 from .install_source import install_prepared_lifeos,validate_prepared_lifeos
 from .memory_access import NativeMemory,MemoryUnavailable,HOT_FILES
 from .memory_backup import _directory,_read,ENTRY_LIMIT,TOTAL_LIMIT
@@ -100,14 +100,66 @@ class FreshStore:
             raise MemoryUnavailable('The selected installation changes during fresh store preparation')
         return selected
 
+    def _base(self):
+        identity=hashlib.sha256(str(self.profile).encode()).hexdigest()[:24]
+        return self.profile.parent/'.local/state/lifeos-hook-bridge/fresh-stores'/identity
+
+    def _store(self,folder,running):
+        info=folder.lstat()
+        if not stat.S_ISDIR(info.st_mode) or not re.fullmatch(r'[0-9a-f]{32}',folder.name):
+            raise MemoryUnavailable('The fresh store listing requires physical prepared directories')
+        _directory(folder,private=True)
+        unfinished={'identifier':folder.name,'state':'preparing' if running else 'interrupted'}
+        review=folder/'review.json'
+        if not review.exists() and not review.is_symlink():
+            return info.st_mtime_ns,unfinished
+        data,metadata=_read(review)
+        invalid=metadata['mtime_ns'],{'identifier':folder.name,'state':'invalid'}
+        try:
+            document=json.loads(data)
+        except ValueError:
+            return invalid
+        names=document.get('names') if isinstance(document,dict) else None
+        if (not isinstance(names,dict) or set(names)!={'principal','assistant'}
+                or document.get('profile')!=str(self.profile)):
+            return invalid
+        try:
+            for value in names.values():_name(value)
+        except ValueError:
+            return invalid
+        if document.get('state')=='preparing':
+            return metadata['mtime_ns'],{**unfinished,'names':names}
+        unsigned={key:value for key,value in document.items() if key!='signature'}
+        signature=hashlib.sha256((json.dumps(unsigned,sort_keys=True,indent=2)+'\n').encode()).hexdigest()
+        if document.get('state')!='review' or document.get('signature')!=signature:
+            return invalid
+        return metadata['mtime_ns'],{'identifier':folder.name,'state':'review','names':names,
+            **{key:document.get(key) for key in ('active_facts','activation_ready','source','retained_installation')}}
+
+    def status(self,*,account=None):
+        selected=self._owner(account)
+        base=self._base()
+        try:
+            with installation_lock(self.profile):
+                busy=False
+        except InstallationBusy:
+            busy=True
+        stores=[]
+        if base.exists() or base.is_symlink():
+            _directory(base,private=True)
+            stores=[self._store(folder,busy) for folder in base.iterdir()]
+        if self._owner(account)!=selected:
+            raise MemoryUnavailable('The installation owner changes during the fresh store listing')
+        stores.sort(key=lambda row:(-row[0],row[1]['identifier']))
+        return {'busy':busy,'stores':[row for _,row in stores]}
+
     def prepare(self,candidate,*,principal_name,assistant_name,account=None):
         candidate=Path(candidate).absolute()
         with installation_lock(self.profile),self.configuration._lock():
             selected=self._owner(account)
             principal=_name(principal_name);assistant=_name(assistant_name)
             source=validate_prepared_lifeos(candidate)
-            identity=hashlib.sha256(str(self.profile).encode()).hexdigest()[:24]
-            base=self.profile.parent/'.local/state/lifeos-hook-bridge/fresh-stores'/identity
+            base=self._base()
             if base.resolve()!=base:
                 raise MemoryUnavailable('The fresh store destination changes its physical path')
             base.mkdir(parents=True,exist_ok=True,mode=0o700)
