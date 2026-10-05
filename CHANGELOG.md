@@ -28,6 +28,8 @@ Keep it equal to the version in both plugin manifests.
   private FlashNext replies. All six final client runs pass.
 - Three paired response-cache cases verify creation, replacement, and the exact
   2,000-character limit through real Stop events. All six client runs pass.
+- Five paired feedback cases verify explicit and bare ratings, praise, neutral
+  numeric text, and low-rating learning. All ten final client runs pass.
 - A full-experience release plan with private FlashNext tiers and Discord voice
   input and spoken replies. Voice follows the core functionality.
 

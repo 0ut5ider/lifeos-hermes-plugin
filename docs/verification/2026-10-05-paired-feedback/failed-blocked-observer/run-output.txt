@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/var/tmp/lifeos-paired-feedback-20261005/paired_lifecycle_effects.py", line 797, in <module>
+    raise SystemExit(main())
+                     ~~~~^^
+  File "/var/tmp/lifeos-paired-feedback-20261005/paired_lifecycle_effects.py", line 793, in main
+    return run_controls(read_json(args.configuration), args.output, cases)
+  File "/var/tmp/lifeos-paired-feedback-20261005/paired_lifecycle_effects.py", line 760, in run_controls
+    paired[side] = run_side(side, config[side], case, output, endpoint, guard)
+                   ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/lifeos-paired-feedback-20261005/paired_lifecycle_effects.py", line 673, in run_side
+    raise ValueError('A complete real lifecycle boundary was not observed')
+ValueError: A complete real lifecycle boundary was not observed

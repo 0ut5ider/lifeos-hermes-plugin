@@ -62,7 +62,7 @@ BLOCK_REASON = 'PAIR_BLOCK_BEFORE_MODEL'
 ADVISORY_KEY = 'doc.integrity.memory_dir missing_active:KNOWLEDGE'
 RELATIONSHIP_TEXT = '- PAIR_RELATIONSHIP_NOTE\n'
 WISDOM_TEXT = '### PAIR_WISDOM_GUIDANCE [CRYSTAL: 95%]\n### PAIR_LOW_CONFIDENCE [CRYSTAL: 50%]\n'
-RESPONSE_PREFIXES = ('context-response-', 'response-cache-', 'feedback-')
+RESPONSE_PREFIXES = ('context-response-', 'response-cache-')
 FEEDBACK_PROMPTS = {'feedback-rating': '8 great result', 'feedback-bare-rating': '10',
                     'feedback-praise': 'great job', 'feedback-neutral': '2 of the files were inspected',
                     'feedback-low-rating': '4 needs clearer details'}
@@ -73,8 +73,7 @@ PRIOR_RATING = {'timestamp': '2026-10-01T00:00:00Z', 'rating': 6,
 
 def expected_feedback(case: str) -> dict:
     result = {'unrelated_rating_preserved': True, 'cache_preserved': True,
-              'captured_ratings': [], 'learning_count': int(case == 'feedback-low-rating'),
-              'user_response_delivered': True}
+              'captured_ratings': [], 'learning_count': int(case == 'feedback-low-rating')}
     if case != 'feedback-neutral':
         rating = {'rating': {'feedback-rating': 8, 'feedback-bare-rating': 10,
                             'feedback-praise': 8, 'feedback-low-rating': 4}[case],
@@ -699,7 +698,7 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                 if isinstance(row, dict) and row.get('type') == 'result':
                     results.append(row)
             user_response = (results[0].get('result', '') if side == 'native' else results[0].get('text', '')) if len(results) == 1 else ''
-            after['user_response_delivered'] = bool(user_response) and (case.startswith('feedback-') or 'READY' in user_response)
+            after['user_response_delivered'] = bool(user_response) and 'READY' in user_response
             if case.startswith('response-cache-'):
                 cache = home / '.claude/LIFEOS/MEMORY/STATE/last-response.txt'
                 stop_message = json.loads(base64.b64decode(traces[0]['stdin_base64']))['last_assistant_message']

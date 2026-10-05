@@ -1,0 +1,125 @@
+.................................FFFF                            [100%]
+=================================== FAILURES ===================================
+_ PairedFeedbackEffectTests.test_explicit_and_bare_ratings_require_current_session_context (name='feedback-rating') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_explicit_and_bare_ratings_require_current_session_context>
+
+    def test_explicit_and_bare_ratings_require_current_session_context(self):
+        for name, rating in [('feedback-rating', self.rating(8, comment='great result')),
+                             ('feedback-bare-rating', self.rating(10))]:
+            with self.subTest(name=name):
+                case = self.case(name, rating)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-rating: feedback effect is miss[51 chars]ted'] != []
+E               
+E               First list contains 2 additional elements.
+E               First extra element 0:
+E               'feedback-rating: feedback effect is missing'
+E               
+E               + []
+E               - ['feedback-rating: feedback effect is missing',
+E               -  'feedback-rating: model generation was attempted']
+
+tests/test_paired_lifecycle_effects.py:340: AssertionError
+_ PairedFeedbackEffectTests.test_explicit_and_bare_ratings_require_current_session_context (name='feedback-bare-rating') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_explicit_and_bare_ratings_require_current_session_context>
+
+    def test_explicit_and_bare_ratings_require_current_session_context(self):
+        for name, rating in [('feedback-rating', self.rating(8, comment='great result')),
+                             ('feedback-bare-rating', self.rating(10))]:
+            with self.subTest(name=name):
+                case = self.case(name, rating)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-bare-rating: feedback effect is[61 chars]ted'] != []
+E               
+E               First list contains 2 additional elements.
+E               First extra element 0:
+E               'feedback-bare-rating: feedback effect is missing'
+E               
+E               + []
+E               - ['feedback-bare-rating: feedback effect is missing',
+E               -  'feedback-bare-rating: model generation was attempted']
+
+tests/test_paired_lifecycle_effects.py:340: AssertionError
+_ PairedFeedbackEffectTests.test_feedback_requires_a_successful_complete_client_response _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_feedback_requires_a_successful_complete_client_response>
+
+    def test_feedback_requires_a_successful_complete_client_response(self):
+        case = self.case('feedback-neutral')
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['feedback-neutral: feedback effect is mis[53 chars]ted'] != []
+E       
+E       First list contains 2 additional elements.
+E       First extra element 0:
+E       'feedback-neutral: feedback effect is missing'
+E       
+E       + []
+E       - ['feedback-neutral: feedback effect is missing',
+E       -  'feedback-neutral: model generation was attempted']
+
+tests/test_paired_lifecycle_effects.py:367: AssertionError
+_ PairedFeedbackEffectTests.test_low_rating_requires_learning_with_the_cached_response_and_principal _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_low_rating_requires_learning_with_the_cached_response_and_principal>
+
+    def test_low_rating_requires_learning_with_the_cached_response_and_principal(self):
+        case = self.case('feedback-low-rating', self.rating(4, comment='needs clearer details'), learning=True)
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['feedback-low-rating: feedback effect is [59 chars]ted'] != []
+E       
+E       First list contains 2 additional elements.
+E       First extra element 0:
+E       'feedback-low-rating: feedback effect is missing'
+E       
+E       + []
+E       - ['feedback-low-rating: feedback effect is missing',
+E       -  'feedback-low-rating: model generation was attempted']
+
+tests/test_paired_lifecycle_effects.py:361: AssertionError
+_ PairedFeedbackEffectTests.test_numeric_work_text_cannot_create_a_rating_or_erase_prior_ratings _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_numeric_work_text_cannot_create_a_rating_or_erase_prior_ratings>
+
+    def test_numeric_work_text_cannot_create_a_rating_or_erase_prior_ratings(self):
+        case = self.case('feedback-neutral')
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['feedback-neutral: feedback effect is mis[53 chars]ted'] != []
+E       
+E       First list contains 2 additional elements.
+E       First extra element 0:
+E       'feedback-neutral: feedback effect is missing'
+E       
+E       + []
+E       - ['feedback-neutral: feedback effect is missing',
+E       -  'feedback-neutral: model generation was attempted']
+
+tests/test_paired_lifecycle_effects.py:353: AssertionError
+_ PairedFeedbackEffectTests.test_praise_requires_the_native_summary_and_confidence _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_praise_requires_the_native_summary_and_confidence>
+
+    def test_praise_requires_the_native_summary_and_confidence(self):
+        case = self.case('feedback-praise', {**self.rating(8), 'source': 'implicit',
+            'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95})
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['feedback-praise: feedback effect is miss[51 chars]ted'] != []
+E       
+E       First list contains 2 additional elements.
+E       First extra element 0:
+E       'feedback-praise: feedback effect is missing'
+E       
+E       + []
+E       - ['feedback-praise: feedback effect is missing',
+E       -  'feedback-praise: model generation was attempted']
+
+tests/test_paired_lifecycle_effects.py:347: AssertionError
+=========================== short test summary info ============================
+SUBFAILED(name='feedback-rating') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_explicit_and_bare_ratings_require_current_session_context
+SUBFAILED(name='feedback-bare-rating') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_explicit_and_bare_ratings_require_current_session_context
+FAILED tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_feedback_requires_a_successful_complete_client_response
+FAILED tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_low_rating_requires_learning_with_the_cached_response_and_principal
+FAILED tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_numeric_work_text_cannot_create_a_rating_or_erase_prior_ratings
+FAILED tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_praise_requires_the_native_summary_and_confidence
+6 failed, 33 passed, 6 subtests passed in 0.13s

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import tempfile
 
-from scripts.paired_lifecycle_effects import CASES, check_pair, make_fixture
+from scripts.paired_lifecycle_effects import CASES, check_pair, make_fixture, state_snapshot
 
 
 class PairedLifecycleEffectTests(unittest.TestCase):
@@ -303,3 +303,70 @@ class PairedLifecycleFixtureTests(unittest.TestCase):
                 self.assertEqual(len(settings['hooks']['SessionEnd']), 1)
                 self.assertEqual(json.loads((home / 'before-state.json').read_text()),
                     {'cache_present': prior, 'prior_marker_present': prior})
+
+    def test_feedback_fixture_preserves_a_prior_rating_and_binds_to_prompt_submission(self):
+        home, settings, definitions = self.fixture('feedback-rating')
+        self.assertEqual(settings['hooks']['UserPromptSubmit'][-1]['hooks'][0]['command'],
+                         definitions[0]['command'])
+        self.assertEqual(json.loads((home / 'before-state.json').read_text()),
+                         {'rating_count': 1, 'learning_count': 0, 'cache_present': True})
+        self.assertEqual(state_snapshot(home, 'feedback-rating', 'current-session', after=True),
+                         {'unrelated_rating_preserved': True, 'cache_preserved': True,
+                          'captured_ratings': [], 'learning_count': 0})
+
+
+class PairedFeedbackEffectTests(unittest.TestCase):
+    def case(self, name, rating=None, learning=False):
+        after = {'unrelated_rating_preserved': True, 'cache_preserved': True,
+                 'captured_ratings': [rating] if rating else [], 'learning_count': int(learning),
+                 'user_response_delivered': True}
+        if learning:
+            after['learning_checks'] = {'rating_matches': True, 'source_matches': True,
+                'feedback_matches': True, 'context_matches': True, 'principal_matches': True}
+        side = {'before': {'rating_count': 1, 'learning_count': 0, 'cache_present': True},
+                'after': after, 'hook_exit_codes': [0], 'event': 'UserPromptSubmit',
+                'cli_exit_code': 0, 'model_generation_requests': 1, 'model_successful_responses': 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def rating(self, value, **fields):
+        return {'rating': value, 'source': 'explicit', 'timestamp_valid': True,
+                'session_matches': True, 'response_preview_matches_cache': True, **fields}
+
+    def test_explicit_and_bare_ratings_require_current_session_context(self):
+        for name, rating in [('feedback-rating', self.rating(8, comment='great result')),
+                             ('feedback-bare-rating', self.rating(10))]:
+            with self.subTest(name=name):
+                case = self.case(name, rating)
+                self.assertEqual(check_pair(case), [])
+                case['hermes']['after']['captured_ratings'][0]['session_matches'] = False
+                self.assertIn(f'{name}: feedback effect is missing', check_pair(case))
+
+    def test_praise_requires_the_native_summary_and_confidence(self):
+        case = self.case('feedback-praise', {**self.rating(8), 'source': 'implicit',
+            'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95})
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['captured_ratings'][0]['confidence'] = 1
+        self.assertIn('feedback-praise: feedback effect is missing', check_pair(case))
+
+    def test_numeric_work_text_cannot_create_a_rating_or_erase_prior_ratings(self):
+        case = self.case('feedback-neutral')
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['unrelated_rating_preserved'] = False
+        self.assertIn('feedback-neutral: feedback effect is missing', check_pair(case))
+        case = self.case('feedback-neutral', self.rating(2))
+        self.assertIn('feedback-neutral: feedback effect is missing', check_pair(case))
+
+    def test_low_rating_requires_learning_with_the_cached_response_and_principal(self):
+        case = self.case('feedback-low-rating', self.rating(4, comment='needs clearer details'), learning=True)
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['learning_checks']['context_matches'] = False
+        self.assertIn('feedback-low-rating: feedback effect is missing', check_pair(case))
+
+    def test_feedback_requires_a_successful_complete_client_response(self):
+        case = self.case('feedback-neutral')
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['model_successful_responses'] = 0
+        self.assertIn('feedback-neutral: successful model response was not observed', check_pair(case))
+        case = self.case('feedback-neutral')
+        case['native']['after']['user_response_delivered'] = False
+        self.assertIn('feedback-neutral: feedback effect is missing', check_pair(case))
