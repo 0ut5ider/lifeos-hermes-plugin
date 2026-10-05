@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryHermesSoulWriterTests.test_interrupted_recovery_cannot_restore_into_a_changed_workspace _
+tests/test_memory_hermes_soul_writer.py:164: in test_interrupted_recovery_cannot_restore_into_a_changed_workspace
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_hermes_soul_writer.py::MemoryHermesSoulWriterTests::test_interrupted_recovery_cannot_restore_into_a_changed_workspace
+1 failed, 12 deselected in 4.70s

@@ -26,7 +26,18 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "interview_scan_name") {
+  if (input.action === "hermes_soul_names" || input.action === "hermes_soul_render") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/RenderHermesSoul.ts")).href);
+    const sources = input.sources;
+    if (!object(module) || typeof module.renderHermesSoul !== "function"
+        || typeof module.renderHermesSoulNames !== "function" || !object(sources)
+        || !["daIdentity", "daMemory", "principal", "principalMemory", "telos", "projects"].every(
+          name => typeof sources[name] === "string")) {
+      throw new Error("Native Hermes soul rendering requires declared source text");
+    }
+    result = input.action === "hermes_soul_names" ? module.renderHermesSoulNames(sources)
+      : module.renderHermesSoul(sources);
+  } else if (input.action === "interview_scan_name") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewScan.ts")).href);
     if (!object(module) || typeof module.renderScanName !== "function" || !(input.content === null || typeof input.content === "string")) {
       throw new Error("Native interview naming requires declared identity text");

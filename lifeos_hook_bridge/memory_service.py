@@ -111,6 +111,9 @@ class MemoryConfiguration:
             raise ValueError("Memory ownership must be enabled explicitly")
         if type(configuration.get("sharing_enabled", False)) is not bool:
             raise ValueError("Memory sharing must be enabled explicitly")
+        workspace = configuration.get('hermes_workspace')
+        if workspace is not None and (not isinstance(workspace, str) or not Path(workspace).is_absolute()):
+            raise ValueError('Hermes publication needs an absolute installed workspace')
         MemoryPolicy(configuration)
         clients = configuration.get("clients", {})
         if not isinstance(clients, dict):
@@ -258,6 +261,16 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation == 'hermes_soul' and set(arguments) == {'args', 'home', 'workspace'}:
+                from .memory_hermes_soul import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Hermes soul authority changed during rendering')
+
+                return run(memory, scope, self.configuration.path.parent, configuration.get('hermes_workspace'),
+                           **arguments, check_current=check_current)
             if operation == 'interview_scan' and set(arguments) == {'args'}:
                 from .memory_interview_scan import read
 

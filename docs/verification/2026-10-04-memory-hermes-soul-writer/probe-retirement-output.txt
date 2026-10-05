@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-hermes-soul-writer/probe_retirement.py", line 17, in <module>
+    result = MemoryService(delegation.configuration).native(delegation.context, 'hermes_soul',
+        {'args': ['--stdout'], 'home': str(fixture.profile), 'workspace': str(fixture.workspace)})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 272, in native
+    return run(memory, scope, self.configuration.path.parent, configuration.get('hermes_workspace'),
+               **arguments, check_current=check_current)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_hermes_soul.py", line 97, in run
+    sources = _collect(memory, scope, connection)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_hermes_soul.py", line 28, in _collect
+    if valid != [True] or memory._filter_history(connection, scope, projection, None, reviewed=True)['excluded']:
+                          ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 733, in _filter_history
+    source_time = datetime.fromisoformat(timestamp.replace("Z", "+00:00"))
+                                         ^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'replace'

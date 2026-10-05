@@ -1,0 +1,23 @@
+...F..F                                                                [100%]
+=================================== FAILURES ===================================
+_ MemoryHermesSoulWriterTests.test_owner_native_render_and_check_preserve_synthetic_content _
+tests/test_memory_hermes_soul_writer.py:65: in test_owner_native_render_and_check_preserve_synthetic_content
+    printed = self.successful('--stdout')
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_hermes_soul_writer.py:53: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : error: Cannot find package 'yaml' from '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_3f1e_cu/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts'
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryHermesSoulWriterTests.test_successful_outputs_have_private_permissions _
+tests/test_memory_hermes_soul_writer.py:101: in test_successful_outputs_have_private_permissions
+    self.successful()
+tests/test_memory_hermes_soul_writer.py:53: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : error: Cannot find package 'yaml' from '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-fod3ddn7/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts'
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_hermes_soul_writer.py::MemoryHermesSoulWriterTests::test_owner_native_render_and_check_preserve_synthetic_content
+FAILED tests/test_memory_hermes_soul_writer.py::MemoryHermesSoulWriterTests::test_successful_outputs_have_private_permissions
+2 failed, 5 passed, 2 subtests passed in 1.13s

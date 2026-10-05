@@ -124,6 +124,9 @@ def _check_references(memory, connection):
 
 def capture(memory, scope, connection, stage):
     _authorize(scope)
+    pending = memory.database.parent / 'memory-hermes-soul-operation.json'
+    if pending.exists() or pending.is_symlink():
+        raise MemoryUnavailable('Recover the interrupted Hermes soul publication before creating a backup')
     _check_references(memory, connection)
     snapshot = _collect(memory, connection, stage)
     _check_references(memory, connection)
