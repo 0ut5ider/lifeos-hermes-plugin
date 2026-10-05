@@ -1,0 +1,37 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python3",
+    "-m",
+    "unittest",
+    "test_memory_import",
+    "test_memory_import_dashboard.MemoryImportDashboardTests",
+    "test_memory_publication_modes",
+    "test_memory_publication_recovery",
+    "test_memory_native",
+    "test_memory_proposals",
+    "test_memory_restore",
+    "test_memory_staging",
+    "test_memory_authorization",
+    "test_memory_backup",
+    "test_profile_backup",
+    "test_memory_preferences",
+    "test_memory_dashboard"
+  ],
+  "environment": {
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-final-distributed/lifeos/LifeOS/install",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261005/paired-context-response/hermes",
+    "PYTHONPATH": "tests:."
+  },
+  "source_files": {
+    "lifeos_hook_bridge/memory_import.py": "000d063dba6d914ec920cb229872933ffa07b916511e97199de436799c134809",
+    "lifeos_hook_bridge/memory_access.py": "73130bda857cce208aeb0f98a52f98f8fe53c52ce8926d2fb830d0bb1d27bed9",
+    "lifeos_hook_bridge/memory_transaction.py": "6bcd7f1388e133441a5dc2bd739e14f7d960d5c18d73c93fef93c635e904e08f",
+    "lifeos_hook_bridge/memory_publication.ts": "f8c480f6a199b8c29859d33eb5d8585e40fe70445cf91a5879c54f614509d423",
+    "lifeos_hook_bridge/memory_preferences.py": "1b9d2caef232c771cc41e1b65e17bf09ebbd999740fe68b946a26ff3886cbaf1",
+    "lifeos_hook_bridge/dashboard/plugin_api.py": "77640d06deb0e3a24a1929a9d2ba1f2c6eeba789f9e08490ab57691e4969b76c",
+    "tests/test_memory_import.py": "66f294baeb24b8240f6a6e46f0c22d5d2f9cd6544d2d65cbe3499586028adb27",
+    "tests/test_memory_import_dashboard.py": "317714fd53fa899772638bffd069d9322a2b35247cd602d0c200c774a2af23fb",
+    "tests/test_memory_publication_modes.py": "2afada5d3890edc4953d30d2e596829fb0845382254c3539012ffaf37038ba23"
+  }
+}

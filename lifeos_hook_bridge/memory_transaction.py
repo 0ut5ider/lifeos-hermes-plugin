@@ -10,10 +10,13 @@ import json
 import os
 from pathlib import Path
 import re
+import stat
 import tempfile
 
 
-def publish(path: Path, data: bytes) -> None:
+def publish(path: Path, data: bytes, *, mode: int = 0o600) -> None:
+    if type(mode) is not int or not 0 <= mode <= 0o777:
+        raise ValueError('Atomic publication requires a supported file mode')
     path.parent.mkdir(parents=True, exist_ok=True, mode=0o700)
     descriptor, name = tempfile.mkstemp(prefix=".memory-", dir=path.parent)
     temporary = Path(name)
@@ -21,6 +24,7 @@ def publish(path: Path, data: bytes) -> None:
         with os.fdopen(descriptor, "wb") as stream:
             stream.write(data)
             stream.flush()
+            os.fchmod(stream.fileno(), mode)
             os.fsync(stream.fileno())
         os.replace(temporary, path)
         descriptor = os.open(path.parent, os.O_RDONLY | os.O_DIRECTORY)
@@ -81,14 +85,16 @@ class MemoryTransaction:
         copies = []
         for name in sorted(set(paths)):
             path = self.resolve(name)
-            copies.append({"path": name, "data": base64.b64encode(path.read_bytes()).decode() if path.exists() else None})
+            present = path.exists()
+            copies.append({"path": name, "data": base64.b64encode(path.read_bytes()).decode() if present else None,
+                           "mode": stat.S_IMODE(path.stat().st_mode) if present else None})
             if expected is not None:
                 copies[-1]['after_digest'] = expected[name]
         publish(self.journal, json.dumps({"writer": writer, "request_id": request_id, "copies": copies}).encode())
 
     def _check_restore(self, copy):
         from .memory_access import MemoryUnavailable
-        if (not isinstance(copy, dict) or set(copy) != {'path', 'data', 'after_digest'}
+        if (not isinstance(copy, dict) or set(copy) not in ({'path', 'data', 'after_digest'}, {'path', 'data', 'mode', 'after_digest'})
                 or not isinstance(copy['path'], str) or not copy['path']
                 or not isinstance(copy['after_digest'], str)
                 or re.fullmatch('[0-9a-f]{64}', copy['after_digest']) is None
@@ -119,10 +125,14 @@ class MemoryTransaction:
             raise MemoryUnavailable('The publication recovery journal has invalid operation metadata')
         names = set()
         for copy in operation['copies']:
-            if (not isinstance(copy, dict) or set(copy) not in ({'path', 'data'}, {'path', 'data', 'after_digest'})
+            if (not isinstance(copy, dict) or set(copy) not in ({'path', 'data'}, {'path', 'data', 'after_digest'},
+                    {'path', 'data', 'mode'}, {'path', 'data', 'mode', 'after_digest'})
                     or not isinstance(copy['path'], str) or not copy['path'] or copy['path'] in names
                     or copy['data'] is not None and not isinstance(copy['data'], str)):
                 raise MemoryUnavailable('The publication recovery journal has invalid recovery targets')
+            if 'mode' in copy and (copy['mode'] is not None if copy['data'] is None else
+                    type(copy['mode']) is not int or not 0 <= copy['mode'] <= 0o777):
+                raise MemoryUnavailable('The publication recovery journal has invalid original permissions')
             names.add(copy['path'])
             try:
                 if copy['data'] is not None:
@@ -146,7 +156,7 @@ class MemoryTransaction:
             if copy["data"] is None:
                 path.unlink(missing_ok=True)
             else:
-                publish(path, base64.b64decode(copy["data"], validate=True))
+                publish(path, base64.b64decode(copy["data"], validate=True), mode=copy.get('mode', 0o600))
         connection.execute("DELETE FROM operations WHERE writer=? AND request_id=?",
                            (operation["writer"], operation["request_id"]))
         connection.commit()

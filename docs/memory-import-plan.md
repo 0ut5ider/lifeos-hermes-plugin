@@ -1,6 +1,6 @@
 # Import existing Hermes memory into LifeOS
 
-Date: 2026-10-01. Status: deferred design work. Adrian asks to preserve the original proposal, independent findings, and revised plan before returning to fresh-install completion. This document does not activate memory ownership or implement migration.
+Date: 2026-10-05. Status: implementation in progress. The original proposal and independent findings remain below. The candidate implements source review, private snapshots, manual item plans, and recoverable native publication. It does not activate ownership or complete migration.
 
 The [approved memory design](../notes/2026-09-30-memory-design.md) gives LifeOS ownership of lasting facts. Hermes retains history, compression, and skills. Fresh installations remain the first target. Import applies separately to an established Hermes profile that already has `memories/MEMORY.md` or `memories/USER.md`.
 
@@ -73,6 +73,16 @@ Add acceptance cases for interrupted removal, restore conflicts, changed patch b
 
 The review defines [19 acceptance cases](agents/2026-10-01-memory-import-review/memory-import-review.md) for profiles, parsing, path substitution, duplicates, races, grants, unsupported destinations, capacity, retired claims, untrusted text, optional processing, interruptions, partial outcomes, sessions, old-file controls, restore, retained copies, and release compatibility.
 
-Run these with disposable profiles and synthetic facts when import implementation begins. Current native adoption registers existing LifeOS files in place. It does not import Hermes memory or establish this handoff.
+Run these with disposable profiles and synthetic facts. Current native adoption registers existing LifeOS files in place. The separate importer publishes reviewed Hermes occurrences through native fact operations. Neither operation establishes the complete ownership handoff.
 
-Existing-user migration remains deferred. The active work is the [fresh-install memory completion plan](memory-implementation-plan.md): native PULSE relay/browser authentication, remaining readers, managed restore/staged publication, restricted routes and lifecycle, then ownership setup and the full release gate.
+Existing-user migration remains incomplete. Continue the import and return checks alongside the [fresh-install memory completion plan](memory-implementation-plan.md). Production ownership still requires the full release gate.
+
+## Implemented import primitive
+
+The [October 5 import evidence](verification/2026-10-05-memory-import/README.md) records the current boundary. An authenticated installation owner can review the selected profile through `/memory/import/preview` and create a server-selected private snapshot through `/memory/import/snapshot`. The snapshot preserves source bytes, configuration, occurrence identities, blank chunks, duplicate occurrences, and permissions. The parser matches the pinned Hermes parser for the tested byte order marks and newline forms.
+
+`MemoryImport.plan` requires one explicit import, pending, or exclude decision for each nonempty occurrence. It supports the implemented principal, assistant, and project destinations. It shows transformed text, exact native destinations, source provenance, current reader grants, duplicate references, and complete resulting hot-memory entries. Original author and date remain unknown. Native validation and known retirement checks can refuse publication. The plan refuses capacity overflow without eviction.
+
+`MemoryImport.apply` publishes each selected fact and its import receipt in the same native transaction. Stable request identifiers permit recovery after process exit without duplicate facts. Source, target, configuration, and permission changes produce a conflict. Recovery restores original bytes and file modes for journals that capture those modes. Historical journals cannot prove an original mode they did not capture. Every required item must have a verified current native reference for a complete publication result. Ownership stays unchanged.
+
+These methods are internal primitives. The dashboard exposes review and snapshot creation only. Item planning, application, and operation status still need authenticated controls and browser acceptance. Learning destinations, reviewed splits, effective runtime provider checks, source writer draining through cutover, optional classification, reverse export, return conflicts, and removal remain required work. Semantic conflict detection remains incomplete and explicit. Real `.213` source copies remain private and never enter the selected `.212` store.

@@ -132,6 +132,23 @@ class MemoryPreferences:
         config = self._configuration(account=account)
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))
 
+    def preview_import(self, *, account=None):
+        from .memory_import import MemoryImport
+        self._configuration(account=account)
+        return MemoryImport(self.configuration).preview(account=account)
+
+    def prepare_import(self, request, *, account=None):
+        import hashlib
+        from uuid import uuid4
+        from .memory_import import MemoryImport
+        self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'signature'}:
+            raise ValueError('Provide the reviewed Hermes import signature')
+        profile = self.configuration.path.parent.absolute()
+        identity = hashlib.sha256(str(profile).encode()).hexdigest()[:24]
+        destination = profile.parent / '.local/state/lifeos-hook-bridge/imports' / identity / uuid4().hex
+        return MemoryImport(self.configuration).prepare(destination, request['signature'], account=account)
+
     def preview_sources(self, paths: list[str], *, account: str | None = None):
         from .memory_source_review import preview
         config = self._configuration(account=account)

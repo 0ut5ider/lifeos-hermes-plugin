@@ -6,7 +6,7 @@ The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. The plugin must
 
 The [overall memory plan](memory-implementation-plan.md#installation-trial-and-removal-requirements) adds three planned evaluation choices: a separate trial profile, current-profile activation with reviewed memory import, and current-profile activation without import. Installing the plugin or LifeOS must not select memory ownership automatically. Profile isolation and shared Hermes code changes require separate acceptance evidence.
 
-The page must also offer a verified return to Hermes before removing the integration. It must distinguish restoring preserved Hermes memory from exporting selected current LifeOS facts. Data deletion is a separate owner action. These established-installation and removal workflows are planned, not implemented or verified by the fresh-install controls below.
+The page must also offer a verified return to Hermes before removing the integration. It must distinguish restoring preserved Hermes memory from exporting selected current LifeOS facts. Data deletion is a separate owner action. The candidate now has [private import review and recoverable item publication](verification/2026-10-05-memory-import/README.md). Complete established-installation and removal workflows remain open. The fresh-install controls below do not verify them.
 
 
 1. The page checks whether LifeOS is missing, partial, or installed.

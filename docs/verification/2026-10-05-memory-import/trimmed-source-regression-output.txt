@@ -1,0 +1,80 @@
+.....................................................EF..F.F....F...........................................................................F...E..
+======================================================================
+ERROR: test_auto_application_requires_its_own_grant_and_native_threshold (test_memory_proposals.MemoryProposalTests.test_auto_application_requires_its_own_grant_and_native_threshold)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_proposals.py", line 211, in test_auto_application_requires_its_own_grant_and_native_threshold
+    self.assertEqual(result['proposal_status'], 'auto-applied', result)
+                     ~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'proposal_status'
+
+======================================================================
+ERROR: test_native_proposal_decisions_through_http (test_memory_dashboard.MemoryDashboardTests.test_native_proposal_decisions_through_http)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_dashboard.py", line 100, in test_native_proposal_decisions_through_http
+    self.assertEqual(response.json()['proposal_status'],'edited',response.text)
+                     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+KeyError: 'proposal_status'
+
+======================================================================
+FAIL: test_client_creation_and_owner_approval_have_separate_grants (test_memory_proposals.MemoryProposalTests.test_client_creation_and_owner_approval_have_separate_grants)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_proposals.py", line 156, in test_client_creation_and_owner_approval_have_separate_grants
+    self.assertEqual(approved['status'], 'committed', approved)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unknown' != 'committed'
+- unknown
++ committed
+ : {'status': 'unknown', 'reason': "Native memory operation failed: ResolveMessage: Cannot find module '/tmp/native-memory-3gt5qsu7/.claude/LIFEOS/PULSE/lib/memory-proposals.ts' from '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts'", 'writer': 'chat-a:owner', 'request_id': 'owner-accept'}
+
+======================================================================
+FAIL: test_decision_receipts_do_not_duplicate_native_proposal_text (test_memory_proposals.MemoryProposalTests.test_decision_receipts_do_not_duplicate_native_proposal_text)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_proposals.py", line 241, in test_decision_receipts_do_not_duplicate_native_proposal_text
+    self.assertEqual(result['status'],'committed',result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unknown' != 'committed'
+- unknown
++ committed
+ : {'status': 'unknown', 'reason': "Native memory operation failed: ResolveMessage: Cannot find module '/tmp/native-memory-o9osma1z/.claude/LIFEOS/PULSE/lib/memory-proposals.ts' from '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts'", 'writer': 'local:owner', 'request_id': 'receipt-note'}
+
+======================================================================
+FAIL: test_edit_and_applied_elsewhere_use_native_decisions (test_memory_proposals.MemoryProposalTests.test_edit_and_applied_elsewhere_use_native_decisions)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_proposals.py", line 193, in test_edit_and_applied_elsewhere_use_native_decisions
+    self.assertEqual(result['status'], 'committed', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unknown' != 'committed'
+- unknown
++ committed
+ : {'status': 'unknown', 'reason': "Native memory operation failed: ResolveMessage: Cannot find module '/tmp/native-memory-lq2sbmvd/.claude/LIFEOS/PULSE/lib/memory-proposals.ts' from '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts'", 'writer': 'local:owner', 'request_id': 'edit-one'}
+
+======================================================================
+FAIL: test_native_accept_and_reject_keep_the_queue_state_truthful (test_memory_proposals.MemoryProposalTests.test_native_accept_and_reject_keep_the_queue_state_truthful)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_proposals.py", line 83, in test_native_accept_and_reject_keep_the_queue_state_truthful
+    self.assertEqual(result['status'], 'committed', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'unknown' != 'committed'
+- unknown
++ committed
+ : {'status': 'unknown', 'reason': "Native memory operation failed: ResolveMessage: Cannot find module '/tmp/native-memory-87luuywy/.claude/LIFEOS/PULSE/lib/memory-proposals.ts' from '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts'", 'writer': 'local:owner', 'request_id': 'accept-one'}
+
+======================================================================
+FAIL: test_owner_can_review_and_decide_pending_native_proposals (test_memory_preferences.MemoryPreferencesTests.test_owner_can_review_and_decide_pending_native_proposals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_preferences.py", line 92, in test_owner_can_review_and_decide_pending_native_proposals
+    self.assertTrue(preferences.status()['proposal_review_available'])
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 147 tests in 164.298s
+
+FAILED (failures=5, errors=2)

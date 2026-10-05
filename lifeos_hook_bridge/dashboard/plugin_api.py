@@ -301,6 +301,20 @@ def preview_memory_adoption(request: dict, account: str = Depends(_memory_accoun
     return _memory_action(lambda preferences:preferences.preview_adoption(account=account))
 
 
+@router.post('/memory/import/preview')
+def preview_memory_import(request: dict, account: str = Depends(_memory_account)):
+    if request:
+        raise HTTPException(status_code=400, detail='Import review uses the installed Hermes profile')
+    return _memory_action(lambda preferences: preferences.preview_import(account=account))
+
+
+@router.post('/memory/import/snapshot')
+def prepare_memory_import(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'signature'}:
+        raise HTTPException(status_code=400, detail='Provide the reviewed Hermes import signature')
+    return _memory_action(lambda preferences: preferences.prepare_import(request, account=account))
+
+
 @router.post('/memory/sources/preview')
 def preview_memory_sources(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'paths'}:

@@ -651,7 +651,10 @@ class NativeMemory:
         return result
 
     def remember(self, scope: MemoryScope, *, category: str, content: str, title: str, project: str,
-                 request_id: str, source: dict[str, str] | None = None) -> dict[str, Any]:
+                 request_id: str, source: dict[str, str] | None = None,
+                 check_current=None, record_result=None) -> dict[str, Any]:
+        if any(callback is not None and not callable(callback) for callback in (check_current, record_result)):
+            raise ValueError('Memory publication requires callable review and receipt checks')
         source = source or {"kind": "explicit", "session": ""}
         if category not in CATEGORIES or category not in scope.write or not isinstance(content, str) or not content.strip():
             return {"status": "rejected", "reason": "The fact or write permission is invalid"}
@@ -668,7 +671,7 @@ class NativeMemory:
                  "source_session": source.get("session", "") or "none"} if category == "project" else
                 {"type": "memory", "actor": "principal" if category == "principal" else "assistant", "content": content})
 
-        def save(connection):
+        def save_fact(connection):
             invalid = self._validate(item, content, category)
             if invalid:
                 return {"status": "rejected", "reason": invalid}
@@ -690,6 +693,16 @@ class NativeMemory:
                 return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
             reference = self._record(connection, scope, Path(result["path"]), content, category, project, source)
             return {"status": "committed", "reference": reference, "source": source}
+
+        def save(connection):
+            if check_current is not None:
+                check_current(connection)
+            receipt = save_fact(connection)
+            if record_result is not None:
+                receipt.setdefault('writer', scope.writer)
+                receipt.setdefault('request_id', request_id)
+                record_result(connection, receipt)
+            return receipt
 
         return self._operation(scope, request_id, {"operation": "remember", "item": item, "project": project, "source": source}, save)
 
