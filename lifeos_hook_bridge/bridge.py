@@ -67,6 +67,15 @@ else:
     POLICY_DIRECTORY = Path("/etc/claude-code")
 
 
+def _failure_error(native_name: str, error_message: str, response: Any, result: Any) -> str:
+    # Claude Code reports a failed shell command as the exit code followed by the command output.
+    if native_name == "Bash" and isinstance(response, dict):
+        output, code = response.get("output"), response.get("exit_code")
+        if type(code) is int and code != 0 and isinstance(output, str):
+            return f"Exit code {code}\n{output.rstrip()}" if output.strip() else f"Exit code {code}"
+    return error_message or str(result)
+
+
 def _native_tool_name(tool_name: str) -> str | None:
     if tool_name.startswith("mcp__"):
         return tool_name
@@ -2112,7 +2121,8 @@ class HookBridge:
                 item_event, session_id, tool_name=native_name,
                 tool_input=hook_input,
                 cwd=cwd,
-                **({"error": error_message or str(result)} if item_event == "PostToolUseFailure" else {"tool_response": item_response}),
+                **({"error": _failure_error(native_name, error_message, response, result)}
+                   if item_event == "PostToolUseFailure" else {"tool_response": item_response}),
             )
             external_content = tool_name in WEB_CONTENT_TOOLS or (
                 native_name == "Read" and _web_cache_read(native_input, cwd, task_id)

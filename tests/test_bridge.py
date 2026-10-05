@@ -1410,6 +1410,25 @@ class HookBridgeTests(unittest.TestCase):
             "Summarize these attachments.\nKeep the answer brief.",
         )
 
+    def test_failed_terminal_command_reports_exit_code_and_output_like_the_native_client(self):
+        marker = self.root / "terminal-failure.json"
+        command = self.make_hook(
+            "terminal_failure.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"PostToolUseFailure": [{"hooks": [{"type": "command", "command": command}]}]})
+        result = json.dumps({"output": "ls: cannot access 'pair-missing': No such file or directory",
+                             "exit_code": 2, "error": None})
+        bridge.post_tool_call("terminal", {"command": "ls pair-missing"}, result, session_id="s1",
+                              tool_call_id="tc1", status="error", error_message="exit 2")
+        self.assertEqual(json.loads(marker.read_text())["error"],
+                         "Exit code 2\nls: cannot access 'pair-missing': No such file or directory")
+        marker.unlink()
+        bridge.post_tool_call("terminal", {"command": "false"}, json.dumps({"output": "", "exit_code": 1, "error": None}),
+                              session_id="s1", tool_call_id="tc2", status="error", error_message="exit 1")
+        self.assertEqual(json.loads(marker.read_text())["error"], "Exit code 1")
+
     def test_post_tool_failure_runs_failure_hook(self):
         marker = self.root / "failure.json"
         command = self.make_hook(

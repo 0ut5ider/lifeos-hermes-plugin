@@ -1,0 +1,21 @@
+F
+======================================================================
+FAIL: test_failed_terminal_command_reports_exit_code_and_output_like_the_native_client (test_bridge.HookBridgeTests.test_failed_terminal_command_reports_exit_code_and_output_like_the_native_client)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bridge.py", line 1425, in test_failed_terminal_command_reports_exit_code_and_output_like_the_native_client
+    self.assertEqual(json.loads(marker.read_text())["error"],
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     "Exit code 2\nls: cannot access 'pair-missing': No such file or directory")
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'exit 2' != "Exit code 2\nls: cannot access 'pair-missing': No such file or directory"
+- exit 2
++ Exit code 2
++ ls: cannot access 'pair-missing': No such file or directory
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.290s
+
+FAILED (failures=1)
+exit 1
