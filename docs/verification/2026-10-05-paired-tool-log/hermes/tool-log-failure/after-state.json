@@ -1,0 +1,43 @@
+{
+  "activity": [],
+  "activity_rows_match_calls": true,
+  "failures": [
+    {
+      "error_names_exit_code": true,
+      "event": "tool_failure",
+      "preview_command_matches": true,
+      "session_matches": true,
+      "tool_name": "Bash"
+    }
+  ],
+  "loop": {
+    "session_matches": true,
+    "seq_matches_calls": true,
+    "last_alert": 0,
+    "alert_count": 0,
+    "tools": [
+      "Bash"
+    ],
+    "failed": [
+      true
+    ],
+    "one_signature": true,
+    "state_count": 1
+  },
+  "alert_positions": {
+    "PostToolUseFailure.1.1": [],
+    "PostToolUseFailure.3.1": []
+  },
+  "other_context": false,
+  "at_least_required_calls": true,
+  "events": [
+    "PostToolUseFailure"
+  ],
+  "tool_names": [
+    "Bash"
+  ],
+  "commands_match": true,
+  "model_received_loop_alert": false,
+  "tool_output_in_model": false,
+  "user_response_delivered": true
+}

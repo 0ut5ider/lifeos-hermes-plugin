@@ -1,0 +1,369 @@
+{
+  "cases": [
+    {
+      "id": "tool-log-success",
+      "registrations": [
+        "PostToolUse.11.1",
+        "PostToolUse.12.2"
+      ],
+      "native": {
+        "before": {
+          "activity_rows": 0,
+          "failure_rows": 0,
+          "loop_states": 0
+        },
+        "after": {
+          "activity": [
+            {
+              "event": "tool_use",
+              "ground_truth_command_matches": true,
+              "preview_command_matches": true,
+              "session_matches": true,
+              "tool_name": "Bash"
+            }
+          ],
+          "activity_rows_match_calls": true,
+          "failures": [],
+          "loop": {
+            "session_matches": true,
+            "seq_matches_calls": true,
+            "last_alert": 0,
+            "alert_count": 0,
+            "tools": [
+              "Bash"
+            ],
+            "failed": [
+              false
+            ],
+            "one_signature": true,
+            "state_count": 1
+          },
+          "alert_positions": {
+            "PostToolUse.11.1": [],
+            "PostToolUse.12.2": []
+          },
+          "other_context": false,
+          "at_least_required_calls": true,
+          "events": [
+            "PostToolUse"
+          ],
+          "tool_names": [
+            "Bash"
+          ],
+          "commands_match": true,
+          "model_received_loop_alert": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "activity_rows": 0,
+          "failure_rows": 0,
+          "loop_states": 0
+        },
+        "after": {
+          "activity": [
+            {
+              "event": "tool_use",
+              "ground_truth_command_matches": true,
+              "preview_command_matches": true,
+              "session_matches": true,
+              "tool_name": "Bash"
+            }
+          ],
+          "activity_rows_match_calls": true,
+          "failures": [],
+          "loop": {
+            "session_matches": true,
+            "seq_matches_calls": true,
+            "last_alert": 0,
+            "alert_count": 0,
+            "tools": [
+              "Bash"
+            ],
+            "failed": [
+              false
+            ],
+            "one_signature": true,
+            "state_count": 1
+          },
+          "alert_positions": {
+            "PostToolUse.11.1": [],
+            "PostToolUse.12.2": []
+          },
+          "other_context": false,
+          "at_least_required_calls": true,
+          "events": [
+            "PostToolUse"
+          ],
+          "tool_names": [
+            "Bash"
+          ],
+          "commands_match": true,
+          "model_received_loop_alert": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "tool-log-repeat",
+      "registrations": [
+        "PostToolUse.12.2"
+      ],
+      "native": {
+        "before": {
+          "activity_rows": 0,
+          "failure_rows": 0,
+          "loop_states": 0
+        },
+        "after": {
+          "activity": [],
+          "activity_rows_match_calls": true,
+          "failures": [],
+          "loop": {
+            "session_matches": true,
+            "seq_matches_calls": true,
+            "last_alert": 3,
+            "alert_count": 1,
+            "tools": [
+              "Bash"
+            ],
+            "failed": [
+              false
+            ],
+            "one_signature": true,
+            "state_count": 1
+          },
+          "alert_positions": {
+            "PostToolUse.12.2": [
+              3
+            ]
+          },
+          "other_context": false,
+          "at_least_required_calls": true,
+          "events": [
+            "PostToolUse"
+          ],
+          "tool_names": [
+            "Bash"
+          ],
+          "commands_match": true,
+          "model_received_loop_alert": true,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 4,
+        "metadata_requests": 0,
+        "model_successful_responses": 4
+      },
+      "hermes": {
+        "before": {
+          "activity_rows": 0,
+          "failure_rows": 0,
+          "loop_states": 0
+        },
+        "after": {
+          "activity": [],
+          "activity_rows_match_calls": true,
+          "failures": [],
+          "loop": {
+            "session_matches": true,
+            "seq_matches_calls": true,
+            "last_alert": 3,
+            "alert_count": 1,
+            "tools": [
+              "Bash"
+            ],
+            "failed": [
+              false
+            ],
+            "one_signature": true,
+            "state_count": 1
+          },
+          "alert_positions": {
+            "PostToolUse.12.2": [
+              3
+            ]
+          },
+          "other_context": false,
+          "at_least_required_calls": true,
+          "events": [
+            "PostToolUse"
+          ],
+          "tool_names": [
+            "Bash"
+          ],
+          "commands_match": true,
+          "model_received_loop_alert": true,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0,
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 4,
+        "metadata_requests": 2,
+        "model_successful_responses": 4
+      },
+      "errors": []
+    },
+    {
+      "id": "tool-log-failure",
+      "registrations": [
+        "PostToolUseFailure.1.1",
+        "PostToolUseFailure.3.1"
+      ],
+      "native": {
+        "before": {
+          "activity_rows": 0,
+          "failure_rows": 0,
+          "loop_states": 0
+        },
+        "after": {
+          "activity": [],
+          "activity_rows_match_calls": true,
+          "failures": [
+            {
+              "error_names_exit_code": true,
+              "event": "tool_failure",
+              "preview_command_matches": true,
+              "session_matches": true,
+              "tool_name": "Bash"
+            }
+          ],
+          "loop": {
+            "session_matches": true,
+            "seq_matches_calls": true,
+            "last_alert": 0,
+            "alert_count": 0,
+            "tools": [
+              "Bash"
+            ],
+            "failed": [
+              true
+            ],
+            "one_signature": true,
+            "state_count": 1
+          },
+          "alert_positions": {
+            "PostToolUseFailure.1.1": [],
+            "PostToolUseFailure.3.1": []
+          },
+          "other_context": false,
+          "at_least_required_calls": true,
+          "events": [
+            "PostToolUseFailure"
+          ],
+          "tool_names": [
+            "Bash"
+          ],
+          "commands_match": true,
+          "model_received_loop_alert": false,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0
+        ],
+        "event": "PostToolUseFailure",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "activity_rows": 0,
+          "failure_rows": 0,
+          "loop_states": 0
+        },
+        "after": {
+          "activity": [],
+          "activity_rows_match_calls": true,
+          "failures": [
+            {
+              "error_names_exit_code": true,
+              "event": "tool_failure",
+              "preview_command_matches": true,
+              "session_matches": true,
+              "tool_name": "Bash"
+            }
+          ],
+          "loop": {
+            "session_matches": true,
+            "seq_matches_calls": true,
+            "last_alert": 0,
+            "alert_count": 0,
+            "tools": [
+              "Bash"
+            ],
+            "failed": [
+              true
+            ],
+            "one_signature": true,
+            "state_count": 1
+          },
+          "alert_positions": {
+            "PostToolUseFailure.1.1": [],
+            "PostToolUseFailure.3.1": []
+          },
+          "other_context": false,
+          "at_least_required_calls": true,
+          "events": [
+            "PostToolUseFailure"
+          ],
+          "tool_names": [
+            "Bash"
+          ],
+          "commands_match": true,
+          "model_received_loop_alert": false,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0
+        ],
+        "event": "PostToolUseFailure",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    }
+  ]
+}

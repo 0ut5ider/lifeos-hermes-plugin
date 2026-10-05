@@ -1,7 +1,7 @@
 {
   "date": "2026-10-05",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. Seventy-one equal selected cases cover twenty registrations; complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. Seventy-four equal selected cases cover twenty-four registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -1432,7 +1432,69 @@
     "docs/verification/2026-10-05-paired-pre-tool-guard/run-output.txt": "8edb341c1b424e78c41df4bfa8cfc79e55b0b775aa9556481bacd97af2dc132e",
     "docs/verification/2026-10-05-paired-pre-tool-guard/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
     "docs/verification/2026-10-05-paired-pre-tool-guard/run.py": "72e0161a80e84e3d9a19abfafd8ed7c7871b5267aaf5606835eb87c06483ddb9",
-    "docs/verification/2026-10-05-paired-pre-tool-guard/runtime-check.json": "99836652244108685b61af8792713ca96734bc190aaf6a2e364fa2be04907bd7"
+    "docs/verification/2026-10-05-paired-pre-tool-guard/runtime-check.json": "99836652244108685b61af8792713ca96734bc190aaf6a2e364fa2be04907bd7",
+    "docs/verification/2026-10-05-paired-tool-log/README.md": "078ef247a876f972213fc70270f0cc9bc42371d645313a731a83ce1f491ee749",
+    "docs/verification/2026-10-05-paired-tool-log/before-output.txt": "9297ed7b1a5bf1a126c99d17aeacc3c6f62cef556a6b1ed17a25b787a1ca0117",
+    "docs/verification/2026-10-05-paired-tool-log/collect.py": "038e8f0748e56ee565836c028eeed57b3b3e437d70ac6aca3cd688786383623d",
+    "docs/verification/2026-10-05-paired-tool-log/configuration.json": "1ac949f1f03ab242e497ea2de6cec86849a7948efae8aa67e7b0bef7509b4ecd",
+    "docs/verification/2026-10-05-paired-tool-log/focused-command.json": "1ead33dd1d36ff8f89e2a65d8e3bff924e046cd0c3634e89633b39708bde3bd2",
+    "docs/verification/2026-10-05-paired-tool-log/focused-output.txt": "34b7c4e77b314ddd8caece06f1e797b8bac67350e7129100fdc05a613cbe264e",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/after-state.json": "b75334e0d85601d289966d94e8eadf7d315ffe09d67cadfe3eb7bd2636d6fcf8",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/cli.log": "50fe801f80a9f52a664640db4b502806c09448a75dfdc815d359067147077517",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-events.jsonl": "61475b4e626a737ddd185f7cb8d2ba5f7fe7ebc357d9c4bafb2c1594b24b10e5",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-after.json": "e3cc98e92bc1146fbc8e59041940fbb66a39412bf5a141ceb1b734daab478af1",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-before.json": "45da00deb496a7e03e5489d2e2a4ef6724a1d6b12dc719b40f0876ab5e13129c",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/hooks.jsonl": "38155ca37ccc6b99ae842ac08ad9aee15a4ab46bfd1f28650835ace016e02be1",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/result.json": "6ed8ef788cadb8606df76d1cc6ec6b8c8556b5d883f0ab02b4c8b6ee1bba433c",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/after-state.json": "dbf2f65050ea8e9bcb695c0ee367ae31062b2d8b8a577bd0a92b7387defe6027",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/cli.log": "32f8478643fda6ced4f50040031bb38bb76af68c982af132f5e405661ef91c4c",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-events.jsonl": "00002d18db4f550627782004e064b3dd0b3244600b2634f820e1138844a36f0a",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-after.json": "84081594d569cd3484e509b71c3e87bccfc98a158716e0cd69d65048e68a75fc",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-before.json": "3d425a92a704bf8175f7a17f5018b869fc62ef97edce4934e50f37f46b5f8660",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/hooks.jsonl": "46636b4f374ee187d606c3efe289bc64449e83183a952e4726f1a2c9d2fefaab",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/result.json": "ca5717ff8ad9566ecaf08bbd82adeff703ef86539ba0ab65cafa38f766b9ec5b",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/after-state.json": "a486f535e94b82bb0999a08325f2ee436481d397c7d63db3ce2137c8a554a09d",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/cli.log": "f98036193902e7d316377f725b878facf38cc6e1400e08aee09277048ddfd002",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-events.jsonl": "c17d4a2f866c10172eaf561d819a7da664d69628b87c6a884c8eccaeff5a0545",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-after.json": "9e82445b336fd6436a8c44dfaf2254bfbafa08c1145a45ef079613f326bb7813",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-before.json": "d37092cc503a075b66274f621f9b106d3cdcac026b1ff78d514424daee0b8579",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/hooks.jsonl": "8c8bd4fd1ae75770d4b421066edf33fd4754cc9fc26085b7aab573335b421d82",
+    "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/result.json": "cc5cdcc7e5447b934ab37305eca6ae97cf5e73cf90ebd3c1da8ad4acc7ef9948",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/after-state.json": "b75334e0d85601d289966d94e8eadf7d315ffe09d67cadfe3eb7bd2636d6fcf8",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/cli.log": "2a9720a5f74a46ee609cd4b1046b42162bdd73293459374e20ee6a35d1d0817f",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-events.jsonl": "ebc763682bb4517d7ff28412a5966ed0da7b1671f9d1451d451ed2c1c105e242",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-after.json": "5a1d0eee111041451206cd5f2f659740e379ba0ba6d5bfbafa561e5c3cfb4f94",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-before.json": "dc5612045b768393aaead93451dfc2d8f35e29d8c2e991f0e3f1812b403632bf",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/hooks.jsonl": "ad9be722f040812157718df7bb236accb9ea39fc69ef045d0822631e45f2ccdf",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/result.json": "c4c3ff1853031ff29fd8eb96920765cc2ab0e21f282ff3f9e2463f581b7b7102",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/after-state.json": "dbf2f65050ea8e9bcb695c0ee367ae31062b2d8b8a577bd0a92b7387defe6027",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/cli.log": "70a351cad818d08c14258a8058de9aadc01e8bdeca7a9b18eef4c3d2f33433e8",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-events.jsonl": "cf66b0a1f96e4fc87e88f3c089de88fbc9a96a7fe5b3b0a6168fc571988a756f",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-after.json": "96c6fda44dac2d32616ff45adbee4a11637ce7309b9bf0285c0709bbe696bea2",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-before.json": "8340fe56c7ca0f1dba087521ee1c428d0c0cd284a05bac541e9b568e34b81f06",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/hooks.jsonl": "c5c744e0af750ee8b6cc6dce209768f248ca4157c7e03518dcd0b7901b253d43",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/result.json": "3501890796253c80a31b565f16ea880e89d46158070c8bce46663c4029e9d909",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/after-state.json": "a486f535e94b82bb0999a08325f2ee436481d397c7d63db3ce2137c8a554a09d",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/cli.log": "a606cc6d12c6a68837ca95073c0c49f295f40e3484c0f1cd1258255bc4d66853",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-events.jsonl": "4829f256ce88649ef8f97e6fc5794eaf989fbcca5a940aecc3d8977a69f91bf8",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-after.json": "08baa9f33d07d66712530e276cf95ed59cbbbbe15bd2ef24e54aef280ac2e0d8",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-before.json": "ea247690deb4f3daa6dfec85101d7da3b6370c9d6cc4d506caa8d9299aa4f9ca",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/hooks.jsonl": "74566291db853fca4a7e78390f583ccb8ac9c8e0bf3435a40ae8846ff1d2d7cf",
+    "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/result.json": "e0e1e42ae5a6feae256bcc2b7992ce2cba694583df77e11df8fc7b2d72836149",
+    "docs/verification/2026-10-05-paired-tool-log/paired-lifecycle-driver.py": "d51971a4b2caf79a6e9922addb547e13528a61b36106b6e693587894863127bf",
+    "docs/verification/2026-10-05-paired-tool-log/paired-response-server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-05-paired-tool-log/paired-results.json": "5ec038448395f4088b2a4cf24f1aea19e3d8f898cd0992c5d42dd5e3eb82ae1e",
+    "docs/verification/2026-10-05-paired-tool-log/run-output.txt": "07a97e89c71f4b28a4858d56313783ea2c10c10d82fff933ea5d692fa6c6de1d",
+    "docs/verification/2026-10-05-paired-tool-log/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-05-paired-tool-log/run.py": "9f7c08552cda192960357ac0172ce9be6ba9ec3f416d4469e9b29d6932385a8a",
+    "docs/verification/2026-10-05-paired-tool-log/runtime-check.json": "c3187eeb90fef6c4624940b160f0bb5accf564aaab4d5a4db87f3af752c51059",
+    "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json": "88ab3427bddfd4d0615c858de0d9a6bbdb678bd6dff2e0594e0919ce3a23e89d"
   },
   "registrations": [
     {
@@ -2231,12 +2293,198 @@
       "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
       "expected_effect": "Write native tool activity, record applicable skill execution, and update the active ISA heartbeat.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "tool-log-success",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-tool-log/README.md",
+            "docs/verification/2026-10-05-paired-tool-log/before-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/collect.py",
+            "docs/verification/2026-10-05-paired-tool-log/configuration.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-command.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+            "docs/verification/2026-10-05-paired-tool-log/run-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/run.done",
+            "docs/verification/2026-10-05-paired-tool-log/run.py",
+            "docs/verification/2026-10-05-paired-tool-log/runtime-check.json",
+            "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json"
+          ],
+          "native": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [
+                {
+                  "event": "tool_use",
+                  "ground_truth_command_matches": true,
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "activity_rows_match_calls": true,
+              "failures": [],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  false
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUse.11.1": [],
+                "PostToolUse.12.2": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUse"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [
+                {
+                  "event": "tool_use",
+                  "ground_truth_command_matches": true,
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "activity_rows_match_calls": true,
+              "failures": [],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  false
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUse.11.1": [],
+                "PostToolUse.12.2": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUse"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_event_logger.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify Skill execution rows, file ground truth, heartbeat and work reconciliation, interruption, and complete groups."
     },
     {
       "id": "PostToolUse.12.1",
@@ -2257,12 +2505,371 @@
       "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
       "expected_effect": "Track repeated failures and return the native loop warning.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "tool-log-success",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-tool-log/README.md",
+            "docs/verification/2026-10-05-paired-tool-log/before-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/collect.py",
+            "docs/verification/2026-10-05-paired-tool-log/configuration.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-command.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+            "docs/verification/2026-10-05-paired-tool-log/run-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/run.done",
+            "docs/verification/2026-10-05-paired-tool-log/run.py",
+            "docs/verification/2026-10-05-paired-tool-log/runtime-check.json",
+            "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json"
+          ],
+          "native": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [
+                {
+                  "event": "tool_use",
+                  "ground_truth_command_matches": true,
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "activity_rows_match_calls": true,
+              "failures": [],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  false
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUse.11.1": [],
+                "PostToolUse.12.2": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUse"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [
+                {
+                  "event": "tool_use",
+                  "ground_truth_command_matches": true,
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "activity_rows_match_calls": true,
+              "failures": [],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  false
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUse.11.1": [],
+                "PostToolUse.12.2": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUse"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        },
+        {
+          "id": "tool-log-repeat",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-tool-log/README.md",
+            "docs/verification/2026-10-05-paired-tool-log/before-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/collect.py",
+            "docs/verification/2026-10-05-paired-tool-log/configuration.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-command.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+            "docs/verification/2026-10-05-paired-tool-log/run-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/run.done",
+            "docs/verification/2026-10-05-paired-tool-log/run.py",
+            "docs/verification/2026-10-05-paired-tool-log/runtime-check.json",
+            "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json"
+          ],
+          "native": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [],
+              "activity_rows_match_calls": true,
+              "failures": [],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 3,
+                "alert_count": 1,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  false
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUse.12.2": [
+                  3
+                ]
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUse"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": true,
+              "tool_output_in_model": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 4,
+            "model_successful_responses": 4
+          },
+          "hermes": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [],
+              "activity_rows_match_calls": true,
+              "failures": [],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 3,
+                "alert_count": 1,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  false
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUse.12.2": [
+                  3
+                ]
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUse"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": true,
+              "tool_output_in_model": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 4,
+            "model_successful_responses": 4
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_loop_detector.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify oscillation, hammering, the alert cooldown, parallel tool calls, and complete groups."
     },
     {
       "id": "PostToolUse.13.1",
@@ -7928,12 +8535,198 @@
       "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
       "expected_effect": "Write the native tool-failure audit row with the actual tool and error.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "tool-log-failure",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-tool-log/README.md",
+            "docs/verification/2026-10-05-paired-tool-log/before-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/collect.py",
+            "docs/verification/2026-10-05-paired-tool-log/configuration.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-command.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+            "docs/verification/2026-10-05-paired-tool-log/run-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/run.done",
+            "docs/verification/2026-10-05-paired-tool-log/run.py",
+            "docs/verification/2026-10-05-paired-tool-log/runtime-check.json",
+            "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json"
+          ],
+          "native": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [],
+              "activity_rows_match_calls": true,
+              "failures": [
+                {
+                  "error_names_exit_code": true,
+                  "event": "tool_failure",
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  true
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUseFailure.1.1": [],
+                "PostToolUseFailure.3.1": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUseFailure"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": false,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUseFailure",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [],
+              "activity_rows_match_calls": true,
+              "failures": [
+                {
+                  "error_names_exit_code": true,
+                  "event": "tool_failure",
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  true
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUseFailure.1.1": [],
+                "PostToolUseFailure.3.1": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUseFailure"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": false,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUseFailure",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_event_logger.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify failures of other tools, long error truncation, and complete groups."
     },
     {
       "id": "PostToolUseFailure.2.1",
@@ -7956,12 +8749,198 @@
       "handler": "$HOME/.claude/hooks/LoopDetector.hook.ts",
       "expected_effect": "Track repeated failures and return the native loop warning.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "tool-log-failure",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-tool-log/README.md",
+            "docs/verification/2026-10-05-paired-tool-log/before-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/collect.py",
+            "docs/verification/2026-10-05-paired-tool-log/configuration.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-command.json",
+            "docs/verification/2026-10-05-paired-tool-log/focused-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/hermes/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-failure/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-repeat/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/after-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/before-state.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/cli.log",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-tool-log/native/tool-log-success/result.json",
+            "docs/verification/2026-10-05-paired-tool-log/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-tool-log/paired-results.json",
+            "docs/verification/2026-10-05-paired-tool-log/run-output.txt",
+            "docs/verification/2026-10-05-paired-tool-log/run.done",
+            "docs/verification/2026-10-05-paired-tool-log/run.py",
+            "docs/verification/2026-10-05-paired-tool-log/runtime-check.json",
+            "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json"
+          ],
+          "native": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [],
+              "activity_rows_match_calls": true,
+              "failures": [
+                {
+                  "error_names_exit_code": true,
+                  "event": "tool_failure",
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  true
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUseFailure.1.1": [],
+                "PostToolUseFailure.3.1": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUseFailure"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": false,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUseFailure",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "activity_rows": 0,
+              "failure_rows": 0,
+              "loop_states": 0
+            },
+            "after": {
+              "activity": [],
+              "activity_rows_match_calls": true,
+              "failures": [
+                {
+                  "error_names_exit_code": true,
+                  "event": "tool_failure",
+                  "preview_command_matches": true,
+                  "session_matches": true,
+                  "tool_name": "Bash"
+                }
+              ],
+              "loop": {
+                "session_matches": true,
+                "seq_matches_calls": true,
+                "last_alert": 0,
+                "alert_count": 0,
+                "tools": [
+                  "Bash"
+                ],
+                "failed": [
+                  true
+                ],
+                "one_signature": true,
+                "state_count": 1
+              },
+              "alert_positions": {
+                "PostToolUseFailure.1.1": [],
+                "PostToolUseFailure.3.1": []
+              },
+              "other_context": false,
+              "at_least_required_calls": true,
+              "events": [
+                "PostToolUseFailure"
+              ],
+              "tool_names": [
+                "Bash"
+              ],
+              "commands_match": true,
+              "model_received_loop_alert": false,
+              "tool_output_in_model": false,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0
+            ],
+            "event": "PostToolUseFailure",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_loop_detector.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify the hammering alert after repeated failures and complete groups."
     },
     {
       "id": "TaskCreated.1.1",

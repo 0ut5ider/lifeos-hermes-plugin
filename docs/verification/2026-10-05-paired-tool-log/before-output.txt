@@ -1,0 +1,39 @@
+...................................................................F.F.F........
+======================================================================
+FAIL: test_failure_requires_the_failure_event_row_and_failed_loop_entry (test_paired_lifecycle_effects.PairedToolLogTests.test_failure_requires_the_failure_event_row_and_failed_loop_entry)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 885, in test_failure_requires_the_failure_event_row_and_failed_loop_entry
+    self.assertIn('tool-log-failure: tool log effect is missing',
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  self.change(self.case('tool-log-failure'), 'failures', []))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'tool-log-failure: tool log effect is missing' not found in []
+
+======================================================================
+FAIL: test_repeat_requires_the_alert_on_the_third_call_and_model_delivery (test_paired_lifecycle_effects.PairedToolLogTests.test_repeat_requires_the_alert_on_the_third_call_and_model_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 870, in test_repeat_requires_the_alert_on_the_third_call_and_model_delivery
+    self.assertIn('tool-log-repeat: tool log effect is missing',
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  self.change(self.case('tool-log-repeat'), 'alert_positions', {'PostToolUse.12.2': [2]}))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'tool-log-repeat: tool log effect is missing' not found in []
+
+======================================================================
+FAIL: test_success_requires_the_activity_row_and_an_unalerted_loop_state (test_paired_lifecycle_effects.PairedToolLogTests.test_success_requires_the_activity_row_and_an_unalerted_loop_state)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 864, in test_success_requires_the_activity_row_and_an_unalerted_loop_state
+    self.assertIn('tool-log-success: tool log effect is missing',
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                  self.change(self.case('tool-log-success'), 'activity', []))
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'tool-log-success: tool log effect is missing' not found in []
+
+----------------------------------------------------------------------
+Ran 80 tests in 0.177s
+
+FAILED (failures=3)
+exit 1

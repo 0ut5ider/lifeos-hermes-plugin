@@ -1,0 +1,186 @@
+[
+  {
+    "case": "tool-log-success",
+    "side": "native",
+    "session_id": "04b4b217-332c-42e5-8101-edaec887f93b",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "63d644177c685ac717189d39d153990b7b4c4209c8441989db302733eabecf7b",
+      "41b3bf4c0687dacad0a548b7d8208d5865de201e49fdfad50a428e83a2f63dc1"
+    ],
+    "response_sha256": [
+      "5f67f4ce5326f8acd0ce86a9bc83397455d8d64a7812deb7fb053cf4e5b16c61",
+      "bb1a033a9ae912601b63a42716f5d2265a5ffc987b2541a414bdd9cea1e7649c"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' TOOL_LOG",
+    "tool_calls": 1,
+    "loop_alert_positions": [],
+    "loop_alert_in_later_request": false,
+    "activity_row": true,
+    "failure_row": false,
+    "loop_entries_failed": false
+  },
+  {
+    "case": "tool-log-success",
+    "side": "hermes",
+    "session_id": "20261005_181859_2d040a",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "d784ad769b2d6c65815255562ab0e311810dc23fa24927dcc4637148475b7434",
+      "5d09faa17034a3d30d149b383b94f5d89b1bda13399d2d9cd9a245378c794458"
+    ],
+    "response_sha256": [
+      "014a032b76d4f99e7e21c2bf4ad17b749f6ea77c6fa7f0f812e5bb591c2d733a",
+      "12a88d093095b66dba35aa0832f959d202d66278ca70b9d127e64cc4bf15164e"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' TOOL_LOG",
+    "tool_calls": 1,
+    "loop_alert_positions": [],
+    "loop_alert_in_later_request": false,
+    "activity_row": true,
+    "failure_row": false,
+    "loop_entries_failed": false
+  },
+  {
+    "case": "tool-log-repeat",
+    "side": "native",
+    "session_id": "aaad3cc5-05f4-443f-af9b-39bffc41b9c6",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "e657d2f6d67ec164b278971efde728b66d9d3875d99172bb04e5d06097b0a996",
+      "849ac263ee13f0b3440c218bd26b64e2b63358225d20cacf7f898776d879d80e",
+      "a4ade49dba08c4ab6ae7c7b2c55026b58039f96018b7e1b962705ce9d5c31669",
+      "8788a8776cf22534f0a31efee41bea9763d054536179a20efd921ecfca190ea8"
+    ],
+    "response_sha256": [
+      "9b44b6219b03361ee29ebd1b0333e4fe6d680bc22cc8a53223bb54293eb223cd",
+      "b62ffdea7241cd917c06fb9cfc26795bdb63869422795f8016dfc45787499bb2",
+      "f3fbd7186b550d3200e370f7ba37185c71d51331d7232f408937a760adeaf40d",
+      "1e4c8223d249a7459648083436fa9dd664d7180089f1170af6306543d01a7b33"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200,
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' TOOL_LOG",
+    "tool_calls": 3,
+    "loop_alert_positions": [
+      3
+    ],
+    "loop_alert_in_later_request": true,
+    "activity_row": false,
+    "failure_row": false,
+    "loop_entries_failed": false
+  },
+  {
+    "case": "tool-log-repeat",
+    "side": "hermes",
+    "session_id": "20261005_181917_8a765e",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "159b1bf31a730f71e312f97c21ab2fa9d4b52f7f995ebcdc59919fa168b0290c",
+      "a165cd07b04b83eca51adfffa02f6eaa43dfce5b09c3c2965cd0937831a9dc48",
+      "7750d7eacc3d5fe19ccacd7fe114dd352f586478fa140673a9e3c1f97e931e9f",
+      "d9bcb8d7fd8c98494ab760fbb3ce63f4de562a716e98dd95b04db1e028bc734a"
+    ],
+    "response_sha256": [
+      "b8ec2464563af5d289aab72b305be1116b0bd0e561c11e408a53c03588c5ea93",
+      "86ed7187c83121ec79a8d22c81888b56409da5f019028f914430ed58303a2baa",
+      "edb834675467790310a493bc7a7d2d82217aa68914996867ceca67b54d825290",
+      "bba399dd2d8cca862abb378b34b5b7e64440165991411e4cf2c071096eb1e12a"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200,
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_%s' TOOL_LOG",
+    "tool_calls": 3,
+    "loop_alert_positions": [
+      3
+    ],
+    "loop_alert_in_later_request": true,
+    "activity_row": false,
+    "failure_row": false,
+    "loop_entries_failed": false
+  },
+  {
+    "case": "tool-log-failure",
+    "side": "native",
+    "session_id": "e149a33d-af93-434c-9459-0e73a5309362",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "8b8f352cae0538c858217caf7734a403675cf168a7346f0ead54a6e0063dc1a2",
+      "b0f2f6cf1491958bb1db4e6e79a57d1896b3846a60ee6eeda232502978394f4e"
+    ],
+    "response_sha256": [
+      "6a01d69584f316b281a5c9b851c747064bc5a2739177adf47636e21de968849e",
+      "c5d11ad35826d2c9b3b6211220a14d6e7acd0a6aa7a59655198d78384047b9e4"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "ls pair-missing-tool-log",
+    "tool_calls": 1,
+    "loop_alert_positions": [],
+    "loop_alert_in_later_request": false,
+    "activity_row": false,
+    "failure_row": true,
+    "loop_entries_failed": true
+  },
+  {
+    "case": "tool-log-failure",
+    "side": "hermes",
+    "session_id": "20261005_181935_cb7628",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "51883658f929cf2e1bdfe51df7686f636102e53775f3d801df9346bee4bded3a",
+      "c318f9f75c89669cf8c0e79a26b221be32570ac1024cc42392e5f27b923fa385"
+    ],
+    "response_sha256": [
+      "8d2ef3b36f8e99265a4451d21bcaea411bc9dcbb3e9a030a4e3e888f9f9600a8",
+      "8a852b782a06cdfeb5a2e2e232b0b89504219bdc3ea52e48f08dfbba517940fc"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "ls pair-missing-tool-log",
+    "tool_calls": 1,
+    "loop_alert_positions": [],
+    "loop_alert_in_later_request": false,
+    "activity_row": false,
+    "failure_row": true,
+    "loop_entries_failed": true
+  }
+]

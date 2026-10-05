@@ -802,3 +802,104 @@ class PairedPreToolGuardTests(unittest.TestCase):
         group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PreToolUse'][0]
         self.assertEqual(group['matcher'], 'Bash|Write|Edit|MultiEdit')
         self.assertIn('PreToolUse.5.1', group['hooks'][0]['command'])
+
+
+class PairedRunStorageTests(unittest.TestCase):
+    def test_run_refuses_to_start_without_the_required_free_space(self):
+        from scripts.paired_lifecycle_effects import require_free_space
+        with tempfile.TemporaryDirectory() as directory:
+            require_free_space(Path(directory), 1)
+            with self.assertRaisesRegex(RuntimeError, 'free space'):
+                require_free_space(Path(directory), 1 << 60)
+
+    def test_hermes_tool_cache_is_removed_and_evidence_files_remain(self):
+        from scripts.paired_lifecycle_effects import remove_tool_cache
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory)
+            (home / '.hermes/tools/fetch-fixture').mkdir(parents=True)
+            (home / '.hermes/tools/fetch-fixture/binary').write_text('regenerable\n')
+            (home / '.hermes/state.db').write_text('retained\n')
+            remove_tool_cache(home)
+            self.assertFalse((home / '.hermes/tools').exists())
+            self.assertEqual((home / '.hermes/state.db').read_text(), 'retained\n')
+            remove_tool_cache(home)
+
+
+class PairedToolLogTests(unittest.TestCase):
+    def case(self, name):
+        failure, repeat = name == 'tool-log-failure', name == 'tool-log-repeat'
+        event = 'PostToolUseFailure' if failure else 'PostToolUse'
+        identifiers = {'tool-log-success': ['PostToolUse.11.1', 'PostToolUse.12.2'],
+                       'tool-log-repeat': ['PostToolUse.12.2'],
+                       'tool-log-failure': ['PostToolUseFailure.1.1', 'PostToolUseFailure.3.1']}[name]
+        row = {'event': 'tool_failure' if failure else 'tool_use', 'tool_name': 'Bash',
+               'session_matches': True, 'preview_command_matches': True}
+        after = {'activity': [{**row, 'ground_truth_command_matches': True}] if name == 'tool-log-success' else [],
+                 'activity_rows_match_calls': True,
+                 'failures': [{**row, 'error_names_exit_code': True}] if failure else [],
+                 'loop': {'session_matches': True, 'seq_matches_calls': True, 'last_alert': 3 if repeat else 0,
+                          'alert_count': int(repeat), 'tools': ['Bash'], 'failed': [failure],
+                          'one_signature': True, 'state_count': 1},
+                 'alert_positions': {identifier: [3] if repeat else [] for identifier in identifiers},
+                 'other_context': False, 'at_least_required_calls': True, 'events': [event],
+                 'tool_names': ['Bash'], 'commands_match': True, 'model_received_loop_alert': repeat,
+                 'tool_output_in_model': not failure, 'user_response_delivered': True}
+        calls = 3 if repeat else 1
+        side = {'before': {'activity_rows': 0, 'failure_rows': 0, 'loop_states': 0}, 'after': after,
+                'hook_exit_codes': [0] * len(identifiers) * calls, 'event': event, 'cli_exit_code': 0,
+                'model_generation_requests': calls + 1, 'model_successful_responses': calls + 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def change(self, case, key, value):
+        for side in ('native', 'hermes'):
+            case[side]['after'][key] = value
+        return check_pair(case)
+
+    def test_every_selected_case_accepts_only_its_required_effect(self):
+        for name in ('tool-log-success', 'tool-log-repeat', 'tool-log-failure'):
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_success_requires_the_activity_row_and_an_unalerted_loop_state(self):
+        self.assertIn('tool-log-success: tool log effect is missing',
+                      self.change(self.case('tool-log-success'), 'activity', []))
+        self.assertIn('tool-log-success: tool log effect is missing',
+                      self.change(self.case('tool-log-success'), 'loop', None))
+
+    def test_repeat_requires_the_alert_on_the_third_call_and_model_delivery(self):
+        self.assertIn('tool-log-repeat: tool log effect is missing',
+                      self.change(self.case('tool-log-repeat'), 'alert_positions', {'PostToolUse.12.2': [2]}))
+        self.assertIn('tool-log-repeat: tool log effect is missing',
+                      self.change(self.case('tool-log-repeat'), 'model_received_loop_alert', False))
+
+    def test_repeat_accepts_additional_calls_after_the_third(self):
+        case = self.case('tool-log-repeat')
+        for side in ('native', 'hermes'):
+            case[side]['hook_exit_codes'] = [0] * 4
+            case[side]['model_generation_requests'] = case[side]['model_successful_responses'] = 5
+        self.assertEqual(check_pair(case), [])
+        case['native']['hook_exit_codes'] = [0] * 2
+        self.assertIn('tool-log-repeat: hook invocation count differs', check_pair(case))
+
+    def test_failure_requires_the_failure_event_row_and_failed_loop_entry(self):
+        self.assertIn('tool-log-failure: tool log effect is missing',
+                      self.change(self.case('tool-log-failure'), 'failures', []))
+        case = self.case('tool-log-failure')
+        for side in ('native', 'hermes'):
+            case[side]['after']['loop']['failed'] = [False]
+        self.assertIn('tool-log-failure: tool log effect is missing', check_pair(case))
+
+    def test_success_fixture_keeps_the_pinned_asynchronous_logger(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        source = base / 'source'
+        (source / 'hooks').mkdir(parents=True)
+        for name in ('EventLogger', 'LoopDetector'):
+            (source / f'hooks/{name}.hook.ts').write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, 'tool-log-success', source, base / 'trace.py')
+        group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
+        self.assertNotIn('matcher', group)
+        self.assertEqual([(hook.get('async', False), hook['timeout']) for hook in group['hooks']],
+                         [(True, 5), (False, 30)])
