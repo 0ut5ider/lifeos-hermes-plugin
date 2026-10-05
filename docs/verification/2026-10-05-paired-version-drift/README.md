@@ -21,3 +21,5 @@ The synchronous controls override the original execution mode. The asynchronous 
 [runtime-check.json](runtime-check.json) verifies all 16,925 prepared source files and records 603 native program hashes. Raw synthetic logs and file captures remain in this bundle. Full model wire bodies remain private outside Git. No product code changes in this unit.
 
 The new required-effect tests fail before implementation ([before-output.txt](before-output.txt)). The focused suite passes 67 tests. These selected cases leave next-turn asynchronous delivery, the 60-minute interval boundary, interrupted clients, complete groups, and Discord acceptance open. The cumulative ledger contains 59 equal selected cases for 17 registrations. Complete compatibility remains unverified.
+
+The two clients run different LifeOS trees: the installed reference tree and the patched prepared tree. See [source differences](../../parity/source-differences.md).

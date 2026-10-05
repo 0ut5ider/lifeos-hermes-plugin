@@ -25,3 +25,5 @@ For ConfigEvalFire, these cases cover only the branch for a file that is not a s
 The KnowledgeWriteGuard hook needs a write inside the LifeOS memory tree, outside the project directory. That case needs a separate permission design and remains open.
 
 The new required-effect tests fail before the final expectations ([before-output.txt](before-output.txt)); the exploratory driver accepted any equal state at that point. The focused suite passes 96 tests. The cumulative ledger contains 77 equal selected cases for 28 registrations. Complete compatibility remains unverified.
+
+The two clients run different LifeOS trees: the installed reference tree and the patched prepared tree. See [source differences](../../parity/source-differences.md).

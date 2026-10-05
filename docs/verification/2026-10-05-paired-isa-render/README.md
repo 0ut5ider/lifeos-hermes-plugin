@@ -18,3 +18,5 @@ The fixture observer writes the per-session edit state at the real SessionStart 
 [runtime-check.json](runtime-check.json) verifies all 16,925 prepared source files and records 603 native program hashes. Raw synthetic logs and file captures remain in this bundle. Full model wire bodies remain private outside Git. No product code changes in this unit.
 
 The new required-effect tests fail before implementation ([before-output.txt](before-output.txt)). The focused suite passes 74 tests. These selected cases leave the spawn-failure branch, a page that is newer than its document, interrupted clients, complete groups, and Discord acceptance open. The cumulative ledger contains 65 equal selected cases for 18 registrations. Complete compatibility remains unverified.
+
+The two clients run different LifeOS trees: the installed reference tree and the patched prepared tree. See [source differences](../../parity/source-differences.md). The `ISARender.ts` tool also differs between the two trees.

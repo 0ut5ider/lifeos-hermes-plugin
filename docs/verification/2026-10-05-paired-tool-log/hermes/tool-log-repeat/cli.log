@@ -1,0 +1,12 @@
+{"type": "system", "subtype": "init", "model": "lifecycle-fixture", "session_id": "20261005_181917_8a765e", "timestamp": 1791224357971}
+{"type": "tool_use", "name": "terminal", "input": {"command": "printf 'PAIR_%s' TOOL_LOG"}, "timestamp": 1791224362228}
+/var/tmp/lifeos-paired-context-response-20261005/hermes/pm/shell.py:13: SyntaxWarning: "\W" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\W"? A raw string is also an option.
+  minus C:\Windows\System32\bash.exe (the WSL launcher stub, first on PATH
+{"type": "tool_result", "name": "terminal", "output": "{\"output\": \"PAIR_TOOL_LOG\", \"exit_code\": 0, \"error\": null}", "duration_ms": 286, "is_error": false, "timestamp": 1791224362510}
+{"type": "tool_use", "name": "terminal", "input": {"command": "printf 'PAIR_%s' TOOL_LOG"}, "timestamp": 1791224363514}
+{"type": "tool_result", "name": "terminal", "output": "{\"output\": \"PAIR_TOOL_LOG\", \"exit_code\": 0, \"error\": null}", "duration_ms": 162, "is_error": false, "timestamp": 1791224363677}
+{"type": "tool_use", "name": "terminal", "input": {"command": "printf 'PAIR_%s' TOOL_LOG"}, "timestamp": 1791224365229}
+{"type": "tool_result", "name": "terminal", "output": "{\"output\": \"PAIR_TOOL_LOG\", \"exit_code\": 0, \"error\": null}\n\n[LOOP DETECTED] You've called Bash 3 times with the same input this session without progress. Last input: {\"command\":\"printf 'PAIR_%s' TOOL_LOG\"}.", "duration_ms": 185, "is_error": false, "timestamp": 1791224365416}
+{"type": "result", "session_id": "20261005_181917_8a765e", "exit_code": 0, "text": "READY", "tokens": {"input": 13835, "output": 288, "total": 14123, "cache_read": 0, "cache_write": 0}, "duration_ms": 8367, "timestamp": 1791224366339}
+
+session_id: 20261005_181917_8a765e

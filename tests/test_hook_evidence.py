@@ -106,3 +106,17 @@ class HookEvidenceTests(unittest.TestCase):
             errors = check_evidence(inventory, ledger, root)
             self.assertTrue(any('does not cover registration' in error for error in errors))
             self.assertTrue(any('ledger outcome differs' in error for error in errors))
+
+
+class TrackedEvidenceTests(unittest.TestCase):
+    def test_every_ledger_artifact_is_tracked_by_git(self):
+        import json
+        import subprocess
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        if not (root / '.git').exists():
+            self.skipTest('A Git checkout is required')
+        tracked = set(subprocess.run(['git', 'ls-files', '-z'], cwd=root, check=True,
+                                     capture_output=True, text=True).stdout.split('\0'))
+        ledger = json.loads((root / 'docs/parity/handler-effects.json').read_text())
+        self.assertEqual(sorted(name for name in ledger['artifacts'] if name not in tracked), [])

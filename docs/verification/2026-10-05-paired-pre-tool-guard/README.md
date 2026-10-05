@@ -15,3 +15,5 @@ The registration uses the pinned matcher `Bash|Write|Edit|MultiEdit`. Each comma
 [runtime-check.json](runtime-check.json) verifies all 16,925 prepared source files and records 603 native program hashes. Full model wire bodies remain private outside Git. No product code changes in this unit.
 
 The new required-effect tests fail before implementation ([before-output.txt](before-output.txt)). The focused suite passes 83 tests. These cases cover one of the six Bash guards. The file guards for Write and Edit, the other Bash guards, interrupted clients, and complete groups remain open. The cumulative ledger contains 71 equal selected cases for 20 registrations. Complete compatibility remains unverified.
+
+The two clients run different LifeOS trees: the installed reference tree and the patched prepared tree. See [source differences](../../parity/source-differences.md).
