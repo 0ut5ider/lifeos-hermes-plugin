@@ -1,0 +1,28 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ PairedLifecycleEffectTests.test_response_cache_limit_requires_a_long_answer_and_exact_prefix _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleEffectTests testMethod=test_response_cache_limit_requires_a_long_answer_and_exact_prefix>
+
+    def test_response_cache_limit_requires_a_long_answer_and_exact_prefix(self):
+        side = {'before': {'cache_present': True, 'prior_marker_present': True},
+            'after': {'cache_present': True, 'cache_is_nonempty': True, 'prior_marker_present': False,
+                'cache_within_limit': True, 'cache_matches_user_response': True,
+                'user_response_delivered': True, 'user_response_exceeds_limit': True, 'cache_characters': 2000},
+            'hook_exit_codes': [0], 'event': 'Stop', 'cli_exit_code': 0,
+            'model_generation_requests': 1, 'model_successful_responses': 1}
+        case = {'id': 'response-cache-limit', 'native': side, 'hermes': json.loads(json.dumps(side))}
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['response-cache-limit: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'response-cache-limit: unknown case'
+E       
+E       - ['response-cache-limit: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:104: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_paired_lifecycle_effects.py::PairedLifecycleEffectTests::test_response_cache_limit_requires_a_long_answer_and_exact_prefix
+1 failed, 30 deselected in 0.06s

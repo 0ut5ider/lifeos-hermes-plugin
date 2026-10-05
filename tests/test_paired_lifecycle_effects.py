@@ -1,8 +1,11 @@
 # ABOUTME: Checks the state assertions used by paired native lifecycle controls.
 # ABOUTME: Rejects matching outcomes that omit the required filesystem effect.
 import unittest
+import json
+from pathlib import Path
+import tempfile
 
-from scripts.paired_lifecycle_effects import CASES, check_pair
+from scripts.paired_lifecycle_effects import CASES, check_pair, make_fixture
 
 
 class PairedLifecycleEffectTests(unittest.TestCase):
@@ -75,6 +78,32 @@ class PairedLifecycleEffectTests(unittest.TestCase):
         self.assertEqual(check_pair(case), [])
         case['hermes']['model_successful_responses'] = 0
         self.assertIn('context-response-disabled: successful model response was not observed', check_pair(case))
+
+    def test_response_cache_requires_the_current_delivered_answer(self):
+        for name, prior in (('response-cache-empty', False), ('response-cache-replace', True)):
+            with self.subTest(name=name):
+                side = {'before': {'cache_present': prior, 'prior_marker_present': prior},
+                    'after': {'cache_present': True, 'cache_is_nonempty': True,
+                        'prior_marker_present': False, 'cache_within_limit': True,
+                        'cache_matches_stop_message': True, 'stop_message_matches_user_response': True, 'user_response_delivered': True},
+                    'hook_exit_codes': [0], 'event': 'Stop', 'cli_exit_code': 0,
+                    'model_generation_requests': 1, 'model_successful_responses': 1}
+                case = {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+                self.assertEqual(check_pair(case), [])
+                case['hermes']['after']['cache_matches_stop_message'] = False
+                self.assertIn(f'{name}: response cache effect is missing', check_pair(case))
+
+    def test_response_cache_limit_requires_a_long_answer_and_exact_prefix(self):
+        side = {'before': {'cache_present': True, 'prior_marker_present': True},
+            'after': {'cache_present': True, 'cache_is_nonempty': True, 'prior_marker_present': False,
+                'cache_within_limit': True, 'cache_matches_stop_message': True, 'stop_message_matches_user_response': True,
+                'user_response_delivered': True, 'user_response_exceeds_limit': True, 'cache_characters': 2000},
+            'hook_exit_codes': [0], 'event': 'Stop', 'cli_exit_code': 0,
+            'model_generation_requests': 1, 'model_successful_responses': 1}
+        case = {'id': 'response-cache-limit', 'native': side, 'hermes': json.loads(json.dumps(side))}
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['user_response_exceeds_limit'] = False
+        self.assertIn('response-cache-limit: response cache effect is missing', check_pair(case))
 
     def test_disabled_context_requires_neutral_output_and_no_marker(self):
         case = self.context_case('context-disabled')
@@ -236,3 +265,41 @@ class PairedLifecycleEffectTests(unittest.TestCase):
                          {'usage_cache_present': False, 'credentials_present': False})
         case['native'] = {**case['native'], 'cli_exit_code': 1}
         self.assertIn('update-counts-no-oauth: CLI failed', check_pair(case))
+
+
+class PairedLifecycleFixtureTests(unittest.TestCase):
+    def fixture(self, name):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        source = base / 'source'
+        for _, relative in CASES[name]:
+            path = source / relative
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('Fixture source identity\n')
+        if name.startswith('context-'):
+            for relative in ('hooks/lib/learning-readback.ts', 'hooks/lib/advisory-readback.ts',
+                             'hooks/lib/notifications.ts'):
+                path = source / relative
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text('Fixture source identity\n')
+        home = base / 'home'
+        definitions = make_fixture(home, name, source, base / 'trace.py')
+        return home, json.loads((home / '.claude/settings.json').read_text()), definitions
+
+    def test_existing_startup_and_end_fixtures_preserve_their_selected_event(self):
+        for name, event in (('context-desktop', 'SessionStart'), ('update-counts-no-oauth', 'SessionEnd')):
+            with self.subTest(name=name):
+                home, settings, definitions = self.fixture(name)
+                self.assertEqual(set(settings['hooks']), {'SessionStart', 'UserPromptSubmit', 'SessionEnd'})
+                self.assertEqual(settings['hooks'][event][-1]['hooks'][0]['command'], definitions[0]['command'])
+                self.assertTrue((home / 'before-state.json').is_file())
+
+    def test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state(self):
+        for name, prior in (('response-cache-empty', False), ('response-cache-replace', True)):
+            with self.subTest(name=name):
+                home, settings, definitions = self.fixture(name)
+                self.assertEqual(settings['hooks']['Stop'][0]['hooks'][0]['command'], definitions[0]['command'])
+                self.assertEqual(len(settings['hooks']['SessionEnd']), 1)
+                self.assertEqual(json.loads((home / 'before-state.json').read_text()),
+                    {'cache_present': prior, 'prior_marker_present': prior})

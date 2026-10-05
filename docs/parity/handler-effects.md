@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Thirty equal selected cases cover 12 registrations. Twenty-eight lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases and three successful response cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Thirty-three equal selected cases cover 13 registrations. Thirty-one lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, and three response-cache cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -67,7 +67,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | SessionStart.1.3 | LoadContext | Load the applicable native identity, system, and admitted user context. | Selected cases verified |
 | SessionStart.1.4 | FreshnessCache.ts --quiet | Write the native freshness cache for the installed source tree. | Selected cases verified |
 | SessionStart.1.5 | SettingsBackport and MergeSettings | Backport applicable settings and atomically merge system and user settings. | Selected cases verified |
-| Stop.1.1 | LastResponseCache | Persist the final assistant response in the native response cache. | Pending |
+| Stop.1.1 | LastResponseCache | Persist the final assistant response in the native response cache. | Selected cases verified |
 | Stop.1.2 | TabState | Set the applicable completed-turn terminal state. | Pending |
 | Stop.1.3 | VoiceCompletion | Record final-answer voice state and apply the configured remote-channel desktop gate. | Pending |
 | Stop.1.4 | ISARenderOnStop | Render the applicable active ISA after the completed response. | Pending |

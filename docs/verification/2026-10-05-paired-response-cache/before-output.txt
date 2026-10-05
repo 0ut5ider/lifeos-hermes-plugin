@@ -1,0 +1,110 @@
+..............................                                     [100%]
+=================================== FAILURES ===================================
+_ PairedLifecycleEffectTests.test_response_cache_requires_the_current_delivered_answer (name='response-cache-empty') _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleEffectTests testMethod=test_response_cache_requires_the_current_delivered_answer>
+
+    def test_response_cache_requires_the_current_delivered_answer(self):
+        for name, prior in (('response-cache-empty', False), ('response-cache-replace', True)):
+            with self.subTest(name=name):
+                side = {'before': {'cache_present': prior, 'prior_marker_present': prior},
+                    'after': {'cache_present': True, 'cache_is_nonempty': True,
+                        'prior_marker_present': False, 'cache_within_limit': True,
+                        'cache_matches_user_response': True, 'user_response_delivered': True},
+                    'hook_exit_codes': [0], 'event': 'Stop', 'cli_exit_code': 0,
+                    'model_generation_requests': 1, 'model_successful_responses': 1}
+                case = {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['response-cache-empty: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'response-cache-empty: unknown case'
+E               
+E               - ['response-cache-empty: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:92: AssertionError
+_ PairedLifecycleEffectTests.test_response_cache_requires_the_current_delivered_answer (name='response-cache-replace') _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleEffectTests testMethod=test_response_cache_requires_the_current_delivered_answer>
+
+    def test_response_cache_requires_the_current_delivered_answer(self):
+        for name, prior in (('response-cache-empty', False), ('response-cache-replace', True)):
+            with self.subTest(name=name):
+                side = {'before': {'cache_present': prior, 'prior_marker_present': prior},
+                    'after': {'cache_present': True, 'cache_is_nonempty': True,
+                        'prior_marker_present': False, 'cache_within_limit': True,
+                        'cache_matches_user_response': True, 'user_response_delivered': True},
+                    'hook_exit_codes': [0], 'event': 'Stop', 'cli_exit_code': 0,
+                    'model_generation_requests': 1, 'model_successful_responses': 1}
+                case = {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['response-cache-replace: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'response-cache-replace: unknown case'
+E               
+E               - ['response-cache-replace: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:92: AssertionError
+_ PairedLifecycleFixtureTests.test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state (name='response-cache-empty') _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state>
+
+    def test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state(self):
+        for name, prior in (('response-cache-empty', False), ('response-cache-replace', True)):
+            with self.subTest(name=name):
+>               home, settings, definitions = self.fixture(name)
+                                              ^^^^^^^^^^^^^^^^^^
+
+tests/test_paired_lifecycle_effects.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state>
+name = 'response-cache-empty'
+
+    def fixture(self, name):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        source = base / 'source'
+>       for _, relative in CASES[name]:
+                           ^^^^^^^^^^^
+E       KeyError: 'response-cache-empty'
+
+tests/test_paired_lifecycle_effects.py:264: KeyError
+_ PairedLifecycleFixtureTests.test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state (name='response-cache-replace') _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state>
+
+    def test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state(self):
+        for name, prior in (('response-cache-empty', False), ('response-cache-replace', True)):
+            with self.subTest(name=name):
+>               home, settings, definitions = self.fixture(name)
+                                              ^^^^^^^^^^^^^^^^^^
+
+tests/test_paired_lifecycle_effects.py:289: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state>
+name = 'response-cache-replace'
+
+    def fixture(self, name):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        source = base / 'source'
+>       for _, relative in CASES[name]:
+                           ^^^^^^^^^^^
+E       KeyError: 'response-cache-replace'
+
+tests/test_paired_lifecycle_effects.py:264: KeyError
+=========================== short test summary info ============================
+SUBFAILED(name='response-cache-empty') tests/test_paired_lifecycle_effects.py::PairedLifecycleEffectTests::test_response_cache_requires_the_current_delivered_answer
+SUBFAILED(name='response-cache-replace') tests/test_paired_lifecycle_effects.py::PairedLifecycleEffectTests::test_response_cache_requires_the_current_delivered_answer
+SUBFAILED(name='response-cache-empty') tests/test_paired_lifecycle_effects.py::PairedLifecycleFixtureTests::test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state
+SUBFAILED(name='response-cache-replace') tests/test_paired_lifecycle_effects.py::PairedLifecycleFixtureTests::test_response_cache_fixture_uses_stop_and_preserves_the_selected_prior_state
+4 failed, 30 passed, 2 subtests passed in 0.10s
