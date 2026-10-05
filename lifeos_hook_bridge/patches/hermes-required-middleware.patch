@@ -120,12 +120,27 @@ index 1c6ed2ae24..336d01dc37 100644
              if next_succeeded:
                  return next_result
              if next_called:
+diff --git a/hermes_cli/plugin_validate.py b/hermes_cli/plugin_validate.py
+index 98fa14a3e9..23e391cccc 100644
+--- a/hermes_cli/plugin_validate.py
++++ b/hermes_cli/plugin_validate.py
+@@ -216,7 +216,9 @@ class RecordingContext:
+     def register_hook(self, hook_name, callback):
+         recorded["hooks"].append(str(hook_name))
+ 
+-    def register_middleware(self, kind, callback):
++    def register_middleware(self, kind, callback, *, required=False):
++        if type(required) is not bool:
++            raise TypeError("required must be a boolean")
+         recorded["middleware"].append(str(kind))
+ 
+     def register_command(self, name, *args, **kwargs):
 diff --git a/tests/hermes_cli/test_required_middleware.py b/tests/hermes_cli/test_required_middleware.py
 new file mode 100644
-index 0000000000..4ea198a2a9
+index 0000000000..037eca8d07
 --- /dev/null
 +++ b/tests/hermes_cli/test_required_middleware.py
-@@ -0,0 +1,127 @@
+@@ -0,0 +1,148 @@
 +# ABOUTME: Verifies that required middleware stops execution when its check fails.
 +# ABOUTME: Preserves optional failure behavior and single-use downstream execution.
 +import logging
@@ -253,3 +268,24 @@ index 0000000000..4ea198a2a9
 +    assert captured == []
 +    assert dispatched == []
 +    assert 'synchronous' in caplog.text
++
++def _probe_plugin(tmp_path, required):
++    plugin = tmp_path / 'required-probe'
++    plugin.mkdir()
++    (plugin / 'plugin.yaml').write_text(
++        'name: required-probe\nversion: 1.0.0\ndescription: Test\nprovides_middleware:\n  - llm_admission\n')
++    (plugin / '__init__.py').write_text(
++        "def register(ctx):\n"
++        f"    ctx.register_middleware('llm_admission', lambda **kwargs: None, required={required})\n")
++    return plugin
++
++def test_capability_probe_records_required_middleware(tmp_path):
++    from hermes_cli.plugin_validate import validate_plugin_dir
++    report = validate_plugin_dir(_probe_plugin(tmp_path, 'True'))
++    assert ('capability probe', True, 'register() ran in isolation') in report.checks
++    assert ('declared middleware', True, 'matches registrations') in report.checks
++
++def test_capability_probe_rejects_a_non_boolean_required_flag(tmp_path):
++    from hermes_cli.plugin_validate import validate_plugin_dir
++    report = validate_plugin_dir(_probe_plugin(tmp_path, "'yes'"))
++    assert ('capability probe', False, 'register() raised: required must be a boolean') in report.checks

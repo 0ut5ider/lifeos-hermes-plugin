@@ -117,3 +117,6 @@ provides_hooks:
   - on_session_finalize
   - api_request_error
   - on_turn_result
+provides_middleware:
+  - llm_admission
+  - llm_execution

@@ -1,0 +1,30 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+______________ test_capability_probe_records_required_middleware _______________
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-2/test_capability_probe_records_0')
+
+    def test_capability_probe_records_required_middleware(tmp_path):
+        from hermes_cli.plugin_validate import validate_plugin_dir
+        report = validate_plugin_dir(_probe_plugin(tmp_path, 'True'))
+>       assert ('capability probe', True, 'register() ran in isolation') in report.checks
+E       assert ('capability probe', True, 'register() ran in isolation') in [('manifest', True, 'plugin.yaml parses'), ('manifest fields', True, 'name, version, description present'), ('requires...rue, 'not declared'), ('requires_env', True, 'all entries UPPER_SNAKE'), ('loadable', True, 'entry: __init__.py'), ...]
+E        +  where [('manifest', True, 'plugin.yaml parses'), ('manifest fields', True, 'name, version, description present'), ('requires...rue, 'not declared'), ('requires_env', True, 'all entries UPPER_SNAKE'), ('loadable', True, 'entry: __init__.py'), ...] = ValidationReport(checks=[('manifest', True, 'plugin.yaml parses'), ('manifest fields', True, 'name, version, descripti...t 'required'"), ('built-in tool collisions', True, 'no tools to check'), ('security scan', True, 'safe')], warnings=[]).checks
+
+tests/hermes_cli/test_required_middleware.py:142: AssertionError
+__________ test_capability_probe_rejects_a_non_boolean_required_flag ___________
+
+tmp_path = PosixPath('/tmp/pytest-of-outsider/pytest-2/test_capability_probe_rejects_0')
+
+    def test_capability_probe_rejects_a_non_boolean_required_flag(tmp_path):
+        from hermes_cli.plugin_validate import validate_plugin_dir
+        report = validate_plugin_dir(_probe_plugin(tmp_path, "'yes'"))
+>       assert ('capability probe', False, 'register() raised: required must be a boolean') in report.checks
+E       assert ('capability probe', False, 'register() raised: required must be a boolean') in [('manifest', True, 'plugin.yaml parses'), ('manifest fields', True, 'name, version, description present'), ('requires...rue, 'not declared'), ('requires_env', True, 'all entries UPPER_SNAKE'), ('loadable', True, 'entry: __init__.py'), ...]
+E        +  where [('manifest', True, 'plugin.yaml parses'), ('manifest fields', True, 'name, version, description present'), ('requires...rue, 'not declared'), ('requires_env', True, 'all entries UPPER_SNAKE'), ('loadable', True, 'entry: __init__.py'), ...] = ValidationReport(checks=[('manifest', True, 'plugin.yaml parses'), ('manifest fields', True, 'name, version, descripti...t 'required'"), ('built-in tool collisions', True, 'no tools to check'), ('security scan', True, 'safe')], warnings=[]).checks
+
+tests/hermes_cli/test_required_middleware.py:148: AssertionError
+=========================== short test summary info ============================
+FAILED tests/hermes_cli/test_required_middleware.py::test_capability_probe_records_required_middleware
+FAILED tests/hermes_cli/test_required_middleware.py::test_capability_probe_rejects_a_non_boolean_required_flag
+2 failed, 14 deselected in 1.55s

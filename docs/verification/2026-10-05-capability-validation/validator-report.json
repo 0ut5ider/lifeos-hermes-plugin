@@ -1,0 +1,146 @@
+{
+  "checks": [
+    {
+      "name": "manifest",
+      "ok": true,
+      "detail": "plugin.yaml parses"
+    },
+    {
+      "name": "manifest fields",
+      "ok": true,
+      "detail": "name, version, description present"
+    },
+    {
+      "name": "requires_hermes",
+      "ok": true,
+      "detail": "not declared"
+    },
+    {
+      "name": "config schema",
+      "ok": true,
+      "detail": "shape valid"
+    },
+    {
+      "name": "requires_env",
+      "ok": true,
+      "detail": "all entries UPPER_SNAKE"
+    },
+    {
+      "name": "loadable",
+      "ok": true,
+      "detail": "entry: __init__.py"
+    },
+    {
+      "name": "python dependencies",
+      "ok": true,
+      "detail": "4 requirements from manifest"
+    },
+    {
+      "name": "capability probe",
+      "ok": true,
+      "detail": "register() ran in isolation"
+    },
+    {
+      "name": "declared tools",
+      "ok": true,
+      "detail": "matches registrations"
+    },
+    {
+      "name": "declared hooks",
+      "ok": true,
+      "detail": "matches registrations"
+    },
+    {
+      "name": "declared middleware",
+      "ok": true,
+      "detail": "matches registrations"
+    },
+    {
+      "name": "built-in tool collisions",
+      "ok": true,
+      "detail": "no tools to check"
+    },
+    {
+      "name": "security scan",
+      "ok": false,
+      "detail": "dangerous: ssh_backdoor (memory_preferences.py:27), ssh_backdoor (memory_preferences.py:31), ssh_backdoor (memory_sharing.py:106), ssh_backdoor (memory_sharing.py:144), ssh_backdoor (memory_sharing.py:169), ssh_backdoor (memory_sharing.py:63), ssh_backdoor (memory_sharing.py:66), ssh_backdoor (memory_sharing.py:69), ssh_backdoor (memory_sharing.py:78), ssh_backdoor (memory_sharing.py:82), ssh_backdoor (memory_sharing.py:84), ssh_backdoor (memory_sharing.py:86), ssh_backdoor (memory_sharing.py:87), ssh_backdoor (memory_sharing.py:89), ssh_backdoor (memory_sharing.py:94), ssh_backdoor (plugin_api.py:116)"
+    }
+  ],
+  "warnings": [
+    "provides_hooks declares pre_llm_call but register() did not register them"
+  ],
+  "scan": {
+    "verdict": "dangerous",
+    "findings": 62,
+    "by_severity_and_pattern": [
+      [
+        "critical",
+        "ssh_backdoor",
+        16
+      ],
+      [
+        "low",
+        "agent_config_ref",
+        5
+      ],
+      [
+        "low",
+        "other_agent_config_ref",
+        2
+      ],
+      [
+        "medium",
+        "hex_encoded_string",
+        2
+      ],
+      [
+        "medium",
+        "path_traversal",
+        2
+      ],
+      [
+        "medium",
+        "python_subprocess",
+        30
+      ],
+      [
+        "medium",
+        "shell_rc_mod",
+        4
+      ],
+      [
+        "medium",
+        "unicode_escape_chain",
+        1
+      ]
+    ],
+    "critical_locations": [
+      "dashboard/plugin_api.py:116",
+      "memory_preferences.py:27",
+      "memory_preferences.py:31",
+      "memory_sharing.py:106",
+      "memory_sharing.py:144",
+      "memory_sharing.py:169",
+      "memory_sharing.py:63",
+      "memory_sharing.py:66",
+      "memory_sharing.py:69",
+      "memory_sharing.py:78",
+      "memory_sharing.py:82",
+      "memory_sharing.py:84",
+      "memory_sharing.py:86",
+      "memory_sharing.py:87",
+      "memory_sharing.py:89",
+      "memory_sharing.py:94"
+    ],
+    "installer_decision": {
+      "False": [
+        false,
+        "Blocked (dangerous verdict, 16 critical of 62 findings (ssh_backdoor)). --force does not override a dangerous verdict."
+      ],
+      "True": [
+        false,
+        "Blocked (dangerous verdict, 16 critical of 62 findings (ssh_backdoor)). --force does not override a dangerous verdict."
+      ]
+    }
+  }
+}
