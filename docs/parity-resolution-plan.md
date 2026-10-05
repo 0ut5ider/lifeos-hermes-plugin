@@ -43,6 +43,8 @@ The [startup extension](verification/2026-10-04-paired-startup-effects/README.md
 
 The [request-delivery extension](verification/2026-10-04-paired-context-delivery/README.md) adds three cases that reach the actual model request boundary. Both clients deliver the selected desktop content and withhold it for remote or disabled sources. An expected HTTP 401 ends each client run without a generated response. Exact wire bytes remain private, with verified public hashes and marker assertions. The cumulative ledger retains 27 equal selected cases for 12 registrations. Complete managed-memory admission and generated user delivery remain open.
 
+The [successful response extension](verification/2026-10-05-paired-context-response/README.md) adds three selected startup cases. All six real clients receive HTTP 200 from private FlashNext and deliver `READY`. The ledger now retains 30 equal selected cases for 12 registrations. The unmanaged desktop, remote, and disabled-source branches preserve their request context assertions. Managed memory, complete groups, and auxiliary title generation remain open.
+
 The first command checks the recorded inventory and artifacts. The second command currently fails. The check validates evidence structure and equal recorded outcomes. A reviewer must still assess scenario coverage and the underlying measurements.
 
 Nine registrations lack a successful native event control:

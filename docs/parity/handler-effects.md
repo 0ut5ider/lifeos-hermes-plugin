@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-04. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Twenty-seven equal selected cases cover 12 registrations. Twenty-five lifecycle cases use real client events and synthetic file assertions, including three actual request-delivery cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Thirty equal selected cases cover 12 registrations. Twenty-eight lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases and three successful response cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |

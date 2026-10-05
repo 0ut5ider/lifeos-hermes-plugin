@@ -1,0 +1,56 @@
+{
+  "native": {
+    "uid": 1005,
+    "gid": 1005,
+    "home_root": "/home/lifeos-claude-ref/workspace/paired-response-20261005-v2",
+    "hook_root": "/home/lifeos-claude-ref/.claude",
+    "trace_script": "/var/tmp/paired-startup-trace-20261004.py",
+    "command": [
+      "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+      "-p",
+      "--verbose",
+      "--output-format",
+      "stream-json",
+      "--strict-mcp-config",
+      "--tools",
+      "",
+      "--model",
+      "lifecycle-fixture",
+      "--effort",
+      "medium"
+    ],
+    "environment": {
+      "PATH": "/home/lifeos-claude-ref/.bun/bin:/home/lifeos-claude-ref/.local/bin:/usr/local/bin:/usr/bin:/bin",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "isolate_tmp": true
+  },
+  "hermes": {
+    "uid": 1007,
+    "gid": 1007,
+    "home_root": "/home/lifeos-plugin-install-probe/workspace/paired-response-20261005-v2",
+    "hook_root": "/var/tmp/lifeos-paired-context-response-20261005/lifeos",
+    "trace_script": "/var/tmp/paired-startup-trace-20261004.py",
+    "plugins_path": "/var/tmp/lifeos-paired-context-response-20261005/plugins",
+    "command": [
+      "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+      "-m",
+      "hermes_cli.main",
+      "chat",
+      "--oneshot",
+      "-Q",
+      "--format",
+      "stream-json",
+      "-t",
+      "todo",
+      "-q"
+    ],
+    "environment": {
+      "PATH": "/home/lifeos-plugin-install-probe/.local/bin:/usr/local/bin:/usr/bin:/bin",
+      "PYTHONPATH": "/var/tmp/lifeos-paired-context-response-20261005/hermes:/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.hermes/installs/2cd77f30ab6c57b5/environments/de1515ba6e674677ba2da15650b65812/venv/lib/python3.14/site-packages",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "isolate_tmp": true
+  },
+  "model_environment": "/home/lifeos-claude-ref/.config/lifeos-reference/model.env"
+}

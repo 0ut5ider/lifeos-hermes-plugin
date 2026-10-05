@@ -50,6 +50,32 @@ class PairedLifecycleEffectTests(unittest.TestCase):
         case['hermes']['model_generation_requests'] = 0
         self.assertIn('context-delivery-disabled: model delivery was not observed', check_pair(case))
 
+    def response_case(self, name, loaded):
+        case = self.delivery_case(name, loaded)
+        for side in ('native', 'hermes'):
+            case[side]['cli_exit_code'] = 0
+            case[side]['model_successful_responses'] = 1
+            case[side]['after']['user_response_delivered'] = True
+        return case
+
+    def test_context_response_requires_successful_generation_and_user_delivery(self):
+        case = self.response_case('context-response-desktop', True)
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['user_response_delivered'] = False
+        self.assertIn('context-response-desktop: context effect is missing', check_pair(case))
+
+    def test_remote_response_preserves_owner_context_exclusion(self):
+        case = self.response_case('context-response-remote', False)
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['model_context_contains']['wisdom'] = True
+        self.assertIn('context-response-remote: context effect is missing', check_pair(case))
+
+    def test_disabled_response_cannot_count_an_unsuccessful_model_request(self):
+        case = self.response_case('context-response-disabled', False)
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['model_successful_responses'] = 0
+        self.assertIn('context-response-disabled: successful model response was not observed', check_pair(case))
+
     def test_disabled_context_requires_neutral_output_and_no_marker(self):
         case = self.context_case('context-disabled')
         self.assertEqual(check_pair(case), [])
