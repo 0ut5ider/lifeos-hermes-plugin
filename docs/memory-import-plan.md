@@ -4,6 +4,8 @@ Date: 2026-10-01. Status: deferred design work. Adrian asks to preserve the orig
 
 The [approved memory design](../notes/2026-09-30-memory-design.md) gives LifeOS ownership of lasting facts. Hermes retains history, compression, and skills. Fresh installations remain the first target. Import applies separately to an established Hermes profile that already has `memories/MEMORY.md` or `memories/USER.md`.
 
+On October 5, Adrian selects a fresh start on `.212` without importing existing personal data. Prepare no Hermes memory, `.211` or `.213` archive, or conversation-history selection for this deployment. Preserve existing source files and any existing LifeOS data. Prepare the fresh-start identity and return workflow for review. Complete activation checks before changing ownership. The optional importer and reverse migration remain part of the product plan below.
+
 ## Original proposal
 
 1. Detect existing built-in memory in the selected Hermes profile.
