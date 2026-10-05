@@ -20,7 +20,7 @@ Every case preserves an earlier unrelated row in the events file. Both hooks ret
 
 The model selects the number of file calls. An earlier attempt had two native Edit calls, so each case requires at least one call and one hint for each call. This run has one call in every client. The final answer text is not compared; an earlier native answer added prose after the write.
 
-For ConfigEvalFire, these cases cover only the branch for a file that is not a sentinel. A sentinel case that writes a file named `CLAUDE.md` is deferred. In the exploratory run, Hermes printed `Preparing the isolated Hermes runtime` after the write call and did not finish within 120 seconds. The cause is not yet measured.
+For ConfigEvalFire, these cases cover only the branch for a file that is not a sentinel. A sentinel case that writes a file named `CLAUDE.md` is deferred. In the exploratory run, Hermes printed `Preparing the isolated Hermes runtime` after the write call and did not finish within 120 seconds. A later [measurement](../../../notes/2026-10-05-instruction-file-write-gate.md) shows the cause: Hermes has an approval gate for instruction file names, and the plugin is not involved. The sentinel case needs another file name.
 
 The KnowledgeWriteGuard hook needs a write inside the LifeOS memory tree, outside the project directory. That case needs a separate permission design and remains open.
 

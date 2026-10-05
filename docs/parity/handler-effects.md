@@ -20,7 +20,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | PostToolUse.8.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Pending |
 | PostToolUse.8.2 | ISAStaleWriteGuard | Prevent ISA writes based on a stale session view of the actual local or backend file. | Pending |
 | PostToolUse.8.3 | CheckpointPerISC | Commit eligible verified ISC state and write a retrievable checkpoint record. | Pending |
-| PostToolUse.8.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Only the non-sentinel Write branch passes; the sentinel branch is deferred after a Hermes hang |
+| PostToolUse.8.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Only the non-sentinel Write branch passes; the sentinel branch needs a file name outside the Hermes instruction file gate |
 | PostToolUse.8.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Write cases pass; other tracked file patterns remain open |
 | PostToolUse.8.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Pending |
 | PostToolUse.8.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Pending |

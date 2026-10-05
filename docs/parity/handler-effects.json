@@ -1495,7 +1495,7 @@
     "docs/verification/2026-10-05-paired-tool-log/run.py": "9f7c08552cda192960357ac0172ce9be6ba9ec3f416d4469e9b29d6932385a8a",
     "docs/verification/2026-10-05-paired-tool-log/runtime-check.json": "c3187eeb90fef6c4624940b160f0bb5accf564aaab4d5a4db87f3af752c51059",
     "docs/verification/2026-10-05-paired-tool-log/tool-log-proof.json": "88ab3427bddfd4d0615c858de0d9a6bbdb678bd6dff2e0594e0919ce3a23e89d",
-    "docs/verification/2026-10-05-paired-file-hints/README.md": "9f65b19f77874036cc1ccc8c6b8ff2182ab324245862b80e6d424cff4fd65db4",
+    "docs/verification/2026-10-05-paired-file-hints/README.md": "0b03a53d966539d9d5463153368f7745eb4bba9ad08ed2e864f2f3c33acfb258",
     "docs/verification/2026-10-05-paired-file-hints/before-output.txt": "c19873f57b746b3de4c838133414f92889603ab784a74d4436071b8401c2b52d",
     "docs/verification/2026-10-05-paired-file-hints/collect.py": "91803a6a5e406decbd0bb6d5dba7d07aeb4d01daabf8c35eeee9081638fd6261",
     "docs/verification/2026-10-05-paired-file-hints/configuration.json": "5fff12c4c082e6cb3dcc6bbf1ae551181abbe60e2b0af919779b734ebea772c2",
@@ -2510,7 +2510,7 @@
         }
       ],
       "related_native_tests": [],
-      "remaining": "Verify the sentinel fire, the debounce, and the missing-runner branches. Hermes does not complete a write to a file named CLAUDE.md in the fixture; investigate that first."
+      "remaining": "Verify the sentinel fire, the debounce, and the missing-runner branches. Use a sentinel other than CLAUDE.md, because Hermes has an approval gate for instruction file names."
     },
     {
       "id": "PostToolUse.8.5",
