@@ -1,0 +1,109 @@
+{
+  "before": {
+    "changed_core_files": 10,
+    "tag": "v1.0.0",
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false
+  },
+  "after": {
+    "hook_context": "\u23eb VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+    "state": {
+      "count": 10,
+      "tag": "v1.0.0",
+      "timestamp_current": true
+    },
+    "worktree_preserved": true,
+    "model_nag_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_171611_665a23",
+  "seconds": 9.697,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-version-drift-20261005/results/version-drift-count",
+    "/home/lifeos-plugin-install-probe/workspace/paired-version-drift-20261005/results/version-drift-count",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.4.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.4.1 /home/lifeos-plugin-install-probe/workspace/paired-version-drift-20261005/results/version-drift-count/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvVmVyc2lvbkRyaWZ0Lmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/VersionDrift.hook.ts": "f246a7bf2ba340fd0255ddf6f873c76f61434abc7161afecb2da9436ecde4497"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "a3f17476639e9737408f24d0a6fbb64ae6c10a5b53b1af77a84ea2548a394200",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "0cdf7f621b22e24c519e9a79ec4a68e128bbbc7fcd724116f1e04c03d1da2f14",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "fcdb8e7d6d3a94b7c52ecbe355acfcc96c60207035f0cbfaa702042f2f3925fc",
+    "fixture-events.jsonl": "13e95d573d1b674b672e777adf6dc863004f3b0bfc954765fd635e17ce0d5940",
+    "cli.log": "fc6983681bb668da312f50b7e9890fb317cecb86cfc3a3e308b8fb71f2284c73",
+    "before-state.json": "21b6034aee93b0364c48832be20db952b77936b934b5e9aa33864f76a6668b1b",
+    "after-state.json": "7f308b16b7a1a18b8fbb22b7deff1b6dacbbb80073de4a017234587edb503324",
+    "fixture-files-before.json": "4c0157d3d390ab7d48ec7b4d9f7a9b585c6a298e182f63d9b44e44a379f60a8d",
+    "fixture-files-after.json": "b0947e54988ab2ae133f9df6e581144e2375f339ac570f5b5906b3d6c78a7623"
+  }
+}

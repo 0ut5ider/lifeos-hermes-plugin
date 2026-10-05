@@ -493,3 +493,112 @@ class PairedTimeContextTests(unittest.TestCase):
         self.assertEqual(check_pair(case), [])
         case['native']['after']['settings_preserved'] = False
         self.assertIn('time-context-invalid-zone: time context effect is missing', check_pair(case))
+
+
+class PairedVersionDriftTests(unittest.TestCase):
+    SHAPES = {'version-drift-count': (10, True), 'version-drift-aged': (1, True),
+              'version-drift-below': (1, False), 'version-drift-bump': (10, False),
+              'version-drift-recent': (10, False), 'version-drift-untagged': (10, False),
+              'version-drift-async-count': (10, True)}
+
+    def line(self, name):
+        age = ' (tag 72h old)' if name == 'version-drift-aged' else ''
+        dash = chr(0x2014)
+        return (f'⏫ VERSION-DRIFT: {self.SHAPES[name][0]} core file(s) ahead of v1.0.0{age}, no bump in flight {dash} '
+                'run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, '
+                'or defer explicitly to the principal.')
+
+    def case(self, name):
+        changed, nag = self.SHAPES[name]
+        recent = name == 'version-drift-recent'
+        asynchronous = name == 'version-drift-async-count'
+        state = {'count': changed, 'tag': 'v1.0.0', 'timestamp_current': True} if nag else None
+        if recent:
+            state = {'count': 3, 'tag': 'v0.9.0', 'timestamp_current': False}
+        side = {'before': {'changed_core_files': changed,
+                           'tag': None if name == 'version-drift-untagged' else 'v1.0.0',
+                           'tag_age_hours': 72 if name == 'version-drift-aged' else 0,
+                           'version': '1.0.1' if name == 'version-drift-bump' else '1.0.0',
+                           'prior_nag_present': recent, 'asynchronous': asynchronous},
+                'after': {'hook_context': self.line(name) if nag else None, 'state': state,
+                          'worktree_preserved': True, 'model_nag_present': nag and not asynchronous,
+                          'user_response_delivered': True},
+                'hook_exit_codes': [0], 'event': 'UserPromptSubmit', 'cli_exit_code': 0,
+                'model_generation_requests': 1, 'model_successful_responses': 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_every_selected_branch_accepts_only_its_required_effect(self):
+        for name in self.SHAPES:
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_threshold_nag_requires_the_exact_line_state_and_model_delivery(self):
+        for key, value in (('model_nag_present', False), ('state', None), ('hook_context', None)):
+            with self.subTest(key=key):
+                case = self.case('version-drift-count')
+                case['native']['after'][key] = case['hermes']['after'][key] = value
+                self.assertIn('version-drift-count: version drift effect is missing', check_pair(case))
+
+    def test_aged_tag_requires_the_reported_tag_age(self):
+        case = self.case('version-drift-aged')
+        for side in ('native', 'hermes'):
+            case[side]['after']['hook_context'] = case[side]['after']['hook_context'].replace(' (tag 72h old)', '')
+        self.assertIn('version-drift-aged: version drift effect is missing', check_pair(case))
+
+    def test_silent_branches_reject_a_nag_or_a_replaced_prior_state(self):
+        for name in ('version-drift-below', 'version-drift-bump', 'version-drift-untagged', 'version-drift-recent'):
+            with self.subTest(name=name):
+                case = self.case(name)
+                for side in ('native', 'hermes'):
+                    case[side]['after']['state'] = {'count': 10, 'tag': 'v1.0.0', 'timestamp_current': True}
+                self.assertIn(f'{name}: version drift effect is missing', check_pair(case))
+
+    def test_async_first_turn_cannot_claim_model_delivery(self):
+        case = self.case('version-drift-async-count')
+        for side in ('native', 'hermes'):
+            case[side]['after']['model_nag_present'] = True
+        self.assertIn('version-drift-async-count: version drift effect is missing', check_pair(case))
+
+
+class PairedVersionDriftFixtureTests(unittest.TestCase):
+    def fixture(self, name):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        source = base / 'source'
+        (source / 'hooks').mkdir(parents=True)
+        (source / 'hooks/VersionDrift.hook.ts').write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, name, source, base / 'trace.py')
+        return home, json.loads((home / '.claude/settings.json').read_text())
+
+    def test_fixture_measures_the_seeded_repository_before_the_client_runs(self):
+        expected = {'version-drift-count': (10, 'v1.0.0', 0, '1.0.0', False),
+                    'version-drift-aged': (1, 'v1.0.0', 72, '1.0.0', False),
+                    'version-drift-below': (1, 'v1.0.0', 0, '1.0.0', False),
+                    'version-drift-bump': (10, 'v1.0.0', 0, '1.0.1', False),
+                    'version-drift-recent': (10, 'v1.0.0', 0, '1.0.0', True),
+                    'version-drift-untagged': (10, None, 0, '1.0.0', False)}
+        for name, (changed, tag, age, version, prior) in expected.items():
+            with self.subTest(name=name):
+                home, _ = self.fixture(name)
+                self.assertEqual(json.loads((home / 'before-state.json').read_text()), {
+                    'changed_core_files': changed, 'tag': tag, 'tag_age_hours': age, 'version': version,
+                    'prior_nag_present': prior, 'asynchronous': False})
+
+    def test_async_fixture_uses_the_pinned_execution_setting(self):
+        home, settings = self.fixture('version-drift-async-count')
+        hook = settings['hooks']['UserPromptSubmit'][-1]['hooks'][0]
+        self.assertEqual((hook['async'], hook['timeout']), (True, 10))
+        self.assertTrue(json.loads((home / 'before-state.json').read_text())['asynchronous'])
+
+    def test_after_state_reports_a_preserved_worktree_and_an_untouched_prior_nag(self):
+        home, _ = self.fixture('version-drift-recent')
+        (home / 'hooks.jsonl').write_text(json.dumps({'stdout': ''}) + '\n')
+        now = time.strftime('%Y-%m-%dT%H:%M:%S+00:00', time.gmtime())
+        (home / 'clock-bounds.json').write_text(json.dumps({'started_at': now, 'finished_at': now}))
+        self.assertEqual(state_snapshot(home, 'version-drift-recent', 'current-session', after=True), {
+            'hook_context': None, 'state': {'count': 3, 'tag': 'v0.9.0', 'timestamp_current': False},
+            'worktree_preserved': True})
+        (home / '.claude/hooks/core-0.txt').write_text('changed by a client\n')
+        self.assertFalse(state_snapshot(home, 'version-drift-recent', 'current-session', after=True)['worktree_preserved'])

@@ -51,7 +51,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | UserPromptSubmit.1.1 | PromptProcessing | Create and persist the session name, including the configured child inference result. | Pending |
 | UserPromptSubmit.2.1 | SatisfactionCapture | Capture eligible satisfaction feedback from the submitted prompt. | Selected synchronous and asynchronous feedback cases; remaining branches open |
 | UserPromptSubmit.3.1 | ReminderRouter | Route due native reminders under the configured session and delivery policy. | Pending |
-| UserPromptSubmit.4.1 | VersionDrift | Compare the installation with its selected baseline and emit the native drift warning. | Pending |
+| UserPromptSubmit.4.1 | VersionDrift | Compare the installation with its selected baseline and emit the native drift warning. | Selected cases pass; first asynchronous request lacks the warning; next-turn delivery remains open |
 | UserPromptSubmit.5.1 | MemoryTurnStart | Supply the admitted native memory context for the current turn. | Pending |
 | UserPromptSubmit.6.1 | DriftReminder | Return the applicable drift context within its per-prompt line budget. | Five paired format-contract cases; remaining branches open |
 | UserPromptSubmit.7.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |

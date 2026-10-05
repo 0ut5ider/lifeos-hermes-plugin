@@ -1,0 +1,435 @@
+{
+  "cases": [
+    {
+      "id": "version-drift-count",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": "\u23eb VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+          "state": {
+            "count": 10,
+            "tag": "v1.0.0",
+            "timestamp_current": true
+          },
+          "worktree_preserved": true,
+          "model_nag_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": "\u23eb VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+          "state": {
+            "count": 10,
+            "tag": "v1.0.0",
+            "timestamp_current": true
+          },
+          "worktree_preserved": true,
+          "model_nag_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "version-drift-aged",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 1,
+          "tag": "v1.0.0",
+          "tag_age_hours": 72,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": "\u23eb VERSION-DRIFT: 1 core file(s) ahead of v1.0.0 (tag 72h old), no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+          "state": {
+            "count": 1,
+            "tag": "v1.0.0",
+            "timestamp_current": true
+          },
+          "worktree_preserved": true,
+          "model_nag_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 1,
+          "tag": "v1.0.0",
+          "tag_age_hours": 72,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": "\u23eb VERSION-DRIFT: 1 core file(s) ahead of v1.0.0 (tag 72h old), no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+          "state": {
+            "count": 1,
+            "tag": "v1.0.0",
+            "timestamp_current": true
+          },
+          "worktree_preserved": true,
+          "model_nag_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "version-drift-below",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 1,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": null,
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 1,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": null,
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "version-drift-bump",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.1",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": null,
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.1",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": null,
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "version-drift-recent",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": true,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": {
+            "count": 3,
+            "tag": "v0.9.0",
+            "timestamp_current": false
+          },
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": true,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": {
+            "count": 3,
+            "tag": "v0.9.0",
+            "timestamp_current": false
+          },
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "version-drift-untagged",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": null,
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": null,
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": null,
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": false
+        },
+        "after": {
+          "hook_context": null,
+          "state": null,
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "version-drift-async-count",
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "native": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": true
+        },
+        "after": {
+          "hook_context": "\u23eb VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+          "state": {
+            "count": 10,
+            "tag": "v1.0.0",
+            "timestamp_current": true
+          },
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "changed_core_files": 10,
+          "tag": "v1.0.0",
+          "tag_age_hours": 0,
+          "version": "1.0.0",
+          "prior_nag_present": false,
+          "asynchronous": true
+        },
+        "after": {
+          "hook_context": "\u23eb VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+          "state": {
+            "count": 10,
+            "tag": "v1.0.0",
+            "timestamp_current": true
+          },
+          "worktree_preserved": true,
+          "model_nag_present": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    }
+  ]
+}

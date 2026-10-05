@@ -1,0 +1,98 @@
+{
+  "before": {
+    "changed_core_files": 10,
+    "tag": "v1.0.0",
+    "tag_age_hours": 0,
+    "version": "1.0.1",
+    "prior_nag_present": false,
+    "asynchronous": false
+  },
+  "after": {
+    "hook_context": null,
+    "state": null,
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "16b09ed8-c8d4-4daa-8f2b-33623e59eb83",
+  "seconds": 1.874,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-version-drift-20261005/results/version-drift-bump",
+    "/home/lifeos-claude-ref/workspace/paired-version-drift-20261005/results/version-drift-bump",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.4.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.4.1 /home/lifeos-claude-ref/workspace/paired-version-drift-20261005/results/version-drift-bump/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvVmVyc2lvbkRyaWZ0Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/VersionDrift.hook.ts": "f246a7bf2ba340fd0255ddf6f873c76f61434abc7161afecb2da9436ecde4497"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "8744130276400b1fa698b453936fa08227d551bc4cca59d6cc90606761a69a53",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "9de34b53bfb1a9a87bc31327dd7ac7d5dd7a0981ae544554c2c806485618dd18",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "c84ac4af4da97496cb616020370a4557811171728e6a4d658ce28f834b632116",
+    "fixture-events.jsonl": "49065605884ccdea4abfde2d913f45f4222d3b4fdad18970e193e6990b36575d",
+    "cli.log": "8b3278b87c46cde96da5962b07b525b48ff7210a48dabf314b9ff90172752e73",
+    "before-state.json": "a316fc6fa237e3c57cf9cdc6961ffdab4565d8521e7846deedb3727f33686dee",
+    "after-state.json": "ae3da302de2199443417b89f4efd6e6e2a67c8917a125567c6ca275aa98de379",
+    "fixture-files-before.json": "7775d933c44c42a64155ebd131c244862fa97c7eeaa3bb4a7099403506a46218",
+    "fixture-files-after.json": "7775d933c44c42a64155ebd131c244862fa97c7eeaa3bb4a7099403506a46218"
+  }
+}
