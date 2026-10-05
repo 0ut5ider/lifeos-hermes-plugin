@@ -1,0 +1,135 @@
+F.                                                    [100%]
+=================================== FAILURES ===================================
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: []\n', target='memory') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: []\n', target='user') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'user', 'usage': '4% — 65/1,375 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: synthetic-invalid\n', target='memory') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: synthetic-invalid\n', target='user') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'user', 'usage': '4% — 65/1,375 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: null\n', target='memory') _
+tests/test_hermes_memory_config.py:40: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, True] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, True]
+E   + [False, False] : {'flags': [True, True], 'store_flags': [True, True], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: null\n', target='user') _
+tests/test_hermes_memory_config.py:40: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, True] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, True]
+E   + [False, False] : {'flags': [True, True], 'store_flags': [True, True], 'result': {'success': True, 'done': True, 'target': 'user', 'usage': '4% — 65/1,375 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: [\n', target='memory') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': "Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-_itjlgvu/config.yaml) has a formatting error at line 2. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 2, then run `hermes config check`. A copy of the broken file was saved to /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-_itjlgvu/backups/config/config.yaml.corrupt.20261005-015446. Details: expected the node content, but found '<stream end>'\n⚠️  hermes config: Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-_itjlgvu/config.yaml) has a formatting error at line 2. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 2, then run `hermes config check`. A copy of the broken file was saved to /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-_itjlgvu/backups/config/config.yaml.corrupt.20261005-015446.\n    Details: expected the node content, but found '<stream end>'\n"}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: [\n', target='user') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'user', 'usage': '4% — 65/1,375 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': "Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-xpuaruz4/config.yaml) has a formatting error at line 2. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 2, then run `hermes config check`. A copy of the broken file was saved to /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-xpuaruz4/backups/config/config.yaml.corrupt.20261005-015447. Details: expected the node content, but found '<stream end>'\n⚠️  hermes config: Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-xpuaruz4/config.yaml) has a formatting error at line 2. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 2, then run `hermes config check`. A copy of the broken file was saved to /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-xpuaruz4/backups/config/config.yaml.corrupt.20261005-015447.\n    Details: expected the node content, but found '<stream end>'\n"}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='directory', target='memory') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': "Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-2sksmq1w/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Try again; run `hermes config check` if it keeps failing. Details: [Errno 21] Is a directory: '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-2sksmq1w/config.yaml'\n⚠️  hermes config: Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-2sksmq1w/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Try again; run `hermes config check` if it keeps failing.\n    Details: [Errno 21] Is a directory: '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-2sksmq1w/config.yaml'\n"}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='directory', target='user') _
+tests/test_hermes_memory_config.py:42: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'user', 'usage': '4% — 65/1,375 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': "Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-ba_ao0c2/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Try again; run `hermes config check` if it keeps failing. Details: [Errno 21] Is a directory: '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-ba_ao0c2/config.yaml'\n⚠️  hermes config: Your settings file (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-ba_ao0c2/config.yaml) could not be read. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Try again; run `hermes config check` if it keeps failing.\n    Details: [Errno 21] Is a directory: '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/hermes-memory-config-ba_ao0c2/config.yaml'\n"}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (flag='[false]') _
+tests/test_hermes_memory_config.py:51: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, False] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, False]
+E   + [False, False] : {'flags': [True, False], 'store_flags': [True, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (flag='{unexpected: true}') _
+tests/test_hermes_memory_config.py:51: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, False] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, False]
+E   + [False, False] : {'flags': [True, False], 'store_flags': [True, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (flag='null') _
+tests/test_hermes_memory_config.py:51: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, False] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, False]
+E   + [False, False] : {'flags': [True, False], 'store_flags': [True, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (flag='.nan') _
+tests/test_hermes_memory_config.py:51: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, False] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, False]
+E   + [False, False] : {'flags': [True, False], 'store_flags': [True, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (flag='.inf') _
+tests/test_hermes_memory_config.py:51: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, False] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, False]
+E   + [False, False] : {'flags': [True, False], 'store_flags': [True, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores _
+tests/test_hermes_memory_config.py:59: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertFalse(result['result']['success'], result)
+E   AssertionError: True is not false : {'flags': [False, False], 'store_flags': [False, False], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+----------------------------- Captured stdout call -----------------------------
+uuuuuuuuuuuuuuu
+=========================== short test summary info ============================
+SUBFAILED(configuration='memory: []\n', target='memory') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: []\n', target='user') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: synthetic-invalid\n', target='memory') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: synthetic-invalid\n', target='user') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: null\n', target='memory') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: null\n', target='user') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: [\n', target='memory') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: [\n', target='user') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='directory', target='memory') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='directory', target='user') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(flag='[false]') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(flag='{unexpected: true}') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(flag='null') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(flag='.nan') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(flag='.inf') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+FAILED tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+16 failed, 1 passed, 4 subtests passed in 7.74s

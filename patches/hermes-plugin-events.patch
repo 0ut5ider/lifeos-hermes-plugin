@@ -675,3 +675,86 @@ index 810fd962a..45fc7e658 100644
      )
      assert out == "first"
  
+diff --git a/tools/memory_tool.py b/tools/memory_tool.py
+index 7577015e92..213b489e96 100644
+--- a/tools/memory_tool.py
++++ b/tools/memory_tool.py
+@@ -7,6 +7,7 @@ Single `memory` tool: add/replace/remove or a batch `operations` list."""
+ import copy
+ import json
+ import logging
++import math
+ from contextvars import ContextVar
+ from pathlib import Path
+ from hermes_constants import get_hermes_home
+@@ -45,18 +46,17 @@ from tools.memory_tool_store import (  # noqa: E402,F401  (re-exports)
+ 
+ 
+ def load_on_disk_store() -> "MemoryStore":
+-    """Fresh on-disk MemoryStore with configured limits/flags for contexts with no live
+-    agent (gateway, Desktop, ``/memory``) so approvals enforce the SAME caps as
+-    ``agent_init``. Falls back to defaults if config can't load; never raises."""
++    """Fresh on-disk MemoryStore with configured limits and flags for contexts with no live
++    agent (gateway, Desktop, ``/memory``). Invalid configuration disables both stores."""
+     try:
+         from hermes_cli.config import load_config
+-        config = load_config() or {}
++        config = load_config()
+         mem_cfg = get_builtin_memory_config(config)
+         memory_enabled, user_profile_enabled = get_builtin_memory_store_flags(config)
+         store = MemoryStore(int(mem_cfg.get("memory_char_limit", 2200)), int(mem_cfg.get("user_char_limit", 1375)),
+                             memory_enabled=memory_enabled, user_profile_enabled=user_profile_enabled)
+     except Exception:
+-        store = MemoryStore()  # config optional — fall back to defaults rather than break /memory
++        store = MemoryStore(memory_enabled=False, user_profile_enabled=False)
+     store.load_from_disk()
+     return store
+ 
+@@ -241,18 +241,37 @@ def memory_tool(action: str = None, target: str = "memory", content: str = None,
+     return json.dumps(_STORE_ACTIONS[action][0](store, target, content, old_text), ensure_ascii=False)
+ 
+ 
++def _memory_section(config: Any) -> Optional[Dict[str, Any]]:
++    from hermes_cli.config_read_errors import FailedConfigRead
++    if isinstance(config, FailedConfigRead) or not isinstance(config, dict):
++        return None
++    section = config.get("memory", {})
++    if not isinstance(section, dict):
++        return None
++    for name in ("memory_enabled", "user_profile_enabled"):
++        if name in section:
++            value = section[name]
++            if type(value) not in (bool, int, float, str) or isinstance(value, float) and not math.isfinite(value):
++                return None
++    return section
++
++
+ def get_builtin_memory_config(config: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+-    """Normalized ``memory`` config section ({} when missing/malformed → flags default to
+-    enabled). ``agent_init`` reads the same section so availability and store cannot diverge."""
+-    if config is None:
+-        try:
+-            from hermes_cli.config import load_config_readonly
++    """Return the memory section. Failed reads and malformed sections disable both stores.
++    A missing section retains the native defaults for an ordinary fresh profile."""
++    disabled = {"memory_enabled": False, "user_profile_enabled": False}
++    try:
++        from hermes_cli.config import load_config_readonly, read_raw_config_readonly
++        # Normalization can replace an explicit null section with native defaults.
++        if _memory_section(read_raw_config_readonly()) is None:
++            return disabled
++        if config is None:
+             config = load_config_readonly()
+-        except Exception:
+-            logger.debug("Could not read memory config for availability", exc_info=True)
+-            return {}
+-    section = config.get("memory") if isinstance(config, dict) else None
+-    return section if isinstance(section, dict) else {}
++    except Exception:
++        logger.debug("Could not read memory config for availability", exc_info=True)
++        return disabled
++    section = _memory_section(config)
++    return disabled if section is None else section
+ 
+ 
+ def get_builtin_memory_store_flags(config: Optional[Dict[str, Any]] = None) -> Tuple[bool, bool]:

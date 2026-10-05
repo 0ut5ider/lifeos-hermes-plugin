@@ -1,0 +1,25 @@
+{
+  "case": "test_each_enabled_store_retains_its_own_graph_cards",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/hermes_learning_memory_process.py"
+      ],
+      "status": 0,
+      "stdout": "{\"result\": [{\"source\": \"memory\", \"timestamp\": 1791180349, \"title\": \"Synthetic preserved journey memory.\", \"body\": \"Synthetic preserved journey memory.\", \"fingerprint\": \"cb67f08fb531\"}], \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/hermes_learning_memory_process.py"
+      ],
+      "status": 0,
+      "stdout": "{\"result\": [{\"source\": \"profile\", \"timestamp\": 1791180349, \"title\": \"Synthetic preserved journey preference.\", \"body\": \"Synthetic preserved journey preference.\", \"fingerprint\": \"b7b2999a077f\"}], \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-memory-config-raw-final-distributed/lifeos/LifeOS/install"
+}

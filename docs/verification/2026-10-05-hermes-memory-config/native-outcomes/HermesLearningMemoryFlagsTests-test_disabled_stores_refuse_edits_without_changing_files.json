@@ -1,0 +1,25 @@
+{
+  "case": "test_disabled_stores_refuse_edits_without_changing_files",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/hermes_learning_memory_process.py"
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"message\": \"Built-in MEMORY.md is disabled in the selected profile\"}, \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/hermes_learning_memory_process.py"
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"message\": \"Built-in USER.md is disabled in the selected profile\"}, \"unchanged\": true, \"bytes\": \"Synthetic preserved journey preference.\\n\"}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-memory-config-raw-final-distributed/lifeos/LifeOS/install"
+}

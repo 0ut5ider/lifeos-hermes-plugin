@@ -1,0 +1,28 @@
+.....................              [100%]
+=================================== FAILURES ===================================
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: null\n', target='memory') _
+tests/test_hermes_memory_config.py:40: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, True] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, True]
+E   + [False, False] : {'module': '/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-memory-config-final-distributed/hermes/tools/memory_tool.py', 'multiplex': [], 'flags': [True, True], 'store_flags': [True, True], 'result': {'success': True, 'done': True, 'target': 'memory', 'usage': '2% — 64/2,200 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+_ HermesMemoryConfigTests.test_invalid_configurations_do_not_enable_or_write_lasting_stores (configuration='memory: null\n', target='user') _
+tests/test_hermes_memory_config.py:40: in test_invalid_configurations_do_not_enable_or_write_lasting_stores
+    self.assertEqual(result['flags'], [False, False], result)
+E   AssertionError: Lists differ: [True, True] != [False, False]
+E   
+E   First differing element 0:
+E   True
+E   False
+E   
+E   - [True, True]
+E   + [False, False] : {'module': '/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-memory-config-final-distributed/hermes/tools/memory_tool.py', 'multiplex': [], 'flags': [True, True], 'store_flags': [True, True], 'result': {'success': True, 'done': True, 'target': 'user', 'usage': '4% — 65/1,375 chars', 'entry_count': 2, 'message': 'Entry added.', 'note': 'Write saved. This update is complete — do not repeat it.'}, 'unchanged': False, 'warnings': ''}
+=========================== short test summary info ============================
+SUBFAILED(configuration='memory: null\n', target='memory') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+SUBFAILED(configuration='memory: null\n', target='user') tests/test_hermes_memory_config.py::HermesMemoryConfigTests::test_invalid_configurations_do_not_enable_or_write_lasting_stores
+2 failed, 21 passed, 36 subtests passed in 19.88s
