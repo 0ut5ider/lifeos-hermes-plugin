@@ -330,6 +330,14 @@ class PairedLifecycleFixtureTests(unittest.TestCase):
                 cache = home / '.claude/LIFEOS/MEMORY/STATE/last-response.txt'
                 self.assertEqual(time.time() - cache.stat().st_mtime > 1800, stale)
 
+    def test_async_feedback_fixture_uses_the_pinned_execution_setting(self):
+        home, settings, definitions = self.fixture('feedback-async-rating')
+        hook = settings['hooks']['UserPromptSubmit'][-1]['hooks'][0]
+        self.assertTrue(hook['async'])
+        self.assertEqual(hook['timeout'], 20)
+        self.assertEqual(hook['command'], definitions[0]['command'])
+        self.assertEqual(json.loads((home / 'before-state.json').read_text())['rating_count'], 1)
+
 
 class PairedFeedbackEffectTests(unittest.TestCase):
     def case(self, name, rating=None, learning=False):
@@ -386,6 +394,21 @@ class PairedFeedbackEffectTests(unittest.TestCase):
         case = self.case('feedback-neutral')
         case['native']['after']['user_response_delivered'] = False
         self.assertIn('feedback-neutral: feedback effect is missing', check_pair(case))
+
+    def test_asynchronous_feedback_requires_the_same_complete_effects(self):
+        examples = [('rating', self.rating(8, comment='great result'), False),
+                    ('bare-rating', self.rating(10), False),
+                    ('praise', {**self.rating(8), 'source': 'implicit',
+                       'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95}, False),
+                    ('neutral', None, False),
+                    ('low-rating', self.rating(4, comment='needs clearer details'), True)]
+        for suffix, rating, learning in examples:
+            with self.subTest(suffix=suffix):
+                name = 'feedback-async-' + suffix
+                case = self.case(name, rating, learning)
+                self.assertEqual(check_pair(case), [])
+                case['hermes']['after']['cache_preserved'] = False
+                self.assertIn(f'{name}: feedback effect is missing', check_pair(case))
 
 
 class PairedFormatContractTests(unittest.TestCase):

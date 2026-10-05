@@ -32,6 +32,8 @@ Keep it equal to the version in both plugin manifests.
   numeric text, and low-rating learning. All ten final client runs pass.
 - Five paired format-contract cases verify turn state, measured violations, depth
   requests, stale-cache exclusion, and model delivery. All ten client runs pass.
+- Five further feedback cases verify normal completion with the pinned asynchronous
+  registration and timeout. All ten client runs pass.
 - A full-experience release plan with private FlashNext tiers and Discord voice
   input and spoken replies. Voice follows the core functionality.
 

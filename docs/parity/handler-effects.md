@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Forty-three equal selected cases cover 15 registrations. Forty-one lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, five feedback capture cases, and five format-contract cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Forty-eight equal selected cases cover 15 registrations. Forty-six lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, and five format-contract cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -49,7 +49,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | SessionEnd.1.5 | DocIntegrity | Check documentation integrity and report applicable stale documentation. | Selected cases verified |
 | SessionEnd.1.6 | IntegrityCheck | Compare installed files with the native integrity baseline and report changes. | Pending |
 | UserPromptSubmit.1.1 | PromptProcessing | Create and persist the session name, including the configured child inference result. | Pending |
-| UserPromptSubmit.2.1 | SatisfactionCapture | Capture eligible satisfaction feedback from the submitted prompt. | Five paired feedback cases; remaining branches open |
+| UserPromptSubmit.2.1 | SatisfactionCapture | Capture eligible satisfaction feedback from the submitted prompt. | Selected synchronous and asynchronous feedback cases; remaining branches open |
 | UserPromptSubmit.3.1 | ReminderRouter | Route due native reminders under the configured session and delivery policy. | Pending |
 | UserPromptSubmit.4.1 | VersionDrift | Compare the installation with its selected baseline and emit the native drift warning. | Pending |
 | UserPromptSubmit.5.1 | MemoryTurnStart | Supply the admitted native memory context for the current turn. | Pending |
