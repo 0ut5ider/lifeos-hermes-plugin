@@ -173,9 +173,6 @@ def handle(memory, scope, operation, arguments, *, check_current):
         if arguments['signature'] != signature:
             raise MemoryConflict('Derivative sources or tracking state changed before execution')
         if operation == 'derived_sync_check':
-            # Adapter admission is a release dependency. A raw adapter cannot receive a managed source plan.
-            if plan['actions'] and any(action['kind'] == 'data-plane-page' for action in plan['actions']):
-                raise MemoryUnavailable('Managed PULSE adapter admission is not available')
             return {'ok': True}
         logs = arguments['logs']
         failed = arguments['failed']

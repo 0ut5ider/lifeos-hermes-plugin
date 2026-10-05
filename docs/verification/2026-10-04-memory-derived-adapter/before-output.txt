@@ -1,0 +1,69 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ MemoryDerivedSyncAdapterTests.test_actual_cached_child_preserves_page_and_publishes_tracking _
+tests/test_memory_derived_sync_adapter.py:67: in test_actual_cached_child_preserves_page_and_publishes_tracking
+    self.successful()
+tests/test_memory_derived_sync_adapter.py:40: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E   55 |   const response: unknown = JSON.parse(result.stdout);
+E   56 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+E                                          ^
+E   error: The native memory service returned an invalid result
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)
+E         at runGovernedSync (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:350:24)
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:570:30)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:596:29
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryDerivedSyncAdapterTests.test_actual_child_generation_publishes_page_and_tracking _
+tests/test_memory_derived_sync_adapter.py:56: in test_actual_child_generation_publishes_page_and_tracking
+    self.successful()
+tests/test_memory_derived_sync_adapter.py:40: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E   55 |   const response: unknown = JSON.parse(result.stdout);
+E   56 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+E                                          ^
+E   error: The native memory service returned an invalid result
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)
+E         at runGovernedSync (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:350:24)
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:570:30)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:596:29
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryDerivedSyncAdapterTests.test_native_missing_source_child_retains_successful_sync_contract _
+tests/test_memory_derived_sync_adapter.py:75: in test_native_missing_source_child_retains_successful_sync_contract
+    self.successful()
+tests/test_memory_derived_sync_adapter.py:40: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E   55 |   const response: unknown = JSON.parse(result.stdout);
+E   56 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+E                                          ^
+E   error: The native memory service returned an invalid result
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)
+E         at runGovernedSync (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:350:24)
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:570:30)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:596:29
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryDerivedSyncAdapterTests.test_revocation_during_child_refuses_page_and_tracking _
+tests/test_memory_derived_sync_adapter.py:86: in test_revocation_during_child_refuses_page_and_tracking
+    self.assertIn('[DerivedSync] action failed:', result.stderr)
+E   AssertionError: '[DerivedSync] action failed:' not found in '51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),\n52 |                                                env: {...process.env},\n53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});\n54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");\n55 |   const response: unknown = JSON.parse(result.stdout);\n56 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");\n                                       ^\nerror: The native memory service returned an invalid result\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)\n      at runGovernedSync (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:350:24)\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:570:30)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:596:29\n\nBun v1.3.14 (Linux x64)\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_derived_sync_adapter.py::MemoryDerivedSyncAdapterTests::test_actual_cached_child_preserves_page_and_publishes_tracking
+FAILED tests/test_memory_derived_sync_adapter.py::MemoryDerivedSyncAdapterTests::test_actual_child_generation_publishes_page_and_tracking
+FAILED tests/test_memory_derived_sync_adapter.py::MemoryDerivedSyncAdapterTests::test_native_missing_source_child_retains_successful_sync_contract
+FAILED tests/test_memory_derived_sync_adapter.py::MemoryDerivedSyncAdapterTests::test_revocation_during_child_refuses_page_and_tracking
+4 failed in 4.16s
