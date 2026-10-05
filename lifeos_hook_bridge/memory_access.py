@@ -353,6 +353,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'distill_mark':
+            from .memory_distill import publication_paths
+            return publication_paths(self, scope)
         if payload['operation'] == 'pulse_data':
             from .memory_pulse_adapters import publication_paths
             return publication_paths(self, scope, payload)

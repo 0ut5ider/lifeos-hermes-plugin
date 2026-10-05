@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryDistillMarkTests.test_revocation_after_reservation_preserves_later_state_edit _
+tests/test_memory_distill_mark.py:116: in test_revocation_after_reservation_preserves_later_state_edit
+    self.assertTrue(value['later_state_preserved'], value)
+E   AssertionError: False is not true : {'result': {'ok': False, 'value': None}, 'later_state_preserved': False}
+=========================== short test summary info ============================
+FAILED tests/test_memory_distill_mark.py::MemoryDistillMarkTests::test_revocation_after_reservation_preserves_later_state_edit
+1 failed in 1.95s

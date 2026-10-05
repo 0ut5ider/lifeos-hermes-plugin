@@ -26,7 +26,14 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "distill_read") {
+  if (input.action === "distill_mark") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeDistill.ts")).href);
+    if (!object(module) || typeof module.markDistill !== "function" || typeof input.content !== "string"
+        || !(input.state === null || object(input.state))) {
+      throw new Error("Native distill marking requires declared digest text and state");
+    }
+    result = module.markDistill(input.content, input.state);
+  } else if (input.action === "distill_read") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeDistill.ts")).href);
     if (!object(module) || typeof module.readDistill !== "function" || !Array.isArray(input.args)
         || input.args.some(arg => typeof arg !== "string") || !Array.isArray(input.sources)

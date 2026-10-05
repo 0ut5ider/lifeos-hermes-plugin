@@ -2628,7 +2628,7 @@ index 85c3d87..9fca5cd 100755
 +  process.exit(result.status);
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
-index 95a0676..b470112 100644
+index 95a0676..b2c0b76 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
 @@ -29,6 +29,10 @@
@@ -2670,7 +2670,33 @@ index 95a0676..b470112 100644
      const dir = join(KNOWLEDGE, d);
      if (!existsSync(dir)) continue;
      for (const f of readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("_"))) {
-@@ -350,7 +354,40 @@ function argVal(args: string[], flag: string): string | undefined {
+@@ -219,7 +223,14 @@ function gather(days: number, limit: number): GatherResult {
+ 
+ function markFromDigest(digestPath: string): { slugs: number; items: number } {
+   const raw = readFileSync(digestPath, "utf-8");
+-  const st = loadState();
++  const result = markDistill(raw, loadState());
++  saveState(result.state);
++  return result.counts;
++}
++
++export function markDistill(raw: string, previous: DistillState | null): {state: DistillState; counts: {slugs: number; items: number}} {
++  const st: DistillState = previous === null ? {schema_version: 1, surfaced_slugs: {}, item_hashes: {}, last_run: null}
++    : {...previous, surfaced_slugs: {...previous.surfaced_slugs}, item_hashes: {...previous.item_hashes}};
+   const stamp = today();
+   let slugs = 0;
+   for (const m of raw.matchAll(/KNOWLEDGE\/(?:People|Companies|Ideas|Research|Blogs|Books)\/([a-z0-9-]+)\.md/g)) {
+@@ -231,8 +242,7 @@ function markFromDigest(digestPath: string): { slugs: number; items: number } {
+     if (!st.item_hashes[h]) { st.item_hashes[h] = stamp; items++; }
+   }
+   st.last_run = stamp;
+-  saveState(st);
+-  return { slugs, items };
++  return {state: st, counts: {slugs, items}};
+ }
+ 
+ // ── headless run ──
+@@ -350,7 +360,40 @@ function argVal(args: string[], flag: string): string | undefined {
    return i >= 0 ? args[i + 1] : undefined;
  }
  
@@ -2711,7 +2737,24 @@ index 95a0676..b470112 100644
  switch (cmd) {
    case "gather": {
      const cfg = loadConfig();
-@@ -378,3 +415,5 @@ switch (cmd) {
+@@ -361,7 +404,15 @@ switch (cmd) {
+   }
+   case "mark": {
+     const p = argVal(args, "--digest");
+-    if (!p || !existsSync(p)) { console.error("usage: KnowledgeDistill.ts mark --digest <path>"); process.exit(1); }
++    if (!p) { console.error("usage: KnowledgeDistill.ts mark --digest <path>"); process.exit(1); }
++    const governed = memoryAccess("distill_mark", {path: p},
++      (value): value is {ok: boolean; value: {slugs: number; items: number}} => memoryObject(value) && value.ok === true
++        && memoryObject(value.value) && typeof value.value.slugs === "number" && typeof value.value.items === "number");
++    if (governed !== undefined) {
++      console.log(JSON.stringify(governed.value));
++      break;
++    }
++    if (!existsSync(p)) { console.error("usage: KnowledgeDistill.ts mark --digest <path>"); process.exit(1); }
+     console.log(JSON.stringify(markFromDigest(p)));
+     break;
+   }
+@@ -378,3 +429,5 @@ switch (cmd) {
      console.log("usage: KnowledgeDistill.ts gather [--days N] [--limit N] | mark --digest <path> | run [--headless] [--dry-run] | status");
      process.exit(cmd ? 1 : 0);
  }

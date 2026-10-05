@@ -3,10 +3,13 @@
 import json
 import os
 from pathlib import Path
+import re
+from uuid import uuid4
 
 from .memory_access import MemoryUnavailable, MemoryConflict, _now
 from .memory_canonical import corpus
 from .memory_sources import authorize, json_projection, CORPUS_LIMIT
+from .memory_transaction import publish
 
 
 STATE = 'LIFEOS/MEMORY/STATE/distill.json'
@@ -69,3 +72,67 @@ def read(memory, scope, args, *, check_current):
         if len(json.dumps(result).encode()) > CORPUS_LIMIT:
             raise MemoryUnavailable('Distill read exceeds its transport limit')
         return result
+
+
+def publication_paths(memory, scope):
+    authorize(scope)
+    if not {'principal', 'assistant', 'project'} <= set(scope.write):
+        raise MemoryUnavailable('Distill marking requires unrestricted owner write access')
+    path = memory._publication_path(STATE)
+    physical = memory.root.parent / '.config/LIFEOS/USER/MEMORY/STATE/distill.json'
+    if (path.is_symlink() or path.resolve() != physical or path.exists() and
+            (not path.is_file() or path.stat().st_uid != os.getuid() or path.stat().st_nlink != 1
+             or path.stat().st_size > CORPUS_LIMIT)):
+        raise MemoryUnavailable('Distill marking changes its fixed owner destination')
+    return [STATE]
+
+
+def _digest(memory, scope, connection, path):
+    if not isinstance(path, str):
+        raise ValueError('Choose an installed distill digest')
+    try:
+        relative = Path(path).relative_to(memory.root).as_posix()
+    except ValueError as error:
+        raise MemoryUnavailable('The digest leaves its installed source directory') from error
+    if re.fullmatch(r'LIFEOS/MEMORY/DIGESTS/\d{4}-\d{2}-\d{2}-distill\.md', relative) is None:
+        raise MemoryUnavailable('Choose a native dated distill digest')
+    source = memory._path(relative)
+    physical = memory.root.parent / '.config/LIFEOS/USER' / Path(relative).relative_to('LIFEOS')
+    if (source.is_symlink() or source.resolve() != physical or not source.is_file()
+            or source.stat().st_uid != os.getuid() or source.stat().st_nlink != 1 or source.stat().st_size > 256 * 1024):
+        raise MemoryUnavailable('Distill marking needs a bounded regular owner digest')
+    content = source.read_text(encoding='utf-8')
+    if (memory._native('validate_source_batch', contents=[content])['accepted'] != [True]
+            or memory._filter_history(connection, scope, content, _now(), reviewed=True)['excluded']):
+        raise MemoryUnavailable('The digest is excluded by current policy')
+    return content
+
+
+def mark(memory, scope, path, *, check_current):
+    publication_paths(memory, scope)
+    with memory._transaction() as connection:
+        inputs = _collect(memory, scope, connection)
+        content = _digest(memory, scope, connection, path)
+        target = memory._publication_path(STATE)
+        before = target.read_bytes() if target.exists() else None
+        result = memory._native('distill_mark', content=content, state=inputs['state'])
+        check_current()
+        if _collect(memory, scope, connection) != inputs or _digest(memory, scope, connection, path) != content:
+            raise MemoryConflict('Distill marking inputs changed during collection')
+
+    def apply(connection):
+        try:
+            check_current()
+            publication_paths(memory, scope)
+            current = _collect(memory, scope, connection)
+            current_digest = _digest(memory, scope, connection, path)
+            current_bytes = target.read_bytes() if target.exists() else None
+        except (MemoryUnavailable, OSError) as error:
+            raise MemoryConflict('Distill marking authority or inputs changed before publication') from error
+        if current != inputs or current_digest != content or current_bytes != before:
+            raise MemoryConflict('Distill marking preserves later input and destination changes')
+        publish(target, json.dumps(result['state'], ensure_ascii=False, indent=2).encode())
+        return {'status': 'committed', 'counts': result['counts']}
+
+    receipt = memory._operation(scope, 'distill-mark-' + uuid4().hex, {'operation': 'distill_mark'}, apply)
+    return {'ok': receipt['status'] == 'committed', 'value': receipt.get('counts')}
