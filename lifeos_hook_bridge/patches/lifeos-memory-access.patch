@@ -6771,3 +6771,58 @@ index 5b428b7..81a753f 100755
  
      // Parse shell variable assignments (key='value' or key=value)
      const vars: Record<string, string> = {};
+diff --git a/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts b/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts
+index 83da7ea..9fc6ff2 100755
+--- a/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts
++++ b/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Seeds native interview artifacts from the installed principal sources.
++// ABOUTME: Groups managed summary and state publication under one recovery journal.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -11,8 +13,9 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  * SeedPulse — Interview final step. Seeds the Pulse data plane from the now-
+  * populated USER tree by regenerating the derived artifacts Pulse reads
+  * (PRINCIPAL_TELOS.md, LIFEOS_STATE.json) via the shipped LIFEOS/TOOLS generators.
+- * Best-effort: missing generators are reported, not fatal — Pulse simply shows
+- * scaffold state until they run. Refuses on a dev tree unless --allow-dev.
++ * Unmanaged mode runs available generators separately. Managed mode publishes
++ * the selected artifacts as one recoverable operation. Missing generators are
++ * reported. Refuses on a dev tree unless --allow-dev.
+  *
+  * Usage:
+  *   bun SeedPulse.ts [--config-root <dir>] [--config-dir <dir>] [--apply] [--allow-dev]
+@@ -23,6 +26,7 @@ import { existsSync } from "node:fs";
+ import { join } from "node:path";
+ import { homedir } from "node:os";
+ import { detectDevTree } from "./InstallEngine";
++import { memoryAccess, memoryObject } from "../../../LIFEOS/TOOLS/lib/MemoryAccess";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -64,6 +68,23 @@ function main(): void {
+     process.exit(okDry ? 0 : 1);
+   }
+ 
++  try {
++    const governed = memoryAccess("seed_pulse", {root: configRoot, config_dir: configDir, generators: present},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (governed !== undefined) {
++      const ok = governed.ok === true && present.length > 0;
++      const blocker = present.length === 0 ? `no Pulse generators present under ${toolsDir}` : undefined;
++      console.log(JSON.stringify({ok, written: ok, ran: ok ? present : [],
++        failed: ok ? [] : present.map(tool => ({tool, error: "Managed interview seeding is unavailable"})),
++        missing, blocker}, null, 2));
++      process.exit(ok ? 0 : 1);
++    }
++  } catch {
++    console.log(JSON.stringify({ok: false, written: false, ran: [],
++      failed: present.map(tool => ({tool, error: "Managed interview seeding is unavailable"})), missing}, null, 2));
++    process.exit(1);
++  }
++
+   const ran: string[] = [];
+   const failed: Array<{ tool: string; error: string }> = [];
+   for (const g of present) {

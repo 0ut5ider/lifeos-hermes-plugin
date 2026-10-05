@@ -1,0 +1,26 @@
+........F..F.F.F                                                 [100%]
+=================================== FAILURES ===================================
+_ MemorySeedRecoveryTests.test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed _
+tests/test_memory_seed_recovery.py:72: in test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed
+    self.assertEqual(child.returncode, 73, child.stdout + child.stderr)
+E   AssertionError: 0 != 73 : {"ok": false, "code": "EINVAL_PATH", "message": "Native memory operation failed: Error: Synthetic second generator failure"}
+__ MemorySeedPulseTests.test_explicit_installed_alias_keeps_the_governed_root __
+tests/test_memory_seed_pulse.py:94: in test_explicit_installed_alias_keeps_the_governed_root
+    self.assertEqual(result.returncode, 0, outcome)
+E   AssertionError: 1 != 0 : {'ok': False, 'written': False, 'ran': [], 'failed': [{'tool': 'GenerateTelosSummary.ts', 'error': 'Managed interview seeding is unavailable'}, {'tool': 'UpdateLifeosState.ts', 'error': 'Managed interview seeding is unavailable'}], 'missing': []}
+______ MemorySeedPulseTests.test_owner_parent_runs_both_governed_children ______
+tests/test_memory_seed_pulse.py:45: in test_owner_parent_runs_both_governed_children
+    self.assertEqual(result.returncode, 0, outcome)
+E   AssertionError: 1 != 0 : {'ok': False, 'written': False, 'ran': [], 'failed': [{'tool': 'GenerateTelosSummary.ts', 'error': 'Managed interview seeding is unavailable'}, {'tool': 'UpdateLifeosState.ts', 'error': 'Managed interview seeding is unavailable'}], 'missing': []}
+__ MemorySeedPulseTests.test_revoked_parent_preserves_both_previous_artifacts __
+tests/test_memory_seed_pulse.py:73: in test_revoked_parent_preserves_both_previous_artifacts
+    self.test_owner_parent_runs_both_governed_children()
+tests/test_memory_seed_pulse.py:45: in test_owner_parent_runs_both_governed_children
+    self.assertEqual(result.returncode, 0, outcome)
+E   AssertionError: 1 != 0 : {'ok': False, 'written': False, 'ran': [], 'failed': [{'tool': 'GenerateTelosSummary.ts', 'error': 'Managed interview seeding is unavailable'}, {'tool': 'UpdateLifeosState.ts', 'error': 'Managed interview seeding is unavailable'}], 'missing': []}
+=========================== short test summary info ============================
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed
+FAILED tests/test_memory_seed_pulse.py::MemorySeedPulseTests::test_explicit_installed_alias_keeps_the_governed_root
+FAILED tests/test_memory_seed_pulse.py::MemorySeedPulseTests::test_owner_parent_runs_both_governed_children
+FAILED tests/test_memory_seed_pulse.py::MemorySeedPulseTests::test_revoked_parent_preserves_both_previous_artifacts
+4 failed, 12 passed, 8 subtests passed in 3.63s

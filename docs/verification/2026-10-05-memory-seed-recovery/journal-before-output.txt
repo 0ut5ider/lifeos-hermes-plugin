@@ -1,0 +1,72 @@
+.                                                               [100%]
+=================================== FAILURES ===================================
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value=[]) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:112: in recover
+    (operation["writer"], operation["request_id"])).fetchone()
+     ^^^^^^^^^^^^^^^^^^^
+E   TypeError: list indices must be integers or slices, not str
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value=None) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:112: in recover
+    (operation["writer"], operation["request_id"])).fetchone()
+     ^^^^^^^^^^^^^^^^^^^
+E   TypeError: 'NoneType' object is not subscriptable
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value={'writer': 'synthetic-writer', 'request_id': 'synthetic-operation', 'copies': None}) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:116: in recover
+    expected = any('after_digest' in copy for copy in operation['copies'])
+                                                      ^^^^^^^^^^^^^^^^^^^
+E   TypeError: 'NoneType' object is not iterable
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value={'writer': 'synthetic-writer', 'request_id': 'synthetic-operation', 'copies': [42]}) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:116: in recover
+    expected = any('after_digest' in copy for copy in operation['copies'])
+               ^^^
+lifeos_hook_bridge/memory_transaction.py:116: in <genexpr>
+    expected = any('after_digest' in copy for copy in operation['copies'])
+                   ^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: argument of type 'int' is not a container or iterable
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value={'writer': 'synthetic-writer', 'request_id': 'synthetic-operation', 'copies': [None]}) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:116: in recover
+    expected = any('after_digest' in copy for copy in operation['copies'])
+               ^^^
+lifeos_hook_bridge/memory_transaction.py:116: in <genexpr>
+    expected = any('after_digest' in copy for copy in operation['copies'])
+                   ^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: argument of type 'NoneType' is not a container or iterable
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value={'writer': [], 'request_id': 'synthetic-operation', 'copies': [{'path': 'first', 'data': 'U3ludGhldGljIG9yaWdpbmFsIGZp... {'path': 'second', 'data': None, 'after_digest': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42'}]}) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:111: in recover
+    row = connection.execute("SELECT receipt FROM operations WHERE writer=? AND request_id=?",
+E   sqlite3.ProgrammingError: Error binding parameter 1: type 'list' is not supported
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value={'writer': 'synthetic-writer', 'request_id': {}, 'copies': [{'path': 'first', 'data': 'U3ludGhldGljIG9yaWdpbmFsIGZpcnN... {'path': 'second', 'data': None, 'after_digest': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42'}]}) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:111: in recover
+    row = connection.execute("SELECT receipt FROM operations WHERE writer=? AND request_id=?",
+E   sqlite3.ProgrammingError: Error binding parameter 2: type 'dict' is not supported
+_ MemoryPublicationRecoveryTests.test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect (value={'request_id': 'synthetic-operation', 'copies': [{'path': 'first', 'data': 'U3ludGhldGljIG9yaWdpbmFsIGZpcnN0IGFydGlmYW... {'path': 'second', 'data': None, 'after_digest': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42'}]}) _
+tests/test_memory_publication_recovery.py:105: in test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+    self.transaction.recover(self.connection)
+lifeos_hook_bridge/memory_transaction.py:112: in recover
+    (operation["writer"], operation["request_id"])).fetchone()
+     ^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'writer'
+=========================== short test summary info ============================
+SUBFAILED(value=[]) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value=None) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value={'writer': 'synthetic-writer', 'request_id': 'synthetic-operation', 'copies': None}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value={'writer': 'synthetic-writer', 'request_id': 'synthetic-operation', 'copies': [42]}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value={'writer': 'synthetic-writer', 'request_id': 'synthetic-operation', 'copies': [None]}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value={'writer': [], 'request_id': 'synthetic-operation', 'copies': [{'path': 'first', 'data': 'U3ludGhldGljIG9yaWdpbmFsIGZp... {'path': 'second', 'data': None, 'after_digest': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42'}]}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value={'writer': 'synthetic-writer', 'request_id': {}, 'copies': [{'path': 'first', 'data': 'U3ludGhldGljIG9yaWdpbmFsIGZpcnN... {'path': 'second', 'data': None, 'after_digest': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42'}]}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+SUBFAILED(value={'request_id': 'synthetic-operation', 'copies': [{'path': 'first', 'data': 'U3ludGhldGljIG9yaWdpbmFsIGZpcnN0IGFydGlmYW... {'path': 'second', 'data': None, 'after_digest': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42'}]}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_operation_journal_shapes_refuse_before_any_recovery_effect
+8 failed, 1 passed, 6 deselected, 1 subtests passed in 0.12s

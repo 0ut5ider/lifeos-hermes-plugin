@@ -314,7 +314,7 @@ class NativeMemory:
 
     def _operation(self, scope: MemoryScope, request_id: str, payload: dict[str, Any],
                    callback: Callable[[sqlite3.Connection], dict[str, Any]], *,
-                   identity_payload: dict[str, Any] | None = None) -> dict[str, Any]:
+                   identity_payload: dict[str, Any] | None = None, publication_digests=None) -> dict[str, Any]:
         if not isinstance(request_id, str) or not request_id or len(request_id) > 256:
             return {"status": "rejected", "reason": "A bounded request identifier is required"}
         payload_digest = _digest(json.dumps(payload if identity_payload is None else identity_payload, sort_keys=True))
@@ -330,7 +330,7 @@ class NativeMemory:
                 unknown = {"status": "unknown", "reason": "The operation outcome needs recovery before retry",
                            "writer": scope.writer, "request_id": request_id}
                 paths = self._publication_paths(connection, scope, payload)
-                self.transaction.prepare(scope.writer, request_id, paths)
+                self.transaction.prepare(scope.writer, request_id, paths, expected=publication_digests)
                 connection.execute("INSERT INTO operations VALUES (?,?,?,?)",
                                    (scope.writer, request_id, payload_digest, json.dumps(unknown)))
                 connection.commit()
@@ -354,6 +354,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'seed_pulse':
+            from .memory_seed import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'learning_hypotheses':
             from .memory_hypotheses import publication_paths
             return publication_paths(self, scope, payload)

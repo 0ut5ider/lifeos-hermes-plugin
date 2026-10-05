@@ -442,6 +442,16 @@ class MemoryService:
                         raise MemoryUnavailable('Graph authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
+            if operation == 'seed_pulse' and set(arguments) in ({'root', 'config_dir', 'generators'},
+                    {'root', 'config_dir', 'generators', 'request_id'}):
+                from .memory_seed import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Interview seed authority changes during publication')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == 'lifeos_state' and set(arguments) == {'root', 'json_output'}:
                 from .memory_state import run
 

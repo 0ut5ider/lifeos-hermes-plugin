@@ -1,0 +1,22 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemorySeedRecoveryTests.test_grouped_seed_runs_both_native_calculations_with_private_artifacts _
+tests/test_memory_seed_recovery.py:21: in setUp
+    self.memory = self.fixture.fixture.fixture.memory
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MemoryDelegationTests' object has no attribute 'memory'
+_ MemorySeedRecoveryTests.test_native_parent_preserves_both_artifacts_when_the_second_generator_fails _
+tests/test_memory_seed_recovery.py:21: in setUp
+    self.memory = self.fixture.fixture.fixture.memory
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MemoryDelegationTests' object has no attribute 'memory'
+_ MemorySeedRecoveryTests.test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed _
+tests/test_memory_seed_recovery.py:21: in setUp
+    self.memory = self.fixture.fixture.fixture.memory
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'MemoryDelegationTests' object has no attribute 'memory'
+=========================== short test summary info ============================
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_grouped_seed_runs_both_native_calculations_with_private_artifacts
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_native_parent_preserves_both_artifacts_when_the_second_generator_fails
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed
+3 failed in 0.11s
