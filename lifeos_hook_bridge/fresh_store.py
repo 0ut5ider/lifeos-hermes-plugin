@@ -93,7 +93,8 @@ class FreshStore:
     def _owner(self,account):
         if not isinstance(account,str) or not account.startswith('dashboard:'):
             raise PermissionError('An authenticated installation owner must prepare a fresh store')
-        selected=self.configuration.load()
+        with self.configuration._lock():
+            selected=self.configuration.load()
         self.configuration.check_owner(selected,account)
         if (selected['root']!=str(self.installed) or selected['principal']!=self.principal
                 or self.installed.resolve()!=self.physical_root):
@@ -155,7 +156,7 @@ class FreshStore:
 
     def prepare(self,candidate,*,principal_name,assistant_name,account=None):
         candidate=Path(candidate).absolute()
-        with installation_lock(self.profile),self.configuration._lock():
+        with installation_lock(self.profile):
             selected=self._owner(account)
             principal=_name(principal_name);assistant=_name(assistant_name)
             source=validate_prepared_lifeos(candidate)

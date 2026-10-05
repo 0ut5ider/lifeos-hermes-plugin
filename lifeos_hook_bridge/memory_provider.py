@@ -108,4 +108,6 @@ def register_provider(ctx) -> MemoryRuntime:
         if REQUIRED_MIDDLEWARE_API_VERSION == 1:
             ctx.register_middleware('llm_execution', provider.runtime.project_call, required=True)
             ctx.register_middleware('llm_admission', provider.runtime.check_call, required=True)
+        elif provider.runtime.enabled():
+            raise MemoryAdmissionError('LifeOS lasting memory needs required model-request checks')
     return provider.runtime
