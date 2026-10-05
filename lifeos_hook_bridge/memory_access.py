@@ -174,12 +174,13 @@ class NativeMemory:
             return self._path(name)
         from .memory_freshness import SYSTEM_PUBLICATIONS
         from .memory_freshness_migration import SYSTEM_BACKUPS
-        if name not in SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS:
+        from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
+        if name not in SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS | DENY_PUBLICATIONS:
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != path.absolute() or path.is_symlink()
                 or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
-                                      or path.samefile(self.database))):
+                                      or self.database.exists() and path.samefile(self.database))):
             raise MemoryUnavailable("The system publication changes its permitted owner path")
         return path
 
@@ -349,6 +350,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'deny_hashes':
+            from .memory_deny_hashes import publication_paths
+            return publication_paths(self, scope)
         if payload['operation'] in {'interview_due_cache_write', 'interview_due_mark'}:
             from .memory_interview import publication_paths
             return publication_paths(self, scope, payload)

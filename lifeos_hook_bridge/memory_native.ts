@@ -26,7 +26,21 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "hermes_soul_names" || input.action === "hermes_soul_render") {
+  if (input.action === "deny_hash_environment") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/DeriveDenyHashes.ts")).href);
+    if (!object(module) || typeof module.renderDenyHashEnvironment !== "function" || typeof input.content !== "string") {
+      throw new Error("Native deny salt generation requires declared environment bytes");
+    }
+    result = module.renderDenyHashEnvironment(input.content);
+  } else if (input.action === "deny_hashes") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/DeriveDenyHashes.ts")).href);
+    if (!object(module) || typeof module.renderDenyHashes !== "function" || !Array.isArray(input.sources)
+        || input.sources.some(value => typeof value !== "string") || typeof input.operator !== "string"
+        || !(input.salt === null || typeof input.salt === "string")) {
+      throw new Error("Native deny hashing requires declared source and operator text");
+    }
+    result = module.renderDenyHashes(input.sources, input.operator, input.salt);
+  } else if (input.action === "hermes_soul_names" || input.action === "hermes_soul_render") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/RenderHermesSoul.ts")).href);
     const sources = input.sources;
     if (!object(module) || typeof module.renderHermesSoul !== "function"

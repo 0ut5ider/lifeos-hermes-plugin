@@ -42,6 +42,16 @@ EVIDENCE_FILES = frozenset({'LIFEOS/USER/HEALTH/current.json', 'LIFEOS/USER/FINA
                             'LIFEOS/MEMORY/STATE/work.json', 'LIFEOS/MEMORY/STATE/interview.json'})
 EVIDENCE_DIRECTORIES = frozenset({'LIFEOS/USER/HEALTH/DATA/oura', 'LIFEOS/USER/CONDUIT/daily'})
 INTERVIEW_SETUP_FILES = frozenset({'.env', 'LIFEOS/PULSE/PULSE.toml', 'LIFEOS/USER/WORK/config.yaml'})
+DENY_SOURCE_FILES = frozenset({'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
+    'LIFEOS/USER/PRINCIPAL/RESUME.md', 'LIFEOS/USER/CONTACTS.md', 'LIFEOS/USER/GEAR.md',
+    'LIFEOS/USER/TELOS/TELOS.md', 'LIFEOS/MEMORY/_NETWORK/assets.json',
+    'LIFEOS/USER/CONFIG/denyhash-allowlist.txt'})
+
+
+def is_deny_source(relative):
+    return relative in DENY_SOURCE_FILES or re.fullmatch(
+        r'LIFEOS/MEMORY/_NETWORK/topology-snapshot-[^/]+\.md', relative) is not None
+
 
 
 def is_evidence_source(relative):
@@ -83,7 +93,7 @@ def authorize(scope: MemoryScope) -> dict[str, Any]:
 
 def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = False,
                  require_file: bool = True, evidence: bool = False,
-                 interview_setup: bool = False) -> tuple[Path, str]:
+                 interview_setup: bool = False, deny_hashes: bool = False) -> tuple[Path, str]:
     authorize(scope)
     if not isinstance(path,str):
         raise MemoryUnavailable('A supported native source path is required')
@@ -93,7 +103,10 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     system = (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
               or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative) is not None
               or interview_setup and relative in {'.env', 'LIFEOS/PULSE/PULSE.toml'})
-    if interview_setup:
+    if deny_hashes:
+        directory = False
+        permitted = is_deny_source(relative)
+    elif interview_setup:
         directory = False
         permitted = relative in INTERVIEW_SETUP_FILES
     elif evidence:
@@ -130,22 +143,23 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
-def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False):
-    source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup)
+def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=False):
+    source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes)
     if source.suffix != suffix:
         raise MemoryUnavailable('The declared wiki source must be native Markdown')
     before = source.stat()
     if before.st_size > SOURCE_LIMIT:
         raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
     try:
-        content = source.read_text(encoding='utf-8')
+        with source.open('r', encoding='utf-8', newline='' if preserve_newlines else None) as stream:
+            content = stream.read()
     except UnicodeError as error:
         raise MemoryUnavailable('The native wiki source is not valid UTF-8') from error
     after = source.stat()
     if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
             != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
         raise MemoryUnavailable('The native wiki source changed during collection')
-    _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup)
+    _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes)
     if len(content.encode()) > SOURCE_LIMIT:
         raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
     return ({'path': path, 'relative': relative, 'content': content,

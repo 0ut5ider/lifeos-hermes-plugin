@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryDenyHashesEnvironmentTests.test_generated_salt_preserves_crlf_environment_prefix _
+tests/test_memory_deny_hashes_environment.py:16: in test_generated_salt_preserves_crlf_environment_prefix
+    self.assertTrue(fixture.env.read_bytes().startswith(before), 'Environment line endings change during publication')
+E   AssertionError: False is not true : Environment line endings change during publication
+=========================== short test summary info ============================
+FAILED tests/test_memory_deny_hashes_environment.py::MemoryDenyHashesEnvironmentTests::test_generated_salt_preserves_crlf_environment_prefix
+1 failed in 2.18s

@@ -1,0 +1,22 @@
+.F.....                                                                  [100%]
+=================================== FAILURES ===================================
+_ MemoryDenyHashesTests.test_hash_and_salt_publication_have_private_permissions _
+tests/test_memory_deny_hashes.py:89: in test_hash_and_salt_publication_have_private_permissions
+    self.successful()
+tests/test_memory_deny_hashes.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 220 | 
+E   221 | function main(): void {
+E   222 |   const governed = memoryAccess("deny_hashes", {args: process.argv.slice(2)},
+E   223 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   224 |   if (governed !== undefined) {
+E   225 |     if (!governed.ok || typeof governed.stdout !== "string") throw new Error("Deny hash admission or publication is unavailable");
+E                                                                                ^
+E   error: Deny hash admission or publication is unavailable
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-deny-hashes-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts:225:72)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-deny-hashes-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts:278:23
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_deny_hashes.py::MemoryDenyHashesTests::test_hash_and_salt_publication_have_private_permissions
+1 failed, 6 passed in 12.04s

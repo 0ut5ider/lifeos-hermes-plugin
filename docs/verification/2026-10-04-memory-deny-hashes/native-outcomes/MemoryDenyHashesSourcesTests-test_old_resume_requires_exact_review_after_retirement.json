@@ -1,0 +1,246 @@
+{
+  "case": "test_old_resume_requires_exact_review_after_retirement",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-deny-hashes-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": {
+        "content": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/memory.json\"]}",
+        "mode": "0o600"
+      },
+      ".env": {
+        "content_without_salt": "SYNTHETIC_KEEP=fixture",
+        "size": 23,
+        "sha256": "942045937a466a4d257eb58c7f04b1ac0444b1c40a8117275dba4bb2f49e3a86",
+        "crlf": 0,
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": {
+        "content": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/RESUME.md": {
+        "content": "FixtureReviewname FixtureReviewsurname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/memory.json\"]}",
+        "mode": "0o600"
+      },
+      ".env": {
+        "content_without_salt": "SYNTHETIC_KEEP=fixture",
+        "size": 23,
+        "sha256": "942045937a466a4d257eb58c7f04b1ac0444b1c40a8117275dba4bb2f49e3a86",
+        "crlf": 0,
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"assistant\",\"content\":\"RULE: SyntheticUnrelatedHashRetirement\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"assistant\",\"content\":\"RULE: SyntheticUnrelatedHashRetirement\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[],\"count\":0,\"chars_used\":0,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[],\"count\":0,\"chars_used\":0,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"assistant\",\"content\":\"RULE: SyntheticUnrelatedHashRetirement\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"prior_count\":0,\"new_count\":1,\"evictions\":[],\"additions\":[\"RULE: SyntheticUnrelatedHashRetirement\"]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: SyntheticUnrelatedHashRetirement\"],\"count\":1,\"chars_used\":38,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: SyntheticUnrelatedHashRetirement\"],\"count\":1,\"chars_used\":38,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: SyntheticUnrelatedHashRetirement\"],\"count\":1,\"chars_used\":38,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: SyntheticUnrelatedHashRetirement\"],\"count\":1,\"chars_used\":38,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"accepted\":0,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"prior_count\":1,\"new_count\":0,\"evictions\":[\"RULE: SyntheticUnrelatedHashRetirement\"],\"additions\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude/LIFEOS/TOOLS/DeriveDenyHashes.ts",
+        "--dry-run",
+        "--show-tokens"
+      ],
+      "status": 0,
+      "stdout": "[DeriveDenyHashes] 0 corpus files -> 0 distinctive tokens\n[DeriveDenyHashes] --show-tokens (LOCAL review, NOT written to disk):\n\n[DeriveDenyHashes] --dry-run: nothing written\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0zrl984v/.claude/LIFEOS/TOOLS/DeriveDenyHashes.ts",
+        "--dry-run",
+        "--show-tokens"
+      ],
+      "status": 0,
+      "stdout": "[DeriveDenyHashes] 1 corpus files -> 1 distinctive tokens\n[DeriveDenyHashes] --show-tokens (LOCAL review, NOT written to disk):\nfixturereviewname fixturereviewsurname\n[DeriveDenyHashes] --dry-run: nothing written\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

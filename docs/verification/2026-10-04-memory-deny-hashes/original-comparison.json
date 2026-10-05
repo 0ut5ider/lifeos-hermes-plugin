@@ -1,0 +1,37 @@
+{
+  "source": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+  "original": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts",
+  "original_sha256": "319cc1d894051ee1ce33f47760b074478b121613d1e5a89b56c36fcd2d50f61c",
+  "native_review": {
+    "status": 0,
+    "stdout": "[DeriveDenyHashes] 1 corpus files -> 1 distinctive tokens\n[DeriveDenyHashes] --show-tokens (LOCAL review, NOT written to disk):\nfixturesurname fixturegivenname\n[DeriveDenyHashes] --dry-run: nothing written\n",
+    "stderr": ""
+  },
+  "native_write": {
+    "status": 0,
+    "stdout": "[DeriveDenyHashes] 1 corpus files -> 1 distinctive tokens\n[DeriveDenyHashes] wrote 1 salted hashes -> /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ccj46o_8/.claude/LIFEOS/USER/SECURITY/DENY_HASHES.json (no plaintext)\n",
+    "stderr": ""
+  },
+  "managed_review": "[DeriveDenyHashes] 1 corpus files -> 1 distinctive tokens\n[DeriveDenyHashes] --show-tokens (LOCAL review, NOT written to disk):\nfixturesurname fixturegivenname\n[DeriveDenyHashes] --dry-run: nothing written\n",
+  "payload": {
+    "version": 1,
+    "algo": "sha256-salted-trunc24",
+    "ngramSizes": [
+      1,
+      2
+    ],
+    "minLen": 4,
+    "count": 1,
+    "generated": "DeriveDenyHashes.ts",
+    "note": "Salted hashes of distinctive private tokens. No plaintext. Salt in .env (never ships).",
+    "hashes": [
+      "99498a8c1636c60f192d5b38"
+    ]
+  },
+  "environment_sha256": "6bc425827bb1fe5222943620c453c8037dfe82af3d8c66a60200816b58049a27",
+  "equal": {
+    "review": true,
+    "payload": true,
+    "environment": true
+  }
+}

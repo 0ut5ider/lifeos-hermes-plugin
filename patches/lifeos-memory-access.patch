@@ -1284,6 +1284,109 @@ index 58270db..68741d7 100644
      proposals: { pending: proposals.rows.filter(row => row.status === "pending").length, evidence: proposalLog, available: proposals.exists, malformedLines: proposals.malformedLines }, observability: observabilityEvidence(obs), index: indexEvidence(memoryRoot, manifest, join(options.root, "LIFEOS/CORTEX_INDEX_POLICY.json"), nowMs) };
 +  return filterMemoryDiagnostic(evidence, new Date(nowMs).toISOString());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts b/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts
+index f33176e..e88983e 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Derives native salted private-token hashes from admitted corpus sources.
++// ABOUTME: Delegates managed source review and fixed salt/hash publication.
+ /**
+  * DeriveDenyHashes.ts — turn the principal's PRIVATE corpus into a SALTED-HASH
+  * leak filter, so the guard can block private data appearing in shipping code
+@@ -33,6 +35,8 @@ import { homedir } from "node:os";
+ import { join, dirname } from "node:path";
+ import { createHash, randomBytes } from "node:crypto";
+ 
++import { hasMemoryAccess, memoryAccess, memoryObject } from "./lib/MemoryAccess";
++
+ const HOME = process.env.HOME || homedir();
+ const CLAUDE = join(HOME, ".claude");
+ const ENV_PATH = join(CLAUDE, ".env");
+@@ -109,7 +113,7 @@ function loadOperatorAllowlist(): void {
+     }
+   } catch { /* no operator extension — generic set only */ }
+ }
+-loadOperatorAllowlist();
++if (!hasMemoryAccess() && process.env.LIFEOS_MEMORY_INTERNAL !== "1") loadOperatorAllowlist();
+ 
+ // Real English words are dropped — what survives is proper nouns (surnames,
+ // brands, hostnames, place names), which ARE the private fingerprint. This is the
+@@ -160,12 +164,13 @@ export function hashToken(token: string, salt: string): string {
+  * host/device identifiers. A pair is kept only if at least one word is a
+  * non-dictionary token; all-dictionary/allowlisted pairs are dropped.
+  */
+-export function extractTokens(text: string, opts: { singles?: boolean } = {}): Set<string> {
++export function extractTokens(text: string, opts: { singles?: boolean } = {},
++                              allowlist: ReadonlySet<string> = ALLOWLIST): Set<string> {
+   const out = new Set<string>();
+   const distinctive = (w: string) => {
+     const lw = w.toLowerCase();
+     if (/['’]/.test(lw)) return false; // contraction/possessive ("I've", "that's") — not a name
+-    return lw.length >= MIN_LEN && !STOPWORDS.has(lw) && !ALLOWLIST.has(lw) && !dictish(lw);
++    return lw.length >= MIN_LEN && !STOPWORDS.has(lw) && !allowlist.has(lw) && !dictish(lw);
+   };
+   const pairRe = /\b([A-Z][a-zA-Z0-9'’]+)\s+([A-Z][a-zA-Z0-9'’]+)\b/g;
+   let m: RegExpExecArray | null;
+@@ -174,13 +179,13 @@ export function extractTokens(text: string, opts: { singles?: boolean } = {}): S
+   }
+   for (const em of text.matchAll(/\b([\w.+-]+)@([\w-]+(?:\.[\w-]+)+)\b/g)) {
+     const local = em[1].toLowerCase();
+-    if (local.length >= MIN_LEN && !ALLOWLIST.has(local) && !dictish(local)) out.add(local);
++    if (local.length >= MIN_LEN && !allowlist.has(local) && !dictish(local)) out.add(local);
+     const domain = em[2].toLowerCase();
+-    if (!ALLOWLIST.has(domain.split(".")[0])) out.add(domain);
++    if (!allowlist.has(domain.split(".")[0])) out.add(domain);
+   }
+   for (const dm of text.matchAll(/\b(?:[a-z0-9-]+\.)+(?:com|net|org|io|ai|dev|co|app|lan|edu|gov)\b/gi)) {
+     const d = dm[0].toLowerCase();
+-    if (!ALLOWLIST.has(d.split(".")[0])) out.add(d);
++    if (!allowlist.has(d.split(".")[0])) out.add(d);
+   }
+   if (opts.singles) {
+     for (const w of text.match(/[A-Za-z][A-Za-z0-9'’-]+/g) ?? []) if (distinctive(w)) out.add(w.toLowerCase());
+@@ -188,7 +193,40 @@ export function extractTokens(text: string, opts: { singles?: boolean } = {}): S
+   return out;
+ }
+ 
++export function renderDenyHashEnvironment(env: string): {content: string; salt: string; generated: boolean} {
++  const match = /^DENYLIST_SALT=(.+)$/m.exec(env);
++  if (match) return {content: env, salt: match[1].trim().replace(/^["']|["']$/g, ""), generated: false};
++  const salt = randomBytes(32).toString("hex");
++  return {content: env + (env.endsWith("\n") || env === "" ? "" : "\n") + `DENYLIST_SALT=${salt}\n`,
++    salt, generated: true};
++}
++
++export function renderDenyHashes(sources: string[], operator: string, salt: string | null): {
++  tokens: string[]; payload: Record<string, unknown> | null
++} {
++  const allowlist = new Set(ALLOWLIST);
++  for (const line of operator.split("\n")) {
++    const token = line.trim().toLowerCase();
++    if (token && !token.startsWith("#")) allowlist.add(token);
++  }
++  const tokens = new Set<string>();
++  for (const content of sources) for (const token of extractTokens(content, {}, allowlist)) tokens.add(token);
++  return {tokens: [...tokens].sort(), payload: salt === null ? null : {
++    version: 1, algo: `sha256-salted-trunc${HASH_HEX_LEN}`, ngramSizes: NGRAM_SIZES, minLen: MIN_LEN,
++    count: tokens.size, generated: "DeriveDenyHashes.ts",
++    note: "Salted hashes of distinctive private tokens. No plaintext. Salt in .env (never ships).",
++    hashes: [...tokens].map(token => hashToken(token, salt)).sort()}};
++}
++
+ function main(): void {
++  const governed = memoryAccess("deny_hashes", {args: process.argv.slice(2)},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (!governed.ok || typeof governed.stdout !== "string") throw new Error("Deny hash admission or publication is unavailable");
++    process.stdout.write(governed.stdout);
++    return;
++  }
++
+   const dryRun = process.argv.includes("--dry-run");
+   const showTokens = process.argv.includes("--show-tokens");
+   const files = corpusFiles();
 diff --git a/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts b/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts
 index fc60fa7..bf55519 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts

@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-deny-hashes/probe_cold_target.py", line 17, in <module>
+    publication_paths(memory, MemoryService(test.fixture.configuration).scope(test.fixture.context))
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_deny_hashes.py", line 87, in publication_paths
+    _target(memory, relative)
+    ~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_deny_hashes.py", line 21, in _target
+    target = memory._publication_path(relative)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py", line 183, in _publication_path
+    or path.samefile(self.database))):
+       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 757, in samefile
+    other_st = other_path.stat()
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 654, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2zqs7nci/.claude/LIFEOS/MEMORY/STATE/memory-access.sqlite'
+database exists: False

@@ -10,7 +10,7 @@ from .memory_policy import CATEGORIES
 from .memory_sources import (CONTEXT_FILES, TELOS_SOURCES, FRESHNESS_TELOS_SOURCES, is_state_source,
                              SYSTEM_FILES, SYSTEM_PREFIXES, CORPUS_LIMIT,
                              SOURCE_COUNT_LIMIT, _markdown_source, _text_source, authorize,
-                             is_evidence_source, json_projection, markdown_projection, INTERVIEW_SETUP_FILES)
+                             is_evidence_source, json_projection, markdown_projection, INTERVIEW_SETUP_FILES, is_deny_source)
 
 
 def _digest(value):
@@ -29,6 +29,8 @@ def _classification(relative):
         return 'evidence'
     if relative in CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES or is_state_source(relative):
         return 'owner_context'
+    if is_deny_source(relative):
+        return 'deny_hashes'
     if (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
             or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative)):
         return 'system'
@@ -72,8 +74,11 @@ def _snapshot(memory, connection, scope, paths):
                              if classification == 'interview_setup' else
                              _text_source(memory, scope, str(memory.root / relative), suffix='.json', evidence=True)
                              if classification == 'evidence' else
+                             _text_source(memory, scope, str(memory.root / relative),
+                                          suffix=Path(relative).suffix, deny_hashes=True)
+                             if classification == 'deny_hashes' else
                              _markdown_source(memory, scope, str(memory.root / relative)))
-        projection = (json_projection(source['content']) if classification == 'evidence' else
+        projection = (json_projection(source['content']) if classification == 'evidence' or classification == 'deny_hashes' and relative.endswith('.json') else
                       markdown_projection(memory, relative, source['content']))
         total += len(source['content'].encode())
         if total > CORPUS_LIMIT:

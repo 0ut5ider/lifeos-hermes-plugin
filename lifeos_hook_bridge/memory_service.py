@@ -261,6 +261,15 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation == 'deny_hashes' and set(arguments) == {'args'}:
+                from .memory_deny_hashes import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Deny hash authority changed during rendering')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == 'hermes_soul' and set(arguments) == {'args', 'home', 'workspace'}:
                 from .memory_hermes_soul import run
 
