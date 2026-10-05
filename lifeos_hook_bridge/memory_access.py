@@ -350,6 +350,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'derived_sync':
+            from .memory_derived_sync import publication_paths
+            return publication_paths(self, scope)
         if payload['operation'] == 'deny_hashes':
             from .memory_deny_hashes import publication_paths
             return publication_paths(self, scope)

@@ -26,7 +26,25 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "deny_hash_environment") {
+  if (input.action === "derived_sync_plan" || input.action === "derived_sync_finish") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/DerivedSync.ts")).href);
+    const state = input.state;
+    const hashes = input.hashes;
+    if (!object(module) || typeof module.planDerivedSync !== "function" || typeof module.finishDerivedSync !== "function"
+        || !object(hashes) || Object.values(hashes).some(hash => typeof hash !== "string" || !/^[a-f0-9]{64}$/.test(hash))
+        || !(state === null || object(state) && object(state.fileHashes) && typeof state.lastRun === "string")
+        || !Array.isArray(input.pages) || input.pages.some(id => typeof id !== "string") || typeof input.force !== "boolean") {
+      throw new Error("Native derivative planning requires declared hashes, state, pages, and force mode");
+    }
+    const declared = {state, hashes, pages: input.pages, force: input.force};
+    if (input.action === "derived_sync_plan") result = module.planDerivedSync(declared);
+    else {
+      if (!Array.isArray(input.failed) || input.failed.some(value => typeof value !== "boolean")) {
+        throw new Error("Native derivative tracking requires declared child results");
+      }
+      result = module.finishDerivedSync(declared, input.failed);
+    }
+  } else if (input.action === "deny_hash_environment") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/DeriveDenyHashes.ts")).href);
     if (!object(module) || typeof module.renderDenyHashEnvironment !== "function" || typeof input.content !== "string") {
       throw new Error("Native deny salt generation requires declared environment bytes");

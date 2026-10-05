@@ -1,0 +1,87 @@
+{
+  "case": "test_interruption_removes_new_state_destination",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": {
+        "content": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/memory.json\"]}",
+        "mode": "0o600"
+      },
+      ".env": {
+        "content_without_salt": "SYNTHETIC_KEEP=fixture",
+        "size": 23,
+        "sha256": "942045937a466a4d257eb58c7f04b1ac0444b1c40a8117275dba4bb2f49e3a86",
+        "crlf": 0,
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": {
+        "content": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/memory.json\"]}",
+        "mode": "0o600"
+      },
+      "LIFEOS/USER/SECURITY/DENY_HASHES.json": {
+        "content": "{\"version\":1,\"algo\":\"sha256-salted-trunc24\",\"ngramSizes\":[1,2],\"minLen\":4,\"count\":1,\"generated\":\"DeriveDenyHashes.ts\",\"note\":\"Salted hashes of distinctive private tokens. No plaintext. Salt in .env (never ships).\",\"hashes\":[\"e4d09daf0e5f7595780af2ab\"]}\n",
+        "mode": "0o600"
+      },
+      ".env": {
+        "content_without_salt": "SYNTHETIC_KEEP=fixture",
+        "size": 102,
+        "sha256": "9e755794ec2feaacdb6f2d3a5397b3f299c2cc0c054a144c34aa9fdf362561c9",
+        "crlf": 0,
+        "mode": "0o600"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_derived_sync_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/memory.json",
+        "interrupt"
+      ],
+      "status": 73,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/.claude/LIFEOS/TOOLS/DerivedSync.ts",
+        "--dry-run"
+      ],
+      "status": 0,
+      "stdout": "changed: 3\n  /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\n  /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md\n  /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\nplanned actions: 1\n  bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9td0ccws/.claude/LIFEOS/TOOLS/DeriveDenyHashes.ts\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

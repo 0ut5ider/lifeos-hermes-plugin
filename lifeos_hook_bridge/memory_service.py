@@ -261,6 +261,15 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation in {'derived_sync_plan', 'derived_sync_check', 'derived_sync_publish'}:
+                from .memory_derived_sync import handle
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Derivative sync authority changed during execution')
+
+                return handle(memory, scope, operation, arguments, check_current=check_current)
             if operation == 'deny_hashes' and set(arguments) == {'args'}:
                 from .memory_deny_hashes import run
 

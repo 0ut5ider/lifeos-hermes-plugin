@@ -48,6 +48,21 @@ DENY_SOURCE_FILES = frozenset({'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md',
     'LIFEOS/USER/CONFIG/denyhash-allowlist.txt'})
 
 
+SYNC_FILES = frozenset({'LIFEOS/USER/TELOS/TELOS.md',
+    'LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md', 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md',
+    'LIFEOS/USER/PRINCIPAL/RESUME.md', 'LIFEOS/USER/PRINCIPAL/WRITINGSTYLE.md',
+    'LIFEOS/USER/PRINCIPAL/PRONUNCIATIONS.json', 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+    'LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md', 'LIFEOS/USER/CONTACTS.md',
+    'LIFEOS/USER/PROJECTS.md', 'LIFEOS/USER/DEFINITIONS.md', 'LIFEOS/USER/CANONICAL_CONTENT.md',
+    'LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md'})
+
+
+def is_sync_source(relative):
+    return (relative in SYNC_FILES or re.fullmatch(
+        r'LIFEOS/USER/TELOS/(?:CURRENT_STATE|IDEAL_STATE)/[^/]+\.md', relative) is not None
+        or re.fullmatch(r'LIFEOS/PULSE/pages/[^/]+\.manifest\.toml', relative) is not None)
+
+
 def is_deny_source(relative):
     return relative in DENY_SOURCE_FILES or re.fullmatch(
         r'LIFEOS/MEMORY/_NETWORK/topology-snapshot-[^/]+\.md', relative) is not None
@@ -93,7 +108,7 @@ def authorize(scope: MemoryScope) -> dict[str, Any]:
 
 def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = False,
                  require_file: bool = True, evidence: bool = False,
-                 interview_setup: bool = False, deny_hashes: bool = False) -> tuple[Path, str]:
+                 interview_setup: bool = False, deny_hashes: bool = False, derived_sync: bool = False) -> tuple[Path, str]:
     authorize(scope)
     if not isinstance(path,str):
         raise MemoryUnavailable('A supported native source path is required')
@@ -102,8 +117,12 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
         raise MemoryUnavailable('The native source cannot leave its installed root')
     system = (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
               or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative) is not None
+              or derived_sync and relative.startswith("LIFEOS/PULSE/pages/")
               or interview_setup and relative in {'.env', 'LIFEOS/PULSE/PULSE.toml'})
-    if deny_hashes:
+    if derived_sync:
+        directory = False
+        permitted = is_sync_source(relative)
+    elif deny_hashes:
         directory = False
         permitted = is_deny_source(relative)
     elif interview_setup:
@@ -143,8 +162,8 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
-def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=False):
-    source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes)
+def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=False, derived_sync=False):
+    source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes, derived_sync=derived_sync)
     if source.suffix != suffix:
         raise MemoryUnavailable('The declared wiki source must be native Markdown')
     before = source.stat()
@@ -159,7 +178,7 @@ def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidenc
     if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
             != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
         raise MemoryUnavailable('The native wiki source changed during collection')
-    _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes)
+    _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes, derived_sync=derived_sync)
     if len(content.encode()) > SOURCE_LIMIT:
         raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
     return ({'path': path, 'relative': relative, 'content': content,

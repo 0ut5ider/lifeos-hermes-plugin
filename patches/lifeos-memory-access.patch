@@ -1387,6 +1387,197 @@ index f33176e..e88983e 100755
    const dryRun = process.argv.includes("--dry-run");
    const showTokens = process.argv.includes("--show-tokens");
    const files = corpusFiles();
+diff --git a/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts b/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts
+index 8d4810f..130b657 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Plans native source derivatives and retains failed writer hashes for retry.
++// ABOUTME: Uses current owner admission and journals managed tracking state after child execution.
+ /**
+  * DerivedSync.ts - Detect manual USER source edits and regenerate derived LifeOS artifacts.
+  *
+@@ -10,6 +12,7 @@ import {
+   appendFileSync,
+   existsSync,
+   mkdirSync,
++  lstatSync,
+   readFileSync,
+   readdirSync,
+   rmSync,
+@@ -18,6 +21,7 @@ import {
+ } from "node:fs";
+ import { join } from "node:path";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ type SpawnReadable = ReadableStream<Uint8Array> | null;
+ type SpawnProcess = {
+@@ -229,7 +233,7 @@ function pageIds(): string[] {
+   return ids;
+ }
+ 
+-function plannedActions(changed: string[]): PlannedAction[] {
++function plannedActions(changed: string[], pages: string[] = pageIds()): PlannedAction[] {
+   const actions: PlannedAction[] = [];
+   const telosSources = changed.filter(isTelosSource);
+   const stateSources = changed.filter(isStateSource);
+@@ -263,7 +267,7 @@ function plannedActions(changed: string[]): PlannedAction[] {
+   }
+ 
+   if (changed.length > 0) {
+-    for (const id of pageIds()) {
++    for (const id of pages) {
+       actions.push({
+         kind: "data-plane-page",
+         cmd: ["bun", ADAPTER_CLI, id],
+@@ -276,6 +280,90 @@ function plannedActions(changed: string[]): PlannedAction[] {
+   return actions;
+ }
+ 
++interface DerivedInputs {
++  state: StateFile | null;
++  hashes: Record<string, string>;
++  pages: string[];
++  force: boolean;
++}
++
++interface DerivedPlan {
++  changed: string[];
++  actions: PlannedAction[];
++}
++
++export function planDerivedSync(input: DerivedInputs): DerivedPlan {
++  const changed = changedFiles(input.state, input.hashes, input.force);
++  return {changed, actions: plannedActions(changed, input.pages)};
++}
++
++export function finishDerivedSync(input: DerivedInputs, failed: boolean[]): StateFile {
++  const plan = planDerivedSync(input);
++  const failedSources = new Set<string>();
++  plan.actions.forEach((action, index) => {
++    if (failed[index] && action.kind !== "data-plane-page") {
++      action.triggeredBy.forEach(source => failedSources.add(source));
++    }
++  });
++  const fileHashes: Record<string, string> = {};
++  for (const path of Object.keys(input.hashes).sort()) {
++    const digest = failedSources.has(path) ? input.state?.fileHashes[path] : input.hashes[path];
++    if (digest) fileHashes[path] = digest;
++  }
++  return {fileHashes, lastRun: new Date().toISOString()};
++}
++
++interface GovernedPlan extends DerivedPlan {
++  ok: boolean;
++  signature: string;
++  lock: string;
++  status: string;
++}
++
++function validPlan(value: unknown): value is GovernedPlan {
++  return memoryObject(value) && value.ok === true && typeof value.signature === "string"
++    && typeof value.lock === "string" && typeof value.status === "string"
++    && Array.isArray(value.changed) && value.changed.every(path => typeof path === "string")
++    && Array.isArray(value.actions) && value.actions.every(action => memoryObject(action)
++      && ["telos-summary", "pai-state", "deny-hashes", "data-plane-page"].includes(String(action.kind))
++      && Array.isArray(action.cmd) && action.cmd.every(part => typeof part === "string")
++      && typeof action.timeoutMs === "number" && Array.isArray(action.triggeredBy)
++      && action.triggeredBy.every(path => typeof path === "string"));
++}
++
++async function runGovernedSync(args: string[], plan: GovernedPlan): Promise<number> {
++  if (args.includes("--status")) {
++    console.log(plan.status);
++    return 0;
++  }
++  if (args.includes("--dry-run")) {
++    printDryRun(plan.changed, plan.actions);
++    return 0;
++  }
++  if (plan.changed.length === 0) return 0;
++  if (plan.lock !== LOCK_PATH) throw new Error("The sync lock changes its declared owner path");
++  if (!acquireLock(true)) return 0;
++  const logs: ActionLog[] = [];
++  const failed: boolean[] = [];
++  try {
++    for (const action of plan.actions) {
++      const admitted = memoryAccess("derived_sync_check", {args, signature: plan.signature},
++        (value): value is {ok: boolean} => memoryObject(value) && value.ok === true);
++      if (!admitted) throw new Error("The current derivative plan is unavailable");
++      const result = await runAction(action);
++      logs.push(result.log);
++      failed.push(!result.ok);
++      if (!result.ok) console.error(`[DerivedSync] action failed: ${result.error ?? "unknown action failure"}`);
++    }
++    const receipt = memoryAccess("derived_sync_publish", {args, signature: plan.signature, logs, failed},
++      (value): value is {ok: boolean} => memoryObject(value) && value.ok === true);
++    if (!receipt) throw new Error("Derivative tracking publication is unavailable");
++    return failed.some(Boolean) ? 1 : 0;
++  } finally {
++    releaseLock();
++  }
++}
++
+ function shellCommand(cmd: string[]): string {
+   return cmd.map((part) => (part.includes(" ") ? JSON.stringify(part) : part)).join(" ");
+ }
+@@ -325,17 +413,32 @@ function appendLog(line: JsonLogLine): void {
+   appendFileSync(LOG_PATH, JSON.stringify(line) + "\n");
+ }
+ 
+-function acquireLock(): boolean {
++function acquireLock(managed = false): boolean {
+   mkdirSync(STATE_DIR, { recursive: true });
+   try {
+-    writeFileSync(LOCK_PATH, `${process.pid}\n${new Date().toISOString()}\n`, { flag: "wx" });
++    writeFileSync(LOCK_PATH, `${process.pid}\n${new Date().toISOString()}\n`, { flag: "wx", ...(managed ? {mode: 0o600} : {}) });
+     return true;
+   } catch (err) {
+     if (!existsSync(LOCK_PATH)) return false;
++    if (managed) {
++      const info = lstatSync(LOCK_PATH);
++      if (!info.isFile() || info.isSymbolicLink() || info.uid !== process.getuid?.() || info.nlink !== 1) {
++        throw new Error("The sync lock needs its regular owner file");
++      }
++      const pid = Number(readFileSync(LOCK_PATH, "utf8").split("\n")[0]);
++      if (!Number.isSafeInteger(pid) || pid <= 0) throw new Error("The sync lock has no valid owner process");
++      try { process.kill(pid, 0); return false; }
++      catch (error: unknown) {
++        if (!memoryObject(error) || error.code !== "ESRCH") throw error;
++      }
++      rmSync(LOCK_PATH);
++      writeFileSync(LOCK_PATH, `${process.pid}\n${new Date().toISOString()}\n`, {flag: "wx", mode: 0o600});
++      return true;
++    }
+     const ageMs = Date.now() - statSync(LOCK_PATH).mtimeMs;
+     if (ageMs <= LOCK_STALE_MS) return false;
+     rmSync(LOCK_PATH, { force: true });
+-    writeFileSync(LOCK_PATH, `${process.pid}\n${new Date().toISOString()}\n`, { flag: "wx" });
++    writeFileSync(LOCK_PATH, `${process.pid}\n${new Date().toISOString()}\n`, { flag: "wx", ...(managed ? {mode: 0o600} : {}) });
+     return true;
+   }
+ }
+@@ -462,6 +565,12 @@ async function main(): Promise<void> {
+     return;
+   }
+ 
++  const governed = memoryAccess("derived_sync_plan", {args}, validPlan);
++  if (governed !== undefined) {
++    process.exitCode = await runGovernedSync(args, governed);
++    return;
++  }
++
+   if (args.includes("--status")) {
+     printStatus();
+     return;
+@@ -484,4 +593,4 @@ async function main(): Promise<void> {
+   process.exit(exitCode);
+ }
+ 
+-main();
++if (import.meta.main) await main();
 diff --git a/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts b/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts
 index fc60fa7..bf55519 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts

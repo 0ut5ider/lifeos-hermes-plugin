@@ -469,3 +469,10 @@ The original standalone template contains terminal-only policy. Installation int
 The [hash gate](verification/2026-10-04-memory-deny-hashes/README.md) supplies admitted current sources to native token extraction. Exact source review does not expand generic reads. The existing publication journal protects both the environment and hash artifact. Actual source and authority conflicts preserve later edits and refuse stale token output. Actual process interruption restores previous bytes or removes a new hash destination.
 
 The broad gate passes 128 tests and 94 subtests. A later environment correction preserves CRLF bytes and passes 47 tests and 31 subtests. Fourteen native controls retain synthetic inputs and actual process output without generated salts. All 43 distributed native files match the candidate. Derivative orchestration, other publishers, aggregate recovery, restricted delivery, ownership activation, import, and combined release verification remain open. No active server changes occur.
+
+
+## Native derivative synchronization
+
+The October 4 [derivative gate](verification/2026-10-04-memory-derived-sync/README.md) passes 166 tests and 107 subtests. The current owner plan supplies admitted source hashes to the native CLI. Each child retains caller context and receives a current plan recheck. Native retry behavior preserves failed writer triggers. Tracking state and logs publish as a recoverable private pair. Actual interruption controls recover previous files or remove a new destination. The original pinned command matches the selected plan and child effects. Eighteen recorded controls preserve actual process results.
+
+The managed CLI does not hold the memory writer lock across children or place long adapter work in the short connector request. Managed PULSE adapter admission remains open. A separate production-layout baseline finds that path checks reject the intended `.claude` alias to `.hermes`; this correction precedes ownership activation. Aggregate ownership, import, management, background jobs, routing, voice, and the combined release remain open. No server configuration or ownership changes occur.
