@@ -1,0 +1,59 @@
+{
+  "case": "test_unapproved_child_route_never_reaches_http",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "# Synthetic collection\nA synthetic book.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "# Synthetic collection\nA synthetic book.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/PULSE_DATA/synthetic.error.json": {
+        "content": "{\n  \"schemaVersion\": \"1.0.0\",\n  \"pageId\": \"synthetic\",\n  \"occurredAt\": \"2026-10-05T02:45:48.164741+00:00\",\n  \"kind\": \"exec-failed\",\n  \"message\": \"api error: claude JSON envelope is_error=true api_error_status=null\"\n}\n",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/PULSE_DATA/_index.json": {
+        "content": "{\n  \"schemaVersion\": \"1.0.0\",\n  \"generatedAt\": \"2026-10-05T02:45:48.943938+00:00\",\n  \"pages\": [\n    {\n      \"id\": \"synthetic\",\n      \"title\": \"Synthetic fixture\",\n      \"kind\": \"collection\",\n      \"lastBuildAt\": \"\",\n      \"hasError\": true,\n      \"costUSD\": 0,\n      \"provenance\": \"template\"\n    }\n  ]\n}\n",
+        "mode": "0o600"
+      }
+    }
+  },
+  "requests": [],
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-30e5ovz_/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts",
+        "synthetic"
+      ],
+      "status": 1,
+      "stdout": "{\n  \"manifest\": {\n    \"id\": \"synthetic\",\n    \"title\": \"Synthetic fixture\",\n    \"dataType\": \"CollectionPageSchema\",\n    \"sourceGlobs\": [\n      \"LIFEOS/USER/TELOS/BOOKS.md\"\n    ],\n    \"adapterPromptFile\": \"LIFEOS/PULSE/pages/synthetic.adapter.md\",\n    \"model\": \"haiku\",\n    \"rebuildButton\": true,\n    \"order\": 1,\n    \"adapterVersion\": \"1.0.0\"\n  },\n  \"status\": \"inference-failed\",\n  \"pageId\": \"synthetic\",\n  \"cached\": false,\n  \"costUSD\": 0,\n  \"latencyMs\": 0,\n  \"sourceCount\": 1,\n  \"warnings\": [],\n  \"errorMessage\": \"api error: claude JSON envelope is_error=true api_error_status=null\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "skips": []
+}

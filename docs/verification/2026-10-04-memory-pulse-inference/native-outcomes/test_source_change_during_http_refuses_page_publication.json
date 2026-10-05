@@ -1,0 +1,69 @@
+{
+  "case": "test_source_change_during_http_refuses_page_publication",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "# Synthetic collection\nA synthetic book.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "Synthetic later source.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      }
+    }
+  },
+  "requests": [
+    {
+      "path": "/v1/messages",
+      "body": {
+        "model": "synthetic-flashnext",
+        "max_tokens": 4096,
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "Render the declared synthetic collection as JSON.\n",
+        "messages": [
+          {
+            "role": "user",
+            "content": "--- SOURCE BUNDLE ---\n\n### SOURCE: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2rz0f4vz/.claude/LIFEOS/USER/TELOS/BOOKS.md\n\n# Synthetic collection\nA synthetic book.\n\n\n--- END SOURCE BUNDLE ---\n\nReturn ONLY a single JSON object. No prose, no markdown fence."
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2rz0f4vz/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts",
+        "synthetic"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "error: adapter \"synthetic\" crashed: Error: The native memory service returned an invalid result\n    at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)\n    at checkCurrent (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2rz0f4vz/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:112:5)\n    at runAdapter (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2rz0f4vz/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:173:3)\n    at processTicksAndRejections (native:7:39)\n"
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "skips": []
+}
