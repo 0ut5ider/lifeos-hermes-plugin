@@ -1,0 +1,22 @@
+........                                                           [100%]
+=================================== FAILURES ===================================
+_ ProfileServicesTests.test_invalid_service_binding_values_refuse_without_stopping_units (value=[]) _
+tests/test_profile_services.py:211: in test_invalid_service_binding_values_refuse_without_stopping_units
+    ProfileServices(self.profile, self.installed, units=units).drain()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:68: in __init__
+    if (set(self.units) != set(UNITS) or len(set(self.units.values())) != len(UNITS)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'list' as a set element (unhashable type: 'list')
+_ ProfileServicesTests.test_invalid_service_binding_values_refuse_without_stopping_units (value={}) _
+tests/test_profile_services.py:211: in test_invalid_service_binding_values_refuse_without_stopping_units
+    ProfileServices(self.profile, self.installed, units=units).drain()
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:68: in __init__
+    if (set(self.units) != set(UNITS) or len(set(self.units.values())) != len(UNITS)
+                                             ^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+=========================== short test summary info ============================
+SUBFAILED(value=[]) tests/test_profile_services.py::ProfileServicesTests::test_invalid_service_binding_values_refuse_without_stopping_units
+SUBFAILED(value={}) tests/test_profile_services.py::ProfileServicesTests::test_invalid_service_binding_values_refuse_without_stopping_units
+2 failed, 8 passed, 4 subtests passed in 9.46s

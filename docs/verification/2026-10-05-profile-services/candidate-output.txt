@@ -1,0 +1,29 @@
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+_ ProfileServicesTests.test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units _
+tests/test_profile_services.py:86: in test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units
+    result = self.barrier().drain()
+             ^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:187: in drain
+    values, definition = self._inspect(role)
+                         ^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:124: in _inspect
+    raise MemoryUnavailable('The profile service has unreviewed program or process properties')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The profile service has unreviewed program or process properties
+_ ProfileServicesTests.test_process_exit_after_one_stop_retains_original_service_state_for_recovery _
+tests/test_profile_services.py:132: in test_process_exit_after_one_stop_retains_original_service_state_for_recovery
+    self.assertEqual(process.returncode, 73, process.stdout + process.stderr)
+E   AssertionError: 1 != 73 : Traceback (most recent call last):
+E     File "<string>", line 10, in <module>
+E       ProfileServices(Path(settings['profile']), Path(settings['installed']), units=settings['units']).drain()
+E       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 187, in drain
+E       values, definition = self._inspect(role)
+E                            ~~~~~~~~~~~~~^^^^^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 124, in _inspect
+E       raise MemoryUnavailable('The profile service has unreviewed program or process properties')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The profile service has unreviewed program or process properties
+=========================== short test summary info ============================
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_process_exit_after_one_stop_retains_original_service_state_for_recovery
+2 failed, 1 passed in 2.97s

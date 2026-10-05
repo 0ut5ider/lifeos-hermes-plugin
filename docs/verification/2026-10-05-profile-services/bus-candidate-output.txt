@@ -1,0 +1,46 @@
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+_ ProfileServicesTests.test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units _
+tests/test_profile_services.py:86: in test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units
+    result = self.barrier().drain()
+             ^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:246: in drain
+    self._drain(document)
+lifeos_hook_bridge/profile_services.py:223: in _drain
+    self._drain_unit(document, role)
+lifeos_hook_bridge/profile_services.py:219: in _drain_unit
+    self._empty(document, role)
+lifeos_hook_bridge/profile_services.py:197: in _empty
+    values = self._check_definition(document, role)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:191: in _check_definition
+    values, definition = self._inspect(role)
+                         ^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:162: in _inspect
+    object_reply = _bus('call', 'org.freedesktop.systemd1', '/org/freedesktop/systemd1',
+lifeos_hook_bridge/profile_services.py:49: in _bus
+    raise MemoryUnavailable('The owner service bus refuses program inspection')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The owner service bus refuses program inspection
+_ ProfileServicesTests.test_process_exit_after_one_stop_retains_original_service_state_for_recovery _
+tests/test_profile_services.py:139: in test_process_exit_after_one_stop_retains_original_service_state_for_recovery
+    result = self.barrier().resume()
+             ^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:264: in resume
+    self._drain(document)
+lifeos_hook_bridge/profile_services.py:223: in _drain
+    self._drain_unit(document, role)
+lifeos_hook_bridge/profile_services.py:216: in _drain_unit
+    values = self._check_definition(document, role)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:191: in _check_definition
+    values, definition = self._inspect(role)
+                         ^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:162: in _inspect
+    object_reply = _bus('call', 'org.freedesktop.systemd1', '/org/freedesktop/systemd1',
+lifeos_hook_bridge/profile_services.py:49: in _bus
+    raise MemoryUnavailable('The owner service bus refuses program inspection')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The owner service bus refuses program inspection
+=========================== short test summary info ============================
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_process_exit_after_one_stop_retains_original_service_state_for_recovery
+2 failed, 1 passed in 3.16s
