@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryOwnershipTests.test_edit_after_disabling_stores_prevents_ownership_from_becoming_enabled _
+tests/test_memory_ownership.py:141: in test_edit_after_disabling_stores_prevents_ownership_from_becoming_enabled
+    self.assertFalse(self.configuration.load()['ownership_enabled'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_edit_after_disabling_stores_prevents_ownership_from_becoming_enabled
+1 failed, 9 deselected in 0.92s

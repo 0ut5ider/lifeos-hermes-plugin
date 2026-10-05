@@ -1,0 +1,24 @@
+{
+  "source_hashes_unchanged": {
+    "tests/test_memory_ownership.py": true,
+    "lifeos_hook_bridge/memory_ownership.py": true
+  },
+  "outcome_files": [
+    "test_current_backup_review_preserves_other_yaml_settings_and_comments.json",
+    "test_edit_after_disabling_stores_prevents_ownership_from_becoming_enabled.json",
+    "test_edit_during_recovery_is_preserved_before_the_second_publication.json",
+    "test_fresh_host_processes_load_the_selected_owner_and_return_to_preserved_stores.json",
+    "test_invalid_journal_metadata_refuses_without_configuration_changes.json",
+    "test_lost_or_changed_connector_refuses_before_ownership_publication.json",
+    "test_process_exit_after_first_file_recovers_configuration_without_data_restore.json",
+    "test_process_exit_during_mode_restoration_can_resume_the_original_mode.json",
+    "test_recovery_preserves_later_configuration_edits.json",
+    "test_recovery_restores_exact_configuration_and_preserves_later_native_writes.json",
+    "test_review_refuses_changed_configuration_or_backup_without_publication.json",
+    "test_reviewed_configuration_disables_both_stores_and_preserves_files.json",
+    "test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings.json",
+    "test_shared_or_merged_memory_settings_require_review_without_changing_other_sections.json"
+  ],
+  "new_dependencies": [],
+  "upstream_patch_changes": []
+}

@@ -1,0 +1,137 @@
+FFFFF.                                                           [100%]
+=================================== FAILURES ===================================
+_ MemoryOwnershipTests.test_process_exit_after_first_file_recovers_configuration_without_data_restore _
+tests/test_memory_ownership.py:116: in test_process_exit_after_first_file_recovers_configuration_without_data_restore
+    plan = self.preview()
+           ^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+____ MemoryOwnershipTests.test_recovery_preserves_later_configuration_edits ____
+tests/test_memory_ownership.py:92: in test_recovery_preserves_later_configuration_edits
+    self.apply()
+tests/test_memory_ownership.py:41: in apply
+    plan = plan or self.preview()
+                   ^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_recovery_restores_exact_configuration_and_preserves_later_native_writes _
+tests/test_memory_ownership.py:63: in test_recovery_restores_exact_configuration_and_preserves_later_native_writes
+    self.apply()
+tests/test_memory_ownership.py:41: in apply
+    plan = plan or self.preview()
+                   ^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_review_refuses_changed_configuration_or_backup_without_publication _
+tests/test_memory_ownership.py:76: in test_review_refuses_changed_configuration_or_backup_without_publication
+    plan = self.preview()
+           ^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_reviewed_configuration_disables_both_stores_and_preserves_files _
+tests/test_memory_ownership.py:46: in test_reviewed_configuration_disables_both_stores_and_preserves_files
+    preview = self.preview()
+              ^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (account=None) _
+tests/test_memory_ownership.py:104: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'], account=account)
+    ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (account='dashboard:other') _
+tests/test_memory_ownership.py:104: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'], account=account)
+    ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (account='chat-a:100') _
+tests/test_memory_ownership.py:104: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'], account=account)
+    ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (updates={'ownership_enabled': True}) _
+tests/test_memory_ownership.py:108: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.preview()
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (updates={'sharing_enabled': True}) _
+tests/test_memory_ownership.py:108: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.preview()
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (text='memory: null\n') _
+tests/test_memory_ownership.py:113: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.preview()
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (text='memory: []\n') _
+tests/test_memory_ownership.py:113: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.preview()
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+_ MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings (text='memory:\n  memory_enabled: true\nmemory: {}\n') _
+tests/test_memory_ownership.py:113: in test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+    self.preview()
+tests/test_memory_ownership.py:37: in preview
+    return self.transaction().preview(Path(self.backup['snapshot']), self.backup['signature'],
+           ^^^^^^^^^^^^^^^^^^
+tests/test_memory_ownership.py:33: in transaction
+    from lifeos_hook_bridge.memory_ownership import OwnershipTransaction
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_ownership'
+=========================== short test summary info ============================
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_process_exit_after_first_file_recovers_configuration_without_data_restore
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_recovery_preserves_later_configuration_edits
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_recovery_restores_exact_configuration_and_preserves_later_native_writes
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_review_refuses_changed_configuration_or_backup_without_publication
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_reviewed_configuration_disables_both_stores_and_preserves_files
+SUBFAILED(account=None) tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(account='dashboard:other') tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(account='chat-a:100') tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(updates={'ownership_enabled': True}) tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(updates={'sharing_enabled': True}) tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(text='memory: null\n') tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(text='memory: []\n') tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+SUBFAILED(text='memory:\n  memory_enabled: true\nmemory: {}\n') tests/test_memory_ownership.py::MemoryOwnershipTests::test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings
+13 failed, 1 passed in 4.98s

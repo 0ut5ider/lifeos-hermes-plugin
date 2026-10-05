@@ -1,0 +1,32 @@
+F..                                                                 [100%]
+=================================== FAILURES ===================================
+_ MemoryOwnershipTests.test_edit_during_recovery_is_preserved_before_the_second_publication _
+tests/test_memory_ownership.py:114: in test_edit_during_recovery_is_preserved_before_the_second_publication
+    with self.assertRaisesRegex(MemoryUnavailable, 'later'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ MemoryOwnershipTests.test_invalid_journal_metadata_refuses_without_configuration_changes (field='state', value=[]) _
+tests/test_memory_ownership.py:132: in test_invalid_journal_metadata_refuses_without_configuration_changes
+    transaction.rollback(account='dashboard:owner')
+lifeos_hook_bridge/memory_ownership.py:181: in rollback
+    document = self._load(configuration)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_ownership.py:73: in _load
+    or document['principal'] != configuration['principal'] or document['state'] not in STATES
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'list' as a set element (unhashable type: 'list')
+_ MemoryOwnershipTests.test_invalid_journal_metadata_refuses_without_configuration_changes (field='state', value={}) _
+tests/test_memory_ownership.py:132: in test_invalid_journal_metadata_refuses_without_configuration_changes
+    transaction.rollback(account='dashboard:owner')
+lifeos_hook_bridge/memory_ownership.py:181: in rollback
+    document = self._load(configuration)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_ownership.py:73: in _load
+    or document['principal'] != configuration['principal'] or document['state'] not in STATES
+                                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+=========================== short test summary info ============================
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_edit_during_recovery_is_preserved_before_the_second_publication
+SUBFAILED(field='state', value=[]) tests/test_memory_ownership.py::MemoryOwnershipTests::test_invalid_journal_metadata_refuses_without_configuration_changes
+SUBFAILED(field='state', value={}) tests/test_memory_ownership.py::MemoryOwnershipTests::test_invalid_journal_metadata_refuses_without_configuration_changes
+3 failed, 2 passed, 6 deselected, 3 subtests passed in 9.45s
