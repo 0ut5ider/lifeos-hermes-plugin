@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Forty-eight equal selected cases cover 15 registrations. Forty-six lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, and five format-contract cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Fifty-two equal selected cases cover 16 registrations. Fifty lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, and four current-time cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -55,7 +55,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | UserPromptSubmit.5.1 | MemoryTurnStart | Supply the admitted native memory context for the current turn. | Pending |
 | UserPromptSubmit.6.1 | DriftReminder | Return the applicable drift context within its per-prompt line budget. | Five paired format-contract cases; remaining branches open |
 | UserPromptSubmit.7.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |
-| UserPromptSubmit.8.1 | TimeContext | Return the current native time context through the configured async path. | Pending |
+| UserPromptSubmit.8.1 | TimeContext | Return the current native time context through the configured async path. | Selected cases pass; first asynchronous request lacks clock context; next-turn delivery remains open |
 | UserPromptSubmit.9.1 | ModelRungGuard | Evaluate the actual model and effort carrier and return the applicable rung guidance. | Pending |
 | PostToolUseFailure.1.1 | EventLogger | Write the native tool-failure audit row with the actual tool and error. | Pending |
 | PostToolUseFailure.2.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |

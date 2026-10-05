@@ -1,0 +1,95 @@
+{
+  "before": {
+    "configured_timezone": "America/Toronto",
+    "asynchronous": false
+  },
+  "after": {
+    "clock_emitted": true,
+    "clock_valid": true,
+    "clock_is_current": true,
+    "settings_preserved": true,
+    "clock_context_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "da1a5b52-4913-4ee5-a278-0866ffbd9452",
+  "seconds": 3.928,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-time-context-20261005/results/time-context-sync-toronto",
+    "/home/lifeos-claude-ref/workspace/paired-time-context-20261005/results/time-context-sync-toronto",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.8.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.8.1 /home/lifeos-claude-ref/workspace/paired-time-context-20261005/results/time-context-sync-toronto/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvVGltZUNvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/TimeContext.hook.ts": "8ed68ce91b874e4226a0214e7a974c40b419f74ef6f78989dd0fe5a8cb214edf"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "02d032ab3fd9d38f3b09222387ee406b16bbc6bdc7972a9a01636358b623f340",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "0c460b56ff074e04a5306974cebb36fe74e30dd3d23f871c2231e32ab0b19f78",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "aaa120b9a31eedff9e4f1483842f977cf4bf804331db4154a0e31ea77b1bf676",
+    "fixture-events.jsonl": "08c3cdf6a51aa412afa5a1e141b10a93f3da2942bc6097bb0015c48dd7a67f74",
+    "cli.log": "31e716ffda5cf2ad0d8789a22e52534d8a4aaf4c3cfb401a5cb3a395c4e107a2",
+    "before-state.json": "b30e166151f346c339917a5892bd2d12cbda4c0f77263e9437ddcd12efd93549",
+    "after-state.json": "c04a8ebb3849ced400b6b894debf419a404c6b4734518f7d528dcf61c1e7a899",
+    "fixture-files-before.json": "62fe0bccf222766f13965c2eba2a046820d384720242bcecd7de505a53cb0051",
+    "fixture-files-after.json": "62fe0bccf222766f13965c2eba2a046820d384720242bcecd7de505a53cb0051"
+  }
+}

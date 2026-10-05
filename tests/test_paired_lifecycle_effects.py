@@ -458,3 +458,38 @@ class PairedFormatContractTests(unittest.TestCase):
         self.assertEqual(check_pair(case), [])
         case['native']['after']['hook_context'] += ' Last response broke: no banner.'
         self.assertIn('format-contract-stale: format contract effect is missing', check_pair(case))
+
+
+class PairedTimeContextTests(unittest.TestCase):
+    def case(self, name):
+        invalid = name == 'time-context-invalid-zone'
+        asynchronous = name == 'time-context-async-utc'
+        zone = 'PAIR_INVALID_ZONE' if invalid else 'America/Toronto' if name.endswith('toronto') else 'UTC'
+        side = {'before': {'configured_timezone': zone, 'asynchronous': asynchronous},
+                'after': {'clock_emitted': not invalid, 'clock_valid': not invalid,
+                    'clock_is_current': not invalid, 'settings_preserved': True,
+                    'clock_context_in_model': not invalid and not asynchronous,
+                    'user_response_delivered': True},
+                'hook_exit_codes': [0], 'event': 'UserPromptSubmit', 'cli_exit_code': 0,
+                'model_generation_requests': 1, 'model_successful_responses': 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery(self):
+        for name in ('time-context-sync-utc', 'time-context-sync-toronto'):
+            with self.subTest(name=name):
+                case = self.case(name)
+                self.assertEqual(check_pair(case), [])
+                case['native']['after']['clock_is_current'] = False
+                self.assertIn(f'{name}: time context effect is missing', check_pair(case))
+
+    def test_async_first_turn_cannot_claim_delivery_without_a_clock_in_the_request(self):
+        case = self.case('time-context-async-utc')
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['clock_context_in_model'] = True
+        self.assertIn('time-context-async-utc: time context effect is missing', check_pair(case))
+
+    def test_invalid_timezone_fails_open_without_clock_or_configuration_changes(self):
+        case = self.case('time-context-invalid-zone')
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['settings_preserved'] = False
+        self.assertIn('time-context-invalid-zone: time context effect is missing', check_pair(case))
