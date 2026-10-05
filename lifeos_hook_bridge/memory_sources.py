@@ -145,7 +145,7 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     if not permitted:
         raise MemoryUnavailable('This is not a supported native history or context source')
     source = memory.root / relative if system else memory._path(relative)
-    physical = source.absolute() if system else memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
+    physical = memory.physical_root / relative if system else memory.root.parent/'.config/LIFEOS/USER'/Path(relative).relative_to(
         'LIFEOS/USER' if relative.startswith('LIFEOS/USER/') else 'LIFEOS')
     if (source.resolve() != physical.absolute() or (require_file and not source.is_file())
             or (not require_file and source.exists() and not (source.is_dir() if directory else source.is_file()))):

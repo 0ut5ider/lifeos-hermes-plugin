@@ -19,7 +19,7 @@ SYSTEM_PUBLICATIONS = frozenset({'.env'})
 
 def _target(memory, relative):
     target = memory._publication_path(relative)
-    physical = (memory.root / relative if relative == '.env' else
+    physical = (memory.physical_root / relative if relative == '.env' else
                 memory.root.parent / '.config/LIFEOS/USER/SECURITY/DENY_HASHES.json')
     limit = SOURCE_LIMIT if relative == '.env' else CORPUS_LIMIT
     if (target.resolve() != physical.absolute() or target.is_symlink()
@@ -31,7 +31,7 @@ def _target(memory, relative):
 
 def _marker(memory):
     marker = memory.root / 'skills/_LIFEOS'
-    if marker.is_symlink() or marker.resolve() != marker.absolute():
+    if marker.is_symlink() or marker.resolve() != memory.physical_root / 'skills/_LIFEOS':
         raise MemoryUnavailable('The private hash consumer changes its installed path')
     return marker.exists()
 

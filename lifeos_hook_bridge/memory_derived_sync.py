@@ -40,7 +40,7 @@ def publication_paths(memory, scope):
 
 def _directory(memory, relative, *, system=False):
     path = memory.root / relative
-    physical = path.absolute() if system else memory.root.parent / '.config/LIFEOS/USER' / Path(relative).relative_to('LIFEOS/USER')
+    physical = memory.physical_root / relative if system else memory.root.parent / '.config/LIFEOS/USER' / Path(relative).relative_to('LIFEOS/USER')
     if path.resolve() != physical or path.is_symlink() or path.exists() and not path.is_dir():
         raise MemoryUnavailable('Derivative source directory changes its installed path')
     if not path.exists():
@@ -118,7 +118,7 @@ def _collect(memory, scope, connection):
         if projection is not None and not memory._filter_history(connection, scope, projection,
                 value['ts'], reviewed=True)['excluded']:
             lines.append(line)
-    return {'hashes': hashes, 'pages': pages, 'state': state, 'lines': lines,
+    return {'hashes': hashes, 'pages': pages, 'state': state, 'lines': lines, 'root_binding': str(memory.physical_root),
             'raw_signature': _signature([row[0] for row in rows]),
             'tracking_signature': _signature([state_bytes.hex() if state_bytes is not None else None, log_bytes.hex()])}
 

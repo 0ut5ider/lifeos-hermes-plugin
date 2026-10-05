@@ -1,0 +1,13 @@
+# Managed memory through the Hermes profile alias
+
+Date: 2026-10-04. This gate uses isolated synthetic data and the real native commands. It reproduces the intended `.claude` alias to `.hermes` used by the `.212` layout. It does not change the server.
+
+The [baseline](before-output.txt) fails two owner cases and passes the redirected PULSE-directory control. The [checker probe](probe-output.txt) reproduces three actual refusals: PULSE source-directory inspection, the private hash-consumer marker, and fixed environment publication. Each checker compares a resolved child path with an unresolved path below the configured root. The top-level alias makes those paths differ.
+
+`NativeMemory` captures the resolved configured root for each operation. Fixed system sources and publications, the hash consumer, and PULSE source directories compare against that anchor. The existing physical USER_DATA checks continue to govern USER and MEMORY. The operation boundary refuses a root change. Derivative plan signatures include the resolved root binding and reject reuse after a later alias retarget.
+
+The [first candidate](candidate-output.txt) passes the three baseline methods. The [expanded gate](expanded-output.txt) passes seven methods. It verifies native plan, hash review and publication, admitted system-source readback, redirected source/environment/consumer/PULSE refusals, changed-root plan refusal, and actual native hash rendering followed by root retargeting. The hash operation withholds tokens and writes neither environment after that change.
+
+The [final regression](final-output.txt) passes 213 tests and 107 subtests in 386.54 seconds. It includes the preceding derivative gate, native operations, source and review boundaries, freshness publication, prompt publication, soul publication, private-token hashes, native backup/recovery, and distribution contracts. All recorded [final source hashes](final-command.json) match after the run. The [corrected checker probe](probe-correction-output.txt) accepts all three intended paths. The [recorder](controls-output.txt) saves seven passing [native controls](native-outcomes) without replacing native results. It preserves synthetic source and publication bytes; environment records omit generated salt values.
+
+This unit changes four Python product modules. The preceding 44-file native patch and its distributed fixture remain unchanged. This gate does not establish all profile services, aggregate ownership cutover, model behavior, active jobs, import, voice, installation/update, or release readiness. PULSE adapter admission remains the next measured native boundary. No external configuration, ownership, sharing, or deployment changes occur.

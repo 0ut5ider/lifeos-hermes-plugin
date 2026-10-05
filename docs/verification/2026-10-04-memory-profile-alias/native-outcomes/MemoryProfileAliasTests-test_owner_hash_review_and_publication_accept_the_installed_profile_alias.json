@@ -1,0 +1,87 @@
+{
+  "case": "test_owner_hash_review_and_publication_accept_the_installed_profile_alias",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": {
+        "content": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-h43exrnq/memory.json\"]}",
+        "mode": "0o600"
+      },
+      ".env": {
+        "content_without_salt": "SYNTHETIC_KEEP=fixture",
+        "size": 23,
+        "sha256": "942045937a466a4d257eb58c7f04b1ac0444b1c40a8117275dba4bb2f49e3a86",
+        "crlf": 0,
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": {
+        "content": "# Synthetic principal\nFixtureSurname FixtureGivenname\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-h43exrnq/memory.json\"]}",
+        "mode": "0o600"
+      },
+      "LIFEOS/USER/SECURITY/DENY_HASHES.json": {
+        "content": "{\"version\":1,\"algo\":\"sha256-salted-trunc24\",\"ngramSizes\":[1,2],\"minLen\":4,\"count\":1,\"generated\":\"DeriveDenyHashes.ts\",\"note\":\"Salted hashes of distinctive private tokens. No plaintext. Salt in .env (never ships).\",\"hashes\":[\"df82a66f9787f718e45a4d13\"]}\n",
+        "mode": "0o600"
+      },
+      ".env": {
+        "content_without_salt": "SYNTHETIC_KEEP=fixture",
+        "size": 102,
+        "sha256": "8c43bbfe353078f6e79abb43ee66664ec10d7334082bbc162abdcfe88b6910cf",
+        "crlf": 0,
+        "mode": "0o600"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-h43exrnq/.claude/LIFEOS/TOOLS/DeriveDenyHashes.ts",
+        "--dry-run",
+        "--show-tokens"
+      ],
+      "status": 0,
+      "stdout": "[DeriveDenyHashes] 1 corpus files -> 1 distinctive tokens\n[DeriveDenyHashes] --show-tokens (LOCAL review, NOT written to disk):\nfixturesurname fixturegivenname\n[DeriveDenyHashes] --dry-run: nothing written\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-h43exrnq/.claude/LIFEOS/TOOLS/DeriveDenyHashes.ts"
+      ],
+      "status": 0,
+      "stdout": "[DeriveDenyHashes] 1 corpus files -> 1 distinctive tokens\n[DeriveDenyHashes] generated DENYLIST_SALT in the installed environment\n[DeriveDenyHashes] wrote 1 salted hashes (no plaintext)\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

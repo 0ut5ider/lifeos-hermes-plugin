@@ -57,12 +57,15 @@ class MemoryConflict(MemoryUnavailable):
 class NativeMemory:
     def __init__(self, installed_root: Path, *, bun: str | None = None):
         self.root = Path(installed_root).absolute()
+        self.physical_root = self.root.resolve()
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
         self.transaction = MemoryTransaction(self.database.parent, self._publication_path)
 
     def _boundary(self) -> None:
+        if self.root.resolve() != self.physical_root:
+            raise MemoryUnavailable("The installed root alias changed during the memory operation")
         user = self.root.parent / ".config/LIFEOS/USER"
         if not user.is_dir():
             raise MemoryUnavailable("The native USER_DATA boundary is missing")
@@ -178,7 +181,7 @@ class NativeMemory:
         if name not in SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS | DENY_PUBLICATIONS:
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
-        if (path.resolve() != path.absolute() or path.is_symlink()
+        if (path.resolve() != self.physical_root / name or path.is_symlink()
                 or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
                                       or self.database.exists() and path.samefile(self.database))):
             raise MemoryUnavailable("The system publication changes its permitted owner path")
