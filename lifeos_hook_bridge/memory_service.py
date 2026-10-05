@@ -252,8 +252,8 @@ class MemoryService:
             if operation == 'canonical_corpus' and set(arguments) == {'root'}:
                 from .memory_canonical import corpus
                 return corpus(memory,scope,arguments['root'])
-            if operation in {'distill_read', 'distill_mark'}:
-                from .memory_distill import read, mark
+            if operation in {'distill_read', 'distill_mark', 'distill_prepare', 'distill_check', 'distill_publish'}:
+                from .memory_distill import read, mark, synthesis
 
                 def check_current():
                     current = self.configuration.load()
@@ -264,6 +264,8 @@ class MemoryService:
                     return read(memory, scope, **arguments, check_current=check_current)
                 if operation == 'distill_mark' and set(arguments) == {'path'}:
                     return mark(memory, scope, **arguments, check_current=check_current)
+                if operation.startswith(('distill_prepare', 'distill_check', 'distill_publish')):
+                    return synthesis(memory, scope, operation, arguments, check_current=check_current)
                 raise ValueError('Choose declared native distill arguments')
             if operation == 'read_freshness' and set(arguments) == {'view', 'path', 'slug'}:
                 from .memory_freshness import read

@@ -1,0 +1,17 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryDistillSynthesisTests.test_malformed_item_lane_returns_governed_refusal _
+tests/test_memory_distill_synthesis.py:162: in test_malformed_item_lane_returns_governed_refusal
+    result = service.native(context, 'distill_check', {'dryRun': True, 'date': prepared['date'],
+lifeos_hook_bridge/memory_service.py:268: in native
+    return synthesis(memory, scope, operation, arguments, check_current=check_current)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_distill.py:215: in synthesis
+    _synthesis_items(memory, scope, connection, arguments['items'], native['gather'])
+lifeos_hook_bridge/memory_distill.py:178: in _synthesis_items
+    if (not isinstance(item, dict) or set(item) - fields or item.get('lane') not in {'content', 'system', 'health'}
+                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+=========================== short test summary info ============================
+FAILED tests/test_memory_distill_synthesis.py::MemoryDistillSynthesisTests::test_malformed_item_lane_returns_governed_refusal
+1 failed in 2.66s

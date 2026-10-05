@@ -26,7 +26,15 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "distill_mark") {
+  if (input.action === "distill_prepare") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeDistill.ts")).href);
+    if (!object(module) || typeof module.prepareDistill !== "function" || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.path !== "string" || typeof source.content !== "string")
+        || !(input.state === null || object(input.state)) || !(input.config === null || object(input.config))) {
+      throw new Error("Native distill preparation requires declared state, configuration, and sources");
+    }
+    result = module.prepareDistill(input.state, input.config, input.sources);
+  } else if (input.action === "distill_mark") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeDistill.ts")).href);
     if (!object(module) || typeof module.markDistill !== "function" || typeof input.content !== "string"
         || !(input.state === null || object(input.state))) {

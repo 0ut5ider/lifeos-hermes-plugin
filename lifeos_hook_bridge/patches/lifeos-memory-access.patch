@@ -2628,7 +2628,7 @@ index 85c3d87..9fca5cd 100755
 +  process.exit(result.status);
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
-index 95a0676..b2c0b76 100644
+index 95a0676..7d77106 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
 @@ -29,6 +29,10 @@
@@ -2696,7 +2696,89 @@ index 95a0676..b2c0b76 100644
  }
  
  // ── headless run ──
-@@ -350,7 +360,40 @@ function argVal(args: string[], flag: string): string | undefined {
+@@ -240,8 +250,20 @@ function markFromDigest(digestPath: string): { slugs: number; items: number } {
+ const SYNTH_SYSTEM = `You are the Distill synthesizer for a personal knowledge archive. From the candidate notes JSON, produce the week's digest items. Rules: every item cites >=2 source note paths from the candidates (field "sources", exact paths); every item has a one-sentence plain-language "pitch" and a "why_now" line grounded in recency or cluster growth; lanes are "content" (could become a post/newsletter/video), "system" (an improvement to the AI system itself), "health" (archive-quality observation). Quality over quantity — return only items genuinely worth the principal's attention; zero items in a lane is a valid answer. Respond with ONLY a JSON object: {"items":[{"lane","title","pitch","why_now","sources",["suggested_format"],["recommendation"],["target_surface"]}]}`;
+ 
+ async function runHeadless(dryRun: boolean): Promise<void> {
+-  const cfg = loadConfig();
+-  const g = gather(cfg.windowDays, 100);
++  const managed = memoryAccess("distill_prepare", {dryRun},
++    (value): value is {ok: boolean; signature: string; date: string; config: DistillConfig; state: DistillState; gather: GatherResult} =>
++      memoryObject(value) && value.ok === true && typeof value.signature === "string" && typeof value.date === "string"
++      && memoryObject(value.config) && memoryObject(value.state) && memoryObject(value.gather)
++      && Array.isArray(value.gather.candidates) && Array.isArray(value.gather.hot_tags));
++  const cfg = managed?.config ?? loadConfig();
++  const g = managed?.gather ?? gather(cfg.windowDays, 100);
++  const date = managed?.date ?? today();
++  function checkCurrent(items?: DigestItem[]): void {
++    if (managed === undefined) return;
++    memoryAccess("distill_check", {signature: managed.signature, date, dryRun, items: items ?? null},
++      (value): value is {ok: boolean} => memoryObject(value) && value.ok === true);
++  }
++  checkCurrent();
+   if (g.candidates.length === 0) {
+     console.log("[distill] no fresh candidates in window — nothing to do");
+     return;
+@@ -265,8 +287,10 @@ async function runHeadless(dryRun: boolean): Promise<void> {
+     process.exit(1);
+   }
+ 
++  checkCurrent(items);
++
+   // enforce caps + item-level dedupe
+-  const st = loadState();
++  const st = managed?.state ?? loadState();
+   items = items.filter((i) => i.title && i.pitch && (i.sources?.length ?? 0) >= 1 && !st.item_hashes[itemHash(i.title)]);
+   const dropped = Math.max(0, items.length - cfg.maxDigestItems);
+   items = items.slice(0, cfg.maxDigestItems);
+@@ -282,6 +306,7 @@ async function runHeadless(dryRun: boolean): Promise<void> {
+   // route: content lane → gh issues
+   const routedContent: { item: DigestItem; dest: string }[] = [];
+   for (const item of content) {
++    checkCurrent(items);
+     let dest = "not filed — no contentRepo configured";
+     if (cfg.contentRepo) {
+       const body = `${item.pitch}\n\n**Why now:** ${item.why_now}\n\n**Sources:**\n${item.sources.map((s) => `- \`${s}\``).join("\n")}\n\n${item.suggested_format ? `**Suggested format:** ${item.suggested_format}\n\n` : ""}_Filed by Cortex Distill._`;
+@@ -294,6 +319,7 @@ async function runHeadless(dryRun: boolean): Promise<void> {
+   // route: system lane → Upgrades store
+   const routedSystem: { item: DigestItem; dest: string }[] = [];
+   for (const item of system) {
++    checkCurrent(items);
+     const res = addUpgrade({
+       claim: item.pitch,
+       source: "autonomous",
+@@ -305,12 +331,12 @@ async function runHeadless(dryRun: boolean): Promise<void> {
+   }
+ 
+   // digest
+-  mkdirSync(DIGESTS, { recursive: true });
+-  const digestPath = join(DIGESTS, `${today()}-distill.md`);
++  if (managed === undefined) mkdirSync(DIGESTS, { recursive: true });
++  const digestPath = join(DIGESTS, `${date}-distill.md`);
+   const section = (rows: { item: DigestItem; dest: string }[], empty: string) =>
+     rows.length === 0 ? `_empty — ${empty}_\n` : rows.map(({ item, dest }) =>
+       `### ${item.title}\n\n- ${item.pitch}\n- why now: ${item.why_now}\n- sources: ${item.sources.map((s) => `\`${s}\``).join(", ")}\n- routed: ${dest}\n`).join("\n");
+-  const digest = `# Cortex Distill — ${today()}
++  const digest = `# Cortex Distill — ${date}
+ 
+ > window ${g.window_days}d · ${g.scanned} notes scanned · ${g.candidates.length} candidates · ${g.excluded_surfaced} previously surfaced excluded${dropped ? ` · ${dropped} items dropped over cap` : ""}
+ 
+@@ -328,8 +354,12 @@ ${health.map((i) => `- ${i.pitch} (${i.sources.map((s) => `\`${s}\``).join(", ")
+ ${g.contradiction_candidates.map((p) => `- possible contradiction: \`${p.a}\` ↔ \`${p.b}\` (${p.shared_tags.join(", ")})`).join("\n")}
+ - deeper action: \`/knowledge develop\` · \`/knowledge contradictions\`
+ `;
+-  writeFileSync(digestPath, digest);
+-  const marked = markFromDigest(digestPath);
++  const published = managed === undefined ? undefined : memoryAccess("distill_publish",
++    {signature: managed.signature, date, dryRun, digest},
++    (value): value is {ok: boolean; counts: {slugs: number; items: number}} => memoryObject(value) && value.ok === true
++      && memoryObject(value.counts) && typeof value.counts.slugs === "number" && typeof value.counts.items === "number");
++  if (published === undefined) writeFileSync(digestPath, digest);
++  const marked = published?.counts ?? markFromDigest(digestPath);
+   console.log(JSON.stringify({ digest: digestPath, issues: routedContent.map((r) => r.dest), upgrades: routedSystem.map((r) => r.dest), marked }, null, 2));
+ 
+   // best-effort notification — Pulse may be down; never fail the run over it
+@@ -350,7 +380,47 @@ function argVal(args: string[], flag: string): string | undefined {
    return i >= 0 ? args[i + 1] : undefined;
  }
  
@@ -2723,6 +2805,13 @@ index 95a0676..b2c0b76 100644
 +  return gather(days, limit, notes, current);
 +}
 +
++export function prepareDistill(state: DistillState | null, config: Partial<DistillConfig> | null,
++  sources: {path: string; content: string}[]): Record<string, unknown> {
++  return {date: today(), state: state ?? {schema_version: 1, surfaced_slugs: {}, item_hashes: {}, last_run: null},
++    config: {maxIssues: 5, maxUpgrades: 5, maxDigestItems: 10, windowDays: 7, ...config},
++    gather: readDistill(["gather"], state, config, sources)};
++}
++
 +if (import.meta.main) {
  const [cmd, ...args] = process.argv.slice(2);
 +if (cmd === "gather" || cmd === "status") {
@@ -2737,7 +2826,7 @@ index 95a0676..b2c0b76 100644
  switch (cmd) {
    case "gather": {
      const cfg = loadConfig();
-@@ -361,7 +404,15 @@ switch (cmd) {
+@@ -361,7 +431,15 @@ switch (cmd) {
    }
    case "mark": {
      const p = argVal(args, "--digest");
@@ -2754,7 +2843,7 @@ index 95a0676..b2c0b76 100644
      console.log(JSON.stringify(markFromDigest(p)));
      break;
    }
-@@ -378,3 +429,5 @@ switch (cmd) {
+@@ -378,3 +456,5 @@ switch (cmd) {
      console.log("usage: KnowledgeDistill.ts gather [--days N] [--limit N] | mark --digest <path> | run [--headless] [--dry-run] | status");
      process.exit(cmd ? 1 : 0);
  }

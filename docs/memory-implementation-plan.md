@@ -2,6 +2,8 @@
 
 ## October 4 continuation
 
+The [headless synthesis gate](verification/2026-10-04-memory-distill-synthesis/README.md) passes 218 tests and 104 subtests. Native synthesis uses current admitted notes, validates generated items, preserves native digest and state bytes, and journals both publications. Actual process death restores the previous pair. Scripted local HTTP establishes request assembly and selected effects. Live private model acceptance, other publishers, aggregate recovery, and ownership activation remain open.
+
 Adrian directs work to proceed through steps 2 to 7 of the [full experience plan](full-experience-release-plan.md). Hook compatibility remains a combined release gate. Candidate feature work proceeds without changing the active `.212` installation.
 
 The [verified resume gate](verification/2026-10-04-memory-resume/README.md) passes 100 tests and 68 subtests. Fact-only restart admission preserves a stale generation until foreground request repair. Applied identity proposals cannot use that refresh. Actual SDK and complete Hermes process checks preserve the transcript while excluding the retired claim from the next model request.
