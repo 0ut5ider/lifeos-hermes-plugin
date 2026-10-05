@@ -26,7 +26,16 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "pulse_manifest" || input.action === "pulse_sources") {
+  if (input.action === "distill_read") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeDistill.ts")).href);
+    if (!object(module) || typeof module.readDistill !== "function" || !Array.isArray(input.args)
+        || input.args.some(arg => typeof arg !== "string") || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.path !== "string" || typeof source.content !== "string")
+        || !(input.state === null || object(input.state)) || !(input.config === null || object(input.config))) {
+      throw new Error("Native distill read requires declared arguments and sources");
+    }
+    result = {value: module.readDistill(input.args, input.state, input.config, input.sources)};
+  } else if (input.action === "pulse_manifest" || input.action === "pulse_sources") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/lib/manifest-loader.ts")).href);
     if (!object(module) || typeof module.parseManifest !== "function" || typeof module.resolveSources !== "function") {
       throw new Error("Native PULSE manifest exports are unavailable");

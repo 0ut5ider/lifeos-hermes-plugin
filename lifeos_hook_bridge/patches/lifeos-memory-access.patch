@@ -2627,6 +2627,96 @@ index 85c3d87..9fca5cd 100755
 +  process.stderr.write(result.stderr);
 +  process.exit(result.status);
 +}
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
+index 95a0676..b470112 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeDistill.ts
+@@ -29,6 +29,10 @@
+  * ============================================================================
+  */
+ 
++// ABOUTME: Distills current native Knowledge notes into routed digest items.
++// ABOUTME: Admits managed read requests and preserves the native candidate parser.
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++
+ import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from "fs";
+ import { join } from "path";
+ import { homedir } from "os";
+@@ -124,9 +128,9 @@ function itemHash(title: string): string {
+ }
+ 
+ /** Minimal frontmatter parse — enough fields for candidate ranking; never writes. */
+-function parseNote(absPath: string, domain: string): NoteCandidate | null {
++function parseNote(absPath: string, domain: string, declared?: string): NoteCandidate | null {
+   let raw: string;
+-  try { raw = readFileSync(absPath, "utf-8"); } catch { return null; }
++  try { raw = declared ?? readFileSync(absPath, "utf-8"); } catch { return null; }
+   const m = raw.match(/^---\n([\s\S]*?)\n---\n?([\s\S]*)$/);
+   if (!m) return null;
+   const fm = m[1];
+@@ -158,11 +162,11 @@ function parseNote(absPath: string, domain: string): NoteCandidate | null {
+ 
+ // ── gather ──
+ 
+-function gather(days: number, limit: number): GatherResult {
+-  const state = loadState();
++function gather(days: number, limit: number, declared?: NoteCandidate[], declaredState?: DistillState): GatherResult {
++  const state = declaredState ?? loadState();
+   const cutoff = new Date(Date.now() - days * 86400_000);
+-  const all: NoteCandidate[] = [];
+-  for (const d of DOMAINS) {
++  const all: NoteCandidate[] = declared ?? [];
++  if (declared === undefined) for (const d of DOMAINS) {
+     const dir = join(KNOWLEDGE, d);
+     if (!existsSync(dir)) continue;
+     for (const f of readdirSync(dir).filter((f) => f.endsWith(".md") && !f.startsWith("_"))) {
+@@ -350,7 +354,40 @@ function argVal(args: string[], flag: string): string | undefined {
+   return i >= 0 ? args[i + 1] : undefined;
+ }
+ 
++export function readDistill(args: string[], state: DistillState | null, config: Partial<DistillConfig> | null,
++  sources: {path: string; content: string}[]): GatherResult | Record<string, unknown> {
++  const current = state ?? {schema_version: 1, surfaced_slugs: {}, item_hashes: {}, last_run: null};
++  const settings = {maxIssues: 5, maxUpgrades: 5, maxDigestItems: 10, windowDays: 7, ...config};
++  const [cmd, ...flags] = args;
++  if (cmd === "status") return {last_run: current.last_run, surfaced_slugs: Object.keys(current.surfaced_slugs).length,
++    item_hashes: Object.keys(current.item_hashes).length, config: settings};
++  if (cmd !== "gather") throw new Error("Choose a supported distill read command");
++  const days = Number(argVal(flags, "--days") ?? settings.windowDays);
++  const limit = Number(argVal(flags, "--limit") ?? 100);
++  if (!Number.isFinite(days) || days <= 0 || days > 36500 || !Number.isInteger(limit) || limit < 0 || limit > 2048) {
++    throw new Error("Choose bounded distill days and candidate count");
++  }
++  const notes: NoteCandidate[] = [];
++  for (const source of sources) {
++    const domain = source.path.split("/").at(-2);
++    if (!domain || !DOMAINS.includes(domain)) continue;
++    const note = parseNote(source.path, domain, source.content);
++    if (note) notes.push(note);
++  }
++  return gather(days, limit, notes, current);
++}
++
++if (import.meta.main) {
+ const [cmd, ...args] = process.argv.slice(2);
++if (cmd === "gather" || cmd === "status") {
++  const governed = memoryAccess("distill_read", {args: [cmd, ...args]},
++    (value): value is {ok: boolean; value: Record<string, unknown>} => memoryObject(value) && value.ok === true && memoryObject(value.value));
++  if (governed !== undefined) {
++    console.log(JSON.stringify(governed.value, null, 2));
++    process.exit(0);
++  }
++}
++
+ switch (cmd) {
+   case "gather": {
+     const cfg = loadConfig();
+@@ -378,3 +415,5 @@ switch (cmd) {
+     console.log("usage: KnowledgeDistill.ts gather [--days N] [--limit N] | mark --digest <path> | run [--headless] [--dry-run] | status");
+     process.exit(cmd ? 1 : 0);
+ }
++
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
 index 310662c..efd332b 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts

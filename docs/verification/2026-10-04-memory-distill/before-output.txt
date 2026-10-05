@@ -1,0 +1,34 @@
+F..FFF                                                                 [100%]
+=================================== FAILURES ===================================
+________ MemoryDistillTests.test_forgotten_note_is_excluded_from_gather ________
+tests/test_memory_distill.py:58: in test_forgotten_note_is_excluded_from_gather
+    self.assertEqual(value['scanned'], 0)
+E   AssertionError: 1 != 0
+_ MemoryDistillTests.test_missing_context_refuses_gather_and_status (args=('gather', '--days', '36500')) _
+tests/test_memory_distill.py:51: in test_missing_context_refuses_gather_and_status
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryDistillTests.test_missing_context_refuses_gather_and_status (args=('status',)) _
+tests/test_memory_distill.py:51: in test_missing_context_refuses_gather_and_status
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+____ MemoryDistillTests.test_restricted_reader_refuses_unclassified_gather _____
+tests/test_memory_distill.py:78: in test_restricted_reader_refuses_unclassified_gather
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+____________ MemoryDistillTests.test_revoked_account_refuses_gather ____________
+tests/test_memory_distill.py:72: in test_revoked_account_refuses_gather
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+______ MemoryDistillTests.test_unregistered_note_is_excluded_from_gather _______
+tests/test_memory_distill.py:66: in test_unregistered_note_is_excluded_from_gather
+    self.assertEqual(value['scanned'], 1)
+E   AssertionError: 2 != 1
+=========================== short test summary info ============================
+FAILED tests/test_memory_distill.py::MemoryDistillTests::test_forgotten_note_is_excluded_from_gather
+SUBFAILED(args=('gather', '--days', '36500')) tests/test_memory_distill.py::MemoryDistillTests::test_missing_context_refuses_gather_and_status
+SUBFAILED(args=('status',)) tests/test_memory_distill.py::MemoryDistillTests::test_missing_context_refuses_gather_and_status
+FAILED tests/test_memory_distill.py::MemoryDistillTests::test_restricted_reader_refuses_unclassified_gather
+FAILED tests/test_memory_distill.py::MemoryDistillTests::test_revoked_account_refuses_gather
+FAILED tests/test_memory_distill.py::MemoryDistillTests::test_unregistered_note_is_excluded_from_gather
+6 failed, 2 passed in 3.11s
