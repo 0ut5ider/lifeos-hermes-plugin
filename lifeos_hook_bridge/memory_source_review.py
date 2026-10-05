@@ -2,6 +2,7 @@
 # ABOUTME: Keeps source approvals bound to current retirement state without storing another fact body.
 import hashlib
 import json
+from pathlib import Path
 import re
 
 from .memory_access import MemoryUnavailable, _now
@@ -9,7 +10,7 @@ from .memory_policy import CATEGORIES
 from .memory_sources import (CONTEXT_FILES, TELOS_SOURCES, FRESHNESS_TELOS_SOURCES, is_state_source,
                              SYSTEM_FILES, SYSTEM_PREFIXES, CORPUS_LIMIT,
                              SOURCE_COUNT_LIMIT, _markdown_source, _text_source, authorize,
-                             is_evidence_source, json_projection)
+                             is_evidence_source, json_projection, markdown_projection, INTERVIEW_SETUP_FILES)
 
 
 def _digest(value):
@@ -22,6 +23,8 @@ def _source_digest(memory, scope, relative, content):
 
 
 def _classification(relative):
+    if relative in INTERVIEW_SETUP_FILES:
+        return 'interview_setup'
     if is_evidence_source(relative):
         return 'evidence'
     if relative in CONTEXT_FILES | TELOS_SOURCES | FRESHNESS_TELOS_SOURCES or is_state_source(relative):
@@ -64,10 +67,14 @@ def _snapshot(memory, connection, scope, paths):
         if relative.startswith('/') or any(part in ('.', '..', '') for part in relative.split('/')):
             raise ValueError('Source review needs exact installation-relative paths')
         classification = _classification(relative)
-        source, timestamp = (_text_source(memory, scope, str(memory.root / relative), suffix='.json', evidence=True)
+        source, timestamp = (_text_source(memory, scope, str(memory.root / relative),
+                                         suffix=Path(relative).suffix, interview_setup=True)
+                             if classification == 'interview_setup' else
+                             _text_source(memory, scope, str(memory.root / relative), suffix='.json', evidence=True)
                              if classification == 'evidence' else
                              _markdown_source(memory, scope, str(memory.root / relative)))
-        projection = json_projection(source['content']) if classification == 'evidence' else source['content']
+        projection = (json_projection(source['content']) if classification == 'evidence' else
+                      markdown_projection(memory, relative, source['content']))
         total += len(source['content'].encode())
         if total > CORPUS_LIMIT:
             raise MemoryUnavailable('The reviewed sources exceed their transport limit')

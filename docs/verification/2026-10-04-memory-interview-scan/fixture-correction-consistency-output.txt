@@ -1,0 +1,22 @@
+.                                                                    [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewScanConsistencyTests.test_post_render_source_owner_installation_and_evidence_changes_refuse_delivery (mode='installation') _
+tests/test_memory_interview_scan_consistency.py:24: in test_post_render_source_owner_installation_and_evidence_changes_refuse_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : Traceback (most recent call last):
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_interview_scan_process.py", line 40, in <module>
+E       assert len(rendered) == 1
+E              ^^^^^^^^^^^^^^^^^^
+E   AssertionError
+_ MemoryInterviewScanConsistencyTests.test_post_render_source_owner_installation_and_evidence_changes_refuse_delivery (mode='evidence') _
+tests/test_memory_interview_scan_consistency.py:24: in test_post_render_source_owner_installation_and_evidence_changes_refuse_delivery
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : Traceback (most recent call last):
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_interview_scan_process.py", line 40, in <module>
+E       assert len(rendered) == 1
+E              ^^^^^^^^^^^^^^^^^^
+E   AssertionError
+=========================== short test summary info ============================
+SUBFAILED(mode='installation') tests/test_memory_interview_scan_consistency.py::MemoryInterviewScanConsistencyTests::test_post_render_source_owner_installation_and_evidence_changes_refuse_delivery
+SUBFAILED(mode='evidence') tests/test_memory_interview_scan_consistency.py::MemoryInterviewScanConsistencyTests::test_post_render_source_owner_installation_and_evidence_changes_refuse_delivery
+2 failed, 1 passed, 2 subtests passed in 4.19s

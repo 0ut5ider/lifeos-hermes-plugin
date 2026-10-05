@@ -1,0 +1,39 @@
+F...F.FF.                                                             [100%]
+=================================== FAILURES ===================================
+____ MemoryInterviewScanTests.test_foreign_identity_source_refuses_scoring _____
+tests/test_memory_interview_scan.py:67: in test_foreign_identity_source_refuses_scoring
+    self.assertNotEqual(self.call('--file', 'DA_IDENTITY').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryInterviewScanTests.test_foreign_setup_sources_refuse_scoring (name='.env/credentials') _
+tests/test_memory_interview_scan.py:77: in test_foreign_setup_sources_refuse_scoring
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryInterviewScanTests.test_foreign_setup_sources_refuse_scoring (name='PULSE.toml/voice') _
+tests/test_memory_interview_scan.py:77: in test_foreign_setup_sources_refuse_scoring
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryInterviewScanTests.test_foreign_setup_sources_refuse_scoring (name='WORK/config') _
+tests/test_memory_interview_scan.py:77: in test_foreign_setup_sources_refuse_scoring
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryInterviewScanTests.test_old_identity_after_retirement_requires_exact_source_review _
+tests/test_memory_interview_scan.py:82: in test_old_identity_after_retirement_requires_exact_source_review
+    self.assertEqual(self.target('DA_IDENTITY')['content_length'], 0)
+E   AssertionError: 54 != 0
+___ MemoryInterviewScanTests.test_private_identity_cannot_influence_scoring ____
+tests/test_memory_interview_scan.py:56: in test_private_identity_cannot_influence_scoring
+    self.assertEqual(value['content_length'], 0)
+E   AssertionError: 1069 != 0
+_ MemoryInterviewScanTests.test_private_unified_telos_cannot_influence_scoring _
+tests/test_memory_interview_scan.py:61: in test_private_unified_telos_cannot_influence_scoring
+    self.assertEqual(self.target('Mission')['content_length'], 0)
+E   AssertionError: 800 != 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_foreign_identity_source_refuses_scoring
+SUBFAILED(name='.env/credentials') tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_foreign_setup_sources_refuse_scoring
+SUBFAILED(name='PULSE.toml/voice') tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_foreign_setup_sources_refuse_scoring
+SUBFAILED(name='WORK/config') tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_foreign_setup_sources_refuse_scoring
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_old_identity_after_retirement_requires_exact_source_review
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_private_identity_cannot_influence_scoring
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_private_unified_telos_cannot_influence_scoring
+7 failed, 5 passed in 88.07s (0:01:28)

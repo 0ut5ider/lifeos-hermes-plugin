@@ -1,0 +1,14 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewScanTests.test_escaped_private_assistant_name_cannot_reach_scan_prompts _
+tests/test_memory_interview_scan.py:101: in test_escaped_private_assistant_name_cannot_reach_scan_prompts
+    self.assertNotIn('SyntheticPrivateScanName', self.successful('--next').stdout)
+E   AssertionError: 'SyntheticPrivateScanName' unexpectedly found in '📋 DA_IDENTITY  —  100% complete  ·  PHASE 0 — Setup (DA / Principal / voice / credentials / projects / work repo)\nFile: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-a1v4ihr6/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\nLeverage: 10/10  ·  Priority: 2020  ·  REVIEW mode — read file, ask what to update/refine/add\nWhy incomplete: sparse content\n\nReview approach (<private>SyntheticPrivateScanName</private> reads file first, then asks):\n  - "Here\'s what you\'ve got in DA_IDENTITY. Anything outdated? Sharpen / refine?"\n  - "Any recent thinking that should be captured here?"\n  - "Anything missing from a category that should exist?"\n'
+_ MemoryInterviewScanTests.test_escaped_retired_assistant_name_cannot_reach_scan_prompts _
+tests/test_memory_interview_scan.py:106: in test_escaped_retired_assistant_name_cannot_reach_scan_prompts
+    self.assertNotIn('Synthetic retired evidence work', self.successful('--next').stdout)
+E   AssertionError: 'Synthetic retired evidence work' unexpectedly found in '📋 DA_IDENTITY  —  100% complete  ·  PHASE 0 — Setup (DA / Principal / voice / credentials / projects / work repo)\nFile: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-d7on7pw9/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\nLeverage: 10/10  ·  Priority: 2020  ·  REVIEW mode — read file, ask what to update/refine/add\nWhy incomplete: sparse content\n\nReview approach (Synthetic retired evidence work reads file first, then asks):\n  - "Here\'s what you\'ve got in DA_IDENTITY. Anything outdated? Sharpen / refine?"\n  - "Any recent thinking that should be captured here?"\n  - "Anything missing from a category that should exist?"\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_escaped_private_assistant_name_cannot_reach_scan_prompts
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_escaped_retired_assistant_name_cannot_reach_scan_prompts
+2 failed, 9 deselected in 35.31s

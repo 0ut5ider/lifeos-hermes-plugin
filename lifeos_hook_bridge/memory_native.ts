@@ -26,7 +26,42 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "interview_completion") {
+  if (input.action === "interview_scan_name") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewScan.ts")).href);
+    if (!object(module) || typeof module.renderScanName !== "function" || !(input.content === null || typeof input.content === "string")) {
+      throw new Error("Native interview naming requires declared identity text");
+    }
+    result = {name: module.renderScanName(input.content)};
+  } else if (input.action === "interview_scan") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewScan.ts")).href);
+    const evidence: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/StateEvidence.ts")).href);
+    if (!object(module) || typeof module.renderInterviewScan !== "function" || !object(evidence)
+        || typeof evidence.gatherEvidence !== "function" || typeof input.name !== "string"
+        || !Array.isArray(input.args) || input.args.some(arg => typeof arg !== "string") || !Array.isArray(input.sources)
+        || !(input.evidence === null || object(input.evidence) && Array.isArray(input.evidence.sources)
+          && (input.evidence.gitCommits === null || Array.isArray(input.evidence.gitCommits)
+            && input.evidence.gitCommits.every(date => typeof date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(date))))) {
+      throw new Error("Native interview scan requires declared text, evidence, and arguments");
+    }
+    function declared(values: unknown[]): Record<string, {path: string; content: string; lastModified: string}> {
+      const sources: Record<string, {path: string; content: string; lastModified: string}> = {};
+      for (const source of values) {
+        if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string"
+            || typeof source.lastModified !== "string" || Object.hasOwn(sources, source.path)) {
+          throw new Error("Native interview scan requires distinct declared source bytes and dates");
+        }
+        sources[source.path] = {path: source.path, content: source.content, lastModified: source.lastModified};
+      }
+      return sources;
+    }
+    let observed = null;
+    if (object(input.evidence)) {
+      const sources: Record<string, string> = {};
+      for (const value of Object.values(declared(input.evidence.sources))) sources[value.path] = value.content;
+      observed = evidence.gatherEvidence(new Date(), {sources, gitCommits: input.evidence.gitCommits});
+    }
+    result = module.renderInterviewScan(input.args, {sources: declared(input.sources), name: input.name, evidence: observed});
+  } else if (input.action === "interview_completion") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewDue.ts")).href);
     if (!object(module) || typeof module.renderInterviewCompletion !== "function" || typeof input.now !== "string") {
       throw new Error("Native interview completion needs its declared date");

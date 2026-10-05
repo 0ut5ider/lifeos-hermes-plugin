@@ -1834,6 +1834,189 @@ index 130c96c..246c93a 100644
  }
  
  // ---------- CLI ----------
+diff --git a/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts b/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts
+index 85c3d87..9fca5cd 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts
+@@ -27,7 +27,10 @@ import { readFileSync, existsSync } from "fs";
+ import { join } from "path";
+ import { readTelosFreshness, readStateFreshness, sectionSlug, legacyTelosFilePath, daysBetween, type SectionFreshness } from "./TelosFreshness";
+ import { homedir } from "node:os";
+-import { getDAName } from "../../hooks/lib/identity";
++import { getDAName, getDefaultIdentity } from "../../hooks/lib/identity";
++import { parse as parseYaml } from "yaml";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import type { FreshnessSources } from "./TelosFreshness";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -41,7 +44,44 @@ const LIFEOS_DIR = process.env.LIFEOS_DIR || join(HOME, ".claude", "LIFEOS");
+ const USER_DIR = join(LIFEOS_DIR, "USER");
+ const TELOS_DIR = join(USER_DIR, "TELOS");
+ const TELOS_PATH = join(TELOS_DIR, "TELOS.md");
+-const DA_NAME = getDAName();
++export interface ScanInput {
++  sources: FreshnessSources;
++  name: string;
++  evidence: {domains?: Record<string, {sources?: Array<{id?: string; status?: string; last_observation?: string}>}>} | null;
++}
++
++export interface ScanResult {
++  status: number;
++  stdout: string;
++  stderr: string;
++}
++
++export function renderScanName(content: string | null): string {
++  try {
++    const match = content?.match(/^---\n([\s\S]*?)\n---/);
++    const front: unknown = match ? parseYaml(match[1]) : null;
++    if (memoryObject(front) && memoryObject(front.core) && typeof front.core.name === "string" && front.core.name) {
++      return front.core.name;
++    }
++  } catch {
++    return getDefaultIdentity().name;
++  }
++  return getDefaultIdentity().name;
++}
++
++export function renderInterviewScan(args: string[], input?: ScanInput): ScanResult {
++const DA_NAME = input ? input.name : getDAName();
++
++function readSource(path: string): string | null {
++  if (input) return input.sources[path]?.content ?? null;
++  return existsSync(path) ? readFileSync(path, "utf-8") : null;
++}
++
++function response(stdout: string): ScanResult {
++  return {status: 0, stdout: stdout + "\n", stderr: ""};
++}
++
++
+ 
+ type Category = "setup" | "foundational" | "ideal_state" | "current_state" | "preference" | "identity";
+ 
+@@ -259,9 +299,9 @@ const PLACEHOLDER_PATTERNS = [
+ const PHASE_BOOST: Record<Phase, number> = { 0: 2000, 1: 1000, 2: 200, 3: 50, 4: 300, 9: 0 };
+ 
+ const TELOS_SECTION_PREFIX = `${TELOS_PATH}#`;
+-const TELOS_CONTENT = existsSync(TELOS_PATH) ? readFileSync(TELOS_PATH, "utf-8") : "";
++const TELOS_CONTENT = readSource(TELOS_PATH) ?? "";
+ const TELOS_SECTIONS = parseTelosSections(TELOS_CONTENT);
+-const freshness = readTelosFreshness();
++const freshness = readTelosFreshness(TELOS_PATH, input?.sources);
+ const freshnessBySlug = new Map<string, SectionFreshness>(freshness.sections.map((sf) => [sf.slug, sf]));
+ 
+ function parseTelosSections(content: string): Map<string, string> {
+@@ -296,10 +336,11 @@ function extractSectionBody(target: RegistryTarget, sections: Map<string, string
+   const slug = sectionSlug(target.name);
+   const h2Body = sections.get(slug) ?? null;
+ 
+-  const legacyPath = legacyTelosFilePath(slug, TELOS_PATH);
++  const legacyPath = legacyTelosFilePath(slug, TELOS_PATH, input?.sources);
+   if (legacyPath) {
+     try {
+-      const raw = readFileSync(legacyPath, "utf-8");
++      const raw = readSource(legacyPath);
++      if (raw === null) return h2Body;
+       // Strip frontmatter so a file carrying only `---\nlast_updated: ...\n---`
+       // reads as empty rather than as content.
+       const body = raw.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, "");
+@@ -334,14 +375,14 @@ function scoreFile(target: RegistryTarget): Target {
+     why_incomplete: [],
+   };
+ 
+-  if (!existsSync(target.path)) {
++  const content = readSource(target.path);
++  if (content === null) {
+     result.why_incomplete.push("file does not exist");
+     result.completeness_score = 0;
+     result.priority = PHASE_BOOST[target.phase] + target.leverage * 2 + 100;
+     return result;
+   }
+ 
+-  const content = readFileSync(target.path, "utf-8");
+   result.content_length = content.length;
+ 
+   for (const pattern of PLACEHOLDER_PATTERNS) {
+@@ -511,6 +552,7 @@ type EvidenceCache = {
+ };
+ 
+ function readEvidenceCache(): EvidenceCache | null {
++  if (input) return input.evidence;
+   try {
+     return JSON.parse(readFileSync(EVIDENCE_CACHE_PATH, "utf-8")) as EvidenceCache;
+   } catch {
+@@ -550,7 +592,7 @@ function oldestObservation30(cache: EvidenceCache | null, domain: string): Date
+ function stateTargets(): Target[] {
+   const evidence = readEvidenceCache();
+   const now = new Date();
+-  const state = readStateFreshness();
++  const state = readStateFreshness(input?.sources);
+ 
+   return state.files.map((f) => {
+     const isCurrent = f.slug.startsWith("current_state_");
+@@ -708,8 +750,7 @@ function formatNext(targets: Target[]): string {
+ 
+ // ─── Main ───
+ 
+-function main(): void {
+-  const args = process.argv.slice(2);
++function main(): ScanResult {
+   const includeDeferred = args.includes("--include-deferred");
+   const phaseIdx = args.indexOf("--phase");
+   const phaseFilter = phaseIdx !== -1 ? Number(args[phaseIdx + 1]) : null;
+@@ -718,12 +759,10 @@ function main(): void {
+     const idx = args.indexOf("--file");
+     const match = REGISTRY.find((t) => t.path === args[idx + 1] || t.name === args[idx + 1]);
+     if (!match) {
+-      console.error(`Not found: ${args[idx + 1]}`);
+-      process.exit(1);
++      return {status: 1, stdout: "", stderr: `Not found: ${args[idx + 1]}\n`};
+     }
+     const scored = scoreTarget(match);
+-    console.log(JSON.stringify(scored, null, 2));
+-    return;
++    return response(JSON.stringify(scored, null, 2));
+   }
+ 
+   let scored = [...REGISTRY.map(scoreTarget), ...stateTargets()];
+@@ -743,12 +782,31 @@ function main(): void {
+   });
+ 
+   if (args.includes("--json")) {
+-    console.log(formatJson(scored));
++    return response(formatJson(scored));
+   } else if (args.includes("--next")) {
+-    console.log(formatNext(scored));
++    return response(formatNext(scored));
+   } else {
+-    console.log(formatHuman(scored));
++    return response(formatHuman(scored));
+   }
+ }
+ 
+-main();
++return main();
++}
++
++if (import.meta.main) {
++  const args = process.argv.slice(2);
++  const governed = memoryAccess("interview_scan", {args},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  let result: ScanResult;
++  if (governed === undefined) result = renderInterviewScan(args);
++  else {
++    if (governed.ok !== true || !memoryObject(governed.result) || typeof governed.result.status !== "number"
++        || typeof governed.result.stdout !== "string" || typeof governed.result.stderr !== "string") {
++      throw new Error("Interview scan is unavailable under the current policy");
++    }
++    result = {status: governed.result.status, stdout: governed.result.stdout, stderr: governed.result.stderr};
++  }
++  process.stdout.write(result.stdout);
++  process.stderr.write(result.stderr);
++  process.exit(result.status);
++}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts
 index 310662c..efd332b 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts

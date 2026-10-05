@@ -41,6 +41,7 @@ SOURCE_COUNT_LIMIT = 2048
 EVIDENCE_FILES = frozenset({'LIFEOS/USER/HEALTH/current.json', 'LIFEOS/USER/FINANCES/expenses.json',
                             'LIFEOS/MEMORY/STATE/work.json', 'LIFEOS/MEMORY/STATE/interview.json'})
 EVIDENCE_DIRECTORIES = frozenset({'LIFEOS/USER/HEALTH/DATA/oura', 'LIFEOS/USER/CONDUIT/daily'})
+INTERVIEW_SETUP_FILES = frozenset({'.env', 'LIFEOS/PULSE/PULSE.toml', 'LIFEOS/USER/WORK/config.yaml'})
 
 
 def is_evidence_source(relative):
@@ -81,7 +82,8 @@ def authorize(scope: MemoryScope) -> dict[str, Any]:
 
 
 def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = False,
-                 require_file: bool = True, evidence: bool = False) -> tuple[Path, str]:
+                 require_file: bool = True, evidence: bool = False,
+                 interview_setup: bool = False) -> tuple[Path, str]:
     authorize(scope)
     if not isinstance(path,str):
         raise MemoryUnavailable('A supported native source path is required')
@@ -89,8 +91,12 @@ def _source_path(memory, scope: MemoryScope, path: str, *, diagnostic: bool = Fa
     if '..' in Path(relative).parts:
         raise MemoryUnavailable('The native source cannot leave its installed root')
     system = (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
-              or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative) is not None)
-    if evidence:
+              or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative) is not None
+              or interview_setup and relative in {'.env', 'LIFEOS/PULSE/PULSE.toml'})
+    if interview_setup:
+        directory = False
+        permitted = relative in INTERVIEW_SETUP_FILES
+    elif evidence:
         directory = False
         permitted = is_evidence_source(relative)
     elif diagnostic:
@@ -124,8 +130,8 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
-def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False):
-    source, relative = _source_path(memory, scope, path, evidence=evidence)
+def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False):
+    source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup)
     if source.suffix != suffix:
         raise MemoryUnavailable('The declared wiki source must be native Markdown')
     before = source.stat()
@@ -139,7 +145,7 @@ def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidenc
     if ((before.st_dev, before.st_ino, before.st_size, before.st_mtime_ns)
             != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)):
         raise MemoryUnavailable('The native wiki source changed during collection')
-    _source_path(memory, scope, path, evidence=evidence)
+    _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup)
     if len(content.encode()) > SOURCE_LIMIT:
         raise MemoryUnavailable('The native wiki source exceeds the 256 KiB limit')
     return ({'path': path, 'relative': relative, 'content': content,
@@ -148,6 +154,15 @@ def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidenc
 
 def _markdown_source(memory, scope: MemoryScope, path: str):
     return _text_source(memory, scope, path)
+
+
+def markdown_projection(memory, relative, content):
+    if relative != 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md':
+        return content
+    name = memory._native('interview_scan_name', content=content)
+    if set(name) != {'name'} or not isinstance(name['name'], str):
+        raise MemoryUnavailable('Native identity admission returns an invalid assistant name')
+    return content + '\n' + name['name'] if len(name['name']) <= 256 else None
 
 
 def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None):
@@ -181,6 +196,7 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
     with (memory._transaction() if connection is None else nullcontext(connection)) as connection:
         sources = []
         timestamps = {}
+        projections = {}
         total = 0
         for path in paths:
             source, timestamp = _markdown_source(memory, scope, path)
@@ -189,17 +205,19 @@ def read_markdown(memory, scope: MemoryScope, paths: list[str], *, connection=No
             if total > CORPUS_LIMIT:
                 raise MemoryUnavailable('The declared native wiki sources exceed their transport limit')
             timestamps[path] = timestamp
+            projections[path] = markdown_projection(memory, source['relative'], source['content'])
             sources.append(source)
         if not sources:
             return []
         checked = memory._native('validate_source_batch',
-            contents=[source['content'] + '\n' + source['path'] for source in sources])['accepted']
+            contents=[(projections[source['path']] or '') + '\n' + source['path'] for source in sources])['accepted']
         admitted = []
         for source, accepted in zip(sources, checked, strict=True):
-            if accepted is not True:
+            if accepted is not True or projections[source['path']] is None:
                 continue
             relative = source['relative']
-            if not _admit(memory, connection, scope, source['content'], relative, timestamps[source['path']])['excluded']:
+            if not _admit(memory, connection, scope, source['content'], relative, timestamps[source['path']],
+                          projection=projections[source['path']])['excluded']:
                 admitted.append(source)
         return admitted
 
@@ -303,6 +321,9 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
         if relative in CONTEXT_FILES and len(content.encode('utf-8')) > 256 * 1024:
             raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
         timestamp = _source_time(source.stat())
+        projection = markdown_projection(memory, relative, content)
+        if projection is None:
+            return {**rejected, 'reason': 'Native identity admission rejected the source format'}
         if relative in LOG_FILES:
             return {'ok':True, 'content':_read_log(memory,connection,scope,relative,content,timestamp),
                     'excluded':False, 'historical':True}
@@ -311,12 +332,12 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
             values = ([json.loads(line) for line in content.splitlines() if line.strip()]
                       if source.suffix == '.jsonl' else [json.loads(content)])
             decoded = '\n'.join(text for value in values for text in _strings(value))
-        for text in (content,decoded) if decoded else (content,):
+        for text in (projection, decoded) if decoded else (projection,):
             checked = memory._validate({'type':'idea','title':'Native retained source','content':text},text,'project')
             if checked:
                 return {**rejected, 'reason':'Native validation rejected this source text'}
         filtered = _admit(memory, connection, scope, '\n'.join((content, decoded)) if decoded else content,
-                          relative, timestamp)
+                          relative, timestamp, projection='\n'.join((projection, decoded)) if decoded else projection)
         if filtered['excluded']:
             return {**rejected, 'reason':'This retained source predates a correction or contains a removed claim'}
         return {'ok':True, 'content':content, 'excluded':False, 'historical':relative.startswith('LIFEOS/MEMORY/LEARNING/')}

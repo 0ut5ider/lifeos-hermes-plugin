@@ -258,6 +258,15 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation == 'interview_scan' and set(arguments) == {'args'}:
+                from .memory_interview_scan import read
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Interview scan authority changed during rendering')
+
+                return read(memory, scope, **arguments, check_current=check_current)
             if operation in {'interview_due_inputs', 'interview_due_mark', 'interview_due_cache_write'}:
                 from .memory_interview import read, write
                 handlers = {'interview_due_inputs': (read, {'now', 'evidence_present'}),

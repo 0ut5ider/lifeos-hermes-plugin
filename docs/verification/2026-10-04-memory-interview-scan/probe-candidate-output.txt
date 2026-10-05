@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-interview-scan/probe_candidate.py", line 13, in <module>
+    result = MemoryService(test.fixture.fixture.fixture.configuration).native(
+        test.fixture.fixture.fixture.context, 'interview_scan', {'args': ['--json']})
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_service.py", line 262, in native
+    from .memory_interview_scan import read
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_interview_scan.py", line 42
+    if (valid != [True] or memory._filter_history(connection, scope, projection, identity['lastModified'],
+       ^
+SyntaxError: '(' was never closed
