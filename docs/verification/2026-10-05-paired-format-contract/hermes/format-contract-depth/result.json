@@ -1,0 +1,112 @@
+{
+  "before": {
+    "state": {
+      "last_fired_turn": 6,
+      "turn_count": 6,
+      "last_text": "PAIR_PRIOR_CONTRACT",
+      "schema_version": 1
+    },
+    "cache_present": true
+  },
+  "after": {
+    "state": {
+      "last_fired_turn": 7,
+      "turn_count": 7,
+      "last_text": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+      "schema_version": 1
+    },
+    "cache_preserved": true,
+    "hook_context": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+    "model_contract_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_134806_1a2f52",
+  "seconds": 10.505,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-depth",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-depth",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Give a detailed report."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.6.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.6.1 /home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-depth/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvRHJpZnRSZW1pbmRlci5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/DriftReminder.hook.ts": "3c92fa459d9a8b2f519b7acc3fc0b6ec6cc4364cf1b9f9f7e30516d3a0457ec5",
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/lib/banned-vocab.ts": "42fd8460fd6374abf6a0a19f5526834c9d38f99f59f0a7cf8b6bf661820ca4b8"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "7eb6356f529a482bc03c82693a397dd7b294eff3826ea5ac230f3b0d5dbb8135",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "f561b97317a54fc899472a8e2b2171907ebaf657a03493936c0c49a0a58bc26f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "1454ebbadf6a5fe5f09387f560fa43a044e828b47b816a8cdf65ea729cdf5977",
+    "fixture-events.jsonl": "54e9e54e867b6f16d3e72aa53bc3cef0a4b2cf6caa973f926e1fa046e83b0412",
+    "cli.log": "c5c187fe1476837a3dd5f7e43d6e62fe4f630665f41b21ee5c1b90c14ddc4899",
+    "before-state.json": "950c5dfc86b2ae7d0078dd015a20929cd8c495b7288ad0bacfa903ab721fd073",
+    "after-state.json": "9df10c4b89b33e22ff27fcfa8898dd8d21ea6896fb3d664528f65461fb133547",
+    "fixture-files-before.json": "30476d20a24a108bef415197802391c8a8f3d3d72ff5ea76111a8bb284b3c72c",
+    "fixture-files-after.json": "708ff550c974f64f661caa44475dfaa06626ae040e21fb2dcad647bad346bad0"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "before": {
+    "state": null,
+    "cache_present": false
+  },
+  "after": {
+    "state": {
+      "last_fired_turn": 1,
+      "turn_count": 1,
+      "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+      "schema_version": 1
+    },
+    "cache_preserved": true,
+    "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+    "model_contract_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_134724_dc2ec6",
+  "seconds": 9.404,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-empty",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-empty",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.6.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.6.1 /home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-empty/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvRHJpZnRSZW1pbmRlci5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/DriftReminder.hook.ts": "3c92fa459d9a8b2f519b7acc3fc0b6ec6cc4364cf1b9f9f7e30516d3a0457ec5",
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/lib/banned-vocab.ts": "42fd8460fd6374abf6a0a19f5526834c9d38f99f59f0a7cf8b6bf661820ca4b8"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "fb7d794f45cc46a9a013b0a8626fdc63adef6c24ace3c09e594fb8094fee3832",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1b41a0d416c02865cf9690cdf08208cfc439951f10307d9b4b765dc1f3ad483a",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "ee3eb88ab238836076ef9369766cbb7d1bf502def28503f5b161ecc24adca2c8",
+    "fixture-events.jsonl": "49bcde5cb571a0ba9b6d608c8599382ca96befec0c99a62428ece11085ca4890",
+    "cli.log": "c704a2a6ced958623c066c4a4b348245691408b836dedfe99fa60f1667c4b9c3",
+    "before-state.json": "c4e528491903a442d09bd996f5e397b54383e12c74117057b41bf269f394b8d8",
+    "after-state.json": "7d3543c6faa244f8c8ee149d01a20ff3e84f9cc4797a8780b5daa1d4e8ea94ef",
+    "fixture-files-before.json": "a734381ff93d5c3f72cb69d02d7177a5d374547fe35794c170c11d492d0f197e",
+    "fixture-files-after.json": "f20b8ddeff2bd6176e01c016dc519bf3520abb89f8ff8724428dfa075496acd4"
+  }
+}

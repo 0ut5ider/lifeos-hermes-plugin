@@ -22,4 +22,6 @@ The final configuration supplies a synthetic system instruction through native `
 
 The new characterization tests fail before implementation. The successful-response requirements also fail before the fixture permits model completion. The final focused suite passes 48 tests and eight subtests. No product code changes in this unit.
 
-These cases cover selected unmanaged feedback branches. Other rating syntax, system-message exclusions, missing context, write failure, very low ratings and FailureCapture, standing directives, complaints, ISA rating pulses, complete hook groups, managed-memory admission, and Discord remain open. The cumulative ledger contains 38 equal selected cases for 14 registrations. Complete compatibility remains unverified.
+These fixtures run the selected hook synchronously. The pinned SatisfactionCapture registration specifies asynchronous execution. The retained results establish the selected handler effects through real client events. They do not establish asynchronous timing or shutdown behavior.
+
+These cases cover selected unmanaged feedback branches. Asynchronous registration, other rating syntax, system-message exclusions, missing context, write failure, very low ratings and FailureCapture, standing directives, complaints, ISA rating pulses, complete hook groups, managed-memory admission, and Discord remain open. The cumulative ledger contains 38 equal selected cases for 14 registrations. Complete compatibility remains unverified.

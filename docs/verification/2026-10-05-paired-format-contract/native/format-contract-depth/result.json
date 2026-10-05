@@ -1,0 +1,105 @@
+{
+  "before": {
+    "state": {
+      "last_fired_turn": 6,
+      "turn_count": 6,
+      "last_text": "PAIR_PRIOR_CONTRACT",
+      "schema_version": 1
+    },
+    "cache_present": true
+  },
+  "after": {
+    "state": {
+      "last_fired_turn": 7,
+      "turn_count": 7,
+      "last_text": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+      "schema_version": 1
+    },
+    "cache_preserved": true,
+    "hook_context": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+    "model_contract_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "020fe2c2-4083-4696-a2d5-0c8130edfe8c",
+  "seconds": 2.524,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-format-contract-20261005/results/format-contract-depth",
+    "/home/lifeos-claude-ref/workspace/paired-format-contract-20261005/results/format-contract-depth",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Give a detailed report."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.6.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.6.1 /home/lifeos-claude-ref/workspace/paired-format-contract-20261005/results/format-contract-depth/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvRHJpZnRSZW1pbmRlci5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/DriftReminder.hook.ts": "4a7e48a1fb7f3080493f65229d3c83214f42c9802f55e3232f1b754f43e6f9fd",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/banned-vocab.ts": "42fd8460fd6374abf6a0a19f5526834c9d38f99f59f0a7cf8b6bf661820ca4b8"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "8d8a1fb425bd9f086980e36c4df80af431c7fc461cf870f4181ad9dcdeca4886",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "d765d30a5c01c44f9fd163d5d0947e7ff31c6b780f71b6bddf55749e432ce353",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "c3f533ff3ed75c792bb8577c9fbb42abf60c3ccf95fed83bfb0c25c22b4f07d3",
+    "fixture-events.jsonl": "e462f7a2e60141dc57bbba0d0a40d4c2271a078b694ac2840b6ddbc33ffd7a69",
+    "cli.log": "80d351f9fb1a1a73928a2a6b6ce14829fae64ba0e09d2d09bd5c97cda2022a46",
+    "before-state.json": "950c5dfc86b2ae7d0078dd015a20929cd8c495b7288ad0bacfa903ab721fd073",
+    "after-state.json": "9df10c4b89b33e22ff27fcfa8898dd8d21ea6896fb3d664528f65461fb133547",
+    "fixture-files-before.json": "38956ad6e2f2969ee96988d389da3122fa746189be2f6cb764866a720bb20937",
+    "fixture-files-after.json": "d48b607eb1fe7c5db554da1af1b6a0126a20ad370f29a3d8323c14664388f39d"
+  }
+}

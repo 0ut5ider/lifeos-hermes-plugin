@@ -1,0 +1,112 @@
+{
+  "before": {
+    "state": {
+      "last_fired_turn": 6,
+      "turn_count": 6,
+      "last_text": "PAIR_PRIOR_CONTRACT",
+      "schema_version": 1
+    },
+    "cache_present": true
+  },
+  "after": {
+    "state": {
+      "last_fired_turn": 7,
+      "turn_count": 7,
+      "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response was clean (3 lines).",
+      "schema_version": 1
+    },
+    "cache_preserved": true,
+    "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response was clean (3 lines).",
+    "model_contract_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_134736_d542c4",
+  "seconds": 8.969,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-clean",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-clean",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.6.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.6.1 /home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-clean/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvRHJpZnRSZW1pbmRlci5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/DriftReminder.hook.ts": "3c92fa459d9a8b2f519b7acc3fc0b6ec6cc4364cf1b9f9f7e30516d3a0457ec5",
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/lib/banned-vocab.ts": "42fd8460fd6374abf6a0a19f5526834c9d38f99f59f0a7cf8b6bf661820ca4b8"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "0ccd1f66f9013daf90fcda6a52281bc8f8669b7dc56f7bb614bd3a8dedde99ea",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "48ada45fd087ef3e8bc404339c93980fe3c35dbf03836a11f1743f198dc75858",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "96be31630411bc6642404e3fda4643c1637fd0a2fbd55ec60e2fdb416c6d2c86",
+    "fixture-events.jsonl": "f8a04136c12a9ace3094ed0520e001e5cd56b2fa861126bf2b1f9b44b0c2e6f8",
+    "cli.log": "158cef9537c8dc7cbd4dc92f99e86fe8c3a71680a07469330122d3e243d0f6a4",
+    "before-state.json": "950c5dfc86b2ae7d0078dd015a20929cd8c495b7288ad0bacfa903ab721fd073",
+    "after-state.json": "90bd149e159abea5f0070284bd3260b6438c070d6db5d2ecaba1de0409804af5",
+    "fixture-files-before.json": "f10486ca434862141103a3cbd60a011e3fb07f1e8fea7a2a36dc88f886253bf1",
+    "fixture-files-after.json": "41ce5d193209389c041b974a2de0a6206e695bfb2b900807504e38d199fdac8a"
+  }
+}

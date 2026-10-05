@@ -4,6 +4,7 @@ import unittest
 import json
 from pathlib import Path
 import tempfile
+import time
 
 from scripts.paired_lifecycle_effects import CASES, check_pair, make_fixture, state_snapshot
 
@@ -283,6 +284,10 @@ class PairedLifecycleFixtureTests(unittest.TestCase):
                 path = source / relative
                 path.parent.mkdir(parents=True, exist_ok=True)
                 path.write_text('Fixture source identity\n')
+        if name.startswith('format-contract-'):
+            path = source / 'hooks/lib/banned-vocab.ts'
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_text('Fixture source identity\n')
         home = base / 'home'
         definitions = make_fixture(home, name, source, base / 'trace.py')
         return home, json.loads((home / '.claude/settings.json').read_text()), definitions
@@ -313,6 +318,17 @@ class PairedLifecycleFixtureTests(unittest.TestCase):
         self.assertEqual(state_snapshot(home, 'feedback-rating', 'current-session', after=True),
                          {'unrelated_rating_preserved': True, 'cache_preserved': True,
                           'captured_ratings': [], 'learning_count': 0})
+
+    def test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes(self):
+        for name, stale in [('format-contract-clean', False), ('format-contract-stale', True)]:
+            with self.subTest(name=name):
+                home, settings, definitions = self.fixture(name)
+                self.assertEqual(settings['hooks']['UserPromptSubmit'][-1]['hooks'][0]['command'], definitions[0]['command'])
+                before = json.loads((home / 'before-state.json').read_text())
+                self.assertEqual(before['state']['turn_count'], 6)
+                self.assertEqual(before['state']['last_fired_turn'], 6)
+                cache = home / '.claude/LIFEOS/MEMORY/STATE/last-response.txt'
+                self.assertEqual(time.time() - cache.stat().st_mtime > 1800, stale)
 
 
 class PairedFeedbackEffectTests(unittest.TestCase):
@@ -370,3 +386,52 @@ class PairedFeedbackEffectTests(unittest.TestCase):
         case = self.case('feedback-neutral')
         case['native']['after']['user_response_delivered'] = False
         self.assertIn('feedback-neutral: feedback effect is missing', check_pair(case))
+
+
+class PairedFormatContractTests(unittest.TestCase):
+    def case(self, name, *, previous='', state_present=True):
+        budget = 'depth requested, line cap lifted' if name == 'format-contract-depth' else 'max 15 prose lines'
+        contract = ('FORMAT CONTRACT (check before writing, not after): ' + budget +
+                    '; banner first, 🗣️ closer last, max 2 em-dashes.' + previous)
+        before = {'state': {'last_fired_turn': 6, 'turn_count': 6, 'last_text': 'PAIR_PRIOR_CONTRACT',
+                           'schema_version': 1} if state_present else None,
+                  'cache_present': name != 'format-contract-empty'}
+        after = {'state': {'last_fired_turn': 7 if state_present else 1, 'turn_count': 7 if state_present else 1,
+                          'last_text': contract, 'schema_version': 1},
+                 'cache_preserved': True, 'hook_context': contract,
+                 'model_contract_present': True, 'user_response_delivered': True}
+        side = {'before': before, 'after': after, 'hook_exit_codes': [0], 'event': 'UserPromptSubmit',
+                'cli_exit_code': 0, 'model_generation_requests': 1, 'model_successful_responses': 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_first_prompt_initializes_state_and_delivers_the_contract_to_the_model(self):
+        case = self.case('format-contract-empty', state_present=False)
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['model_contract_present'] = False
+        self.assertIn('format-contract-empty: format contract effect is missing', check_pair(case))
+
+    def test_clean_response_still_emits_on_the_next_turn_and_advances_state(self):
+        case = self.case('format-contract-clean', previous=' Last response was clean (3 lines).')
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['state']['last_fired_turn'] = 6
+        self.assertIn('format-contract-clean: format contract effect is missing', check_pair(case))
+
+    def test_depth_lifts_only_the_line_limit_and_preserves_measured_violations(self):
+        previous = " Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'."
+        case = self.case('format-contract-depth', previous=previous)
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['hook_context'] += ' 17 lines (cap 15).'
+        self.assertIn('format-contract-depth: format contract effect is missing', check_pair(case))
+
+    def test_default_budget_reports_all_seeded_violations(self):
+        case = self.case('format-contract-violations',
+            previous=" Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).")
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['cache_preserved'] = False
+        self.assertIn('format-contract-violations: format contract effect is missing', check_pair(case))
+
+    def test_stale_cache_cannot_contribute_previous_session_violations(self):
+        case = self.case('format-contract-stale')
+        self.assertEqual(check_pair(case), [])
+        case['native']['after']['hook_context'] += ' Last response broke: no banner.'
+        self.assertIn('format-contract-stale: format contract effect is missing', check_pair(case))
