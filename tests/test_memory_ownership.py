@@ -187,10 +187,13 @@ class MemoryOwnershipTests(unittest.TestCase):
             with self.subTest(updates=updates), self.assertRaises(MemoryUnavailable):
                 self.preview()
             self.configuration.path.write_bytes(self.original['lifeos-memory.json'])
-        for text in ('memory: null\n', 'memory: []\n', 'memory:\n  memory_enabled: true\nmemory: {}\n'):
+        for index, text in enumerate(('memory: null\n', 'memory: []\n',
+                'memory:\n  memory_enabled: true\nmemory: {}\n', '[]\n', '"synthetic scalar"\n', '')):
             (self.profile / 'config.yaml').write_text(text)
+            snapshot = create(self.configuration, self.fixture.destination.parent / f'invalid-settings-{index}',
+                account='dashboard:owner')
             with self.subTest(text=text), self.assertRaises(MemoryUnavailable):
-                self.preview()
+                self.transaction().preview(Path(snapshot['snapshot']), snapshot['signature'], account='dashboard:owner')
 
     def test_lost_or_changed_connector_refuses_before_ownership_publication(self):
         plan = self.preview()

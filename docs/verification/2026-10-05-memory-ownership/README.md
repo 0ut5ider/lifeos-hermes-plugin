@@ -14,6 +14,8 @@ The fresh-process sequence verifies built-in configuration, selected LifeOS conf
 
 The final regression passes **44 tests and 36 subtests in 68.53 seconds**, with no skips, failures, or errors. It includes the ownership controls, profile backup and recovery controls, existing actual Hermes ownership controls, and installation lock checks. Fourteen individual ownership outcomes are retained.
 
+The subsequent parser control corrects the malformed-settings fixture to capture each changed configuration in a fresh verified backup. The earlier fixture can refuse its stale backup before it reaches the parser. The corrected method passes one test and 11 subtests in 2.85 seconds. It verifies owner requirements, disabled ownership and sharing, null and sequence memory sections, duplicate memory sections, root sequences and scalars, and an empty configuration. The product code does not change. This follow-up retains its own source hashes, command, output, completion marker, and synthetic outcome under `parser-*`.
+
 The final command, source hashes, prepared source manifest, process output, and exit status are retained in `final-command.json`, `final-output.txt`, and `final.done`. Individual synthetic outcomes are in `native-outcomes/`. The preceding 43-test regression and its 33 subtests remain under `pre-alias-final-*`. The last YAML refusal change receives a new final regression because it changes the accepted configuration formats.
 
 ## Scope and remaining requirements
