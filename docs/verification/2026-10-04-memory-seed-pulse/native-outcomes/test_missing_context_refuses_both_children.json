@@ -1,0 +1,18 @@
+{
+  "case": "test_missing_context_refuses_both_children",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts",
+        "--apply"
+      ],
+      "status": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"written\": false,\n  \"ran\": [],\n  \"failed\": [\n    {\n      \"tool\": \"GenerateTelosSummary.ts\",\n      \"error\": \"Command failed: bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-bt9_wbvw/.claude/LIFEOS/TOOLS/GenerateTelosSummary.ts\\n833 | function main(): void {\\n834 |   const governed = memoryAccess('telos_summary', {root: TELOS_DIR},\\n835 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === 'boolean');\\n836 |   if (governed !== undefined) {\\n837 |     if (governed.ok !== true || typeof governed.stdout !== 'string' || typeof governed.stderr !== 'string') {\\n838 |       throw new Error('TELOS summary publication is unavailable under current memory policy');\\n                      ^\\nerror: TELOS summary publication is unavailable under current memory policy\\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:838:17)\\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:851:23\\n\\nBun v1.3.14 (Linux x64)\\n\"\n    },\n    {\n      \"tool\": \"UpdateLifeosState.ts\",\n      \"error\": \"Command failed: bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-bt9_wbvw/.claude/LIFEOS/TOOLS/UpdateLifeosState.ts\\n176 |   const jsonOutput = process.argv.includes(\\\"--json\\\");\\n177 |   const governed = memoryAccess(\\\"lifeos_state\\\", {root: LIFEOS_DIR, json_output: jsonOutput},\\n178 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \\\"boolean\\\");\\n179 |   if (governed !== undefined) {\\n180 |     if (governed.ok !== true || typeof governed.stdout !== \\\"string\\\" || typeof governed.stderr !== \\\"string\\\") {\\n181 |       throw new Error(\\\"TELOS state publication is unavailable under current memory policy\\\");\\n                      ^\\nerror: TELOS state publication is unavailable under current memory policy\\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:181:17)\\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:194:23\\n\\nBun v1.3.14 (Linux x64)\\n\"\n    }\n  ],\n  \"missing\": []\n}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install"
+}

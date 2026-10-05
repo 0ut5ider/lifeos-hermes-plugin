@@ -1,0 +1,32 @@
+{
+  "case": "test_empty_runtime_reports_missing_generators_without_publication",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts",
+        "--config-root",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-id1aei4t/empty-profile"
+      ],
+      "status": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"dryRun\": true,\n  \"willRun\": [],\n  \"missing\": [\n    \"GenerateTelosSummary.ts\",\n    \"UpdateLifeosState.ts\"\n  ],\n  \"toolsDir\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-id1aei4t/empty-profile/LIFEOS/TOOLS\",\n  \"blocker\": \"no Pulse generators present under /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-id1aei4t/empty-profile/LIFEOS/TOOLS \u2014 was the LIFEOS runtime deployed (DeployCore)?\"\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts",
+        "--config-root",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-id1aei4t/empty-profile",
+        "--apply"
+      ],
+      "status": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"written\": false,\n  \"ran\": [],\n  \"failed\": [],\n  \"missing\": [\n    \"GenerateTelosSummary.ts\",\n    \"UpdateLifeosState.ts\"\n  ],\n  \"blocker\": \"no Pulse generators present under /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-id1aei4t/empty-profile/LIFEOS/TOOLS \u2014 was the LIFEOS runtime deployed (DeployCore)?\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install"
+}
