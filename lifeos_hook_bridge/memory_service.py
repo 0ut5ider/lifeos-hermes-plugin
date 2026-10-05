@@ -276,7 +276,7 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
-            if operation in {'pulse_adapter_inputs', 'pulse_adapter_check', 'pulse_adapter_log', 'pulse_data', 'pulse_manifests', 'pulse_manifest_read'}:
+            if operation in {'pulse_adapter_inputs', 'pulse_adapter_check', 'pulse_adapter_log', 'inference_log', 'pulse_data', 'pulse_manifests', 'pulse_manifest_read'}:
                 from .memory_pulse_adapters import inputs, log, data, manifests
 
                 def check_current():
@@ -296,6 +296,8 @@ class MemoryService:
                     if not isinstance(arguments['signature'], str):
                         raise ValueError('PULSE input checks require their plan signature')
                     return inputs(memory, scope, **arguments, check_current=check_current)
+                if operation == 'inference_log' and set(arguments) == {'entry'}:
+                    return log(memory, scope, **arguments, check_current=check_current, inference=True)
                 if operation == 'pulse_adapter_log' and set(arguments) == {'entry'}:
                     return log(memory, scope, **arguments, check_current=check_current)
                 if operation == 'pulse_data' and set(arguments) == {'action', 'identifier', 'value'}:

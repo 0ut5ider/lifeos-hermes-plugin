@@ -16,6 +16,7 @@ from .memory_transaction import publish
 
 
 LOG = 'LIFEOS/MEMORY/OBSERVABILITY/adapter-runs.jsonl'
+INFERENCE_LOG = 'LIFEOS/MEMORY/OBSERVABILITY/model-verification.jsonl'
 DATA = 'LIFEOS/MEMORY/PULSE_DATA/'
 
 
@@ -208,7 +209,7 @@ def _source_binding(memory, scope, connection, value, identifier, *, page):
 def publication_paths(memory, scope, payload):
     _write(scope)
     for relative in payload['paths']:
-        if relative != LOG and not re.fullmatch(r'LIFEOS/MEMORY/PULSE_DATA/(?:[A-Za-z0-9][A-Za-z0-9_-]{0,127}(?:\.meta|\.error)?|_index)\.json', relative):
+        if relative not in {LOG, INFERENCE_LOG} and not re.fullmatch(r'LIFEOS/MEMORY/PULSE_DATA/(?:[A-Za-z0-9][A-Za-z0-9_-]{0,127}(?:\.meta|\.error)?|_index)\.json', relative):
             raise MemoryUnavailable('PULSE publication leaves its fixed data plane')
         _target(memory, relative)
     return payload['paths']
@@ -308,15 +309,24 @@ def data(memory, scope, action, identifier, value, *, check_current):
     return _publish(memory, scope, values, before, check_current, check_inputs=check_inputs)
 
 
-def log(memory, scope, entry, *, check_current):
+def log(memory, scope, entry, *, check_current, inference=False):
     _write(scope)
+    relative = INFERENCE_LOG if inference else LOG
+    if inference and (not isinstance(entry, dict)
+            or set(entry) != {'ts', 'level', 'requested', 'expected_tier', 'executed', 'downgraded', 'latency_ms'}
+            or any(not isinstance(entry[key], str) or len(entry[key]) > 4096
+                   for key in ('ts', 'level', 'requested', 'expected_tier', 'executed'))
+            or entry['level'] not in {'low', 'medium', 'high', 'max'}
+            or type(entry['downgraded']) is not bool or type(entry['latency_ms']) is not int
+            or not 0 <= entry['latency_ms'] <= 3600000):
+        raise ValueError('Inference verification requires bounded native metadata')
     with memory._transaction() as connection:
         if not isinstance(entry, dict) or not _admitted(memory, scope, connection, entry):
             raise MemoryUnavailable('PULSE adapter log is excluded by current policy')
-        path = _target(memory, LOG)
+        path = _target(memory, relative)
         previous = path.read_bytes() if path.exists() else None
         content = (previous or b'') + (json.dumps(entry, ensure_ascii=False, separators=(',', ':')) + '\n').encode()
         if len(content) > CORPUS_LIMIT:
             raise MemoryUnavailable('PULSE adapter log exceeds its publication limit')
         check_current()
-    return _publish(memory, scope, {LOG: content}, {LOG: previous}, check_current)
+    return _publish(memory, scope, {relative: content}, {relative: previous}, check_current)

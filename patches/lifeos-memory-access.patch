@@ -2341,6 +2341,33 @@ index 2ae55d8..2ac8e2f 100755
 -console.error(`📋 TELOS summary regenerated: ${lineCount} lines from source files`);
 +
 +if (import.meta.main) main();
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Inference.ts b/LifeOS/install/LIFEOS/TOOLS/Inference.ts
+index b0408f9..4feef08 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/Inference.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Inference.ts
+@@ -50,6 +50,7 @@ import { appendFileSync, existsSync, mkdirSync, unlinkSync, writeFileSync } from
+ import { join } from "path";
+ import { homedir, tmpdir } from "os";
+ import { randomUUID } from "crypto";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { modelForEffort, pinnedModelForEffort, EFFORT_MODEL, UNIFORM_HARNESS_EFFORT, type EffortLevel, type HarnessEffort } from './models';
+ 
+ /**
+@@ -193,9 +194,13 @@ export function verifyExecutedModel(modelUsage: unknown, expectedTier: string):
+  * exact drift this catches and makes auditable. Logging must never break inference. */
+ function logModelVerification(entry: Record<string, unknown>): void {
+   try {
++    const record = { ts: new Date().toISOString(), ...entry };
++    const governed = memoryAccess("inference_log", {entry: record},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (governed !== undefined) return;
+     const dir = join(homedir(), '.claude', 'LIFEOS', 'MEMORY', 'OBSERVABILITY');
+     mkdirSync(dir, { recursive: true });
+-    appendFileSync(join(dir, 'model-verification.jsonl'), JSON.stringify({ ts: new Date().toISOString(), ...entry }) + '\n');
++    appendFileSync(join(dir, 'model-verification.jsonl'), JSON.stringify(record) + '\n');
+   } catch { /* observability must never break inference */ }
+ }
+ 
 diff --git a/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts b/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts
 index 130c96c..246c93a 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts

@@ -1,0 +1,25 @@
+{
+  "case": "test_private_metadata_refuses_without_changing_previous_log",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-692bv4l0/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[false]}\n",
+      "stderr": ""
+    }
+  ],
+  "before": "{\"synthetic\":\"previous verification\"}\n",
+  "artifacts": {
+    "LIFEOS/MEMORY/OBSERVABILITY/model-verification.jsonl": {
+      "content": "{\"synthetic\":\"previous verification\"}\n",
+      "mode": "0o644"
+    }
+  },
+  "requests": [],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-inference-log-candidate-distributed/lifeos/LifeOS/install"
+}

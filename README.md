@@ -35,6 +35,8 @@ The [KnowledgeDistill reader gate](docs/verification/2026-10-04-memory-distill/R
 
 The [SeedPulse parent controls](docs/verification/2026-10-04-memory-seed-pulse/README.md) verify both actual governed generator children, dry-run behavior, custom root alias handling, and refused authority. The combined generator gate passes 49 tests and 15 subtests. Aggregate interview recovery and ownership remain open.
 
+The [native inference log gate](docs/verification/2026-10-04-memory-inference-log/README.md) preserves native metadata and makes its publication private and recoverable. The two gates pass 36 tests and seven subtests, including foreign-file preservation and process-death recovery. Live model and ownership acceptance remain open.
+
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.
 
 [Owner source review](docs/verification/2026-10-02-memory-source-review/README.md) permits exact reviewed system and identity files to pass the conservative age check. Current access, private-content validation, and detected retired-claim checks remain required. The owner API exists; preferences-page review controls remain open. This does not activate lasting-memory ownership.
