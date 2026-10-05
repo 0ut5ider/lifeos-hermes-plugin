@@ -1,0 +1,26 @@
+{
+  "case": "test_excluded_constitution_refuses_and_preserves_both_previous_artifacts",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-5ugsgjay/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "473 | function main(): void {\n474 |   const governed = memoryAccess(\"hermes_soul\", {args: process.argv.slice(2), home: HERMES_HOME, workspace: WORKSPACE},\n475 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n476 |   if (governed !== undefined) {\n477 |     if (!governed.ok || typeof governed.stdout !== \"string\" || typeof governed.status !== \"number\") {\n478 |       throw new Error(\"Hermes soul admission or publication is unavailable\");\n                      ^\nerror: Hermes soul admission or publication is unavailable\n      at main (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-5ugsgjay/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:478:17)\n      at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-5ugsgjay/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:516:23\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-5ugsgjay/SOUL.md": {
+      "content": "Synthetic previous soul\n",
+      "mode": "0o644"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-5ugsgjay/hermes-workspace/.hermes.md": {
+      "content": "Synthetic previous workspace\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-mounted-soul-candidate-distributed/lifeos/LifeOS/install"
+}

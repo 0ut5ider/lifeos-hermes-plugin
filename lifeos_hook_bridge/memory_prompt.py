@@ -19,6 +19,19 @@ SOURCES = {'systemPrompt': 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md',
            'telos': 'LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md', 'projects': 'LIFEOS/USER/PROJECTS.md'}
 
 
+def admit_names(memory, scope, connection, declared, selected):
+    names = memory._native('hermes_soul_names', sources=declared)
+    if set(names) != {'name', 'fullName', 'principal'} or any(not isinstance(value, str) or len(value) > 256 for value in names.values()):
+        raise MemoryUnavailable('Native Hermes soul naming is invalid')
+    for name, fields in (('daIdentity', ('name', 'fullName')), ('principal', ('principal',))):
+        projection = declared[name] + '\n' + '\n'.join(names[field] for field in fields)
+        valid = memory._native('validate_source_batch', contents=[projection])['accepted']
+        timestamp = next((source['lastModified'] for source in selected if source['relative'] == SOURCES[name]),
+                         '1970-01-01T00:00:00Z')
+        if valid != [True] or memory._filter_history(connection, scope, projection, timestamp, reviewed=True)['excluded']:
+            declared[name] = ''
+
+
 def _collect(memory, scope, connection, keep_output_format):
     authorize(scope)
     if type(keep_output_format) is not bool:
@@ -45,10 +58,11 @@ def _collect(memory, scope, connection, keep_output_format):
     for category, name in (('principal', 'principalMemory'), ('assistant', 'daMemory')):
         snapshot = memory._hot_snapshot(connection, category)
         declared[name] = '\n'.join(snapshot['entries'])
+    admit_names(memory, scope, connection, declared, selected)
     skill_sources = [{'directory': Path(source['relative']).parent.name, 'content': source['content']}
                      for source in selected if source['relative'].startswith('skills/')]
     result = memory._native('prompt_bundle', sources=declared, skills=skill_sources,
-                            options={'keepOutputFormat': keep_output_format})
+                            options={'keepOutputFormat': keep_output_format, 'integration': True})
     if (set(result) != {'bundle'} or not isinstance(result['bundle'], dict)
             or set(result['bundle']) != {'soul','constitution','identity','skillRouting','skills','launcherName'}
             or any(not isinstance(result['bundle'][name], str) for name in ('soul','constitution','identity','skillRouting','launcherName'))):

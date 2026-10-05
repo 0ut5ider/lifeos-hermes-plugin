@@ -7,7 +7,7 @@ from pathlib import Path
 from uuid import uuid4
 
 from .memory_access import MemoryUnavailable, MemoryConflict
-from .memory_prompt import SOURCES
+from .memory_prompt import SOURCES, admit_names, _collect as collect_prompt
 from .memory_sources import authorize, read_markdown, CORPUS_LIMIT
 from .memory_transaction import MemoryTransaction, publish
 
@@ -19,16 +19,7 @@ def _collect(memory, scope, connection):
     declared = {name: contents.get(relative, '') for name, relative in paths.items()}
     for category, name in (('principal', 'principalMemory'), ('assistant', 'daMemory')):
         declared[name] = '\n'.join(memory._hot_snapshot(connection, category)['entries'])
-    names = memory._native('hermes_soul_names', sources=declared)
-    if set(names) != {'name', 'fullName', 'principal'} or any(not isinstance(value, str) or len(value) > 256 for value in names.values()):
-        raise MemoryUnavailable('Native Hermes soul naming is invalid')
-    for name, fields in (('daIdentity', ('name', 'fullName')), ('principal', ('principal',))):
-        projection = declared[name] + '\n' + '\n'.join(names[field] for field in fields)
-        valid = memory._native('validate_source_batch', contents=[projection])['accepted']
-        timestamp = next((source['lastModified'] for source in selected if source['relative'] == paths[name]),
-                         '1970-01-01T00:00:00Z')
-        if valid != [True] or memory._filter_history(connection, scope, projection, timestamp, reviewed=True)['excluded']:
-            declared[name] = ''
+    admit_names(memory, scope, connection, declared, selected)
     return {'declared': declared, 'selected': selected}
 
 
@@ -97,14 +88,18 @@ def run(memory, scope, profile, installed_workspace, *, args, home, workspace, c
             connection.execute('BEGIN IMMEDIATE')
         previous = _snapshot(targets)
         sources = _collect(memory, scope, connection)
-        result = memory._native('hermes_soul_render', sources=sources['declared'])
+        mounted = collect_prompt(memory, scope, connection, False)
+        result = memory._native('hermes_soul_render', sources=sources['declared'],
+                                integrationSoul=mounted['bundle']['soul'])
         if (set(result) != {'soul', 'context', 'size', 'hash'}
                 or any(not isinstance(result[name], str) for name in ('soul', 'context', 'hash'))
                 or len(json.dumps(result).encode()) > CORPUS_LIMIT):
             raise MemoryUnavailable('Native Hermes soul renderer returns invalid artifacts')
         try:
             check_current()
-            if _collect(memory, scope, connection) != sources or _snapshot(_targets(memory, profile, installed_workspace)) != previous:
+            if (_collect(memory, scope, connection) != sources
+                    or collect_prompt(memory, scope, connection, False)['signature'] != mounted['signature']
+                    or _snapshot(_targets(memory, profile, installed_workspace)) != previous):
                 raise MemoryConflict('Hermes soul sources or destinations changed during rendering')
         except (MemoryUnavailable, OSError) as error:
             raise MemoryConflict(str(error)) from error
@@ -114,10 +109,10 @@ def run(memory, scope, profile, installed_workspace, *, args, home, workspace, c
             current = targets['SOUL.md'].read_text() if targets['SOUL.md'].exists() else ''
             drifted = current != result['soul']
             return {'ok': True, 'status': int(drifted), 'stdout':
-                f"SOUL.md   {result['size']} / 19500 chars (Hermes cap 20000)\ndigest    {result['hash']}\n" +
+                f"SOUL.md   {result['size']} / 100000 chars (publication limit)\ndigest    {result['hash']}\n" +
                 ('state     STALE: re-render needed\n' if drifted else 'state     current\n')}
         request = 'hermes-soul-' + uuid4().hex
-        payload = hashlib.sha256(json.dumps(sources, sort_keys=True).encode()).hexdigest()
+        payload = hashlib.sha256(json.dumps({'sources': sources, 'mounted': mounted['signature']}, sort_keys=True).encode()).hexdigest()
         journal.prepare(scope.writer, request, [str(path) for path in targets.values()])
         connection.execute('INSERT INTO operations VALUES (?,?,?,?)',
                            (scope.writer, request, payload, json.dumps({'status': 'unknown'})))
@@ -131,4 +126,4 @@ def run(memory, scope, profile, installed_workspace, *, args, home, workspace, c
         connection.commit()
         journal.finish()
         return {'ok': True, 'status': 0, 'stdout':
-            f"SOUL.md      {result['size']} / 19500 chars\n.hermes.md   {len(result['context'])} chars\ndigest       {result['hash']}\n"}
+            f"SOUL.md      {result['size']} / 100000 chars\n.hermes.md   {len(result['context'])} chars\ndigest       {result['hash']}\n"}

@@ -21,6 +21,8 @@ class MemoryHermesSoulRetirementTests(unittest.TestCase):
         self.assertEqual(result['status'], 'committed', result)
         for path in (self.fixture.root / 'LIFEOS/USER').rglob('*.md'):
             path.write_text(path.read_text())
+        constitution = self.fixture.root / 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md'
+        constitution.write_text(constitution.read_text())
 
     def test_unrelated_retirement_preserves_current_native_soul(self):
         self.retire('RULE: SyntheticUnrelatedSoulRetirement')

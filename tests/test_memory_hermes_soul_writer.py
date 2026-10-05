@@ -27,6 +27,9 @@ class MemoryHermesSoulWriterTests(unittest.TestCase):
                 shutil.copyfile(child, tools / child.name)
             else:
                 (tools / child.name).symlink_to(child, target_is_directory=child.is_dir())
+        shutil.copytree(SOURCE / 'LIFEOS/HERMES', self.root / 'LIFEOS/HERMES')
+        (self.root / 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md').write_text(
+            '# Synthetic mounted constitution\n## Safety\nSynthetic mounted LifeOS doctrine.\n')
         self.identity = self.root / 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md'
         self.identity.write_text('# Synthetic assistant\n## Personality\nSynthetic personality for the fixture.\n'
             '## Relationship\nSynthetic shared work pact.\n## Writing Style\nUse concrete source evidence.\n')

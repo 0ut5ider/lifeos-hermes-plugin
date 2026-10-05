@@ -117,7 +117,8 @@ async function main(): Promise<void> {
       throw new Error("Native Hermes soul rendering requires declared source text");
     }
     result = input.action === "hermes_soul_names" ? module.renderHermesSoulNames(sources)
-      : module.renderHermesSoul(sources);
+      : typeof input.integrationSoul === "string" && typeof module.renderMountedHermesSoul === "function"
+        ? module.renderMountedHermesSoul(input.integrationSoul, sources) : module.renderHermesSoul(sources);
   } else if (input.action === "interview_scan_name") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/InterviewScan.ts")).href);
     if (!object(module) || typeof module.renderScanName !== "function" || !(input.content === null || typeof input.content === "string")) {
