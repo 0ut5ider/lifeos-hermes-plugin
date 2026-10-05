@@ -244,7 +244,12 @@
                 h("p", null, "Projects: " + (connection.projects ?? []).join(", ") + ". Declared model route: " + (connection.model_route ?? "unknown") + "."),
                 connection.enabled ? h("button", { type: "button", disabled: busy,
                   onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
-                }, "Revoke " + connection.client) : null);
+                }, "Revoke " + connection.client) : null,
+                !connection.enabled && connection.credential_entry_pending ? h("p", null,
+                  "The SSH entry of this connection is still present. It cannot reach memory. Install the sharing component to remove it.") : null,
+                !connection.enabled && connection.credential_entry_pending && memory.connection_enrollment_available !== false ? h("button", { type: "button", disabled: busy,
+                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
+                }, "Remove SSH entry of " + connection.client) : null);
             }),
             h("p", { className: "text-sm" }, "A cloud model can receive every fact this connection returns. An unknown model route is unverified. Adding a connection enables sharing for the enabled connections listed above."),
             memory.connection_enrollment_available === false ? h("p", { id: "memory_enrollment_unavailable", className: "text-sm" },

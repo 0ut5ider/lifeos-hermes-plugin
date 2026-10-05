@@ -133,6 +133,15 @@ test('connection form is replaced by an installation note without the sharing co
   assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Revoke reader')));
 });
 
+test('a disabled connection with a remaining SSH entry offers removal only with the component',async()=>{
+  const connection={client:'reader',enabled:false,credential_entry_pending:true};
+  let view=(await panel({state:'prepared',native_health:'ok',connection_enrollment_available:true,connections:[connection],remaining_gates:{}})).render();
+  assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Remove SSH entry of reader')));
+  view=(await panel({state:'prepared',native_health:'ok',connection_enrollment_available:false,connections:[connection],remaining_gates:{}})).render();
+  assert.equal(find(view,n=>n.type==='button'&&n.children.includes('Remove SSH entry of reader')),null);
+  assert.ok(find(view,n=>n.type==='p'&&n.children.some(c=>typeof c==='string'&&c.includes('still present'))));
+});
+
 
 test('source adoption previews historical records and sends exact project assignments',async()=>{
   const source={path:'LIFEOS/MEMORY/LEARNING/SYSTEM/sample.md',content:'Synthetic historical source marker',

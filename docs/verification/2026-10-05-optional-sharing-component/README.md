@@ -34,5 +34,5 @@ The new tests fail before implementation ([before.txt](before.txt)). The final g
 
 - The stock Hermes installer has not yet installed this package in the disposable guest. That acceptance run remains open, together with the update workflow.
 - The scan result depends on the corrected host patch for validation. The scan itself reads only the package files.
-- The hash check and the load are two separate reads. An attacker who can already write as the Hermes account can change the file between them; that attacker can also change the plugin itself.
+- The first version of the loader read the file twice and accepted a planted bytecode file. The [follow-up corrections](../2026-10-05-pr3-followup-fixes/README.md) close both defects.
 - The component has no automatic update. A plugin release that changes the component needs a new installer run.

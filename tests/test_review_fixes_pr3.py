@@ -72,3 +72,29 @@ class FreshStoreLockTests(unittest.TestCase):
                     fixture.fixture.home / 'candidate', principal_name='Adrian', assistant_name='Cerebo',
                     account='dashboard:owner')
         self.assertEqual(observed, ['free'])
+
+
+class FreshStoreBindingTests(unittest.TestCase):
+    def test_binding_ignores_unrelated_settings_and_detects_owner_changes(self):
+        selected = {'root': '/installed', 'principal': 'owner', 'accounts': {'dashboard:owner': 'owner'},
+                    'sharing_enabled': False, 'clients': {}}
+        changed = {**selected, 'sharing_enabled': True, 'clients': {'reader': {'enabled': False}}}
+        binding = fresh_store.owner_binding
+        self.assertEqual(binding(selected, 'dashboard:owner'), binding(changed, 'dashboard:owner'))
+        for key, value in (('root', '/other'), ('principal', 'other'), ('accounts', {'dashboard:owner': 'other'})):
+            self.assertNotEqual(binding(selected, 'dashboard:owner'), binding({**selected, key: value}, 'dashboard:owner'))
+
+
+class UnverifiableConfigurationTests(unittest.TestCase):
+    def test_unsupported_host_refuses_a_configuration_that_cannot_be_read(self):
+        package = types.ModuleType('hermes_cli')
+        package.__path__ = []
+        module = types.ModuleType('hermes_cli.middleware')
+        module.REQUIRED_MIDDLEWARE_API_VERSION = 2
+
+        def unreadable(runtime):
+            raise ValueError('synthetic malformed configuration')
+        with patch.dict(sys.modules, {'hermes_cli': package, 'hermes_cli.middleware': module}), \
+                patch.object(memory_provider.MemoryRuntime, 'enabled', unreadable):
+            with self.assertRaisesRegex(MemoryAdmissionError, 'cannot confirm'):
+                memory_provider.register_provider(Context())

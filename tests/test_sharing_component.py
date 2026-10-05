@@ -95,6 +95,60 @@ class SharingComponentTests(unittest.TestCase):
         with self.assertRaisesRegex(MemoryUnavailable, 'optional sharing component'):
             load_sharing_component(self.home / 'absent-component')
 
+    def test_loader_runs_the_verified_source_and_ignores_planted_bytecode(self):
+        import importlib.util
+        import py_compile
+        component = self.copy()
+        planted = self.home / 'planted.py'
+        marker = self.home / 'planted-marker'
+        planted.write_text(f"open({str(marker)!r}, 'w').write('ran')\nclass MemorySharing: pass\n")
+        cache = importlib.util.cache_from_source(str(component / 'memory_sharing.py'))
+        Path(cache).parent.mkdir(exist_ok=True)
+        py_compile.compile(str(planted), cfile=cache, dfile=str(component / 'memory_sharing.py'),
+                           invalidation_mode=py_compile.PycInvalidationMode.UNCHECKED_HASH)
+        module = load_sharing_component(component)
+        self.assertFalse(marker.exists())
+        self.assertTrue(hasattr(module.MemorySharing, 'enroll'))
+
+    def test_loader_refuses_a_component_inside_a_shared_writable_parent(self):
+        parent = self.home / 'shared-parent'
+        parent.mkdir()
+        shutil.copytree(COMPONENT, parent / 'component')
+        os.chmod(parent / 'component', 0o700)
+        os.chmod(parent, 0o777)
+        self.addCleanup(os.chmod, parent, 0o700)
+        with self.assertRaisesRegex(MemoryUnavailable, 'owner'):
+            load_sharing_component(parent / 'component')
+
+    def test_unreadable_component_reports_unavailable_enrollment(self):
+        component = self.copy()
+        os.chmod(component / 'memory_sharing.py', 0o000)
+        self.addCleanup(os.chmod, component / 'memory_sharing.py', 0o600)
+        self.assertFalse(self.preferences(component).status()['connection_enrollment_available'])
+
+    def test_fallback_revocation_marks_the_entry_and_a_later_component_revocation_clears_it(self):
+        installed = self.preferences(COMPONENT)
+        installed.enroll(self.request())
+        self.preferences(self.home / 'absent-component').revoke('reader')
+        grant = MemoryConfiguration(self.service.config).load()['clients']['reader']
+        self.assertEqual((grant['enabled'], grant['credential_entry_pending']), (False, True))
+        self.assertTrue(next(row for row in installed.status()['connections']
+                             if row['client'] == 'reader')['credential_entry_pending'])
+        installed.revoke('reader')
+        grant = MemoryConfiguration(self.service.config).load()['clients']['reader']
+        self.assertNotIn('credential_entry_pending', grant)
+        self.assertNotIn(b'lifeos-memory:reader', self.keys.read_bytes())
+
+    def test_removal_refuses_a_linked_component_directory(self):
+        profile = self.home / 'profile'
+        profile.mkdir(mode=0o700)
+        outside = self.copy()
+        (profile / 'lifeos-memory-sharing').symlink_to(outside, target_is_directory=True)
+        result = subprocess.run([sys.executable, str(COMPONENT / 'install.py'), '--hermes-home', str(profile),
+                                 '--remove'], capture_output=True, text=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertTrue((outside / 'memory_sharing.py').is_file())
+
     def test_installer_publishes_private_files_and_removal_deletes_only_its_files(self):
         profile = self.home / 'profile'
         profile.mkdir(mode=0o700)
@@ -107,8 +161,11 @@ class SharingComponentTests(unittest.TestCase):
         self.assertEqual(self.preferences(target).enroll(self.request())['status'], 'enrolled')
         unrelated = target / 'operator-note.txt'
         unrelated.write_text('keep\n')
+        (target / '__pycache__').mkdir()
+        (target / '__pycache__/memory_sharing.cpython-314.pyc').write_bytes(b'stale')
         subprocess.run([*installer, '--remove'], check=True, capture_output=True, text=True)
         self.assertFalse((target / 'memory_sharing.py').exists())
+        self.assertFalse((target / '__pycache__').exists())
         self.assertEqual(unrelated.read_text(), 'keep\n')
 
 

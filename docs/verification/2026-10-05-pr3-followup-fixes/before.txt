@@ -1,0 +1,104 @@
+.EEF./tmp/native-memory-hcjtqtqz/component/memory_sharing.py:1: ResourceWarning: unclosed file <_io.TextIOWrapper name='/tmp/native-memory-hcjtqtqz/planted-marker' mode='w' encoding='UTF-8'>
+  # ABOUTME: Optional component that enrolls restricted SSH keys with fixed server-owned memory client grants.
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+F..F..EE....E
+======================================================================
+ERROR: test_fallback_revocation_marks_the_entry_and_a_later_component_revocation_clears_it (test_sharing_component.SharingComponentTests.test_fallback_revocation_marks_the_entry_and_a_later_component_revocation_clears_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 134, in test_fallback_revocation_marks_the_entry_and_a_later_component_revocation_clears_it
+    self.assertEqual((grant['enabled'], grant['credential_entry_pending']), (False, True))
+                                        ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: 'credential_entry_pending'
+
+======================================================================
+ERROR: test_installer_publishes_private_files_and_removal_deletes_only_its_files (test_sharing_component.SharingComponentTests.test_installer_publishes_private_files_and_removal_deletes_only_its_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 164, in test_installer_publishes_private_files_and_removal_deletes_only_its_files
+    (target / '__pycache__').mkdir()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 1011, in mkdir
+    os.mkdir(self, mode)
+    ~~~~~~~~^^^^^^^^^^^^
+FileExistsError: [Errno 17] File exists: '/tmp/native-memory-18vilds2/profile/lifeos-memory-sharing/__pycache__'
+
+======================================================================
+ERROR: test_unreadable_component_reports_unavailable_enrollment (test_sharing_component.SharingComponentTests.test_unreadable_component_reports_unavailable_enrollment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 127, in test_unreadable_component_reports_unavailable_enrollment
+    self.assertFalse(self.preferences(component).status()['connection_enrollment_available'])
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 92, in status
+    'connection_enrollment_available':self.connection_enrollment_available()}
+                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 75, in connection_enrollment_available
+    load_sharing_component(self.sharing_component)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py", line 43, in load_sharing_component
+    if hashlib.sha256(source.read_bytes()).hexdigest() != SHARING_COMPONENT_SHA256:
+                      ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: '/tmp/native-memory-vstwclqi/component/memory_sharing.py'
+
+======================================================================
+ERROR: test_binding_ignores_unrelated_settings_and_detects_owner_changes (test_review_fixes_pr3.FreshStoreBindingTests.test_binding_ignores_unrelated_settings_and_detects_owner_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_review_fixes_pr3.py", line 82, in test_binding_ignores_unrelated_settings_and_detects_owner_changes
+    binding = fresh_store.owner_binding
+              ^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'lifeos_hook_bridge.fresh_store' has no attribute 'owner_binding'
+
+======================================================================
+ERROR: test_unsupported_host_refuses_a_configuration_that_cannot_be_read (test_review_fixes_pr3.UnverifiableConfigurationTests.test_unsupported_host_refuses_a_configuration_that_cannot_be_read)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_review_fixes_pr3.py", line 100, in test_unsupported_host_refuses_a_configuration_that_cannot_be_read
+    memory_provider.register_provider(Context())
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_provider.py", line 111, in register_provider
+    elif provider.runtime.enabled():
+         ~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_review_fixes_pr3.py", line 96, in unreadable
+    raise ValueError('synthetic malformed configuration')
+ValueError: synthetic malformed configuration
+
+======================================================================
+FAIL: test_loader_refuses_a_component_inside_a_shared_writable_parent (test_sharing_component.SharingComponentTests.test_loader_refuses_a_component_inside_a_shared_writable_parent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 120, in test_loader_refuses_a_component_inside_a_shared_writable_parent
+    with self.assertRaisesRegex(MemoryUnavailable, 'owner'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+======================================================================
+FAIL: test_loader_runs_the_verified_source_and_ignores_planted_bytecode (test_sharing_component.SharingComponentTests.test_loader_runs_the_verified_source_and_ignores_planted_bytecode)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 110, in test_loader_runs_the_verified_source_and_ignores_planted_bytecode
+    self.assertFalse(marker.exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_removal_refuses_a_linked_component_directory (test_sharing_component.SharingComponentTests.test_removal_refuses_a_linked_component_directory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 149, in test_removal_refuses_a_linked_component_directory
+    self.assertNotEqual(result.returncode, 0)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 18 tests in 2.674s
+
+FAILED (failures=3, errors=5)
+exit 1

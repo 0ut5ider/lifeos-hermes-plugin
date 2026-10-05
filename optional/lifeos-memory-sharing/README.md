@@ -28,4 +28,4 @@ A plugin update that changes the recorded hash requires a new run of the install
 python3 optional/lifeos-memory-sharing/install.py --hermes-home ~/.hermes --remove
 ```
 
-Removal deletes the installed program. It does not change connection grants or SSH entries. Revoke each connection in the dashboard before you remove the component. Without the component, the dashboard can still disable a connection grant, and a disabled grant refuses every request. The SSH entry of that connection then stays in the keys file until you remove it or reinstall the component and revoke again.
+Removal deletes the installed program. It does not change connection grants or SSH entries. Revoke each connection in the dashboard before you remove the component. Without the component, the dashboard can still disable a connection grant, and a disabled grant refuses every request. The SSH entry of that connection then stays in the keys file. The dashboard marks such a connection. After you reinstall the component, the dashboard offers **Remove SSH entry** for it.

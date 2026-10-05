@@ -4,13 +4,13 @@ from __future__ import annotations
 
 from dataclasses import replace
 import hashlib
-import importlib.util
 import os
 from pathlib import Path
 import sqlite3
 import stat
 import subprocess
 import sys
+import types
 from typing import Any
 
 from .memory_access import NativeMemory, MemoryUnavailable
@@ -31,23 +31,34 @@ SHARING_COMPONENT_SHA256 = '677cc5909520029dba91009161d615f5f699286f8d2b96f9e80c
 
 
 def load_sharing_component(directory: Path):
-    directory = Path(directory)
+    directory = Path(directory).absolute()
     source = directory / 'memory_sharing.py'
     try:
-        folder, program = directory.lstat(), source.lstat()
-    except OSError as error:
+        parent, folder = directory.parent.stat(), directory.lstat()
+        descriptor = os.open(source, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    except FileNotFoundError as error:
         raise MemoryUnavailable('SSH memory connections require the optional sharing component') from error
+    except OSError as error:
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access') from error
+    try:
+        with os.fdopen(descriptor, 'rb') as stream:
+            program = os.fstat(stream.fileno())
+            data = stream.read()
+    except OSError as error:
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access') from error
     if (not stat.S_ISDIR(folder.st_mode) or not stat.S_ISREG(program.st_mode)
-            or any(info.st_uid != os.getuid() or info.st_mode & 0o022 for info in (folder, program))):
+            or any(info.st_uid != os.getuid() or info.st_mode & 0o022 for info in (parent, folder, program))):
         raise MemoryUnavailable('The sharing component needs physical owner files without shared write access')
-    if hashlib.sha256(source.read_bytes()).hexdigest() != SHARING_COMPONENT_SHA256:
+    if hashlib.sha256(data).hexdigest() != SHARING_COMPONENT_SHA256:
         raise MemoryUnavailable('The installed sharing component differs from the reviewed release')
+    # The verified bytes run directly. The standard source loader would read the file again
+    # and would prefer an unverified bytecode file beside the source.
     name = __package__ + '.memory_sharing'
-    spec = importlib.util.spec_from_file_location(name, source)
-    module = importlib.util.module_from_spec(spec)
+    module = types.ModuleType(name)
+    module.__package__, module.__file__ = __package__, str(source)
     sys.modules[name] = module
     try:
-        spec.loader.exec_module(module)
+        exec(compile(data, str(source), 'exec', dont_inherit=True), module.__dict__)
     except BaseException:
         sys.modules.pop(name, None)
         raise
@@ -274,7 +285,10 @@ class MemoryPreferences:
     def revoke(self, identifier: str, *, account: str | None = None) -> dict[str, Any]:
         self._configuration(account=account)
         if self.connection_enrollment_available():
-            return self.connections.revoke(identifier, account=account)
+            result = self.connections.revoke(identifier, account=account)
+            self.configuration.update(lambda config: config.get('clients', {}).get(identifier, {}).pop(
+                'credential_entry_pending', None))
+            return result
         def disable(config):
             if Path(config['root']).absolute() != self.root:
                 raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
@@ -283,5 +297,6 @@ class MemoryPreferences:
             if grant is None:
                 raise ValueError('This memory connection does not exist')
             grant['enabled'] = False
+            grant['credential_entry_pending'] = True
         self.configuration.update(disable)
         return {'status':'revoked', 'client':identifier, 'records_deleted':False, 'credential_entry_removed':False}

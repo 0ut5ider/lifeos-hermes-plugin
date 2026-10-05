@@ -3,6 +3,7 @@
 import argparse
 import os
 from pathlib import Path
+import shutil
 import stat
 import tempfile
 
@@ -40,9 +41,17 @@ def install(profile: Path) -> Path:
 
 def remove(profile: Path) -> None:
     directory = target(profile)
+    if not directory.is_symlink() and not directory.exists():
+        return
+    info = directory.lstat()
+    if not stat.S_ISDIR(info.st_mode) or info.st_uid != os.getuid():
+        raise SystemExit('The component directory must be a physical owner directory')
     program = directory / NAME
     if program.is_symlink() or program.exists():
         program.unlink()
+    cache = directory / '__pycache__'
+    if cache.is_dir() and not cache.is_symlink():
+        shutil.rmtree(cache)
     try:
         directory.rmdir()
     except OSError:

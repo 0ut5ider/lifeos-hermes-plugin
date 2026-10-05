@@ -79,6 +79,10 @@ def _config_names(data,principal,assistant):
     return result
 
 
+def owner_binding(selected,account):
+    return selected['root'],selected['principal'],selected.get('accounts',{}).get(account)
+
+
 class FreshStore:
     def __init__(self,configuration):
         self.configuration=configuration
@@ -149,7 +153,7 @@ class FreshStore:
         if base.exists() or base.is_symlink():
             _directory(base,private=True)
             stores=[self._store(folder,busy) for folder in base.iterdir()]
-        if self._owner(account)!=selected:
+        if owner_binding(self._owner(account),account)!=owner_binding(selected,account):
             raise MemoryUnavailable('The installation owner changes during the fresh store listing')
         stores.sort(key=lambda row:(-row[0],row[1]['identifier']))
         return {'busy':busy,'stores':[row for _,row in stores]}
@@ -213,7 +217,8 @@ class FreshStore:
                 active=connection.execute("SELECT COUNT(*) FROM records WHERE status='active'").fetchone()[0]
                 if active or connection.execute('SELECT COUNT(*) FROM operations').fetchone()[0]:
                     raise MemoryUnavailable('The fresh native store contains unexpected fact operations')
-            if self._owner(account)!=selected or validate_prepared_lifeos(candidate)!=source:
+            if (owner_binding(self._owner(account),account)!=owner_binding(selected,account)
+                    or validate_prepared_lifeos(candidate)!=source):
                 raise MemoryUnavailable('The reviewed source or owner changes during fresh store preparation')
             document.update(state='review',installed=str(installed),data=str(user),
                 retained_hermes_files=['memories/MEMORY.md','memories/USER.md'],installation=installation,
