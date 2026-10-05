@@ -26,8 +26,7 @@ class MemorySourceLabelTests(unittest.TestCase):
         self.configuration.save({'version': 1, 'root': str(self.root), 'principal': 'owner',
             'ownership_enabled': False, 'sharing_enabled': False,
             'accounts': {'dashboard:synthetic-owner': 'owner'}, 'destinations': {}, 'clients': {}})
-        self.preferences = MemoryPreferences(self.configuration.path, self.root,
-            self.fixture.home / '.ssh/authorized_keys', Path(sys.executable), self.fixture.home / 'unused-program')
+        self.preferences = MemoryPreferences(self.configuration.path, self.root, Path(sys.executable), self.fixture.home / 'unused-program')
 
     def note(self, name, title='Safe synthetic title'):
         path = self.root / 'LIFEOS/MEMORY/KNOWLEDGE/Research' / (name + '.md')

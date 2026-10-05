@@ -113,8 +113,7 @@ def _memory_preferences():
         sys.modules[name] = package
     module = importlib.import_module(name + '.memory_preferences')
     return module.MemoryPreferences(HERMES_HOME / 'lifeos-memory.json', INSTALLED_ROOT,
-                                    Path.home() / '.ssh/authorized_keys', Path(sys.executable),
-                                    PLUGIN_DIR / 'memory_mcp.py')
+                                    Path(sys.executable), PLUGIN_DIR / 'memory_mcp.py')
 
 
 def _memory_action(action):

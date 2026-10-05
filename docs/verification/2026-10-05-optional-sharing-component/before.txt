@@ -1,0 +1,18 @@
+E
+======================================================================
+ERROR: test_sharing_component (unittest.loader._FailedTest.test_sharing_component)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_sharing_component
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/unittest/loader.py", line 141, in loadTestsFromName
+    module = __import__(module_name)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_sharing_component.py", line 15, in <module>
+    from lifeos_hook_bridge.memory_preferences import MemoryPreferences, load_sharing_component
+ImportError: cannot import name 'load_sharing_component' from 'lifeos_hook_bridge.memory_preferences' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_preferences.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)
+exit 1

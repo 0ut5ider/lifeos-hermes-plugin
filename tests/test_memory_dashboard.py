@@ -4,6 +4,7 @@ from contextlib import contextmanager
 import secrets
 import importlib.util
 import os
+import subprocess
 from pathlib import Path
 import sys
 import unittest
@@ -19,6 +20,7 @@ from hermes_cli.dashboard_auth.routes import router as auth_router, _reset_passw
 from hermes_cli.dashboard_auth.registry import register_global_provider, restore_registration, snapshot_registration
 from plugins.dashboard_auth.basic import BasicAuthProvider, hash_password
 import test_memory_sharing as sharing_fixture
+from sharing_component import COMPONENT
 
 
 @contextmanager
@@ -108,6 +110,8 @@ class MemoryDashboardTests(unittest.TestCase):
         home = fixture.fixture.fixture.home
         profile = fixture.fixture.config.parent
         MemoryConfiguration(profile/'lifeos-memory.json').save(fixture.fixture.configuration)
+        subprocess.run([sys.executable, str(COMPONENT/'install.py'), '--hermes-home', str(profile)],
+                       check=True, capture_output=True)
         api_path = Path(__file__).parents[1]/'lifeos_hook_bridge/dashboard/plugin_api.py'
         with patch.dict(os.environ,{'HOME':str(home),'HERMES_HOME':str(profile)}):
             spec = importlib.util.spec_from_file_location('memory_dashboard_http',api_path)

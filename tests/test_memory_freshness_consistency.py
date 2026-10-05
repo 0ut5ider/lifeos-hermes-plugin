@@ -19,8 +19,7 @@ class MemoryFreshnessConsistencyTests(unittest.TestCase):
         self.addCleanup(self.fixture.doCleanups)
         self.root = self.fixture.root
         (self.root / 'LIFEOS/PULSE').symlink_to(SOURCE / 'LIFEOS/PULSE')
-        self.preferences = MemoryPreferences(self.fixture.fixture.configuration.path, self.root,
-            self.fixture.fixture.fixture.home / 'authorized_keys', Path(sys.executable),
+        self.preferences = MemoryPreferences(self.fixture.fixture.configuration.path, self.root, Path(sys.executable),
             Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
         self.path = self.root / 'LIFEOS/USER/TELOS/TELOS.md'
 

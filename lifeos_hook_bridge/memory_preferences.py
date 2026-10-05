@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import hashlib
+import importlib.util
+import os
 from pathlib import Path
 import sqlite3
+import stat
 import subprocess
+import sys
 from typing import Any
 
 from .memory_access import NativeMemory, MemoryUnavailable
 from .memory_policy import CATEGORIES, MemoryPolicy, MemoryScope
 from .memory_service import MemoryConfiguration, MemoryService
-from .memory_sharing import MemorySharing
 
 
 REMAINING_GATES = {
@@ -23,12 +27,55 @@ REMAINING_GATES = {
 }
 
 
+SHARING_COMPONENT_SHA256 = '677cc5909520029dba91009161d615f5f699286f8d2b96f9e80cbd9a28e70515'
+
+
+def load_sharing_component(directory: Path):
+    directory = Path(directory)
+    source = directory / 'memory_sharing.py'
+    try:
+        folder, program = directory.lstat(), source.lstat()
+    except OSError as error:
+        raise MemoryUnavailable('SSH memory connections require the optional sharing component') from error
+    if (not stat.S_ISDIR(folder.st_mode) or not stat.S_ISREG(program.st_mode)
+            or any(info.st_uid != os.getuid() or info.st_mode & 0o022 for info in (folder, program))):
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access')
+    if hashlib.sha256(source.read_bytes()).hexdigest() != SHARING_COMPONENT_SHA256:
+        raise MemoryUnavailable('The installed sharing component differs from the reviewed release')
+    name = __package__ + '.memory_sharing'
+    spec = importlib.util.spec_from_file_location(name, source)
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[name] = module
+    try:
+        spec.loader.exec_module(module)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
+    return module
+
+
 class MemoryPreferences:
-    def __init__(self, configuration: Path, installed_root: Path, authorized_keys: Path,
-                 interpreter: Path, program: Path):
+    def __init__(self, configuration: Path, installed_root: Path, interpreter: Path, program: Path,
+                 *, sharing_component: Path | None = None, sharing_options: dict[str, Any] | None = None):
         self.configuration = MemoryConfiguration(configuration)
         self.root = installed_root.absolute()
-        self.connections = MemorySharing(configuration, authorized_keys, interpreter, program, installed_root=self.root)
+        self.sharing_component = Path(sharing_component or Path(configuration).parent / 'lifeos-memory-sharing')
+        self._sharing = (Path(configuration), interpreter, program, dict(sharing_options or {}))
+        if any(not path.is_absolute() for path in (Path(configuration), interpreter, program)):
+            raise ValueError('Memory connection paths must be absolute')
+
+    @property
+    def connections(self):
+        configuration, interpreter, program, options = self._sharing
+        return load_sharing_component(self.sharing_component).MemorySharing(
+            configuration, interpreter, program, installed_root=self.root, **options)
+
+    def connection_enrollment_available(self) -> bool:
+        try:
+            load_sharing_component(self.sharing_component)
+        except MemoryUnavailable:
+            return False
+        return True
 
     def _configuration(self, *, account: str | None = None):
         config = self.configuration.load()
@@ -41,7 +88,8 @@ class MemoryPreferences:
         result = {'state':'not_configured', 'ownership_enabled':False, 'sharing_enabled':False,
                   'activation_ready':False, 'remaining_gates':REMAINING_GATES,
                   'automatic_review':'Native LifeOS hooks', 'proposal_review_available':False,
-                  'native_health':'not_checked', 'active_facts':None, 'connections':[]}
+                  'native_health':'not_checked', 'active_facts':None, 'connections':[],
+                  'connection_enrollment_available':self.connection_enrollment_available()}
         if not self.configuration.path.exists() and not self.configuration.path.is_symlink():
             return result
         try:
@@ -225,4 +273,15 @@ class MemoryPreferences:
 
     def revoke(self, identifier: str, *, account: str | None = None) -> dict[str, Any]:
         self._configuration(account=account)
-        return self.connections.revoke(identifier, account=account)
+        if self.connection_enrollment_available():
+            return self.connections.revoke(identifier, account=account)
+        def disable(config):
+            if Path(config['root']).absolute() != self.root:
+                raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+            self.configuration.check_owner(config, account)
+            grant = config.get('clients', {}).get(identifier)
+            if grant is None:
+                raise ValueError('This memory connection does not exist')
+            grant['enabled'] = False
+        self.configuration.update(disable)
+        return {'status':'revoked', 'client':identifier, 'records_deleted':False, 'credential_entry_removed':False}

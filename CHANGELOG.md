@@ -6,6 +6,12 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+### Changed
+
+- SSH memory sharing enrollment moves to the separately installed `optional/lifeos-memory-sharing` component.
+  The plugin package no longer changes the SSH authorized keys file, and the Hermes install scan is clean.
+  Operators who use SSH sharing must run the component installer after this update.
+
 ### Added
 
 - Private native data backups with SQLite governance metadata and integrity checks.

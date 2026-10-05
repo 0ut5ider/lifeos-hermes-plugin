@@ -18,8 +18,7 @@ class MemoryGraphViewConsistencyTests(unittest.TestCase):
         self.addCleanup(self.fixture.doCleanups)
         (self.fixture.root / 'LIFEOS/PULSE').symlink_to(SOURCE / 'LIFEOS/PULSE')
         self.fixture.fixture.remember()
-        self.preferences = MemoryPreferences(self.fixture.configuration.path, self.fixture.root,
-            self.fixture.fixture.home / 'authorized_keys', Path(sys.executable),
+        self.preferences = MemoryPreferences(self.fixture.configuration.path, self.fixture.root, Path(sys.executable),
             Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
         self.path = self.fixture.root / 'LIFEOS/MEMORY/WORK/synthetic-work/ISA.md'
         self.path.parent.mkdir(parents=True)

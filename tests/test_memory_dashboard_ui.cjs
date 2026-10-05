@@ -124,6 +124,15 @@ test('owner search displays references and new connections default to read-only 
   assert.deepEqual(JSON.parse(request.init.body),{client:'reader',public_key:'ssh-ed25519 synthetic',projects:['lab'],model_route:'unknown',read:['project'],write_project:false});
 });
 
+test('connection form is replaced by an installation note without the sharing component',async()=>{
+  const p=await panel({state:'prepared',native_health:'ok',sharing_enabled:false,connection_enrollment_available:false,
+    connections:[{client:'reader',enabled:true}],remaining_gates:{}});
+  const view=p.render();
+  assert.equal(find(view,n=>n.type==='form'&&n.props.id==='memory_enrollment'),null);
+  assert.ok(find(view,n=>n.type==='p'&&n.props.id==='memory_enrollment_unavailable'));
+  assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Revoke reader')));
+});
+
 
 test('source adoption previews historical records and sends exact project assignments',async()=>{
   const source={path:'LIFEOS/MEMORY/LEARNING/SYSTEM/sample.md',content:'Synthetic historical source marker',

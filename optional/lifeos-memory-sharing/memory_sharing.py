@@ -1,4 +1,4 @@
-# ABOUTME: Enrolls restricted SSH keys with fixed server-owned memory client grants.
+# ABOUTME: Optional component that enrolls restricted SSH keys with fixed server-owned memory client grants.
 # ABOUTME: Revokes interface access before removing a key and preserves unrelated SSH entries.
 from __future__ import annotations
 
@@ -60,8 +60,9 @@ def enrolled_line(line: str, identifier: str, fingerprint: str) -> bool:
 
 
 class MemorySharing:
-    def __init__(self, configuration: Path, authorized_keys: Path, interpreter: Path, program: Path,
-                 *, installed_root: Path | None = None):
+    def __init__(self, configuration: Path, interpreter: Path, program: Path,
+                 *, installed_root: Path | None = None, keys_file: Path | None = None):
+        authorized_keys = Path.home() / '.ssh/authorized_keys' if keys_file is None else Path(keys_file)
         self.configuration = MemoryConfiguration(configuration)
         self.authorized_keys = authorized_keys
         self.interpreter, self.program = interpreter, program

@@ -247,6 +247,8 @@
                 }, "Revoke " + connection.client) : null);
             }),
             h("p", { className: "text-sm" }, "A cloud model can receive every fact this connection returns. An unknown model route is unverified. Adding a connection enables sharing for the enabled connections listed above."),
+            memory.connection_enrollment_available === false ? h("p", { id: "memory_enrollment_unavailable", className: "text-sm" },
+              "Adding a connection needs the optional SSH sharing component. Install it on the server, then reload this page. Existing connections can still be revoked here.") :
             h("form", { id: "memory_enrollment", className: "space-y-3", onSubmit: function (event) {
               event.preventDefault();
               const read = ["project"]; if (principal) read.push("principal"); if (assistant) read.push("assistant");

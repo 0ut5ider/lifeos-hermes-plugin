@@ -17,8 +17,7 @@ class MemoryPulseTests(unittest.TestCase):
         self.addCleanup(self.fixture.doCleanups)
         self.root, self.obs = self.fixture.root, self.fixture.obs
         (self.root / 'LIFEOS/PULSE').symlink_to(SOURCE / 'LIFEOS/PULSE')
-        self.preferences = MemoryPreferences(self.fixture.fixture.configuration.path, self.root,
-            self.fixture.fixture.fixture.home / '.ssh/authorized_keys', Path('/usr/bin/python3'),
+        self.preferences = MemoryPreferences(self.fixture.fixture.configuration.path, self.root, Path('/usr/bin/python3'),
             Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
 
     def snapshot(self, view='snapshot'):

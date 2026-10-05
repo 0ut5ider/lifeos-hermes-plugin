@@ -15,3 +15,5 @@ The recommended release work has one acceptance goal: install a published integr
 The acceptance gate needs a clean stock profile, an actual Git installer run with scanning enabled, a real second-release update, failed dependency resolution, interruption during replacement, recovery, later user data, and version rollback. Both `.212` layouts need explicit coverage. A same-revision rehearsal alone does not establish update correctness. Catalog submission can follow installation readiness; it does not remove the host compatibility requirement.
 
 Update, 2026-10-05: the [capability validation unit](../docs/verification/2026-10-05-capability-validation/README.md) corrects the validator stub in the required-middleware patch and declares both middleware kinds. The scanner now reports 62 findings, with the same 16 critical matches. Scanner admission remains open.
+
+Update, 2026-10-05: Adrian approves a separate optional component for SSH enrollment. The [component unit](../docs/verification/2026-10-05-optional-sharing-component/README.md) records a `safe` scan verdict and an allowed installer decision for the runtime directory.

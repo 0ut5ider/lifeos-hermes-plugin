@@ -121,8 +121,7 @@ class MemoryPromptTests(unittest.TestCase):
     def preferences(self):
         from lifeos_hook_bridge.memory_preferences import MemoryPreferences
         self.fixture.configuration.update(lambda value: value['accounts'].update({'dashboard:owner': 'owner'}))
-        return MemoryPreferences(self.fixture.configuration.path, self.root,
-            self.fixture.fixture.home / 'keys', Path('/usr/bin/python3'), Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
+        return MemoryPreferences(self.fixture.configuration.path, self.root, Path('/usr/bin/python3'), Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
 
     def test_owner_publication_has_a_fixed_destination_and_idempotent_retry(self):
         preferences = self.preferences()

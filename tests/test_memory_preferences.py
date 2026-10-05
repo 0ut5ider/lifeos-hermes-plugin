@@ -8,15 +8,16 @@ import unittest
 from lifeos_hook_bridge.memory_preferences import MemoryPreferences
 from lifeos_hook_bridge.memory_service import MemoryConfiguration
 import test_memory_sharing as sharing_fixture
+from sharing_component import COMPONENT
 
 
 class MemoryPreferencesTests(unittest.TestCase):
     def setUp(self):
         self.fixture = sharing_fixture.MemorySharingTests(); self.fixture.setUp()
         self.addCleanup(self.fixture.doCleanups)
-        self.preferences = MemoryPreferences(self.fixture.fixture.config, self.fixture.fixture.fixture.root,
-                                             self.fixture.keys, Path('/usr/bin/python3'),
-                                             Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py')
+        self.preferences = MemoryPreferences(self.fixture.fixture.config, self.fixture.fixture.fixture.root, Path('/usr/bin/python3'),
+                                             Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py',
+                                             sharing_component=COMPONENT, sharing_options={'keys_file': self.fixture.keys})
 
     def test_missing_configuration_and_partial_setup_are_not_reported_active(self):
         self.fixture.fixture.config.unlink()
@@ -86,7 +87,7 @@ class MemoryPreferencesTests(unittest.TestCase):
         config = fixture.fixture.home / 'hermes/lifeos-memory.json'
         MemoryConfiguration(config).save({'version':1,'root':str(fixture.fixture.root),
                                           'principal':'owner','accounts':{},'destinations':{}})
-        preferences = MemoryPreferences(config,fixture.fixture.root,fixture.fixture.home/'keys',
+        preferences = MemoryPreferences(config,fixture.fixture.root,
                                         Path('/usr/bin/python3'),Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py')
         saved = fixture.enqueue()
         self.assertTrue(preferences.status()['proposal_review_available'])
@@ -120,8 +121,9 @@ class MemoryPreferencesTests(unittest.TestCase):
                         if not proceed.wait(10):
                             raise RuntimeError('Preference test barrier timed out')
                         return result
-                observed = ObservedPreferences(config.path,self.preferences.root,self.fixture.keys,
-                                               Path('/usr/bin/python3'),Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py')
+                observed = ObservedPreferences(config.path, self.preferences.root,
+                                               Path('/usr/bin/python3'), Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py',
+                                               sharing_component=COMPONENT, sharing_options={'keys_file': self.fixture.keys})
                 def operation():
                     if action == 'revoke':
                         return observed.revoke(identifier)
@@ -156,8 +158,9 @@ class MemoryPreferencesTests(unittest.TestCase):
                         if not proceed.wait(10):
                             raise RuntimeError('Owner authorization test barrier timed out')
                         return result
-                observed = ObservedPreferences(config.path, self.preferences.root, self.fixture.keys,
-                    Path('/usr/bin/python3'), Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
+                observed = ObservedPreferences(config.path, self.preferences.root,
+                    Path('/usr/bin/python3'), Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py',
+                    sharing_component=COMPONENT, sharing_options={'keys_file': self.fixture.keys})
                 def operation():
                     if action == 'sharing':
                         return observed.sharing(True, account=account)
