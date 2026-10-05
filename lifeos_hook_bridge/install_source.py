@@ -4,12 +4,14 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 import hashlib
 import importlib
 import json
 import os
 import re
 import runpy
+import signal
 import shutil
 import subprocess
 import sys
@@ -231,6 +233,21 @@ def validate_supported_hermes(candidate: Path) -> dict:
                                      Path(__file__).parent / "patches", HERMES_PATCHES)
 
 
+def _install_step(command, *, cwd, environment, timeout=300):
+    process = subprocess.Popen(command, cwd=cwd, env=environment, text=True,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+    try:
+        output, errors = process.communicate(timeout=timeout)
+    except BaseException:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.communicate()
+        raise
+    return subprocess.CompletedProcess(command, process.returncode, output, errors)
+
+
 def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
                    supported_revision: str, patches: Path,
                    patch_names: tuple[str, ...]) -> dict:
@@ -258,19 +275,33 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
     for name in INSTALL_STEPS:
         if not (skill_root / "Tools" / f"{name}.ts").is_file():
             raise IncompatibleLifeOS(f"LifeOS candidate lacks {name}.ts")
+    dependency_catalog = Path(__file__).parent / 'dependency_locks'
+    dependencies = None
+    if supported_revision == SUPPORTED_LIFEOS_COMMIT:
+        try:
+            dependencies = memory_module('native_dependencies').validate_release_dependencies(
+                skill_root / 'install', dependency_catalog, supported_revision)
+        except (ValueError, OSError) as error:
+            raise IncompatibleLifeOS(f"LifeOS dependency verification failed: {error}") from error
     installed.parent.mkdir(parents=True, exist_ok=True)
     installed.mkdir(mode=0o700)
     try:
         shutil.copy2(template, installed / "CLAUDE.md")
-        for name in INSTALL_STEPS:
-            result = subprocess.run(
-                [executable, str(skill_root / "Tools" / f"{name}.ts"),
-                 "--config-root", str(installed), "--config-dir", str(config_dir),
-                 "--skill-root", str(skill_root), "--apply"],
-                cwd=installed.parent, env=environment, text=True, capture_output=True, timeout=300,
-            )
-            if result.returncode:
-                raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
+        if dependencies:
+            memory_module('native_dependencies').seed_release_locks(installed, dependency_catalog)
+        dependency_context = (memory_module('native_dependencies').dependency_environment(
+            installed, executable, dependency_catalog) if dependencies else nullcontext({}))
+        with dependency_context as dependency_paths:
+            environment.update(dependency_paths)
+            for name in INSTALL_STEPS:
+                result = _install_step(
+                    [executable, str(skill_root / "Tools" / f"{name}.ts"),
+                     "--config-root", str(installed), "--config-dir", str(config_dir),
+                     "--skill-root", str(skill_root), "--apply"],
+                    cwd=installed.parent, environment=environment, timeout=300,
+                )
+                if result.returncode:
+                    raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
         source_version = (skill_root / "install/LIFEOS/VERSION").read_text().strip()
         version = (installed / "LIFEOS/VERSION").read_text().strip()
         settings = json.loads((installed / "settings.json").read_text())
@@ -287,8 +318,13 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
         if isinstance(error, KeyboardInterrupt):
             raise
         raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
-    return {"installed_version": version, "upstream_commit": manifest["upstream_commit"],
-            "steps": list(INSTALL_STEPS), "restart_required": True}
+    receipt = {"installed_version": version, "upstream_commit": manifest["upstream_commit"],
+               "steps": list(INSTALL_STEPS), "restart_required": True}
+    if dependencies:
+        receipt['dependencies'] = {'bun_version': dependencies['bun_version'],
+            'packages': len(dependencies['packages']),
+            'catalog_sha256': hashlib.sha256((dependency_catalog / 'catalog.json').read_bytes()).hexdigest()}
+    return receipt
 
 
 def install_prepared_lifeos(candidate: Path, installed: Path, failed: Path) -> dict:

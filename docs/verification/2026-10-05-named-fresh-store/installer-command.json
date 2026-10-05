@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python3",
+    "-m",
+    "unittest",
+    "test_native_dependencies",
+    "test_install_step",
+    "test_fresh_store_paths",
+    "test_lifeos_install_source"
+  ],
+  "environment": {
+    "LIFEOS_FRESH_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261005/fresh-store-paths/native-candidate",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-final-distributed/lifeos/LifeOS/install",
+    "LIFEOS_FRESH_EVIDENCE": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-05-named-fresh-store/rerun-results",
+    "PYTHONPATH": "tests:.:/home/outsider/.cache/lifeos-full-experience-20261005/paired-context-response/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261005/paired-context-response/hermes"
+  },
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin"
+}

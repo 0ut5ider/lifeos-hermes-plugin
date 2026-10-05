@@ -1,0 +1,15 @@
+F
+======================================================================
+FAIL: test_native_shipped_dashboard_lock_stays_unchanged (test_native_dependencies.NativeDependenciesTests.test_native_shipped_dashboard_lock_stays_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_dependencies.py", line 49, in test_native_shipped_dashboard_lock_stays_unchanged
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 0 : The native dependency lock changes after release verification
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.088s
+
+FAILED (failures=1)

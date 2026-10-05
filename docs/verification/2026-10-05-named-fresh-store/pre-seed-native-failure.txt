@@ -1,0 +1,27 @@
+E.
+======================================================================
+ERROR: test_named_store_has_no_adopted_facts_and_preserves_originals (test_fresh_store.FreshStoreTests.test_named_store_has_no_adopted_facts_and_preserves_originals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 302, in install_lifeos
+    raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS DeployCore exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 38, in test_named_store_has_no_adopted_facts_and_preserves_originals
+    result=self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account='dashboard:owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/fresh_store.py", line 125, in prepare
+    installation=install_prepared_lifeos(candidate,installed,destination/'failed-install')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 329, in install_prepared_lifeos
+    return install_lifeos(candidate, installed, failed, "bun", SUPPORTED_LIFEOS_COMMIT,
+                          Path(__file__).parent / "patches", LIFEOS_PATCHES)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 318, in install_lifeos
+    raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS DeployCore exited with code 1. Partial files were kept at /tmp/native-memory-k1j91u7r/.local/state/lifeos-hook-bridge/fresh-stores/646ca654dc873c88febac030/14d9a87138ce4fe6924cd3e626222a01/failed-install
+
+----------------------------------------------------------------------
+Ran 2 tests in 13.242s
+
+FAILED (errors=1)

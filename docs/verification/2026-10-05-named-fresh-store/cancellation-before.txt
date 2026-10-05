@@ -1,0 +1,36 @@
+EEE
+======================================================================
+ERROR: test_result_retains_exit_code_and_both_captured_streams (test_install_step.InstallStepTests.test_result_retains_exit_code_and_both_captured_streams) (code=0)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_install_step.py", line 22, in test_result_retains_exit_code_and_both_captured_streams
+    result=self.run_step([sys.executable,'-c',program],Path(directory))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_install_step.py", line 14, in run_step
+    from lifeos_hook_bridge.install_source import _install_step
+ImportError: cannot import name '_install_step' from 'lifeos_hook_bridge.install_source' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py)
+
+======================================================================
+ERROR: test_result_retains_exit_code_and_both_captured_streams (test_install_step.InstallStepTests.test_result_retains_exit_code_and_both_captured_streams) (code=23)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_install_step.py", line 22, in test_result_retains_exit_code_and_both_captured_streams
+    result=self.run_step([sys.executable,'-c',program],Path(directory))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_install_step.py", line 14, in run_step
+    from lifeos_hook_bridge.install_source import _install_step
+ImportError: cannot import name '_install_step' from 'lifeos_hook_bridge.install_source' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py)
+
+======================================================================
+ERROR: test_timed_out_parent_and_descendant_cannot_publish_later (test_install_step.InstallStepTests.test_timed_out_parent_and_descendant_cannot_publish_later)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_install_step.py", line 34, in test_timed_out_parent_and_descendant_cannot_publish_later
+    self.run_step([sys.executable,'-c',parent],root,timeout=0.2)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_install_step.py", line 14, in run_step
+    from lifeos_hook_bridge.install_source import _install_step
+ImportError: cannot import name '_install_step' from 'lifeos_hook_bridge.install_source' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py)
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.028s
+
+FAILED (errors=3)
