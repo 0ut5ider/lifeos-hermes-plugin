@@ -1,0 +1,21 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+___ MemoryLearningRatingTests.test_extreme_numeric_rating_returns_a_refusal ____
+tests/test_memory_learning_ratings.py:113: in test_extreme_numeric_rating_returns_a_refusal
+    result = MemoryService(self.fixture.configuration).native(self.fixture.context, 'learning_ratings', {
+lifeos_hook_bridge/memory_service.py:243: in native
+    return ratings(memory, scope, arguments, check_current=check_current)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_learning.py:99: in ratings
+    collected = _collect(memory, scope, connection, arguments['path'])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_learning.py:50: in _collect
+    or any(type(row.get(key)) not in (int, float) or not math.isfinite(row[key])
+       ^^^
+lifeos_hook_bridge/memory_learning.py:50: in <genexpr>
+    or any(type(row.get(key)) not in (int, float) or not math.isfinite(row[key])
+                                                         ^^^^^^^^^^^^^^^^^^^^^^^
+E   OverflowError: int too large to convert to float
+=========================== short test summary info ============================
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_extreme_numeric_rating_returns_a_refusal
+1 failed in 0.15s

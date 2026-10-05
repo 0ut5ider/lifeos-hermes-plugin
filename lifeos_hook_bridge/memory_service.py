@@ -235,6 +235,12 @@ class MemoryService:
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}
+            if operation == 'learning_ratings' and set(arguments) == {'path','month','all','dry_run','request_id'}:
+                from .memory_learning import ratings
+                def check_current():
+                    if self.configuration.load() != configuration:
+                        raise MemoryUnavailable('Learning authority changed during analysis')
+                return ratings(memory, scope, arguments, check_current=check_current)
             if (operation == 'wisdom_frames' and set(arguments) == {'base'}
                     or operation == 'wisdom_synthesis' and set(arguments) == {'base','health','dry_run','request_id'}):
                 from .memory_wisdom import frames, synthesize

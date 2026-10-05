@@ -3267,6 +3267,84 @@ index ecfbbeb..4809978 100755
      const abs = pathJoin(KNOWLEDGE_DIR, dir);
      if (!existsSync(abs)) continue;
      for (const f of readdirSync(abs)) {
+diff --git a/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts b/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts
+index 80ea291..4842825 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts
+@@ -37,6 +37,8 @@ import * as fs from "fs";
+ import * as path from "path";
+ import * as crypto from "crypto";
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ import { getPrincipalName } from "../../hooks/lib/identity";
+ import {
+   FRUSTRATION_PATTERNS, SUCCESS_PATTERNS,
+@@ -238,8 +240,8 @@ function analyzeRatings(ratings: Rating[], period: string): SynthesisResult {
+ // File Generation
+ // ============================================================================
+ 
+-function formatSynthesisReport(result: SynthesisResult): string {
+-  const date = new Date().toISOString().split('T')[0];
++function formatSynthesisReport(result: SynthesisResult, now: Date = new Date()): string {
++  const date = now.toISOString().split('T')[0];
+ 
+   let content = `# Learning Pattern Synthesis
+ 
+@@ -327,6 +329,37 @@ function writeSynthesis(result: SynthesisResult, period: string): string {
+   return filepath;
+ }
+ 
++export function renderRatingSynthesis(
++  ratings: Rating[] | null, opts: {month: boolean; all: boolean; dryRun: boolean}, sourcePath: string, instant: string
++): {stdout: string; relative: string | null; content: string | null} {
++  if (ratings === null) return {stdout: `No ratings file found at: ${sourcePath}\n`, relative: null, content: null};
++  let stdout = `📊 Loaded ${ratings.length} total ratings\n`;
++  let period = "Weekly";
++  const cutoffDate = new Date(instant);
++  if (opts.month) {period = "Monthly"; cutoffDate.setDate(cutoffDate.getDate() - 30);}
++  else if (opts.all) {period = "All Time"; cutoffDate.setTime(0);}
++  else cutoffDate.setDate(cutoffDate.getDate() - 7);
++  const filtered = ratings.filter(rating => new Date(rating.timestamp) >= cutoffDate);
++  stdout += `🔍 Analyzing ${filtered.length} ratings for ${period.toLowerCase()} period\n`;
++  if (!filtered.length) return {stdout: stdout + "✅ No ratings in this period\n", relative: null, content: null};
++  const result = analyzeRatings(filtered, period);
++  stdout += `\n📈 Analysis Results:\n   Average Rating: ${result.avgRating.toFixed(1)}/10\n`;
++  stdout += `   Frustration Patterns: ${result.frustrations.length}\n   Success Patterns: ${result.successes.length}\n`;
++  if (result.topIssues.length) {
++    stdout += "\n⚠️  Top Issues:\n";
++    for (const issue of result.topIssues) stdout += `   - ${issue}\n`;
++  }
++  if (opts.dryRun) {
++    stdout += "\n🔍 DRY RUN - Would write synthesis report\n\nRecommendations:\n";
++    for (const recommendation of result.recommendations) stdout += `   - ${recommendation}\n`;
++    return {stdout, relative: null, content: null};
++  }
++  const now = new Date(instant);
++  const filename = `${now.toISOString().split('T')[0]}_${period.toLowerCase().replace(/\s+/g, '-')}-patterns.md`;
++  const relative = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}/${filename}`;
++  return {stdout: stdout + `\n✅ Created synthesis report: ${filename}\n`, relative, content: formatSynthesisReport(result, now)};
++}
++
+ // ============================================================================
+ // Hypothesis Generation (Proactive Deriver Loop)
+ // ============================================================================
+@@ -1064,6 +1097,15 @@ if (values.hypothesize) {
+   process.exit(0);
+ }
+ 
++const governed = memoryAccess("learning_ratings", {path: RATINGS_FILE, month: values.month ?? false,
++  all: values.all ?? false, dry_run: values["dry-run"] ?? false, request_id: randomUUID()},
++  (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++if (governed !== undefined) {
++  if (!governed.ok || typeof governed.stdout !== "string") throw new Error("Learning rating admission or publication is unavailable");
++  process.stdout.write(governed.stdout);
++  process.exit(0);
++}
++
+ // Check ratings file exists
+ if (!fs.existsSync(RATINGS_FILE)) {
+   console.log("No ratings file found at:", RATINGS_FILE);
 diff --git a/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts b/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts
 index b5c0b6d..60f32bf 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts

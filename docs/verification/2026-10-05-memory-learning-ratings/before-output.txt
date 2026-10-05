@@ -1,0 +1,44 @@
+FFFFFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+____ MemoryLearningRatingTests.test_missing_context_cannot_publish_a_report ____
+tests/test_memory_learning_ratings.py:59: in test_missing_context_cannot_publish_a_report
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_____ MemoryLearningRatingTests.test_native_report_has_private_permissions _____
+tests/test_memory_learning_ratings.py:97: in test_native_report_has_private_permissions
+    self.assertEqual(self.reports()[0].stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryLearningRatingTests.test_owner_analysis_preserves_native_counts_and_patterns _
+tests/test_memory_learning_ratings.py:54: in test_owner_analysis_preserves_native_counts_and_patterns
+    self.assertIn('Over-engineering', result.stdout)
+E   AssertionError: 'Over-engineering' not found in '📊 Loaded 2 total ratings\n🔍 Analyzing 2 ratings for all time period\n\n📈 Analysis Results:\n   Average Rating: 5.0/10\n   Frustration Patterns: 0\n   Success Patterns: 0\n\n🔍 DRY RUN - Would write synthesis report\n\nRecommendations:\n   - Continue current patterns - no major issues detected\n'
+_ MemoryLearningRatingTests.test_private_rating_is_absent_from_native_counts_and_report _
+tests/test_memory_learning_ratings.py:67: in test_private_rating_is_absent_from_native_counts_and_report
+    self.assertIn('Loaded 2 total ratings', result.stdout)
+E   AssertionError: 'Loaded 2 total ratings' not found in '📊 Loaded 3 total ratings\n🔍 Analyzing 3 ratings for all time period\n\n📈 Analysis Results:\n   Average Rating: 3.7/10\n   Frustration Patterns: 0\n   Success Patterns: 0\n\n✅ Created synthesis report: 2026-10-05_all-time-patterns.md\n'
+_ MemoryLearningRatingTests.test_read_only_owner_can_analyze_but_cannot_publish _
+tests/test_memory_learning_ratings.py:90: in test_read_only_owner_can_analyze_but_cannot_publish
+    self.assertNotEqual(self.call('--all').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryLearningRatingTests.test_redirected_ratings_refuse_without_generating_foreign_examples _
+tests/test_memory_learning_ratings.py:104: in test_redirected_ratings_refuse_without_generating_foreign_examples
+    self.assertNotEqual(self.call('--all').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryLearningRatingTests.test_retired_rating_cannot_return_in_a_generated_report _
+tests/test_memory_learning_ratings.py:80: in test_retired_rating_cannot_return_in_a_generated_report
+    self.assertIn('Loaded 1 total ratings', result.stdout)
+E   AssertionError: 'Loaded 1 total ratings' not found in '📊 Loaded 2 total ratings\n🔍 Analyzing 2 ratings for all time period\n\n📈 Analysis Results:\n   Average Rating: 4.5/10\n   Frustration Patterns: 0\n   Success Patterns: 0\n\n✅ Created synthesis report: 2026-10-05_all-time-patterns.md\n'
+____ MemoryLearningRatingTests.test_revoked_account_cannot_analyze_ratings _____
+tests/test_memory_learning_ratings.py:85: in test_revoked_account_cannot_analyze_ratings
+    self.assertNotEqual(self.call('--all', '--dry-run').returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_missing_context_cannot_publish_a_report
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_native_report_has_private_permissions
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_owner_analysis_preserves_native_counts_and_patterns
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_private_rating_is_absent_from_native_counts_and_report
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_read_only_owner_can_analyze_but_cannot_publish
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_redirected_ratings_refuse_without_generating_foreign_examples
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_retired_rating_cannot_return_in_a_generated_report
+FAILED tests/test_memory_learning_ratings.py::MemoryLearningRatingTests::test_revoked_account_cannot_analyze_ratings
+8 failed in 1.55s

@@ -1,0 +1,19 @@
+{
+  "case": "test_native_ignored_json_lines_remain_ignored",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-tln8sjzl/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--all",
+        "--dry-run"
+      ],
+      "status": 0,
+      "stdout": "\ud83d\udcca Loaded 2 total ratings\n\ud83d\udd0d Analyzing 2 ratings for all time period\n\n\ud83d\udcc8 Analysis Results:\n   Average Rating: 5.0/10\n   Frustration Patterns: 1\n   Success Patterns: 1\n\n\u26a0\ufe0f  Top Issues:\n   - Over-engineering (1 occurrences, avg rating 2.0)\n\n\ud83d\udd0d DRY RUN - Would write synthesis report\n\nRecommendations:\n   - Default to simpler solutions; only add complexity when justified\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-learning-ratings-candidate-distributed/lifeos/LifeOS/install"
+}

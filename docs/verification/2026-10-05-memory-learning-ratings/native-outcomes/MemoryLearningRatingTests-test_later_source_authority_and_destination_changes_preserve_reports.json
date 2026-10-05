@@ -1,0 +1,45 @@
+{
+  "case": "test_later_source_authority_and_destination_changes_preserve_reports",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_learning_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vviyvwlx/memory.json",
+        "source"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"The learning source or report changes during analysis\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_learning_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vviyvwlx/memory.json",
+        "authority"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"Learning authority changed during analysis\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_learning_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vviyvwlx/memory.json",
+        "destination"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"The learning source or report changes during analysis\"}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vviyvwlx/.claude/LIFEOS/MEMORY/LEARNING/SYNTHESIS/2026-10/2026-10-05_all-time-patterns.md": {
+      "content": "Synthetic later rating report edit\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-learning-ratings-candidate-distributed/lifeos/LifeOS/install"
+}

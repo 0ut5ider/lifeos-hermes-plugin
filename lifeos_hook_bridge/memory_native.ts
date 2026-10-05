@@ -107,6 +107,16 @@ async function main(): Promise<void> {
       throw new Error("Native deny hashing requires declared source and operator text");
     }
     result = module.renderDenyHashes(input.sources, input.operator, input.salt);
+  } else if (input.action === "learning_ratings") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/LearningPatternSynthesis.ts")).href);
+    if (!object(module) || typeof module.renderRatingSynthesis !== "function"
+        || !(input.ratings === null || Array.isArray(input.ratings)) || typeof input.path !== "string"
+        || typeof input.month !== "boolean" || typeof input.all !== "boolean" || typeof input.dry_run !== "boolean"
+        || typeof input.now !== "string" || !Number.isFinite(Date.parse(input.now))) {
+      throw new Error("Native learning analysis requires declared ratings");
+    }
+    result = module.renderRatingSynthesis(input.ratings,
+      {month: input.month, all: input.all, dryRun: input.dry_run}, input.path, input.now);
   } else if (input.action === "wisdom_synthesis") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts")).href);
     if (!object(module) || typeof module.renderCrossFrameSynthesis !== "function" || !Array.isArray(input.sources)
