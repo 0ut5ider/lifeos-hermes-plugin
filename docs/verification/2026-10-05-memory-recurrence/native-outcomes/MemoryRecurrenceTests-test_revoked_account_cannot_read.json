@@ -1,0 +1,18 @@
+{
+  "case": "test_revoked_account_cannot_read",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-8tj2_kpy/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.buildReport(30)));"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "40 | \n41 | function admittedSources(): RecurrenceSource[] | undefined {\n42 |   const result = memoryAccess(\"recurrence_sources\", {base: LIFEOS_DIR},\n43 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n44 |   if (result === undefined) return undefined;\n45 |   if (result.ok !== true || !Array.isArray(result.sources)) throw new Error(\"Recurrence sources are unavailable\");\n                                                                           ^\nerror: Recurrence sources are unavailable\n      at admittedSources (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts:45:71)\n      at buildReport (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts:295:56)\n      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:207\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

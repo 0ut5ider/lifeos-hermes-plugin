@@ -1,0 +1,18 @@
+{
+  "case": "test_missing_context_cannot_append_registry",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-f61kkvou/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");m.appendPatchRegistry({\"ts\": \"2026-10-05T05:22:43.401901+00:00\", \"class_id\": \"tool:terminal:synthetic-recurrence-failure\", \"hypothesis_slug\": \"synthetic-failure\", \"files\": [\"hooks/Synthetic.ts\"], \"fixture\": null, \"note\": \"Synthetic repair\"}); console.log(\"appended\");"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "282 | \n283 | export function appendPatchRegistry(rec: PatchRecord): void {\n284 |   const governed = memoryAccess(\"recurrence_append\", {base: LIFEOS_DIR, record: rec, request_id: randomUUID()},\n285 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n286 |   if (governed !== undefined) {\n287 |     if (governed.ok !== true) throw new Error(\"The recurrence registry publication is unavailable\");\n                                              ^\nerror: The recurrence registry publication is unavailable\n      at appendPatchRegistry (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts:287:41)\n      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:180\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

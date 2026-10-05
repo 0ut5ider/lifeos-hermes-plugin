@@ -1,0 +1,111 @@
+{
+  "case": "test_owner_report_and_library_results_match_original_native",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u6_b8qg9/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.buildReport(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:44.791442+00:00\",\"last_seen\":\"2026-10-05T05:22:44.791442+00:00\",\"sources\":[\"tool-failures\"],\"patch\":{\"ts\":\"2026-10-05T05:22:44.791525+00:00\",\"hypothesis_slug\":\"synthetic-failure\"},\"recurrences_since_patch\":0,\"flags\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.buildReport(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:44.791442+00:00\",\"last_seen\":\"2026-10-05T05:22:44.791442+00:00\",\"sources\":[\"tool-failures\"],\"patch\":{\"ts\":\"2026-10-05T05:22:44.791525+00:00\",\"hypothesis_slug\":\"synthetic-failure\"},\"recurrences_since_patch\":0,\"flags\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u6_b8qg9/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:44.791442+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:44.791442+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u6_b8qg9/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectObservabilityClusters(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:44.791442+00:00\",\"examples\":[\"Synthetic recurrence failure\"],\"sigRefs\":[\"obs:2026-10-05T05:22:44.791442+00:00\"]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectObservabilityClusters(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:44.791442+00:00\",\"examples\":[\"Synthetic recurrence failure\"],\"sigRefs\":[\"obs:2026-10-05T05:22:44.791442+00:00\"]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u6_b8qg9/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.readPatchRegistry()));"
+      ],
+      "status": 0,
+      "stdout": "[{\"ts\":\"2026-10-05T05:22:44.791525+00:00\",\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"hypothesis_slug\":\"synthetic-failure\",\"files\":[\"hooks/Synthetic.ts\"],\"fixture\":null,\"note\":\"Synthetic repair\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.readPatchRegistry()));"
+      ],
+      "status": 0,
+      "stdout": "[{\"ts\":\"2026-10-05T05:22:44.791525+00:00\",\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"hypothesis_slug\":\"synthetic-failure\",\"files\":[\"hooks/Synthetic.ts\"],\"fixture\":null,\"note\":\"Synthetic repair\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u6_b8qg9/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.buildReport(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:44.791442+00:00\",\"last_seen\":\"2026-10-05T05:22:44.791442+00:00\",\"sources\":[\"tool-failures\"],\"patch\":{\"ts\":\"2026-10-05T05:22:44.791525+00:00\",\"hypothesis_slug\":\"synthetic-failure\"},\"recurrences_since_patch\":0,\"flags\":[]}]\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u6_b8qg9/.claude/LIFEOS/MEMORY/LEARNING/PATCHES/registry.jsonl": {
+      "content": "{\"ts\": \"2026-10-05T05:22:44.791525+00:00\", \"class_id\": \"tool:terminal:synthetic-recurrence-failure\", \"hypothesis_slug\": \"synthetic-failure\", \"files\": [\"hooks/Synthetic.ts\"], \"fixture\": null, \"note\": \"Synthetic repair\"}\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

@@ -1,0 +1,29 @@
+{
+  "case": "test_source_or_authority_change_during_collection_refuses_delivery",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_recurrence_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-jnhtms_z/memory.json",
+        "source"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"Recurrence sources change during collection\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_recurrence_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-jnhtms_z/memory.json",
+        "read-authority"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"Recurrence authority changes during the operation\"}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

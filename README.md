@@ -105,6 +105,8 @@ The [fresh memory review](docs/agents/2026-10-01-memory-fresh-review/memory-fres
 
 The [resolved memory experience](notes/2026-09-30-memory-design.md) gives LifeOS ownership of lasting facts and preferences. Hermes keeps conversation history, compression, and skills. Other agents can optionally share the same native records through an authenticated Model Context Protocol (MCP) connection. The policy applies across messaging apps. The [design review](docs/agents/2026-09-30-memory-design-review/memory-design-review.md) and [implementation plan](docs/memory-implementation-plan.md) describe the required boundaries and acceptance evidence.
 
+The [native recurrence ledger checks](docs/verification/2026-10-05-memory-recurrence/README.md) govern failure streams, captures, reports, clusters, and registry publication. The combined gate passes 69 tests and 35 subtests. Hypothesis and healing publications remain open.
+
 The [native rating analysis checks](docs/verification/2026-10-05-memory-learning-ratings/README.md) govern rating inputs and report publication. The combined gate passes 75 tests and 51 subtests. Hypothesis derivation and recurrence publications remain open.
 
 The [existing-memory import plan](docs/memory-import-plan.md) preserves the original proposal, independent findings, and revised workflow. The importer is not implemented. Fresh-install completion remains the active work; migration does not change ownership or copy existing server data.

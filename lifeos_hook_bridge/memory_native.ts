@@ -26,7 +26,12 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "distill_prepare") {
+  if (input.action === "recurrence_append") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/RecurrenceLedger.ts")).href);
+    if (!object(module) || typeof module.renderPatchRegistry !== "function" || typeof input.previous !== "string"
+        || !object(input.record)) throw new Error("Native registry publication requires declared record and bytes");
+    result = {content: module.renderPatchRegistry(input.previous, input.record)};
+  } else if (input.action === "distill_prepare") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeDistill.ts")).href);
     if (!object(module) || typeof module.prepareDistill !== "function" || !Array.isArray(input.sources)
         || input.sources.some(source => !object(source) || typeof source.path !== "string" || typeof source.content !== "string")

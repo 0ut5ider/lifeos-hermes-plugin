@@ -1,0 +1,18 @@
+{
+  "case": "test_private_and_decoded_private_rows_stay_outside_counts",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2td_631h/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:46.822319+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"}]\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

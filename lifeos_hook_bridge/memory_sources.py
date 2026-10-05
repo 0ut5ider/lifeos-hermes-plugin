@@ -16,7 +16,8 @@ PREFIXES = ('LIFEOS/MEMORY/LEARNING/', 'LIFEOS/MEMORY/WISDOM/FRAMES/',
             'LIFEOS/MEMORY/RELATIONSHIP/', 'LIFEOS/MEMORY/WORK/', 'LIFEOS/MEMORY/STATE/progress/')
 FILES = {'LIFEOS/MEMORY/STATE/learning-cache.sh', 'LIFEOS/MEMORY/STATE/session-names.json',
          'LIFEOS/MEMORY/STATE/events.jsonl'}
-LOG_FILES = {'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl',
+LOG_FILES = {'LIFEOS/MEMORY/OBSERVABILITY/' + name for name in
+    ('verification-gate.jsonl', 'format-gate.jsonl', 'writing-gate.jsonl', 'tool-failures.jsonl', 'hook-healer.jsonl')} | {'LIFEOS/MEMORY/OBSERVABILITY/memory-writes.jsonl',
              'LIFEOS/MEMORY/OBSERVABILITY/memory-health.jsonl'}
 CACHE_FILES = {'LIFEOS/USER/CACHE/freshness.json'}
 CONTEXT_FILES = {'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',

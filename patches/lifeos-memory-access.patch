@@ -4375,6 +4375,140 @@ index a53b2b6..02354ed 100755
 -  main();
 +  process.exit(main());
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts b/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts
+index 6297973..7a3fd59 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts
+@@ -33,6 +33,24 @@
+ import * as fs from "fs";
+ import * as path from "path";
+ import { homedir } from "os";
++import { randomUUID } from "node:crypto";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++
++export interface RecurrenceSource { path: string; content: string; timestamp: string }
++
++function admittedSources(): RecurrenceSource[] | undefined {
++  const result = memoryAccess("recurrence_sources", {base: LIFEOS_DIR},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (result === undefined) return undefined;
++  if (result.ok !== true || !Array.isArray(result.sources)) throw new Error("Recurrence sources are unavailable");
++  const sources: RecurrenceSource[] = [];
++  for (const source of result.sources) {
++    if (!memoryObject(source) || typeof source.path !== "string" || typeof source.content !== "string"
++        || typeof source.timestamp !== "string") throw new Error("Recurrence sources require declared text and timestamps");
++    sources.push({path: source.path, content: source.content, timestamp: source.timestamp});
++  }
++  return sources;
++}
+ 
+ // ── Paths (LIFEOS_DIR override mirrors the hook/test convention) ────────────
+ const LIFEOS_DIR = process.env.LIFEOS_DIR ?? path.join(homedir(), ".claude", "LIFEOS");
+@@ -118,9 +136,10 @@ export function classifyCaptureText(text: string): string {
+ }
+ 
+ // ── Stream parsers ───────────────────────────────────────────────────────────
+-function loadJsonl(filepath: string): any[] {
+-  if (!fs.existsSync(filepath)) return [];
+-  return fs.readFileSync(filepath, "utf-8")
++function loadJsonl(filepath: string, sources?: RecurrenceSource[]): any[] {
++  const content = sources === undefined ? (fs.existsSync(filepath) ? fs.readFileSync(filepath, "utf-8") : "")
++    : sources.find(source => source.path === filepath)?.content ?? "";
++  return content
+     .split("\n")
+     .filter(l => l.trim())
+     .map(l => { try { return JSON.parse(l); } catch { return null; } })
+@@ -169,7 +188,19 @@ const STREAMS: StreamDef[] = [
+   },
+ ];
+ 
+-function collectCaptureEvents(): FailureEvent[] {
++function collectCaptureEvents(sources?: RecurrenceSource[]): FailureEvent[] {
++  if (sources !== undefined) {
++    const out: FailureEvent[] = [];
++    for (const source of sources.filter(source => source.path.startsWith(FAILURES_DIR + path.sep))) {
++      try {
++        const s = JSON.parse(source.content);
++        const text = `${s.summary ?? ""} ${s.detailed_context ?? ""}`;
++        out.push({classId: `capture:${classifyCaptureText(text)}`, ts: s.captured_at ?? new Date(source.timestamp).toISOString(),
++          source: "failure-capture", detail: String(s.summary ?? "").slice(0, 200), sessionId: s.session_id});
++      } catch { /* skip malformed capture */ }
++    }
++    return out;
++  }
+   if (!fs.existsSync(FAILURES_DIR)) return [];
+   const out: FailureEvent[] = [];
+   for (const month of fs.readdirSync(FAILURES_DIR)) {
+@@ -195,18 +226,18 @@ function collectCaptureEvents(): FailureEvent[] {
+ }
+ 
+ /** All failure events across every stream, oldest-first. windowDays=0 → all history. */
+-export function collectFailureEvents(windowDays = 0): FailureEvent[] {
++export function collectFailureEvents(windowDays = 0, sources = admittedSources()): FailureEvent[] {
+   const cutoff = windowDays > 0 ? Date.now() - windowDays * 86400_000 : 0;
+   const events: FailureEvent[] = [];
+   for (const s of STREAMS) {
+-    for (const r of loadJsonl(path.join(OBS_DIR, s.file))) {
++    for (const r of loadJsonl(path.join(OBS_DIR, s.file), sources)) {
+       const e = s.toEvent(r);
+       if (!e || !e.ts) continue;
+       if (cutoff && new Date(e.ts).getTime() < cutoff) continue;
+       events.push(e);
+     }
+   }
+-  for (const e of collectCaptureEvents()) {
++  for (const e of collectCaptureEvents(sources)) {
+     if (cutoff && new Date(e.ts).getTime() < cutoff) continue;
+     events.push(e);
+   }
+@@ -223,9 +254,9 @@ export interface ObservabilityCluster {
+ 
+ /** Window-scoped clusters for the deriver's intake. Capture events excluded —
+  *  those already flow to the deriver via ratings.jsonl. */
+-export function collectObservabilityClusters(windowDays: number): ObservabilityCluster[] {
++export function collectObservabilityClusters(windowDays: number, sources = admittedSources()): ObservabilityCluster[] {
+   const byClass = new Map<string, FailureEvent[]>();
+-  for (const e of collectFailureEvents(windowDays)) {
++  for (const e of collectFailureEvents(windowDays, sources)) {
+     if (e.source === "failure-capture") continue;
+     const arr = byClass.get(e.classId) ?? [];
+     arr.push(e);
+@@ -241,20 +272,30 @@ export function collectObservabilityClusters(windowDays: number): ObservabilityC
+ }
+ 
+ // ── Patch registry ───────────────────────────────────────────────────────────
+-export function readPatchRegistry(): PatchRecord[] {
+-  return loadJsonl(PATCH_REGISTRY) as PatchRecord[];
++export function readPatchRegistry(sources = admittedSources()): PatchRecord[] {
++  return loadJsonl(PATCH_REGISTRY, sources) as PatchRecord[];
++}
++
++export function renderPatchRegistry(previous: string, rec: PatchRecord): string {
++  return previous + JSON.stringify(rec) + "\n";
+ }
+ 
+ export function appendPatchRegistry(rec: PatchRecord): void {
++  const governed = memoryAccess("recurrence_append", {base: LIFEOS_DIR, record: rec, request_id: randomUUID()},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (governed.ok !== true) throw new Error("The recurrence registry publication is unavailable");
++    return;
++  }
+   fs.mkdirSync(PATCHES_DIR, { recursive: true });
+   fs.appendFileSync(PATCH_REGISTRY, JSON.stringify(rec) + "\n");
+ }
+ 
+ // ── Report ───────────────────────────────────────────────────────────────────
+-export function buildReport(windowDays = 30): ClassReportRow[] {
+-  const all = collectFailureEvents(0);
++export function buildReport(windowDays = 30, sources = admittedSources()): ClassReportRow[] {
++  const all = collectFailureEvents(0, sources);
+   const cutoff = Date.now() - windowDays * 86400_000;
+-  const patches = readPatchRegistry();
++  const patches = readPatchRegistry(sources);
+   const latestPatch = new Map<string, PatchRecord>();
+   for (const p of patches) latestPatch.set(p.class_id, p); // last wins (registry is append-ordered)
+ 
 diff --git a/LifeOS/install/LIFEOS/TOOLS/RenderHermesSoul.ts b/LifeOS/install/LIFEOS/TOOLS/RenderHermesSoul.ts
 index ab80489..3f80938 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/RenderHermesSoul.ts

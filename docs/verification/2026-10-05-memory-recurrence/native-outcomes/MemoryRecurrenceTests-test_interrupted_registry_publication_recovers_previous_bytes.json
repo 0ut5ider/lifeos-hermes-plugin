@@ -1,0 +1,23 @@
+{
+  "case": "test_interrupted_registry_publication_recovers_previous_bytes",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_recurrence_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-hrb7oe7r/memory.json",
+        "interrupt"
+      ],
+      "status": 73,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-hrb7oe7r/.claude/LIFEOS/MEMORY/LEARNING/PATCHES/registry.jsonl": {
+      "content": "{\"ts\": \"2026-10-05T05:22:41.988837+00:00\", \"class_id\": \"tool:terminal:synthetic-recurrence-failure\", \"hypothesis_slug\": \"synthetic-failure\", \"files\": [\"hooks/Synthetic.ts\"], \"fixture\": null, \"note\": \"Synthetic repair\"}\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

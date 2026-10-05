@@ -235,6 +235,15 @@ class MemoryService:
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}
+            if (operation == 'recurrence_sources' and set(arguments) == {'base'}
+                    or operation == 'recurrence_append' and set(arguments) == {'base','record','request_id'}):
+                from .memory_recurrence import sources, append
+                def check_current():
+                    if self.configuration.load() != configuration:
+                        raise MemoryUnavailable('Recurrence authority changes during the operation')
+                if operation == 'recurrence_sources':
+                    return sources(memory, scope, arguments['base'], check_current=check_current)
+                return append(memory, scope, arguments, check_current=check_current)
             if operation == 'learning_ratings' and set(arguments) == {'path','month','all','dry_run','request_id'}:
                 from .memory_learning import ratings
                 def check_current():
