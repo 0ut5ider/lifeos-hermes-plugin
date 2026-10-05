@@ -1,0 +1,18 @@
+........FF                                                             [100%]
+=================================== FAILURES ===================================
+____ MemoryPulseAdapterDestinationTests.test_later_log_append_is_preserved _____
+tests/test_memory_pulse_adapter_destination.py:29: in test_later_log_append_is_preserved
+    self.process('log')
+tests/test_memory_pulse_adapter_destination.py:25: in process
+    self.assertFalse(outcome['result']['ok'], outcome)
+E   AssertionError: True is not false : {'result': {'ok': True, 'value': None}, 'preserved': False}
+_____ MemoryPulseAdapterDestinationTests.test_later_page_edit_is_preserved _____
+tests/test_memory_pulse_adapter_destination.py:32: in test_later_page_edit_is_preserved
+    self.process('page')
+tests/test_memory_pulse_adapter_destination.py:25: in process
+    self.assertFalse(outcome['result']['ok'], outcome)
+E   AssertionError: True is not false : {'result': {'ok': True, 'value': None}, 'preserved': False}
+=========================== short test summary info ============================
+FAILED tests/test_memory_pulse_adapter_destination.py::MemoryPulseAdapterDestinationTests::test_later_log_append_is_preserved
+FAILED tests/test_memory_pulse_adapter_destination.py::MemoryPulseAdapterDestinationTests::test_later_page_edit_is_preserved
+2 failed, 8 passed, 2 subtests passed in 4.20s

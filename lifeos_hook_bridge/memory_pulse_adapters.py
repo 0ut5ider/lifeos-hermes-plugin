@@ -214,10 +214,14 @@ def publication_paths(memory, scope, payload):
     return payload['paths']
 
 
-def _publish(memory, scope, values, check_current, *, check_inputs=None):
+def _bytes(memory, relative):
+    path = _target(memory, relative)
+    return path.read_bytes() if path.exists() else None
+
+
+def _publish(memory, scope, values, before, check_current, *, check_inputs=None):
     paths = sorted(values)
     publication_paths(memory, scope, {'paths': paths})
-    before = {relative: _target(memory, relative).read_bytes() if _target(memory, relative).exists() else None for relative in paths}
 
     def apply(connection):
         try:
@@ -227,7 +231,7 @@ def _publish(memory, scope, values, check_current, *, check_inputs=None):
                 check_inputs(connection)
         except (MemoryUnavailable, OSError) as error:
             raise MemoryConflict('PULSE publication authority or destinations changed') from error
-        if any((_target(memory, relative).read_bytes() if _target(memory, relative).exists() else None) != before[relative] for relative in paths):
+        if any(_bytes(memory, relative) != before[relative] for relative in paths):
             raise MemoryConflict('PULSE publication preserves a later destination edit')
         for relative, content in values.items():
             if content is None:
@@ -273,6 +277,8 @@ def data(memory, scope, action, identifier, value, *, check_current):
                 result = None
             check_current()
             return {'ok': True, 'value': result}
+        destinations = [relative, DATA + identifier + '.meta.json'] if action == 'write_page' else [relative]
+        before = {destination: _bytes(memory, destination) for destination in destinations}
         if action != 'clear_error' and not _admitted(memory, scope, connection, value):
             raise MemoryUnavailable('PULSE output is excluded by current policy')
         if action == 'write_page':
@@ -299,7 +305,7 @@ def data(memory, scope, action, identifier, value, *, check_current):
         if action == 'write_page' and not _source_binding(memory, scope, connection, value, identifier, page=True):
             raise MemoryConflict('PULSE page sources changed before publication')
 
-    return _publish(memory, scope, values, check_current, check_inputs=check_inputs)
+    return _publish(memory, scope, values, before, check_current, check_inputs=check_inputs)
 
 
 def log(memory, scope, entry, *, check_current):
@@ -308,9 +314,9 @@ def log(memory, scope, entry, *, check_current):
         if not isinstance(entry, dict) or not _admitted(memory, scope, connection, entry):
             raise MemoryUnavailable('PULSE adapter log is excluded by current policy')
         path = _target(memory, LOG)
-        previous = path.read_bytes() if path.exists() else b''
-        content = previous + (json.dumps(entry, ensure_ascii=False, separators=(',', ':')) + '\n').encode()
+        previous = path.read_bytes() if path.exists() else None
+        content = (previous or b'') + (json.dumps(entry, ensure_ascii=False, separators=(',', ':')) + '\n').encode()
         if len(content) > CORPUS_LIMIT:
             raise MemoryUnavailable('PULSE adapter log exceeds its publication limit')
         check_current()
-    return _publish(memory, scope, {LOG: content}, check_current)
+    return _publish(memory, scope, {LOG: content}, {LOG: previous}, check_current)

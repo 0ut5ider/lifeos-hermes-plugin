@@ -29,7 +29,7 @@ The [freshness reader gate](docs/verification/2026-10-04-memory-freshness/README
 
 ## Compatibility target
 
-The [PULSE adapter gate](docs/verification/2026-10-04-memory-pulse-adapter/README.md) admits manifests, prompts, sources, cache reads, and fixed data-plane publication. It verifies current-source conflicts and interrupted page/metadata recovery. Its distributed gate passes 126 tests and 90 subtests. Model generation, combined derivative child acceptance, and memory ownership remain open.
+The [PULSE adapter gate](docs/verification/2026-10-04-memory-pulse-adapter/README.md) admits manifests, prompts, sources, cache reads, and fixed data-plane publication. It verifies current-source conflicts and interrupted page/metadata recovery. Its distributed gate passes 126 tests and 90 subtests. The [destination conflict correction](docs/verification/2026-10-04-memory-pulse-destinations/README.md) preserves later log and page edits and passes 136 tests and 92 subtests. Model generation, combined derivative child acceptance, and memory ownership remain open.
 
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.
 
