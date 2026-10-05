@@ -107,6 +107,14 @@ async function main(): Promise<void> {
       throw new Error("Native deny hashing requires declared source and operator text");
     }
     result = module.renderDenyHashes(input.sources, input.operator, input.salt);
+  } else if (input.action === "wisdom_synthesis") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts")).href);
+    if (!object(module) || typeof module.renderCrossFrameSynthesis !== "function" || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.path !== "string" || typeof source.content !== "string")
+        || typeof input.health !== "boolean" || typeof input.dry_run !== "boolean" || typeof input.exists !== "boolean") {
+      throw new Error("Native Wisdom synthesis requires declared frame sources");
+    }
+    result = module.renderCrossFrameSynthesis(input.sources, input.health, input.dry_run, input.exists);
   } else if (input.action === "wisdom_frame_update") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/WisdomFrameUpdater.ts")).href);
     if (!object(module) || typeof module.renderFrameUpdate !== "function" || typeof input.domain !== "string"

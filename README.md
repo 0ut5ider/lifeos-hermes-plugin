@@ -74,6 +74,9 @@ The [full-experience release plan](docs/full-experience-release-plan.md) tracks 
 
 [Wisdom frame checks](docs/verification/2026-10-05-memory-wisdom-frame/README.md) verify the native observation writer under current owner authority. Managed publication retains all five update types, uses private permissions, and recovers after process death. Private or retired observations and later source or authority changes refuse publication. Other Wisdom readers and synthesis remain release requirements.
 
+[Wisdom reader checks](docs/verification/2026-10-05-memory-wisdom-readers/README.md) verify current frame classification, loading, listing, synthesis, and health reports. Managed results retain the tested native bytes and exclude private or retired frames. Report publication checks current authority and destinations, uses private permissions, and recovers the previous pair after interruption. Scheduled learning synthesis and ownership activation remain open.
+
+
 
 
 Memory request repair supports readable Chat Completions messages and Responses input items. It removes known retired content from generated history while preserving protocol identifiers and the current user's verified quote. It keeps stored transcripts. A verified conversation can resume after a fact correction or forget operation. Its next foreground request must repair the readable history before auxiliary calls can continue. Compression can transfer a verified parent into its host-bound child. The caller requires recorded lineage and unchanged authority before using the child. Changed identity, prompt, permissions, or unverified saved state require a fresh conversation. This support does not enable memory ownership or establish complete compression failure recovery, backup, and recovery behavior.

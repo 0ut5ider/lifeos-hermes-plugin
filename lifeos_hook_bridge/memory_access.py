@@ -353,7 +353,7 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
-        if payload['operation'] == 'wisdom_frame_update':
+        if payload['operation'] in {'wisdom_frame_update', 'wisdom_synthesis'}:
             from .memory_wisdom import publication_paths
             return publication_paths(self, scope, payload)
         if payload['operation'] == 'distill_synthesis':

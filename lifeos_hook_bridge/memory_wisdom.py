@@ -1,12 +1,15 @@
 # ABOUTME: Admits current Wisdom frame inputs and native observation transformations.
 # ABOUTME: Publishes fixed owner frame paths through the existing recovery journal.
 from datetime import datetime, timezone
+from itertools import islice
+import hashlib
+import json
 import os
 from pathlib import Path
 import re
 
 from .memory_access import MemoryConflict, MemoryUnavailable
-from .memory_sources import authorize, read_markdown, CORPUS_LIMIT
+from .memory_sources import authorize, read_markdown, CORPUS_LIMIT, SOURCE_COUNT_LIMIT
 from .memory_transaction import publish
 
 
@@ -34,6 +37,9 @@ def _target(memory, scope, arguments):
 
 
 def publication_paths(memory, scope, payload):
+    if payload['operation'] == 'wisdom_synthesis':
+        _authorize_reports(scope)
+        return [_report(memory, relative).relative_to(memory.root).as_posix() for relative in payload['outputs']]
     relative, _ = _target(memory, scope, payload)
     return [relative]
 
@@ -107,3 +113,105 @@ def update_frame(memory, scope, arguments, *, check_current):
 
     receipt = memory._operation(scope, arguments['request_id'], payload, apply)
     return {'ok': receipt['status'] == 'committed', 'result': receipt.get('result'), 'receipt': receipt}
+
+
+def _frames(memory, scope, connection, base):
+    authorize(scope)
+    if base != str(memory.root / 'LIFEOS'):
+        raise MemoryUnavailable('Wisdom readers require their installed LifeOS root')
+    directory = memory._path(PREFIX.rstrip('/'))
+    physical = memory.root.parent / '.config/LIFEOS/USER/MEMORY/WISDOM/FRAMES'
+    if directory.is_symlink() or directory.resolve() != physical or directory.exists() and not directory.is_dir():
+        raise MemoryUnavailable('The Wisdom frames directory changes its permitted physical path')
+    if not directory.exists():
+        return {'exists': False, 'sources': []}
+    children = list(islice(directory.iterdir(), SOURCE_COUNT_LIMIT + 1))
+    if len(children) > SOURCE_COUNT_LIMIT:
+        raise MemoryUnavailable('The Wisdom frames directory exceeds its entry limit')
+    paths = [str(path) for path in children if path.suffix == '.md']
+    return {'exists': True, 'sources': read_markdown(memory, scope, paths, connection=connection)}
+
+
+def frames(memory, scope, base, *, check_current):
+    with memory._transaction() as connection:
+        collected = _frames(memory, scope, connection, base)
+        check_current()
+        if _frames(memory, scope, connection, base) != collected:
+            raise MemoryConflict('The Wisdom frames change during collection')
+        return {'ok': True, 'sources': [{'path': source['path'], 'content': source['content']}
+                                       for source in collected['sources']]}
+
+
+def _authorize_reports(scope):
+    authorize(scope)
+    if not {'principal', 'assistant', 'project'} <= set(scope.write):
+        raise MemoryUnavailable('Wisdom report publication requires unrestricted owner write access')
+
+
+def _report(memory, relative):
+    if relative not in {'META/frame-health.md', 'PRINCIPLES/verified.md'}:
+        raise MemoryUnavailable('Wisdom synthesis changes its fixed report destination')
+    target = memory._path('LIFEOS/MEMORY/WISDOM/' + relative)
+    physical = memory.root.parent / '.config/LIFEOS/USER/MEMORY/WISDOM' / relative
+    if (target.resolve() != physical or target.is_symlink()
+            or target.exists() and (not target.is_file() or target.stat().st_uid != os.getuid()
+                                    or target.stat().st_nlink != 1 or target.stat().st_size > CORPUS_LIMIT)):
+        raise MemoryUnavailable('The Wisdom report changes its permitted physical owner path')
+    return target
+
+
+def _reports(memory, relatives):
+    result = {}
+    for relative in relatives:
+        target = _report(memory, relative)
+        result[relative] = hashlib.sha256(target.read_bytes()).hexdigest() if target.exists() else None
+    return result
+
+
+def synthesize(memory, scope, arguments, *, check_current):
+    if type(arguments['health']) is not bool or type(arguments['dry_run']) is not bool:
+        raise ValueError('Choose native Wisdom health and dry-run modes')
+    writing = not arguments['dry_run']
+    if writing:
+        _authorize_reports(scope)
+    with memory._transaction() as connection:
+        collected = _frames(memory, scope, connection, arguments['base'])
+        relatives = ([] if not writing or not collected['sources'] else ['META/frame-health.md']
+                     if arguments['health'] else ['PRINCIPLES/verified.md', 'META/frame-health.md'])
+        previous = _reports(memory, relatives)
+        rendered = memory._native('wisdom_synthesis',
+            sources=[{'path': source['path'], 'content': source['content']} for source in collected['sources']],
+            exists=collected['exists'], health=arguments['health'], dry_run=arguments['dry_run'])
+        if (set(rendered) != {'stdout', 'writes'} or not isinstance(rendered['stdout'], str)
+                or not isinstance(rendered['writes'], list) or len(json.dumps(rendered).encode()) > CORPUS_LIMIT
+                or any(not isinstance(write, dict) or set(write) != {'relative', 'content'}
+                       or not isinstance(write['relative'], str) or not isinstance(write['content'], str)
+                       for write in rendered['writes'])
+                or [write['relative'] for write in rendered['writes']] != relatives):
+            raise MemoryUnavailable('Native Wisdom synthesis returns invalid reports')
+        generated = '\n'.join([rendered['stdout'], *(write['content'] for write in rendered['writes'])])
+        if (memory._native('validate_source_batch', contents=[generated])['accepted'] != [True]
+                or memory._filter_history(connection, scope, generated,
+                    datetime.now(timezone.utc).isoformat(), reviewed=True)['excluded']):
+            raise MemoryUnavailable('The generated Wisdom reports are excluded by current memory policy')
+        check_current()
+        if _frames(memory, scope, connection, arguments['base']) != collected or _reports(memory, relatives) != previous:
+            raise MemoryConflict('The Wisdom synthesis inputs or reports change during rendering')
+    if not writing:
+        return {'ok': True, 'stdout': rendered['stdout']}
+    signature = hashlib.sha256(json.dumps(collected, sort_keys=True).encode()).hexdigest()
+    payload = {'operation': 'wisdom_synthesis', **arguments, 'sources_signature': signature, 'outputs': relatives}
+
+    def apply(connection):
+        try:
+            check_current()
+            if _frames(memory, scope, connection, arguments['base']) != collected or _reports(memory, relatives) != previous:
+                raise MemoryConflict('The Wisdom synthesis inputs or reports change before publication')
+        except (MemoryUnavailable, OSError) as error:
+            raise MemoryConflict(str(error)) from error
+        for write in rendered['writes']:
+            publish(_report(memory, write['relative']), write['content'].encode())
+        return {'status': 'committed', 'stdout': rendered['stdout']}
+
+    receipt = memory._operation(scope, arguments['request_id'], payload, apply)
+    return {'ok': receipt['status'] == 'committed', 'stdout': receipt.get('stdout'), 'receipt': receipt}

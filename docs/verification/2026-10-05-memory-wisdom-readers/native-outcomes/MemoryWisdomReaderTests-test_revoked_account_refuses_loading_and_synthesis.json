@@ -1,0 +1,32 @@
+{
+  "case": "test_revoked_account_refuses_loading_and_synthesis",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-i45z9fem/.claude/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "listFrames",
+        "[]"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "40 | \n41 | function admittedFrames(): FrameSource[] | undefined {\n42 |   const governed = memoryAccess(\"wisdom_frames\", {base: BASE_DIR},\n43 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n44 |   if (governed === undefined) return undefined;\n45 |   if (!governed.ok || !Array.isArray(governed.sources)) throw new Error(\"Wisdom frame admission is unavailable\");\n                                                                       ^\nerror: Wisdom frame admission is unavailable\n      at admittedFrames (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts:45:67)\n      at listFrames (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts:210:31)\n      at /home/outsider/Projects/Hermes_agent/LifeOS_plugin/[eval]:1:81\n\nBun v1.3.14 (Linux x64)\n"
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-i45z9fem/.claude/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts",
+        "--dry-run"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "360 | \n361 |   const governed = memoryAccess(\"wisdom_synthesis\", {base: BASE_DIR, health: values.health ?? false,\n362 |     dry_run: values[\"dry-run\"] ?? false, request_id: randomUUID()},\n363 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n364 |   if (governed !== undefined) {\n365 |     if (!governed.ok || typeof governed.stdout !== \"string\") throw new Error(\"Wisdom synthesis admission or publication is unavailable\");\n                                                                             ^\nerror: Wisdom synthesis admission or publication is unavailable\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts:365:72\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install"
+}

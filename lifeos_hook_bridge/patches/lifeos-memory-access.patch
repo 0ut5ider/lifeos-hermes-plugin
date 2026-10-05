@@ -5422,6 +5422,172 @@ index 30db06e..7c1ca94 100644
    saveState(st);
    return { created: true, id };
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts b/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts
+index 4e2c04a..f3cf6a9 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts
+@@ -25,6 +25,8 @@ import { existsSync, readdirSync, readFileSync, writeFileSync, mkdirSync } from
+ import { join, basename } from 'path';
+ import { parseArgs } from 'util';
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -72,8 +74,8 @@ interface FrameHealth {
+ 
+ // ── Frame Parsing ──
+ 
+-function parseFrame(filepath: string): FrameData {
+-  const content = readFileSync(filepath, 'utf-8');
++function parseFrame(filepath: string, declared?: string): FrameData {
++  const content = declared ?? readFileSync(filepath, 'utf-8');
+   const domain = basename(filepath, '.md');
+ 
+   // Parse meta
+@@ -300,6 +302,36 @@ ${healthData.filter(h => h.antiPatternCount === 0).map(h => `- **${h.domain}:**
+ `;
+ }
+ 
++export function renderCrossFrameSynthesis(
++  sources: {path: string; content: string}[], health: boolean, dryRun: boolean, exists: boolean
++): {stdout: string; writes: {relative: string; content: string}[]} {
++  if (!exists) return {stdout: "No frames directory found\n", writes: []};
++  if (!sources.length) return {stdout: "No frames found\n", writes: []};
++  const frames = sources.map(source => parseFrame(source.path, source.content));
++  let stdout = `📊 Loading ${frames.length} frames...\n`;
++  const writes: {relative: string; content: string}[] = [];
++  if (health) {
++    const report = generateHealthReport(frames.map(assessHealth));
++    if (dryRun) stdout += report + "\n";
++    else {
++      writes.push({relative: "META/frame-health.md", content: report});
++      stdout += "✅ Health report written to WISDOM/META/frame-health.md\n";
++    }
++    return {stdout, writes};
++  }
++  const crossPrinciples = findCrossPrinciples(frames);
++  stdout += `🔍 Analyzing cross-frame principles...\n   Found ${crossPrinciples.length} cross-domain principles\n`;
++  const report = generatePrinciplesReport(crossPrinciples, frames);
++  if (dryRun) stdout += report + "\n";
++  else {
++    writes.push({relative: "PRINCIPLES/verified.md", content: report},
++                {relative: "META/frame-health.md", content: generateHealthReport(frames.map(assessHealth))});
++    stdout += "✅ Principles report written to WISDOM/PRINCIPLES/verified.md\n";
++    stdout += "✅ Health report written to WISDOM/META/frame-health.md\n";
++  }
++  return {stdout, writes};
++}
++
+ // ── Main ──
+ 
+ if (import.meta.main) {
+@@ -326,6 +358,15 @@ Output: WISDOM/PRINCIPLES/verified.md and WISDOM/META/frame-health.md
+     process.exit(0);
+   }
+ 
++  const governed = memoryAccess("wisdom_synthesis", {base: BASE_DIR, health: values.health ?? false,
++    dry_run: values["dry-run"] ?? false, request_id: randomUUID()},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (!governed.ok || typeof governed.stdout !== "string") throw new Error("Wisdom synthesis admission or publication is unavailable");
++    process.stdout.write(governed.stdout);
++    process.exit(0);
++  }
++
+   // Load all frames
+   if (!existsSync(FRAMES_DIR)) {
+     console.log('No frames directory found');
+diff --git a/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts b/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts
+index 50a90df..cc55bc4 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts
+@@ -24,6 +24,7 @@ import { existsSync, readdirSync, readFileSync } from 'fs';
+ import { join, basename } from 'path';
+ import { parseArgs } from 'util';
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -35,6 +36,23 @@ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ const BASE_DIR = process.env.LIFEOS_DIR || join(homedir(), '.claude');
+ const FRAMES_DIR = join(BASE_DIR, 'MEMORY', 'WISDOM', 'FRAMES');
+ 
++interface FrameSource {path: string; content: string;}
++
++function admittedFrames(): FrameSource[] | undefined {
++  const governed = memoryAccess("wisdom_frames", {base: BASE_DIR},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed === undefined) return undefined;
++  if (!governed.ok || !Array.isArray(governed.sources)) throw new Error("Wisdom frame admission is unavailable");
++  const sources: FrameSource[] = [];
++  for (const source of governed.sources) {
++    if (!memoryObject(source) || typeof source.path !== "string" || typeof source.content !== "string") {
++      throw new Error("Wisdom frame admission returns an invalid source");
++    }
++    sources.push({path: source.path, content: source.content});
++  }
++  return sources;
++}
++
+ // ── Domain Keyword Map ──
+ 
+ interface DomainKeywords {
+@@ -120,7 +138,8 @@ interface ClassificationResult {
+   relevance: number; // 0-1
+ }
+ 
+-export function classifyDomains(text: string): ClassificationResult[] {
++export function classifyDomains(text: string, sources?: FrameSource[]): ClassificationResult[] {
++  const declared = sources ?? admittedFrames();
+   const results: ClassificationResult[] = [];
+ 
+   for (const entry of DOMAIN_MAP) {
+@@ -147,7 +166,7 @@ export function classifyDomains(text: string): ClassificationResult[] {
+     // Need at least 1 primary hit OR 2+ secondary hits
+     if (primaryHits >= 1 || secondaryHits >= 2) {
+       const framePath = join(FRAMES_DIR, `${entry.domain}.md`);
+-      const frameExists = existsSync(framePath);
++      const frameExists = declared === undefined ? existsSync(framePath) : declared.some(source => source.path === framePath);
+ 
+       results.push({
+         domain: entry.domain,
+@@ -166,15 +185,17 @@ export function classifyDomains(text: string): ClassificationResult[] {
+ /**
+  * Load and return the content of relevant frames for a given text
+  */
+-export function loadRelevantFrames(text: string, maxFrames: number = 3): { domain: string; content: string }[] {
+-  const classified = classifyDomains(text);
++export function loadRelevantFrames(text: string, maxFrames: number = 3, sources?: FrameSource[]): { domain: string; content: string }[] {
++  const declared = sources ?? admittedFrames();
++  const classified = classifyDomains(text, declared);
+   const loaded: { domain: string; content: string }[] = [];
+ 
+   for (const result of classified.slice(0, maxFrames)) {
+-    if (result.path && existsSync(result.path)) {
++    const source = declared?.find(source => source.path === result.path);
++    if (result.path && (source || declared === undefined && existsSync(result.path))) {
+       loaded.push({
+         domain: result.domain,
+-        content: readFileSync(result.path, 'utf-8'),
++        content: source ? source.content : readFileSync(result.path, 'utf-8'),
+       });
+     }
+   }
+@@ -185,7 +206,10 @@ export function loadRelevantFrames(text: string, maxFrames: number = 3): { domai
+ /**
+  * List all available frames
+  */
+-export function listFrames(): { domain: string; path: string; confidence: string }[] {
++export function listFrames(sources?: FrameSource[]): { domain: string; path: string; confidence: string }[] {
++  const declared = sources ?? admittedFrames();
++  if (declared !== undefined) return declared.map(source => ({domain: basename(source.path, '.md'),
++    path: source.path, confidence: source.content.match(/\*\*Confidence:\*\*\s*(\d+%)/)?.[1] || 'unknown'}));
+   if (!existsSync(FRAMES_DIR)) return [];
+ 
+   return readdirSync(FRAMES_DIR)
 diff --git a/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts b/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts
 index 1367c49..bd6d5f5 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts

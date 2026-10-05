@@ -1,0 +1,91 @@
+{
+  "case": "test_original_native_classification_loading_and_listing_match",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "listFrames",
+        "[]"
+      ],
+      "status": 0,
+      "stdout": "[{\"domain\":\"communication\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md\",\"confidence\":\"70%\"},{\"domain\":\"development\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/development.md\",\"confidence\":\"70%\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "listFrames",
+        "[]"
+      ],
+      "status": 0,
+      "stdout": "[{\"domain\":\"communication\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md\",\"confidence\":\"70%\"},{\"domain\":\"development\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/development.md\",\"confidence\":\"70%\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "classifyDomains",
+        "[\"format response code build\"]"
+      ],
+      "status": 0,
+      "stdout": "[{\"domain\":\"communication\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md\",\"relevance\":0.4},{\"domain\":\"development\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/development.md\",\"relevance\":0.4}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "classifyDomains",
+        "[\"format response code build\"]"
+      ],
+      "status": 0,
+      "stdout": "[{\"domain\":\"communication\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md\",\"relevance\":0.4},{\"domain\":\"development\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/development.md\",\"relevance\":0.4}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_a7swod3/.claude/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "loadRelevantFrames",
+        "[\"format response code build\", 2]"
+      ],
+      "status": 0,
+      "stdout": "[{\"domain\":\"communication\",\"content\":\"# Synthetic frame\\n## Meta\\n- **Confidence:** 70%\\n- **Observation Count:** 12\\n- **Last Crystallized:** 2026-10-01\\n\\n## Core Principles\\n### Synthetic concrete verification principle [CRYSTAL]\\n\"},{\"domain\":\"development\",\"content\":\"# Synthetic frame\\n## Meta\\n- **Confidence:** 70%\\n- **Observation Count:** 12\\n- **Last Crystallized:** 2026-10-01\\n\\n## Core Principles\\n### Synthetic concrete verification principle [CRYSTAL]\\n\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m=await import(process.argv[1]);console.log(JSON.stringify(m[process.argv[2]](...JSON.parse(process.argv[3]))));",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomDomainClassifier.ts",
+        "loadRelevantFrames",
+        "[\"format response code build\", 2]"
+      ],
+      "status": 0,
+      "stdout": "[{\"domain\":\"communication\",\"content\":\"# Synthetic frame\\n## Meta\\n- **Confidence:** 70%\\n- **Observation Count:** 12\\n- **Last Crystallized:** 2026-10-01\\n\\n## Core Principles\\n### Synthetic concrete verification principle [CRYSTAL]\\n\"},{\"domain\":\"development\",\"content\":\"# Synthetic frame\\n## Meta\\n- **Confidence:** 70%\\n- **Observation Count:** 12\\n- **Last Crystallized:** 2026-10-01\\n\\n## Core Principles\\n### Synthetic concrete verification principle [CRYSTAL]\\n\"}]\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install"
+}

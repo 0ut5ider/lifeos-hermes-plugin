@@ -235,6 +235,15 @@ class MemoryService:
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}
+            if (operation == 'wisdom_frames' and set(arguments) == {'base'}
+                    or operation == 'wisdom_synthesis' and set(arguments) == {'base','health','dry_run','request_id'}):
+                from .memory_wisdom import frames, synthesize
+                def check_current():
+                    if self.configuration.load() != configuration:
+                        raise MemoryUnavailable('Wisdom authority changed during source collection')
+                if operation == 'wisdom_frames':
+                    return frames(memory, scope, arguments['base'], check_current=check_current)
+                return synthesize(memory, scope, arguments, check_current=check_current)
             if operation == 'wisdom_frame_update' and set(arguments) == {'domain','observation','type','path','request_id'}:
                 from .memory_wisdom import update_frame
                 def check_current():
