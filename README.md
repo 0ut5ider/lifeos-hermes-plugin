@@ -39,6 +39,8 @@ The [native inference log gate](docs/verification/2026-10-04-memory-inference-lo
 
 The [source-health HTTP gate](docs/verification/2026-10-04-memory-source-health/README.md) supplies current admitted source counts through authenticated requests. It verifies edits, retirement, revocation, and backend loss, and passes 72 tests and 59 subtests. Deployed service acceptance and ownership remain open.
 
+The [Hermes learning-memory flag gate](docs/verification/2026-10-04-hermes-learning-memory-flags/README.md) prevents graph reads and mutations from reopening disabled built-in stores. Real process controls include queued edits and deletions after flags change. The bridge gate passes 20 tests and 33 subtests; all 23 native graph tests pass. Aggregate cutover remains open.
+
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.
 
 [Owner source review](docs/verification/2026-10-02-memory-source-review/README.md) permits exact reviewed system and identity files to pass the conservative age check. Current access, private-content validation, and detected retired-claim checks remain required. The owner API exists; preferences-page review controls remain open. This does not activate lasting-memory ownership.

@@ -1,0 +1,25 @@
+{
+  "case": "test_disabled_stores_do_not_supply_graph_cards",
+  "before": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "after": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "events": [
+    {
+      "operation": "cards",
+      "source": "memory",
+      "flags": [
+        false,
+        false
+      ],
+      "status": 0,
+      "stdout": "{\"result\": [], \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-learning-flags-final-distributed/hermes"
+}

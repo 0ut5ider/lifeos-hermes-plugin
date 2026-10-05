@@ -1,0 +1,83 @@
+F.....                                                         [100%]
+=================================== FAILURES ===================================
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_do_not_supply_graph_cards _
+tests/test_hermes_learning_memory_flags.py:39: in test_disabled_stores_do_not_supply_graph_cards
+    self.assertEqual(result['result'],[])
+E   AssertionError: Lists differ: [{'source': 'memory', 'timestamp': 1791172[308 chars]7f'}] != []
+E   
+E   First list contains 2 additional elements.
+E   First extra element 0:
+E   {'source': 'memory', 'timestamp': 1791172427, 'title': 'Synthetic preserved journey memory.', 'body': 'Synthetic preserved journey memory.', 'fingerprint': 'cb67f08fb531'}
+E   
+E   + []
+E   - [{'body': 'Synthetic preserved journey memory.',
+E   -   'fingerprint': 'cb67f08fb531',
+E   -   'source': 'memory',
+E   -   'timestamp': 1791172427,
+E   -   'title': 'Synthetic preserved journey memory.'},
+E   -  {'body': 'Synthetic preserved journey preference.',
+E   -   'fingerprint': 'b7b2999a077f',
+E   -   'source': 'profile',
+E   -   'timestamp': 1791172427,
+E   -   'title': 'Synthetic preserved journey preference.'}]
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_refuse_deletion_without_changing_files (source='memory') _
+tests/test_hermes_learning_memory_flags.py:61: in test_disabled_stores_refuse_deletion_without_changing_files
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'deleted memory from MEMORY.md'}, 'unchanged': False, 'bytes': ''}
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_refuse_deletion_without_changing_files (source='profile') _
+tests/test_hermes_learning_memory_flags.py:61: in test_disabled_stores_refuse_deletion_without_changing_files
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'deleted memory from USER.md'}, 'unchanged': False, 'bytes': ''}
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_refuse_detail_prefill_without_exposing_content (source='memory') _
+tests/test_hermes_learning_memory_flags.py:46: in test_disabled_stores_refuse_detail_prefill_without_exposing_content
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'kind': 'memory', 'id': 'memory:memory:0:cb67f08fb531', 'label': 'Synthetic preserved journey memory.', 'content': 'Synthetic preserved journey memory.'}, 'unchanged': True, 'bytes': 'Synthetic preserved journey memory.\n'}
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_refuse_detail_prefill_without_exposing_content (source='profile') _
+tests/test_hermes_learning_memory_flags.py:46: in test_disabled_stores_refuse_detail_prefill_without_exposing_content
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'kind': 'memory', 'id': 'memory:profile:1:b7b2999a077f', 'label': 'Synthetic preserved journey preference.', 'content': 'Synthetic preserved journey preference.'}, 'unchanged': True, 'bytes': 'Synthetic preserved journey preference.\n'}
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_refuse_edits_without_changing_files (source='memory') _
+tests/test_hermes_learning_memory_flags.py:54: in test_disabled_stores_refuse_edits_without_changing_files
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'updated memory in MEMORY.md'}, 'unchanged': False, 'bytes': 'Synthetic replacement journey fact.'}
+_ HermesLearningMemoryFlagsTests.test_disabled_stores_refuse_edits_without_changing_files (source='profile') _
+tests/test_hermes_learning_memory_flags.py:54: in test_disabled_stores_refuse_edits_without_changing_files
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'updated memory in USER.md'}, 'unchanged': False, 'bytes': 'Synthetic replacement journey fact.'}
+_ HermesLearningMemoryFlagsTests.test_each_enabled_store_retains_its_own_graph_cards (flags=(True, False)) _
+tests/test_hermes_learning_memory_flags.py:68: in test_each_enabled_store_retains_its_own_graph_cards
+    self.assertEqual([entry['source'] for entry in result['result']],[source])
+E   AssertionError: Lists differ: ['memory', 'profile'] != ['memory']
+E   
+E   First list contains 1 additional elements.
+E   First extra element 1:
+E   'profile'
+E   
+E   - ['memory', 'profile']
+E   + ['memory']
+_ HermesLearningMemoryFlagsTests.test_each_enabled_store_retains_its_own_graph_cards (flags=(False, True)) _
+tests/test_hermes_learning_memory_flags.py:68: in test_each_enabled_store_retains_its_own_graph_cards
+    self.assertEqual([entry['source'] for entry in result['result']],[source])
+E   AssertionError: Lists differ: ['memory', 'profile'] != ['profile']
+E   
+E   First differing element 0:
+E   'memory'
+E   'profile'
+E   
+E   First list contains 1 additional elements.
+E   First extra element 1:
+E   'profile'
+E   
+E   - ['memory', 'profile']
+E   + ['profile']
+=========================== short test summary info ============================
+FAILED tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_do_not_supply_graph_cards
+SUBFAILED(source='memory') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_refuse_deletion_without_changing_files
+SUBFAILED(source='profile') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_refuse_deletion_without_changing_files
+SUBFAILED(source='memory') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_refuse_detail_prefill_without_exposing_content
+SUBFAILED(source='profile') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_refuse_detail_prefill_without_exposing_content
+SUBFAILED(source='memory') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_refuse_edits_without_changing_files
+SUBFAILED(source='profile') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_disabled_stores_refuse_edits_without_changing_files
+SUBFAILED(flags=(True, False)) tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_each_enabled_store_retains_its_own_graph_cards
+SUBFAILED(flags=(False, True)) tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_each_enabled_store_retains_its_own_graph_cards
+9 failed, 5 passed, 2 subtests passed in 2.68s

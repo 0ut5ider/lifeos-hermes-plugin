@@ -1,0 +1,60 @@
+{
+  "case": "test_enabled_stores_retain_native_edit_and_detail_behavior",
+  "before": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "after": {
+    "MEMORY.md.lock": "",
+    "MEMORY.md": "Synthetic replacement journey fact.",
+    "USER.md.lock": "",
+    "USER.md": "Synthetic replacement journey fact."
+  },
+  "events": [
+    {
+      "operation": "detail",
+      "source": "memory",
+      "flags": [
+        true,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": true, \"kind\": \"memory\", \"id\": \"memory:memory:0:cb67f08fb531\", \"label\": \"Synthetic preserved journey memory.\", \"content\": \"Synthetic preserved journey memory.\"}, \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "operation": "edit",
+      "source": "memory",
+      "flags": [
+        true,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": true, \"message\": \"updated memory in MEMORY.md\"}, \"unchanged\": false, \"bytes\": \"Synthetic replacement journey fact.\"}\n",
+      "stderr": ""
+    },
+    {
+      "operation": "detail",
+      "source": "profile",
+      "flags": [
+        true,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": true, \"kind\": \"memory\", \"id\": \"memory:profile:1:b7b2999a077f\", \"label\": \"Synthetic preserved journey preference.\", \"content\": \"Synthetic preserved journey preference.\"}, \"unchanged\": true, \"bytes\": \"Synthetic preserved journey preference.\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "operation": "edit",
+      "source": "profile",
+      "flags": [
+        true,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": true, \"message\": \"updated memory in USER.md\"}, \"unchanged\": false, \"bytes\": \"Synthetic replacement journey fact.\"}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-learning-flags-final-distributed/hermes"
+}

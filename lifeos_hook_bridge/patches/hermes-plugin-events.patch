@@ -1,3 +1,60 @@
+diff --git a/agent/learning_graph.py b/agent/learning_graph.py
+index ca6c9e645f..8725b5f313 100644
+--- a/agent/learning_graph.py
++++ b/agent/learning_graph.py
+@@ -148,11 +148,14 @@ def memory_node_id(card: dict[str, Any], index: int) -> str:
+ def _memory_cards() -> list[dict[str, Any]]:
+     """``MEMORY.md`` / ``USER.md`` entries as the memory tool parses them; every
+     entry becomes one card (MEMORY.md cards first, then USER.md)."""
+-    from tools.memory_tool import MemoryStore
++    from tools.memory_tool import MemoryStore, get_builtin_memory_store_flags
+ 
++    enabled = dict(zip(("memory", "profile"), get_builtin_memory_store_flags()))
+     base = get_hermes_home() / "memories"
+     cards: list[dict[str, Any]] = []
+     for fname, source in (("MEMORY.md", "memory"), ("USER.md", "profile")):
++        if not enabled[source]:
++            continue
+         path = base / fname
+         try:
+             file_ts = _to_int_ts(path.stat().st_mtime)
+diff --git a/agent/learning_mutations.py b/agent/learning_mutations.py
+index 415d22fa17..679e304778 100644
+--- a/agent/learning_mutations.py
++++ b/agent/learning_mutations.py
+@@ -37,6 +37,16 @@ def _parse_memory_id(node_id: str) -> tuple[str, int, str]:
+         raise ValueError(f"bad memory node id: {node_id!r}") from exc
+ 
+ 
++
++def _require_memory_enabled(source: str) -> None:
++    """Refuse a disabled built-in source before reading or changing its preserved file."""
++    from tools.memory_tool import get_builtin_memory_store_flags
++
++    enabled = dict(zip(("memory", "profile"), get_builtin_memory_store_flags()))
++    if not enabled[source]:
++        raise ValueError(f"Built-in {_MEMORY_FILES[source]} is disabled in the selected profile")
++
++
+ def _resolve_fingerprint(chunks: list[str], fingerprint: str) -> int | None:
+     """Index of the first entry in *chunks* whose text carries *fingerprint*, or None when gone.
+ 
+@@ -60,6 +70,7 @@ def _locate_memory(node_id: str) -> tuple[Path, list[str], int]:
+     from tools.memory_tool import MemoryStore
+ 
+     source, gidx, fingerprint = _parse_memory_id(node_id)
++    _require_memory_enabled(source)
+     path = get_hermes_home() / "memories" / _MEMORY_FILES[source]
+     if not path.exists():
+         raise ValueError(f"{path.name} not found")
+@@ -93,6 +104,7 @@ def _mutate_memory(node_id: str, replacement: str | None) -> dict[str, Any]:
+     from tools.memory_tool import load_on_disk_store
+ 
+     source, _, _ = _parse_memory_id(node_id)
++    _require_memory_enabled(source)
+     name = _MEMORY_FILES[source]
+     message = f"deleted memory from {name}" if replacement is None else f"updated memory in {name}"
+ 
 diff --git a/hermes_cli/plugins.py b/hermes_cli/plugins.py
 index bba82a3b4..01f139b01 100644
 --- a/hermes_cli/plugins.py

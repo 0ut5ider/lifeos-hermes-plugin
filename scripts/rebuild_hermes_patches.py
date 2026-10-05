@@ -13,6 +13,7 @@ from lifeos_hook_bridge.install_source import SUPPORTED_HERMES_COMMIT
 GROUPS = {
     "hermes-plugin-events.patch": (
         "hermes_cli/plugins.py", "hermes_cli/plugins_dispatch.py", "model_tools.py",
+        "agent/learning_graph.py", "agent/learning_mutations.py",
         "tests/hermes_cli/test_plugins.py", "tests/hermes_cli/test_required_policy_hooks.py",
         "tests/hermes_cli/test_session_boundary_hooks.py", "tests/hermes_cli/test_stop_policy_dispatch.py",
         "tests/plugins/test_transform_tool_result_hook.py",
