@@ -1,0 +1,117 @@
+{
+  "before": {
+    "event_rows": 1
+  },
+  "after": {
+    "prior_event_preserved": true,
+    "hints": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "a073c6ee-f5e4-47c2-a955-dd16d091f6f9",
+  "seconds": 6.315,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-plain",
+    "/home/lifeos-claude-ref/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-plain",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: printf 'PAIR_ATLAS plain command'"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.13.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.13.1 /home/lifeos-claude-ref/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-plain/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQXRsYXNFdmVudENhcHR1cmUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/AtlasEventCapture.hook.ts": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "7d19e78f636f21d585ac50ab93d58006259408771c5f0f40b3b3a1ea184b7e1b",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a3516ebb8c8ad3f77e12d694d230e43b96c897853e4cb9fb23323e343979bb9b",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "5c52aa4ec0f46b27e597ec91111e04a6cd348d0eaf70aab7b8e7c3dc59bd0ee3",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "be76274ea06f9eed5d3b9a0be0aa70f09f731d107bc8968133c8a7e5c1968e5e",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "000d6c859817411965dc58c4c28444a56e507fc2ceeaa8cf5774d1c1085e863f",
+    "fixture-events.jsonl": "03cea60b092684b25de94cdc16fe224ef7f465a956170033085420f31066867b",
+    "cli.log": "67bee0b243f900f5c1ebb70d23fcde682600b8a3814519e7a11175a8f484b5e4",
+    "before-state.json": "b705d7a96589d611a24b92cc9628c1a471897e500f67de316c54e070d78c6405",
+    "after-state.json": "bbbb6bbec1c2c63336f7ac319d5d32026f3015af7217107cc8e32bfe9d4fe0f8",
+    "fixture-files-before.json": "44cd70e137492c29628a75be5c4417357f701f5f724d41c3b84d91ae53bfe4bf",
+    "fixture-files-after.json": "44cd70e137492c29628a75be5c4417357f701f5f724d41c3b84d91ae53bfe4bf"
+  }
+}

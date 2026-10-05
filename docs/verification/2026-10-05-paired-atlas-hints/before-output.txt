@@ -1,0 +1,104 @@
+FFFEFFFF...............................................................
+======================================================================
+ERROR: test_fixture_binds_the_hook_to_the_bash_matcher_and_seeds_a_prior_row (test_paired_lifecycle_effects.PairedAtlasHintTests.test_fixture_binds_the_hook_to_the_bash_matcher_and_seeds_a_prior_row)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 750, in test_fixture_binds_the_hook_to_the_bash_matcher_and_seeds_a_prior_row
+    make_fixture(home, 'atlas-bash-systemd', source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 770, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 730, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'atlas-bash-systemd'
+
+======================================================================
+FAIL: test_every_selected_command_accepts_only_its_required_hints (test_paired_lifecycle_effects.PairedAtlasHintTests.test_every_selected_command_accepts_only_its_required_hints) (name='atlas-bash-systemd')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 721, in test_every_selected_command_accepts_only_its_required_hints
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['atlas-bash-systemd: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'atlas-bash-systemd: unknown case'
+
+- ['atlas-bash-systemd: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_command_accepts_only_its_required_hints (test_paired_lifecycle_effects.PairedAtlasHintTests.test_every_selected_command_accepts_only_its_required_hints) (name='atlas-bash-plain')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 721, in test_every_selected_command_accepts_only_its_required_hints
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['atlas-bash-plain: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'atlas-bash-plain: unknown case'
+
+- ['atlas-bash-plain: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_command_accepts_only_its_required_hints (test_paired_lifecycle_effects.PairedAtlasHintTests.test_every_selected_command_accepts_only_its_required_hints) (name='atlas-bash-multiple')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 721, in test_every_selected_command_accepts_only_its_required_hints
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['atlas-bash-multiple: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'atlas-bash-multiple: unknown case'
+
+- ['atlas-bash-multiple: unknown case']
++ []
+
+======================================================================
+FAIL: test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row (test_paired_lifecycle_effects.PairedAtlasHintTests.test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row) (key='command_matches')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 728, in test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row
+    self.assertIn('atlas-bash-systemd: mutation hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'atlas-bash-systemd: mutation hint effect is missing' not found in ['atlas-bash-systemd: unknown case']
+
+======================================================================
+FAIL: test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row (test_paired_lifecycle_effects.PairedAtlasHintTests.test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row) (key='prior_event_preserved')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 728, in test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row
+    self.assertIn('atlas-bash-systemd: mutation hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'atlas-bash-systemd: mutation hint effect is missing' not found in ['atlas-bash-systemd: unknown case']
+
+======================================================================
+FAIL: test_plain_command_rejects_any_hint (test_paired_lifecycle_effects.PairedAtlasHintTests.test_plain_command_rejects_any_hint)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 734, in test_plain_command_rejects_any_hint
+    self.assertIn('atlas-bash-plain: mutation hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'atlas-bash-plain: mutation hint effect is missing' not found in ['atlas-bash-plain: unknown case']
+
+======================================================================
+FAIL: test_tool_case_requires_the_tool_request_and_the_final_response (test_paired_lifecycle_effects.PairedAtlasHintTests.test_tool_case_requires_the_tool_request_and_the_final_response)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 740, in test_tool_case_requires_the_tool_request_and_the_final_response
+    self.assertIn('atlas-bash-multiple: tool turn was not completed', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'atlas-bash-multiple: tool turn was not completed' not found in ['atlas-bash-multiple: unknown case']
+
+----------------------------------------------------------------------
+Ran 68 tests in 0.169s
+
+FAILED (failures=7, errors=1)
+exit 1

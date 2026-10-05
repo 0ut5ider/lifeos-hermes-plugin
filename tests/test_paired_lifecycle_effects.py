@@ -699,3 +699,57 @@ class PairedISARenderFixtureTests(unittest.TestCase):
         self.assertEqual(state_snapshot(home, 'isa-render-existing-page', 'current-session', after=True), {
             'state_present': True, 'page': 'prior', 'isa_preserved': True, 'hook_output': {'continue': True},
             'log': [{'session_matches': True, 'rendered': ['paired-work/ISA.md'], 'skipped': []}]})
+
+
+class PairedAtlasHintTests(unittest.TestCase):
+    SOURCES = {'atlas-bash-systemd': ['systemd'], 'atlas-bash-plain': [],
+               'atlas-bash-multiple': ['github', 'launchd']}
+
+    def case(self, name):
+        side = {'before': {'event_rows': 1},
+                'after': {'prior_event_preserved': True,
+                          'hints': [{'source': source, 'tool': 'Bash', 'timestamp_current': True}
+                                    for source in self.SOURCES[name]],
+                          'tool_name': 'Bash', 'command_matches': True, 'user_response_delivered': True},
+                'hook_exit_codes': [0], 'event': 'PostToolUse', 'cli_exit_code': 0,
+                'model_generation_requests': 2, 'model_successful_responses': 2}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_every_selected_command_accepts_only_its_required_hints(self):
+        for name in self.SOURCES:
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_hint_requires_the_exact_executed_command_and_a_preserved_prior_row(self):
+        for key in ('command_matches', 'prior_event_preserved'):
+            with self.subTest(key=key):
+                case = self.case('atlas-bash-systemd')
+                case['native']['after'][key] = case['hermes']['after'][key] = False
+                self.assertIn('atlas-bash-systemd: mutation hint effect is missing', check_pair(case))
+
+    def test_plain_command_rejects_any_hint(self):
+        case = self.case('atlas-bash-plain')
+        for side in ('native', 'hermes'):
+            case[side]['after']['hints'] = [{'source': 'systemd', 'tool': 'Bash', 'timestamp_current': True}]
+        self.assertIn('atlas-bash-plain: mutation hint effect is missing', check_pair(case))
+
+    def test_tool_case_requires_the_tool_request_and_the_final_response(self):
+        case = self.case('atlas-bash-multiple')
+        for side in ('native', 'hermes'):
+            case[side]['model_generation_requests'] = case[side]['model_successful_responses'] = 1
+        self.assertIn('atlas-bash-multiple: tool turn was not completed', check_pair(case))
+
+    def test_fixture_binds_the_hook_to_the_bash_matcher_and_seeds_a_prior_row(self):
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        source = base / 'source'
+        (source / 'hooks').mkdir(parents=True)
+        (source / 'hooks/AtlasEventCapture.hook.ts').write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, 'atlas-bash-systemd', source, base / 'trace.py')
+        settings = json.loads((home / '.claude/settings.json').read_text())
+        group = settings['hooks']['PostToolUse'][0]
+        self.assertEqual(group['matcher'], 'Bash')
+        self.assertIn('PostToolUse.13.1', group['hooks'][0]['command'])
+        self.assertEqual(json.loads((home / 'before-state.json').read_text()), {'event_rows': 1})

@@ -1,0 +1,125 @@
+{
+  "before": {
+    "event_rows": 1
+  },
+  "after": {
+    "prior_event_preserved": true,
+    "hints": [
+      {
+        "source": "github",
+        "tool": "Bash",
+        "timestamp_current": true
+      },
+      {
+        "source": "launchd",
+        "tool": "Bash",
+        "timestamp_current": true
+      }
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261005_175722_f9f93d",
+  "seconds": 10.295,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-multiple",
+    "/home/lifeos-plugin-install-probe/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-multiple",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_ATLAS gh repo create fixture; launchctl load fixture'"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.13.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.13.1 /home/lifeos-plugin-install-probe/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-multiple/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvQXRsYXNFdmVudENhcHR1cmUuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/AtlasEventCapture.hook.ts": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "9433a47d9db30cff474777a8862cd740ecae00cc7ff2d76c105ba072521276f2",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "78143d96144ae046354bd4455d15a5040ac8b2e5754191c8dd21635deabc5f75",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "7319a7649657dd053fdda76b152e9b4b236625dc863926f56ce065d3441c18c5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "ee06f6b515c94ef78163222646aa5599d4623713aff5200df588750d8b82dccb",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "c4adaeabb0d90b124163dbf7093322575865e2952def02e3d70a79b938f34c33",
+    "fixture-events.jsonl": "455794bb621dd7e48b331e59e52b345e041e7518c48f7a2c8c63a6e8b4c931ac",
+    "cli.log": "3dcf4040ef22218cf30307ab5772f118b7e7012271dc7f15a35f7b0e07c4038e",
+    "before-state.json": "b705d7a96589d611a24b92cc9628c1a471897e500f67de316c54e070d78c6405",
+    "after-state.json": "9f66479fa82e44ee769274146efe034d604fc347045ff0c1c0f600e49e1c3ab0",
+    "fixture-files-before.json": "a66a5366bd633ff4d6eec7a6d6cfa49341797180189a37a0782f5c52eea5b82e",
+    "fixture-files-after.json": "2a0f526bff9a18c8540576374be535ebd5e3bbfd5243d8183374ec78f2fb61b5"
+  }
+}

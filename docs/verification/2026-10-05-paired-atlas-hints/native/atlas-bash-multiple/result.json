@@ -1,0 +1,128 @@
+{
+  "before": {
+    "event_rows": 1
+  },
+  "after": {
+    "prior_event_preserved": true,
+    "hints": [
+      {
+        "source": "github",
+        "tool": "Bash",
+        "timestamp_current": true
+      },
+      {
+        "source": "launchd",
+        "tool": "Bash",
+        "timestamp_current": true
+      }
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "1829abb7-c60a-4643-a0fd-814c47968b17",
+  "seconds": 5.7,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-multiple",
+    "/home/lifeos-claude-ref/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-multiple",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: printf 'PAIR_ATLAS gh repo create fixture; launchctl load fixture'"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.13.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.13.1 /home/lifeos-claude-ref/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-multiple/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQXRsYXNFdmVudENhcHR1cmUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/AtlasEventCapture.hook.ts": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "626b21acb93408b10fc151b3a29f04ecdd1aa2618132b6c3cd0eb968e9d18bcf",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "162805a4b6e5c9016bff58ecf62254a98fdd13dad0c71f89fa52ff3eff737933",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "d4626cb8fe52cb33d7051a3c0e79ebb787fb6494f7dca07429dbc326b67a2ddf",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "6e68b4718319ebeb9bc7be369ff1d57ddd9600914b6e26a66d09fadd857e7a39",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "b7571c5bebc2a03a2e3668d6f7bbdc1beab5bae6073c7052d8cb2b343e1de9d6",
+    "fixture-events.jsonl": "f6e5064b7135eebd02cb8024fcef014738221171f491b4c2da0c8f08edc3b180",
+    "cli.log": "16b1c7a23f0734cee3fe6cd7118ddf081b358f2b7a7b23f58800bfa09aa6b789",
+    "before-state.json": "b705d7a96589d611a24b92cc9628c1a471897e500f67de316c54e070d78c6405",
+    "after-state.json": "9f66479fa82e44ee769274146efe034d604fc347045ff0c1c0f600e49e1c3ab0",
+    "fixture-files-before.json": "a82ab2d8f089771181bbdffff6ab7d2b5d24a8ff562885066b7a5cebd54560a9",
+    "fixture-files-after.json": "a82ab2d8f089771181bbdffff6ab7d2b5d24a8ff562885066b7a5cebd54560a9"
+  }
+}

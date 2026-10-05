@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Sixty-five equal selected cases cover 18 registrations. Sixty-three lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, and six end-of-turn render cases; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Sixty-eight equal selected cases cover 19 registrations. Sixty-six lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, and three mutation hint cases with real tool calls; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -41,7 +41,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | PostToolUse.11.1 | EventLogger | Write native tool activity, record applicable skill execution, and update the active ISA heartbeat. | Pending |
 | PostToolUse.12.1 | PostToolObserver | Run the nested post-tool observers with the actual result and transcript. | Pending |
 | PostToolUse.12.2 | LoopDetector | Track repeated failures and return the native loop warning. | Pending |
-| PostToolUse.13.1 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Pending |
+| PostToolUse.13.1 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Bash cases pass; the cloudflare and DNS patterns remain open |
 | SessionEnd.1.1 | WorkCompletionLearning | Read session completion evidence and persist eligible native learning. | Selected cases verified |
 | SessionEnd.1.2 | SessionCleanup | Close native session state and remove the applicable transient work state. | Selected cases verified |
 | SessionEnd.1.3 | UpdateCounts | Refresh the configured usage counts or remain neutral without OAuth credentials. | Selected cases verified |
