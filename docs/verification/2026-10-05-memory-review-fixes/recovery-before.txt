@@ -1,0 +1,38 @@
+FF.
+======================================================================
+FAIL: test_recovery_keeps_a_copy_before_it_removes_a_file_that_did_not_exist (test_memory_review_fixes.RecoveryPreservationTests.test_recovery_keeps_a_copy_before_it_removes_a_file_that_did_not_exist)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review_fixes.py", line 127, in test_recovery_keeps_a_copy_before_it_removes_a_file_that_did_not_exist
+    self.assertEqual(self.preserved(), [b'created after the journal\n'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [b'created after the journal\n']
+
+Second list contains 1 additional elements.
+First extra element 0:
+b'created after the journal\n'
+
+- []
++ [b'created after the journal\n']
+
+======================================================================
+FAIL: test_recovery_keeps_a_copy_of_bytes_that_differ_from_the_journal_original (test_memory_review_fixes.RecoveryPreservationTests.test_recovery_keeps_a_copy_of_bytes_that_differ_from_the_journal_original)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review_fixes.py", line 115, in test_recovery_keeps_a_copy_of_bytes_that_differ_from_the_journal_original
+    self.assertEqual(self.preserved(), [b'owner edit after the interruption\n'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: [] != [b'owner edit after the interruption\n']
+
+Second list contains 1 additional elements.
+First extra element 0:
+b'owner edit after the interruption\n'
+
+- []
++ [b'owner edit after the interruption\n']
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.006s
+
+FAILED (failures=2)
+exit 1

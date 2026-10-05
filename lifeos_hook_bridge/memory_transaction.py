@@ -110,6 +110,31 @@ class MemoryTransaction:
         if current not in {original, copy['after_digest']}:
             raise MemoryUnavailable('Publication recovery preserves a later artifact edit')
 
+    def _preserve_current(self, operation) -> None:
+        # Recovery cannot tell an interrupted write from a later owner edit, so it keeps
+        # every destination whose bytes differ from the journal original before it restores.
+        kept = {}
+        for copy in operation['copies']:
+            path = self.resolve(copy['path'])
+            if not path.is_file():
+                continue
+            current = path.read_bytes()
+            original = None if copy['data'] is None else base64.b64decode(copy['data'], validate=True)
+            if current != original:
+                kept[copy['path']] = current
+        if not kept:
+            return
+        identity = hashlib.sha256(json.dumps([operation['writer'], operation['request_id']]).encode()).hexdigest()[:32]
+        folder = self.state / 'recovery-preserved' / identity
+        files = {}
+        for name, data in kept.items():
+            digest = hashlib.sha256(data).hexdigest()
+            publish(folder / digest, data)
+            files[name] = digest
+        publish(folder / 'preserved.json', (json.dumps({
+            'writer': operation['writer'], 'request_id': operation['request_id'], 'files': files},
+            sort_keys=True, indent=2) + '\n').encode())
+
     def recover(self, connection) -> None:
         from .memory_access import MemoryUnavailable
         if not self.journal.exists():
@@ -149,6 +174,7 @@ class MemoryTransaction:
         if expected:
             for copy in operation['copies']:
                 self._check_restore(copy)
+        self._preserve_current(operation)
         for copy in operation["copies"]:
             if expected:
                 self._check_restore(copy)

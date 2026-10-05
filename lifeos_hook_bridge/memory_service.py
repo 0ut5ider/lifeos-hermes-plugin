@@ -573,7 +573,17 @@ class MemoryService:
             scope = self.client_scope(configuration, identifier)
         except (MemoryUnavailable, ValueError, OSError) as error:
             return {"status": "rejected", "reason": str(error)}
-        return self._call(configuration, scope, name, arguments)
+
+        def check_current(*_):
+            current = self.configuration.load()
+            if current["root"] != configuration["root"] or self.client_scope(current, identifier) != scope:
+                raise MemoryUnavailable("This memory connection changed during the request")
+        result = self._call(configuration, scope, name, arguments, check_current=check_current)
+        try:
+            check_current()
+        except (MemoryUnavailable, ValueError, OSError) as error:
+            return {"status": "rejected", "reason": str(error)}
+        return result
 
     def call_context(self, context: SessionContext, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         try:
@@ -591,7 +601,7 @@ class MemoryService:
         return self._call(configuration, scope, name, arguments)
 
     def _call(self, configuration: dict[str, Any], scope: MemoryScope, name: str, arguments: dict[str, Any],
-              *, source_session: str = '') -> dict[str, Any]:
+              *, source_session: str = '', check_current=None) -> dict[str, Any]:
         try:
             _validate_arguments(name, arguments)
         except ValueError as error:
@@ -613,7 +623,8 @@ class MemoryService:
             if name == "lifeos_memory_get":
                 return memory.get(scope, arguments["reference"])
             if name == "lifeos_memory_remember":
-                return memory.remember(scope, **arguments, source={'kind': 'explicit', 'session': source_session})
+                return memory.remember(scope, **arguments, source={'kind': 'explicit', 'session': source_session},
+                                       check_current=check_current)
             if name == "lifeos_memory_correct":
                 return memory.correct(scope, **arguments)
             if name == "lifeos_memory_forget":
