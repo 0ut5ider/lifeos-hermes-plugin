@@ -1168,7 +1168,7 @@ index ea4d80b..c290760 100644
  
    if (pathname === "/api/memory" || pathname === "/api/memory/") {
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/telos.ts b/LifeOS/install/LIFEOS/PULSE/modules/telos.ts
-index 78853a7..faae4f3 100644
+index 78853a7..348e093 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/telos.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/telos.ts
 @@ -14,7 +14,8 @@
@@ -1177,7 +1177,7 @@ index 78853a7..faae4f3 100644
  
 -import { readTelosFreshness, readContextFreshness, type TelosFreshness, type ContextFreshness } from "../../TOOLS/TelosFreshness";
 +import { readTelosFreshness, readContextFreshness, type TelosFreshness, type ContextFreshness, type FreshnessSources } from "../../TOOLS/TelosFreshness";
-+import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess";
++import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryObject } from "../../TOOLS/lib/MemoryAccess";
  import { writeFreshnessCache } from "../../TOOLS/FreshnessCache";
  
  function refreshFileCache(): void {
@@ -1204,24 +1204,35 @@ index 78853a7..faae4f3 100644
 +  if (!hasManagedMemoryHTTP()) refreshFileCache();
  }
  
- export function health(): { status: string; details?: Record<string, unknown> } {
-   if (!state.running) return { status: "stopped" };
+-export function health(): { status: string; details?: Record<string, unknown> } {
+-  if (!state.running) return { status: "stopped" };
 -  const f = state.cachedTelos;
 -  const c = state.cachedContext;
++export function health(sources?: FreshnessSources): { status: string; details?: Record<string, unknown> } {
++  if (sources === undefined && !state.running) return { status: "stopped" };
 +  const managed = hasManagedMemoryHTTP();
-+  const f = managed ? null : state.cachedTelos;
-+  const c = managed ? null : state.cachedContext;
++  const f = sources !== undefined ? readTelosFreshness(undefined, sources) : managed ? null : state.cachedTelos;
++  const c = sources !== undefined ? readContextFreshness(sources) : managed ? null : state.cachedContext;
    return {
      status: f && f.fileUpdated ? "healthy" : "degraded",
      details: {
-@@ -124,11 +128,34 @@ export function health(): { status: string; details?: Record<string, unknown> }
+@@ -115,7 +119,7 @@ export function health(): { status: string; details?: Record<string, unknown> }
+       telos_sections_stale: f?.staleSections.length ?? 0,
+       context_files_total: c?.total ?? 0,
+       context_files_stale: c?.stale_count ?? 0,
+-      last_read_at: state.lastReadAt?.toISOString() ?? null,
++      last_read_at: sources !== undefined ? new Date().toISOString() : state.lastReadAt?.toISOString() ?? null,
+     },
+   };
+ }
+@@ -124,11 +128,43 @@ export function health(): { status: string; details?: Record<string, unknown> }
   * Pulse routes /api/telos/* here. Returns null on unhandled paths so the
   * outer router can fall through to the next module.
   */
 -export async function handleRequest(_req: Request, pathname: string): Promise<Response | null> {
 +export async function handleRequest(req: Request, pathname: string,
 +    sources?: FreshnessSources): Promise<Response | null> {
-+  if (sources === undefined && (pathname.startsWith("/api/telos/freshness") || pathname.startsWith("/api/freshness"))) {
++  if (sources === undefined && (pathname.startsWith("/api/telos/freshness") || pathname.startsWith("/api/freshness") || pathname === "/api/telos/health")) {
 +    const refused = (status: number, error: string): Response => new Response(JSON.stringify({error}), {
 +      status, headers: {"content-type": "application/json", "cache-control": "no-store"},
 +    });
@@ -1229,7 +1240,7 @@ index 78853a7..faae4f3 100644
 +      if (hasManagedMemoryHTTP()) {
 +        const views: Record<string, string> = {"/api/telos/freshness": "telos_freshness",
 +          "/api/telos/freshness/stale": "telos_stale", "/api/telos/freshness/summary": "telos_freshness_summary",
-+          "/api/freshness": "context_freshness", "/api/freshness/summary": "context_freshness_summary"};
++          "/api/freshness": "context_freshness", "/api/freshness/summary": "context_freshness_summary", "/api/telos/health": "telos_health"};
 +        const view = views[pathname];
 +        if (!view) return refused(404, "This managed freshness route is not supported");
 +        if (req.method !== "GET") return refused(405, "Freshness views require GET");
@@ -1237,7 +1248,16 @@ index 78853a7..faae4f3 100644
 +        if (url.search) return refused(400, "Freshness views use the installed owner configuration");
 +        const origin = req.headers.get("origin");
 +        if (origin && origin !== url.origin) return refused(403, "Freshness views require the current origin");
-+        return memoryHTTPResponse(req, view);
++        const response = await memoryHTTPResponse(req, view);
++        if (view !== "telos_health" || !response.ok) return response;
++        const body: unknown = await response.json();
++        if (!memoryObject(body) || typeof body.status !== "string" || !memoryObject(body.details)) {
++          return refused(503, "Authenticated source health is unavailable");
++        }
++        return Response.json({...body, status: state.running ? body.status : "stopped",
++          details: {...body.details, uptime_s: state.startedAt
++            ? Math.floor((Date.now() - state.startedAt.getTime()) / 1000) : 0}},
++          {headers: {"cache-control": "no-store"}});
 +      }
 +    } catch {
 +      return refused(503, "Authenticated freshness is unavailable");
@@ -1251,7 +1271,7 @@ index 78853a7..faae4f3 100644
        return Response.json({
          total: c.total,
          fresh_count: c.fresh_count,
-@@ -161,7 +188,7 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+@@ -161,7 +197,7 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
        });
      }
      if (pathname === "/api/freshness") {
@@ -1260,7 +1280,7 @@ index 78853a7..faae4f3 100644
      }
      return null;
    }
-@@ -170,7 +197,7 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+@@ -170,7 +206,7 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
    if (!pathname.startsWith("/api/telos")) return null;
  
    if (pathname === "/api/telos/freshness/summary") {
@@ -1269,7 +1289,7 @@ index 78853a7..faae4f3 100644
      const top = f.staleSections[0];
      return Response.json({
        file_updated: f.fileUpdated?.toISOString() ?? null,
-@@ -183,14 +210,22 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
+@@ -183,14 +219,22 @@ export async function handleRequest(_req: Request, pathname: string): Promise<Re
      });
    }
    if (pathname === "/api/telos/freshness/stale") {
@@ -1282,7 +1302,8 @@ index 78853a7..faae4f3 100644
 +    return Response.json(sources === undefined ? freshness() : readTelosFreshness(undefined, sources));
    }
    if (pathname === "/api/telos/health") {
-     return Response.json(health());
+-    return Response.json(health());
++    return Response.json(health(sources));
    }
    return null;
  }

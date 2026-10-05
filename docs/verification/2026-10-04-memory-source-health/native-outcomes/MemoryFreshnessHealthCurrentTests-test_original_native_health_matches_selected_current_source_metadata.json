@@ -1,0 +1,88 @@
+{
+  "case": "test_original_native_health_matches_selected_current_source_metadata",
+  "before": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "after": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:44367/api/telos/health",
+      "status": 200,
+      "body": "{\"status\":\"healthy\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":\"2020-01-01T00:00:00.000Z\",\"telos_file_age_days\":2469,\"telos_sections_total\":1,\"telos_sections_stale\":1,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:10.818Z\"}}",
+      "cache-control": "no-store",
+      "content-type": "application/json;charset=utf-8"
+    }
+  ],
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-wk2wn3f_/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-wk2wn3f_/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-wk2wn3f_/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"status\":200,\"body\":{\"status\":\"healthy\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":\"2020-01-01T00:00:00.000Z\",\"telos_file_age_days\":2469,\"telos_sections_total\":1,\"telos_sections_stale\":1,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:10.818Z\"}}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-wk2wn3f_/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-wk2wn3f_/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {start,health} from \"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/PULSE/modules/telos.ts\";await start();console.log(\"SYNTHETIC_HEALTH=\"+JSON.stringify(health()));"
+      ],
+      "status": 0,
+      "stdout": "[telos] Starting...\n[telos] Started \u2014 telos: 1 sections (1 stale), context: 8 files (8 stale)\nSYNTHETIC_HEALTH={\"status\":\"healthy\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":\"2020-01-01T00:00:00.000Z\",\"telos_file_age_days\":2469,\"telos_sections_total\":1,\"telos_sections_stale\":1,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:11.072Z\"}}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-source-health-candidate-distributed/lifeos/LifeOS/install"
+}

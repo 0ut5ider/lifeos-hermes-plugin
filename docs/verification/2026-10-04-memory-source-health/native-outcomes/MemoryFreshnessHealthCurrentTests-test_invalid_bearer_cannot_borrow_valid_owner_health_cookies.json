@@ -1,0 +1,21 @@
+{
+  "case": "test_invalid_bearer_cannot_borrow_valid_owner_health_cookies",
+  "before": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "after": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:37535/api/telos/health",
+      "status": 401,
+      "body": "{\"error\": \"session_expired\", \"detail\": \"Unauthorized\", \"reason\": \"invalid_or_expired_session\"}",
+      "cache-control": "no-store",
+      "content-type": "application/json"
+    }
+  ],
+  "events": [],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-source-health-candidate-distributed/lifeos/LifeOS/install"
+}

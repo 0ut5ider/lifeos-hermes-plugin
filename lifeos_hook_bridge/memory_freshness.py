@@ -14,7 +14,7 @@ CONTEXT = CONTEXT_FILES | {TELOS, 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md',
 VIEWS = frozenset({'telos', 'context', 'state', 'registry', 'frontmatter', 'legacy_path', 'legacy_date'})
 HTTP_VIEWS = {'telos_freshness': '/api/telos/freshness', 'telos_stale': '/api/telos/freshness/stale',
     'telos_freshness_summary': '/api/telos/freshness/summary', 'context_freshness': '/api/freshness',
-    'context_freshness_summary': '/api/freshness/summary'}
+    'context_freshness_summary': '/api/freshness/summary', 'telos_health': '/api/telos/health'}
 
 
 def _request(memory, view, path, slug):
@@ -82,13 +82,22 @@ def view(memory, scope, name, *, check_current):
     if name not in HTTP_VIEWS:
         raise ValueError('Choose a native freshness HTTP view')
     source_view = 'context' if name.startswith('context_') else 'telos'
-    with memory._transaction() as connection:
+
+    def collect(connection):
         sources = _collect(memory, scope, connection, source_view, None)
+        if name == 'telos_health':
+            sources = sorted({source['path']: source for source in
+                [*sources, *_collect(memory, scope, connection, 'context', None)]}.values(),
+                key=lambda source: source['path'])
+        return sources
+
+    with memory._transaction() as connection:
+        sources = collect(connection)
         result = memory._native('freshness_view', target=HTTP_VIEWS[name], sources=sources)
         if (set(result) != {'status', 'body'} or result['status'] != 200 or not isinstance(result['body'], dict)
                 or len(json.dumps(result).encode()) > CORPUS_LIMIT):
             raise MemoryUnavailable('Native freshness returns an invalid HTTP result')
-        if _collect(memory, scope, connection, source_view, None) != sources:
+        if collect(connection) != sources:
             raise MemoryUnavailable('Freshness sources changed during HTTP rendering')
         check_current()
         return result['body']

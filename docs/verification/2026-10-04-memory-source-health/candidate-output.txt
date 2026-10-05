@@ -1,0 +1,20 @@
+.FFF.............................. [ 62%]
+....................                                                     [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessHealthTests.test_owner_health_uses_current_sources_without_ambient_cache _
+tests/test_memory_freshness_health.py:51: in test_owner_health_uses_current_sources_without_ambient_cache
+    self.assertEqual(response.status_code, 200, response.text)
+E   AssertionError: 400 != 200 : {"error": "Choose a supported native memory view"}
+_ MemoryFreshnessHealthTests.test_revocation_refuses_previously_successful_health _
+tests/test_memory_freshness_health.py:66: in test_revocation_refuses_previously_successful_health
+    self.assertEqual(client.get(self.native + self.route).status_code, 200)
+E   AssertionError: 400 != 200
+_ MemoryFreshnessHealthTests.test_unauthenticated_health_requires_current_credentials _
+tests/test_memory_freshness_health.py:42: in test_unauthenticated_health_requires_current_credentials
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 400 != 401 : {"error": "Choose a supported native memory view"}
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness_health.py::MemoryFreshnessHealthTests::test_owner_health_uses_current_sources_without_ambient_cache
+FAILED tests/test_memory_freshness_health.py::MemoryFreshnessHealthTests::test_revocation_refuses_previously_successful_health
+FAILED tests/test_memory_freshness_health.py::MemoryFreshnessHealthTests::test_unauthenticated_health_requires_current_credentials
+3 failed, 51 passed, 38 subtests passed in 49.31s

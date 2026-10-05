@@ -17,7 +17,7 @@ if TYPE_CHECKING:
     from .memory_service import MemoryConfiguration
 
 VIEWS = frozenset({'snapshot','state','health','runs','graph', 'telos_freshness', 'telos_stale',
-                  'telos_freshness_summary', 'context_freshness', 'context_freshness_summary'})
+                  'telos_freshness_summary', 'context_freshness', 'context_freshness_summary', 'telos_health'})
 RESPONSE_LIMIT = 3 * 1024 * 1024
 SESSION_COOKIES = frozenset(prefix+name for prefix in ('','__Host-','__Secure-')
     for name in ('hermes_session_at','hermes_session_rt','hermes_session_provider'))

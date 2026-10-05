@@ -37,6 +37,8 @@ The [SeedPulse parent controls](docs/verification/2026-10-04-memory-seed-pulse/R
 
 The [native inference log gate](docs/verification/2026-10-04-memory-inference-log/README.md) preserves native metadata and makes its publication private and recoverable. The two gates pass 36 tests and seven subtests, including foreign-file preservation and process-death recovery. Live model and ownership acceptance remain open.
 
+The [source-health HTTP gate](docs/verification/2026-10-04-memory-source-health/README.md) supplies current admitted source counts through authenticated requests. It verifies edits, retirement, revocation, and backend loss, and passes 72 tests and 59 subtests. Deployed service acceptance and ownership remain open.
+
 The [installation and removal plan](docs/memory-implementation-plan.md#installation-trial-and-removal-requirements) includes separate-profile trials, reviewed memory import, and a return to Hermes. These established-installation workflows are planned. They are not implemented or verified by the current fresh-install controls. Installing the plugin must not switch lasting-memory ownership automatically.
 
 [Owner source review](docs/verification/2026-10-02-memory-source-review/README.md) permits exact reviewed system and identity files to pass the conservative age check. Current access, private-content validation, and detected retired-claim checks remain required. The owner API exists; preferences-page review controls remain open. This does not activate lasting-memory ownership.
