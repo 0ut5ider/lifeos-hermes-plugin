@@ -1,0 +1,14 @@
+F.F                                                                      [100%]
+=================================== FAILURES ===================================
+___ MemoryPulseAdapterStaleTests.test_missing_context_cannot_read_cache_age ____
+tests/test_memory_pulse_adapter_stale.py:33: in test_missing_context_cannot_read_cache_age
+    self.assertFalse(self.call(context=False)['ok'])
+E   AssertionError: True is not false
+__ MemoryPulseAdapterStaleTests.test_restricted_context_cannot_read_cache_age __
+tests/test_memory_pulse_adapter_stale.py:37: in test_restricted_context_cannot_read_cache_age
+    self.assertFalse(self.call()['ok'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_pulse_adapter_stale.py::MemoryPulseAdapterStaleTests::test_missing_context_cannot_read_cache_age
+FAILED tests/test_memory_pulse_adapter_stale.py::MemoryPulseAdapterStaleTests::test_restricted_context_cannot_read_cache_age
+2 failed, 1 passed in 0.35s

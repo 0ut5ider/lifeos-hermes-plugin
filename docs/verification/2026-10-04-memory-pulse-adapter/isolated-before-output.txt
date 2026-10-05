@@ -1,0 +1,44 @@
+FFF..FF                                                               [100%]
+=================================== FAILURES ===================================
+_ MemoryPulseAdapterTests.test_foreign_error_destination_refuses_before_any_publication _
+tests/test_memory_pulse_adapter.py:123: in test_foreign_error_destination_refuses_before_any_publication
+    self.assertTrue(target.is_symlink())
+E   AssertionError: False is not true
+_ MemoryPulseAdapterTests.test_foreign_source_refuses_before_log_or_index_publication _
+tests/test_memory_pulse_adapter.py:112: in test_foreign_source_refuses_before_log_or_index_publication
+    self.assertFalse((self.data / '_index.json').exists())
+E   AssertionError: True is not false
+_ MemoryPulseAdapterTests.test_missing_context_refuses_before_error_index_or_log_publication _
+tests/test_memory_pulse_adapter.py:89: in test_missing_context_refuses_before_error_index_or_log_publication
+    self.assertFalse(self.data.exists())
+E   AssertionError: True is not false
+_ MemoryPulseAdapterTests.test_no_sources_retains_native_status_and_private_publications (path='synthetic.error.json') _
+tests/test_memory_pulse_adapter.py:84: in test_no_sources_retains_native_status_and_private_publications
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryPulseAdapterTests.test_no_sources_retains_native_status_and_private_publications (path='_index.json') _
+tests/test_memory_pulse_adapter.py:84: in test_no_sources_retains_native_status_and_private_publications
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryPulseAdapterTests.test_no_sources_retains_native_status_and_private_publications (path='adapter-runs.jsonl') _
+tests/test_memory_pulse_adapter.py:84: in test_no_sources_retains_native_status_and_private_publications
+    self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+__ MemoryPulseAdapterTests.test_private_source_cannot_reuse_raw_source_cache ___
+tests/test_memory_pulse_adapter.py:102: in test_private_source_cannot_reuse_raw_source_cache
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryPulseAdapterTests.test_read_only_owner_cannot_publish_error_index_or_log _
+tests/test_memory_pulse_adapter.py:96: in test_read_only_owner_cannot_publish_error_index_or_log
+    self.assertFalse(self.data.exists())
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_foreign_error_destination_refuses_before_any_publication
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_foreign_source_refuses_before_log_or_index_publication
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_missing_context_refuses_before_error_index_or_log_publication
+SUBFAILED(path='synthetic.error.json') tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_no_sources_retains_native_status_and_private_publications
+SUBFAILED(path='_index.json') tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_no_sources_retains_native_status_and_private_publications
+SUBFAILED(path='adapter-runs.jsonl') tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_no_sources_retains_native_status_and_private_publications
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_private_source_cannot_reuse_raw_source_cache
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_read_only_owner_cannot_publish_error_index_or_log
+8 failed, 2 passed in 1.13s

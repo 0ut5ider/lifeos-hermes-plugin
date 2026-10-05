@@ -1,0 +1,14 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryPulseAdapterTests.test_unknown_caller_cannot_list_installed_manifest_titles _
+tests/test_memory_pulse_adapter.py:143: in test_unknown_caller_cannot_list_installed_manifest_titles
+    self.assertNotIn('Synthetic fixture', result.stdout)
+E   AssertionError: 'Synthetic fixture' unexpectedly found in 'Usage: bun AdapterCli.ts <page-id> [--force]\n\nAvailable pages:\n  synthetic — Synthetic fixture\n'
+_ MemoryPulseAdapterTests.test_owner_can_list_installed_manifest_titles_without_publication _
+tests/test_memory_pulse_adapter.py:149: in test_owner_can_list_installed_manifest_titles_without_publication
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 :
+=========================== short test summary info ============================
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_unknown_caller_cannot_list_installed_manifest_titles
+FAILED tests/test_memory_pulse_adapter.py::MemoryPulseAdapterTests::test_owner_can_list_installed_manifest_titles_without_publication
+2 failed in 0.23s

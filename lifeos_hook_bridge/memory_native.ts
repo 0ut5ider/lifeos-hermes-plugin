@@ -26,7 +26,32 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "derived_sync_plan" || input.action === "derived_sync_finish") {
+  if (input.action === "pulse_manifest" || input.action === "pulse_sources") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/lib/manifest-loader.ts")).href);
+    if (!object(module) || typeof module.parseManifest !== "function" || typeof module.resolveSources !== "function") {
+      throw new Error("Native PULSE manifest exports are unavailable");
+    }
+    if (input.action === "pulse_manifest") {
+      if (typeof input.content !== "string") throw new Error("PULSE manifests require declared text");
+      result = {manifest: module.parseManifest(input.content)};
+    } else {
+      if (!object(input.manifest) || !Array.isArray(input.manifest.sourceGlobs)
+          || input.manifest.sourceGlobs.some(value => typeof value !== "string")) {
+        throw new Error("PULSE source resolution requires declared manifest globs");
+      }
+      result = {paths: module.resolveSources(input.manifest, root)};
+    }
+  } else if (input.action === "pulse_validate_page") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/PULSE/Schema/PulseSchema.ts")).href);
+    if (!object(module) || !object(module.PageDataSchema) || typeof module.PageDataSchema.safeParse !== "function"
+        || !object(module.PageMetaSchema) || typeof module.PageMetaSchema.safeParse !== "function") {
+      throw new Error("Native PULSE schema exports are unavailable");
+    }
+    const page = input.page;
+    result = {valid: object(page) && page.schemaVersion === "1.0.0"
+      && module.PageDataSchema.safeParse(page.data).success === true
+      && module.PageMetaSchema.safeParse(page._meta).success === true};
+  } else if (input.action === "derived_sync_plan" || input.action === "derived_sync_finish") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/DerivedSync.ts")).href);
     const state = input.state;
     const hashes = input.hashes;

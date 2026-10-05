@@ -542,6 +542,247 @@ index aaedfe6..76bce75 100644
        tooltipEl.style.opacity = "1";
        tooltipEl.style.left = mx + 12 + "px";
        tooltipEl.style.top = my - 12 + "px";
+diff --git a/LifeOS/install/LIFEOS/PULSE/adapters/AdapterRunner.ts b/LifeOS/install/LIFEOS/PULSE/adapters/AdapterRunner.ts
+index 8bf34d0..9a96848 100644
+--- a/LifeOS/install/LIFEOS/PULSE/adapters/AdapterRunner.ts
++++ b/LifeOS/install/LIFEOS/PULSE/adapters/AdapterRunner.ts
+@@ -1,10 +1,13 @@
++// ABOUTME: Builds native PULSE pages from admitted source and prompt text.
++// ABOUTME: Retains native inference and cache behavior with governed input checks.
+ import { readFileSync, existsSync, appendFileSync, mkdirSync } from "node:fs";
+ import { resolve, join } from "node:path";
+ import { ALL_PAGE_SCHEMAS, SCHEMA_VERSION, type PageData, type PageMeta, type Provenance } from "../Schema/PulseSchema";
+ import { type Manifest, paiRoot, resolveSources } from "../lib/manifest-loader";
+-import { hashFile, combineSourceHashes } from "../lib/cache";
++import { hashFile, sha256Hex, combineSourceHashes } from "../lib/cache";
+ import { writePage, writeError, clearError, readMeta, type DataPlaneFile, PULSE_DATA_DIR } from "../lib/data-plane";
+-import { getProvenance } from "../lib/frontmatter";
++import { getProvenance, parseFrontmatter } from "../lib/frontmatter";
++import { memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ import { inference } from "../../TOOLS/Inference";
+ // Mapping derived from models.ts EFFORT_MODEL — the local copy returned the
+ // legacy "fast"/"smart"/"standard" names Inference.ts deleted 2026-06-10, so
+@@ -35,6 +38,9 @@ export interface RunOptions {
+ }
+ 
+ function logRun(entry: Record<string, unknown>): void {
++  const governed = memoryAccess("pulse_adapter_log", {entry},
++    (value): value is {ok: boolean} => memoryObject(value) && value.ok === true);
++  if (governed !== undefined) return;
+   try {
+     mkdirSync(OBSERVABILITY_DIR, { recursive: true });
+     appendFileSync(RUNS_LOG, JSON.stringify(entry) + "\n", { encoding: "utf8" });
+@@ -43,18 +49,19 @@ function logRun(entry: Record<string, unknown>): void {
+   }
+ }
+ 
+-function aggregateProvenance(sources: string[]): Provenance {
+-  const stamps = sources.map(getProvenance);
++function aggregateProvenance(sources: string[], declared?: Record<string, string>): Provenance {
++  const stamps = sources.map(path => declared === undefined ? getProvenance(path) : parseFrontmatter(declared[path] ?? "").data.provenance ?? "unknown");
+   if (stamps.every((s) => s === "template")) return "template";
+   if (stamps.every((s) => s === "customized" || s === "unknown")) return "customized";
+   return "mixed";
+ }
+ 
+-function buildSourceBundle(sources: string[]): string {
++function buildSourceBundle(sources: string[], declared?: Record<string, string>): string {
+   const parts: string[] = [];
+   for (const p of sources.sort()) {
+-    if (!existsSync(p)) continue;
+-    parts.push(`### SOURCE: ${p}\n\n${readFileSync(p, "utf8").trim()}\n`);
++    if (declared === undefined && !existsSync(p)) continue;
++    const content = declared === undefined ? readFileSync(p, "utf8") : declared[p] ?? "";
++    parts.push(`### SOURCE: ${p}\n\n${content.trim()}\n`);
+   }
+   return parts.join("\n---\n\n");
+ }
+@@ -93,7 +100,19 @@ async function callInference(systemPrompt: string, model: string, sourceText: st
+ 
+ export async function runAdapter(manifest: Manifest, opts: RunOptions = {}): Promise<AdapterResult> {
+   const startedAt = new Date().toISOString();
+-  const sources = resolveSources(manifest);
++  const managed = memoryAccess("pulse_adapter_inputs", {manifest, force: opts.force ?? false},
++    (value): value is {ok: boolean; sources: Record<string, string>; prompt: string | null; signature: string} =>
++      memoryObject(value) && value.ok === true && memoryObject(value.sources)
++      && Object.values(value.sources).every(content => typeof content === "string")
++      && (value.prompt === null || typeof value.prompt === "string") && typeof value.signature === "string");
++  const declared = managed?.sources;
++  const sources = declared === undefined ? resolveSources(manifest) : Object.keys(declared);
++  function checkCurrent(): void {
++    if (managed === undefined) return;
++    memoryAccess("pulse_adapter_check", {manifest, force: opts.force ?? false, signature: managed.signature},
++      (value): value is {ok: boolean} => memoryObject(value) && value.ok === true);
++  }
++  checkCurrent();
+ 
+   if (sources.length === 0) {
+     const result: AdapterResult = {
+@@ -113,9 +132,9 @@ export async function runAdapter(manifest: Manifest, opts: RunOptions = {}): Pro
+   }
+ 
+   const sourceHashes: Record<string, string> = {};
+-  for (const s of sources) sourceHashes[s] = hashFile(s);
++  for (const s of sources) sourceHashes[s] = declared === undefined ? hashFile(s) : sha256Hex(declared[s] ?? "");
+   const cacheKey = combineSourceHashes(sourceHashes, manifest.adapterVersion, manifest.model, SCHEMA_VERSION);
+-  const provenance = aggregateProvenance(sources);
++  const provenance = aggregateProvenance(sources, declared);
+ 
+   const prevMeta = readMeta(manifest.id);
+   const cacheHit = !opts.force && prevMeta && (prevMeta as PageMeta & { cacheKey?: string }).cacheKey === cacheKey;
+@@ -136,7 +155,7 @@ export async function runAdapter(manifest: Manifest, opts: RunOptions = {}): Pro
+   }
+ 
+   const promptPath = resolve(paiRoot(), manifest.adapterPromptFile);
+-  if (!existsSync(promptPath)) {
++  if (managed === undefined ? !existsSync(promptPath) : managed.prompt === null) {
+     const msg = `adapter prompt not found: ${manifest.adapterPromptFile}`;
+     writeError(manifest.id, { kind: "config", message: msg });
+     const result: AdapterResult = {
+@@ -146,10 +165,12 @@ export async function runAdapter(manifest: Manifest, opts: RunOptions = {}): Pro
+     logRun({ ...result, startedAt });
+     return result;
+   }
+-  const adapterPrompt = readFileSync(promptPath, "utf8");
+-  const sourceBundle = buildSourceBundle(sources);
++  const adapterPrompt = managed === undefined ? readFileSync(promptPath, "utf8") : managed.prompt ?? "";
++  const sourceBundle = buildSourceBundle(sources, declared);
++  checkCurrent();
+ 
+   const inferenceResult = await callInference(adapterPrompt, manifest.model, sourceBundle);
++  checkCurrent();
+   if (!inferenceResult.ok) {
+     writeError(manifest.id, { kind: inferenceResult.reason, message: inferenceResult.message });
+     const result: AdapterResult = {
+diff --git a/LifeOS/install/LIFEOS/PULSE/lib/data-plane.ts b/LifeOS/install/LIFEOS/PULSE/lib/data-plane.ts
+index 005712b..b03368a 100644
+--- a/LifeOS/install/LIFEOS/PULSE/lib/data-plane.ts
++++ b/LifeOS/install/LIFEOS/PULSE/lib/data-plane.ts
+@@ -1,8 +1,11 @@
++// ABOUTME: Reads and publishes native PULSE pages, metadata, errors, and indexes.
++// ABOUTME: Uses current owner admission and fixed recoverable destinations in managed mode.
+ import { readFileSync, existsSync, statSync, unlinkSync } from "node:fs";
+ import { resolve, join } from "node:path";
+ import { paiRoot } from "./manifest-loader";
+ import { atomicWriteJSON } from "./atomic-write";
+-import type { PageData, PageMeta, Provenance } from "../Schema/PulseSchema";
++import { PageDataSchema, PageMetaSchema, type PageData, type PageMeta, type Provenance } from "../Schema/PulseSchema";
++import { memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ import { homedir } from "node:os";
+ 
+ const HOME = process.env.HOME ?? process.env.USERPROFILE ?? homedir();
+@@ -31,6 +34,29 @@ export interface DataPlaneIndex {
+   pages: IndexEntry[];
+ }
+ 
++function managed(action: string, identifier: string, value: unknown = null): {value: unknown} | undefined {
++  return memoryAccess("pulse_data", {action, identifier, value},
++    (response): response is {ok: boolean; value: unknown} => memoryObject(response)
++      && response.ok === true && Object.hasOwn(response, "value"));
++}
++
++function validPage(value: unknown): value is DataPlaneFile {
++  return memoryObject(value) && value.schemaVersion === "1.0.0"
++    && PageDataSchema.safeParse(value.data).success && PageMetaSchema.safeParse(value._meta).success;
++}
++
++function validMeta(value: unknown): value is PageMeta {
++  return PageMetaSchema.safeParse(value).success;
++}
++
++function validIndex(value: unknown): value is DataPlaneIndex {
++  return memoryObject(value) && value.schemaVersion === "1.0.0" && typeof value.generatedAt === "string"
++    && Array.isArray(value.pages) && value.pages.every(page => memoryObject(page)
++      && ["id", "title", "kind", "lastBuildAt"].every(key => typeof page[key] === "string")
++      && typeof page.hasError === "boolean" && typeof page.costUSD === "number"
++      && ["template", "customized", "mixed"].includes(String(page.provenance)));
++}
++
+ export function pagePath(id: string): string {
+   return join(PULSE_DATA_DIR, `${id}.json`);
+ }
+@@ -48,23 +74,37 @@ export function indexPath(): string {
+ }
+ 
+ export function readPage(id: string): DataPlaneFile | null {
++  const response = managed("read_page", id);
++  if (response !== undefined) {
++    if (response.value === null) return null;
++    if (!validPage(response.value)) throw new Error("The managed PULSE page has an invalid native schema");
++    return response.value;
++  }
+   const p = pagePath(id);
+   if (!existsSync(p)) return null;
+   return JSON.parse(readFileSync(p, "utf8")) as DataPlaneFile;
+ }
+ 
+ export function readMeta(id: string): PageMeta | null {
++  const response = managed("read_meta", id);
++  if (response !== undefined) {
++    if (response.value === null) return null;
++    if (!validMeta(response.value)) throw new Error("The managed PULSE metadata has an invalid native schema");
++    return response.value;
++  }
+   const p = metaPath(id);
+   if (!existsSync(p)) return null;
+   return JSON.parse(readFileSync(p, "utf8")) as PageMeta;
+ }
+ 
+ export function writePage(id: string, file: DataPlaneFile): void {
++  if (managed("write_page", id, file) !== undefined) return;
+   atomicWriteJSON(pagePath(id), file);
+   atomicWriteJSON(metaPath(id), file._meta);
+ }
+ 
+ export function writeError(id: string, error: { kind: string; message: string; details?: unknown }): void {
++  if (managed("write_error", id, error) !== undefined) return;
+   atomicWriteJSON(errorPath(id), {
+     schemaVersion: "1.0.0",
+     pageId: id,
+@@ -74,6 +114,7 @@ export function writeError(id: string, error: { kind: string; message: string; d
+ }
+ 
+ export function clearError(id: string): void {
++  if (managed("clear_error", id) !== undefined) return;
+   const p = errorPath(id);
+   if (existsSync(p)) {
+     try { unlinkSync(p); } catch { /* ignore */ }
+@@ -82,6 +123,14 @@ export function clearError(id: string): void {
+ 
+ export function isStale(id: string, staleAfterHours: number | undefined): { stale: boolean; ageHours: number } | null {
+   if (!staleAfterHours) return null;
++  const response = managed("stale", id, staleAfterHours);
++  if (response !== undefined) {
++    if (!memoryObject(response.value)) throw new Error("The managed PULSE age has an invalid result");
++    if (response.value.missing === true) return {stale: true, ageHours: Infinity};
++    if (typeof response.value.stale !== "boolean" || typeof response.value.ageHours !== "number"
++        || !Number.isFinite(response.value.ageHours)) throw new Error("The managed PULSE age has an invalid result");
++    return {stale: response.value.stale, ageHours: response.value.ageHours};
++  }
+   const p = metaPath(id);
+   if (!existsSync(p)) return { stale: true, ageHours: Infinity };
+   const ageMs = Date.now() - statSync(p).mtimeMs;
+@@ -90,6 +139,7 @@ export function isStale(id: string, staleAfterHours: number | undefined): { stal
+ }
+ 
+ export function writeIndex(entries: IndexEntry[]): void {
++  if (managed("write_index", "", entries) !== undefined) return;
+   const idx: DataPlaneIndex = {
+     schemaVersion: "1.0.0",
+     generatedAt: new Date().toISOString(),
+@@ -99,6 +149,12 @@ export function writeIndex(entries: IndexEntry[]): void {
+ }
+ 
+ export function readIndex(): DataPlaneIndex | null {
++  const response = managed("read_index", "");
++  if (response !== undefined) {
++    if (response.value === null) return null;
++    if (!validIndex(response.value)) throw new Error("The managed PULSE index has an invalid native schema");
++    return response.value;
++  }
+   const p = indexPath();
+   if (!existsSync(p)) return null;
+   return JSON.parse(readFileSync(p, "utf8")) as DataPlaneIndex;
 diff --git a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts b/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
 index a65dfb3..0a7f66c 100644
 --- a/LifeOS/install/LIFEOS/PULSE/lib/lifeos-context.ts
@@ -664,6 +905,81 @@ index a65dfb3..0a7f66c 100644
      cachedContext = { text: block, builtAt: Date.now(), mtimes }
    }
    return block
+diff --git a/LifeOS/install/LIFEOS/PULSE/lib/manifest-loader.ts b/LifeOS/install/LIFEOS/PULSE/lib/manifest-loader.ts
+index 4cefc82..e011ac0 100644
+--- a/LifeOS/install/LIFEOS/PULSE/lib/manifest-loader.ts
++++ b/LifeOS/install/LIFEOS/PULSE/lib/manifest-loader.ts
+@@ -1,5 +1,8 @@
++// ABOUTME: Loads native PULSE manifests and resolves their declared source globs.
++// ABOUTME: Exposes text parsing and root selection for governed adapter inputs.
+ import { readFileSync, readdirSync, existsSync } from "node:fs";
+ import { resolve, join } from "node:path";
++import { memoryAccess, memoryObject } from "../../TOOLS/lib/MemoryAccess";
+ 
+ export interface Manifest {
+   id: string;
+@@ -57,8 +60,8 @@ export function parseToml(content: string): Record<string, unknown> {
+   return out;
+ }
+ 
+-export function loadManifest(filePath: string): Manifest {
+-  const raw = parseToml(readFileSync(filePath, "utf8")) as Record<string, unknown>;
++export function parseManifest(content: string): Manifest {
++  const raw = parseToml(content);
+   return {
+     id: String(raw.id),
+     title: String(raw.title),
+@@ -73,7 +76,26 @@ export function loadManifest(filePath: string): Manifest {
+   };
+ }
+ 
++function validManifest(value: unknown): value is Manifest {
++  return memoryObject(value) && ["id", "title", "dataType", "adapterPromptFile", "model", "adapterVersion"].every(
++    key => typeof value[key] === "string") && Array.isArray(value.sourceGlobs)
++    && value.sourceGlobs.every(glob => typeof glob === "string") && typeof value.rebuildButton === "boolean"
++    && typeof value.order === "number" && Number.isFinite(value.order)
++    && (value.staleAfterHours === undefined || typeof value.staleAfterHours === "number" && Number.isFinite(value.staleAfterHours));
++}
++
++export function loadManifest(filePath: string): Manifest {
++  const governed = memoryAccess("pulse_manifest_read", {path: resolve(filePath)},
++    (value): value is {ok: boolean; manifest: Manifest} => memoryObject(value) && value.ok === true && validManifest(value.manifest));
++  if (governed !== undefined) return governed.manifest;
++  return parseManifest(readFileSync(filePath, "utf8"));
++}
++
+ export function loadAllManifests(): Manifest[] {
++  const governed = memoryAccess("pulse_manifests", {},
++    (value): value is {ok: boolean; manifests: Manifest[]} => memoryObject(value) && value.ok === true
++      && Array.isArray(value.manifests) && value.manifests.every(validManifest));
++  if (governed !== undefined) return governed.manifests;
+   if (!existsSync(PAGES_DIR)) return [];
+   return readdirSync(PAGES_DIR)
+     .filter((f) => f.endsWith(".manifest.toml"))
+@@ -86,8 +108,8 @@ export function loadManifestById(id: string): Manifest | null {
+   return manifests.find((m) => m.id === id) ?? null;
+ }
+ 
+-function expandGlob(pattern: string): string[] {
+-  const abs = resolve(LIFEOS_ROOT, pattern);
++function expandGlob(pattern: string, root: string): string[] {
++  const abs = resolve(root, pattern);
+   if (!pattern.includes("*")) {
+     return existsSync(abs) ? [abs] : [];
+   }
+@@ -99,10 +121,10 @@ function expandGlob(pattern: string): string[] {
+   return readdirSync(dir).filter((f) => re.test(f)).map((f) => join(dir, f)).sort();
+ }
+ 
+-export function resolveSources(manifest: Manifest): string[] {
++export function resolveSources(manifest: Manifest, root: string = LIFEOS_ROOT): string[] {
+   const all: string[] = [];
+   for (const g of manifest.sourceGlobs) {
+-    for (const p of expandGlob(g)) {
++    for (const p of expandGlob(g, root)) {
+       if (!all.includes(p)) all.push(p);
+     }
+   }
 diff --git a/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts b/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts
 index fb6dffa..599a563 100644
 --- a/LifeOS/install/LIFEOS/PULSE/lib/memory-proposals.ts

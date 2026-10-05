@@ -1,0 +1,74 @@
+{
+  "case": "test_foreign_source_refuses_before_log_or_index_publication",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/memory.json\"]}",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/PULSE_DATA/synthetic.meta.json": {
+        "content": "{\"schemaVersion\": \"1.0.0\", \"pageId\": \"synthetic\", \"lastBuildAt\": \"2026-10-04T00:00:00.000Z\", \"sourceHashes\": {\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/.claude/LIFEOS/USER/TELOS/BOOKS.md\": \"88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620\"}, \"adapterVersion\": \"1.0.0\", \"model\": \"haiku\", \"costUSD\": 0, \"latencyMs\": 0, \"provenance\": \"customized\", \"warnings\": [], \"cacheKey\": \"3d7b3158ebee613d19d40b5230adf9e082b3a444e164e16456dc20e203af434e\"}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/PULSE_DATA/synthetic.json": {
+        "content": "{\"schemaVersion\": \"1.0.0\", \"data\": {\"kind\": \"collection\", \"title\": \"Synthetic fixture\", \"category\": \"taste\", \"items\": [{\"name\": \"A synthetic book\", \"private\": false}], \"meta\": {\"schemaVersion\": \"1.0.0\", \"pageId\": \"synthetic\", \"lastBuildAt\": \"2026-10-04T00:00:00.000Z\", \"sourceHashes\": {\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/.claude/LIFEOS/USER/TELOS/BOOKS.md\": \"88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620\"}, \"adapterVersion\": \"1.0.0\", \"model\": \"haiku\", \"costUSD\": 0, \"latencyMs\": 0, \"provenance\": \"customized\", \"warnings\": [], \"cacheKey\": \"3d7b3158ebee613d19d40b5230adf9e082b3a444e164e16456dc20e203af434e\"}}, \"_meta\": {\"schemaVersion\": \"1.0.0\", \"pageId\": \"synthetic\", \"lastBuildAt\": \"2026-10-04T00:00:00.000Z\", \"sourceHashes\": {\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/.claude/LIFEOS/USER/TELOS/BOOKS.md\": \"88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620\"}, \"adapterVersion\": \"1.0.0\", \"model\": \"haiku\", \"costUSD\": 0, \"latencyMs\": 0, \"provenance\": \"customized\", \"warnings\": [], \"cacheKey\": \"3d7b3158ebee613d19d40b5230adf9e082b3a444e164e16456dc20e203af434e\"}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/memory.json\"]}",
+        "mode": "0o600"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts",
+        "synthetic"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "error: adapter \"synthetic\" crashed: Error: The native memory service returned an invalid result\n    at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)\n    at runAdapter (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:103:19)\n    at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-now5z5jl/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts:27:18\n"
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

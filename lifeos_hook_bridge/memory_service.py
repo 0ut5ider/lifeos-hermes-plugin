@@ -261,6 +261,31 @@ class MemoryService:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation in {'pulse_adapter_inputs', 'pulse_adapter_check', 'pulse_adapter_log', 'pulse_data', 'pulse_manifests', 'pulse_manifest_read'}:
+                from .memory_pulse_adapters import inputs, log, data, manifests
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('PULSE authority changed during execution')
+
+                if operation == 'pulse_manifests' and not arguments:
+                    return manifests(memory, scope, check_current=check_current)
+                if operation == 'pulse_manifest_read' and set(arguments) == {'path'}:
+                    if not isinstance(arguments['path'], str):
+                        raise ValueError('PULSE manifest read requires its declared installed path')
+                    return manifests(memory, scope, **arguments, check_current=check_current)
+                if operation == 'pulse_adapter_inputs' and set(arguments) == {'manifest', 'force'}:
+                    return inputs(memory, scope, **arguments, check_current=check_current)
+                if operation == 'pulse_adapter_check' and set(arguments) == {'manifest', 'force', 'signature'}:
+                    if not isinstance(arguments['signature'], str):
+                        raise ValueError('PULSE input checks require their plan signature')
+                    return inputs(memory, scope, **arguments, check_current=check_current)
+                if operation == 'pulse_adapter_log' and set(arguments) == {'entry'}:
+                    return log(memory, scope, **arguments, check_current=check_current)
+                if operation == 'pulse_data' and set(arguments) == {'action', 'identifier', 'value'}:
+                    return data(memory, scope, **arguments, check_current=check_current)
+                raise ValueError('PULSE requires its declared native arguments')
             if operation in {'derived_sync_plan', 'derived_sync_check', 'derived_sync_publish'}:
                 from .memory_derived_sync import handle
 
