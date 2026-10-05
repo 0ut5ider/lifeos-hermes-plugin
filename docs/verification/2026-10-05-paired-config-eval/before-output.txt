@@ -1,0 +1,84 @@
+...........FFEE.FF.........................................................................
+======================================================================
+ERROR: test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target (test_paired_lifecycle_effects.PairedFileHintTests.test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target) (name='file-hint-sentinel-debounced')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 982, in test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 976, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 936, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'file-hint-sentinel-debounced'
+
+======================================================================
+ERROR: test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target (test_paired_lifecycle_effects.PairedFileHintTests.test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target) (name='file-hint-sentinel-no-runner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 982, in test_fixture_uses_the_tool_matcher_and_seeds_only_the_edit_target
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 976, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 936, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'file-hint-sentinel-no-runner'
+
+======================================================================
+FAIL: test_every_selected_file_operation_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedFileHintTests.test_every_selected_file_operation_accepts_only_its_required_effect) (name='file-hint-sentinel-debounced')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 944, in test_every_selected_file_operation_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['file-hint-sentinel-debounced: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'file-hint-sentinel-debounced: unknown case'
+
+- ['file-hint-sentinel-debounced: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_file_operation_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedFileHintTests.test_every_selected_file_operation_accepts_only_its_required_effect) (name='file-hint-sentinel-no-runner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 944, in test_every_selected_file_operation_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['file-hint-sentinel-no-runner: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'file-hint-sentinel-no-runner: unknown case'
+
+- ['file-hint-sentinel-no-runner: unknown case']
++ []
+
+======================================================================
+FAIL: test_sentinel_cases_reject_a_changed_or_created_evaluation_state (test_paired_lifecycle_effects.PairedFileHintTests.test_sentinel_cases_reject_a_changed_or_created_evaluation_state) (name='file-hint-sentinel-debounced')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 995, in test_sentinel_cases_reject_a_changed_or_created_evaluation_state
+    self.assertIn(f'{name}: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-sentinel-debounced: file hint effect is missing' not found in ['file-hint-sentinel-debounced: unknown case']
+
+======================================================================
+FAIL: test_sentinel_cases_reject_a_changed_or_created_evaluation_state (test_paired_lifecycle_effects.PairedFileHintTests.test_sentinel_cases_reject_a_changed_or_created_evaluation_state) (name='file-hint-sentinel-no-runner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 995, in test_sentinel_cases_reject_a_changed_or_created_evaluation_state
+    self.assertIn(f'{name}: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-sentinel-no-runner: file hint effect is missing' not found in ['file-hint-sentinel-no-runner: unknown case']
+
+----------------------------------------------------------------------
+Ran 88 tests in 0.434s
+
+FAILED (failures=4, errors=2)
+exit 1

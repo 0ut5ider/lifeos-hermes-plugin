@@ -920,12 +920,15 @@ class PairedToolLogTests(unittest.TestCase):
 
 class PairedFileHintTests(unittest.TestCase):
     SHAPES = {'file-hint-write-projects': ('Write', ['projects']), 'file-hint-write-plain': ('Write', []),
-              'file-hint-edit-gear': ('Edit', ['gear'])}
+              'file-hint-edit-gear': ('Edit', ['gear']), 'file-hint-sentinel-debounced': ('Write', []),
+              'file-hint-sentinel-no-runner': ('Write', [])}
+    SEEDED = {'file-hint-sentinel-debounced'}
 
     def case(self, name):
         tool, sources = self.SHAPES[name]
         event = 'PostToolUse'
-        side = {'before': {'atlas_rows': 1, 'target_present': tool == 'Edit', 'evaluation_state_present': False},
+        side = {'before': {'atlas_rows': 1, 'target_present': tool == 'Edit',
+                           'evaluation_state_present': name in self.SEEDED},
                 'after': {'prior_event_preserved': True, 'hint_sources': sources,
                           'hint_tools': [tool] if sources else [], 'hints_current': True, 'one_hint_per_call': True,
                           'target_content_matches': True, 'tool_names': [tool], 'file_path_matches': True,
@@ -980,4 +983,13 @@ class PairedFileHintTests(unittest.TestCase):
                 group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
                 self.assertEqual(group['matcher'], tool)
                 self.assertEqual(json.loads((home / 'before-state.json').read_text()),
-                                 {'atlas_rows': 1, 'target_present': tool == 'Edit', 'evaluation_state_present': False})
+                                 {'atlas_rows': 1, 'target_present': tool == 'Edit',
+                                  'evaluation_state_present': name in self.SEEDED})
+
+    def test_sentinel_cases_reject_a_changed_or_created_evaluation_state(self):
+        for name in ('file-hint-sentinel-debounced', 'file-hint-sentinel-no-runner'):
+            with self.subTest(name=name):
+                case = self.case(name)
+                for side in ('native', 'hermes'):
+                    case[side]['after']['evaluation_state_preserved'] = False
+                self.assertIn(f'{name}: file hint effect is missing', check_pair(case))
