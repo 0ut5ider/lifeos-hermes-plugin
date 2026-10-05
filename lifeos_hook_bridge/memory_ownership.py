@@ -37,8 +37,9 @@ def _signature(value):
 
 
 class OwnershipTransaction:
-    def __init__(self, configuration):
+    def __init__(self, configuration, *, installation_lease=None):
         self.configuration = configuration
+        self.installation_lease = installation_lease
         self.profile = configuration.path.parent.absolute()
         if configuration.path.absolute() != self.profile / 'lifeos-memory.json':
             raise MemoryUnavailable('Ownership setup requires the fixed profile configuration')
@@ -54,7 +55,7 @@ class OwnershipTransaction:
 
     @contextmanager
     def _lock(self, account):
-        with installation_lock(self.profile), self.configuration._lock():
+        with installation_lock(self.profile, lease=self.installation_lease), self.configuration._lock():
             configuration = self._owner(account)
             self.state.mkdir(mode=0o700, exist_ok=True)
             _directory(self.state, private=True)

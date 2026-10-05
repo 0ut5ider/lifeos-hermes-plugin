@@ -15,13 +15,16 @@ from lifeos_hook_bridge.memory_access import MemoryUnavailable
 
 class ProfileServicesTests(unittest.TestCase):
     def setUp(self):
-        self.directory = tempfile.TemporaryDirectory(prefix='profile-services-')
-        self.addCleanup(self.directory.cleanup)
-        self.home = Path(self.directory.name)
-        self.profile = self.home / '.hermes'
+        if hasattr(self, 'fixture_home'):
+            self.home = Path(self.fixture_home)
+        else:
+            self.directory = tempfile.TemporaryDirectory(prefix='profile-services-')
+            self.addCleanup(self.directory.cleanup)
+            self.home = Path(self.directory.name)
+        self.profile = Path(getattr(self, 'fixture_profile', self.home / '.hermes'))
         self.installed = self.home / '.claude'
-        self.profile.mkdir(mode=0o700)
-        (self.installed / 'LIFEOS/PULSE').mkdir(parents=True)
+        self.profile.mkdir(mode=0o700, exist_ok=True)
+        (self.installed / 'LIFEOS/PULSE').mkdir(parents=True, exist_ok=True)
         self.units = {role: f'lifeos-ownership-test-{uuid4().hex}-{role}.service'
             for role in ('gateway', 'dashboard', 'pulse')}
         self.addCleanup(self.stop_units)

@@ -62,8 +62,9 @@ def _definition_file(path):
 
 
 class ProfileServices:
-    def __init__(self, profile, installed, *, units=None):
+    def __init__(self, profile, installed, *, units=None, installation_lease=None):
         self.profile, self.installed = Path(profile).absolute(), Path(installed).absolute()
+        self.installation_lease = installation_lease
         try:
             self.physical_root = self.installed.resolve(strict=True)
         except (OSError, RuntimeError) as error:
@@ -84,7 +85,7 @@ class ProfileServices:
 
     @contextmanager
     def _lock(self):
-        with installation_lock(self.profile):
+        with installation_lock(self.profile, lease=self.installation_lease):
             self.state.mkdir(mode=0o700, exist_ok=True)
             _directory(self.state, private=True)
             descriptor = os.open(self.state / 'lock', os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW, 0o600)

@@ -121,10 +121,10 @@ def _collect_profile(profile, user, databases, stage=None):
     return {'files': files, 'directories': directories, 'links': links}
 
 
-def create(configuration, destination, *, account=None):
+def create(configuration, destination, *, account=None, installation_lease=None):
     profile = configuration.path.parent.absolute()
     destination = Path(destination).absolute()
-    with installation_lock(profile), configuration._lock(), ExitStack() as stack:
+    with installation_lock(profile, lease=installation_lease), configuration._lock(), ExitStack() as stack:
         config = configuration.load()
         configuration.check_owner(config, account)
         memory = NativeMemory(Path(config['root']))

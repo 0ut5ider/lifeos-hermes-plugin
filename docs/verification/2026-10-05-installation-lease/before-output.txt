@@ -1,0 +1,65 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ InstallationLeaseTests.test_another_thread_cannot_borrow_the_coordinator_lease _
+tests/test_installation_lease.py:58: in test_another_thread_cannot_borrow_the_coordinator_lease
+    executor.submit(borrow).result(timeout=5)
+/usr/lib64/python3.14/concurrent/futures/_base.py:447: in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/concurrent/futures/_base.py:396: in __get_result
+    raise self._exception
+/usr/lib64/python3.14/concurrent/futures/thread.py:86: in run
+    result = ctx.run(self.task)
+             ^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/concurrent/futures/thread.py:73: in run
+    return fn(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^
+tests/test_installation_lease.py:55: in borrow
+    with installation_lock(profile, lease=lease):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:305: in helper
+    return _GeneratorContextManager(func, args, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:109: in __init__
+    self.gen = func(*args, **kwds)
+               ^^^^^^^^^^^^^^^^^^^
+E   TypeError: installation_lock() got an unexpected keyword argument 'lease'
+_ InstallationLeaseTests.test_borrowed_helpers_keep_the_original_process_lock_until_outer_exit _
+tests/test_installation_lease.py:30: in test_borrowed_helpers_keep_the_original_process_lock_until_outer_exit
+    with installation_lock(profile, lease=lease):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:305: in helper
+    return _GeneratorContextManager(func, args, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:109: in __init__
+    self.gen = func(*args, **kwds)
+               ^^^^^^^^^^^^^^^^^^^
+E   TypeError: installation_lock() got an unexpected keyword argument 'lease'
+_ InstallationLeaseTests.test_expired_and_other_profile_leases_refuse_without_reacquiring _
+tests/test_installation_lease.py:43: in test_expired_and_other_profile_leases_refuse_without_reacquiring
+    with installation_lock(other, lease=lease):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:305: in helper
+    return _GeneratorContextManager(func, args, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:109: in __init__
+    self.gen = func(*args, **kwds)
+               ^^^^^^^^^^^^^^^^^^^
+E   TypeError: installation_lock() got an unexpected keyword argument 'lease'
+_ InstallationLeaseTests.test_replaced_lock_file_invalidates_the_borrowed_lease _
+tests/test_installation_lease.py:70: in test_replaced_lock_file_invalidates_the_borrowed_lease
+    with installation_lock(profile, lease=lease):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:305: in helper
+    return _GeneratorContextManager(func, args, kwds)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/contextlib.py:109: in __init__
+    self.gen = func(*args, **kwds)
+               ^^^^^^^^^^^^^^^^^^^
+E   TypeError: installation_lock() got an unexpected keyword argument 'lease'
+=========================== short test summary info ============================
+FAILED tests/test_installation_lease.py::InstallationLeaseTests::test_another_thread_cannot_borrow_the_coordinator_lease
+FAILED tests/test_installation_lease.py::InstallationLeaseTests::test_borrowed_helpers_keep_the_original_process_lock_until_outer_exit
+FAILED tests/test_installation_lease.py::InstallationLeaseTests::test_expired_and_other_profile_leases_refuse_without_reacquiring
+FAILED tests/test_installation_lease.py::InstallationLeaseTests::test_replaced_lock_file_invalidates_the_borrowed_lease
+4 failed, 12 deselected in 0.14s
