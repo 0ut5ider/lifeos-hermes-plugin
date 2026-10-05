@@ -315,6 +315,15 @@ def prepare_memory_import(request: dict, account: str = Depends(_memory_account)
     return _memory_action(lambda preferences: preferences.prepare_import(request, account=account))
 
 
+@router.post('/memory/fresh/prepare')
+async def prepare_fresh_store(request: dict, account: str = Depends(_memory_account)):
+    if (set(request) != {'principal_name','assistant_name'}
+            or any(not isinstance(value,str) for value in request.values())):
+        raise HTTPException(status_code=400, detail='Provide the principal and assistant display names')
+    return await run_in_threadpool(_memory_action, lambda preferences: preferences.prepare_fresh(
+        INSTALL_CANDIDATE, **request, account=account))
+
+
 @router.post('/memory/sources/preview')
 def preview_memory_sources(request: dict, account: str = Depends(_memory_account)):
     if set(request) != {'paths'}:

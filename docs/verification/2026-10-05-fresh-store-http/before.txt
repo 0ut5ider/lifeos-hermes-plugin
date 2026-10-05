@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_verified_owner_prepares_fixed_source_and_preserves_current_profile (test_fresh_store_dashboard.FreshStoreDashboardTests.test_verified_owner_prepares_fixed_source_and_preserves_current_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-full-experience-20261005/named-store-git-archive/source/tests/test_fresh_store_dashboard.py", line 42, in test_verified_owner_prepares_fixed_source_and_preserves_current_profile
+    self.assertEqual(response.status_code,400,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 400 : {"detail":"Not Found"}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.168s
+
+FAILED (failures=1)

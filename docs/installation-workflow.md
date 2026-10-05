@@ -10,6 +10,8 @@ The page must also offer a verified return to Hermes before removing the integra
 
 The candidate's [named-store preparation](verification/2026-10-05-named-fresh-store/README.md) initializes Adrian and Cerebo in a separate private native store. It retains existing facts and Hermes files outside that store. All six native tools complete with Bun 1.3.14 and verified locks for 12 package trees. The installer seeds locks only in an empty target and cancels each native process group after timeout or interruption. The two native tests and 20 installer tests pass. This primitive still requires authenticated page controls, selection, recovery, activation, and return acceptance.
 
+The [authenticated preparation endpoint](verification/2026-10-05-fresh-store-http/README.md) now accepts the two display names under the current owner binding. The server selects the source and destination. Native HTTP acceptance and four neighboring route tests pass. Page controls, restart-safe preparation, status, selection, recovery, activation, and return remain required.
+
 
 1. The page checks whether LifeOS is missing, partial, or installed.
 2. **Prepare latest LifeOS** reads the current commit of [Daniel Miessler's public repository](https://github.com/danielmiessler/LifeOS), clones that exact revision, applies the bundled LifeOS patches, and publishes a private candidate. It changes no running files.
