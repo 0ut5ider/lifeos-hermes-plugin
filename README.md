@@ -72,6 +72,9 @@ The [full-experience release plan](docs/full-experience-release-plan.md) tracks 
 
 [Mounted policy checks](docs/verification/2026-10-05-memory-mounted-soul/README.md) verify that managed soul regeneration retains the admitted constitution and identity. Hermes runs the installed LifeOS workflows and uses its configured messaging destination. Both managed renderers exclude decoded retired names. The publication limit is 100,000 characters; the actual model context still needs release verification. Unmanaged renderers retain their existing policy. Ownership remains disabled.
 
+[Wisdom frame checks](docs/verification/2026-10-05-memory-wisdom-frame/README.md) verify the native observation writer under current owner authority. Managed publication retains all five update types, uses private permissions, and recovers after process death. Private or retired observations and later source or authority changes refuse publication. Other Wisdom readers and synthesis remain release requirements.
+
+
 
 Memory request repair supports readable Chat Completions messages and Responses input items. It removes known retired content from generated history while preserving protocol identifiers and the current user's verified quote. It keeps stored transcripts. A verified conversation can resume after a fact correction or forget operation. Its next foreground request must repair the readable history before auxiliary calls can continue. Compression can transfer a verified parent into its host-bound child. The caller requires recorded lineage and unchanged authority before using the child. Changed identity, prompt, permissions, or unverified saved state require a fresh conversation. This support does not enable memory ownership or establish complete compression failure recovery, backup, and recovery behavior.
 

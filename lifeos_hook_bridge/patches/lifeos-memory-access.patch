@@ -5422,6 +5422,111 @@ index 30db06e..7c1ca94 100644
    saveState(st);
    return { created: true, id };
  }
+diff --git a/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts b/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts
+index 1367c49..bd6d5f5 100644
+--- a/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts
+@@ -26,6 +26,8 @@ import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'fs';
+ import { join } from 'path';
+ import { parseArgs } from 'util';
+ import { homedir } from "node:os";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
++import { randomUUID } from "node:crypto";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+ for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -192,18 +194,16 @@ function addPrediction(content: string, observation: string): string {
+ 
+ // ── Core Update Function ──
+ 
+-export function updateFrame(
++export function renderFrameUpdate(
+   domain: string,
+   observation: string,
+-  type: ObservationType = 'evolution'
+-): UpdateResult {
+-  const framePath = getFramePath(domain);
++  type: ObservationType,
++  previous: string | null,
++  framePath: string
++): {content: string; result: UpdateResult} {
+ 
+   // Create frame if it doesn't exist
+-  if (!existsSync(framePath)) {
+-    if (!existsSync(FRAMES_DIR)) {
+-      mkdirSync(FRAMES_DIR, { recursive: true });
+-    }
++  if (previous === null) {
+ 
+     const newFrame = `# Frame: ${domain.charAt(0).toUpperCase() + domain.slice(1)} Domain
+ 
+@@ -252,18 +252,17 @@ ${type === 'anti-pattern' ? `### ${observation}\n- **Severity:** Medium\n- **Fre
+ - ${getDateStr()}: Frame created with initial observation: ${observation}
+ `;
+ 
+-    writeFileSync(framePath, newFrame);
+-    return {
++    return {content: newFrame, result: {
+       success: true,
+       domain,
+       type,
+       message: `Created new frame for domain "${domain}" with initial observation`,
+       framePath,
+-    };
++    }};
+   }
+ 
+   // Update existing frame
+-  let content = readFileSync(framePath, 'utf-8');
++  let content = previous;
+ 
+   // Always increment observation count and update crystallized date
+   content = incrementObservationCount(content);
+@@ -293,15 +292,40 @@ ${type === 'anti-pattern' ? `### ${observation}\n- **Severity:** Medium\n- **Fre
+       break;
+   }
+ 
+-  writeFileSync(framePath, content);
+-
+-  return {
++  return {content, result: {
+     success: true,
+     domain,
+     type,
+     message: `Updated "${domain}" frame with ${type}: ${observation}`,
+     framePath,
+-  };
++  }};
++}
++
++export function updateFrame(
++  domain: string,
++  observation: string,
++  type: ObservationType = 'evolution'
++): UpdateResult {
++  const framePath = getFramePath(domain);
++  const governed = memoryAccess("wisdom_frame_update", {domain, observation, type, path: framePath, request_id: randomUUID()},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    const result = governed.result;
++    if (!governed.ok || !memoryObject(result) || result.success !== true || typeof result.domain !== "string"
++        || typeof result.type !== "string" || typeof result.message !== "string" || typeof result.framePath !== "string") {
++      throw new Error("Wisdom frame admission or publication is unavailable");
++    }
++    if (result.type !== "principle" && result.type !== "contextual-rule" && result.type !== "prediction"
++        && result.type !== "anti-pattern" && result.type !== "evolution") {
++      throw new Error("Wisdom frame update returns an invalid observation type");
++    }
++    return {success: true, domain: result.domain, type: result.type, message: result.message, framePath: result.framePath};
++  }
++  const previous = existsSync(framePath) ? readFileSync(framePath, 'utf-8') : null;
++  const rendered = renderFrameUpdate(domain, observation, type, previous, framePath);
++  if (!existsSync(FRAMES_DIR)) mkdirSync(FRAMES_DIR, {recursive: true});
++  writeFileSync(framePath, rendered.content);
++  return rendered.result;
+ }
+ 
+ // ── CLI ──
 diff --git a/LifeOS/install/LIFEOS/TOOLS/bun.lock b/LifeOS/install/LIFEOS/TOOLS/bun.lock
 new file mode 100644
 index 0000000..a8d4be5

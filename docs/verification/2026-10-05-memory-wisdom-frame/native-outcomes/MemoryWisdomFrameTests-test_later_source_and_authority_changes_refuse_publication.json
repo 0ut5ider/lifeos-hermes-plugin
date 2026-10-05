@@ -1,0 +1,45 @@
+{
+  "case": "test_later_source_and_authority_changes_refuse_publication",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_wisdom_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s7peiobb/memory.json",
+        "source"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"result\": null, \"receipt\": {\"status\": \"conflict\", \"reason\": \"The Wisdom frame changes during native rendering\", \"writer\": \"chat-a:100\", \"request_id\": \"wisdom-process-source\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_wisdom_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s7peiobb/memory.json",
+        "private"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"result\": null, \"receipt\": {\"status\": \"conflict\", \"reason\": \"The current Wisdom frame is excluded by memory policy\", \"writer\": \"chat-a:100\", \"request_id\": \"wisdom-process-private\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_wisdom_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s7peiobb/memory.json",
+        "authority"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"result\": null, \"receipt\": {\"status\": \"conflict\", \"reason\": \"Wisdom authority changed during rendering\", \"writer\": \"chat-a:100\", \"request_id\": \"wisdom-process-authority\"}}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s7peiobb/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md": {
+      "content": "# Frame: Communication Domain\n\n## Meta\n- **Confidence:** 50%\n- **Observation Count:** 1\n- **Last Crystallized:** 2026-10-01\n\n## Core Principles\n\n## Contextual Rules\n\n## Predictive Model\n\n## Anti-Patterns\n\n## Evolution Log\n- 2026-10-01: Synthetic retained observation\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-frame-candidate-distributed/lifeos/LifeOS/install"
+}

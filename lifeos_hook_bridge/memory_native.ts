@@ -107,6 +107,14 @@ async function main(): Promise<void> {
       throw new Error("Native deny hashing requires declared source and operator text");
     }
     result = module.renderDenyHashes(input.sources, input.operator, input.salt);
+  } else if (input.action === "wisdom_frame_update") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/WisdomFrameUpdater.ts")).href);
+    if (!object(module) || typeof module.renderFrameUpdate !== "function" || typeof input.domain !== "string"
+        || typeof input.observation !== "string" || typeof input.type !== "string" || typeof input.path !== "string"
+        || !(input.previous === null || typeof input.previous === "string")) {
+      throw new Error("Native Wisdom update requires declared frame content");
+    }
+    result = module.renderFrameUpdate(input.domain, input.observation, input.type, input.previous, input.path);
   } else if (input.action === "hermes_soul_names" || input.action === "hermes_soul_render") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/RenderHermesSoul.ts")).href);
     const sources = input.sources;

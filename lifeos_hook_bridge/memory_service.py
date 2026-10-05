@@ -235,6 +235,12 @@ class MemoryService:
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}
+            if operation == 'wisdom_frame_update' and set(arguments) == {'domain','observation','type','path','request_id'}:
+                from .memory_wisdom import update_frame
+                def check_current():
+                    if self.configuration.load() != configuration:
+                        raise MemoryUnavailable('Wisdom authority changed during rendering')
+                return update_frame(memory, scope, arguments, check_current=check_current)
             if operation == 'staged_promote' and set(arguments) == {'target','all','project','signature','request_id'}:
                 from .memory_staging import promote
                 receipt=promote(memory,scope,**arguments,source_session=context.session_id)
