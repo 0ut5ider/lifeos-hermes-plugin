@@ -2387,6 +2387,188 @@ index 2ae55d8..2ac8e2f 100755
 -console.error(`📋 TELOS summary regenerated: ${lineCount} lines from source files`);
 +
 +if (import.meta.main) main();
+diff --git a/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts b/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts
+index d16a836..75067b9 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Reports native numeric installation inventory in JSON, shell, or single-value form.
++// ABOUTME: Requires current owner authority and fixed source roots for managed calls.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -42,6 +44,7 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+ 
+ import { readdirSync, existsSync, statSync } from "fs";
+ import { join } from "path";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { homedir } from "node:os";
+ 
+ // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
+@@ -117,9 +120,9 @@ function countWorkflowFiles(dir: string): number {
+ /**
+  * Count skills (directories with SKILL.md file)
+  */
+-function countSkills(): number {
++function countSkills(sourceRoot = CLAUDE_DIR): number {
+   let count = 0;
+-  const skillsDir = join(CLAUDE_DIR, "skills");
++  const skillsDir = join(sourceRoot, "skills");
+   try {
+     for (const entry of readdirSync(skillsDir, { withFileTypes: true })) {
+       // Handle both real directories and symlinks to directories
+@@ -143,8 +146,8 @@ function countSkills(): number {
+  * in settings.json. Dormant hook files on disk that aren't wired to any event do NOT
+  * count — only what Claude Code will actually fire.
+  */
+-function countHooks(): number {
+-  const settingsPath = join(HOME, ".claude", "settings.json");
++function countHooks(sourceRoot = CLAUDE_DIR): number {
++  const settingsPath = join(sourceRoot, "settings.json");
+   try {
+     const fs = require('fs');
+     const settings = JSON.parse(fs.readFileSync(settingsPath, 'utf-8'));
+@@ -170,8 +173,8 @@ function countHooks(): number {
+ /**
+  * Count ratings from ratings.jsonl
+  */
+-function countRatings(): number {
+-  const ratingsFile = join(LIFEOS_DIR, "MEMORY/LEARNING/SIGNALS/ratings.jsonl");
++function countRatings(sourceRoot = LIFEOS_DIR): number {
++  const ratingsFile = join(sourceRoot, "MEMORY/LEARNING/SIGNALS/ratings.jsonl");
+   try {
+     const fs = require('fs');
+     const content = fs.readFileSync(ratingsFile, 'utf-8');
+@@ -183,63 +186,85 @@ function countRatings(): number {
+ 
+ // Per-key computation. Each function is invoked only when its key is requested.
+ // In --single mode we run exactly one; in --shell / default mode we run all.
+-function countWork(): number {
++function countWork(sourceRoot = LIFEOS_DIR): number {
+   let count = 0;
+   try {
+-    for (const entry of readdirSync(join(LIFEOS_DIR, "MEMORY/WORK"), { withFileTypes: true })) {
++    for (const entry of readdirSync(join(sourceRoot, "MEMORY/WORK"), { withFileTypes: true })) {
+       if (entry.isDirectory()) count++;
+     }
+   } catch {}
+   return count;
+ }
+ 
+-const COMPUTERS: Record<keyof Counts, () => number> = {
+-  skills: countSkills,
+-  workflows: () => countWorkflowFiles(join(CLAUDE_DIR, "skills")),
+-  hooks: countHooks,
+-  signals: () => countFilesRecursive(join(LIFEOS_DIR, "MEMORY/LEARNING"), ".md"),
+-  files: () => countFilesRecursive(join(LIFEOS_DIR, "USER")),
+-  work: countWork,
+-  research: () => countFilesRecursive(join(LIFEOS_DIR, "MEMORY/RESEARCH"), ".md") +
+-                  countFilesRecursive(join(LIFEOS_DIR, "MEMORY/RESEARCH"), ".json"),
+-  ratings: countRatings,
+-};
+-
+-function getCounts(only?: keyof Counts): Counts {
++function computersFor(sourceRoot = CLAUDE_DIR, sourceLifeos = LIFEOS_DIR): Record<keyof Counts, () => number> {
++  return {
++    skills: () => countSkills(sourceRoot),
++    workflows: () => countWorkflowFiles(join(sourceRoot, "skills")),
++    hooks: () => countHooks(sourceRoot),
++    signals: () => countFilesRecursive(join(sourceLifeos, "MEMORY/LEARNING"), ".md"),
++    files: () => countFilesRecursive(join(sourceLifeos, "USER")),
++    work: () => countWork(sourceLifeos),
++    research: () => countFilesRecursive(join(sourceLifeos, "MEMORY/RESEARCH"), ".md") +
++                    countFilesRecursive(join(sourceLifeos, "MEMORY/RESEARCH"), ".json"),
++    ratings: () => countRatings(sourceLifeos),
++  };
++}
++
++const COMPUTERS = computersFor();
++
++export function getCounts(only?: keyof Counts, sourceRoot = CLAUDE_DIR, sourceLifeos = LIFEOS_DIR): Counts {
++  const computers = computersFor(sourceRoot, sourceLifeos);
+   const out: Counts = { skills: 0, workflows: 0, hooks: 0, signals: 0, files: 0, work: 0, research: 0, ratings: 0 };
+   if (only) {
+-    out[only] = COMPUTERS[only]();
++    out[only] = computers[only]();
+   } else {
+-    for (const k of Object.keys(COMPUTERS) as Array<keyof Counts>) {
+-      out[k] = COMPUTERS[k]();
++    for (const k of Object.keys(computers) as Array<keyof Counts>) {
++      out[k] = computers[k]();
+     }
+   }
+   return out;
+ }
+ 
+-// CLI handling
+-const args = process.argv.slice(2);
+-const shellMode = args.includes('--shell');
+-const singleArg = args.find(a => a.startsWith('--single'));
+-const singleKey = singleArg ? args[args.indexOf(singleArg) + 1] : null;
+-
+-const validSingle = singleKey && singleKey in COMPUTERS ? (singleKey as keyof Counts) : undefined;
+-const counts = getCounts(validSingle);
+-
+-if (singleKey && singleKey in counts) {
+-  // Output just the single value (for use in shell scripts)
+-  console.log(counts[singleKey as keyof Counts]);
+-} else if (shellMode) {
+-  // Output as shell-sourceable variables
+-  console.log(`skills_count=${counts.skills}`);
+-  console.log(`workflows_count=${counts.workflows}`);
+-  console.log(`hooks_count=${counts.hooks}`);
+-  console.log(`signals_count=${counts.signals}`);
+-  console.log(`files_count=${counts.files}`);
+-  console.log(`work_count=${counts.work}`);
+-  console.log(`research_count=${counts.research}`);
+-  console.log(`ratings_count=${counts.ratings}`);
+-} else {
+-  // JSON output (default)
+-  console.log(JSON.stringify(counts));
++function main(): void {
++  // CLI handling
++  const args = process.argv.slice(2);
++  const shellMode = args.includes('--shell');
++  const singleArg = args.find(a => a.startsWith('--single'));
++  const singleKey = singleArg ? args[args.indexOf(singleArg) + 1] : null;
++
++  const validSingle = singleKey && singleKey in COMPUTERS ? (singleKey as keyof Counts) : undefined;
++  const governed = memoryAccess<{ok: boolean; counts?: Counts}>("counts",
++    {root: CLAUDE_DIR, lifeos_dir: LIFEOS_DIR, only: validSingle ?? null},
++    (value): value is {ok: boolean; counts?: Counts} => {
++      if (!memoryObject(value) || typeof value.ok !== "boolean") return false;
++      if (value.ok === false) return true;
++      const counts = value.counts;
++      return memoryObject(counts) && Object.keys(counts).length === Object.keys(COMPUTERS).length
++        && Object.keys(COMPUTERS).every(key => {
++          const count = counts[key];
++          return typeof count === "number" && Number.isSafeInteger(count) && count >= 0;
++        });
++    });
++  if (governed !== undefined && governed.ok !== true) throw new Error("Governed native installation counts are unavailable");
++  const counts = governed?.counts ?? getCounts(validSingle);
++
++  if (singleKey && singleKey in counts) {
++    // Output just the single value (for use in shell scripts)
++    console.log(counts[singleKey as keyof Counts]);
++  } else if (shellMode) {
++    // Output as shell-sourceable variables
++    console.log(`skills_count=${counts.skills}`);
++    console.log(`workflows_count=${counts.workflows}`);
++    console.log(`hooks_count=${counts.hooks}`);
++    console.log(`signals_count=${counts.signals}`);
++    console.log(`files_count=${counts.files}`);
++    console.log(`work_count=${counts.work}`);
++    console.log(`research_count=${counts.research}`);
++    console.log(`ratings_count=${counts.ratings}`);
++  } else {
++    // JSON output (default)
++    console.log(JSON.stringify(counts));
++  }
+ }
++
++if (import.meta.main) main();
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Inference.ts b/LifeOS/install/LIFEOS/TOOLS/Inference.ts
 index b0408f9..4feef08 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/Inference.ts

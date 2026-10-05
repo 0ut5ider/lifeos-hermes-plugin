@@ -340,6 +340,14 @@ async function main(): Promise<void> {
         : ["legacy_path", "legacy_date"].includes(input.view) ? [input.slug, input.path, sources] : [sources];
       result = {value: module[name](...args)};
     }
+  } else if (input.action === "counts") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/GetCounts.ts")).href);
+    const keys = ["skills", "workflows", "hooks", "signals", "files", "work", "research", "ratings"];
+    if (!object(module) || typeof module.getCounts !== "function"
+        || !(input.only === null || typeof input.only === "string" && keys.includes(input.only))) {
+      throw new Error("Native installation counts require a fixed count selection");
+    }
+    result = module.getCounts(input.only ?? undefined, root, resolve(root, "LIFEOS"));
   } else if (input.action === "telos_summary") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/GenerateTelosSummary.ts")).href);
     if (!object(module) || typeof module.renderTelosSummary !== "function" || !object(input.sources)

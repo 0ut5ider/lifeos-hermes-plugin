@@ -442,6 +442,15 @@ class MemoryService:
                         raise MemoryUnavailable('Graph authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
+            if operation == 'counts' and set(arguments) == {'root', 'lifeos_dir', 'only'}:
+                from .memory_counts import read
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Native count authority changes during collection')
+
+                return read(memory, scope, **arguments, check_current=check_current)
             if operation == 'seed_pulse' and set(arguments) in ({'root', 'config_dir', 'generators'},
                     {'root', 'config_dir', 'generators', 'request_id'}):
                 from .memory_seed import run
