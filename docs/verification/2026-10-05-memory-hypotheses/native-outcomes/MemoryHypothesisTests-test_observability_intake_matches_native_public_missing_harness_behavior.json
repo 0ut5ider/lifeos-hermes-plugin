@@ -1,0 +1,42 @@
+{
+  "case": "test_observability_intake_matches_native_public_missing_harness_behavior",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q3ys62fc/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q3ys62fc/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_tool-terminal-syntheticrecurrencefailure.md": {
+      "content": "---\nstatus: hypothesis\nslug: tool-terminal-syntheticrecurrencefailure\ntarget_frame: new\nconfidence: 0.84\ngenerated: 2026-10-05T05:48:55.395Z\nexpires: 2026-11-04T05:48:55.395Z\nsource: observability\nenforcement_surface: context\nclass_id: tool:terminal:synthetic-recurrence-failure\nevidence_signals:\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\n  - obs:2026-10-05T05:48:54.194831+00:00\nfalsifier: \"Refuted if class tool:terminal:synthetic-recurrence-failure logs zero events over the next 7d of normal operation.\"\n---\n## Claim\n\nRecurring failure class tool:terminal:synthetic-recurrence-failure \u2014 12 events in 7d, last 2026-10-05. Top example: Synthetic recurrence failure\n\n## Evidence\n\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- obs:2026-10-05T05:48:54.194831+00:00\n- (cluster size: 12; pattern: tool:terminal:synthetic-recurrence-failure)\n\n## Falsifier\n\nRefuted if class tool:terminal:synthetic-recurrence-failure logs zero events over the next 7d of normal operation.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/tool-terminal-syntheticrecurrencefailure.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:48:55.395Z \u2014 emitted by deriver loop\n",
+      "mode": "0o644"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q3ys62fc/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:48:55.395Z\",\n  \"claim_hashes\": {\n    \"tool-terminal-syntheticrecurrencefailure\": {\n      \"hash\": \"b690209be7d17651\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o644"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q3ys62fc/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:48:55.396Z] run: window=7d dry-run=false\n[2026-10-05T05:48:55.396Z] signals: total=0 in_window=0 obs_clusters=1\n[2026-10-05T05:48:55.396Z] clusters: 0\n[2026-10-05T05:48:55.396Z] hook-replay harness not present in this install \u2014 skipping healing-fixture proposal\n[2026-10-05T05:48:55.396Z] emitted: 2026-10-05_tool-terminal-syntheticrecurrencefailure.md (src=observability, conf=0.84, samples=12)\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

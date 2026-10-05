@@ -3268,7 +3268,7 @@ index ecfbbeb..4809978 100755
      if (!existsSync(abs)) continue;
      for (const f of readdirSync(abs)) {
 diff --git a/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts b/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts
-index 80ea291..4842825 100755
+index 80ea291..2967f36 100755
 --- a/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts
 +++ b/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts
 @@ -37,6 +37,8 @@ import * as fs from "fs";
@@ -3329,7 +3329,297 @@ index 80ea291..4842825 100755
  // ============================================================================
  // Hypothesis Generation (Proactive Deriver Loop)
  // ============================================================================
-@@ -1064,6 +1097,15 @@ if (values.hypothesize) {
+@@ -381,6 +414,35 @@ interface DeriverState {
+   claim_hashes: Record<string, { hash: string; archived_at: string | null; status: string }>;
+ }
+ 
++export interface DeriverSources {
++  ratings: Rating[];
++  clusters: ObservabilityCluster[];
++  healed: string[];
++  frames: { name: string; body: string }[];
++  people: string[];
++  hypotheses: { name: string; content: string }[];
++  state: DeriverState | null;
++  log: string;
++  principal: string;
++  now: string;
++}
++
++interface DeriverPublication { path: string; content: string | null }
++
++function publishDeriver(path_: string, content: string | null, publications?: DeriverPublication[]): void {
++  if (publications !== undefined) {
++    const previous = publications.find(publication => publication.path === path_);
++    if (previous) previous.content = content;
++    else publications.push({path: path_, content});
++  } else if (content === null) {
++    fs.unlinkSync(path_);
++  } else {
++    const temporary = path_ + ".tmp";
++    fs.writeFileSync(temporary, content);
++    fs.renameSync(temporary, path_);
++  }
++}
++
+ function parseWindow(arg: string | undefined): number {
+   if (!arg) return 7;
+   const m = arg.match(/^(\d+)d$/);
+@@ -407,8 +469,8 @@ function writeDeriverState(state: DeriverState): void {
+   fs.renameSync(tmp, HYPOTHESES_STATE_FILE);
+ }
+ 
+-function pruneStateClaimHashes(state: DeriverState): DeriverState {
+-  const cutoff = Date.now() - HYPO_DEDUP_RETENTION_DAYS * 86400 * 1000;
++function pruneStateClaimHashes(state: DeriverState, now = Date.now()): DeriverState {
++  const cutoff = now - HYPO_DEDUP_RETENTION_DAYS * 86400 * 1000;
+   for (const [slug, entry] of Object.entries(state.claim_hashes)) {
+     if (entry.archived_at) {
+       const archivedMs = new Date(entry.archived_at).getTime();
+@@ -698,8 +760,8 @@ export async function proposeHealingFixture(c: HypothesisCandidate, log: string[
+   return { rationale: out.rationale ?? "", surface: c.enforcement_surface as any, fixture, pending_slug: pendingSlug };
+ }
+ 
+-function renderHypothesisFile(c: HypothesisCandidate, priorChangelog: string[] = []): string {
+-  const generated = new Date();
++function renderHypothesisFile(c: HypothesisCandidate, priorChangelog: string[] = [], instant?: string, principal?: string): string {
++  const generated = instant === undefined ? new Date() : new Date(instant);
+   const expires = new Date(generated.getTime() + HYPO_EXPIRY_DAYS * 86400 * 1000);
+ 
+   const fm: HypothesisFrontmatter = {
+@@ -764,8 +826,8 @@ function renderHypothesisFile(c: HypothesisCandidate, priorChangelog: string[] =
+     c.healing
+       ? `Graduating this in Pulse promotes the fixture IF it is already green (the class got fixed); if still red, it stays a pending healing task. The deriver never writes code — it wrote a failing test. Fix the class through normal work, then \`bun LIFEOS/TOOLS/PromoteFixture.ts ${c.healing.pending_slug}\`.`
+       : c.target_frame === "new"
+-      ? `Start a new frame at \`MEMORY/WISDOM/FRAMES/${c.slug}.md\` if ${getPrincipalName()} reviews and confirms the pattern.`
+-      : `Append a section to \`MEMORY/WISDOM/FRAMES/${c.target_frame}.md\` under \`## Hypothesis-Sourced\` if ${getPrincipalName()} graduates this hypothesis.`,
++      ? `Start a new frame at \`MEMORY/WISDOM/FRAMES/${c.slug}.md\` if ${principal ?? getPrincipalName()} reviews and confirms the pattern.`
++      : `Append a section to \`MEMORY/WISDOM/FRAMES/${c.target_frame}.md\` under \`## Hypothesis-Sourced\` if ${principal ?? getPrincipalName()} graduates this hypothesis.`,
+     "",
+     "## Changelog",
+     "",
+@@ -783,7 +845,12 @@ function renderHypothesisFile(c: HypothesisCandidate, priorChangelog: string[] =
+ // records first emission; a re-derivation of the same slug updates that file in
+ // place instead of spawning a new dated copy. Slugs never contain "_" (the date
+ // separator), so `_<slug>.md` uniquely identifies the file.
+-function findLiveHypothesisFile(slug: string): string | null {
++function findLiveHypothesisFile(slug: string, sources?: DeriverSources): string | null {
++  if (sources !== undefined) {
++    const found = sources.hypotheses.find(file => file.name.endsWith(`_${slug}.md`)
++      && /^status:\s*hypothesis/m.test(file.content));
++    return found ? path.join(HYPOTHESES_DIR, found.name) : null;
++  }
+   if (!fs.existsSync(HYPOTHESES_DIR)) return null;
+   const suffix = `_${slug}.md`;
+   for (const f of fs.readdirSync(HYPOTHESES_DIR)) {
+@@ -801,7 +868,29 @@ function priorChangelogLines(content: string): string[] {
+   return content.slice(idx).split("\n").filter(l => l.startsWith("- "));
+ }
+ 
+-function expirySweep(state: DeriverState, log: string[]): number {
++function expirySweep(state: DeriverState, log: string[], sources?: DeriverSources, publications?: DeriverPublication[]): number {
++  if (sources !== undefined) {
++    let moved = 0;
++    for (const file of sources.hypotheses) {
++      const expires = file.content.match(/^expires:\s*(\S+)/m);
++      const status = file.content.match(/^status:\s*(\S+)/m);
++      if (!expires || !status || status[1] !== "hypothesis" || new Date(expires[1]).getTime() > new Date(sources.now).getTime()) continue;
++      const content = file.content.replace(/^status:\s*hypothesis/m, "status: expired") +
++        `\n- ${sources.now} — auto-expired by deriver sweep\n`;
++      publishDeriver(path.join(HYPOTHESES_ARCHIVE_DIR, file.name), content, publications);
++      publishDeriver(path.join(HYPOTHESES_DIR, file.name), null, publications);
++      const slug = file.content.match(/^slug:\s*(\S+)/m)?.[1];
++      if (slug && state.claim_hashes[slug]) {
++        state.claim_hashes[slug].archived_at = sources.now;
++        state.claim_hashes[slug].status = "expired";
++      }
++      log.push(`expired: ${file.name}`);
++      moved++;
++    }
++    sources.hypotheses = sources.hypotheses.filter(file =>
++      !publications?.some(publication => publication.path === path.join(HYPOTHESES_DIR, file.name) && publication.content === null));
++    return moved;
++  }
+   if (!fs.existsSync(HYPOTHESES_DIR)) return 0;
+   let moved = 0;
+   const now = Date.now();
+@@ -833,8 +922,13 @@ function expirySweep(state: DeriverState, log: string[]): number {
+   return moved;
+ }
+ 
+-function appendDeriverLog(lines: string[]): void {
++function appendDeriverLog(lines: string[], sources?: DeriverSources, publications?: DeriverPublication[]): void {
+   if (lines.length === 0) return;
++  if (sources !== undefined) {
++    if (publications !== undefined) publishDeriver(DERIVER_LOG,
++      sources.log + lines.map(line => `[${sources.now}] ${line}`).join("\n") + "\n", publications);
++    return;
++  }
+   fs.mkdirSync(path.dirname(DERIVER_LOG), { recursive: true });
+   const stamp = new Date().toISOString();
+   const entry = lines.map(l => `[${stamp}] ${l}`).join("\n") + "\n";
+@@ -842,27 +936,50 @@ function appendDeriverLog(lines: string[]): void {
+ }
+ 
+ export async function runDeriver(opts: { window: number; dryRun: boolean; noInference?: boolean }): Promise<{ emitted: number; updated: number; expired: number }> {
++  const governed = memoryAccess("learning_hypotheses", {path: RATINGS_FILE, window: opts.window,
++    dry_run: opts.dryRun, no_inference: opts.noInference ?? false, once_daily: false, request_id: randomUUID()},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    const result = governed.result;
++    if (governed.ok !== true || !memoryObject(result) || typeof result.emitted !== "number"
++        || typeof result.updated !== "number" || typeof result.expired !== "number") {
++      throw new Error("Hypothesis derivation is unavailable under current memory policy");
++    }
++    return {emitted: result.emitted, updated: result.updated, expired: result.expired};
++  }
++  return deriveHypotheses(opts);
++}
++
++export async function renderHypothesisDerivation(opts: { window: number; dryRun: boolean; noInference: boolean }, sources: DeriverSources): Promise<{ result: {emitted: number; updated: number; expired: number}; publications: DeriverPublication[] }> {
++  const publications: DeriverPublication[] = [];
++  const result = await deriveHypotheses(opts, structuredClone(sources), publications);
++  return {result, publications};
++}
++
++async function deriveHypotheses(opts: { window: number; dryRun: boolean; noInference?: boolean }, sources?: DeriverSources, publications?: DeriverPublication[]): Promise<{ emitted: number; updated: number; expired: number }> {
+   const log: string[] = [];
+   log.push(`run: window=${opts.window}d dry-run=${opts.dryRun}`);
+ 
+-  fs.mkdirSync(HYPOTHESES_DIR, { recursive: true });
+-  fs.mkdirSync(HYPOTHESES_ARCHIVE_DIR, { recursive: true });
++  if (sources === undefined) {
++    fs.mkdirSync(HYPOTHESES_DIR, { recursive: true });
++    fs.mkdirSync(HYPOTHESES_ARCHIVE_DIR, { recursive: true });
++  }
+ 
+-  let state = readDeriverState();
+-  state = pruneStateClaimHashes(state);
++  let state = sources === undefined ? readDeriverState() : sources.state ?? {schema_version: 1, last_run: null, claim_hashes: {}};
++  state = pruneStateClaimHashes(state, sources === undefined ? Date.now() : new Date(sources.now).getTime());
+ 
+-  const expired = opts.dryRun ? 0 : expirySweep(state, log);
++  const expired = opts.dryRun ? 0 : expirySweep(state, log, sources, publications);
+ 
+   // Load signals within window
+-  const cutoff = Date.now() - opts.window * 86400 * 1000;
+-  const allRatings = loadJsonl<Rating>(RATINGS_FILE);
++  const cutoff = (sources === undefined ? Date.now() : new Date(sources.now).getTime()) - opts.window * 86400 * 1000;
++  const allRatings = sources === undefined ? loadJsonl<Rating>(RATINGS_FILE) : sources.ratings;
+   const ratings = allRatings.filter(r => new Date(r.timestamp).getTime() >= cutoff);
+-  const obsClusters = collectObservabilityClusters(opts.window);
++  const obsClusters = sources === undefined ? collectObservabilityClusters(opts.window) : sources.clusters;
+   log.push(`signals: total=${allRatings.length} in_window=${ratings.length} obs_clusters=${obsClusters.length}`);
+ 
+   if (ratings.length === 0 && obsClusters.length === 0) {
+     log.push("no signals in window — nothing to do");
+-    if (!opts.dryRun) appendDeriverLog(log);
++    if (!opts.dryRun) appendDeriverLog(log, sources, opts.dryRun ? undefined : publications);
+     return { emitted: 0, updated: 0, expired };
+   }
+ 
+@@ -877,8 +994,8 @@ export async function runDeriver(opts: { window: number; dryRun: boolean; noInfe
+   }
+   log.push(`clusters: ${allGroups.size}`);
+ 
+-  const frames = listExistingFrames();
+-  const peopleSlugs = listPeopleSlugs();
++  const frames = sources === undefined ? listExistingFrames() : sources.frames;
++  const peopleSlugs = sources === undefined ? listPeopleSlugs() : new Set(sources.people);
+ 
+   const rawCandidates: HypothesisCandidate[] = [];
+   for (const [pattern, examples] of allGroups.entries()) {
+@@ -917,13 +1034,19 @@ export async function runDeriver(opts: { window: number; dryRun: boolean; noInfe
+   if (opts.dryRun) {
+     log.push(`dry-run: would emit ${emit.length} hypotheses`);
+     for (const c of emit) log.push(`  ${c.slug} (src=${c.source}, conf=${c.confidence}, samples=${c.cluster_size})`);
+-    appendDeriverLog(log);
++    appendDeriverLog(log, sources, opts.dryRun ? undefined : publications);
+     return { emitted: emit.length, updated: 0, expired };
+   }
+ 
+   // Patch proposals (v2): for recurring observability classes not yet patched,
+   // draft ≤PATCH_MAX_PER_RUN diffs. Failures degrade to prose-only notes.
+-  if (!opts.noInference) {
++  if (!opts.noInference && sources !== undefined) {
++    const replayPath = new URL("../../test/lib/hook-replay.ts", import.meta.url).pathname;
++    if (fs.existsSync(replayPath)) throw new Error("Managed healing fixtures require their governed publication capability");
++    const candidate = emit.find(c => c.source === "observability" && c.class_id && c.cluster_size >= HEALING_RECURRENCE_THRESHOLD && !sources.healed.includes(c.class_id));
++    if (candidate) log.push("hook-replay harness not present in this install — skipping healing-fixture proposal");
++  }
++  if (!opts.noInference && sources === undefined) {
+     // Already-healed classes (a fixture landed and was promoted) are skipped.
+     const healed = new Set(readPatchRegistry().map(p => p.class_id));
+     let drafted = 0;
+@@ -946,13 +1069,11 @@ export async function runDeriver(opts: { window: number; dryRun: boolean; noInfe
+     // Update-in-place: a live file already carries this slug → refresh it
+     // (evidence window, counts, confidence, generated, changelog) instead of
+     // spawning a new dated duplicate.
+-    const livePath = findLiveHypothesisFile(c.slug);
++    const livePath = findLiveHypothesisFile(c.slug, sources);
+     if (livePath) {
+-      const prior = priorChangelogLines(fs.readFileSync(livePath, "utf-8"));
+-      const content = renderHypothesisFile(c, prior);
+-      const tmp = livePath + ".tmp";
+-      fs.writeFileSync(tmp, content);
+-      fs.renameSync(tmp, livePath);
++      const prior = priorChangelogLines(sources === undefined ? fs.readFileSync(livePath, "utf-8") : sources.hypotheses.find(file => path.join(HYPOTHESES_DIR, file.name) === livePath)?.content ?? "");
++      const content = renderHypothesisFile(c, prior, sources?.now, sources?.principal);
++      publishDeriver(livePath, content, publications);
+       state.claim_hashes[c.slug] = {
+         hash: claimHash(c.dedup_key),
+         archived_at: null,
+@@ -963,13 +1084,11 @@ export async function runDeriver(opts: { window: number; dryRun: boolean; noInfe
+       continue;
+     }
+ 
+-    const dateStr = new Date().toISOString().split("T")[0];
++    const dateStr = (sources?.now ?? new Date().toISOString()).split("T")[0];
+     const filename = `${dateStr}_${c.slug}.md`;
+     const filepath = path.join(HYPOTHESES_DIR, filename);
+-    const content = renderHypothesisFile(c);
+-    const tmp = filepath + ".tmp";
+-    fs.writeFileSync(tmp, content);
+-    fs.renameSync(tmp, filepath);
++    const content = renderHypothesisFile(c, [], sources?.now, sources?.principal);
++    publishDeriver(filepath, content, publications);
+     state.claim_hashes[c.slug] = {
+       hash: claimHash(c.dedup_key),
+       archived_at: null,
+@@ -979,9 +1098,10 @@ export async function runDeriver(opts: { window: number; dryRun: boolean; noInfe
+     emitted++;
+   }
+ 
+-  state.last_run = new Date().toISOString();
+-  writeDeriverState(state);
+-  appendDeriverLog(log);
++  state.last_run = sources?.now ?? new Date().toISOString();
++  if (sources === undefined) writeDeriverState(state);
++  else publishDeriver(HYPOTHESES_STATE_FILE, JSON.stringify(state, null, 2), publications);
++  appendDeriverLog(log, sources, opts.dryRun ? undefined : publications);
+ 
+   return { emitted, updated, expired };
+ }
+@@ -1035,6 +1155,18 @@ Deriver log:      MEMORY/OBSERVABILITY/deriver.log
+ 
+ // Hypothesize mode short-circuits — runs the proactive deriver loop and exits.
+ if (values.hypothesize) {
++  let managedWindow = 7;
++  try { managedWindow = parseWindow(values.window); }
++  catch (error: unknown) { console.error("error:", error instanceof Error ? error.message : String(error)); process.exit(1); }
++  const governed = memoryAccess("learning_hypotheses", {path: RATINGS_FILE, window: managedWindow,
++    dry_run: values["dry-run"] ?? false, no_inference: values["no-inference"] ?? false,
++    once_daily: values["once-daily"] ?? false, request_id: randomUUID()},
++    (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++  if (governed !== undefined) {
++    if (governed.ok !== true || typeof governed.stdout !== "string") throw new Error("Hypothesis derivation is unavailable under current memory policy");
++    process.stdout.write(governed.stdout);
++    process.exit(0);
++  }
+   // --once-daily: idempotence guard for the launchd RunAtLoad trigger. The
+   // plist fires at 03:00 AND at load; this stamp makes at most one real run
+   // per local date, so the pair can't double-run and a cold-booted machine
+@@ -1064,6 +1196,15 @@ if (values.hypothesize) {
    process.exit(0);
  }
  

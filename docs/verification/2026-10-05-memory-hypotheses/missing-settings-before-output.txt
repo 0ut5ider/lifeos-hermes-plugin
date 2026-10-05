@@ -1,0 +1,19 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_missing_native_settings_retains_original_default_identity _
+tests/test_memory_hypotheses.py:311: in test_missing_native_settings_retains_original_default_identity
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 1161 |   const governed = memoryAccess("learning_hypotheses", {path: RATINGS_FILE, window: managedWindow,
+E   1162 |     dry_run: values["dry-run"] ?? false, no_inference: values["no-inference"] ?? false,
+E   1163 |     once_daily: values["once-daily"] ?? false, request_id: randomUUID()},
+E   1164 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   1165 |   if (governed !== undefined) {
+E   1166 |     if (governed.ok !== true || typeof governed.stdout !== "string") throw new Error("Hypothesis derivation is unavailable under current memory policy");
+E                                                                                         ^
+E   error: Hypothesis derivation is unavailable under current memory policy
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts:1166:80
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_missing_native_settings_retains_original_default_identity
+1 failed in 0.40s

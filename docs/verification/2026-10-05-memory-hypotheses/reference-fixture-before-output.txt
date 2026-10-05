@@ -1,0 +1,15 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_derivation_cannot_remove_a_registered_fact_from_a_note _
+tests/test_memory_hypotheses.py:282: in test_derivation_cannot_remove_a_registered_fact_from_a_note
+    self.assertEqual(memory.get(OWNER, saved['reference'])['content'], marker)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_access.py:799: in get
+    return {"status": "ok", "reference": reference, "content": self._content(row),
+                                                               ^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_access.py:225: in _content
+    raise MemoryConflict("The referenced fact changed outside its recorded revision")
+E   lifeos_hook_bridge.memory_access.MemoryConflict: The referenced fact changed outside its recorded revision
+=========================== short test summary info ============================
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_derivation_cannot_remove_a_registered_fact_from_a_note
+1 failed in 1.94s

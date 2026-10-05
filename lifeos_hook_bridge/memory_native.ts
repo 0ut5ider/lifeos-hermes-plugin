@@ -14,6 +14,7 @@ async function main(): Promise<void> {
   if (!root) throw new Error("An installed LifeOS root is required");
   const input: unknown = JSON.parse(await Bun.stdin.text());
   if (!object(input)) throw new Error("Native memory input must be an object");
+  if (input.action === "learning_principal") process.env.LIFEOS_CONFIG_PATH = resolve(root, "LIFEOS/USER/CONFIG/LIFEOS_CONFIG.toml");
   const system: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemorySystem.ts")).href);
   const writer: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/MemoryWriter.ts")).href);
   if (!object(system) || !object(writer)) throw new Error("Native memory exports are unavailable");
@@ -26,7 +27,38 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "recurrence_append") {
+  if (input.action === "learning_principal") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "hooks/lib/identity.ts")).href);
+    if (!object(module) || typeof module.getPrincipalName !== "function") throw new Error("Native principal identity is unavailable");
+    result = {name: module.getPrincipalName()};
+  } else if (input.action === "learning_hypotheses") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/LearningPatternSynthesis.ts")).href);
+    const ledger: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/RecurrenceLedger.ts")).href);
+    const sources = input.sources;
+    if (!object(module) || typeof module.renderHypothesisDerivation !== "function" || !object(ledger)
+        || typeof ledger.collectObservabilityClusters !== "function" || typeof ledger.readPatchRegistry !== "function"
+        || !object(sources) || !Array.isArray(sources.recurrence) || !Array.isArray(sources.ratings)
+        || !Array.isArray(sources.frames) || !Array.isArray(sources.people) || !Array.isArray(sources.hypotheses)
+        || typeof sources.log !== "string" || typeof sources.principal !== "string"
+        || typeof input.now !== "string" || !Number.isFinite(Date.parse(input.now))
+        || typeof input.window !== "number" || !Number.isInteger(input.window) || input.window < 1 || input.window > 365
+        || typeof input.dry_run !== "boolean" || typeof input.no_inference !== "boolean" || typeof input.once_daily !== "boolean"
+        || !(input.stamp === null || typeof input.stamp === "string")) throw new Error("Native hypothesis derivation requires declared current sources");
+    const today = new Date(input.now).toLocaleDateString("en-CA");
+    if (input.once_daily && !input.dry_run && input.stamp?.trim() === today) {
+      result = {result: {emitted: 0, updated: 0, expired: 0}, publications: [],
+        stdout: `🌙 deriver: already ran ${today} (--once-daily) — skipping\n`};
+    } else {
+      const declared = {...sources, now: input.now,
+        clusters: ledger.collectObservabilityClusters(input.window, sources.recurrence),
+        healed: ledger.readPatchRegistry(sources.recurrence).map((row: {class_id: string}) => row.class_id)};
+      const rendered: unknown = await module.renderHypothesisDerivation({window: input.window,
+        dryRun: input.dry_run, noInference: input.no_inference}, declared);
+      if (!object(rendered) || !object(rendered.result) || !Array.isArray(rendered.publications)) throw new Error("Native hypothesis artifacts are invalid");
+      if (input.once_daily && !input.dry_run) rendered.publications.push({path: resolve(root, "LIFEOS/MEMORY/OBSERVABILITY/deriver-lastrun.date"), content: today + "\n"});
+      result = {...rendered, stdout: `🌙 deriver: window=${input.window}d expired=${rendered.result.expired} emitted=${rendered.result.emitted} updated=${rendered.result.updated}${input.dry_run ? " (dry-run)" : ""}\n`};
+    }
+  } else if (input.action === "recurrence_append") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/RecurrenceLedger.ts")).href);
     if (!object(module) || typeof module.renderPatchRegistry !== "function" || typeof input.previous !== "string"
         || !object(input.record)) throw new Error("Native registry publication requires declared record and bytes");

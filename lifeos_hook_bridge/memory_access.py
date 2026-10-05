@@ -313,10 +313,11 @@ class NativeMemory:
         return {"id": identifier, "revision": 1}
 
     def _operation(self, scope: MemoryScope, request_id: str, payload: dict[str, Any],
-                   callback: Callable[[sqlite3.Connection], dict[str, Any]]) -> dict[str, Any]:
+                   callback: Callable[[sqlite3.Connection], dict[str, Any]], *,
+                   identity_payload: dict[str, Any] | None = None) -> dict[str, Any]:
         if not isinstance(request_id, str) or not request_id or len(request_id) > 256:
             return {"status": "rejected", "reason": "A bounded request identifier is required"}
-        payload_digest = _digest(json.dumps(payload, sort_keys=True))
+        payload_digest = _digest(json.dumps(payload if identity_payload is None else identity_payload, sort_keys=True))
         reserved = False
         try:
             with self._transaction() as connection:
@@ -353,6 +354,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'learning_hypotheses':
+            from .memory_hypotheses import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'recurrence_append':
             from .memory_recurrence import publication_paths
             return publication_paths(self, scope)

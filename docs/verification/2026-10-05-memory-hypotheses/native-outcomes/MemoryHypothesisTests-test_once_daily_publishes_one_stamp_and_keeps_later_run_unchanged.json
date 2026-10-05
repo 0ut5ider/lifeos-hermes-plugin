@@ -1,0 +1,50 @@
+{
+  "case": "test_once_daily_publishes_one_stamp_and_keeps_later_run_unchanged",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nor1v5mi/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference",
+        "--once-daily"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nor1v5mi/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference",
+        "--once-daily"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: already ran 2026-10-05 (--once-daily) \u2014 skipping\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nor1v5mi/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "---\nstatus: hypothesis\nslug: clean-implementationsatisfaction\ntarget_frame: new\nconfidence: 0.76\ngenerated: 2026-10-05T05:48:55.534Z\nexpires: 2026-11-04T05:48:55.534Z\nsource: ratings\nenforcement_surface: context\nevidence_signals:\n  - sig:2026-10-05T05:48:55.408064+00:00\n  - sig:2026-10-05T05:48:55.408075+00:00\n  - sig:2026-10-05T05:48:55.408077+00:00\n  - sig:2026-10-05T05:48:55.408078+00:00\n  - sig:2026-10-05T05:48:55.408080+00:00\n  - sig:2026-10-05T05:48:55.408082+00:00\n  - sig:2026-10-05T05:48:55.408083+00:00\n  - sig:2026-10-05T05:48:55.408085+00:00\nfalsifier: \"Refuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\"\n---\n## Claim\n\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\n\n## Evidence\n\n- sig:2026-10-05T05:48:55.408064+00:00\n- sig:2026-10-05T05:48:55.408075+00:00\n- sig:2026-10-05T05:48:55.408077+00:00\n- sig:2026-10-05T05:48:55.408078+00:00\n- sig:2026-10-05T05:48:55.408080+00:00\n- sig:2026-10-05T05:48:55.408082+00:00\n- sig:2026-10-05T05:48:55.408083+00:00\n- sig:2026-10-05T05:48:55.408085+00:00\n- (cluster size: 8; pattern: Clean Implementation)\n\n## Falsifier\n\nRefuted if next 8 signals matching \"Clean Implementation\" average rating \u2264 4.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:48:55.534Z \u2014 emitted by deriver loop\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nor1v5mi/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:48:55.534Z\",\n  \"claim_hashes\": {\n    \"clean-implementationsatisfaction\": {\n      \"hash\": \"42c02696a49bab60\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nor1v5mi/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:48:55.534Z] run: window=7d dry-run=false\n[2026-10-05T05:48:55.534Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:48:55.534Z] clusters: 1\n[2026-10-05T05:48:55.534Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nor1v5mi/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver-lastrun.date": {
+      "content": "2026-10-05\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

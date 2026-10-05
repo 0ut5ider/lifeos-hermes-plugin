@@ -1,0 +1,110 @@
+{
+  "case": "test_derivation_cannot_remove_a_registered_fact_from_a_note",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"knowledge\",\"entity_type\":\"research\",\"name\":\"Synthetic hypothesis\",\"content\":\"RULE: Synthetic retained hypothesis fact\",\"source_session\":\"none\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-hypothesis.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"knowledge\",\"entity_type\":\"research\",\"name\":\"Synthetic hypothesis\",\"content\":\"RULE: Synthetic retained hypothesis fact\",\"source_session\":\"none\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-hypothesis.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-hypothesis.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"type\":\"knowledge\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-hypothesis.md\",\"detail\":{\"bytes_written\":327,\"created_or_appended\":\"created\",\"related_links\":0}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "1161 |   const governed = memoryAccess(\"learning_hypotheses\", {path: RATINGS_FILE, window: managedWindow,\n1162 |     dry_run: values[\"dry-run\"] ?? false, no_inference: values[\"no-inference\"] ?? false,\n1163 |     once_daily: values[\"once-daily\"] ?? false, request_id: randomUUID()},\n1164 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n1165 |   if (governed !== undefined) {\n1166 |     if (governed.ok !== true || typeof governed.stdout !== \"string\") throw new Error(\"Hypothesis derivation is unavailable under current memory policy\");\n                                                                                      ^\nerror: Hypothesis derivation is unavailable under current memory policy\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts:1166:80\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "---\nstatus: hypothesis\nslug: clean-implementationsatisfaction\ntarget_frame: new\nconfidence: 0.76\ngenerated: 2026-10-05T05:41:22.840Z\nexpires: 2026-11-04T05:41:22.840Z\nsource: ratings\nenforcement_surface: context\nevidence_signals:\n  - sig:2026-10-05T05:41:22.699929+00:00\n  - sig:2026-10-05T05:41:22.699940+00:00\n  - sig:2026-10-05T05:41:22.699943+00:00\n  - sig:2026-10-05T05:41:22.699944+00:00\n  - sig:2026-10-05T05:41:22.699946+00:00\n  - sig:2026-10-05T05:41:22.699948+00:00\n  - sig:2026-10-05T05:41:22.699949+00:00\n  - sig:2026-10-05T05:41:22.699951+00:00\nfalsifier: \"Refuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\"\n---\n## Claim\n\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\n\n## Evidence\n\n- sig:2026-10-05T05:41:22.699929+00:00\n- sig:2026-10-05T05:41:22.699940+00:00\n- sig:2026-10-05T05:41:22.699943+00:00\n- sig:2026-10-05T05:41:22.699944+00:00\n- sig:2026-10-05T05:41:22.699946+00:00\n- sig:2026-10-05T05:41:22.699948+00:00\n- sig:2026-10-05T05:41:22.699949+00:00\n- sig:2026-10-05T05:41:22.699951+00:00\n- (cluster size: 8; pattern: Clean Implementation)\n\n## Falsifier\n\nRefuted if next 8 signals matching \"Clean Implementation\" average rating \u2264 4.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:41:22.840Z \u2014 emitted by deriver loop\n\nRULE: Synthetic retained hypothesis fact\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:41:22.840Z\",\n  \"claim_hashes\": {\n    \"clean-implementationsatisfaction\": {\n      \"hash\": \"42c02696a49bab60\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-vn2ssu0g/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:41:22.840Z] run: window=7d dry-run=false\n[2026-10-05T05:41:22.840Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:41:22.840Z] clusters: 1\n[2026-10-05T05:41:22.840Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

@@ -1,0 +1,39 @@
+...FFFF.                                                              [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_native_note_and_state_publications_have_private_permissions (path='2026-10-05_clean-implementationsatisfaction.md') _
+tests/test_memory_hypotheses.py:96: in test_native_note_and_state_publications_have_private_permissions
+    self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryHypothesisTests.test_native_note_and_state_publications_have_private_permissions (path='.state.json') _
+tests/test_memory_hypotheses.py:96: in test_native_note_and_state_publications_have_private_permissions
+    self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryHypothesisTests.test_native_note_and_state_publications_have_private_permissions (path='deriver.log') _
+tests/test_memory_hypotheses.py:96: in test_native_note_and_state_publications_have_private_permissions
+    self.assertEqual(target.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+____ MemoryHypothesisTests.test_private_ratings_cannot_create_a_hypothesis _____
+tests/test_memory_hypotheses.py:72: in test_private_ratings_cannot_create_a_hypothesis
+    self.assertIn('emitted=0', result.stdout)
+E   AssertionError: 'emitted=0' not found in '🌙 deriver: window=7d expired=0 emitted=1 updated=0\n'
+_____ MemoryHypothesisTests.test_read_only_owner_dry_run_creates_no_files ______
+tests/test_memory_hypotheses.py:103: in test_read_only_owner_dry_run_creates_no_files
+    self.assertFalse(self.log.exists())
+E   AssertionError: True is not false
+_ MemoryHypothesisTests.test_redirected_hypotheses_directory_cannot_write_foreign_notes _
+tests/test_memory_hypotheses.py:112: in test_redirected_hypotheses_directory_cannot_write_foreign_notes
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_______ MemoryHypothesisTests.test_retired_rating_pattern_cannot_return ________
+tests/test_memory_hypotheses.py:84: in test_retired_rating_pattern_cannot_return
+    self.assertFalse(self.notes())
+E   AssertionError: [PosixPath('/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-e0gu4b0b/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md')] is not false
+=========================== short test summary info ============================
+SUBFAILED(path='2026-10-05_clean-implementationsatisfaction.md') tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_native_note_and_state_publications_have_private_permissions
+SUBFAILED(path='.state.json') tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_native_note_and_state_publications_have_private_permissions
+SUBFAILED(path='deriver.log') tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_native_note_and_state_publications_have_private_permissions
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_private_ratings_cannot_create_a_hypothesis
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_read_only_owner_dry_run_creates_no_files
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_redirected_hypotheses_directory_cannot_write_foreign_notes
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_retired_rating_pattern_cannot_return
+7 failed, 4 passed in 2.57s

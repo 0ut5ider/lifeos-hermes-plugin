@@ -1,0 +1,24 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_expired_live_slug_can_create_a_current_hypothesis _
+tests/test_memory_hypotheses.py:240: in test_expired_live_slug_can_create_a_current_hypothesis
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 1157 |   const governed = memoryAccess("learning_hypotheses", {path: RATINGS_FILE, window: managedWindow,
+E   1158 |     dry_run: values["dry-run"] ?? false, no_inference: values["no-inference"] ?? false,
+E   1159 |     once_daily: values["once-daily"] ?? false, request_id: randomUUID()},
+E   1160 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   1161 |   if (governed !== undefined) {
+E   1162 |     if (governed.ok !== true || typeof governed.stdout !== "string") throw new Error("Hypothesis derivation is unavailable under current memory policy");
+E                                                                                         ^
+E   error: Hypothesis derivation is unavailable under current memory policy
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts:1162:80
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryHypothesisTests.test_snake_case_identity_user_directory_cannot_redirect_reads _
+tests/test_memory_hypotheses.py:254: in test_snake_case_identity_user_directory_cannot_redirect_reads
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_expired_live_slug_can_create_a_current_hypothesis
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_snake_case_identity_user_directory_cannot_redirect_reads
+2 failed in 2.93s

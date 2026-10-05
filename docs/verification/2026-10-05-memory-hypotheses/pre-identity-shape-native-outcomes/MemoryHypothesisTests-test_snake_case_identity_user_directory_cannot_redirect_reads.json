@@ -1,0 +1,19 @@
+{
+  "case": "test_snake_case_identity_user_directory_cannot_redirect_reads",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-8e3nx4lu/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "1161 |   const governed = memoryAccess(\"learning_hypotheses\", {path: RATINGS_FILE, window: managedWindow,\n1162 |     dry_run: values[\"dry-run\"] ?? false, no_inference: values[\"no-inference\"] ?? false,\n1163 |     once_daily: values[\"once-daily\"] ?? false, request_id: randomUUID()},\n1164 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n1165 |   if (governed !== undefined) {\n1166 |     if (governed.ok !== true || typeof governed.stdout !== \"string\") throw new Error(\"Hypothesis derivation is unavailable under current memory policy\");\n                                                                                      ^\nerror: Hypothesis derivation is unavailable under current memory policy\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/LearningPatternSynthesis.ts:1166:80\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

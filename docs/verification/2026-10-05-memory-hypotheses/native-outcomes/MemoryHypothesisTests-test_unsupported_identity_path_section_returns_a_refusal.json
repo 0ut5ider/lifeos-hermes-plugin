@@ -1,0 +1,29 @@
+{
+  "case": "test_unsupported_identity_path_section_returns_a_refusal",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ul43aiuo/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true,true,true,true,true,true,true,true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ul43aiuo/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

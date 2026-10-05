@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_same_request_returns_receipt_without_another_derivation _
+tests/test_memory_hypotheses.py:266: in test_same_request_returns_receipt_without_another_derivation
+    self.assertTrue(second['ok'], second)
+E   AssertionError: False is not true : {'ok': False, 'result': None, 'stdout': None, 'receipt': {'status': 'conflict', 'reason': 'This request identifier names another operation'}}
+=========================== short test summary info ============================
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_same_request_returns_receipt_without_another_derivation
+1 failed in 1.83s

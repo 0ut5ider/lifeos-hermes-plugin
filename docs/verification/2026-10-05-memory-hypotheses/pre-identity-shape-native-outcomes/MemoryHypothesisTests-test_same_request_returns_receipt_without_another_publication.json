@@ -1,0 +1,306 @@
+{
+  "case": "test_same_request_returns_receipt_without_another_publication",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true,true,true,true,true,true,true,true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"name\":\"User\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"result\":{\"emitted\":1,\"updated\":0,\"expired\":0},\"publications\":[{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md\",\"content\":\"---\\nstatus: hypothesis\\nslug: clean-implementationsatisfaction\\ntarget_frame: new\\nconfidence: 0.76\\ngenerated: 2026-10-05T05:41:51.673Z\\nexpires: 2026-11-04T05:41:51.673Z\\nsource: ratings\\nenforcement_surface: context\\nevidence_signals:\\n  - sig:2026-10-05T05:41:51.661677+00:00\\n  - sig:2026-10-05T05:41:51.661689+00:00\\n  - sig:2026-10-05T05:41:51.661692+00:00\\n  - sig:2026-10-05T05:41:51.661693+00:00\\n  - sig:2026-10-05T05:41:51.661694+00:00\\n  - sig:2026-10-05T05:41:51.661696+00:00\\n  - sig:2026-10-05T05:41:51.661697+00:00\\n  - sig:2026-10-05T05:41:51.661699+00:00\\nfalsifier: \\\"Refuted if next 8 signals matching \\\\\\\"Clean Implementation\\\\\\\" average rating \u2264 4.\\\"\\n---\\n## Claim\\n\\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\\n\\n## Evidence\\n\\n- sig:2026-10-05T05:41:51.661677+00:00\\n- sig:2026-10-05T05:41:51.661689+00:00\\n- sig:2026-10-05T05:41:51.661692+00:00\\n- sig:2026-10-05T05:41:51.661693+00:00\\n- sig:2026-10-05T05:41:51.661694+00:00\\n- sig:2026-10-05T05:41:51.661696+00:00\\n- sig:2026-10-05T05:41:51.661697+00:00\\n- sig:2026-10-05T05:41:51.661699+00:00\\n- (cluster size: 8; pattern: Clean Implementation)\\n\\n## Falsifier\\n\\nRefuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\\n\\n## Suggested Action\\n\\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\\n\\n## Changelog\\n\\n- 2026-10-05T05:41:51.673Z \u2014 emitted by deriver loop\\n\"},{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json\",\"content\":\"{\\n  \\\"schema_version\\\": 1,\\n  \\\"last_run\\\": \\\"2026-10-05T05:41:51.673Z\\\",\\n  \\\"claim_hashes\\\": {\\n    \\\"clean-implementationsatisfaction\\\": {\\n      \\\"hash\\\": \\\"42c02696a49bab60\\\",\\n      \\\"archived_at\\\": null,\\n      \\\"status\\\": \\\"hypothesis\\\"\\n    }\\n  }\\n}\"},{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log\",\"content\":\"[2026-10-05T05:41:51.673Z] run: window=7d dry-run=false\\n[2026-10-05T05:41:51.673Z] signals: total=8 in_window=8 obs_clusters=0\\n[2026-10-05T05:41:51.673Z] clusters: 1\\n[2026-10-05T05:41:51.673Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\\n\"}],\"stdout\":\"\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true,true,true,true,true,true,true,true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"name\":\"User\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true,true,true,true,true,true,true,true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"name\":\"User\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true,true,true,true,true,true,true,true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"name\":\"User\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"result\":{\"emitted\":0,\"updated\":1,\"expired\":0},\"publications\":[{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md\",\"content\":\"---\\nstatus: hypothesis\\nslug: clean-implementationsatisfaction\\ntarget_frame: new\\nconfidence: 0.76\\ngenerated: 2026-10-05T05:41:52.707Z\\nexpires: 2026-11-04T05:41:52.707Z\\nsource: ratings\\nenforcement_surface: context\\nevidence_signals:\\n  - sig:2026-10-05T05:41:51.661677+00:00\\n  - sig:2026-10-05T05:41:51.661689+00:00\\n  - sig:2026-10-05T05:41:51.661692+00:00\\n  - sig:2026-10-05T05:41:51.661693+00:00\\n  - sig:2026-10-05T05:41:51.661694+00:00\\n  - sig:2026-10-05T05:41:51.661696+00:00\\n  - sig:2026-10-05T05:41:51.661697+00:00\\n  - sig:2026-10-05T05:41:51.661699+00:00\\nfalsifier: \\\"Refuted if next 8 signals matching \\\\\\\"Clean Implementation\\\\\\\" average rating \u2264 4.\\\"\\n---\\n## Claim\\n\\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\\n\\n## Evidence\\n\\n- sig:2026-10-05T05:41:51.661677+00:00\\n- sig:2026-10-05T05:41:51.661689+00:00\\n- sig:2026-10-05T05:41:51.661692+00:00\\n- sig:2026-10-05T05:41:51.661693+00:00\\n- sig:2026-10-05T05:41:51.661694+00:00\\n- sig:2026-10-05T05:41:51.661696+00:00\\n- sig:2026-10-05T05:41:51.661697+00:00\\n- sig:2026-10-05T05:41:51.661699+00:00\\n- (cluster size: 8; pattern: Clean Implementation)\\n\\n## Falsifier\\n\\nRefuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\\n\\n## Suggested Action\\n\\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\\n\\n## Changelog\\n\\n- 2026-10-05T05:41:51.673Z \u2014 emitted by deriver loop\\n- 2026-10-05T05:41:52.707Z \u2014 updated in place by deriver loop (samples: 8, conf: 0.76)\\n\"},{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json\",\"content\":\"{\\n  \\\"schema_version\\\": 1,\\n  \\\"last_run\\\": \\\"2026-10-05T05:41:52.707Z\\\",\\n  \\\"claim_hashes\\\": {\\n    \\\"clean-implementationsatisfaction\\\": {\\n      \\\"hash\\\": \\\"42c02696a49bab60\\\",\\n      \\\"archived_at\\\": null,\\n      \\\"status\\\": \\\"hypothesis\\\"\\n    }\\n  }\\n}\"},{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log\",\"content\":\"[2026-10-05T05:41:51.673Z] run: window=7d dry-run=false\\n[2026-10-05T05:41:51.673Z] signals: total=8 in_window=8 obs_clusters=0\\n[2026-10-05T05:41:51.673Z] clusters: 1\\n[2026-10-05T05:41:51.673Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\\n[2026-10-05T05:41:52.707Z] run: window=7d dry-run=false\\n[2026-10-05T05:41:52.707Z] signals: total=8 in_window=8 obs_clusters=0\\n[2026-10-05T05:41:52.707Z] clusters: 1\\n[2026-10-05T05:41:52.707Z] updated: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\\n\"}],\"stdout\":\"\ud83c\udf19 deriver: window=7d expired=0 emitted=0 updated=1\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true,true,true,true,true,true,true,true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"name\":\"User\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "---\nstatus: hypothesis\nslug: clean-implementationsatisfaction\ntarget_frame: new\nconfidence: 0.76\ngenerated: 2026-10-05T05:41:51.673Z\nexpires: 2026-11-04T05:41:51.673Z\nsource: ratings\nenforcement_surface: context\nevidence_signals:\n  - sig:2026-10-05T05:41:51.661677+00:00\n  - sig:2026-10-05T05:41:51.661689+00:00\n  - sig:2026-10-05T05:41:51.661692+00:00\n  - sig:2026-10-05T05:41:51.661693+00:00\n  - sig:2026-10-05T05:41:51.661694+00:00\n  - sig:2026-10-05T05:41:51.661696+00:00\n  - sig:2026-10-05T05:41:51.661697+00:00\n  - sig:2026-10-05T05:41:51.661699+00:00\nfalsifier: \"Refuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\"\n---\n## Claim\n\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\n\n## Evidence\n\n- sig:2026-10-05T05:41:51.661677+00:00\n- sig:2026-10-05T05:41:51.661689+00:00\n- sig:2026-10-05T05:41:51.661692+00:00\n- sig:2026-10-05T05:41:51.661693+00:00\n- sig:2026-10-05T05:41:51.661694+00:00\n- sig:2026-10-05T05:41:51.661696+00:00\n- sig:2026-10-05T05:41:51.661697+00:00\n- sig:2026-10-05T05:41:51.661699+00:00\n- (cluster size: 8; pattern: Clean Implementation)\n\n## Falsifier\n\nRefuted if next 8 signals matching \"Clean Implementation\" average rating \u2264 4.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:41:51.673Z \u2014 emitted by deriver loop\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:41:51.673Z\",\n  \"claim_hashes\": {\n    \"clean-implementationsatisfaction\": {\n      \"hash\": \"42c02696a49bab60\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3h24or_u/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:41:51.673Z] run: window=7d dry-run=false\n[2026-10-05T05:41:51.673Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:41:51.673Z] clusters: 1\n[2026-10-05T05:41:51.673Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

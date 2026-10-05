@@ -235,6 +235,12 @@ class MemoryService:
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}
+            if operation == 'learning_hypotheses' and set(arguments) == {'path','window','dry_run','no_inference','once_daily','request_id'}:
+                from .memory_hypotheses import derive
+                def check_current():
+                    if self.configuration.load() != configuration:
+                        raise MemoryUnavailable('Hypothesis authority changes during derivation')
+                return derive(memory, scope, arguments, check_current=check_current)
             if (operation == 'recurrence_sources' and set(arguments) == {'base'}
                     or operation == 'recurrence_append' and set(arguments) == {'base','record','request_id'}):
                 from .memory_recurrence import sources, append
