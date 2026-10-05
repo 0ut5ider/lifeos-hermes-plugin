@@ -6,6 +6,8 @@ The [approved memory design](../notes/2026-09-30-memory-design.md) gives LifeOS 
 
 On October 5, Adrian selects a fresh start on `.212` without importing existing personal data. Prepare no Hermes memory, `.211` or `.213` archive, or conversation-history selection for this deployment. Preserve existing source files and any existing LifeOS data. Prepare the fresh-start identity and return workflow for review. Complete activation checks before changing ownership. The optional importer and reverse migration remain part of the product plan below.
 
+Use a separate fresh native store with no adoption of existing facts or personal context. The fresh-start review identifies the new store, retained originals, template initialization, and return destination. Existing LifeOS data remains retained outside the selected fresh store. A no-import choice must not silently activate old LifeOS context.
+
 ## Original proposal
 
 1. Detect existing built-in memory in the selected Hermes profile.

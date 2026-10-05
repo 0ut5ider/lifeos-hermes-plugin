@@ -6,6 +6,8 @@ The four LifeOS tiers retain private FlashNext with different effort levels. Voi
 
 On October 5, Adrian selects a fresh start on `.212` without importing existing personal data. The deployment selects no Hermes memory, cross-server archive, or conversation history for import. Preserve existing Hermes files and any existing LifeOS data. This choice does not authorize deletion or bypass memory activation checks. Prepare the owner identity, fresh-start preview, and return workflow for review. Supported optional migration remains product work for established profiles.
 
+The selected fresh store must contain no adopted facts or personal context from the existing installation. Existing LifeOS data stays retained outside the selected fresh store. The review must identify the new store, retained originals, supported template initialization, and the return destination. Preserving old data must not make that data active in the fresh experience.
+
 | Workstream | Required result | Current state |
 | --- | --- | --- |
 | Hook compatibility | Paired effects, decisions, state, and model/user delivery for the claimed contract; explicit resolution of unavailable native controls | In progress; 65 dispatch controls and equal selected cases for 12 registrations; remote Kitty isolation difference retained |
