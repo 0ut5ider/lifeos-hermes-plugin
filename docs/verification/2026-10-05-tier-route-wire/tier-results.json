@@ -1,0 +1,166 @@
+{
+  "mapping": {
+    "haiku": "low",
+    "sonnet": "medium",
+    "opus": "xhigh",
+    "fable": "xhigh"
+  },
+  "tiers": [
+    {
+      "tier": "haiku",
+      "configured_effort": "low",
+      "command": [
+        "/var/tmp/lifeos-paired-context-response-20261005/plugins/lifeos-hook-bridge/bin/claude",
+        "--print",
+        "--model",
+        "haiku",
+        "--effort",
+        "medium",
+        "--output-format",
+        "json",
+        "--system-prompt",
+        "Reply with exactly READY."
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "d8613082ce4e9dd6877ebaf675b4ef2cfaf32ed5d47363dd31ae4511870ae4de",
+      "stdout": "{\"result\": \"READY\", \"is_error\": false, \"stop_reason\": \"stop\", \"modelUsage\": {\"flashnext-w4a16-fp8ple\": {\"outputTokens\": 20}}}\n",
+      "stderr": "",
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "body_sha256": "6bb245c962e09c7565536565759f856740af2808661b995d9b85b0078615ad74",
+          "body_keys": [
+            "messages",
+            "model",
+            "reasoning_effort"
+          ],
+          "requested_model": "lifecycle-fixture",
+          "actual_model": "flashnext-w4a16-fp8ple",
+          "upstream_status": 200,
+          "effort_fields": {
+            "reasoning_effort": "low"
+          },
+          "response_body_sha256": "d4ba1d2cddf1f6fc2a7de871c71ba7f3feb6cab298cc8cfafc63a7e1d376bd12"
+        }
+      ],
+      "generation_requests": 1
+    },
+    {
+      "tier": "sonnet",
+      "configured_effort": "medium",
+      "command": [
+        "/var/tmp/lifeos-paired-context-response-20261005/plugins/lifeos-hook-bridge/bin/claude",
+        "--print",
+        "--model",
+        "sonnet",
+        "--effort",
+        "medium",
+        "--output-format",
+        "json",
+        "--system-prompt",
+        "Reply with exactly READY."
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "3e36999edef53da35efceac1d0d43a762de25337505ea9580dad0f37729cb4f0",
+      "stdout": "{\"result\": \"READY\", \"is_error\": false, \"stop_reason\": \"stop\", \"modelUsage\": {\"flashnext-w4a16-fp8ple\": {\"outputTokens\": 24}}}\n",
+      "stderr": "",
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "body_sha256": "b3a05fb3bbe0ee88331096e1e3e198c76cd545e968f4585c0efaaef6d7e176c1",
+          "body_keys": [
+            "messages",
+            "model",
+            "reasoning_effort"
+          ],
+          "requested_model": "lifecycle-fixture",
+          "actual_model": "flashnext-w4a16-fp8ple",
+          "upstream_status": 200,
+          "effort_fields": {
+            "reasoning_effort": "medium"
+          },
+          "response_body_sha256": "53726de9c26ba599b2b39c513eb2e60ddd81dc82976aa4d6968b7d75113f8485"
+        }
+      ],
+      "generation_requests": 1
+    },
+    {
+      "tier": "opus",
+      "configured_effort": "xhigh",
+      "command": [
+        "/var/tmp/lifeos-paired-context-response-20261005/plugins/lifeos-hook-bridge/bin/claude",
+        "--print",
+        "--model",
+        "opus",
+        "--effort",
+        "medium",
+        "--output-format",
+        "json",
+        "--system-prompt",
+        "Reply with exactly READY."
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "c1b39bd488aa5b850e74ad010d0928ce023b32b9a3640156e729c9dcf4b5bee9",
+      "stdout": "{\"result\": \"READY\", \"is_error\": false, \"stop_reason\": \"stop\", \"modelUsage\": {\"flashnext-w4a16-fp8ple\": {\"outputTokens\": 32}}}\n",
+      "stderr": "",
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "body_sha256": "174ea83f47dcf10452e555915893b2b0de9da39214a24cf297cd296577b67f9e",
+          "body_keys": [
+            "messages",
+            "model",
+            "reasoning_effort"
+          ],
+          "requested_model": "lifecycle-fixture",
+          "actual_model": "flashnext-w4a16-fp8ple",
+          "upstream_status": 200,
+          "effort_fields": {
+            "reasoning_effort": "xhigh"
+          },
+          "response_body_sha256": "bad39568fbfacb86476014b6d6dc1e37fb88c77474560c98083453e0067f139f"
+        }
+      ],
+      "generation_requests": 1
+    },
+    {
+      "tier": "fable",
+      "configured_effort": "xhigh",
+      "command": [
+        "/var/tmp/lifeos-paired-context-response-20261005/plugins/lifeos-hook-bridge/bin/claude",
+        "--print",
+        "--model",
+        "fable",
+        "--effort",
+        "medium",
+        "--output-format",
+        "json",
+        "--system-prompt",
+        "Reply with exactly READY."
+      ],
+      "exit_code": 0,
+      "stdout_sha256": "f30cdbd4407a7d24d84ba49a27e2e546ce075267cd10d634694807a855326205",
+      "stdout": "{\"result\": \"READY\", \"is_error\": false, \"stop_reason\": \"stop\", \"modelUsage\": {\"flashnext-w4a16-fp8ple\": {\"outputTokens\": 41}}}\n",
+      "stderr": "",
+      "requests": [
+        {
+          "path": "/v1/chat/completions",
+          "body_sha256": "174ea83f47dcf10452e555915893b2b0de9da39214a24cf297cd296577b67f9e",
+          "body_keys": [
+            "messages",
+            "model",
+            "reasoning_effort"
+          ],
+          "requested_model": "lifecycle-fixture",
+          "actual_model": "flashnext-w4a16-fp8ple",
+          "upstream_status": 200,
+          "effort_fields": {
+            "reasoning_effort": "xhigh"
+          },
+          "response_body_sha256": "0781185fb4fa91bd8748e214c02cf880c9096066f7caee8e68519aae2b98024b"
+        }
+      ],
+      "generation_requests": 1
+    }
+  ]
+}
