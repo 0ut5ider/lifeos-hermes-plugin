@@ -124,7 +124,8 @@ def recover(configuration, backup, signature, destination, *, account=None):
                        'destination': str(destination), 'profile_files': len(manifest['files']),
                        'native_files': native['files'], 'active_facts': native['active_facts'],
                        'retired_facts': native['retired_facts'], 'ownership_enabled': False,
-                       'sharing_enabled': False, 'program_tools': native['program_tools'], 'rebound_files': rebound_files}
+                       'sharing_enabled': False, 'program_tools': native['program_tools'], 'rebound_files': rebound_files,
+                       'excluded': manifest['excluded']}
             publish(stage / '.profile-recovery.json', (json.dumps(receipt, sort_keys=True, indent=2) + '\n').encode())
             _sync_tree(stage)
             _directory(destination.parent)

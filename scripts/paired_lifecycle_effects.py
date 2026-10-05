@@ -957,7 +957,7 @@ def hook_commands(home: Path, case: str, source: Path, trace_script: Path) -> li
                 source_files.append(merge)
         encoded = base64.b64encode(command.encode()).decode()
         wrapped = ' '.join(shlex.quote(value) for value in (
-            '/usr/bin/python3', str(trace_script), 'run', identifier, str(home / 'hooks.jsonl'), encoded))
+            sys.executable, str(trace_script), 'run', identifier, str(home / 'hooks.jsonl'), encoded))
         commands.append((identifier, wrapped, source_files))
     return commands
 
@@ -968,7 +968,7 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
     root.mkdir()
     (home / 'project').mkdir()
     observer = ' '.join(shlex.quote(value) for value in (
-        '/usr/bin/python3', str(Path(__file__).resolve()), 'fixture-event', case))
+        sys.executable, str(Path(__file__).resolve()), 'fixture-event', case))
     commands = hook_commands(home, case, source, trace_script)
     hooks = {event: [{'hooks': [{'type': 'command', 'command': observer}]}]
              for event in ('SessionStart', 'UserPromptSubmit', 'SessionEnd')}

@@ -1,0 +1,78 @@
+EEFEEE
+======================================================================
+ERROR: test_regenerable_and_runtime_entries_are_excluded_and_recorded (test_profile_backup.ProfileBackupScopeTests.test_regenerable_and_runtime_entries_are_excluded_and_recorded)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 329, in test_regenerable_and_runtime_entries_are_excluded_and_recorded
+    result, manifest = self.snapshot()
+                       ~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 49, in snapshot
+    result = create(self.configuration, self.destination)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 138, in create
+    databases = _databases(profile, user, stack)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 60, in _databases
+    for path, kind, _, _ in _entries(profile, user):
+                            ~~~~~~~~^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 50, in _entries
+    raise MemoryUnavailable('A profile backup source requires a regular file, directory, or covered link')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: A profile backup source requires a regular file, directory, or covered link
+
+======================================================================
+ERROR: test_byte_limit_refusal_names_the_largest_top_level_entries (test_profile_backup.ProfileBackupScopeTests.test_byte_limit_refusal_names_the_largest_top_level_entries)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 350, in test_byte_limit_refusal_names_the_largest_top_level_entries
+    with self.assertRaises(profile_backup.ProfileBackupTooLarge) as raised:
+                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'lifeos_hook_bridge.profile_backup' has no attribute 'ProfileBackupTooLarge'
+
+======================================================================
+ERROR: test_inspection_refuses_an_altered_or_unsupported_exclusion_record (test_profile_backup.ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record) (change=<function ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record.<locals>.<lambda> at 0x7fb2efce4040>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 366, in test_inspection_refuses_an_altered_or_unsupported_exclusion_record
+    change(document)
+    ~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 361, in <lambda>
+    lambda value: value['excluded'].append({'path': '../outside', 'reason': 'regenerable'}),
+                  ~~~~~^^^^^^^^^^^^
+KeyError: 'excluded'
+
+======================================================================
+ERROR: test_inspection_refuses_an_altered_or_unsupported_exclusion_record (test_profile_backup.ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record) (change=<function ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record.<locals>.<lambda> at 0x7fb2ee8b8eb0>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 366, in test_inspection_refuses_an_altered_or_unsupported_exclusion_record
+    change(document)
+    ~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 362, in <lambda>
+    lambda value: value['excluded'].append({'path': 'installs', 'reason': 'unknown'}),
+                  ~~~~~^^^^^^^^^^^^
+KeyError: 'excluded'
+
+======================================================================
+ERROR: test_inspection_refuses_an_altered_or_unsupported_exclusion_record (test_profile_backup.ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record) (change=<function ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record.<locals>.<lambda> at 0x7fb2ee8b8bf0>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 366, in test_inspection_refuses_an_altered_or_unsupported_exclusion_record
+    change(document)
+    ~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 363, in <lambda>
+    lambda value: value.pop('excluded')):
+                  ~~~~~~~~~^^^^^^^^^^^^
+KeyError: 'excluded'
+
+======================================================================
+FAIL: test_inspection_refuses_an_altered_or_unsupported_exclusion_record (test_profile_backup.ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record) (change=<function ProfileBackupScopeTests.test_inspection_refuses_an_altered_or_unsupported_exclusion_record.<locals>.<lambda> at 0x7fb2ee9943b0>)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_backup.py", line 369, in test_inspection_refuses_an_altered_or_unsupported_exclusion_record
+    with self.assertRaises(MemoryUnavailable):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryUnavailable not raised
+
+----------------------------------------------------------------------
+Ran 3 tests in 1.933s
+
+FAILED (failures=1, errors=5)
+exit 1

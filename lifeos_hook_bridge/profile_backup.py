@@ -1,5 +1,5 @@
 # ABOUTME: Captures one selected Hermes profile and native data under configuration and SQLite writer barriers.
-# ABOUTME: Preserves all supported profile files, internal links, committed histories, and private integrity metadata.
+# ABOUTME: Preserves user state, internal links, and committed histories, and records each excluded regenerable entry.
 from contextlib import ExitStack, closing
 from datetime import datetime, timezone
 import hashlib
@@ -21,7 +21,45 @@ from .memory_transaction import publish
 from .sqlite_snapshot import standalone
 
 
-def _entries(profile, user):
+# Top-level entries that Hermes or the plugin can create again. A backup records them and does not copy them.
+EXCLUDED_TOP_LEVEL = {
+    'installs': 'regenerable', 'tools': 'regenerable', 'cache': 'regenerable', 'image_cache': 'regenerable',
+    'audio_cache': 'regenerable', 'logs': 'regenerable', 'hermes-agent': 'regenerable',
+    'models_dev_cache.json': 'regenerable', 'models_dev_cache.etag': 'regenerable', 'profiles': 'other_profile',
+}
+EXCLUSION_REASONS = {'regenerable', 'other_profile', 'dependencies', 'runtime'}
+RETAINED_LOCKFILES = {'bun.lock'}
+
+
+class ProfileBackupTooLarge(MemoryUnavailable):
+    def __init__(self, largest):
+        self.largest = largest
+        names = ', '.join(f'{name} ({size // (1024 * 1024)} MiB)' for name, size in largest)
+        super().__init__('The profile backup exceeds its byte limit. Largest top-level entries: ' + names)
+
+
+def _exclusion(relative, path):
+    parts = relative.split('/')
+    if len(parts) == 1:
+        if relative in EXCLUDED_TOP_LEVEL:
+            return EXCLUDED_TOP_LEVEL[relative]
+        if relative.endswith(('.pid', '.sock')) or relative.endswith('.lock') and relative not in RETAINED_LOCKFILES:
+            return 'runtime'
+    elif parts[-1] == 'node_modules' and path.is_dir() and not path.is_symlink():
+        return 'dependencies'
+    return None
+
+
+def _largest(profile, user):
+    sizes = {}
+    for path, kind, info, _ in _entries(profile, user):
+        if kind == 'file':
+            name = path.relative_to(profile).parts[0]
+            sizes[name] = sizes.get(name, 0) + info.st_size
+    return sorted(sizes.items(), key=lambda item: (-item[1], item[0]))[:5]
+
+
+def _entries(profile, user, excluded=None):
     pending = [profile]
     entries = []
     while pending:
@@ -31,7 +69,14 @@ def _entries(profile, user):
         entries.append((directory, 'directory', info, None))
         for path in sorted(directory.iterdir()):
             relative = path.relative_to(profile).as_posix()
-            if relative in ('lifeos-memory.json.lock', '.lifeos-installation/lock'):
+            if relative == '.lifeos-installation/lock':
+                continue
+            reason = _exclusion(relative, path)
+            if reason is None and stat.S_ISSOCK(path.lstat().st_mode):
+                reason = 'runtime'
+            if reason is not None:
+                if excluded is not None:
+                    excluded.append({'path': relative, 'reason': reason})
                 continue
             info = path.lstat()
             if info.st_uid != os.getuid():
@@ -87,7 +132,8 @@ def _collect_profile(profile, user, databases, stage=None):
     total = 0
     database_identities = {identity for _, identity in databases.values()}
     sidecars = {path.with_name(path.name + suffix) for path in databases for suffix in ('-wal', '-shm', '-journal')}
-    for path, kind, info, target in _entries(profile, user):
+    excluded = []
+    for path, kind, info, target in _entries(profile, user, excluded):
         relative = path.relative_to(profile).as_posix()
         metadata = {'mode': stat.S_IMODE(info.st_mode), 'mtime_ns': info.st_mtime_ns}
         if kind == 'directory':
@@ -112,13 +158,16 @@ def _collect_profile(profile, user, databases, stage=None):
                 if data[:16] == b'SQLite format 3\x00':
                     raise MemoryUnavailable('A profile database has no admitted writer barrier')
             total += len(data)
-            if len(data) > FILE_LIMIT or total > TOTAL_LIMIT:
+            if total > TOTAL_LIMIT:
+                raise ProfileBackupTooLarge(_largest(profile, user))
+            if len(data) > FILE_LIMIT:
                 raise MemoryUnavailable('The profile backup exceeds its byte limit')
             files.append({'path': relative, 'copy': len(files), 'size': len(data),
                           'digest': hashlib.sha256(data).hexdigest(), 'sqlite': path in databases, **metadata})
             if stage is not None:
                 publish(stage / 'files' / str(files[-1]['copy']), data)
-    return {'files': files, 'directories': directories, 'links': links}
+    return {'files': files, 'directories': directories, 'links': links,
+            'excluded': sorted(excluded, key=lambda item: item['path'])}
 
 
 def create(configuration, destination, *, account=None, installation_lease=None):
@@ -148,7 +197,7 @@ def create(configuration, destination, *, account=None, installation_lease=None)
                 snapshot = _collect_profile(profile, user, databases, stage / 'profile')
                 if _collect_profile(profile, user, databases) != snapshot or configuration.load() != config:
                     raise MemoryUnavailable('The selected profile changed during backup collection')
-                manifest = {'version': 1, 'profile': str(profile), 'native_root': str(memory.root),
+                manifest = {'version': 2, 'profile': str(profile), 'native_root': str(memory.root),
                             'principal': config['principal'], 'created': datetime.now(timezone.utc).isoformat(),
                             'native_signature': native_signature, **snapshot}
                 data = (json.dumps(manifest, sort_keys=True, indent=2) + '\n').encode()
@@ -165,7 +214,8 @@ def create(configuration, destination, *, account=None, installation_lease=None)
                 finally:
                     os.close(descriptor)
             return {'status': 'committed', 'snapshot': str(destination), 'signature': signature,
-                    'profile_files': len(snapshot['files']), 'native_files': len(native['files'])}
+                    'profile_files': len(snapshot['files']), 'native_files': len(native['files']),
+                    'excluded_entries': len(snapshot['excluded'])}
         finally:
             if stage.exists():
                 shutil.rmtree(stage)
@@ -186,12 +236,13 @@ def inspect(configuration, destination, signature=None, *, account=None):
     except (ValueError, UnicodeError) as error:
         raise MemoryUnavailable('The profile backup has invalid manifest content') from error
     if (not isinstance(manifest, dict) or set(manifest) != {'version', 'profile', 'native_root', 'principal', 'created',
-            'native_signature', 'files', 'directories', 'links'} or type(manifest['version']) is not int or manifest['version'] != 1
+            'native_signature', 'files', 'directories', 'links', 'excluded'}
+            or type(manifest['version']) is not int or manifest['version'] != 2
             or manifest['profile'] != str(configuration.path.parent.absolute()) or manifest['native_root'] != config['root']
             or manifest['principal'] != config['principal'] or not isinstance(manifest['native_signature'], str)
             or re.fullmatch('[0-9a-f]{64}', manifest['native_signature']) is None):
         raise MemoryUnavailable('The profile backup belongs to another profile or has unsupported metadata')
-    lists = [manifest[key] for key in ('files', 'directories', 'links')]
+    lists = [manifest[key] for key in ('files', 'directories', 'links', 'excluded')]
     if (any(not isinstance(items, list) for items in lists) or not manifest['files']
             or not manifest['directories'] or sum(map(len, lists)) > ENTRY_LIMIT + 1):
         raise MemoryUnavailable('The profile backup has invalid source lists')
@@ -244,6 +295,18 @@ def inspect(configuration, destination, signature=None, *, account=None):
         target = Path(os.path.abspath(profile / Path(item['path']).parent / item['target']))
         if not (target.is_relative_to(profile) or target.is_relative_to(user)):
             raise MemoryUnavailable('The profile backup has an unreviewed external link')
+    excluded = set()
+    for item in manifest['excluded']:
+        if (not isinstance(item, dict) or set(item) != {'path', 'reason'}
+                or item['reason'] not in EXCLUSION_REASONS or not isinstance(item['path'], str)):
+            raise MemoryUnavailable('The profile backup has invalid exclusion metadata')
+        _relative(item['path'])
+        if item['path'] in seen or item['path'] in excluded or _exclusion(item['path'], profile / item['path']) not in (
+                item['reason'], None if item['reason'] in ('dependencies', 'runtime') else item['reason']):
+            raise MemoryUnavailable('The profile backup has invalid exclusion metadata')
+        excluded.add(item['path'])
+    if any(any(path == name or path.startswith(name + '/') for name in excluded) for path in seen):
+        raise MemoryUnavailable('The profile backup copies a path inside an excluded entry')
     if '.' not in directories or configuration.path.name not in {item['path'] for item in manifest['files']}:
         raise MemoryUnavailable('The profile backup lacks its data root or ownership configuration')
     if any(Path(path).parent.as_posix() not in directories for path in seen if path != '.'):

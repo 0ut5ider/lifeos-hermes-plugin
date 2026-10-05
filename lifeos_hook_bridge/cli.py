@@ -81,6 +81,9 @@ def run_backup(args: argparse.Namespace) -> int:
                         manifest = inspect(memory, scope, Path(args.inspect).expanduser(), args.signature)
                         result = {'status': 'verified', 'files': len(manifest['files']),
                                   'schema': manifest['schema'], 'created': manifest['created']}
+    except profile_backup.ProfileBackupTooLarge as error:
+        print(json.dumps({'status': 'rejected', 'message': str(error)}), file=sys.stderr)
+        return 1
     except (ValueError, OSError, RuntimeError, sqlite3.Error, subprocess.TimeoutExpired):
         print(json.dumps({'status': 'rejected', 'message':
                          'The backup is unavailable under the selected profile. Check its configuration, store, permissions, and destination.'}),

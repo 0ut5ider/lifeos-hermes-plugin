@@ -301,3 +301,75 @@ class ProfileBackupTests(unittest.TestCase):
             sys.settrace(None)
         self.assertTrue(replaced)
         self.assertFalse(self.destination.exists())
+
+
+class ProfileBackupScopeTests(ProfileBackupTests):
+    REGENERABLE = {'installs/environment/lib.bin': 'regenerable', 'tools/fetch/program': 'regenerable',
+                   'cache/model.json': 'regenerable', 'image_cache/one.png': 'regenerable',
+                   'audio_cache/one.ogg': 'regenerable', 'logs/gateway.log': 'regenerable',
+                   'hermes-agent/cli.py': 'regenerable', 'models_dev_cache.json': 'regenerable',
+                   'profiles/other/config.yaml': 'other_profile',
+                   'skills/retained/node_modules/dependency/index.js': 'dependencies',
+                   'gateway.pid': 'runtime', 'gateway.lock': 'runtime'}
+
+    def seed(self):
+        for name in self.REGENERABLE:
+            path = self.profile / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(b'regenerable or runtime content\n')
+
+    def test_regenerable_and_runtime_entries_are_excluded_and_recorded(self):
+        import socket
+        self.seed()
+        (self.profile / 'node_modules/runtime-dependency').mkdir(parents=True)
+        (self.profile / 'node_modules/runtime-dependency/index.js').write_text('export {}\n')
+        listener = socket.socket(socket.AF_UNIX)
+        self.addCleanup(listener.close)
+        listener.bind(str(self.profile / 'gateway.sock'))
+        (self.profile / 'state').mkdir()
+        nested = socket.socket(socket.AF_UNIX)
+        self.addCleanup(nested.close)
+        nested.bind(str(self.profile / 'state/gateway.loop-tick.1.sock'))
+        result, manifest = self.snapshot()
+        self.assertEqual(manifest['version'], 2)
+        files = {item['path'] for item in manifest['files']}
+        for name in self.REGENERABLE:
+            self.assertNotIn(name, files)
+        self.assertTrue({'custom-owner-file.bin', 'skills/retained/SKILL.md', 'state.db',
+                         'node_modules/runtime-dependency/index.js'} <= files)
+        excluded = {item['path']: item['reason'] for item in manifest['excluded']}
+        self.assertEqual(excluded, {'installs': 'regenerable', 'tools': 'regenerable', 'cache': 'regenerable',
+            'image_cache': 'regenerable', 'audio_cache': 'regenerable', 'logs': 'regenerable',
+            'hermes-agent': 'regenerable', 'models_dev_cache.json': 'regenerable', 'profiles': 'other_profile',
+            'skills/retained/node_modules': 'dependencies', 'gateway.pid': 'runtime', 'gateway.lock': 'runtime',
+            'gateway.sock': 'runtime', 'lifeos-memory.json.lock': 'runtime',
+            'state/gateway.loop-tick.1.sock': 'runtime'})
+        self.assertEqual(result['excluded_entries'], len(excluded))
+
+    def test_byte_limit_refusal_names_the_largest_top_level_entries(self):
+        from unittest.mock import patch
+        from lifeos_hook_bridge import profile_backup
+        (self.profile / 'unclassified-large').mkdir()
+        (self.profile / 'unclassified-large/data.bin').write_bytes(b'x' * 200_000)
+        with patch.object(profile_backup, 'TOTAL_LIMIT', 100_000):
+            with self.assertRaises(profile_backup.ProfileBackupTooLarge) as raised:
+                create(self.configuration, self.destination)
+        self.assertEqual(raised.exception.largest[0][0], 'unclassified-large')
+        self.assertIn('unclassified-large', str(raised.exception))
+        self.assertFalse(self.destination.exists())
+
+    def test_inspection_refuses_an_altered_or_unsupported_exclusion_record(self):
+        self.seed()
+        result, manifest = self.snapshot()
+        path = self.destination / 'manifest.json'
+        for change in (lambda value: value.update(version=1),
+                       lambda value: value['excluded'].append({'path': '../outside', 'reason': 'regenerable'}),
+                       lambda value: value['excluded'].append({'path': 'installs', 'reason': 'unknown'}),
+                       lambda value: value.pop('excluded')):
+            with self.subTest(change=change):
+                document = json.loads(json.dumps(manifest))
+                change(document)
+                path.write_text(json.dumps(document, sort_keys=True, indent=2) + '\n')
+                path.chmod(0o600)
+                with self.assertRaises(MemoryUnavailable):
+                    inspect(self.configuration, self.destination)

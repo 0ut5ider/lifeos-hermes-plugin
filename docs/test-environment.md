@@ -4,6 +4,14 @@ As of 2026-10-04, the development fixture is the unprivileged `lifeos-hermes` ac
 
 The [catalog deployment record](verification/2026-10-04-catalog-release-212/README.md) covers this Discord fixture and the separate `lifeos-plugin-install-probe` browser profile. Both active installations now run plugin version `0.1.0` at tested commit `02d7ac85d96fb416b3c8832928d274ec9ddab4cf`. The update builds on the [October 3 merged release](verification/2026-10-03-merged-release-212/README.md), preserves existing profiles, and keeps memory ownership disabled.
 
+## Development container
+
+As of 2026-10-05, the paired hook fixtures run in a separate container, because the `.212` disk is nearly full. The container is CT `101` (`lifeos-dev`) on the Proxmox host `192.168.8.101`. It is an unprivileged Ubuntu 24.04 container with 8 cores, 16 GiB RAM, nesting, and automatic start. Its root disk is the ZFS dataset `rpool/data/subvol-101-disk-0` with a 150 GB quota and `zstd-3` compression. The address `192.168.8.252` comes from DHCP and can change.
+
+The container has the same accounts and paths as `.212`: `lifeos-claude-ref` (UID 1005) with Claude Code 2.1.272 and the reference LifeOS tree, and `lifeos-plugin-install-probe` (UID 1007) with the Hermes environment. The prepared runtime is `/var/tmp/lifeos-paired-context-response-20261005`. Python 3.14.7 is in `/opt/python-3.14.7` and first in the path as `/usr/local/bin/python3`; the system Python is 3.12. The paired driver starts hook wrappers with its own interpreter.
+
+A four-case paired run passes in the container: one hook case, one shell tool case, one renderer case, and one file edit case. The raw evidence directories of the earlier units are copied from `.212`. The active Discord and browser installations stay on `.212`.
+
 ## Installed baseline
 
 - Hermes v0.21.5 at local base commit `6056259cc67cb6daeaf8d6ceffabbc524598e418`, built from base `758ad514` and nine reviewed patch groups. The October 4 update adds the catalog callback overlay in `model_tools.py`. The account has a local model, a LAN dashboard, and a separate Discord test bot. Required middleware protects model execution and admission. The command denial patch makes an explicit native denial block a recoverable approval. The Stop gate withholds rejected answers. Its default continuation limit matches Claude Code; the plugin can select a failed turn at that limit. Iteration-budget exhaustion fails the turn.
