@@ -246,7 +246,11 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
     executable = shutil.which(bun)
     if not executable:
         raise IncompatibleLifeOS("Bun is required to install LifeOS")
-    environment = dict(os.environ, PATH=str(Path(executable).parent) + os.pathsep + os.environ.get("PATH", ""))
+    config_dir = installed.parent / '.config/LIFEOS'
+    environment = dict(os.environ, HOME=str(installed.parent), CLAUDE_CONFIG_DIR=str(installed),
+                       LIFEOS_DIR=str(installed / 'LIFEOS'), LIFEOS_CONFIG_DIR=str(config_dir),
+                       PROJECTS_DIR=str(installed.parent / 'Projects'),
+                       PATH=str(Path(executable).parent) + os.pathsep + os.environ.get("PATH", ""))
     skill_root = candidate / "LifeOS"
     template = skill_root / "install/CLAUDE.template.md"
     if not template.is_file():
@@ -261,7 +265,8 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
         for name in INSTALL_STEPS:
             result = subprocess.run(
                 [executable, str(skill_root / "Tools" / f"{name}.ts"),
-                 "--config-root", str(installed), "--skill-root", str(skill_root), "--apply"],
+                 "--config-root", str(installed), "--config-dir", str(config_dir),
+                 "--skill-root", str(skill_root), "--apply"],
                 cwd=installed.parent, env=environment, text=True, capture_output=True, timeout=300,
             )
             if result.returncode:

@@ -1,6 +1,6 @@
 # Plugin-managed LifeOS installation
 
-The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. The plugin must load before LifeOS exists so its settings page can guide installation. An absent `~/.claude/settings.json` now leaves its hooks inactive without making the plugin fail to load.
+The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. [Fresh installation path checks](verification/2026-10-05-fresh-store-paths/README.md) bind the native program and data selectors to the selected home. They preserve an unrelated retained store. The plugin must load before LifeOS exists so its settings page can guide installation. An absent `~/.claude/settings.json` now leaves its hooks inactive without making the plugin fail to load.
 
 ## Requested page flow
 
