@@ -1,0 +1,26 @@
+[
+  {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_context_audit_process.py",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nqyefr2z/memory.json",
+      "exit",
+      "{\"transport\": \"chat-a\", \"author\": \"100\", \"destination\": \"200\", \"visibility\": \"private\", \"participants\": [\"owner\"], \"model_route\": \"local\", \"session_id\": \"native-session\"}"
+    ],
+    "returncode": 73,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_context_audit_process.py",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nqyefr2z/memory.json",
+      "recover",
+      "{\"transport\": \"chat-a\", \"author\": \"100\", \"destination\": \"200\", \"visibility\": \"private\", \"participants\": [\"owner\"], \"model_route\": \"local\", \"session_id\": \"native-session\"}"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "Traceback (most recent call last):\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_context_audit_process.py\", line 20, in <module>\n    with NativeMemory(root)._transaction():\n         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\n  File \"/usr/lib64/python3.14/contextlib.py\", line 141, in __enter__\n    return next(self.gen)\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_access.py\", line 128, in _transaction\n    self.transaction.recover(connection)\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_transaction.py\", line 141, in recover\n    self._check_restore(copy)\n    ~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_transaction.py\", line 105, in _check_restore\n    raise MemoryUnavailable('Publication recovery preserves a later artifact edit')\nlifeos_hook_bridge.memory_access.MemoryUnavailable: Publication recovery preserves a later artifact edit\n"
+  }
+]

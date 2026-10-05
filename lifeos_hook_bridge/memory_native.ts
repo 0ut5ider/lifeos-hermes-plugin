@@ -340,6 +340,13 @@ async function main(): Promise<void> {
         : ["legacy_path", "legacy_date"].includes(input.view) ? [input.slug, input.path, sources] : [sources];
       result = {value: module[name](...args)};
     }
+  } else if (input.action === "context_audit") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/ContextAudit.ts")).href);
+    if (!object(module) || typeof module.renderContextAudit !== "function" || !Array.isArray(input.sources)
+        || input.sources.some(source => !object(source) || typeof source.path !== "string" || typeof source.content !== "string")) {
+      throw new Error("Native context audit needs declared constitutional sources");
+    }
+    result = module.renderContextAudit(input.sources);
   } else if (input.action === "counts") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/GetCounts.ts")).href);
     const keys = ["skills", "workflows", "hooks", "signals", "files", "work", "research", "ratings"];

@@ -1511,6 +1511,99 @@ index 65ae65c..1eeb3c3 100644
    if (pathname === "/api/wiki/reindex") {
      buildFullIndex()
      return jsonResponse({ ok: true, pages: pageIndex.size, indexedAt: lastIndexedAt })
+diff --git a/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts b/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts
+index 208abd1..8ae742e 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Audits admitted constitutional context with the original native finding rules.
++// ABOUTME: Delegates managed report publication while retaining standalone audit output.
+ // Normalize env path vars Claude Code may inject unexpanded — literal $HOME/${HOME}
+ // in LIFEOS_DIR/LIFEOS_CONFIG_DIR/PROJECTS_DIR resolves to a shadow dir (#1404 / PR #1451, author jbmml).
+ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+@@ -15,7 +17,8 @@ for (const __k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
+  */
+ 
+ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "fs";
+-import { basename, dirname, join } from "path";
++import { basename, dirname, join, resolve } from "path";
++import { memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ import { CONTEXT_FRESHNESS_REGISTRY, parseFrontmatter, type ContextFile } from "./TelosFreshness";
+ import { currentModel } from "./models";
+ import { homedir } from "node:os";
+@@ -287,8 +290,11 @@ function scanPlaceholders(info: BodyInfo): Finding[] {
+   return findings;
+ }
+ 
+-function auditFile(entry: ContextFile): FileAudit {
+-  if (!existsSync(entry.path)) {
++type AuditSource = { path: string; content: string };
++
++function auditFile(entry: ContextFile, sources?: AuditSource[]): FileAudit {
++  const source = sources?.find(item => resolve(item.path) === resolve(entry.path));
++  if (sources ? !source : !existsSync(entry.path)) {
+     return {
+       slug: entry.slug,
+       path: entry.path,
+@@ -300,7 +306,7 @@ function auditFile(entry: ContextFile): FileAudit {
+     };
+   }
+ 
+-  const content = readFileSync(entry.path, "utf-8");
++  const content = sources ? source!.content : readFileSync(entry.path, "utf-8");
+   const info = bodyInfo(content);
+   const findings = [
+     ...scanTbd(info),
+@@ -319,8 +325,8 @@ function countSeverity(findings: Finding[], severity: Severity): number {
+   return findings.filter((finding) => finding.severity === severity).length;
+ }
+ 
+-function buildReport(): AuditReport {
+-  const files = CONTEXT_FRESHNESS_REGISTRY.map(auditFile);
++function buildReport(sources?: AuditSource[]): AuditReport {
++  const files = CONTEXT_FRESHNESS_REGISTRY.map(entry => auditFile(entry, sources));
+   const summary = files.map((file) => ({
+     file: basename(file.path),
+     critical: countSeverity(file.findings, "critical"),
+@@ -377,17 +383,31 @@ function renderMarkdown(report: AuditReport): string {
+   return lines.join("\n") + "\n";
+ }
+ 
++export function renderContextAudit(sources?: AuditSource[]): {report: AuditReport; markdown: string; hasCritical: boolean} {
++  const report = buildReport(sources);
++  return {report, markdown: renderMarkdown(report), hasCritical: (report.summary.at(-1)?.critical ?? 0) > 0};
++}
++
+ function main(): void {
+-  const report = buildReport();
+-  const hasCritical = report.summary.at(-1)?.critical ? report.summary.at(-1)!.critical > 0 : false;
++  const governed = memoryAccess<{ok: boolean; report?: AuditReport; markdown?: string; hasCritical?: boolean}>("context_audit",
++    {root: resolve(CLAUDE_DIR), json_output: process.argv.includes("--json")},
++    (value): value is {ok: boolean; report?: AuditReport; markdown?: string; hasCritical?: boolean} =>
++      memoryObject(value) && typeof value.ok === "boolean" && (value.ok === false || memoryObject(value.report)
++        && typeof value.markdown === "string" && typeof value.hasCritical === "boolean"));
++  if (governed !== undefined && governed.ok !== true) throw new Error("Governed native context audit is unavailable");
++  const rendered = governed === undefined ? renderContextAudit() : governed;
++  const report = rendered.report!;
++  const hasCritical = rendered.hasCritical!;
+ 
+   if (process.argv.includes("--json")) {
+     console.log(JSON.stringify(report, null, 2));
+   } else {
+-    const markdown = renderMarkdown(report);
+-    const auditDir = dirname(AUDIT_PATH);
+-    if (!existsSync(auditDir)) mkdirSync(auditDir, { recursive: true });
+-    writeFileSync(AUDIT_PATH, markdown);
++    const markdown = rendered.markdown!;
++    if (governed === undefined) {
++      const auditDir = dirname(AUDIT_PATH);
++      if (!existsSync(auditDir)) mkdirSync(auditDir, { recursive: true });
++      writeFileSync(AUDIT_PATH, markdown);
++    }
+     console.log(`Wrote ${AUDIT_PATH}`);
+     console.log("");
+     console.log(markdown.split("\n").slice(4, 14).join("\n"));
 diff --git a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts b/LifeOS/install/LIFEOS/TOOLS/Cortex.ts
 index 390808e..2baccc7 100644
 --- a/LifeOS/install/LIFEOS/TOOLS/Cortex.ts

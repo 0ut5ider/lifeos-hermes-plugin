@@ -451,6 +451,15 @@ class MemoryService:
                         raise MemoryUnavailable('Native count authority changes during collection')
 
                 return read(memory, scope, **arguments, check_current=check_current)
+            if operation == 'context_audit' and set(arguments) == {'root', 'json_output'}:
+                from .memory_context_audit import run
+
+                def check_current():
+                    current = self.configuration.load()
+                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                        raise MemoryUnavailable('Context audit authority changes during the operation')
+
+                return run(memory, scope, **arguments, check_current=check_current)
             if operation == 'seed_pulse' and set(arguments) in ({'root', 'config_dir', 'generators'},
                     {'root', 'config_dir', 'generators', 'request_id'}):
                 from .memory_seed import run

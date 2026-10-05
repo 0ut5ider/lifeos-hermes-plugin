@@ -1,0 +1,22 @@
+[
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts"
+    ],
+    "returncode": 0,
+    "stdout": "Wrote /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-zl5n9ygg/.claude/LIFEOS/MEMORY/STATE/context-audit/AUDIT.md\n\n| file | critical | warn | info |\n|------|---------:|-----:|-----:|\n| TELOS.md | 0 | 0 | 0 |\n| DA_IDENTITY.md | 0 | 0 | 0 |\n| PRINCIPAL_IDENTITY.md | 0 | 1 | 0 |\n| PROJECTS.md | 0 | 0 | 0 |\n| LIFEOS_SYSTEM_PROMPT.md | 0 | 0 | 1 |\n| PRINCIPAL_TELOS.md | 0 | 0 | 0 |\n| ARCHITECTURE_SUMMARY.md | 0 | 0 | 0 |\n| LifeosSystemArchitecture.md | 0 | 0 | 0 |\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "392 |   const governed = memoryAccess<{ok: boolean; report?: AuditReport; markdown?: string; hasCritical?: boolean}>(\"context_audit\",\n393 |     {root: resolve(CLAUDE_DIR), json_output: process.argv.includes(\"--json\")},\n394 |     (value): value is {ok: boolean; report?: AuditReport; markdown?: string; hasCritical?: boolean} =>\n395 |       memoryObject(value) && typeof value.ok === \"boolean\" && (value.ok === false || memoryObject(value.report)\n396 |         && typeof value.markdown === \"string\" && typeof value.hasCritical === \"boolean\"));\n397 |   if (governed !== undefined && governed.ok !== true) throw new Error(\"Governed native context audit is unavailable\");\n                                                                      ^\nerror: Governed native context audit is unavailable\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts:397:65)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts:423:3\n\nBun v1.3.14 (Linux x64)\n"
+  }
+]
