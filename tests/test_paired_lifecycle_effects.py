@@ -834,9 +834,10 @@ class PairedToolLogTests(unittest.TestCase):
                        'tool-log-failure': ['PostToolUseFailure.1.1', 'PostToolUseFailure.3.1']}[name]
         row = {'event': 'tool_failure' if failure else 'tool_use', 'tool_name': 'Bash',
                'session_matches': True, 'preview_command_matches': True}
-        after = {'activity': [{**row, 'ground_truth_command_matches': True}] if name == 'tool-log-success' else [],
+        after = {'activity': [{**row, 'ground_truth_command_matches': True, 'output_recorded': True}]
+                 if name == 'tool-log-success' else [],
                  'activity_rows_match_calls': True,
-                 'failures': [{**row, 'error_names_exit_code': True}] if failure else [],
+                 'failures': [{**row, 'error_text_matches': True}] if failure else [],
                  'loop': {'session_matches': True, 'seq_matches_calls': True, 'last_alert': 3 if repeat else 0,
                           'alert_count': int(repeat), 'tools': ['Bash'], 'failed': [failure],
                           'one_signature': True, 'state_count': 1},
@@ -888,6 +889,18 @@ class PairedToolLogTests(unittest.TestCase):
         for side in ('native', 'hermes'):
             case[side]['after']['loop']['failed'] = [False]
         self.assertIn('tool-log-failure: tool log effect is missing', check_pair(case))
+
+    def test_failure_requires_the_complete_native_error_text(self):
+        case = self.case('tool-log-failure')
+        for side in ('native', 'hermes'):
+            case[side]['after']['failures'][0]['error_text_matches'] = False
+        self.assertIn('tool-log-failure: tool log effect is missing', check_pair(case))
+
+    def test_success_requires_the_recorded_command_output(self):
+        case = self.case('tool-log-success')
+        for side in ('native', 'hermes'):
+            case[side]['after']['activity'][0]['output_recorded'] = False
+        self.assertIn('tool-log-success: tool log effect is missing', check_pair(case))
 
     def test_success_fixture_keeps_the_pinned_asynchronous_logger(self):
         folder = tempfile.TemporaryDirectory()

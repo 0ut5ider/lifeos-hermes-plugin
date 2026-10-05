@@ -38,7 +38,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | PostToolUse.10.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Pending |
 | PostToolUse.10.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Pending |
 | PostToolUse.10.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Pending |
-| PostToolUse.11.1 | EventLogger | Write native tool activity, record applicable skill execution, and update the active ISA heartbeat. | Selected Bash case passes on event, row kind, and command; output fields differ between the clients; Skill, file, and work-reconcile branches remain open |
+| PostToolUse.11.1 | EventLogger | Write native tool activity, record applicable skill execution, and update the active ISA heartbeat. | Selected Bash case passes with the pinned asynchronous setting; output field names differ by an accepted host limit; Skill, file, and work-reconcile branches remain open |
 | PostToolUse.12.1 | PostToolObserver | Run the nested post-tool observers with the actual result and transcript. | Pending |
 | PostToolUse.12.2 | LoopDetector | Track repeated failures and return the native loop warning. | Selected single-call and exact-repeat cases pass; oscillation and hammering remain open |
 | PostToolUse.13.1 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Bash cases pass; the cloudflare and DNS patterns remain open |
@@ -57,7 +57,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | UserPromptSubmit.7.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |
 | UserPromptSubmit.8.1 | TimeContext | Return the current native time context through the configured async path. | Selected cases pass; first asynchronous request lacks clock context; next-turn delivery remains open |
 | UserPromptSubmit.9.1 | ModelRungGuard | Evaluate the actual model and effort carrier and return the applicable rung guidance. | Pending |
-| PostToolUseFailure.1.1 | EventLogger | Write the native tool-failure audit row with the actual tool and error. | Selected failing Bash case passes on event, row kind, and command; the error text differs between the clients |
+| PostToolUseFailure.1.1 | EventLogger | Write the native tool-failure audit row with the actual tool and error. | Selected failing Bash case passes with equal error text; other tools remain open |
 | PostToolUseFailure.2.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |
 | PostToolUseFailure.3.1 | LoopDetector | Track repeated failures and return the native loop warning. | Selected failing Bash case passes; hammering remains open |
 | TaskCreated.1.1 | TaskGovernance | Apply the task quality and count rules to the actual task creation event. | Pending |
