@@ -595,12 +595,12 @@ class NativeMemory:
         return adopt(self, scope, signature, projects, request_id)
 
     def native_add(self, scope: MemoryScope, item: dict[str, Any], *, request_id: str, project: str,
-                   observed_revision: str = "", source_session: str = "") -> dict[str, Any]:
+                   observed_revision: str = "", source_session: str = "", check_current=None) -> dict[str, Any]:
         if not isinstance(item, dict):
             return {"ok": False, "code": "EINVAL_ITEM", "message": "A native memory item is required"}
         if item.get("type") == "proposal":
             from .memory_proposals import enqueue
-            return enqueue(self, scope, item, request_id, source_session)
+            return enqueue(self, scope, item, request_id, source_session, check_current=check_current)
         category = item.get("actor") if item.get("type") == "memory" else "project"
         if not isinstance(category, str) or item.get("type") not in ("memory", "knowledge", "idea") or category not in CATEGORIES:
             return {"ok": False, "code": "EINVAL_ITEM", "message": "This native memory item needs a supported governed operation"}
@@ -820,8 +820,11 @@ class NativeMemory:
                     "category": row["category"], "project": row["project"], "writer": row["writer"],
                     "source": {"session": row["source_session"], "kind": row["source_kind"]}}
 
-    def correct(self, scope: MemoryScope, reference: dict[str, Any], content: str, request_id: str) -> dict[str, Any]:
+    def correct(self, scope: MemoryScope, reference: dict[str, Any], content: str, request_id: str,
+                check_current=None) -> dict[str, Any]:
         def change(connection):
+            if check_current is not None:
+                check_current(connection)
             row = self._target(connection, scope, reference)
             if row is None:
                 return {"status": "rejected", "reason": "The memory reference is unavailable or has no write grant"}
@@ -871,8 +874,11 @@ class NativeMemory:
             return {"status": "committed", "reference": new_reference, "supersedes": reference}
         return self._operation(scope, request_id, {"operation": "correct", "reference": reference, "content": content}, change)
 
-    def forget(self, scope: MemoryScope, reference: dict[str, Any], request_id: str) -> dict[str, Any]:
+    def forget(self, scope: MemoryScope, reference: dict[str, Any], request_id: str,
+               check_current=None) -> dict[str, Any]:
         def remove(connection):
+            if check_current is not None:
+                check_current(connection)
             row = self._target(connection, scope, reference)
             if row is None:
                 return {"status": "rejected", "reason": "The memory reference is unavailable or has no write grant"}

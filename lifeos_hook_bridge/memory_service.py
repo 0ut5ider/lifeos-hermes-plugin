@@ -626,7 +626,7 @@ class MemoryService:
                 return {"status": "rejected", "reason": scope.reason or "This context has no memory grant"}
             if name == "lifeos_memory_propose":
                 result = memory.native_add(scope, arguments["proposal"], request_id=arguments["request_id"], project="",
-                                           source_session=source_session)
+                                           source_session=source_session, check_current=check_current)
                 return result.get("receipt", {"status":"rejected", "reason":result.get("message", "Native proposal failed")})
             if name == "lifeos_memory_proposals":
                 return {"status":"ok", "results":memory.review_proposals(scope)}
@@ -640,9 +640,9 @@ class MemoryService:
                 return memory.remember(scope, **arguments, source={'kind': 'explicit', 'session': source_session},
                                        check_current=check_current)
             if name == "lifeos_memory_correct":
-                return memory.correct(scope, **arguments)
+                return memory.correct(scope, **arguments, check_current=check_current)
             if name == "lifeos_memory_forget":
-                return memory.forget(scope, **arguments)
+                return memory.forget(scope, **arguments, check_current=check_current)
             memory._boundary()
             with memory._transaction() as connection:
                 connection.execute("SELECT id FROM records LIMIT 1").fetchone()

@@ -58,6 +58,22 @@ class RevocationDuringCallTests(unittest.TestCase):
         found = self.service.call_client('research', 'lifeos_memory_search', {'query': 'late finding'})
         self.assertEqual(found['results'], [], found)
 
+    def test_correction_and_forget_after_revocation_change_nothing(self):
+        saved = self.fixture.fixture.remember()
+        calls = (('correct', 'lifeos_memory_correct', {'reference': saved['reference'],
+                  'content': 'Synthetic late replacement', 'request_id': 'late-correct'}),
+                 ('forget', 'lifeos_memory_forget', {'reference': saved['reference'], 'request_id': 'late-forget'}))
+        for method, tool, arguments in calls:
+            with self.subTest(tool=tool):
+                with self.during(method):
+                    result = self.service.call_client('research', tool, arguments)
+                self.assertNotEqual(result['status'], 'committed', result)
+                self.fixture.configuration['clients']['research']['enabled'] = True
+                self.save()
+                current = self.service.call_client('research', 'lifeos_memory_get', {'reference': saved['reference']})
+                self.assertEqual(current['status'], 'ok', current)
+                self.assertNotIn('late replacement', json.dumps(current))
+
     def test_narrowed_grant_during_a_call_withholds_the_result(self):
         self.fixture.fixture.remember()
         original = memory_service.NativeMemory.recall
