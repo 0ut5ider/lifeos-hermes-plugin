@@ -1,7 +1,7 @@
 {
   "date": "2026-10-05",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. Ninety-six equal selected cases cover fifty-one registrations; complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. Ninety-nine equal selected cases cover fifty-four registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -2034,7 +2034,70 @@
     "docs/verification/2026-10-05-paired-generic-hooks/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
     "docs/verification/2026-10-05-paired-generic-hooks/run.py": "9ca023408a323d34dca43bd1427f7bebb3270c27261a9269565e81a3fbfb9aeb",
     "docs/verification/2026-10-05-paired-generic-hooks/runtime-check.json": "12a7d5cb9d6287181917abca9531ce3ebae270e4bb001487fe23a3f2586b69b1",
-    "docs/verification/2026-10-05-paired-generic-hooks/runtime-manifest.json": "2553a130d612f609b2d1dfd330531177f7024d8eb1ec9d7b3d7ab6339c98bd18"
+    "docs/verification/2026-10-05-paired-generic-hooks/runtime-manifest.json": "2553a130d612f609b2d1dfd330531177f7024d8eb1ec9d7b3d7ab6339c98bd18",
+    "docs/verification/2026-10-05-paired-generic-tools/README.md": "bdf3a0d2d62442ef2b049d3deb4915a6605441b5d893b8f009d721451ad01c47",
+    "docs/verification/2026-10-05-paired-generic-tools/attempts.txt": "e470fef5fa5013808aaf71de9d2d10527b564d13878b376db16a04e13ffc3703",
+    "docs/verification/2026-10-05-paired-generic-tools/collect.py": "ef7160157e95b0bb768527c06f21aabff332ce3ccb8c1e266ea9ac4a3cac2f96",
+    "docs/verification/2026-10-05-paired-generic-tools/configuration.json": "d039fa620d9370d2d657094ac5007ecb04259f6eb5819e82e9b5be529b2c628b",
+    "docs/verification/2026-10-05-paired-generic-tools/focused-command.json": "1ead33dd1d36ff8f89e2a65d8e3bff924e046cd0c3634e89633b39708bde3bd2",
+    "docs/verification/2026-10-05-paired-generic-tools/focused-output.txt": "4ca09954b6657262477e413002ed68d362f43b20a0db519b37aea8966fdb0a49",
+    "docs/verification/2026-10-05-paired-generic-tools/generic-tool-proof.json": "17e67a4ea7a8da1a88aca76ad548a401f37a56f1e951ae9fb6a30109dc5c53bd",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/after-state.json": "ddfe055ed544e5e41e0b4a534ff478e49babef5e2e56b763a1b4312a995c755b",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/cli.log": "acd5a6bf0a4b8d219927856f68215d6e1ad645472623f612f8ebcd6ec41fde67",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-events.jsonl": "8530fbbf9b2da9e27d18e2643ae0930f43122aa122b7e924643e0e8f17c5a5b7",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-after.json": "36bdface01dbb6d6d3ff38712ce2993c081c7e8cbfdbbbf5ed835334307444ee",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-before.json": "74ad99017a4ca8ec1d831051a2272d2a21b4f3715673b3cd9306b4cdec60addf",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/hooks.jsonl": "727533aa9872ea73c7008f0b090ffc37d276bc86b9f3554d4f9a022336f49980",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/result.json": "5513159ab01f4aa8fd905e9a1eabd12f864fb09bb5fbd601c8732836015435f2",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/after-state.json": "e1f4828df04850e4b603d0681934f9bfb0eeb414f587e47dacc0b66507649762",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/cli.log": "16a2000fcf6f060def261ce9eec9e45956566376b11bf314e2b4aed4dcff64ce",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-events.jsonl": "5f4b91837494940f19c47f1c89bf48f0f49fd612d72738d24312285e4f6ad2ce",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-after.json": "130ca90fe15250bdf36a8bd438e874213a3c4330597860ba43ac126698f39336",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-before.json": "1c43fae52e30c5265f9ff618a2ba88a3e42eae559e83c5423bf4118a70dbcbec",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/hooks.jsonl": "d8b5c961a8cd56b7160077178d42a93fb1d1b3206bd12467d78b87faaa082fa2",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/result.json": "1d50bd9d4d106c78f69c347b441fac13425f7797966e3600dd0c0a81e2b48fd9",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/after-state.json": "33ff9132ff075a567e422eea3152a4bd7fe8ea1fa499281c6b7d2cffd4ba20db",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/cli.log": "82238acffa24063794248b663ceece8d4bb08417ae6d904fdb32145621606f16",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-events.jsonl": "d7943a6b9d243c8ea2965e3c1cbb3d229268fd3a5f05e5962a699bf6c95f85e6",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-after.json": "64754b5d030efca2ff6d70b51ae2879f371dcf4edd971b2b7b6e1fc2d9288ed3",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-before.json": "0dca1a588312c4f43cfa151aa0adeda2ba141614902ab50e975f1ca083ca8fa2",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/hooks.jsonl": "2835d9cd3da824ec8c09c4cf9077e86b7d7a719c0bed052b249e28d0911099ba",
+    "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/result.json": "f9ed17d65503cd9339c2697feecf5ce5c7bb2d66057e77c2cfd7952a36402824",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/after-state.json": "ddfe055ed544e5e41e0b4a534ff478e49babef5e2e56b763a1b4312a995c755b",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/cli.log": "8e86c54e3f703019804232914c4de24284592eed7c027d78af64bf9b0c21c75a",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-events.jsonl": "f0c123d613fc9b2611296eea6f7b8dcc9f41c466f1765b9b11f614e1e2f55d8f",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-after.json": "d80c5f2795e583dcbe74375affcb0787a5fea668b19801399c58f8794d97f459",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-before.json": "d80c5f2795e583dcbe74375affcb0787a5fea668b19801399c58f8794d97f459",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/hooks.jsonl": "49b146a7556088b8152c0e336a6e9f4c6c30478165243a48ee0e2e870113472c",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/result.json": "e42d9730a137b195bcb1a4aabab390024796aeab861b761a6eefe267bef7bb2a",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/after-state.json": "e1f4828df04850e4b603d0681934f9bfb0eeb414f587e47dacc0b66507649762",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/cli.log": "3d06ee497c46d5c106663a1143855374cd9e5e80a798f03e0f50ab43eed7b7a3",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-events.jsonl": "52ca2887211f0f111c389fd26aab74ba70d486c5167e609c38622a6e4bf7a281",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-after.json": "56e5e93d7a7a539dc423de5d12e69af0a1ae5dbb15b42c5cb562d2b83ba2061a",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-before.json": "ed9c89921ddf184fbd3d7a203caf70e3008a5fe65aa324a4ec8c834dfe5d5b17",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/hooks.jsonl": "1dbc36c3a0d117ae420ad64602e9a5b3f3326ee0b482ea0b827821adb33adf22",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/result.json": "308fc9238c60048adae935be2c90b1daafbe56fc3c578ec02c2cb8298add7514",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/after-state.json": "33ff9132ff075a567e422eea3152a4bd7fe8ea1fa499281c6b7d2cffd4ba20db",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/cli.log": "40c3ed6f7d02c4808279f967e4d693da14d052587ca15e8d3bc692e90b740053",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-events.jsonl": "72018446f8b234d5d691e827ec5ac3055365064fff9050d10ff0e3d76147a59f",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-after.json": "d3e56214c268f21b3ed97695b8f5fd579ac367bf792b1aad2cf0a0cbb1424d87",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-before.json": "b37842aebcb44c50f928e990863d0a7c872a9b3823c6084bf95f87868bfacd6a",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/hooks.jsonl": "a13d9b22bd2195206cd69a8f6ce96e33ec14f2e0f77d7f62e513de5f788a39a7",
+    "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/result.json": "f82d659222f56bd7b27ed814ec746fd8592f0d3016a70e7817648b93e24f1cda",
+    "docs/verification/2026-10-05-paired-generic-tools/paired-lifecycle-driver.py": "f2c0f47f4cb9ec59a9ff6b9935553480e9dffb1f9aff29d5d219d8f75ce41c07",
+    "docs/verification/2026-10-05-paired-generic-tools/paired-response-server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-05-paired-generic-tools/paired-results.json": "522a857aafa4203b8099d922afff3de09b2cac317ad2212a11a01db08830a34b",
+    "docs/verification/2026-10-05-paired-generic-tools/run-output.txt": "fa2084b917c2bd99ad27e23598c56422886637dec7439510b246c1b643c0b1b3",
+    "docs/verification/2026-10-05-paired-generic-tools/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-05-paired-generic-tools/run.py": "42c6a8fcc0d805bdb75b98535ab8fcb0907645d2977455bc8c1bb14a68c6df6f",
+    "docs/verification/2026-10-05-paired-generic-tools/runtime-check.json": "2802c109112bbe91835135b978ba031ef870003fa95d998660bd2f21bc3e761f",
+    "docs/verification/2026-10-05-paired-generic-tools/runtime-manifest.json": "2553a130d612f609b2d1dfd330531177f7024d8eb1ec9d7b3d7ab6339c98bd18"
   },
   "registrations": [
     {
@@ -2044,10 +2107,127 @@
       "handler": "$HOME/.claude/hooks/ContextReduction.hook.sh",
       "expected_effect": "Rewrite supported commands through RTK and retain the native permission decision.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "generic-tool-context-reduction",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-generic-tools/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-generic-tools/README.md",
+            "docs/verification/2026-10-05-paired-generic-tools/attempts.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/collect.py",
+            "docs/verification/2026-10-05-paired-generic-tools/configuration.json",
+            "docs/verification/2026-10-05-paired-generic-tools/focused-command.json",
+            "docs/verification/2026-10-05-paired-generic-tools/focused-output.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/generic-tool-proof.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-results.json",
+            "docs/verification/2026-10-05-paired-generic-tools/run-output.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/run.done",
+            "docs/verification/2026-10-05-paired-generic-tools/run.py",
+            "docs/verification/2026-10-05-paired-generic-tools/runtime-check.json",
+            "docs/verification/2026-10-05-paired-generic-tools/runtime-manifest.json"
+          ],
+          "native": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {},
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                false
+              ],
+              "context_in_model": [],
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PreToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {},
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                false
+              ],
+              "context_in_model": [],
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PreToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify the git and gh rewrites with rtk installed and complete groups."
     },
     {
       "id": "PreToolUse.2.1",
@@ -7988,10 +8168,133 @@
       "handler": "$HOME/.claude/hooks/PostToolObserver.hook.ts",
       "expected_effect": "Run the nested post-tool observers with the actual result and transcript.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "generic-tool-observer",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-generic-tools/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-generic-tools/README.md",
+            "docs/verification/2026-10-05-paired-generic-tools/attempts.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/collect.py",
+            "docs/verification/2026-10-05-paired-generic-tools/configuration.json",
+            "docs/verification/2026-10-05-paired-generic-tools/focused-command.json",
+            "docs/verification/2026-10-05-paired-generic-tools/focused-output.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/generic-tool-proof.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-results.json",
+            "docs/verification/2026-10-05-paired-generic-tools/run-output.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/run.done",
+            "docs/verification/2026-10-05-paired-generic-tools/run.py",
+            "docs/verification/2026-10-05-paired-generic-tools/runtime-check.json",
+            "docs/verification/2026-10-05-paired-generic-tools/runtime-manifest.json"
+          ],
+          "native": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":1,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":1,\"lastNudgeAt\":{}}",
+                ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json": "{\n  \"window\": [\n    {\n      \"sig\": \"Bash:<id>\",\n      \"tool\": \"Bash\",\n      \"failed\": false,\n      \"ts\": \"<time>\"\n    }\n  ],\n  \"alerted\": [],\n  \"seq\": 1,\n  \"lastAlert\": 0\n}"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                false
+              ],
+              "context_in_model": [],
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":1,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":1,\"lastNudgeAt\":{}}",
+                ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json": "{\n  \"window\": [\n    {\n      \"sig\": \"Bash:<id>\",\n      \"tool\": \"Bash\",\n      \"failed\": false,\n      \"ts\": \"<time>\"\n    }\n  ],\n  \"alerted\": [],\n  \"seq\": 1,\n  \"lastAlert\": 0\n}"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                false
+              ],
+              "context_in_model": [],
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify the exact-repeat alert through the observer, the system-change surface, and complete groups. A repeat case has no stable native control yet."
     },
     {
       "id": "PostToolUse.12.2",
@@ -15827,12 +16130,133 @@
       "handler": "$HOME/.claude/hooks/AlgorithmNudge.hook.ts",
       "expected_effect": "Return the applicable algorithm or capability nudge to the model.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "generic-tool-failure-nudge",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-generic-tools/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-generic-tools/README.md",
+            "docs/verification/2026-10-05-paired-generic-tools/attempts.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/collect.py",
+            "docs/verification/2026-10-05-paired-generic-tools/configuration.json",
+            "docs/verification/2026-10-05-paired-generic-tools/focused-command.json",
+            "docs/verification/2026-10-05-paired-generic-tools/focused-output.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/generic-tool-proof.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-context-reduction/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-failure-nudge/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/hermes/generic-tool-observer/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-context-reduction/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-failure-nudge/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/after-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/before-state.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/cli.log",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-generic-tools/native/generic-tool-observer/result.json",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-generic-tools/paired-results.json",
+            "docs/verification/2026-10-05-paired-generic-tools/run-output.txt",
+            "docs/verification/2026-10-05-paired-generic-tools/run.done",
+            "docs/verification/2026-10-05-paired-generic-tools/run.py",
+            "docs/verification/2026-10-05-paired-generic-tools/runtime-check.json",
+            "docs/verification/2026-10-05-paired-generic-tools/runtime-manifest.json"
+          ],
+          "native": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{}}"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                false
+              ],
+              "context_in_model": [],
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUseFailure",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{}}"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                false
+              ],
+              "context_in_model": [],
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUseFailure",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_algorithm_nudge.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify the late-ISA nudge and complete groups."
     },
     {
       "id": "PostToolUseFailure.3.1",

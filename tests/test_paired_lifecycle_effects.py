@@ -1128,6 +1128,8 @@ class PairedGenericEffectTests(unittest.TestCase):
                           'stderr_present': [False], 'context_in_model': delivered, 'user_response_delivered': True},
                 'hook_exit_codes': [0], 'event': identifier.split('.')[0], 'cli_exit_code': 0,
                 'model_generation_requests': 1, 'model_successful_responses': 1}
+        if name.startswith('generic-tool-'):
+            side['model_generation_requests'] = side['model_successful_responses'] = 2
         return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
 
     def test_every_generic_case_accepts_its_measured_effect(self):

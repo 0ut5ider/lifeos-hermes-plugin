@@ -1,0 +1,118 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_005242_4b16e6",
+  "seconds": 11.688,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-context-reduction",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-context-reduction",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' REDUCED"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.1.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.1.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-context-reduction/hooks.jsonl L3Zhci90bXAvbGlmZW9zLXBhaXJlZC1ydW50aW1lLTIwMjYxMDA1ZC9saWZlb3MvaG9va3MvQ29udGV4dFJlZHVjdGlvbi5ob29rLnNo",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/ContextReduction.hook.sh": "c65e563f75019f3a98ad32eda1702b66a4eea70c919561ca4bd97f197c50f708"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "f7f604242cb95c179e1a000651a97c35ef29caabf89afb0e3d10b74c9325fbc6",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "dda92dcf4ee50d23bbc3793532503c9b1c86faf83414e16fc199c2b764c6e081",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "711945016c6b71fc92cf6e5cd8a0305e05917c09e74b03ce6b24fe91d2e3b0d3",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "440e791c351b7e78ab0253cbd94a1867e6fed208946fa15141c538c30483f7b4",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "727533aa9872ea73c7008f0b090ffc37d276bc86b9f3554d4f9a022336f49980",
+    "fixture-events.jsonl": "8530fbbf9b2da9e27d18e2643ae0930f43122aa122b7e924643e0e8f17c5a5b7",
+    "cli.log": "acd5a6bf0a4b8d219927856f68215d6e1ad645472623f612f8ebcd6ec41fde67",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "ddfe055ed544e5e41e0b4a534ff478e49babef5e2e56b763a1b4312a995c755b",
+    "fixture-files-before.json": "74ad99017a4ca8ec1d831051a2272d2a21b4f3715673b3cd9306b4cdec60addf",
+    "fixture-files-after.json": "36bdface01dbb6d6d3ff38712ce2993c081c7e8cbfdbbbf5ed835334307444ee"
+  }
+}

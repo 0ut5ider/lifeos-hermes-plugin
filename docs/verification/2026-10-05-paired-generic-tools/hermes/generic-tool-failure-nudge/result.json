@@ -1,0 +1,120 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{}}"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUseFailure",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_005227_c4ebb0",
+  "seconds": 11.556,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-failure-nudge",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-failure-nudge",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: ls pair-missing-nudge"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUseFailure.2.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUseFailure.2.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-failure-nudge/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL0FsZ29yaXRobU51ZGdlLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/AlgorithmNudge.hook.ts": "c26501403433be9b2d2b534f1222b91cbc0949650649611d9bd2d65457430a61"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "fa4f7f84c35d4da0a2d039617e6ab98ce99012f344b5e4ef7fb5c290c9209016",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "90b4c6bf489fe9003627142b932b724e1e559be8afd236bb54f00df09f2f64f9",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "2cc6f147f362e13e9df72d22f762247ba38549055aa6b32f019629b816723038",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "c01f6d45882b38b283dfbd776b10ca7421f7d6ff35e076cd95de9c774ec35f46",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "d8b5c961a8cd56b7160077178d42a93fb1d1b3206bd12467d78b87faaa082fa2",
+    "fixture-events.jsonl": "5f4b91837494940f19c47f1c89bf48f0f49fd612d72738d24312285e4f6ad2ce",
+    "cli.log": "16a2000fcf6f060def261ce9eec9e45956566376b11bf314e2b4aed4dcff64ce",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "e1f4828df04850e4b603d0681934f9bfb0eeb414f587e47dacc0b66507649762",
+    "fixture-files-before.json": "1c43fae52e30c5265f9ff618a2ba88a3e42eae559e83c5423bf4118a70dbcbec",
+    "fixture-files-after.json": "130ca90fe15250bdf36a8bd438e874213a3c4330597860ba43ac126698f39336"
+  }
+}

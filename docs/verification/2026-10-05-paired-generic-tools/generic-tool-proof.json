@@ -1,0 +1,174 @@
+[
+  {
+    "case": "generic-tool-observer",
+    "side": "native",
+    "session_id": "0be9a733-389c-4586-badc-de827cb5d827",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "21776516786cb1a86447724d0208ccf1f688508d73a43626760195a4877e3aeb",
+      "0cc849c16366224fa048601b959f8721e640911ae736e97fccaba02dca53bc0c"
+    ],
+    "response_sha256": [
+      "2664cad72658b19c23bd5a3d483a0867466f33434775d019e7944c8096b2de5b",
+      "5e471bea86174cdb2b83da259033d6df069baf0fae8cbc8dc6db9c5bf5c2f89d"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PostToolUse.12.1",
+    "changed_files": [
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json",
+      ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json"
+    ],
+    "hook_output_present": false,
+    "context_in_model": [],
+    "asynchronous": false,
+    "timeout": 30
+  },
+  {
+    "case": "generic-tool-observer",
+    "side": "hermes",
+    "session_id": "20261006_005209_773aaa",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "487e60bfa8f0fba5b108c9cd740b699131c5086a5ea150799dd0c236ea2ba39c",
+      "e9d3c2e59835c3fb3bc110eec0f91950b9e551bb44587578c71c4ffdc853e015"
+    ],
+    "response_sha256": [
+      "406072b21cfc7af2f887a0eafe6490d6868b15c3f2c8da301187bfcaea905caa",
+      "cc5b449ab61b94d7ecc702ca119c5ba800a698aea327d8b838ac8bd06712ddf0"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PostToolUse.12.1",
+    "changed_files": [
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json",
+      ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json"
+    ],
+    "hook_output_present": false,
+    "context_in_model": [],
+    "asynchronous": false,
+    "timeout": 30
+  },
+  {
+    "case": "generic-tool-failure-nudge",
+    "side": "native",
+    "session_id": "b7145390-82e2-4b61-9568-4783a9caff54",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "2acc79c6c9902dddc4c7fbf39064fe30628a00cbd52f19b710be5412f6398403",
+      "9e059981be5742aeafc9a3ef3caeab5f818cdff76c77d6987adc4feef11e9f21"
+    ],
+    "response_sha256": [
+      "c0657f99b25995ff0bffb864447669b5966acee230deeb093940fae19be5d456",
+      "30e77d347b09635d7e309b5c83e9d672076b341591d8d37bfc63b063b661476f"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PostToolUseFailure.2.1",
+    "changed_files": [
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json"
+    ],
+    "hook_output_present": false,
+    "context_in_model": [],
+    "asynchronous": false,
+    "timeout": 30
+  },
+  {
+    "case": "generic-tool-failure-nudge",
+    "side": "hermes",
+    "session_id": "20261006_005227_c4ebb0",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "fa4f7f84c35d4da0a2d039617e6ab98ce99012f344b5e4ef7fb5c290c9209016",
+      "2cc6f147f362e13e9df72d22f762247ba38549055aa6b32f019629b816723038"
+    ],
+    "response_sha256": [
+      "90b4c6bf489fe9003627142b932b724e1e559be8afd236bb54f00df09f2f64f9",
+      "c01f6d45882b38b283dfbd776b10ca7421f7d6ff35e076cd95de9c774ec35f46"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PostToolUseFailure.2.1",
+    "changed_files": [
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json"
+    ],
+    "hook_output_present": false,
+    "context_in_model": [],
+    "asynchronous": false,
+    "timeout": 30
+  },
+  {
+    "case": "generic-tool-context-reduction",
+    "side": "native",
+    "session_id": "909d8749-6ba1-4de2-b633-4d458e705572",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "cfa9e5a09835c5c7092f953a1dbc257e91db32e5913e756fcac446b42c02e9f8",
+      "e4753e531359072dfeda649765dad446cabd66e3043412a8e46cfe88cd628b37"
+    ],
+    "response_sha256": [
+      "098f74674fd8748226c4dae559f665cf02bdfa6a5fdb1f255614b58114948f60",
+      "88888e71d458160221144eea14d80ed6becaaf35f4dcff7f2449afab8eec82fc"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PreToolUse.1.1",
+    "changed_files": [],
+    "hook_output_present": false,
+    "context_in_model": [],
+    "asynchronous": false,
+    "timeout": 30
+  },
+  {
+    "case": "generic-tool-context-reduction",
+    "side": "hermes",
+    "session_id": "20261006_005242_4b16e6",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "f7f604242cb95c179e1a000651a97c35ef29caabf89afb0e3d10b74c9325fbc6",
+      "711945016c6b71fc92cf6e5cd8a0305e05917c09e74b03ce6b24fe91d2e3b0d3"
+    ],
+    "response_sha256": [
+      "dda92dcf4ee50d23bbc3793532503c9b1c86faf83414e16fc199c2b764c6e081",
+      "440e791c351b7e78ab0253cbd94a1867e6fed208946fa15141c538c30483f7b4"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PreToolUse.1.1",
+    "changed_files": [],
+    "hook_output_present": false,
+    "context_in_model": [],
+    "asynchronous": false,
+    "timeout": 30
+  }
+]

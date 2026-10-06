@@ -1,10 +1,10 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Ninety-six equal selected cases cover 51 registrations. Ninety-four lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, three tool logging cases, three file hint cases with real Write and Edit calls, two evaluation trigger cases, two knowledge guard cases, one complete Edit group case, one complete Write group case and one Read case, and twelve generic file and output comparisons; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Ninety-nine equal selected cases cover 54 registrations. Ninety-seven lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, three tool logging cases, three file hint cases with real Write and Edit calls, two evaluation trigger cases, two knowledge guard cases, one complete Edit group case, one complete Write group case and one Read case, twelve generic file and output comparisons, and three generic tool comparisons; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
-| PreToolUse.1.1 | ContextReduction | Rewrite supported commands through RTK and retain the native permission decision. | Pending |
+| PreToolUse.1.1 | ContextReduction | Rewrite supported commands through RTK and retain the native permission decision. | Selected case without rtk passes: no output, command unchanged |
 | PreToolUse.2.1 | skill-guard | Validate the selected skill and return its Pulse guard decision. | Pending |
 | PreToolUse.3.1 | agent-guard | Validate the selected agent and return its Pulse guard decision. | Pending |
 | PreToolUse.3.2 | AgentInvocation | Record and validate agent invocation and completion state. | Pending |
@@ -39,7 +39,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | PostToolUse.10.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Pending |
 | PostToolUse.10.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Pending |
 | PostToolUse.11.1 | EventLogger | Write native tool activity, record applicable skill execution, and update the active ISA heartbeat. | Selected Bash case passes with the pinned asynchronous setting; output field names differ by an accepted host limit; Skill, file, and work-reconcile branches remain open |
-| PostToolUse.12.1 | PostToolObserver | Run the nested post-tool observers with the actual result and transcript. | Pending |
+| PostToolUse.12.1 | PostToolObserver | Run the nested post-tool observers with the actual result and transcript. | Selected single-call case passes: loop and nudge state written, no output |
 | PostToolUse.12.2 | LoopDetector | Track repeated failures and return the native loop warning. | Selected single-call and exact-repeat cases pass; oscillation and hammering remain open |
 | PostToolUse.13.1 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Bash cases pass; the cloudflare and DNS patterns remain open |
 | SessionEnd.1.1 | WorkCompletionLearning | Read session completion evidence and persist eligible native learning. | Selected cases verified |
@@ -58,7 +58,7 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | UserPromptSubmit.8.1 | TimeContext | Return the current native time context through the configured async path. | Selected cases pass; first asynchronous request lacks clock context; next-turn delivery remains open |
 | UserPromptSubmit.9.1 | ModelRungGuard | Evaluate the actual model and effort carrier and return the applicable rung guidance. | Selected first prompt passes with a pinned model; the plugin patch adds the reasoning effort to the log |
 | PostToolUseFailure.1.1 | EventLogger | Write the native tool-failure audit row with the actual tool and error. | Selected failing Bash case passes with equal error text; other tools remain open |
-| PostToolUseFailure.2.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |
+| PostToolUseFailure.2.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Selected failing call passes: nudge state written, no output |
 | PostToolUseFailure.3.1 | LoopDetector | Track repeated failures and return the native loop warning. | Selected failing Bash case passes; hammering remains open |
 | TaskCreated.1.1 | TaskGovernance | Apply the task quality and count rules to the actual task creation event. | Pending |
 | ConfigChange.1.1 | EventLogger | Write the native settings-change audit row and applicable configuration difference. | Pending |
