@@ -9,6 +9,8 @@ import shutil
 import tempfile
 from pathlib import Path
 
+from .version_drift import GENERATED_FILES
+
 
 SYSTEM_PREFIXES = ("hooks/", "skills/", "agents/", "commands/", "test/", "LIFEOS/")
 SKIP_DIRS = frozenset({"node_modules", ".git", ".cache", ".venv", "__pycache__", "dist", "build"})
@@ -86,7 +88,9 @@ def plan_system_files(current: Path, baseline: dict, source: Path, reference: Pa
     previous = baseline.get("files")
     if not isinstance(previous, dict) or not previous:
         raise UpdateConflict("VersionDrift baseline has no system files")
-    desired = deployed_system_files(source, reference)
+    desired = {name: value for name, value in deployed_system_files(source, reference).items()
+               if name not in GENERATED_FILES}
+    previous = {name: value for name, value in previous.items() if name not in GENERATED_FILES}
     for name, previous_hash in previous.items():
         path = _checked_path(current, name)
         if not path.is_file() or _digest(path) != previous_hash:

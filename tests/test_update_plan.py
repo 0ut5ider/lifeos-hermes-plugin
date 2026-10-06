@@ -71,6 +71,23 @@ class UpdatePlanTests(unittest.TestCase):
             with self.assertRaisesRegex(UpdateConflict, "collides"):
                 plan_system_files(current, baseline, source, reference)
 
+    def test_leaves_generated_architecture_summary_in_place(self):
+        with tempfile.TemporaryDirectory() as directory:
+            current, reference, source, baseline = self.fixture(Path(directory))
+            name = "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md"
+            for tree, text in ((current, "regenerated"), (reference, "shipped"), (source, "shipped")):
+                (tree / name).parent.mkdir(parents=True, exist_ok=True)
+                (tree / name).write_text(text)
+            baseline["files"][name] = hashlib.sha256(b"shipped").hexdigest()
+            plan = plan_system_files(current, baseline, source, reference)
+            for key in ("add", "replace", "remove"):
+                self.assertNotIn(name, plan[key])
+            staged = Path(directory) / "staged"
+            import shutil
+            shutil.copytree(current, staged, symlinks=True)
+            apply_system_plan(staged, source, plan)
+            self.assertEqual((staged / name).read_text(), "regenerated")
+
     def test_ignores_payload_file_not_deployed_by_fresh_installer(self):
         with tempfile.TemporaryDirectory() as directory:
             current, reference, source, baseline = self.fixture(Path(directory))
