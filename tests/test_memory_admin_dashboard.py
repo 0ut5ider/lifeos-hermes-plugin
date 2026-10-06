@@ -535,19 +535,18 @@ class MemoryAdminDashboardTests(unittest.TestCase):
                 self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
                                 Path(request['memory_authorization']))
 
-    def test_changed_user_data_refuses_restore_without_changing_job(self):
+    def test_changed_embedded_user_data_does_not_block_restore(self):
         self.login()
         job = self.applied_job()
-        before_request = (job / 'request.json').read_bytes()
-        before_status = (job / 'status.json').read_bytes()
         (self.fixture.root / 'USER.md').write_text('Synthetic later user edit')
-        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Data must be checked first')):
+        with patch.object(self.api, '_launch_lifeos_update') as launched:
             response = self.post('/update/restore')
-        self.assertEqual(response.status_code, 409, response.text)
-        self.assertIn('User data changed', response.text)
-        self.assertEqual(self.grants(), [])
-        self.assertEqual((job / 'request.json').read_bytes(), before_request)
-        self.assertEqual((job / 'status.json').read_bytes(), before_status)
+        self.assertEqual(response.status_code, 200, response.text)
+        launched.assert_called_once_with(job, 'restore')
+        self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'restoring')
+        request = json.loads((job / 'request.json').read_text())
+        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
+                        Path(request['memory_authorization']))
 
     def test_failed_recovery_launch_preserves_retryable_job_state(self):
         self.login()

@@ -300,12 +300,80 @@ def _validate_restore_data(snapshot: Path, manifest: dict) -> None:
     if external != manifest.get('user_data_links', {}) or external != _external_user_data(
             snapshot / 'live-prior', excluded=(target, snapshot)):
         raise UpdateTransactionError('User data binding changed after update; automatic restore refused')
-    if _memory_digest(target, external) != manifest["user_data"]:
-        raise UpdateTransactionError("User data changed after update; automatic restore refused")
     if not isinstance(manifest.get('mount_state'), dict):
         raise UpdateTransactionError('Hermes profile restore metadata is missing; automatic restore refused')
     if _mount_state(Path(manifest['hermes_home'])) != manifest['mount_state']:
         raise UpdateTransactionError('Hermes profile changed after update; automatic restore refused')
+
+
+def _embedded_user_data(manifest: dict) -> list[str]:
+    links = manifest.get('user_data_links', {})
+    return [name for name in USER_DATA_PATHS if name not in links]
+
+
+def _copy_user_data(source: Path, snapshot: Path, names: list[str]) -> None:
+    """Copy current embedded user data into a carry directory that appears atomically."""
+    partial = snapshot / 'carry.partial'
+    if partial.exists():
+        shutil.rmtree(partial)
+    (partial / 'pending').mkdir(parents=True, mode=0o700)
+    present, absent = [], []
+    for index, name in enumerate(names):
+        current = source / name
+        if current.is_symlink():
+            raise UpdateTransactionError(f'User data is a symbolic link: {name}')
+        if current.is_dir():
+            for file in current.rglob('*'):
+                if file.is_symlink():
+                    raise UpdateTransactionError(f'User data contains a symbolic link: {file}')
+            shutil.copytree(current, partial / 'data' / name)
+            present.append(name)
+        elif current.is_file():
+            (partial / 'data' / name).parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(current, partial / 'data' / name)
+            present.append(name)
+        else:
+            absent.append(name)
+        (partial / 'pending' / str(index)).touch()
+    _write_json(partial / 'carry.json', {'names': names, 'present': present, 'absent': absent})
+    os.replace(partial, snapshot / 'carry')
+
+
+def _swap_restored_programs(installed: Path, snapshot: Path) -> None:
+    if installed.exists() or installed.is_symlink():
+        if (snapshot / 'restored-selected').exists():
+            raise UpdateTransactionError('The restored selected archive already exists')
+        os.replace(installed, snapshot / 'restored-selected')
+    os.replace(snapshot / 'live-prior', installed)
+
+
+def _carry_user_data(installed: Path, snapshot: Path) -> None:
+    """Replace prior embedded user data with the carried copy and archive the prior copy."""
+    carry = snapshot / 'carry'
+    if not carry.exists():
+        return
+    record = json.loads((carry / 'carry.json').read_text(encoding='utf-8'))
+    for index, name in enumerate(record['names']):
+        pending = carry / 'pending' / str(index)
+        if not pending.exists():
+            continue
+        carried = carry / 'data' / name
+        target = installed / name
+        selected_had_data = name in record['present']
+        if selected_had_data and not carried.exists():
+            pending.unlink()
+            continue
+        if target.exists() or target.is_symlink():
+            archived = snapshot / 'prior-user-data' / name
+            if archived.exists():
+                raise UpdateTransactionError(f'Prior user data archive already exists: {name}')
+            archived.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(target, archived)
+        if selected_had_data:
+            target.parent.mkdir(parents=True, exist_ok=True)
+            os.replace(carried, target)
+        pending.unlink()
+    shutil.rmtree(carry)
 
 
 def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
@@ -324,8 +392,10 @@ def restore_update(snapshot: Path, *, stop, start, verify) -> dict:
         raise
     manifest["state"] = "restoring"
     _write_json(manifest_path, manifest)
-    os.replace(installed, snapshot / "restored-selected")
-    os.replace(snapshot / "live-prior", installed)
+    names = _embedded_user_data(manifest)
+    _copy_user_data(installed, snapshot, names)
+    _swap_restored_programs(installed, snapshot)
+    _carry_user_data(installed, snapshot)
     archive = _restore_mount(Path(manifest["hermes_home"]), snapshot, Path(manifest["baseline"]))
     manifest['profile_archive'] = str(archive)
     start()
@@ -347,7 +417,23 @@ def recover_update(snapshot: Path, *, stop, start, verify) -> dict:
         manifest['state'] = 'applied'
         _write_json(manifest_path, manifest)
         return manifest
-    if manifest["state"] not in {"stopped", "swapped", "restoring", "rollback_failed"}:
+    if manifest['state'] == 'restoring':
+        installed = Path(manifest['installed'])
+        stop()
+        if (snapshot / 'live-prior').exists():
+            if not (snapshot / 'carry').exists():
+                source = installed if installed.is_dir() else snapshot / 'restored-selected'
+                _copy_user_data(source, snapshot, _embedded_user_data(manifest))
+            _swap_restored_programs(installed, snapshot)
+        _carry_user_data(installed, snapshot)
+        archive = _restore_mount(Path(manifest['hermes_home']), snapshot, Path(manifest['baseline']))
+        manifest['profile_archive'] = str(archive)
+        start()
+        verify()
+        manifest['state'] = 'rolled_back'
+        _write_json(manifest_path, manifest)
+        return manifest
+    if manifest["state"] not in {"stopped", "swapped", "rollback_failed"}:
         raise UpdateTransactionError("Update snapshot does not need interrupted recovery")
     installed = Path(manifest["installed"])
     prior = snapshot / "live-prior"
