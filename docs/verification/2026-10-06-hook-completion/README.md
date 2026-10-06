@@ -62,9 +62,10 @@ outcomes, and artifact hashes. Negative tests reject missing model delivery,
 false native CLI claims, incorrect configuration paths, and partial checkpoints.
 
 The focused native and bridge gate passes 315 tests with one skip. Its output is
-[focused-corrected.txt](focused-corrected.txt). The final classifier and evidence gate passes 20 tests without skips; its output
-is [final-focused.txt](final-focused.txt). The complete regression result is recorded in the
-release validation report after execution.
+[focused-corrected.txt](focused-corrected.txt). The initial classifier and evidence gate passes 20 tests without skips; its output
+is [final-focused.txt](final-focused.txt). The [complete regression report](../2026-10-06-hook-regression/README.md) records
+2,089 tests, 67 skips, three sweep errors, and three passing serial error-case
+reruns. The complete sweep is not clean. Its final evidence gate passes 21 tests.
 
 ## Limits
 

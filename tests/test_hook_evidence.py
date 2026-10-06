@@ -151,6 +151,23 @@ class HookEvidenceTests(unittest.TestCase):
             self.assertTrue(any('unknown functional control' in error for error in errors))
             self.assertTrue(any('ledger outcome differs' in error for error in errors))
 
+    def test_functional_control_never_reads_an_external_artifact(self):
+        with tempfile.TemporaryDirectory() as directory:
+            parent = Path(directory)
+            root = parent / 'repository'
+            root.mkdir()
+            outside = parent / 'outside.json'
+            outside.write_text('This file must not be read as a result.')
+            inventory, ledger, document = self.fixture(root)
+            name = '../outside.json'
+            document['artifacts'][name] = hashlib.sha256(outside.read_bytes()).hexdigest()
+            document['registrations'][0].update(effect_status='paired_case_verified', paired_cases=[{
+                'id': 'external', 'kind': 'effect_control', 'result_artifact': name,
+                'artifacts': [name], 'native': {}, 'hermes': {}}])
+            ledger.write_text(json.dumps(document))
+            errors = check_evidence(inventory, ledger, root)
+            self.assertIn('missing or external artifact: ../outside.json', errors)
+
 
 class TrackedEvidenceTests(unittest.TestCase):
     def test_every_ledger_artifact_is_tracked_by_git(self):

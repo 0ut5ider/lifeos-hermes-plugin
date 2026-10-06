@@ -96,7 +96,11 @@ def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: 
                 if result not in artifacts or result not in names:
                     errors.append(f'functional control result is not retained: {label}')
                 else:
-                    records = json.loads((root / result).read_text()).get('cases', [])
+                    target = (root / result).resolve()
+                    if not target.is_relative_to(root) or not target.is_file():
+                        errors.append(f'functional control result is missing or external: {label}')
+                        continue
+                    records = json.loads(target.read_text()).get('cases', [])
                     matches = [record for record in records if record.get('id') == case['id']]
                     if len(matches) != 1:
                         errors.append(f'functional control is missing or duplicated: {label}')
