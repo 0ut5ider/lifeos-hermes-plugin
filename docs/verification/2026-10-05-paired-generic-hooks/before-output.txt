@@ -1,0 +1,42 @@
+......................EEEE............................................................................
+======================================================================
+ERROR: test_a_missing_file_change_output_or_delivery_is_rejected (test_paired_lifecycle_effects.PairedGenericEffectTests.test_a_missing_file_change_output_or_delivery_is_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.d63XVMA0Ku/tests/test_paired_lifecycle_effects.py", line 1140, in test_a_missing_file_change_output_or_delivery_is_rejected
+    case = self.case('generic-stop-gates')
+  File "/tmp/tmp.d63XVMA0Ku/tests/test_paired_lifecycle_effects.py", line 1122, in case
+    from scripts.paired_lifecycle_effects import GENERIC_EXPECTED
+ImportError: cannot import name 'GENERIC_EXPECTED' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.d63XVMA0Ku/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_every_generic_case_accepts_its_measured_effect (test_paired_lifecycle_effects.PairedGenericEffectTests.test_every_generic_case_accepts_its_measured_effect)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.d63XVMA0Ku/tests/test_paired_lifecycle_effects.py", line 1134, in test_every_generic_case_accepts_its_measured_effect
+    from scripts.paired_lifecycle_effects import GENERIC_CASES
+ImportError: cannot import name 'GENERIC_CASES' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.d63XVMA0Ku/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_normalization_removes_run_values_and_keeps_content (test_paired_lifecycle_effects.PairedGenericEffectTests.test_normalization_removes_run_values_and_keeps_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.d63XVMA0Ku/tests/test_paired_lifecycle_effects.py", line 1155, in test_normalization_removes_run_values_and_keeps_content
+    from scripts.paired_lifecycle_effects import normalize
+ImportError: cannot import name 'normalize' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.d63XVMA0Ku/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_one_side_with_a_different_file_content_is_unequal (test_paired_lifecycle_effects.PairedGenericEffectTests.test_one_side_with_a_different_file_content_is_unequal)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.d63XVMA0Ku/tests/test_paired_lifecycle_effects.py", line 1150, in test_one_side_with_a_different_file_content_is_unequal
+    case = self.case('generic-model-rung')
+  File "/tmp/tmp.d63XVMA0Ku/tests/test_paired_lifecycle_effects.py", line 1122, in case
+    from scripts.paired_lifecycle_effects import GENERIC_EXPECTED
+ImportError: cannot import name 'GENERIC_EXPECTED' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.d63XVMA0Ku/scripts/paired_lifecycle_effects.py)
+
+----------------------------------------------------------------------
+Ran 102 tests in 0.302s
+
+FAILED (errors=4)
+exit 1

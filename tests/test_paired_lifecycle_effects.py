@@ -1115,3 +1115,46 @@ class PairedISAWriteAndReadTests(unittest.TestCase):
         for side in ('native', 'hermes'):
             case[side]['after']['view_matches_content'] = False
         self.assertIn('isa-read-view: ISA edit effect is missing', check_pair(case))
+
+
+class PairedGenericEffectTests(unittest.TestCase):
+    def case(self, name):
+        from scripts.paired_lifecycle_effects import GENERIC_EXPECTED
+        files, printed, delivered = GENERIC_EXPECTED[name]
+        identifier = CASES[name][0][0]
+        side = {'before': {'files': 0},
+                'after': {'changed': {path: 'content' for path in files},
+                          'outputs': ['context' if value else '' for value in printed],
+                          'stderr_present': [False], 'context_in_model': delivered, 'user_response_delivered': True},
+                'hook_exit_codes': [0], 'event': identifier.split('.')[0], 'cli_exit_code': 0,
+                'model_generation_requests': 1, 'model_successful_responses': 1}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_every_generic_case_accepts_its_measured_effect(self):
+        from scripts.paired_lifecycle_effects import GENERIC_CASES
+        for name in GENERIC_CASES:
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_a_missing_file_change_output_or_delivery_is_rejected(self):
+        case = self.case('generic-stop-gates')
+        for side in ('native', 'hermes'):
+            case[side]['after']['changed'].pop('.claude/LIFEOS/MEMORY/OBSERVABILITY/format-gate.jsonl')
+        self.assertIn('generic-stop-gates: generic effect is missing', check_pair(case))
+        case = self.case('generic-memory-turn')
+        for side in ('native', 'hermes'):
+            case[side]['after']['context_in_model'] = [False]
+        self.assertIn('generic-memory-turn: generic effect is missing', check_pair(case))
+
+    def test_one_side_with_a_different_file_content_is_unequal(self):
+        case = self.case('generic-model-rung')
+        case['hermes']['after']['changed'][next(iter(case['hermes']['after']['changed']))] = 'other'
+        self.assertIn('generic-model-rung: paired state differs', check_pair(case))
+
+    def test_normalization_removes_run_values_and_keeps_content(self):
+        from scripts.paired_lifecycle_effects import normalize
+        home = Path('/home/fixture/run')
+        text = ('{"ts":"2026-10-05T12:00:01.123Z","session":"abc-session","path":"/home/fixture/run/.claude/projects/'
+                '-x/abc-session.jsonl","_events_offset": 412,"value":"kept"}')
+        self.assertEqual(normalize(text, home, 'abc-session'),
+                         '{"ts":"<time>","session":"<session>","path":"<transcript>","_events_offset": <offset>,"value":"kept"}')

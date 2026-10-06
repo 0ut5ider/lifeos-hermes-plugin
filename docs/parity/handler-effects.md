@@ -1,6 +1,6 @@
 # Registration effect matrix
 
-Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Eighty-four equal selected cases cover 39 registrations. Eighty-two lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, three tool logging cases, three file hint cases with real Write and Edit calls, two evaluation trigger cases, two knowledge guard cases, one complete Edit group case, and one complete Write group case and one Read case; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-05. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). Ninety-six equal selected cases cover 51 registrations. Ninety-four lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, three tool logging cases, three file hint cases with real Write and Edit calls, two evaluation trigger cases, two knowledge guard cases, one complete Edit group case, one complete Write group case and one Read case, and twelve generic file and output comparisons; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
@@ -47,16 +47,16 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | SessionEnd.1.3 | UpdateCounts | Refresh the configured usage counts or remain neutral without OAuth credentials. | Selected cases verified |
 | SessionEnd.1.4 | MemoryHealthGate | Check native memory health and publish the applicable result without losing async delivery. | Selected cases verified |
 | SessionEnd.1.5 | DocIntegrity | Check documentation integrity and report applicable stale documentation. | Selected cases verified |
-| SessionEnd.1.6 | IntegrityCheck | Compare installed files with the native integrity baseline and report changes. | Pending |
-| UserPromptSubmit.1.1 | PromptProcessing | Create and persist the session name, including the configured child inference result. | Pending |
+| SessionEnd.1.6 | IntegrityCheck | Compare installed files with the native integrity baseline and report changes. | Selected SessionEnd passes: no system file change and no output |
+| UserPromptSubmit.1.1 | PromptProcessing | Create and persist the session name, including the configured child inference result. | Selected prompt passes: work events and registry written |
 | UserPromptSubmit.2.1 | SatisfactionCapture | Capture eligible satisfaction feedback from the submitted prompt. | Selected synchronous and asynchronous feedback cases; remaining branches open |
-| UserPromptSubmit.3.1 | ReminderRouter | Route due native reminders under the configured session and delivery policy. | Pending |
+| UserPromptSubmit.3.1 | ReminderRouter | Route due native reminders under the configured session and delivery policy. | Selected disabled branch passes: no work repository, no issue, no state |
 | UserPromptSubmit.4.1 | VersionDrift | Compare the installation with its selected baseline and emit the native drift warning. | Selected cases pass; first asynchronous request lacks the warning; next-turn delivery remains open |
-| UserPromptSubmit.5.1 | MemoryTurnStart | Supply the admitted native memory context for the current turn. | Pending |
+| UserPromptSubmit.5.1 | MemoryTurnStart | Supply the admitted native memory context for the current turn. | Selected first prompt passes: memory context delivered to the model and injection state written |
 | UserPromptSubmit.6.1 | DriftReminder | Return the applicable drift context within its per-prompt line budget. | Five paired format-contract cases; remaining branches open |
-| UserPromptSubmit.7.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |
+| UserPromptSubmit.7.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Selected first prompt passes: nudge state and skill index written, no output |
 | UserPromptSubmit.8.1 | TimeContext | Return the current native time context through the configured async path. | Selected cases pass; first asynchronous request lacks clock context; next-turn delivery remains open |
-| UserPromptSubmit.9.1 | ModelRungGuard | Evaluate the actual model and effort carrier and return the applicable rung guidance. | Pending |
+| UserPromptSubmit.9.1 | ModelRungGuard | Evaluate the actual model and effort carrier and return the applicable rung guidance. | Selected first prompt passes with a pinned model; the plugin patch adds the reasoning effort to the log |
 | PostToolUseFailure.1.1 | EventLogger | Write the native tool-failure audit row with the actual tool and error. | Selected failing Bash case passes with equal error text; other tools remain open |
 | PostToolUseFailure.2.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Pending |
 | PostToolUseFailure.3.1 | LoopDetector | Track repeated failures and return the native loop warning. | Selected failing Bash case passes; hammering remains open |
@@ -68,13 +68,13 @@ Date: 2026-10-05. This table gives each of the 74 pinned registrations an expect
 | SessionStart.1.4 | FreshnessCache.ts --quiet | Write the native freshness cache for the installed source tree. | Selected cases verified |
 | SessionStart.1.5 | SettingsBackport and MergeSettings | Backport applicable settings and atomically merge system and user settings. | Selected cases verified |
 | Stop.1.1 | LastResponseCache | Persist the final assistant response in the native response cache. | Selected cases verified |
-| Stop.1.2 | TabState | Set the applicable completed-turn terminal state. | Pending |
-| Stop.1.3 | VoiceCompletion | Record final-answer voice state and apply the configured remote-channel desktop gate. | Pending |
+| Stop.1.2 | TabState | Set the applicable completed-turn terminal state. | Selected Stop passes without a terminal: no state change |
+| Stop.1.3 | VoiceCompletion | Record final-answer voice state and apply the configured remote-channel desktop gate. | Selected remote-channel Stop passes: a skipped voice event is logged |
 | Stop.1.4 | ISARenderOnStop | Render the applicable active ISA after the completed response. | Selected cases pass; spawn failure and fresh-page branches remain open |
-| Stop.1.5 | SpendAuditor | Update and check the native session spending record under the configured cost policy. | Pending |
-| Stop.1.6 | StopGates | Run nested completion gates and return required continuation or blocking feedback. | Pending |
-| Stop.1.7 | MemoryReviewFire | Trigger the eligible native memory review and preserve proposal approval rules. | Pending |
-| Stop.2.1 | MemoryHealthGate | Check native memory health and publish the applicable result without losing async delivery. | Pending |
+| Stop.1.5 | SpendAuditor | Update and check the native session spending record under the configured cost policy. | Selected Stop passes: spend audit row and state written |
+| Stop.1.6 | StopGates | Run nested completion gates and return required continuation or blocking feedback. | Selected Stop passes after the transcript timing correction: format, verification, and writing gate rows written |
+| Stop.1.7 | MemoryReviewFire | Trigger the eligible native memory review and preserve proposal approval rules. | Selected Stop passes: review state written |
+| Stop.2.1 | MemoryHealthGate | Check native memory health and publish the applicable result without losing async delivery. | Selected Stop passes synchronously; the pinned asynchronous setting cannot be observed in print mode |
 | StopFailure.1.1 | EventLogger | Write the native terminal API failure audit row with the actual error. | Selected case verified |
 | PermissionRequest.1.1 | Safety | Evaluate the actual command or file permission request, including secret egress, and return the native decision. | Pending |
 | PermissionRequest.2.1 | Safety | Evaluate the actual command or file permission request, including secret egress, and return the native decision. | Pending |

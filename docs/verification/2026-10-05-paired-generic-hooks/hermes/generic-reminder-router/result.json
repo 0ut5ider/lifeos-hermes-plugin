@@ -1,0 +1,104 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261006_004304_9f4bf4",
+  "seconds": 10.15,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-reminder-router",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-reminder-router",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "remind me to water the plants tomorrow"
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.3.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.3.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-reminder-router/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL1JlbWluZGVyUm91dGVyLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/ReminderRouter.hook.ts": "fe571ae827b8132cbbb9664aae0ca023ae734e99309b557769d4e35eaa73490d"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "6185ed204181920d7d826f5c40b7000db56dc5552809324ba2fb723cc285ffcb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "fe90ff353f11926adacc5a83797667d6bab0f04c0885e005f09126973d57080a",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "71ba685ab4e6b32874885e3c89d2831b2d18c3da835d257c142feacd47f35b45",
+    "fixture-events.jsonl": "e0210e687931d382cf611980ef8d9964f4ae33a13deb57a71b88c58fee9fd13d",
+    "cli.log": "348d082e26d93a007be3e196a1dac8a32f94273b3fa78f3a295e6bfce22c83c9",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "ddfe055ed544e5e41e0b4a534ff478e49babef5e2e56b763a1b4312a995c755b",
+    "fixture-files-before.json": "818a102bd6165b88ef0cd84cd53060316274d64bb3216e00f368651323068470",
+    "fixture-files-after.json": "419a9d6fe38f635b8c4d4eb843a6af79a9221bca03872afd76e404e2738556d8"
+  }
+}
