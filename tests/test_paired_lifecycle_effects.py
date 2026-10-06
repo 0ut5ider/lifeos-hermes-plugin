@@ -1038,3 +1038,48 @@ class PairedKnowledgeGuardTests(unittest.TestCase):
         group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
         self.assertEqual(group['matcher'], 'Write')
         self.assertIn('PostToolUse.8.6', group['hooks'][0]['command'])
+
+
+class PairedISAEditGroupTests(unittest.TestCase):
+    def case(self):
+        from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+        side = {'before': {'isa_closed': False, 'repo_commits': 1, 'repo_dirty': True},
+                'after': json.loads(json.dumps(ISA_EDIT_AFTER)), 'hook_exit_codes': [0] * 7,
+                'event': 'PostToolUse', 'cli_exit_code': 0,
+                'model_generation_requests': 3, 'model_successful_responses': 3}
+        return {'id': 'isa-edit-close', 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_complete_group_accepts_the_measured_effects(self):
+        self.assertEqual(check_pair(self.case()), [])
+        self.assertEqual(len(CASES['isa-edit-close']), 7)
+
+    def test_each_hook_effect_is_required(self):
+        for path, value in ((('registry', 'phase'), 'observe'), (('view_matches_content',), False),
+                            (('render_state_lists_isa',), False), (('checkpoint_state',), None),
+                            (('checkpoint_commit', 'count'), 1), (('outputs', 'PostToolUse.9.1', 'context_head'), ''),
+                            (('repo_dirty',), True)):
+            with self.subTest(path=path):
+                case = self.case()
+                for side in ('native', 'hermes'):
+                    target = case[side]['after']
+                    for key in path[:-1]:
+                        target = target[key]
+                    target[path[-1]] = value
+                self.assertIn('isa-edit-close: ISA edit effect is missing', check_pair(case))
+
+    def test_fixture_seeds_an_open_criterion_a_dirty_repository_and_its_allowlist(self):
+        from scripts.paired_lifecycle_effects import project_dir
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        (base / 'source/hooks').mkdir(parents=True)
+        for _, relative in CASES['isa-edit-close']:
+            (base / 'source' / relative).write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, 'isa-edit-close', base / 'source', base / 'trace.py')
+        self.assertEqual(json.loads((home / 'before-state.json').read_text()),
+                         {'isa_closed': False, 'repo_commits': 1, 'repo_dirty': True})
+        self.assertEqual((home / '.claude/checkpoint-repos.txt').read_text().strip(), str(home / 'checkpoint-repo'))
+        self.assertIn('- [ ] ISC-1:', (project_dir(home, 'isa-edit-close') / 'ISA.md').read_text())
+        group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
+        self.assertEqual((group['matcher'], len(group['hooks'])), ('Edit', 7))

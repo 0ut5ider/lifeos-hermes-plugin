@@ -1,0 +1,96 @@
+......................EEEEEEEEE......................................................................
+======================================================================
+ERROR: test_complete_group_accepts_the_measured_effects (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_complete_group_accepts_the_measured_effects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1053, in test_complete_group_accepts_the_measured_effects
+    self.assertEqual(check_pair(self.case()), [])
+                                ~~~~~~~~~^^
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('registry', 'phase'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('view_matches_content',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('render_state_lists_isa',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('checkpoint_state',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('checkpoint_commit', 'count'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('outputs', 'PostToolUse.9.1', 'context_head'))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_each_hook_effect_is_required (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_each_hook_effect_is_required) (path=('repo_dirty',))
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1062, in test_each_hook_effect_is_required
+    case = self.case()
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1045, in case
+    from scripts.paired_lifecycle_effects import ISA_EDIT_AFTER
+ImportError: cannot import name 'ISA_EDIT_AFTER' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.c2Pw3nm3xy/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_fixture_seeds_an_open_criterion_a_dirty_repository_and_its_allowlist (test_paired_lifecycle_effects.PairedISAEditGroupTests.test_fixture_seeds_an_open_criterion_a_dirty_repository_and_its_allowlist)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.c2Pw3nm3xy/tests/test_paired_lifecycle_effects.py", line 1076, in test_fixture_seeds_an_open_criterion_a_dirty_repository_and_its_allowlist
+    for _, relative in CASES['isa-edit-close']:
+                       ~~~~~^^^^^^^^^^^^^^^^^^
+KeyError: 'isa-edit-close'
+
+----------------------------------------------------------------------
+Ran 95 tests in 0.360s
+
+FAILED (errors=9)
+exit 1
