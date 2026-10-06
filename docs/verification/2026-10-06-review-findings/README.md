@@ -9,7 +9,7 @@ Date: 2026-10-06. This unit corrects the open findings from the [memory module r
 | Unbounded nested proposal fields | `008ff89` | Every nested proposal field has a type check and a bound before the native worker runs. |
 | A repeat migration replaces the earlier backup | `73267aa` | A backup whose fixed name already holds other bytes goes to a digest-named file. The journal plan covers it. Two earlier tests asserted the overwrite; they now assert the kept copy. |
 | The Bun wrapper checks only the literal `install` | `8712b51` | The wrapper finds the subcommand after global options. `install` and `i` must use the frozen form; dependency-changing subcommands are refused. |
-| Ownership recovery stops services forever after a completed rollback | this commit | Recovery skips a rollback that the ownership journal already records, and resumes the services. |
+| Ownership recovery stops services forever after a completed rollback | `3bf5d42` | Recovery skips a rollback that the ownership journal already records, and resumes the services. |
 
 ## Test runs
 
