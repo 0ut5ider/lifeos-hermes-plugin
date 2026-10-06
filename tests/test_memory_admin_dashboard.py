@@ -86,6 +86,34 @@ class MemoryAdminDashboardTests(unittest.TestCase):
     def post(self, path):
         return self.client.post(self.prefix + path)
 
+    def test_first_dashboard_account_claims_an_unconfigured_installation(self):
+        self.login()
+        self.configuration.path.unlink()
+        claim = '/api/plugins/lifeos-hook-bridge/memory/owner'
+        self.assertEqual(self.client.post(claim, headers={'Origin': 'https://other.invalid'}).status_code, 403)
+        self.assertFalse(self.configuration.path.exists())
+        response = self.client.post(claim)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()['state'], 'prepared')
+        config = self.configuration.load()
+        self.assertEqual(config['root'], str(self.fixture.root.absolute()))
+        self.assertEqual(config['accounts'], {self.account: config['principal']})
+        self.assertIs(config['ownership_enabled'], False)
+        self.assertIs(config['sharing_enabled'], False)
+        self.assertEqual(self.configuration.path.stat().st_mode & 0o777, 0o600)
+        second = self.client.post(claim)
+        self.assertEqual(second.status_code, 409, second.text)
+        self.assertEqual(self.configuration.load(), config)
+
+    def test_owner_claim_requires_a_session_and_an_installed_lifeos(self):
+        self.configuration.path.unlink()
+        claim = '/api/plugins/lifeos-hook-bridge/memory/owner'
+        self.assertEqual(self.client.post(claim).status_code, 401)
+        self.login()
+        (self.fixture.root / 'LIFEOS/VERSION').unlink()
+        self.assertEqual(self.client.post(claim).status_code, 409)
+        self.assertFalse(self.configuration.path.exists())
+
     def test_verified_owner_finalizes_real_native_mount_and_revokes_grant(self):
         self.login()
         response = self.post('/finalize')

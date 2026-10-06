@@ -176,3 +176,16 @@ test('source adoption retains a conflicted preview and reuses its request identi
   assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes('Synthetic stale source marker')));
   assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes('The native source preview changed.')));
 });
+
+test('an unconfigured installation offers the owner claim and shows the claimed state',async()=>{
+  const p=await panel({state:'not_configured',activation_ready:false,remaining_gates:{},connections:[]});
+  const claim=find(p.render(),n=>n.type==='button'&&n.children.includes('Claim this LifeOS installation'));
+  assert.ok(claim,'An unconfigured installation must offer the owner claim');
+  await claim.props.onClick();
+  await new Promise(setImmediate);
+  const request=p.calls.find(c=>c.url.endsWith('/memory/owner'));
+  assert.equal(request.init.method,'POST');
+  assert.equal(request.init.body,undefined);
+  const configured=await panel({state:'prepared',native_health:'ok',remaining_gates:{},connections:[]});
+  assert.equal(find(configured.render(),n=>n.type==='button'&&n.children.includes('Claim this LifeOS installation')),null);
+});

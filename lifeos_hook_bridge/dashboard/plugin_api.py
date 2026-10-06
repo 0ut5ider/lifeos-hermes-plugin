@@ -191,6 +191,12 @@ async def _fixed_mount_request(request: Request):
         raise HTTPException(status_code=400, detail='Mount requests use the installed owner configuration')
 
 
+@router.post('/memory/owner')
+async def claim_memory_owner(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    return await run_in_threadpool(_memory_action, lambda preferences: preferences.claim(account=account))
+
+
 @router.post('/memory/remount')
 async def remount_memory(request: Request, account: str = Depends(_memory_account)):
     await _fixed_mount_request(request)

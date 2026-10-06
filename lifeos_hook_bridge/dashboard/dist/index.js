@@ -89,6 +89,9 @@
             setResults(result.results ?? []);
             setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
           }
+        } else if (path === "/owner") {
+          setMemory(result);
+          setMessage("This dashboard account now owns the LifeOS installation. Ownership and sharing stay disabled.");
         } else {
           setMemory(await SDK.fetchJSON(memoryEndpoint));
           setMessage(result.status === "enrolled" ?
@@ -133,6 +136,11 @@
       h("h2", { className: "text-lg font-semibold" }, "Lasting memory"),
       h("p", { className: "text-sm" }, "LifeOS keeps durable facts and preferences. Hermes keeps conversation history and context compression."),
       memory?.state === "not_configured" ? h("p", null, "Memory setup is not configured. Your current memory settings have not been changed.") : null,
+      memory?.state === "not_configured" ? h("p", { className: "text-sm" },
+        "Claim the installation to prepare a fresh store or review memory. The claim binds this dashboard account as the owner. It does not enable ownership or sharing.") : null,
+      memory?.state === "not_configured" ? h("button", { type: "button", disabled: busy,
+        onClick: function () { return action("/owner", "POST"); },
+        className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Claim this LifeOS installation") : null,
       memory?.state === "unavailable" ? h("p", { role: "alert" }, "Memory is unavailable: " + memory.message) : null,
       configured ? h("p", null, "Native memory check: " + memory.native_health + ". Current indexed facts: " + (memory.active_facts ?? "unknown") + ".") : null,
       h("p", { className: "text-sm" }, "Ownership setup is still in development. This page cannot switch your memory provider until the checks below pass."),

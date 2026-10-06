@@ -122,6 +122,21 @@ class MemoryPreferences:
             result.update(state='unavailable', native_health='unavailable', message=str(error))
         return result
 
+    def claim(self, *, account: str) -> dict[str, Any]:
+        """Bind an unconfigured installation to the authenticated dashboard account."""
+        if not isinstance(account, str) or not account.startswith('dashboard:'):
+            raise PermissionError('An authenticated dashboard account must claim the installation')
+        if not (self.root / 'LIFEOS/VERSION').is_file():
+            raise MemoryUnavailable('Install LifeOS before claiming the installation')
+        config = {'version': 1, 'root': str(self.root), 'principal': 'owner', 'ownership_enabled': False,
+                  'sharing_enabled': False, 'accounts': {account: 'owner'}, 'destinations': {}, 'clients': {}}
+        self.configuration.validate(config)
+        with self.configuration._lock():
+            if self.configuration.path.exists() or self.configuration.path.is_symlink():
+                raise MemoryUnavailable('This installation already has an owner')
+            self.configuration._publish(config)
+        return self.status(account=account)
+
     @staticmethod
     def _owner_scope(config: dict[str, Any]) -> MemoryScope:
         return MemoryScope(config['principal'], 'dashboard:owner', tuple(sorted(CATEGORIES)),
