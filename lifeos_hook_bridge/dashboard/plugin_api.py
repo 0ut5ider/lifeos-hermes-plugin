@@ -457,6 +457,10 @@ def get_installation():
             host_candidate = validate_supported_hermes(HERMES_CANDIDATE)
         except (IncompatibleLifeOS, OSError) as error:
             host_candidate_error = str(error)
+    # The dashboard keeps the hook list it loaded at start; a later host change needs a restart.
+    host_state = get_host_patch_status()['state']
+    restart_required = ((host_state == 'applied' and hermes != 'patched_hooks_present')
+                        or (host_state == 'rolled_back' and hermes == 'patched_hooks_present'))
     mount = {'state':'none', 'recovery_required':False}
     if (HERMES_HOME / '.lifeos-mount').exists():
         try:
@@ -468,6 +472,7 @@ def get_installation():
         "lifeos": lifeos,
         "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
         "hermes": hermes,
+        "dashboard_restart_required": restart_required,
         "missing_hooks": sorted(PATCHED_HOOKS - VALID_HOOKS),
         "candidate_ready": candidate is not None,
         "candidate_commit": candidate["upstream_commit"] if candidate else None,

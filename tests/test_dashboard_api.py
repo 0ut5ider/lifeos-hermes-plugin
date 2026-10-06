@@ -89,6 +89,24 @@ class DashboardApiTests(unittest.TestCase):
                 host.VALID_HOOKS.add("pre_prompt_admission")
                 self.assertEqual(api.get_installation()["hermes"], "patched_hooks_present")
 
+    def test_installation_reports_a_dashboard_restart_after_a_host_change(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        stock = {"pre_tool_call", "post_tool_call", "pre_llm_call", "on_session_finalize", "api_request_error"}
+        cases = (("applied", stock, True), ("rolled_back", stock | api.PATCHED_HOOKS, True),
+                 ("applied", stock | api.PATCHED_HOOKS, False), ("rolled_back", stock, False))
+        for state, hooks, expected in cases:
+            with self.subTest(state=state, patched=hooks >= api.PATCHED_HOOKS), \
+                    tempfile.TemporaryDirectory() as directory:
+                api.INSTALLED_ROOT = Path(directory) / ".claude"
+                api.HOST_PATCH_ROOT = Path(directory) / "host-patches"
+                (api.HOST_PATCH_ROOT / "patch-1").mkdir(parents=True)
+                (api.HOST_PATCH_ROOT / "patch-1/manifest.json").write_text(json.dumps({"state": state}))
+                host = types.ModuleType("hermes_cli.plugins")
+                host.VALID_HOOKS = set(hooks)
+                with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"),
+                                              "hermes_cli.plugins": host}):
+                    self.assertIs(api.get_installation()["dashboard_restart_required"], expected)
+
     def test_prepares_candidate_only_when_lifeos_is_missing(self):
         api = self.load_api(lambda *_: [], lambda *_: [])
         with tempfile.TemporaryDirectory() as directory:

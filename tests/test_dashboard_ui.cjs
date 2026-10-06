@@ -407,3 +407,48 @@ test("installed LifeOS on stock Hermes shows the reduced safety limits", async (
   assert.equal(find(render(), (node) => node.type === "button" &&
     node.children.includes("Restore previous Hermes")), null);
 });
+
+test("a host change waiting for a dashboard restart hides stale Hermes controls", async () => {
+  const state = [];
+  let index = 0;
+  let effectRan = false;
+  let component;
+  const sdk = {
+    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
+    hooks: {
+      useState(initial) {
+        const slot = index++;
+        if (!(slot in state)) state[slot] = initial;
+        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
+      },
+      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
+    },
+    fetchJSON: (url) => {
+      if (url.endsWith("/installation/host-patch")) return Promise.resolve({ state: "applied" });
+      if (url.endsWith("/installation")) return Promise.resolve({
+        lifeos: "installed", version: "7.40.4", hermes: "stock", dashboard_restart_required: true,
+        candidate_ready: false, setup_baseline_exists: true, hermes_candidate_ready: true,
+      });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
+      if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
+      return Promise.resolve({ fields: [] });
+    },
+  };
+  vm.runInNewContext(bundle, {
+    window: {
+      __HERMES_PLUGIN_SDK__: sdk,
+      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
+    },
+    console,
+  });
+  const render = () => { index = 0; return component(); };
+  render();
+  await new Promise(setImmediate);
+  const view = render();
+  assert.ok(find(view, (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("Restart the Hermes dashboard"))));
+  assert.equal(find(view, (node) => node.type === "button" &&
+    node.children.includes("Prepare tested Hermes extension")), null);
+  assert.equal(find(view, (node) => node.type === "p" &&
+    node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce"))), null);
+});
