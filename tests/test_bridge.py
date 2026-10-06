@@ -1230,6 +1230,28 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
         self.assertEqual(rows[-1]["message"]["content"], "revised")
 
+    def test_stop_candidate_reaches_the_transcript_during_the_stop_hook_like_claude_code(self):
+        # Claude Code 2.1.272 shows the candidate in the transcript 50 to 150 ms after a Stop hook starts.
+        # LifeOS Stop gates wait 150 ms before they parse the transcript for the final answer.
+        marker = self.root / "stop-timing.json"
+        command = self.make_hook(
+            "stop_timing.py",
+            "import json,sys,time\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            "path=Path(data['transcript_path'])\n"
+            "def texts():\n"
+            " rows=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []\n"
+            " return [row['message']['content'] for row in rows if row['type']=='assistant']\n"
+            "early=texts(); time.sleep(0.3); late=texts()\n"
+            f"Path({str(marker)!r}).write_text(json.dumps({{'early':early,'late':late}}))\n",
+        )
+        bridge = self.bridge({"Stop": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call("question", session_id="s1")
+        self.assertIsNone(bridge.stop("READY", session_id="s1"))
+        self.assertEqual(json.loads(marker.read_text()), {"early": [], "late": ["READY"]})
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual([row["message"]["content"] for row in rows if row["type"] == "assistant"], ["READY"])
+
     def test_stop_transcript_records_actual_hermes_model(self):
         bridge = self.bridge({})
         bridge.stop("answered", session_id="model-session", model="flashnext-w4a16-fp8ple")

@@ -590,6 +590,9 @@ def _project_root_for_cwd(cwd: str) -> Path:
     return directory
 
 
+STOP_TRANSCRIPT_DELAY = 0.1
+
+
 class HookBridge:
     def __init__(
         self, settings_path: Path, root: Path,
@@ -2226,6 +2229,18 @@ class HookBridge:
             with self.session_lock:
                 self.session_platforms[session_id] = platform.lower()
         payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
+        # Claude Code adds the candidate to the transcript 50 to 150 ms after its Stop hooks start.
+        # LifeOS Stop gates wait 150 ms before they read the final answer, so the row follows the same delay.
+        appended = threading.Event()
+
+        def append():
+            if not appended.is_set():
+                appended.set()
+                self._append_transcript(session_id, "assistant", response, model=model,
+                                        reasoning_effort=reasoning_effort, provider=provider)
+        timer = threading.Timer(STOP_TRANSCRIPT_DELAY, append)
+        timer.daemon = True
+        timer.start()
         try:
             for process, output in self._run("Stop", payload):
                 if (output or {}).get("decision") == "block" or process.returncode == 2:
@@ -2233,5 +2248,6 @@ class HookBridge:
                     return {"action": "continue", "message": str(message)[:2000]}
             return None
         finally:
-            self._append_transcript(session_id, "assistant", response, model=model,
-                                    reasoning_effort=reasoning_effort, provider=provider)
+            timer.cancel()
+            timer.join()
+            append()
