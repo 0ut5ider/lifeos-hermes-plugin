@@ -80,6 +80,17 @@ class MountTransactionTests(unittest.TestCase):
         self.assertEqual(config.count('\n  deny:'), 1, config)
         self.assertNotIn('synthetic-stale-glob', config)
 
+    def test_finished_journal_of_another_installation_does_not_block_a_new_mount(self):
+        from lifeos_hook_bridge.mount_transaction import MountError, MountTransaction
+        self.execute()
+        other = MountTransaction(self.root, self.profile, self.root.parent / 'other-baseline.json')
+        self.assertEqual(other.status(), {'state': 'none', 'recovery_required': False})
+        journal = json.loads(other.journal.read_text())
+        journal['state'] = 'applying'
+        other.journal.write_text(json.dumps(journal))
+        with self.assertRaisesRegex(MountError, 'another installation'):
+            other.status()
+
     def test_selected_home_keeps_the_configured_account_workspace(self):
         from lifeos_hook_bridge import lifeos_installation
         workspace = self.profile.parent / 'account-workspace'

@@ -122,11 +122,15 @@ class MountTransaction:
         if info['mode'] & 0o077:
             raise MountError('The mount journal requires private owner permissions')
         value = json.loads(data)
-        if (not isinstance(value, dict) or value.get('version') != 1
-                or value.get('profile') != str(self.profile) or value.get('installed') != str(self.installed)
-                or value.get('baseline') != (str(self.baseline) if self.baseline is not None else None)
+        if (not isinstance(value, dict) or value.get('version') != 1 or value.get('profile') != str(self.profile)
                 or value.get('state') not in PENDING | {'committed', 'rolled_back'}):
             raise MountError('The mount journal belongs to another installation or is invalid')
+        if (value.get('installed') != str(self.installed)
+                or value.get('baseline') != (str(self.baseline) if self.baseline is not None else None)):
+            if value['state'] in PENDING:
+                raise MountError('The mount journal belongs to another installation or is invalid')
+            # A finished operation of the previously selected LifeOS home leaves nothing to recover.
+            return None
         directory = Path(value['snapshot'])
         if (directory.parent != self.state or directory.resolve() != directory or directory.is_symlink()
                 or len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)):
