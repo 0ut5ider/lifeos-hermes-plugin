@@ -1083,3 +1083,35 @@ class PairedISAEditGroupTests(unittest.TestCase):
         self.assertIn('- [ ] ISC-1:', (project_dir(home, 'isa-edit-close') / 'ISA.md').read_text())
         group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
         self.assertEqual((group['matcher'], len(group['hooks'])), ('Edit', 7))
+
+
+class PairedISAWriteAndReadTests(unittest.TestCase):
+    def case(self, name):
+        from scripts.paired_lifecycle_effects import isa_after
+        side = {'before': {'isa_closed': False, 'repo_commits': 1, 'repo_dirty': True},
+                'after': json.loads(json.dumps(isa_after(name))), 'hook_exit_codes': [0] * len(CASES[name]),
+                'event': 'PostToolUse', 'cli_exit_code': 0,
+                'model_generation_requests': 2, 'model_successful_responses': 2}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_write_group_and_read_registration_accept_their_measured_effects(self):
+        for name, count in (('isa-write-create', 7), ('isa-read-view', 1)):
+            with self.subTest(name=name):
+                self.assertEqual(len(CASES[name]), count)
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_write_requires_the_checkpoint_and_read_rejects_one(self):
+        case = self.case('isa-write-create')
+        for side in ('native', 'hermes'):
+            case[side]['after']['checkpoint_state'] = None
+        self.assertIn('isa-write-create: ISA edit effect is missing', check_pair(case))
+        case = self.case('isa-read-view')
+        for side in ('native', 'hermes'):
+            case[side]['after']['repo_dirty'] = False
+        self.assertIn('isa-read-view: ISA edit effect is missing', check_pair(case))
+
+    def test_read_requires_the_recorded_view(self):
+        case = self.case('isa-read-view')
+        for side in ('native', 'hermes'):
+            case[side]['after']['view_matches_content'] = False
+        self.assertIn('isa-read-view: ISA edit effect is missing', check_pair(case))

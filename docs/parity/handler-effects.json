@@ -1,7 +1,7 @@
 {
   "date": "2026-10-05",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. Eighty-two equal selected cases cover thirty-four registrations; complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. Eighty-four equal selected cases cover thirty-nine registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -1777,7 +1777,57 @@
     "docs/verification/2026-10-05-paired-isa-edit-group/run-output.txt": "78c87be28fbaf697352bbb55d91ae0f8c28090865afad7aa4051751420edd966",
     "docs/verification/2026-10-05-paired-isa-edit-group/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
     "docs/verification/2026-10-05-paired-isa-edit-group/run.py": "16b735a12d6aa9f5295095518599429ab774c35918235b1196f674bea0f6cd56",
-    "docs/verification/2026-10-05-paired-isa-edit-group/runtime-check.json": "db7e1cf111a3ea49d20f951f65897d6d49c1ecad4b1d8d675a9a1080ed160ae2"
+    "docs/verification/2026-10-05-paired-isa-edit-group/runtime-check.json": "db7e1cf111a3ea49d20f951f65897d6d49c1ecad4b1d8d675a9a1080ed160ae2",
+    "docs/verification/2026-10-05-paired-isa-write-read/README.md": "4c95518d54a90dbf18a0e8d8f45a520081cd8260c6fa010bdddeb1b93074bff1",
+    "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt": "db249b7cb501624e3a6d9fdd5b3fbdb8cc1945288859c8523f096bd0c19e3d85",
+    "docs/verification/2026-10-05-paired-isa-write-read/collect.py": "ae393d0b1a3490a3be102a038186051389ee9ce39a1510f4e0535e9292c94560",
+    "docs/verification/2026-10-05-paired-isa-write-read/configuration.json": "0c2be96108ce3bd5cf21a3f6ed560892834f6d4608e614065b15cc725a9843a6",
+    "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json": "1ead33dd1d36ff8f89e2a65d8e3bff924e046cd0c3634e89633b39708bde3bd2",
+    "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt": "67aa3121dd35ae07cea3f4c6cf1c0a0bff25f2d565a49ac8b34a3e21ea9a9f70",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md": "68be8afd547555edbed96b2689bea895c39ccc09d7ce793119e5ae720371ac04",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json": "47d9b57476bfecbaa978b01f02175f2d49fb5b67e21ec1041ca759c0980c321c",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log": "3b9f7b6f50290c1085f4d87cd7faca205c09b8a5937b085f7b5e2b0401712c6e",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl": "33a940cc800bcbbac216cfe805199c0ef3243e8c36401f4770fe2f34df098ea6",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json": "1a2873a6444f3dc34b87636f37c1a1a14164252cd4b15afea0ea22dcfbf1f3b2",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json": "81c9224605708c5af6a497e19146807ee0fa92cda2eb309cbfc5bb044b48953b",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl": "cf19b49a4d7e2850ab02ece307ab0d302aa66328bc8e1312936f88fc03d65a23",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json": "470d9b78f768053590ba74702bfddf335c07bff5e98a48d31e11f891228ebc5e",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md": "53218c8611a954982e448c8371abbb164b21971bf8a68a48d3cc21e3a2427228",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json": "c39b389278de13d8228fdebda9541fe96f566ee383c3836413d523f767c387af",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log": "d08203af7cee1670ef490c6670e17545ea299995b0b55660ad627130536961d1",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl": "085134cda638df94f0e4d337aa3d37a60b89a1a7bbe6efbab5ca2b99f65a4cb4",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json": "7572f46caba3a414a524f95d98642f02b3ac45e1d13ad9f81d61ed5c9286387e",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json": "bd75dc9e7283a545b53b84de8176001271ad5083bdc94c7e0eea9aa820c77d9a",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl": "53aa9e794598ab499c23b957a2a617feda5b9cf515fb719b731b437c967e534b",
+    "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json": "f5169f5b3ea391f9928a27c6ddee39954bd2c0a6036c596f7cfa961f7006d793",
+    "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json": "f6e28489a22b08a48c7133d1dc53a22472f66cfe8188aff050439cb776381aa5",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md": "8c3b96fab0079d0ad6f13ce6b768d27ed587b99ed91cdad9d9f98ffd422f5c48",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json": "47d9b57476bfecbaa978b01f02175f2d49fb5b67e21ec1041ca759c0980c321c",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log": "c8c05642b0c9caf77694954a718b919cec6b4a790d57c6b7e7b3043ffdaa783b",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl": "fbbac5bf9a6ebe4276f48a9dfc140b9aeeb8acbd4589940b32cf7f2585273edb",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json": "7e6ca037a7e3488a514e802da1d170765ef5ac4b2d719bba49b897bd4924dfc4",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json": "f9bc91104aafa6dc95b5d97b98947e01e848918ce1e6dceb496ed6544330344d",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl": "4b6c053f2fd79e2fffb74ecc27d102c91858f161f1d073dea2702dfb5fb63d90",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json": "5d0211f7d70579327064bca2c3ab4c262c0138c256a12e19ff4a00319f62ad70",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md": "5e3ceadf2f74dac97a0622f09b0af2720badf834c1df7b8ba785b75cc16edf35",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json": "c39b389278de13d8228fdebda9541fe96f566ee383c3836413d523f767c387af",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log": "30123ab55330f69efb8a4fe674099226bc443087e1de3b489ba0b4ae86fc691a",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl": "8789340fbd2aec9e630d69d14af810d3bbe9e2132460aceb853e386e2b5a13a7",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json": "fd5b69cc7597f7a1e5bb161535004a8e967a10dd12b8afb613a6bd7ea030c886",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json": "d88342d520eacd8cdfc1ca55f073c2902b03a82b371f9b7fdb32c85b17d8a96b",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl": "1f10479823705001643ded82748486e675e87c4e53d73d76860ab11519d35281",
+    "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json": "8b086f3ecb2b4eaa25f6f366f61d79a539cb7559fd0f311596fae38e4b703e9c",
+    "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py": "45b1d248b24caa255f2f39a1816d287be92cfae1a43519be1d407c774aee19f9",
+    "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json": "8acc23a2fc8c2e70c6f0b6bc3aa570144f88c0b787df29e08e533a5e3951427f",
+    "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt": "a951487a472208393e382adda37ea5bb49fc4a910605d3083491cd63d7824a32",
+    "docs/verification/2026-10-05-paired-isa-write-read/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-05-paired-isa-write-read/run.py": "27b02e61429e40e8ed6b3a04d4a5ebfab35548f85ac3aba3207d4290c51e8a99",
+    "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json": "c896b79cf6984681bfa923676980a4720c33490ac0b3396eded01e718aba1a32"
   },
   "registrations": [
     {
@@ -2289,12 +2339,166 @@
       "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
       "expected_effect": "Record the complete ISA content view for this session and backend.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "isa-read-view",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": false,
+              "tool_names": [
+                "Read"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": null,
+                "progress": null,
+                "isa": null,
+                "task": null
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": false,
+              "checkpoint_state": null,
+              "checkpoint_commit": {
+                "count": 1,
+                "names_criterion": false,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": true,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.7.1": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": false,
+              "tool_names": [
+                "Read"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": null,
+                "progress": null,
+                "isa": null,
+                "task": null
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": false,
+              "checkpoint_state": null,
+              "checkpoint_commit": {
+                "count": 1,
+                "names_criterion": false,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": true,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.7.1": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_remote_isa.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify a remote file view. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.1",
@@ -2303,10 +2507,246 @@
       "handler": "$HOME/.claude/hooks/ISASync.hook.ts",
       "expected_effect": "Synchronize ISA and active work state after a successful file change.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify a phase change, resume after completion, and an ISA outside the work tree. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.2",
@@ -2315,12 +2755,248 @@
       "handler": "$HOME/.claude/hooks/ISAStaleWriteGuard.hook.ts",
       "expected_effect": "Prevent ISA writes based on a stale session view of the actual local or backend file.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_remote_isa.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify the view after an external change. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.3",
@@ -2329,13 +3005,249 @@
       "handler": "$HOME/.claude/hooks/CheckpointPerISC.hook.ts",
       "expected_effect": "Commit eligible verified ISC state and write a retrievable checkpoint record.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_checkpoint.py",
         "tests/test_native_partial_patch.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify skill-homed ISAs, failure handling, and repeated closures. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.4",
@@ -2897,10 +3809,245 @@
             "model_generation_requests": 2,
             "model_successful_responses": 2
           }
+        },
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
         }
       ],
       "related_native_tests": [],
-      "remaining": "Verify the fire branch with the actual evaluation runner, and complete groups."
+      "remaining": "Verify the fire branch with the actual evaluation runner. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.5",
@@ -3462,10 +4609,245 @@
             "model_generation_requests": 2,
             "model_successful_responses": 2
           }
+        },
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
         }
       ],
       "related_native_tests": [],
-      "remaining": "Verify the gear, inventory, and service unit patterns for Write, and complete groups."
+      "remaining": "Verify the gear, inventory, and service unit patterns for Write. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.6",
@@ -3681,10 +5063,245 @@
             "model_generation_requests": 3,
             "model_successful_responses": 3
           }
+        },
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
         }
       ],
       "related_native_tests": [],
-      "remaining": "Verify a valid note, the Edit and MultiEdit registrations, and complete groups. Claude Code asks for approval before a write below its configuration directory; the native control uses bypass mode."
+      "remaining": "Verify a valid note. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.8.7",
@@ -3693,12 +5310,248 @@
       "handler": "$HOME/.claude/hooks/ComplexityRatchet.hook.ts",
       "expected_effect": "Accumulate changed lines and return the configured complexity warning.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "isa-write-create",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-isa-write-read/README.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/before-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/collect.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/configuration.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-command.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/focused-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/hermes/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/isa-write-read-proof.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-read-view/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/ISA.md",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/after-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/before-state.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/cli.log",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-isa-write-read/native/isa-write-create/result.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/paired-results.json",
+            "docs/verification/2026-10-05-paired-isa-write-read/run-output.txt",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.done",
+            "docs/verification/2026-10-05-paired-isa-write-read/run.py",
+            "docs/verification/2026-10-05-paired-isa-write-read/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "isa_closed": false,
+              "repo_commits": 1,
+              "repo_dirty": true
+            },
+            "after": {
+              "isa_closed": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "registry": {
+                "phase": "execute",
+                "progress": "0/1",
+                "isa": "MEMORY/WORK/pair-run/ISA.md",
+                "task": "PAIR_ISA_TASK"
+              },
+              "view_matches_content": true,
+              "render_state_lists_isa": true,
+              "checkpoint_state": {
+                "committed_iscs": [
+                  "ISC-1"
+                ],
+                "sha_matches_head": true
+              },
+              "checkpoint_commit": {
+                "count": 2,
+                "names_criterion": true,
+                "changed_files": [
+                  "tracked.txt"
+                ]
+              },
+              "repo_dirty": false,
+              "atlas_rows": 1,
+              "evaluation_state_present": false,
+              "outputs": {
+                "PostToolUse.8.1": {
+                  "continue_only": false,
+                  "empty": false,
+                  "context_head": "<lifeos-ascent-delta>"
+                },
+                "PostToolUse.8.2": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.3": {
+                  "continue_only": true,
+                  "empty": false,
+                  "context_head": ""
+                },
+                "PostToolUse.8.4": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.5": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.6": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                },
+                "PostToolUse.8.7": {
+                  "continue_only": false,
+                  "empty": true,
+                  "context_head": ""
+                }
+              },
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        }
+      ],
       "related_native_tests": [
         "tests/test_native_partial_patch.py"
       ],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify a write that exceeds a complexity budget. Complete group coverage is one selected case."
     },
     {
       "id": "PostToolUse.9.1",

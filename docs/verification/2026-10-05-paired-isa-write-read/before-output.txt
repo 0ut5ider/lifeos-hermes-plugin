@@ -1,0 +1,44 @@
+................................EEEE...............................................................
+======================================================================
+ERROR: test_read_requires_the_recorded_view (test_paired_lifecycle_effects.PairedISAWriteAndReadTests.test_read_requires_the_recorded_view)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.nq2YCf7NoE/tests/test_paired_lifecycle_effects.py", line 1114, in test_read_requires_the_recorded_view
+    case = self.case('isa-read-view')
+  File "/tmp/tmp.nq2YCf7NoE/tests/test_paired_lifecycle_effects.py", line 1090, in case
+    from scripts.paired_lifecycle_effects import isa_after
+ImportError: cannot import name 'isa_after' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.nq2YCf7NoE/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_write_group_and_read_registration_accept_their_measured_effects (test_paired_lifecycle_effects.PairedISAWriteAndReadTests.test_write_group_and_read_registration_accept_their_measured_effects) (name='isa-write-create')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.nq2YCf7NoE/tests/test_paired_lifecycle_effects.py", line 1100, in test_write_group_and_read_registration_accept_their_measured_effects
+    self.assertEqual(len(CASES[name]), count)
+                         ~~~~~^^^^^^
+KeyError: 'isa-write-create'
+
+======================================================================
+ERROR: test_write_group_and_read_registration_accept_their_measured_effects (test_paired_lifecycle_effects.PairedISAWriteAndReadTests.test_write_group_and_read_registration_accept_their_measured_effects) (name='isa-read-view')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.nq2YCf7NoE/tests/test_paired_lifecycle_effects.py", line 1100, in test_write_group_and_read_registration_accept_their_measured_effects
+    self.assertEqual(len(CASES[name]), count)
+                         ~~~~~^^^^^^
+KeyError: 'isa-read-view'
+
+======================================================================
+ERROR: test_write_requires_the_checkpoint_and_read_rejects_one (test_paired_lifecycle_effects.PairedISAWriteAndReadTests.test_write_requires_the_checkpoint_and_read_rejects_one)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.nq2YCf7NoE/tests/test_paired_lifecycle_effects.py", line 1104, in test_write_requires_the_checkpoint_and_read_rejects_one
+    case = self.case('isa-write-create')
+  File "/tmp/tmp.nq2YCf7NoE/tests/test_paired_lifecycle_effects.py", line 1090, in case
+    from scripts.paired_lifecycle_effects import isa_after
+ImportError: cannot import name 'isa_after' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.nq2YCf7NoE/scripts/paired_lifecycle_effects.py)
+
+----------------------------------------------------------------------
+Ran 98 tests in 0.552s
+
+FAILED (errors=4)
+exit 1

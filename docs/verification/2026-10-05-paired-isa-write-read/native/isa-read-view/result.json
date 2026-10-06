@@ -1,0 +1,166 @@
+{
+  "before": {
+    "isa_closed": false,
+    "repo_commits": 1,
+    "repo_dirty": true
+  },
+  "after": {
+    "isa_closed": false,
+    "tool_names": [
+      "Read"
+    ],
+    "file_path_matches": true,
+    "registry": {
+      "phase": null,
+      "progress": null,
+      "isa": null,
+      "task": null
+    },
+    "view_matches_content": true,
+    "render_state_lists_isa": false,
+    "checkpoint_state": null,
+    "checkpoint_commit": {
+      "count": 1,
+      "names_criterion": false,
+      "changed_files": [
+        "tracked.txt"
+      ]
+    },
+    "repo_dirty": true,
+    "atlas_rows": 1,
+    "evaluation_state_present": false,
+    "outputs": {
+      "PostToolUse.7.1": {
+        "continue_only": true,
+        "empty": false,
+        "context_head": ""
+      }
+    },
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "b8deddfe-9fa0-4a40-81c1-89a8cb035427",
+  "seconds": 8.594,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-isa-write-read-20261005/results/isa-read-view",
+    "/home/lifeos-claude-ref/workspace/paired-isa-write-read-20261005/results/isa-read-view",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Read",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Perform the exact file operation from the user message with the file tools. Then reply with exactly READY. If a tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "bypassPermissions",
+    "--max-turns",
+    "5",
+    "Read the file at the absolute path /home/lifeos-claude-ref/workspace/paired-isa-write-read-20261005/results/isa-read-view/.claude/LIFEOS/MEMORY/WORK/pair-run/ISA.md once with the file reading tool."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.7.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.7.1 /home/lifeos-claude-ref/workspace/paired-isa-write-read-20261005/results/isa-read-view/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvSVNBU3RhbGVXcml0ZUd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/ISAStaleWriteGuard.hook.ts": "d79dfe0d195fee969090c6fdccea7d93a281e8b7d113d1e1cd5e1bd82cb9fbdd"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "d59b9eb0f9c156cb1ab786100eb67df3214267e853d8b308dd3ce4af5da8e795",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a73a3c4b86e170645186936a468af49244300127d8a3c892f6862e700c3f3122",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "766b7734f8d60fd2956a63470b702b6a7dbc673152c003514b1b09e8860e0bcc",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "348640ccb0a3b3d686c188043184cede31765128feef6abedee3f0b2b4824f1f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "6284a37f18ba6a84c85b8b91ef2426190cdb3418cfdf338f08094bae47992e78",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "5872bdd3ab54138c9397460768e154af24e175f6763eb07e452821b483bf6299",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "4b6c053f2fd79e2fffb74ecc27d102c91858f161f1d073dea2702dfb5fb63d90",
+    "fixture-events.jsonl": "fbbac5bf9a6ebe4276f48a9dfc140b9aeeb8acbd4589940b32cf7f2585273edb",
+    "cli.log": "c8c05642b0c9caf77694954a718b919cec6b4a790d57c6b7e7b3043ffdaa783b",
+    "before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "after-state.json": "47d9b57476bfecbaa978b01f02175f2d49fb5b67e21ec1041ca759c0980c321c",
+    "fixture-files-before.json": "f9bc91104aafa6dc95b5d97b98947e01e848918ce1e6dceb496ed6544330344d",
+    "fixture-files-after.json": "7e6ca037a7e3488a514e802da1d170765ef5ac4b2d719bba49b897bd4924dfc4"
+  }
+}

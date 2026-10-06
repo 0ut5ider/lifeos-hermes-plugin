@@ -1,0 +1,302 @@
+{
+  "cases": [
+    {
+      "id": "isa-write-create",
+      "registrations": [
+        "PostToolUse.8.1",
+        "PostToolUse.8.2",
+        "PostToolUse.8.3",
+        "PostToolUse.8.4",
+        "PostToolUse.8.5",
+        "PostToolUse.8.6",
+        "PostToolUse.8.7"
+      ],
+      "native": {
+        "before": {
+          "isa_closed": false,
+          "repo_commits": 1,
+          "repo_dirty": true
+        },
+        "after": {
+          "isa_closed": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "registry": {
+            "phase": "execute",
+            "progress": "0/1",
+            "isa": "MEMORY/WORK/pair-run/ISA.md",
+            "task": "PAIR_ISA_TASK"
+          },
+          "view_matches_content": true,
+          "render_state_lists_isa": true,
+          "checkpoint_state": {
+            "committed_iscs": [
+              "ISC-1"
+            ],
+            "sha_matches_head": true
+          },
+          "checkpoint_commit": {
+            "count": 2,
+            "names_criterion": true,
+            "changed_files": [
+              "tracked.txt"
+            ]
+          },
+          "repo_dirty": false,
+          "atlas_rows": 1,
+          "evaluation_state_present": false,
+          "outputs": {
+            "PostToolUse.8.1": {
+              "continue_only": false,
+              "empty": false,
+              "context_head": "<lifeos-ascent-delta>"
+            },
+            "PostToolUse.8.2": {
+              "continue_only": true,
+              "empty": false,
+              "context_head": ""
+            },
+            "PostToolUse.8.3": {
+              "continue_only": true,
+              "empty": false,
+              "context_head": ""
+            },
+            "PostToolUse.8.4": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            },
+            "PostToolUse.8.5": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            },
+            "PostToolUse.8.6": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            },
+            "PostToolUse.8.7": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            }
+          },
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "isa_closed": false,
+          "repo_commits": 1,
+          "repo_dirty": true
+        },
+        "after": {
+          "isa_closed": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "registry": {
+            "phase": "execute",
+            "progress": "0/1",
+            "isa": "MEMORY/WORK/pair-run/ISA.md",
+            "task": "PAIR_ISA_TASK"
+          },
+          "view_matches_content": true,
+          "render_state_lists_isa": true,
+          "checkpoint_state": {
+            "committed_iscs": [
+              "ISC-1"
+            ],
+            "sha_matches_head": true
+          },
+          "checkpoint_commit": {
+            "count": 2,
+            "names_criterion": true,
+            "changed_files": [
+              "tracked.txt"
+            ]
+          },
+          "repo_dirty": false,
+          "atlas_rows": 1,
+          "evaluation_state_present": false,
+          "outputs": {
+            "PostToolUse.8.1": {
+              "continue_only": false,
+              "empty": false,
+              "context_head": "<lifeos-ascent-delta>"
+            },
+            "PostToolUse.8.2": {
+              "continue_only": true,
+              "empty": false,
+              "context_head": ""
+            },
+            "PostToolUse.8.3": {
+              "continue_only": true,
+              "empty": false,
+              "context_head": ""
+            },
+            "PostToolUse.8.4": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            },
+            "PostToolUse.8.5": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            },
+            "PostToolUse.8.6": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            },
+            "PostToolUse.8.7": {
+              "continue_only": false,
+              "empty": true,
+              "context_head": ""
+            }
+          },
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "isa-read-view",
+      "registrations": [
+        "PostToolUse.7.1"
+      ],
+      "native": {
+        "before": {
+          "isa_closed": false,
+          "repo_commits": 1,
+          "repo_dirty": true
+        },
+        "after": {
+          "isa_closed": false,
+          "tool_names": [
+            "Read"
+          ],
+          "file_path_matches": true,
+          "registry": {
+            "phase": null,
+            "progress": null,
+            "isa": null,
+            "task": null
+          },
+          "view_matches_content": true,
+          "render_state_lists_isa": false,
+          "checkpoint_state": null,
+          "checkpoint_commit": {
+            "count": 1,
+            "names_criterion": false,
+            "changed_files": [
+              "tracked.txt"
+            ]
+          },
+          "repo_dirty": true,
+          "atlas_rows": 1,
+          "evaluation_state_present": false,
+          "outputs": {
+            "PostToolUse.7.1": {
+              "continue_only": true,
+              "empty": false,
+              "context_head": ""
+            }
+          },
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "isa_closed": false,
+          "repo_commits": 1,
+          "repo_dirty": true
+        },
+        "after": {
+          "isa_closed": false,
+          "tool_names": [
+            "Read"
+          ],
+          "file_path_matches": true,
+          "registry": {
+            "phase": null,
+            "progress": null,
+            "isa": null,
+            "task": null
+          },
+          "view_matches_content": true,
+          "render_state_lists_isa": false,
+          "checkpoint_state": null,
+          "checkpoint_commit": {
+            "count": 1,
+            "names_criterion": false,
+            "changed_files": [
+              "tracked.txt"
+            ]
+          },
+          "repo_dirty": true,
+          "atlas_rows": 1,
+          "evaluation_state_present": false,
+          "outputs": {
+            "PostToolUse.7.1": {
+              "continue_only": true,
+              "empty": false,
+              "context_head": ""
+            }
+          },
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    }
+  ]
+}
