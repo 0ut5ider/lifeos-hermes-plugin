@@ -30,6 +30,10 @@ from .memory_administration import (mount_environment, job_binding, required, re
 from .memory_service import MemoryConfiguration
 from .installation_lock import installation_lock
 from .native_output import failure_message
+from . import program_lock
+
+# Running turns finish before the gateway stops; a longer turn fails the job before any change.
+TURN_WAIT_SECONDS = 600
 
 
 def _digest(path: Path) -> str:
@@ -238,7 +242,8 @@ def _run_authorized_update_job(job, action, installed, profile):
         mount_environment(installed, profile, request.get('memory_authorization'),
                           binding=job_binding(job, request, action))
     try:
-        return _execute_update_job(job, action)
+        with program_lock.exclusive(profile, TURN_WAIT_SECONDS):
+            return _execute_update_job(job, action)
     finally:
         if managed:
             revoke(MemoryConfiguration(profile / 'lifeos-memory.json'), request['memory_authorization'])

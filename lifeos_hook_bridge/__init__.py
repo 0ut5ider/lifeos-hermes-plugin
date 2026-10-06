@@ -35,15 +35,22 @@ def register(ctx: Any) -> None:
         current = load_picker_context()
         return configured_model_map(ctx.get_config, current.current_provider, current.current_model)
 
-    bridge = HookBridge(
-        settings, settings.parent,
-        model_tiers_provider=model_tiers,
-    )
     try:
         from hermes_cli.plugins import VALID_HOOKS
     except ImportError:
         VALID_HOOKS = PATCHED_HOOKS
     patched_host = PATCHED_HOOKS <= VALID_HOOKS
+    try:
+        from hermes_constants import get_hermes_home
+    except ImportError:
+        profile = None
+    else:
+        profile = get_hermes_home()
+    bridge = HookBridge(
+        settings, settings.parent,
+        model_tiers_provider=model_tiers,
+        profile=profile, hold_turns=patched_host,
+    )
     if hasattr(ctx, "on_unload"):
         ctx.on_unload(bridge.close)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)

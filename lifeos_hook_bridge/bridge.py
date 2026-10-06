@@ -26,6 +26,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 
+from . import program_lock
+
 
 LOG = logging.getLogger(__name__)
 TOOL_NAMES = {
@@ -605,9 +607,14 @@ class HookBridge:
     def __init__(
         self, settings_path: Path, root: Path,
         model_tiers_provider: Callable[[], dict[str, Any]] | None = None,
+        profile: Path | None = None, hold_turns: bool = False,
     ):
         self.settings_path = Path(settings_path)
         self.root = Path(root)
+        # The Hermes profile whose program lock turns hold; None disables the lock.
+        self.profile = Path(profile) if profile is not None else None
+        self.hold_turns = hold_turns
+        self.turn_leases: dict[str, int] = {}
         self.model_tiers_provider = model_tiers_provider
         self.base_environment = dict(os.environ)
         self._apply_settings(json.loads(self.settings_path.read_text()))
@@ -666,6 +673,8 @@ class HookBridge:
                 LOG.error("LifeOS config watcher failed: %s", error)
 
     def close(self) -> None:
+        for session_id in tuple(self.turn_leases):
+            self._end_turn(session_id)
         self.watcher_stop.set()
         if self.watcher is not None and self.watcher is not threading.current_thread():
             self.watcher.join(timeout=2)
@@ -2022,6 +2031,8 @@ class HookBridge:
         if _delegated_child():
             # Claude Code runs SessionStart and UserPromptSubmit hooks for the main session only.
             return None
+        if not self._admit_turn(session_id):
+            return {"action": "block", "message": program_lock.BUSY_MESSAGE}
         prompt = _prompt_text(user_message)
         if platform:
             with self.session_lock:
@@ -2177,6 +2188,7 @@ class HookBridge:
         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason=native_reason), native_reason)
         shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
         self._stop_agent_watchdog(session_id)
+        self._end_turn(session_id)
         with self.session_lock:
             self.started_sessions.discard(session_id)
             self.session_platforms.pop(session_id, None)
@@ -2213,11 +2225,42 @@ class HookBridge:
             if len(self.api_errors) > 1024:
                 self.api_errors.pop(next(iter(self.api_errors)))
 
+    def _admit_turn(self, session_id: str) -> bool:
+        """Refuse a turn during a program swap; on a patched host, hold the lock until turn end."""
+        if self.profile is None:
+            return True
+        lease = program_lock.shared(self.profile)
+        if lease is None:
+            return False
+        if not self.hold_turns:
+            program_lock.release(lease)
+            return True
+        with self.session_lock:
+            previous = self.turn_leases.pop(session_id, None)
+            self.turn_leases[session_id] = lease
+        if previous is not None:
+            program_lock.release(previous)
+        return True
+
+    def _end_turn(self, session_id: str) -> None:
+        with self.session_lock:
+            lease = self.turn_leases.pop(session_id, None)
+        if lease is not None:
+            program_lock.release(lease)
+
     def turn_end(
         self, session_id: str = "", turn_id: str = "", failed: bool = False,
         turn_exit_reason: str = "", failure_reason: str = "", final_response: str = "",
         interrupted: bool = False, **_: Any,
     ) -> None:
+        try:
+            self._turn_end(session_id, turn_id, failed, turn_exit_reason, failure_reason,
+                           final_response, interrupted)
+        finally:
+            self._end_turn(session_id)
+
+    def _turn_end(self, session_id, turn_id, failed, turn_exit_reason, failure_reason,
+                  final_response, interrupted) -> None:
         with self.session_lock:
             error = self.api_errors.pop((session_id, turn_id), None)
         if not failed or interrupted or error is None:
