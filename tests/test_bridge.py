@@ -2151,6 +2151,19 @@ class HookBridgeTests(unittest.TestCase):
             bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": True}, session_id="s1")
             self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], True)
 
+    def test_finite_session_reports_the_runtime_synchronous_fallback(self):
+        from gateway.session_context import clear_session_vars, set_session_vars
+        marker = self.root / 'finite-agent.json'
+        command = self.make_hook('record-finite.py',
+                              f'import json,sys\nfrom pathlib import Path\nPath({str(marker)!r}).write_text(sys.stdin.read())\n')
+        bridge = self.bridge({'PreToolUse': [{'matcher': 'Agent', 'hooks': [{'type': 'command', 'command': command}]}]})
+        tokens = set_session_vars(platform='cli', async_delivery=False)
+        try:
+            bridge.pre_tool_call('delegate_task', {'tasks': [{'goal': 'Inspect report'}], 'background': 'false'}, session_id='s1')
+            self.assertIs(json.loads(marker.read_text())['tool_input']['run_in_background'], False)
+        finally:
+            clear_session_vars(tokens)
+
     def test_background_agent_watchdog_instruction_uses_hermes_delivery(self):
         command = self.make_hook(
             "watchdog-context.py",
@@ -3543,6 +3556,17 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(events[0]["tool_input"]["questions"][0]["options"], [
             {"label": "A", "description": ""}, {"label": "B", "description": ""},
         ])
+
+    def test_clarify_batch_maps_the_questions_that_hermes_displays(self):
+        args = {"question": "Batch title", "questions": [
+            {"question": "Choose the fixture mode", "choices": ["A", "B"], "multi_select": True},
+            {"question": "Describe the fixture"},
+        ]}
+        self.assertEqual(_tool_input("AskUserQuestion", args, "/tmp", ""), {"questions": [
+            {"question": "Choose the fixture mode", "options": [
+                {"label": "A", "description": ""}, {"label": "B", "description": ""}], "multiSelect": True},
+            {"question": "Describe the fixture", "multiSelect": False},
+        ]})
 
     def test_multi_file_patch_checks_each_changed_file(self):
         command = self.make_hook(

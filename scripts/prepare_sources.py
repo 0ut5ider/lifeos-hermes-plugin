@@ -28,6 +28,7 @@ SOURCES = {
             "hermes-remote-files.patch",
             "hermes-cron-bootstrap.patch",
             "hermes-required-middleware.patch",
+            "hermes-web-result-status.patch",
         ),
     },
     "lifeos": {
@@ -44,6 +45,7 @@ SOURCES = {
             "lifeos-hermes-carrier-probe.patch",
             "lifeos-memory-access.patch",
             "lifeos-mount-yaml-blocks.patch",
+            "lifeos-config-audit.patch",
         ),
     },
 }

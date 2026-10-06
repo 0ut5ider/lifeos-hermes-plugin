@@ -288,15 +288,26 @@ def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "defau
             translated["prompt"] = tasks[0].get("goal", "")
     if name == "Skill" and "name" in translated:
         translated["skill"] = translated.pop("name")
-    if name == "AskUserQuestion" and isinstance(translated.get("question"), str):
-        question = {"question": translated["question"]}
-        choices = translated.get("choices")
-        if isinstance(choices, list):
-            question["options"] = [
-                {"label": choice, "description": ""} for choice in choices if isinstance(choice, str)
-            ]
-        question["multiSelect"] = bool(translated.get("multi_select"))
-        return {"questions": [question]}
+    if name == "AskUserQuestion":
+        questions = translated.get("questions")
+        if not isinstance(questions, list) or not questions:
+            questions = [translated] if isinstance(translated.get("question"), str) else []
+        if questions:
+            native_questions = []
+            for entry in questions:
+                if isinstance(entry, str):
+                    entry = {"question": entry}
+                if not isinstance(entry, dict) or not isinstance(entry.get("question"), str):
+                    continue
+                question = {"question": entry["question"]}
+                choices = entry.get("choices")
+                if isinstance(choices, list):
+                    question["options"] = [
+                        {"label": choice, "description": ""} for choice in choices if isinstance(choice, str)
+                    ]
+                question["multiSelect"] = bool(entry.get("multi_select"))
+                native_questions.append(question)
+            return {"questions": native_questions}
     return translated
 
 
@@ -431,6 +442,13 @@ def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
             background = not is_delegated_child_context()
         except ImportError:
             background = True
+    try:
+        from gateway.session_context import async_delivery_supported, get_session_env, session_history_delivery_supported
+        if get_session_env('HERMES_SINGLE_QUERY_SESSION') == '1' or (
+                not async_delivery_supported() and not session_history_delivery_supported()):
+            background = False
+    except ImportError:
+        pass
     for index, task in enumerate(tasks):
         if not isinstance(task, dict) or not isinstance(task.get("goal"), str) or not task["goal"].strip():
             continue

@@ -6,10 +6,19 @@ from pathlib import Path
 import tempfile
 import time
 
-from scripts.paired_lifecycle_effects import CASES, check_pair, make_fixture, state_snapshot
+from scripts.paired_lifecycle_effects import CASES, check_pair, make_fixture, state_snapshot, conversation_request
 
 
 class PairedLifecycleEffectTests(unittest.TestCase):
+    def test_interactive_title_request_is_metadata(self):
+        title = {'path': '/v1/messages?beta=true', 'body': {'output_config': {'format': {
+            'type': 'json_schema', 'schema': {'type': 'object', 'properties': {'title': {'type': 'string'}},
+                                            'required': ['title'], 'additionalProperties': False}}}}}
+        self.assertFalse(conversation_request(title, 'question-round-trip'))
+        self.assertTrue(conversation_request(title, 'generic-task-allow'))
+        title['body']['output_config']['format']['schema']['properties']['answer'] = {'type': 'string'}
+        self.assertTrue(conversation_request(title, 'question-round-trip'))
+
     def context_case(self, name, *, loaded=False, marker=None, timing=True):
         after = {'relationship_present': loaded, 'wisdom_present': loaded,
                  'low_confidence_present': False, 'advisory_present': loaded,
@@ -1117,6 +1126,27 @@ class PairedISAWriteAndReadTests(unittest.TestCase):
         self.assertIn('isa-read-view: ISA edit effect is missing', check_pair(case))
 
 
+class PairedQuestionEffectTests(unittest.TestCase):
+    def case(self):
+        side = {'before': {'title': 'Inspecting report', 'ascent': 'traverse'},
+                'after': {'waiting_valid': True, 'restored_valid': True, 'answer_in_model': True,
+                          'user_response_delivered': True},
+                'hook_exit_codes': [0, 0], 'event': 'PreToolUse', 'cli_exit_code': 0,
+                'model_generation_requests': 2, 'model_successful_responses': 2}
+        return {'id': 'question-round-trip', 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_completed_question_passes(self):
+        self.assertEqual(check_pair(self.case()), [])
+
+    def test_equal_missing_answer_or_waiting_state_is_rejected(self):
+        for field in ('waiting_valid', 'restored_valid', 'answer_in_model', 'user_response_delivered'):
+            with self.subTest(field=field):
+                case = self.case()
+                for side in ('native', 'hermes'):
+                    case[side]['after'][field] = False
+                self.assertIn('question-round-trip: question lifecycle effect is missing', check_pair(case))
+
+
 class PairedGenericEffectTests(unittest.TestCase):
     def case(self, name):
         from scripts.paired_lifecycle_effects import GENERIC_EXPECTED
@@ -1128,8 +1158,13 @@ class PairedGenericEffectTests(unittest.TestCase):
                           'stderr_present': [False], 'context_in_model': delivered, 'user_response_delivered': True},
                 'hook_exit_codes': [0], 'event': identifier.split('.')[0], 'cli_exit_code': 0,
                 'model_generation_requests': 1, 'model_successful_responses': 1}
-        if name.startswith(('generic-tool-', 'generic-mcp-', 'generic-agent-', 'generic-task-')):
+        if name.startswith(('generic-tool-', 'generic-mcp-', 'generic-agent-', 'generic-task-', 'generic-skill-', 'generic-web-')):
             side['model_generation_requests'] = side['model_successful_responses'] = 2
+        if '-pulse-' in name:
+            side['after']['guard_effect_valid'] = True
+        if name.startswith('generic-skill-pulse-'):
+            side['after']['skill_content_delivered'] = name.endswith('-allow')
+            side['after']['skill_deny_delivered'] = name.endswith('-block')
         if name.startswith('generic-task-'):
             blocked = name == 'generic-task-block'
             side['after']['model_received_task_block'] = blocked
@@ -1158,6 +1193,18 @@ class PairedGenericEffectTests(unittest.TestCase):
         for side in ('native', 'hermes'):
             case[side]['after']['agent_metadata_valid'] = False
         self.assertIn('generic-agent-pre: agent metadata does not match the real dispatch', check_pair(case))
+
+    def test_an_equal_guard_result_without_a_native_decision_is_rejected(self):
+        case = self.case('generic-skill-pulse-block')
+        for side in ('native', 'hermes'):
+            case[side]['after']['guard_effect_valid'] = False
+        self.assertIn('generic-skill-pulse-block: Pulse guard effect is missing', check_pair(case))
+
+    def test_a_denied_skill_whose_content_reaches_the_model_is_rejected(self):
+        case = self.case('generic-skill-pulse-block')
+        for side in ('native', 'hermes'):
+            case[side]['after']['skill_content_delivered'] = True
+        self.assertIn('generic-skill-pulse-block: skill guard delivery is missing', check_pair(case))
 
     def test_a_missing_file_change_output_or_delivery_is_rejected(self):
         case = self.case('generic-stop-gates')

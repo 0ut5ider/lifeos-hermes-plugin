@@ -36,6 +36,7 @@ HERMES_PATCHES = (
     "hermes-remote-files.patch",
     "hermes-cron-bootstrap.patch",
     "hermes-required-middleware.patch",
+    "hermes-web-result-status.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",
@@ -49,6 +50,7 @@ LIFEOS_PATCHES = (
     "lifeos-hermes-carrier-probe.patch",
     "lifeos-memory-access.patch",
     "lifeos-mount-yaml-blocks.patch",
+    "lifeos-config-audit.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")

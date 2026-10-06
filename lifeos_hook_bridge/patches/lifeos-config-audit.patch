@@ -1,0 +1,94 @@
+diff --git a/LifeOS/install/hooks/EventLogger.hook.ts b/LifeOS/install/hooks/EventLogger.hook.ts
+--- a/LifeOS/install/hooks/EventLogger.hook.ts
++++ b/LifeOS/install/hooks/EventLogger.hook.ts
+@@ -47,6 +47,7 @@
+   writeFileSync,
+ } from 'fs';
+ import { dirname, join } from 'path';
++import { createHash } from 'crypto';
+ import { execFileSync, spawn } from 'child_process';
+ import { paiPath, getSettingsPath } from './lib/paths';
+ import { resolveBun } from './lib/resolve-bin';
+@@ -393,6 +394,8 @@
+   transcript_path: string;
+   hook_event_name: string;
+   config_path?: string;
++  file_path?: string;
++  source?: string;
+   config_key?: string;
+   old_value?: unknown;
+   new_value?: unknown;
+@@ -401,6 +404,7 @@
+ interface ConfigChangeEvent {
+   timestamp: string;
+   event: 'config_change';
++  source: string;
+   session_id: string;
+   config_path: string;
+   config_key: string;
+@@ -422,20 +426,24 @@
+  * Diff current settings.json against cached snapshot.
+  * Returns array of top-level keys that changed, plus a summary string.
+  */
+-function diffSettings(): { changedKeys: string[]; summary: string } {
+-  const settingsPath = getSettingsPath();
++function diffSettings(settingsPath: string, source: string): { changedKeys: string[]; summary: string } {
++  const snapshotPath = settingsPath === getSettingsPath() ? SNAPSHOT_PATH
++    : paiPath('MEMORY', 'STATE', 'config-snapshots', createHash('sha256').update(settingsPath).digest('hex') + '.json');
+   let current: Record<string, unknown> = {};
+   let snapshot: Record<string, unknown> = {};
+ 
+   try {
+-    current = JSON.parse(readFileSync(settingsPath, 'utf-8'));
++    const content = readFileSync(settingsPath, 'utf-8');
++    current = source === 'skills'
++      ? { content: createHash('sha256').update(content).digest('hex') }
++      : JSON.parse(content);
+   } catch {
+-    return { changedKeys: ['settings.json'], summary: 'could not read settings.json' };
+-  }
+-
+-  try {
+-    if (existsSync(SNAPSHOT_PATH)) {
+-      snapshot = JSON.parse(readFileSync(SNAPSHOT_PATH, 'utf-8'));
++    return { changedKeys: ['settings.json'], summary: 'could not read configuration file' };
++  }
++
++  try {
++    if (existsSync(snapshotPath)) {
++      snapshot = JSON.parse(readFileSync(snapshotPath, 'utf-8'));
+     }
+   } catch {
+     // No snapshot or corrupt — treat everything as new
+@@ -443,8 +451,8 @@
+ 
+   // Save new snapshot for next comparison
+   try {
+-    mkdirSync(dirname(SNAPSHOT_PATH), { recursive: true });
+-    writeFileSync(SNAPSHOT_PATH, JSON.stringify(current), 'utf-8');
++    mkdirSync(dirname(snapshotPath), { recursive: true });
++    writeFileSync(snapshotPath, JSON.stringify(current), 'utf-8');
+   } catch {
+     // Non-fatal
+   }
+@@ -507,15 +515,18 @@
+     const data: ConfigChangeInput = JSON.parse(raw);
+ 
+     // Use file-diff to determine what actually changed
+-    const { changedKeys, summary } = diffSettings();
++    const configPath = data.file_path || data.config_path || getSettingsPath();
++    const source = data.source || 'user_settings';
++    const { changedKeys, summary } = diffSettings(configPath, source);
+     const configKey = changedKeys.join(',');
+     const isSensitive = changedKeys.some(k => SENSITIVE_KEYS.has(k));
+ 
+     const event: ConfigChangeEvent = {
+       timestamp: getISOTimestamp(),
+       event: 'config_change',
++      source,
+       session_id: data.session_id,
+-      config_path: data.config_path || 'settings.json',
++      config_path: configPath,
+       config_key: configKey,
+       change_summary: summary,
+     };
