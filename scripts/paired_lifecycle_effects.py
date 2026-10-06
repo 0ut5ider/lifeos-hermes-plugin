@@ -43,7 +43,17 @@ GENERIC_CASES = {
     'generic-mcp-result': ('PostToolUse.4.1', 'hooks/Safety.hook.ts', 'ping'),
     'generic-mcp-permission': ('PermissionRequest.2.1', 'hooks/Safety.hook.ts', 'ping'),
     'generic-agent-post': ('PostToolUse.1.1', 'hooks/AgentInvocation.hook.ts', 'agent'),
+    'generic-task-allow': ('TaskCreated.1.1', 'hooks/TaskGovernance.hook.ts', 'task'),
+    'generic-task-block': ('TaskCreated.1.1', 'hooks/TaskGovernance.hook.ts', 'task'),
 }
+# Task cases create one task. TaskGovernance blocks a description shorter than 10 characters.
+TASK_DESCRIPTIONS = {'generic-task-allow': 'Write the synthetic pair fixture report.', 'generic-task-block': 'Short'}
+TASK_BLOCK_MESSAGE = 'Task creation blocked: description too short'
+TASK_SYSTEM_PROMPT = ('This is a synthetic hook fixture. Create exactly one task with the task tool, using the subject '
+                      'and description that the user gives. Then reply with exactly READY. If the task tool is '
+                      'blocked or fails, do not retry it. Reply with exactly READY.')
+# Claude Code 2.1.272 exposes TaskCreate only for a Haiku model identity. The relay answers with the private model.
+TASK_NATIVE_MODEL = 'claude-haiku-4-5'
 AGENT_SYSTEM_PROMPT = ('This is a synthetic hook fixture. Delegate exactly one task to one subagent with the agent '
                        'delegation tool. The task text is: Reply with exactly SUBAGENT_READY. Wait for the result, '
                        'then reply with exactly READY. Do not delegate a second task.')
@@ -85,6 +95,8 @@ GENERIC_EXPECTED = {
     'generic-mcp-result': ([], [True], [True]),
     'generic-mcp-permission': ([OBSERVED + 'permission-decisions.jsonl', STATE + 'permission-cache.json'], [True], []),
     'generic-agent-post': ([OBSERVED + 'subagent-events.jsonl'], [False], []),
+    'generic-task-allow': ([], [False], []),
+    'generic-task-block': ([], [False], []),
 }
 # Differences that a plugin patch makes on purpose. Both sides are normalized the same way, and the unit
 # record names the patch. The model rung patch adds the reasoning effort to the rung log.
@@ -341,7 +353,7 @@ def render_page(home: Path) -> str:
 
 # Real tool cases: the model runs one exact shell command, so each client makes two requests.
 TOOL_PREFIXES = ('atlas-bash-', 'guard-bash-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-',
-                 'generic-tool-', 'generic-mcp-', 'generic-agent-')
+                 'generic-tool-', 'generic-mcp-', 'generic-agent-', 'generic-task-')
 TOOL_SYSTEM_PROMPT = ('This is a synthetic hook fixture. Run the exact shell command from the user message once '
                       'with the shell tool. Do not change the command. Then reply with exactly READY. '
                       'If the tool call is blocked or fails, do not retry it. Reply with exactly READY.')
@@ -371,7 +383,7 @@ TOOL_FAILURE_ERROR = "Exit code 2\nls: cannot access 'pair-missing-tool-log': No
 LOOP_ALERT = "[LOOP DETECTED] You've called Bash 3 times with the same input this session without progress."
 PINNED_ASYNC = {'tool-log-success': {'PostToolUse.11.1': 5}}
 TOOL_MATCHERS = {'atlas-bash-': 'Bash', 'guard-bash-': 'Bash|Write|Edit|MultiEdit'}
-EXPECTED_EXITS = {'guard-bash-plutil-block': [2]}
+EXPECTED_EXITS = {'guard-bash-plutil-block': [2], 'generic-task-block': [2]}
 GUARD_BLOCK_MESSAGE = '[PreToolGuard] blocked `plutil -extract` without -o'
 ATLAS_SOURCES = {'atlas-bash-systemd': ['systemd'], 'atlas-bash-plain': [],
                  'atlas-bash-multiple': ['github', 'launchd']}
@@ -386,7 +398,8 @@ def clock_timezone(case: str) -> str:
 
 
 GENERIC_ROOTS = ('.claude/LIFEOS', '.local/state/lifeos')
-GENERIC_EXCLUDED = ('.claude/LIFEOS/MEMORY/STATE/hermes-transcripts/',)
+# The bridge keeps its own transcript and session task counts; neither is native LifeOS state.
+GENERIC_EXCLUDED = ('.claude/LIFEOS/MEMORY/STATE/hermes-transcripts/', '.claude/LIFEOS/MEMORY/STATE/hermes-task-counts/')
 TIME_PATTERN = re.compile(r'\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}(:\d{2}(\.\d+)?)?(Z|[+-]\d{2}:?\d{2})?')
 ID_PATTERN = re.compile(r'\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b|\b[0-9a-f]{32,64}\b')
 
@@ -539,7 +552,9 @@ def check_pair(case: dict) -> list[str]:
             files, printed, delivered = GENERIC_EXPECTED[name]
             if (not isinstance(after.get('changed'), dict) or sorted(after['changed']) != files
                     or [bool(output) for output in after.get('outputs', [])] != printed
-                    or after.get('context_in_model') != delivered or after.get('user_response_delivered') is not True):
+                    or after.get('context_in_model') != delivered or after.get('user_response_delivered') is not True
+                    or name.startswith('generic-task-')
+                    and after.get('model_received_task_block') is not (name == 'generic-task-block')):
                 errors.append(f'{name}: generic effect is missing')
         elif name in ISA_CASES:
             if before != {'isa_closed': False, 'repo_commits': 1, 'repo_dirty': True} or after != isa_after(name):
@@ -1552,6 +1567,16 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
             else:
                 command[command.index('-t') + 1] = 'delegation'
                 environment['HERMES_EPHEMERAL_SYSTEM_PROMPT'] = AGENT_SYSTEM_PROMPT
+        if case.startswith('generic-task-'):
+            command[-1] = 'Create one task. Subject: PAIR_TASK. Description: ' + TASK_DESCRIPTIONS[case]
+            if side == 'native':
+                command[command.index('--tools') + 1] = 'TaskCreate'
+                command[command.index('--model') + 1] = TASK_NATIVE_MODEL
+                command[command.index('--append-system-prompt') + 1] = TASK_SYSTEM_PROMPT
+                environment['ANTHROPIC_MODEL'] = TASK_NATIVE_MODEL
+            else:
+                command[command.index('-t') + 1] = 'todo'
+                environment['HERMES_EPHEMERAL_SYSTEM_PROMPT'] = TASK_SYSTEM_PROMPT
         if case.startswith('generic-mcp-'):
             command[-1] = 'Call the ping tool once.'
             if side == 'native':
@@ -1642,6 +1667,9 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                         contexts.append(value)
                 after['context_in_model'] = [json.dumps(context.strip(), ensure_ascii=False)[1:-1] in combined
                                              for context in contexts]
+            if case.startswith('generic-task-'):
+                later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
+                after['model_received_task_block'] = TASK_BLOCK_MESSAGE in later
             if case.startswith('knowledge-'):
                 later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
                 after['model_received_warning'] = KNOWLEDGE_WARNING in later

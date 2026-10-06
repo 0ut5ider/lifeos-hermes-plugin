@@ -1128,8 +1128,13 @@ class PairedGenericEffectTests(unittest.TestCase):
                           'stderr_present': [False], 'context_in_model': delivered, 'user_response_delivered': True},
                 'hook_exit_codes': [0], 'event': identifier.split('.')[0], 'cli_exit_code': 0,
                 'model_generation_requests': 1, 'model_successful_responses': 1}
-        if name.startswith(('generic-tool-', 'generic-mcp-', 'generic-agent-')):
+        if name.startswith(('generic-tool-', 'generic-mcp-', 'generic-agent-', 'generic-task-')):
             side['model_generation_requests'] = side['model_successful_responses'] = 2
+        if name.startswith('generic-task-'):
+            blocked = name == 'generic-task-block'
+            side['after']['model_received_task_block'] = blocked
+            side['after']['stderr_present'] = [blocked]
+            side['hook_exit_codes'] = [2] if blocked else [0]
         return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
 
     def test_every_generic_case_accepts_its_measured_effect(self):
@@ -1137,6 +1142,14 @@ class PairedGenericEffectTests(unittest.TestCase):
         for name in GENERIC_CASES:
             with self.subTest(name=name):
                 self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_a_task_block_that_does_not_reach_the_model_is_rejected(self):
+        case = self.case('generic-task-block')
+        case['hermes']['after']['model_received_task_block'] = False
+        self.assertIn('generic-task-block: generic effect is missing', check_pair(case))
+        case = self.case('generic-task-allow')
+        case['native']['hook_exit_codes'] = [2]
+        self.assertTrue(check_pair(case))
 
     def test_a_missing_file_change_output_or_delivery_is_rejected(self):
         case = self.case('generic-stop-gates')
