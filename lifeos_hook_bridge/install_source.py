@@ -12,6 +12,7 @@ import os
 import re
 import runpy
 import signal
+import stat
 import shutil
 import subprocess
 import sys
@@ -65,6 +66,15 @@ def _git(*args: str, cwd: Path | None = None, timeout: int = 300) -> str:
         detail = getattr(error, "stderr", "") or str(error)
         raise IncompatibleLifeOS(f"Git {args[0]} failed: {detail.strip()}") from error
     return result.stdout.strip()
+
+
+def _remove_shared_write(root: Path) -> None:
+    """Clear group and other write bits, which a shared user umask such as 0002 sets."""
+    for directory, names, files in os.walk(root, followlinks=False):
+        for name in (directory, *(os.path.join(directory, entry) for entry in (*names, *files))):
+            info = os.lstat(name)
+            if not stat.S_ISLNK(info.st_mode) and info.st_mode & 0o022:
+                os.chmod(name, stat.S_IMODE(info.st_mode) & ~0o022)
 
 
 def latest_revision(source: str = UPSTREAM_LIFEOS) -> str:
@@ -149,6 +159,7 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
         manifest = {"upstream": source, "upstream_commit": revision, "patches": applied,
                     "tree_sha256": _tree_digest(stage)}
         (stage / "lifeos-source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+        _remove_shared_write(stage)
         os.replace(stage, target)
         return manifest
     finally:
@@ -303,6 +314,9 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
                 )
                 if result.returncode:
                     raise IncompatibleLifeOS(memory_module("native_output").failure_message(f"LifeOS {name}", result))
+        for tree in (installed, config_dir):
+            if tree.is_dir():
+                _remove_shared_write(tree)
         source_version = (skill_root / "install/LIFEOS/VERSION").read_text().strip()
         version = (installed / "LIFEOS/VERSION").read_text().strip()
         settings = json.loads((installed / "settings.json").read_text())
