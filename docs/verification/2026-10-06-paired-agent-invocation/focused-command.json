@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_native_agent_invocation",
+    "test_bridge",
+    "test_plugin_lifecycle",
+    "test_patch_bundle",
+    "test_paired_lifecycle_effects"
+  ],
+  "environment": {
+    "PYTHONPATH": "tests:.:/home/outsider/.cache/lifeos-hook-completion-20261006/prepared/hermes",
+    "LIFEOS_AGENT_INVOCATION_PATH": "/home/outsider/.cache/lifeos-hook-completion-20261006/prepared/lifeos/LifeOS/install/hooks/AgentInvocation.hook.ts"
+  },
+  "exit_code": 0,
+  "tests": 298,
+  "skipped": 1
+}

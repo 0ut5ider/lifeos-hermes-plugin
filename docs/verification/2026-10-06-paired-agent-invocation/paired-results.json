@@ -1,0 +1,130 @@
+{
+  "cases": [
+    {
+      "id": "generic-agent-pre",
+      "registrations": [
+        "PreToolUse.3.2"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"flashnext-w4a16-fp8ple\",\n    \"level\": \"session-inherited\"\n  }\n}",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"flashnext-w4a16-fp8ple\",\"subagent_level\":\"session-inherited\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "agent_metadata_valid": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"flashnext-w4a16-fp8ple\",\n    \"level\": \"session-inherited\"\n  }\n}",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"flashnext-w4a16-fp8ple\",\"subagent_level\":\"session-inherited\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "agent_metadata_valid": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 4,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-agent-tier",
+      "registrations": [
+        "PreToolUse.3.2"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"opus\",\n    \"level\": \"high\"\n  }\n}",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"opus\",\"subagent_level\":\"high\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "agent_metadata_valid": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"opus\",\n    \"level\": \"high\"\n  }\n}",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"opus\",\"subagent_level\":\"high\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "agent_metadata_valid": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 4,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    }
+  ]
+}

@@ -2068,6 +2068,36 @@ class HookBridgeTests(unittest.TestCase):
         ])
         self.assertEqual(rows[0]["tool_input"]["model"], "local-small")
 
+    def test_agent_carrier_uses_current_request_and_ignores_tool_claims(self):
+        marker = self.root / "agent-carrier.jsonl"
+        command = self.make_hook(
+            "record-carrier.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        bridge.stop("Previous answer", session_id="s1", model="previous-model")
+        bridge.observe_api_response(session_id="s1", model="request-alias", response_model="current-model", provider="private")
+        bridge.observe_api_response(session_id="s2", model="other-session-model", provider="private")
+        args = {"goal": "Inspect the report", "hermes_runtime": {"model": "spoofed-model"}}
+        bridge.pre_tool_call("delegate_task", args, session_id="s1")
+        bridge.pre_tool_call("delegate_task", {**args, "model": "opus"}, session_id="s1")
+        bridge.pre_tool_call("delegate_task", args, session_id="unobserved")
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual(rows[0]["hermes_runtime"], {"model": "current-model", "provider": "private"})
+        self.assertNotIn("model", rows[0]["tool_input"])
+        self.assertEqual(rows[1]["tool_input"]["model"], "opus")
+        self.assertNotIn("hermes_runtime", rows[2])
+        bridge.session_end(session_id="s1")
+        bridge.pre_tool_call("delegate_task", args, session_id="s1")
+        self.assertNotIn("hermes_runtime", json.loads(marker.read_text().splitlines()[-1]))
+
+    def test_invalid_request_carrier_clears_previous_observation(self):
+        bridge = self.bridge({})
+        bridge.observe_api_response(session_id="s1", model="valid-model", provider="private")
+        bridge.observe_api_response(session_id="s1", model=None, provider="private")
+        self.assertNotIn("s1", bridge.session_carriers)
+
     def test_background_dispatch_is_reported_as_spawn_to_agent_hook(self):
         marker = self.root / "agent-dispatch.json"
         command = self.make_hook(

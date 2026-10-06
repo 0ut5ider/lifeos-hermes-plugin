@@ -1,0 +1,14 @@
+{
+  "changed": {
+    ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\": \"Reply with exactly SUBAGENT_READY.\",\n    \"model\": \"lifecycle-fixture\",\n    \"level\": \"session-inherited\"\n  }\n}",
+    ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"lifecycle-fixture\",\"subagent_level\":\"session-inherited\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+  },
+  "outputs": [
+    ""
+  ],
+  "stderr_present": [
+    true
+  ],
+  "context_in_model": [],
+  "user_response_delivered": true
+}

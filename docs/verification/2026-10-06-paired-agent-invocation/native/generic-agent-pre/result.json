@@ -1,0 +1,144 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\": \"Reply with SUBAGENT_READY\",\n    \"model\": \"flashnext-w4a16-fp8ple\",\n    \"level\": \"session-inherited\"\n  }\n}",
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"flashnext-w4a16-fp8ple\",\"subagent_level\":\"session-inherited\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      true
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "75144574-53cc-4b24-b0b0-f3b7e20789c5",
+  "seconds": 7.986,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-agent-invocation-20261006/results/generic-agent-pre",
+    "/home/lifeos-claude-ref/workspace/paired-agent-invocation-20261006/results/generic-agent-pre",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Agent",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Delegate exactly one task to one subagent with the agent delegation tool. The task text is: Reply with exactly SUBAGENT_READY. Wait for the result, then reply with exactly READY. Do not delegate a second task. Use the general-purpose subagent type if the tool has a subagent_type field. Run it in the foreground. Do not use output_schema. Omit the model field so the subagent inherits the session model.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Delegate one task to a subagent."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.3.2",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.3.2 /home/lifeos-claude-ref/workspace/paired-agent-invocation-20261006/results/generic-agent-pre/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQWdlbnRJbnZvY2F0aW9uLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/AgentInvocation.hook.ts": "4e9057a11a45adae321677fb8b6332c65e53bf5605b93e010a0062b8c2ed758f"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "ecfece3aeb5743bede988cdc02be175e8e51316c49fef071015ee59cc813a324",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "17785e8bc65f61335283ea36b237e89d7c48979919cb07262f5756335583f18d",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "9f156b3a68887ef5cdb2f1eda3f3b6ea58d29ba9399ed05321ee7bb68c85448d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "606cdf35b08f2f679210fe08a65ac3a8e387c121014950caab3545aa4c14f810",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "8c675e02985631c575017c3696d1b0823428319ebd76f72445b650d0397547e0",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a82f35a8755f0796dba4f6d9cf1d248d09e5aee504c481dd1a7a7e12535040c5",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "6aa6bb95085bfb289ce6dca4d053b58e55e71dec926268b0a73011ad38a84383",
+    "fixture-events.jsonl": "1d7f9c40691d44a3ffde944118bbc7e6df0790998af0ecd58d010289c14dd435",
+    "cli.log": "5fc5be7383869ca1a062733df938bc01a2b7da67fa846cf2d82ff945baab2682",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "c06de1ccbe715f6bdec94537a29756805136e951e3081db4c3760bf41ba88fd5",
+    "fixture-files-before.json": "755707005f669f4f66d475c38f1329dffce91658e292759b0c1681cfaf964553",
+    "fixture-files-after.json": "95834835329707dc6b8e3e12567d6479f649d5f4a6f703ed585bf9a7c36b6a3c"
+  }
+}

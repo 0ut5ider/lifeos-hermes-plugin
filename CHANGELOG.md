@@ -6,6 +6,8 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Record the served model for inherited agent calls before the Hermes transcript write. Preserve explicit tier selection.
+
 ### Changed
 
 - SSH memory sharing enrollment moves to the separately installed `optional/lifeos-memory-sharing` component.

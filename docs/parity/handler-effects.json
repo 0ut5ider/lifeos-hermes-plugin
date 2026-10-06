@@ -1,7 +1,7 @@
 {
-  "date": "2026-10-05",
+  "date": "2026-10-06",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. One hundred five equal selected cases cover fifty-nine registrations; complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. One hundred seven equal selected cases cover sixty registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -2250,7 +2250,53 @@
     "docs/verification/2026-10-06-paired-task-created/run.py": "1c8c20048f7da67c43c5e4153a754db1e4f5c8f0efbf196d0bac7fc37f5f8eae",
     "docs/verification/2026-10-06-paired-task-created/runtime-check.json": "bc1e5ab6acba5b51c65ae73d399b2d8dcadf2ef121f71bee5aaa21d4bb600662",
     "docs/verification/2026-10-06-paired-task-created/runtime-manifest.json": "0ba4366927cbd113351e78e2fce428d5a6e03a1c2f11ff648ce3a25e9d08f959",
-    "docs/verification/2026-10-06-paired-task-created/task-proof.json": "f575ebe0d77bcc2f28a151fa7bce1d455cc7e75e982498eac30881817f1ab5db"
+    "docs/verification/2026-10-06-paired-task-created/task-proof.json": "f575ebe0d77bcc2f28a151fa7bce1d455cc7e75e982498eac30881817f1ab5db",
+    "docs/verification/2026-10-06-paired-agent-invocation/README.md": "aba7403d1d3ae64af174d96aab130cfb3c10ccedb94f55bf465c6d161928d21f",
+    "docs/verification/2026-10-06-paired-agent-invocation/agent-proof.json": "9e96f817ee87b6eac21b123737d31db93e395beb793fed6ef542cefef7ea4bb2",
+    "docs/verification/2026-10-06-paired-agent-invocation/collect.py": "c15d461e7e69725bcfec2eb732838a9334036e24fc9e26b1e93bda0559e36a0c",
+    "docs/verification/2026-10-06-paired-agent-invocation/configuration.json": "2a5e9ece4035a0f289ea59270a34058144822cbfd77024e5bc63b023d4330766",
+    "docs/verification/2026-10-06-paired-agent-invocation/focused-tests.txt": "ef503fd403becb2196e9538c5b790d2f528abd01e6b3741f45dd8ef52308c57d",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/after-state.json": "e763925da392e8953f0e9a87b6abc0c83d6d46dda5528e7df87f18efd14f4b95",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/cli.log": "9941b8b034a05cd5a55e3721e503af9aa846455707088be30426bbb94fb3f0c0",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-events.jsonl": "ad29fc8e6983445404faabcb29db7126dd75d001ffd23645072fd4191d2b1bbd",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-files-after.json": "9df3a1e94fd361a64a2ba54ea18407a87e7ce9cf2c1a261b13da32a852bac41c",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-files-before.json": "43c7761a826f3ffdc6c165d28964170f708f7e02fcbc205cef22c8bbd7d6078f",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/hooks.jsonl": "203c7f66763d813598425f9545df8591ca19ddac6d0378166de520c6e4253dc8",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/result.json": "b5e6c2b6cc3bca98bc72ff04c3853a12aefe710f1220a87376c8e5c89bb2adf8",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/after-state.json": "4cac975ed508f32b09e7499e12e00036ca8c0039017d17432a2e51d74c27e544",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/cli.log": "39d50e767245f061330eaa6a8c170a1bacd3ba7836bfc38dfebc610d0591862a",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-events.jsonl": "5ad48ec8b473ac0199cac5d0a7d514e828d1425d368ef4e5fe110c978347f9c9",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-files-after.json": "11e49fb737ce41ef1d8122ad370e4a5fabaed97a2ac74f7038bba4463db5584a",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-files-before.json": "e8855262a5a040bf02c3cb025ad3d1a35c52d1885dc4e909c6514fd4202b9154",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/hooks.jsonl": "7f0aded4be4b9baf000fc18bf5b753ecc0af999a095e814503c9573ab450842d",
+    "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/result.json": "39c5311a97aada43d2a953b8a6fe96260f706564915805b5a01057006d27ad22",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/after-state.json": "c06de1ccbe715f6bdec94537a29756805136e951e3081db4c3760bf41ba88fd5",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/cli.log": "5fc5be7383869ca1a062733df938bc01a2b7da67fa846cf2d82ff945baab2682",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-events.jsonl": "1d7f9c40691d44a3ffde944118bbc7e6df0790998af0ecd58d010289c14dd435",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-files-after.json": "95834835329707dc6b8e3e12567d6479f649d5f4a6f703ed585bf9a7c36b6a3c",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-files-before.json": "755707005f669f4f66d475c38f1329dffce91658e292759b0c1681cfaf964553",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/hooks.jsonl": "6aa6bb95085bfb289ce6dca4d053b58e55e71dec926268b0a73011ad38a84383",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/result.json": "829fc22f90b85822140324bcbe99120510c9d03f1bdff1d204371f534dc635b1",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/after-state.json": "e2ab6a92d156fae4dcad9c0eb6aeefb3bee61ad8664168c46a8f743a6a487781",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/cli.log": "5b0126884cb88980dd02f5cdd117668f14911afbb7e1a69a659f59373de7d742",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-events.jsonl": "e4fcdb381f1e82c0f4ffe0388ea4abdb12fa96cad812113eda1e80d29324352e",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-files-after.json": "a394521ecf5ff17e5cde4fd08d2e58d24752b55e506f073263b46c3ba71d9fef",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-files-before.json": "715316dede052b6545e1a32340a217a15c283d6b3015d3e7f2e91e463569f122",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/hooks.jsonl": "ba0f8044ed7c199eaa5ad0615c69cc2085b7dbd93e3dbfa9ad3033adc08f266b",
+    "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/result.json": "0bfa3ed8f78b8377d10b8a7b8ef4868f0f036e284ccd1a61ffb113cc76e4460f",
+    "docs/verification/2026-10-06-paired-agent-invocation/paired-lifecycle-driver.py": "db4e1e2a93f439d21c21f1256a923e238cc98ff5cc8fcc7841a58a247c6088ec",
+    "docs/verification/2026-10-06-paired-agent-invocation/paired-response-server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-06-paired-agent-invocation/paired-results.json": "bb50203ce8afbd4e6b48e5ecb886501214c465bb695807ea5e1808b05c6278f3",
+    "docs/verification/2026-10-06-paired-agent-invocation/run-output.txt": "7c3a54d6ffd1821fb48be12ad9d5992b8bb283d8d5eed1dc53eb25cfdb866c6d",
+    "docs/verification/2026-10-06-paired-agent-invocation/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-06-paired-agent-invocation/run.py": "941d38dc8b782182883836ecfad0f8c3cef50446783dc35ddcf653a578bd581c",
+    "docs/verification/2026-10-06-paired-agent-invocation/runtime-check.json": "ed6fa13cd7d972cbba8da846aad38a7e4235bca0cf4a2cba1e98427f76615efa",
+    "docs/verification/2026-10-06-paired-agent-invocation/runtime-manifest.json": "c9d82f33eb36844fedbd15d6f5dc49816b794055e59a8dd876228af3013a6f90",
+    "docs/verification/2026-10-06-paired-agent-invocation/focused-command.json": "25e9f2194bb1aec472b29def0c6ac43a093e77038b4119a9b1aeaa6ee76849fc"
   },
   "registrations": [
     {
@@ -2413,10 +2459,227 @@
       "handler": "$HOME/.claude/hooks/AgentInvocation.hook.ts",
       "expected_effect": "Record and validate agent invocation and completion state.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
-      "related_native_tests": [],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "generic-agent-pre",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-06-paired-agent-invocation/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-06-paired-agent-invocation/README.md",
+            "docs/verification/2026-10-06-paired-agent-invocation/agent-proof.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/collect.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/configuration.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/focused-command.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/focused-tests.txt",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/paired-response-server.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/paired-results.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/run-output.txt",
+            "docs/verification/2026-10-06-paired-agent-invocation/run.done",
+            "docs/verification/2026-10-06-paired-agent-invocation/run.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/runtime-check.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/runtime-manifest.json"
+          ],
+          "native": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"flashnext-w4a16-fp8ple\",\n    \"level\": \"session-inherited\"\n  }\n}",
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"flashnext-w4a16-fp8ple\",\"subagent_level\":\"session-inherited\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                true
+              ],
+              "context_in_model": [],
+              "agent_metadata_valid": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PreToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          },
+          "hermes": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"flashnext-w4a16-fp8ple\",\n    \"level\": \"session-inherited\"\n  }\n}",
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"flashnext-w4a16-fp8ple\",\"subagent_level\":\"session-inherited\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                true
+              ],
+              "context_in_model": [],
+              "agent_metadata_valid": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PreToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          }
+        },
+        {
+          "id": "generic-agent-tier",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-06-paired-agent-invocation/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-06-paired-agent-invocation/README.md",
+            "docs/verification/2026-10-06-paired-agent-invocation/agent-proof.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/collect.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/configuration.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/focused-command.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/focused-tests.txt",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-pre/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/hermes/generic-agent-tier/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-pre/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/after-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/before-state.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/cli.log",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-events.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-files-after.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/fixture-files-before.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/hooks.jsonl",
+            "docs/verification/2026-10-06-paired-agent-invocation/native/generic-agent-tier/result.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/paired-response-server.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/paired-results.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/run-output.txt",
+            "docs/verification/2026-10-06-paired-agent-invocation/run.done",
+            "docs/verification/2026-10-06-paired-agent-invocation/run.py",
+            "docs/verification/2026-10-06-paired-agent-invocation/runtime-check.json",
+            "docs/verification/2026-10-06-paired-agent-invocation/runtime-manifest.json"
+          ],
+          "native": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"opus\",\n    \"level\": \"high\"\n  }\n}",
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"opus\",\"subagent_level\":\"high\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                true
+              ],
+              "context_in_model": [],
+              "agent_metadata_valid": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PreToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          },
+          "hermes": {
+            "before": {
+              "files": 0
+            },
+            "after": {
+              "changed": {
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\":\"<model-text>\",\n    \"model\": \"opus\",\n    \"level\": \"high\"\n  }\n}",
+                ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"opus\",\"subagent_level\":\"high\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+              },
+              "outputs": [
+                ""
+              ],
+              "stderr_present": [
+                true
+              ],
+              "context_in_model": [],
+              "agent_metadata_valid": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PreToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          }
+        }
+      ],
+      "related_native_tests": [
+        "tests/test_native_agent_invocation.py"
+      ],
+      "remaining": "Inherited and explicit-tier starts are verified. Background completion, concurrent dispatches, and full installed groups remain open."
     },
     {
       "id": "PreToolUse.4.1",

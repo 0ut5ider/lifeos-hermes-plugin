@@ -107,6 +107,7 @@ config_schema:
     choices: [minimal, low, medium, high, xhigh, max, ultra]
     default: xhigh
 provides_hooks:
+  - post_api_request
   - pre_tool_call
   - post_tool_call
   - pre_command_approval

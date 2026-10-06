@@ -623,6 +623,7 @@ class HookBridge:
         self.started_sessions: set[str] = set()
         self.session_lock = threading.RLock()
         self.session_platforms: dict[str, str] = {}
+        self.session_carriers: dict[str, dict[str, str]] = {}
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
@@ -1220,6 +1221,23 @@ class HookBridge:
             pass
         return {}
 
+    def observe_api_response(
+        self, session_id: str = "", model: str = "", provider: str = "", response_model: str = "", **_: Any,
+    ) -> None:
+        """Record the served carrier before tool dispatch, independently of transcript timing."""
+        if not isinstance(session_id, str) or not session_id:
+            return
+        with self.session_lock:
+            self.session_carriers.pop(session_id, None)
+            if isinstance(response_model, str) and response_model.strip():
+                model = response_model
+            if isinstance(model, str) and model.strip():
+                self.session_carriers[session_id] = {"model": model.strip()}
+                if isinstance(provider, str) and provider.strip():
+                    self.session_carriers[session_id]["provider"] = provider.strip()
+                if len(self.session_carriers) > 1024:
+                    self.session_carriers.pop(next(iter(self.session_carriers)))
+
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
@@ -1730,6 +1748,11 @@ class HookBridge:
         for native_input in native_inputs:
             hook_input = _native_file_input(native_name, native_input, task_id)
             payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=hook_input, cwd=cwd)
+            if native_name == "Agent":
+                with self.session_lock:
+                    carrier = dict(self.session_carriers.get(session_id, {}))
+                if carrier:
+                    payload["hermes_runtime"] = carrier
             code = args.get("code") if tool_name == "execute_code" else None
             for process, output in self._run(
                 "PreToolUse", payload, native_name,
@@ -2205,6 +2228,7 @@ class HookBridge:
         with self.session_lock:
             self.started_sessions.discard(session_id)
             self.session_platforms.pop(session_id, None)
+            self.session_carriers.pop(session_id, None)
             self.session_projects.pop(session_id, None)
             self.remote_session_projects.pop(session_id, None)
             used_remote_projects = set().union(*self.remote_session_projects.values()) if self.remote_session_projects else set()

@@ -1,0 +1,150 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json": "{\n  \"<session>::<model-text>\": {\n    \"epoch\": <epoch-ms>,\n    \"timestamp\": \"<time>\",\n    \"subagent_type\": \"general-purpose\",\n    \"description\": \"Reply with exactly SUBAGENT_READY.\",\n    \"model\": \"opus\",\n    \"level\": \"high\"\n  }\n}",
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_start\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"subagent_model\":\"opus\",\"subagent_level\":\"high\",\"description\":\"<model-text>\",\"prompt_preview\":\"<model-text>\"}\n"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      true
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 4,
+  "model_successful_responses": 3,
+  "session_id": "20261006_172127_79fbc4",
+  "seconds": 12.29,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-agent-invocation-20261006/results/generic-agent-tier",
+    "/home/lifeos-plugin-install-probe/workspace/paired-agent-invocation-20261006/results/generic-agent-tier",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "delegation",
+    "-q",
+    "Delegate one task to a subagent."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.3.2",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.3.2 /home/lifeos-plugin-install-probe/workspace/paired-agent-invocation-20261006/results/generic-agent-tier/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9BZ2VudEludm9jYXRpb24uaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/AgentInvocation.hook.ts": "6db420c12491f9fea51e0c5f45498e0df342f724cf4b3ea72560c1a78ae598a1"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "abab2d5bfc70a6c9bea0e56673a4c49698157eb4fc81109502f1e127db3706d7",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "293a8968499e35a30d1b2f55d15940bcb48cc9a4b6d76b5b9d715de6c88a8b51",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "809f2f2f525547d10a467bcbac0e1187289a285170382ce5be89e36f6c0f113d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "d779b8594d9ade276db9ac0510bafb323033be0553080be7ba2e13bfbe2308ae",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "66e872be774b0b71c240a7af1227d1ffca203f66de244fd197e502219259c8e9",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "62ad50e5e626d65437485a498e730f4e3c7a3110c74c764144da123978860019",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "7f0aded4be4b9baf000fc18bf5b753ecc0af999a095e814503c9573ab450842d",
+    "fixture-events.jsonl": "5ad48ec8b473ac0199cac5d0a7d514e828d1425d368ef4e5fe110c978347f9c9",
+    "cli.log": "39d50e767245f061330eaa6a8c170a1bacd3ba7836bfc38dfebc610d0591862a",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "4cac975ed508f32b09e7499e12e00036ca8c0039017d17432a2e51d74c27e544",
+    "fixture-files-before.json": "e8855262a5a040bf02c3cb025ad3d1a35c52d1885dc4e909c6514fd4202b9154",
+    "fixture-files-after.json": "11e49fb737ce41ef1d8122ad370e4a5fabaed97a2ac74f7038bba4463db5584a"
+  }
+}

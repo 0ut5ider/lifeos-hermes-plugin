@@ -55,6 +55,8 @@ def register(ctx: Any) -> None:
     )
     if hasattr(ctx, "on_unload"):
         ctx.on_unload(bridge.close)
+    if "post_api_request" in VALID_HOOKS:
+        ctx.register_hook("post_api_request", bridge.observe_api_response)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
     ctx.register_hook("post_tool_call", bridge.task_result)
     def prompt_admission(**kwargs):

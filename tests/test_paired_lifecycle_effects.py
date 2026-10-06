@@ -1135,6 +1135,8 @@ class PairedGenericEffectTests(unittest.TestCase):
             side['after']['model_received_task_block'] = blocked
             side['after']['stderr_present'] = [blocked]
             side['hook_exit_codes'] = [2] if blocked else [0]
+        if name in {'generic-agent-pre', 'generic-agent-tier'}:
+            side['after']['agent_metadata_valid'] = True
         return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
 
     def test_every_generic_case_accepts_its_measured_effect(self):
@@ -1150,6 +1152,12 @@ class PairedGenericEffectTests(unittest.TestCase):
         case = self.case('generic-task-allow')
         case['native']['hook_exit_codes'] = [2]
         self.assertTrue(check_pair(case))
+
+    def test_an_equal_agent_record_with_the_wrong_model_is_rejected(self):
+        case = self.case('generic-agent-pre')
+        for side in ('native', 'hermes'):
+            case[side]['after']['agent_metadata_valid'] = False
+        self.assertIn('generic-agent-pre: agent metadata does not match the real dispatch', check_pair(case))
 
     def test_a_missing_file_change_output_or_delivery_is_rejected(self):
         case = self.case('generic-stop-gates')

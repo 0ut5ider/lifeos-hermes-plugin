@@ -72,3 +72,34 @@ index 2997fc0..6788599 100755
      }
    } catch (err) {
      process.stderr.write(`ModelRungGuard error: ${(err as Error)?.message || String(err)}\n`);
+diff --git a/LifeOS/install/hooks/AgentInvocation.hook.ts b/LifeOS/install/hooks/AgentInvocation.hook.ts
+index 05c87cf..c56c374 100755
+--- a/LifeOS/install/hooks/AgentInvocation.hook.ts
++++ b/LifeOS/install/hooks/AgentInvocation.hook.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Records delegated agent starts and correlated completion events.
++// ABOUTME: Resolves inherited models from host metadata or the native transcript.
+ /**
+  * @version 1.6.0
+  * AgentInvocation.hook.ts — Agent (Task) subagent lifecycle tracker.
+@@ -103,6 +105,7 @@ interface ToolHookInput {
+   tool_input?: AgentToolInput;
+   tool_response?: unknown;
+   transcript_path?: string;
++  hermes_runtime?: unknown;
+ }
+ 
+ const OBS_DIR = paiPath('MEMORY', 'OBSERVABILITY');
+@@ -163,7 +166,10 @@ async function main() {
+       // the transcript tail and skips sidechain rows; when it can't answer
+       // (first turn, nested spawns) the record keeps the honest 'inherited'.
+       if (dispatch.model === 'inherited') {
+-        const carrier = liveModel(data.transcript_path);
++        const runtime = data.hermes_runtime;
++        const runtimeModel = runtime && typeof runtime === 'object' && 'model' in runtime &&
++          typeof runtime.model === 'string' ? runtime.model.trim() : '';
++        const carrier = runtimeModel || liveModel(data.transcript_path);
+         if (carrier) {
+           dispatch.model = carrier;
+           dispatch.level = 'session-inherited';
