@@ -135,3 +135,9 @@ The [Agent extension](verification/2026-10-05-paired-generic-agent/README.md) de
 The [task creation extension](verification/2026-10-06-paired-task-created/README.md) creates one allowed and one blocked task in both clients. The native client needs a Haiku model identity for TaskCreate, and the Hermes prompt names the todo content exactly. The cumulative ledger contains 105 equal selected cases for 59 registrations. Other branches and complete groups remain open.
 
 The [October 6 agent-start extension](verification/2026-10-06-paired-agent-invocation/README.md) verifies inherited and explicit Opus starts through real Agent calls. All four clients pass. The bridge uses the successful response observer to supply the served model before tool dispatch. The cumulative ledger contains 107 equal selected cases for 60 registrations. Background completion, concurrency, remaining registrations, and complete groups remain open.
+
+## October 6 selected completion checks
+
+The [selected hook completion report](verification/2026-10-06-hook-completion/README.md) records 118 equal cases across all 74 registrations. The original 15 gaps have selected passing effects. Cases for 65 registrations use native Claude Code events. The nine web and MultiEdit registrations use actual Hermes tools with direct native handler comparisons. Full handler branches remain open; the completion gate still refuses a universal parity claim.
+
+Development now runs on `192.168.8.252` in isolated accounts. The Discord gateway remains on `.212`. The real question queue and session state pass without Discord. Migrate the gateway configuration and verify actual Discord question and answer delivery during final combined acceptance. Do not start a second production bot session during development. Keep private FlashNext tier selection unchanged. Voice input and spoken replies remain the last feature workstream.

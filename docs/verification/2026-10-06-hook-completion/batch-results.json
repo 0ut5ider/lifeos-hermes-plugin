@@ -1,0 +1,104 @@
+{
+  "cases": [
+    {
+      "id": "batch-success",
+      "native_cli_dispatch": false,
+      "hermes_tool_dispatch": true,
+      "registrations": [
+        "PostToolUse.10.1",
+        "PostToolUse.10.2",
+        "PostToolUse.10.3",
+        "PostToolUse.10.4",
+        "PostToolUse.10.5",
+        "PostToolUse.10.6",
+        "PostToolUse.10.7"
+      ],
+      "native": {
+        "isa_closed": true,
+        "view_matches_content": true,
+        "registry_present": true,
+        "render_state_lists_isa": true,
+        "checkpoint_commits": 2,
+        "checkpoint_records_criterion": true,
+        "atlas_sources": [
+          "projects"
+        ],
+        "knowledge_warning": true,
+        "complexity_lines": 250,
+        "dependency_count": 1,
+        "evaluation_debounce_preserved": true,
+        "all_files_match": true,
+        "applied_files": 6,
+        "failed_files": 0,
+        "hook_calls": 42
+      },
+      "hermes": {
+        "isa_closed": true,
+        "view_matches_content": true,
+        "registry_present": true,
+        "render_state_lists_isa": true,
+        "checkpoint_commits": 2,
+        "checkpoint_records_criterion": true,
+        "atlas_sources": [
+          "projects"
+        ],
+        "knowledge_warning": true,
+        "complexity_lines": 250,
+        "dependency_count": 1,
+        "evaluation_debounce_preserved": true,
+        "all_files_match": true,
+        "applied_files": 6,
+        "failed_files": 0,
+        "hook_calls": 42
+      }
+    },
+    {
+      "id": "batch-partial",
+      "native_cli_dispatch": false,
+      "hermes_tool_dispatch": true,
+      "registrations": [
+        "PostToolUse.10.1",
+        "PostToolUse.10.2",
+        "PostToolUse.10.3",
+        "PostToolUse.10.4",
+        "PostToolUse.10.5",
+        "PostToolUse.10.6",
+        "PostToolUse.10.7"
+      ],
+      "native": {
+        "isa_closed": true,
+        "view_matches_content": true,
+        "registry_present": true,
+        "render_state_lists_isa": true,
+        "checkpoint_commits": 1,
+        "checkpoint_records_criterion": false,
+        "atlas_sources": [],
+        "knowledge_warning": false,
+        "complexity_lines": 0,
+        "dependency_count": 0,
+        "evaluation_debounce_preserved": true,
+        "all_files_match": true,
+        "applied_files": 1,
+        "failed_files": 1,
+        "hook_calls": 6
+      },
+      "hermes": {
+        "isa_closed": true,
+        "view_matches_content": true,
+        "registry_present": true,
+        "render_state_lists_isa": true,
+        "checkpoint_commits": 1,
+        "checkpoint_records_criterion": false,
+        "atlas_sources": [],
+        "knowledge_warning": false,
+        "complexity_lines": 0,
+        "dependency_count": 0,
+        "evaluation_debounce_preserved": true,
+        "all_files_match": true,
+        "applied_files": 1,
+        "failed_files": 1,
+        "hook_calls": 6
+      }
+    }
+  ]
+}

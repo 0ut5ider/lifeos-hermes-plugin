@@ -107,6 +107,50 @@ class HookEvidenceTests(unittest.TestCase):
             self.assertTrue(any('does not cover registration' in error for error in errors))
             self.assertTrue(any('ledger outcome differs' in error for error in errors))
 
+    def test_functional_control_checks_raw_effects_and_registration_scope(self):
+        import copy
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, ledger, document = self.fixture(root)
+            identifier = 'PostToolUse.10.3'
+            inventory.write_text('id,event,handler\n' + identifier + ',PostToolUse,checkpoint\n')
+            document['registrations_sha256'] = hashlib.sha256(inventory.read_bytes()).hexdigest()
+            source = Path(__file__).resolve().parents[1] / 'docs/verification/2026-10-06-hook-completion/batch-results.json'
+            record = next(r for r in json.loads(source.read_text())['cases'] if r['id'] == 'batch-partial')
+            row = document['registrations'][0]
+            row.update(id=identifier, effect_status='paired_case_verified', paired_cases=[{
+                'id': record['id'], 'kind': 'effect_control', 'result_artifact': 'result.json',
+                'artifacts': ['result.json'], 'native': copy.deepcopy(record['native']),
+                'hermes': copy.deepcopy(record['hermes'])}])
+            self.save_lifecycle(root, ledger, document, record)
+            self.assertEqual(check_evidence(inventory, ledger, root), [])
+            for side in ('native', 'hermes'):
+                record[side]['checkpoint_records_criterion'] = True
+                row['paired_cases'][0][side]['checkpoint_records_criterion'] = True
+            self.save_lifecycle(root, ledger, document, record)
+            self.assertTrue(any('partial checkpoint safety is missing' in error for error in
+                                check_evidence(inventory, ledger, root)))
+            record['registrations'] = []
+            self.save_lifecycle(root, ledger, document, record)
+            self.assertTrue(any('does not cover registration' in error for error in
+                                check_evidence(inventory, ledger, root)))
+
+    def test_functional_control_refuses_a_changed_ledger_outcome(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            inventory, ledger, document = self.fixture(root)
+            result = {'id': 'unrecognized', 'registrations': ['StopFailure.1.1'],
+                      'native': {}, 'hermes': {}, 'native_cli_dispatch': False,
+                      'hermes_tool_dispatch': True}
+            row = document['registrations'][0]
+            row.update(effect_status='paired_case_verified', paired_cases=[{
+                'id': result['id'], 'kind': 'effect_control', 'result_artifact': 'result.json',
+                'artifacts': ['result.json'], 'native': {'invented': True}, 'hermes': {'invented': True}}])
+            self.save_lifecycle(root, ledger, document, result)
+            errors = check_evidence(inventory, ledger, root)
+            self.assertTrue(any('unknown functional control' in error for error in errors))
+            self.assertTrue(any('ledger outcome differs' in error for error in errors))
+
 
 class TrackedEvidenceTests(unittest.TestCase):
     def test_every_ledger_artifact_is_tracked_by_git(self):

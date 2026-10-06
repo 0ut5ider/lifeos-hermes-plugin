@@ -7,6 +7,11 @@ Keep it equal to the version in both plugin manifests.
 ## Unreleased
 
 - Record the served model for inherited agent calls before the Hermes transcript write. Preserve explicit tier selection.
+- Normalize question batches and record synchronous delegation when background delivery is unavailable.
+- Audit the actual configuration source and path with separate source baselines.
+- Classify successful web extraction from structured results, including null errors and partial success.
+- Retain eleven further selected hook controls. All 74 registrations now have a selected passing case.
+- Separate actual native client events from direct native web and batch handler comparisons.
 
 ### Changed
 

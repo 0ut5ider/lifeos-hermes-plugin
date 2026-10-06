@@ -41,3 +41,9 @@ Use the existing [hook plan](parity-resolution-plan.md), [memory activation plan
 Production personal-data publication requires a concrete reviewed selection. Preserve original stores. Isolated migration tests may use `.211` and `.213` under Adrian's October 5 authorization. The existing shared-memory MCP returns `integrity_error`; restore that connector before using its records as a source. No record access bypass is part of this work.
 
 Adrian provides `root@192.168.8.101` for disposable guests on October 5. CT `100` is a new unprivileged Ubuntu 24.04 fixture with 2 CPU cores, 4 GiB RAM, and a 24 GiB local ZFS disk. It uses DHCP and has automatic boot disabled. VM `801` retains its original configuration. Use this guest for the stock installation and later-version update checks. No LifeOS or Hermes installation is yet verified there.
+
+## October 6 selected completion checks
+
+The [selected hook completion report](verification/2026-10-06-hook-completion/README.md) records 118 equal cases across all 74 registrations. The original 15 gaps have selected passing effects. Cases for 65 registrations use native Claude Code events. The nine web and MultiEdit registrations use actual Hermes tools with direct native handler comparisons. Full handler branches remain open; the completion gate still refuses a universal parity claim.
+
+Development now runs on `192.168.8.252` in isolated accounts. The Discord gateway remains on `.212`. The real question queue and session state pass without Discord. Migrate the gateway configuration and verify actual Discord question and answer delivery during final combined acceptance. Do not start a second production bot session during development. Keep private FlashNext tier selection unchanged. Voice input and spoken replies remain the last feature workstream.

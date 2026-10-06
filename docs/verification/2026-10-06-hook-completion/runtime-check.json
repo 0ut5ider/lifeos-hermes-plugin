@@ -1,0 +1,81 @@
+{
+  "native_cli_sha256": "d81396a668eb76fbddb49a2a5841f1b5d7af96b4c1f6500ced92f2c988f5bcd4",
+  "hermes_interpreter_sha256": "8dfa9757a52b9c3edf1dedaaa2a7a8c40ea4beb058f20e90bdd47b48f3b1b176",
+  "selected_program_sha256": {
+    "hooks/TabState.hook.ts": {
+      "native": "3e616ef1ec6bf58b86aac8429268c93cdbd8feac6bde40613bad90a6170a4539",
+      "hermes": "db62ad1f8663a25b186155d66565d62f1906797eba96e2ba40afff28f923421e"
+    },
+    "hooks/EventLogger.hook.ts": {
+      "native": "7cdc843b9994638e75f520eec8887b632acd89cb75fd2aa0090ec044a3856461",
+      "hermes": "7cdc843b9994638e75f520eec8887b632acd89cb75fd2aa0090ec044a3856461"
+    },
+    "hooks/Safety.hook.ts": {
+      "native": "513a0cdfe13f76741de78bfc08e93d491e26a0cbf1c41792c5b9cbadb96ee470",
+      "hermes": "5854fe967a40cd45209c3e9601e31f2002869b820e49509e79585fce5d80390e"
+    },
+    "hooks/ISASync.hook.ts": {
+      "native": "52d10b53aca85cdadec04a068fddb232934b942d9456c86eee369f3bec4c895a",
+      "hermes": "52d10b53aca85cdadec04a068fddb232934b942d9456c86eee369f3bec4c895a"
+    },
+    "hooks/ISAStaleWriteGuard.hook.ts": {
+      "native": "d79dfe0d195fee969090c6fdccea7d93a281e8b7d113d1e1cd5e1bd82cb9fbdd",
+      "hermes": "7e0627b6f95d736ce861cca5b0fdd8bd1591bc4a2e90d1c31b6af69f8c84f798"
+    },
+    "hooks/CheckpointPerISC.hook.ts": {
+      "native": "2e1e95a510e8c1e84d892d98b82a4817686173503ac692cae2dd25b44a3f48a1",
+      "hermes": "454437e8869548ecfed07c4a3b01d416f5f96ba3a72539f7d4e8c17d2a10e24e"
+    },
+    "hooks/ConfigEvalFire.hook.ts": {
+      "native": "999dcaa059b7bedf644c8f249cb77e192aa62f500962dc728ae895098fce0022",
+      "hermes": "74c701218778479f589f5c4ae5e20e4f353b5074a30ad96cd3e4ad367bb0c218"
+    },
+    "hooks/AtlasEventCapture.hook.ts": {
+      "native": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322",
+      "hermes": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+    },
+    "hooks/KnowledgeWriteGuard.hook.ts": {
+      "native": "ef1063ceb4ef0696368901931bae9169e4f28a7547f9c281eccc0ad29eba0a58",
+      "hermes": "ef1063ceb4ef0696368901931bae9169e4f28a7547f9c281eccc0ad29eba0a58"
+    },
+    "hooks/ComplexityRatchet.hook.ts": {
+      "native": "03267a29c4427492e7844cf8db3d41b42d46ec93721feee2d73a411bf6a8089b",
+      "hermes": "03267a29c4427492e7844cf8db3d41b42d46ec93721feee2d73a411bf6a8089b"
+    },
+    "LIFEOS/PULSE/modules/hooks.ts": {
+      "native": "c30807a2bd469a95f0436ac41af09c01c7ed9a9e372aef316e3255a7c8c47f56",
+      "hermes": "c30807a2bd469a95f0436ac41af09c01c7ed9a9e372aef316e3255a7c8c47f56"
+    }
+  },
+  "runner_sha256": {
+    "verify_web_safety.py": "8b50d055c13bc1017c4516ae22514079f7e62419583a3b49489e439e9ebb5f61",
+    "batch_patch_fixture.py": "5a516b88635e51aa739dfc9710f5057a3a10eca1b7b82d9cf42b51eac79233f7",
+    "test_native_pulse_guards.py": "d8c29ef517991641c3e60ba163454a7b81a24dc169bf9ca369a941ba202e22c1",
+    "paired_pulse_guards.py": "5f2a97463e77a74b9de292ff703210269cfb830d63d985709e4a2aad607c9858",
+    "clarify_fixture_host.py": "2cbbd257c57ac500e4b28711e451a54f0d0c0e84824c7f6ab2d057882e72b6e4",
+    "collect_hook_completion.py": "3ffe960e8763d18ef9dd5cdbc0f4ef4d7ce4f18b3bcd7e111e117cfa14800e3f",
+    "paired_config_audit.py": "091dbb3d63d544a46299511c91a5f683a1015ab9de49408f98ffb2a8b516aa8b",
+    "launch.py": "95e1a291b7b6ffb2e619261d62e88a6fe543ff6e88316ad02f4d4d0680861c46",
+    "config_audit_fixture_host.py": "7725fb91dc600b534b8d8cd04837a62bdee7948e09c2b6dd9aea8abf28cc9e6b",
+    "paired_response_server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "web_fixture_host.py": "6d1666e832f09daf446e5e9c6791de6d7743c96cba87111d5f515325f223962f",
+    "paired_lifecycle_effects.py": "abfb7719e5c7236a7995db80c6c360d99cfb5760c157ee2a9dc918b9b7087706"
+  },
+  "native_patch_differences": [
+    "hooks/CheckpointPerISC.hook.ts",
+    "hooks/ConfigEvalFire.hook.ts",
+    "hooks/ISAStaleWriteGuard.hook.ts",
+    "hooks/Safety.hook.ts",
+    "hooks/TabState.hook.ts"
+  ],
+  "hermes_critical_source_sha256": {
+    "agent/display.py": "5f808363cb897a3be377471c0fbdbc73e71b091e56b0a326cb9f80ed6639f9b8",
+    "agent/tool_guardrails.py": "58ee0e047bae007e303b898eac261244fb4208233a867c50360c4ddb116a9420",
+    "agent/tool_result_classification.py": "75276b5b835b1885189d01f7ad8694ec0f1e91a60bf7e2e594ae2694e25b2892"
+  },
+  "bridge_sha256": "718439b641cc2101c3b050e762d5856a074653e86c2ca0d128d0646e98773bd8",
+  "native_cli_version": "2.1.272",
+  "native_web_and_multiedit_cli_dispatch": false,
+  "hermes_base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+  "lifeos_base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c"
+}

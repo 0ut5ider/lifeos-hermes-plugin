@@ -1,0 +1,144 @@
+{
+  "before": {
+    "guard_calls": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      "foreground-warning"
+    ],
+    "stderr_present": [
+      false
+    ],
+    "guard_effect_valid": true,
+    "context_in_model": [
+      true
+    ],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "79be5861-5772-42b1-bac7-35f6aa6d4c23",
+  "seconds": 6.585,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-agent-pulse-foreground",
+    "/home/lifeos-claude-ref/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-agent-pulse-foreground",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Agent",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Delegate exactly one task to one subagent with the agent delegation tool. The task text is: Reply with exactly SUBAGENT_READY. Wait for the result, then reply with exactly READY. Do not delegate a second task. Use the general-purpose subagent type if the tool has a subagent_type field. Run it in the foreground. Do not use output_schema.  Set the TOP-LEVEL background or run_in_background field to false. Do not put background inside tasks. Omit model.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Delegate one task to a subagent."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.3.1",
+      "command": "http://127.0.0.1:37251/hooks/agent-guard",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/LIFEOS/PULSE/modules/hooks.ts": "c30807a2bd469a95f0436ac41af09c01c7ed9a9e372aef316e3255a7c8c47f56"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "5cda747d3939becb47d35e6090cb8621be78465285b8f8448f9d746dd038e38f",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "016ba6738b33eff642fac5d411c1cb5961a888ebe67ce76cdb8073172dbd69f0",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "4cf5a1aa282940dac111b1a4c21ff3b618cedd18815d455b7a48af6746ea6a8f",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "397f4fb361c80cbb5010a42838ee6067fd6d482863aad66a843e693adae7885d",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "e5b70df421b7605833593932b55ef5a58f7f356f188fdcbcf0c5fecf531091c4",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "24f365dd1f1be2e80e6df309791c75bcf474f9d6746e7fbffb4217646b98b3b5",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "3f7a2e9947afaa201f5a185b52fa85e9657ebade708c8924d1a01d6f5ac86691",
+    "fixture-events.jsonl": "1a827f34c71fc96bcafbc71e7487ada7729628c4cd145f89843cca1e267c94b8",
+    "cli.log": "e268dba96a22f81fdb6735fe61fdcf659109a3f58e3fee3596800838cb1ca297",
+    "before-state.json": "ccbcc12b580eaaf77ac574fd955cb2afca7b52e87aa1760e63d4ba300b788a2f",
+    "after-state.json": "c4c2026e850ef7e0234c1008b84f92ba7f3530b3548bb2f1d3b742c81efd7903",
+    "fixture-files-before.json": "b30c529442d4c2679f814a1a65e74ec2feab276f924a9e0da2a5b61ae153b35e",
+    "fixture-files-after.json": "3655f777c03ac4fa7b0bdcb20b43a0928d2fa970228284296ad86bfbd888c135"
+  }
+}

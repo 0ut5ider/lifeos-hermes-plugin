@@ -1,21 +1,21 @@
 # Registration effect matrix
 
-Date: 2026-10-06. This table gives each of the 74 pinned registrations an expected effect. A selected passing case does not close all handler branches. Related native tests are indexed in [the JSON ledger](handler-effects.json). One hundred seven equal selected cases cover 60 registrations. One hundred five lifecycle cases use real client events and synthetic file assertions, including three request-delivery cases, three successful startup response cases, three response-cache cases, ten feedback capture cases, including five asynchronous cases, five format-contract cases, four current-time cases, seven version-drift cases, six end-of-turn render cases, three mutation hint cases with real tool calls, three pre-tool guard cases, three tool logging cases, three file hint cases with real Write and Edit calls, two evaluation trigger cases, two knowledge guard cases, one complete Edit group case, one complete Write group case and one Read case, twelve generic file and output comparisons, three generic tool comparisons, one permission request comparison, two MCP comparisons, three Agent comparisons, and two task creation comparisons; the earlier two cases retain their original scope. The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
+Date: 2026-10-06. This table gives each of the 74 pinned registrations an expected effect. The ledger retains 118 equal selected cases across all 74 registrations. Cases for 65 registrations use native Claude Code events. Nine registrations use actual Hermes tools and direct native handlers because the pinned native CLI has no usable web or MultiEdit control in these fixtures. The [selected completion report](../verification/2026-10-06-hook-completion/README.md) records the distinction and the remaining limits. A selected passing case does not close every handler branch. Related native tests are indexed in [the JSON ledger](handler-effects.json). The retained remote Kitty case demonstrates the existing channel-isolation difference and does not count as equal.
 
 | Registration | Handler | Expected effect | Paired effect evidence |
 | --- | --- | --- | --- |
 | PreToolUse.1.1 | ContextReduction | Rewrite supported commands through RTK and retain the native permission decision. | Selected case without rtk passes: no output, command unchanged |
-| PreToolUse.2.1 | skill-guard | Validate the selected skill and return its Pulse guard decision. | Pending |
-| PreToolUse.3.1 | agent-guard | Validate the selected agent and return its Pulse guard decision. | Pending |
+| PreToolUse.2.1 | skill-guard | Validate the selected skill and return its Pulse guard decision. | Real Pulse skill denial and allowance pass through both clients |
+| PreToolUse.3.1 | agent-guard | Validate the selected agent and return its Pulse guard decision. | Real Pulse foreground warning passes through both clients; watchdog and failure paths have native controls |
 | PreToolUse.3.2 | AgentInvocation | Record and validate agent invocation and completion state. | Inherited and explicit Opus starts pass with the served model and fixed agent type |
-| PreToolUse.4.1 | TabState | Set the terminal state for a question awaiting a user answer. | Pending |
+| PreToolUse.4.1 | TabState | Set the terminal state for a question awaiting a user answer. | Real question round trip sets waiting state; Discord delivery remains open |
 | PreToolUse.5.1 | PreToolGuard | Run the nested pre-tool guards and preserve deny, ask, and changed-input decisions. | Selected Bash cases pass; file guards and the other Bash guards remain open |
 | PostToolUse.1.1 | AgentInvocation | Record and validate agent invocation and completion state. | Selected delegation passes: one subagent stop row on both clients after the child-hook correction |
-| PostToolUse.2.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Pending |
-| PostToolUse.3.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Pending |
+| PostToolUse.2.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Ordinary and injection extraction pass through Hermes with next-request Safety context and direct native handler comparison |
+| PostToolUse.3.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Ordinary and injection search pass through Hermes with next-request Safety context and direct native handler comparison |
 | PostToolUse.4.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Selected MCP result passes: external-content warning delivered to the model on both clients |
 | PostToolUse.5.1 | Safety | Annotate attacker-writable external results as data, report injection patterns, and keep other MCP results neutral. | Selected case verified |
-| PostToolUse.6.1 | TabState | Restore the applicable terminal state after the user answer. | Pending |
+| PostToolUse.6.1 | TabState | Restore the applicable terminal state after the user answer. | Real question round trip restores the prior state; timeout and cancellation have native controls |
 | PostToolUse.7.1 | ISAStaleWriteGuard | Record the complete ISA content view for this session and backend. | Selected Read case passes: the session view records the read content |
 | PostToolUse.8.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Selected Write case passes: registry, render state, and phase strip |
 | PostToolUse.8.2 | ISAStaleWriteGuard | Prevent ISA writes based on a stale session view of the actual local or backend file. | Selected Write case passes: the session view records the written content |
@@ -31,13 +31,13 @@ Date: 2026-10-06. This table gives each of the 74 pinned registrations an expect
 | PostToolUse.9.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Selected Edit cases pass |
 | PostToolUse.9.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Selected Edit case passes outside the knowledge tree |
 | PostToolUse.9.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Selected Edit case passes without a finding |
-| PostToolUse.10.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Pending |
-| PostToolUse.10.2 | ISAStaleWriteGuard | Prevent ISA writes based on a stale session view of the actual local or backend file. | Pending |
-| PostToolUse.10.3 | CheckpointPerISC | Commit eligible verified ISC state and write a retrievable checkpoint record. | Pending |
-| PostToolUse.10.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Pending |
-| PostToolUse.10.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Pending |
-| PostToolUse.10.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Pending |
-| PostToolUse.10.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Pending |
+| PostToolUse.10.1 | ISASync | Synchronize ISA and active work state after a successful file change. | Actual batch patch updates ISA registry and render state; partial patch retains applied-file effects |
+| PostToolUse.10.2 | ISAStaleWriteGuard | Prevent ISA writes based on a stale session view of the actual local or backend file. | Actual batch patch records the applied ISA content view in successful and partial cases |
+| PostToolUse.10.3 | CheckpointPerISC | Commit eligible verified ISC state and write a retrievable checkpoint record. | Successful batch makes one criterion checkpoint; partial batch suppresses that checkpoint |
+| PostToolUse.10.4 | ConfigEvalFire | Trigger the configured evaluation when an applicable configuration file changes. | Actual sentinel batch preserves evaluation debounce; other evaluation branches remain open |
+| PostToolUse.10.5 | AtlasEventCapture | Record applicable architecture file changes in the native event store. | Actual batch captures the projects event; partial case has no unapplied projects event |
+| PostToolUse.10.6 | KnowledgeWriteGuard | Enforce the native knowledge-write contract for applicable file changes. | Actual batch emits the off-schema warning; partial case has no unapplied knowledge warning |
+| PostToolUse.10.7 | ComplexityRatchet | Accumulate changed lines and return the configured complexity warning. | Actual batch records 250 changed source lines and one dependency; partial case adds neither |
 | PostToolUse.11.1 | EventLogger | Write native tool activity, record applicable skill execution, and update the active ISA heartbeat. | Selected Bash case passes with the pinned asynchronous setting; output field names differ by an accepted host limit; Skill, file, and work-reconcile branches remain open |
 | PostToolUse.12.1 | PostToolObserver | Run the nested post-tool observers with the actual result and transcript. | Selected single-call case passes: loop and nudge state written, no output |
 | PostToolUse.12.2 | LoopDetector | Track repeated failures and return the native loop warning. | Selected single-call and exact-repeat cases pass; oscillation and hammering remain open |
@@ -61,7 +61,7 @@ Date: 2026-10-06. This table gives each of the 74 pinned registrations an expect
 | PostToolUseFailure.2.1 | AlgorithmNudge | Return the applicable algorithm or capability nudge to the model. | Selected failing call passes: nudge state written, no output |
 | PostToolUseFailure.3.1 | LoopDetector | Track repeated failures and return the native loop warning. | Selected failing Bash case passes; hammering remains open |
 | TaskCreated.1.1 | TaskGovernance | Apply the task quality and count rules to the actual task creation event. | Allowed and blocked task creation pass on both clients |
-| ConfigChange.1.1 | EventLogger | Write the native settings-change audit row and applicable configuration difference. | Pending |
+| ConfigChange.1.1 | EventLogger | Write the native settings-change audit row and applicable configuration difference. | Eight real external edits pass for user, project, local settings, and skills; paths and source-specific differences match |
 | SessionStart.1.1 | HookHealer | Repair interpreter and executable permissions for installed registered hooks. | Selected cases verified |
 | SessionStart.1.2 | KittyEnvPersist | Persist applicable terminal environment state and remain neutral on remote channels. | Selected cases verified |
 | SessionStart.1.3 | LoadContext | Load the applicable native identity, system, and admitted user context. | Selected cases verified |

@@ -10,8 +10,10 @@ from pathlib import Path
 
 if __package__:
     from .paired_lifecycle_effects import check_pair, model_chosen_calls
+    from .hook_completion_assertions import check_control
 else:
     from paired_lifecycle_effects import check_pair, model_chosen_calls
+    from hook_completion_assertions import check_control
 
 ROOT = Path(__file__).resolve().parents[1]
 STATUSES = {'unverified', 'native_handler_checked', 'paired_case_verified', 'paired_effect_verified'}
@@ -89,6 +91,22 @@ def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: 
                 errors.append(f'paired case lacks a retained artifact: {label}')
             if case.get('kind') == 'paired_lifecycle':
                 errors.extend(check_lifecycle_case(identifier, case, artifacts, root))
+            elif case.get('kind') == 'effect_control':
+                result = case.get('result_artifact')
+                if result not in artifacts or result not in names:
+                    errors.append(f'functional control result is not retained: {label}')
+                else:
+                    records = json.loads((root / result).read_text()).get('cases', [])
+                    matches = [record for record in records if record.get('id') == case['id']]
+                    if len(matches) != 1:
+                        errors.append(f'functional control is missing or duplicated: {label}')
+                    else:
+                        record = matches[0]
+                        errors.extend(f'invalid functional control: {label}: {error}' for error in check_control(record))
+                        if identifier not in record.get('registrations', []):
+                            errors.append(f'functional control does not cover registration: {label}')
+                        if any(case.get(side) != record.get(side) for side in ('native', 'hermes')):
+                            errors.append(f'ledger outcome differs from functional control: {label}')
         if document.get('complete') and status != 'paired_effect_verified':
             errors.append(f'complete claim includes partial effects: {identifier}')
     for identifier in identifiers - rows.keys():
