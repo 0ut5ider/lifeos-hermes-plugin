@@ -5,6 +5,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import stat
 import tomllib
 from uuid import uuid4
@@ -14,6 +15,15 @@ from .install_source import install_prepared_lifeos,validate_prepared_lifeos
 from .memory_access import NativeMemory,MemoryUnavailable,HOT_FILES
 from .memory_backup import _directory,_read,ENTRY_LIMIT,TOTAL_LIMIT
 from .memory_transaction import publish
+
+
+IDENTIFIER=re.compile(r'[0-9a-f]{32}')
+
+
+def _identifier(value):
+    if not isinstance(value,str) or not IDENTIFIER.fullmatch(value):
+        raise ValueError('A fresh store identifier has 32 lowercase hexadecimal characters')
+    return value
 
 
 IDENTITY_FILES=('CONFIG/LIFEOS_CONFIG.toml','PRINCIPAL/PRINCIPAL_IDENTITY.md',
@@ -134,6 +144,11 @@ class FreshStore:
             return invalid
         if document.get('state')=='preparing':
             return metadata['mtime_ns'],{**unfinished,'names':names}
+        if document.get('state')=='failed':
+            reason=document.get('reason')
+            if not isinstance(reason,str) or not 1<=len(reason)<=300:
+                return invalid
+            return metadata['mtime_ns'],{'identifier':folder.name,'state':'failed','names':names,'reason':reason}
         unsigned={key:value for key,value in document.items() if key!='signature'}
         signature=hashlib.sha256((json.dumps(unsigned,sort_keys=True,indent=2)+'\n').encode()).hexdigest()
         if document.get('state')!='review' or document.get('signature')!=signature:
@@ -158,18 +173,52 @@ class FreshStore:
         stores.sort(key=lambda row:(-row[0],row[1]['identifier']))
         return {'busy':busy,'stores':[row for _,row in stores]}
 
-    def prepare(self,candidate,*,principal_name,assistant_name,account=None):
+    def _ensure_base(self):
+        base=self._base()
+        if base.resolve()!=base:
+            raise MemoryUnavailable('The fresh store destination changes its physical path')
+        base.mkdir(parents=True,exist_ok=True,mode=0o700)
+        _directory(base,private=True)
+        return base
+
+    def record_failure(self,identifier,*,principal_name,assistant_name,reason):
+        # A detached preparation records its outcome, so the listing does not show it as interrupted.
+        identifier=_identifier(identifier)
+        names={'principal':_name(principal_name),'assistant':_name(assistant_name)}
+        if not isinstance(reason,str) or not 1<=len(reason)<=300:
+            raise ValueError('A fresh store failure needs a short reason')
+        destination=self._ensure_base()/identifier
+        if destination.is_symlink():
+            raise MemoryUnavailable('The fresh store listing requires physical prepared directories')
+        destination.mkdir(mode=0o700,exist_ok=True)
+        _directory(destination,private=True)
+        document={'version':1,'state':'failed','profile':str(self.profile),'names':names,'reason':reason}
+        publish(destination/'review.json',(json.dumps(document,sort_keys=True,indent=2)+'\n').encode())
+
+    def remove(self,identifier,*,account=None):
+        identifier=_identifier(identifier)
+        try:
+            with installation_lock(self.profile):
+                selected=self._owner(account)
+                folder=self._base()/identifier
+                if folder.is_symlink() or not folder.is_dir():
+                    raise MemoryUnavailable('The fresh store does not exist')
+                _directory(folder,private=True)
+                if Path(selected['root']).absolute().is_relative_to(folder):
+                    raise MemoryUnavailable('The selected installation cannot be removed')
+                shutil.rmtree(folder)
+                return {'identifier':identifier,'removed':True}
+        except InstallationBusy as error:
+            raise MemoryUnavailable('Another installation operation is running') from error
+
+    def prepare(self,candidate,*,principal_name,assistant_name,account=None,identifier=None):
         candidate=Path(candidate).absolute()
+        identifier=uuid4().hex if identifier is None else _identifier(identifier)
         with installation_lock(self.profile):
             selected=self._owner(account)
             principal=_name(principal_name);assistant=_name(assistant_name)
             source=validate_prepared_lifeos(candidate)
-            base=self._base()
-            if base.resolve()!=base:
-                raise MemoryUnavailable('The fresh store destination changes its physical path')
-            base.mkdir(parents=True,exist_ok=True,mode=0o700)
-            _directory(base,private=True)
-            destination=base/uuid4().hex
+            destination=self._ensure_base()/identifier
             destination.mkdir(mode=0o700)
             document={'version':1,'state':'preparing','profile':str(self.profile),
                 'retained_installation':str(self.installed),'source':source,

@@ -323,6 +323,42 @@ async def prepare_fresh_store(request: dict, account: str = Depends(_memory_acco
         INSTALL_CANDIDATE, **request, account=account))
 
 
+def _launch_fresh_store(arguments, unit):
+    from hermes_cli import _launchers
+    code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
+    runtime = _launchers.runtime_command(_host_source(), [str(PLUGIN_DIR / 'fresh_store_worker.py'), *arguments],
+                                         code=code, python=sys.executable)
+    command = ['systemd-run', '--user', '--collect', f'--unit={unit}', f'--setenv=HOME={Path.home()}',
+               f'--setenv=HERMES_HOME={HERMES_HOME}', f"--setenv=PATH={os.environ.get('PATH', os.defpath)}", *runtime]
+    launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
+    if launched.returncode:
+        raise RuntimeError('Could not start the fresh store preparation')
+
+
+@router.post('/memory/fresh/start', status_code=202)
+def start_fresh_store(request: dict, account: str = Depends(_memory_account)):
+    if (set(request) != {'principal_name', 'assistant_name'}
+            or any(not isinstance(value, str) for value in request.values())):
+        raise HTTPException(status_code=400, detail='Provide the principal and assistant display names')
+
+    def start(preferences):
+        from lifeos_memory_settings.fresh_store import _name
+        preferences._configuration(account=account)
+        _name(request['principal_name']); _name(request['assistant_name'])
+        identifier = uuid4().hex
+        _launch_fresh_store(['--configuration', str(preferences.configuration.path), '--candidate', str(INSTALL_CANDIDATE),
+                             '--identifier', identifier, '--principal-name', request['principal_name'],
+                             '--assistant-name', request['assistant_name'], '--account', account],
+                            'lifeos-fresh-store-' + identifier)
+        return {'identifier': identifier, 'state': 'preparing'}
+    return _memory_action(start)
+
+
+@router.delete('/memory/fresh/stores/{identifier}')
+def remove_fresh_store(identifier: str, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences: preferences.remove_fresh(identifier, account=account))
+
+
 @router.get('/memory/fresh/status')
 def get_fresh_store_status(request: Request, account: str = Depends(_memory_account)):
     if request.query_params:
