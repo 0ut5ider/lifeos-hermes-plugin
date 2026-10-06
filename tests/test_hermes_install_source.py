@@ -9,7 +9,7 @@ from pathlib import Path
 
 from lifeos_hook_bridge.install_source import (
     IncompatibleLifeOS, apply_hermes_patch, prepare_hermes, stage_hermes_patch,
-    request_hermes_restore, restore_hermes_patch, validate_hermes_candidate,
+    recover_hermes_patch, request_hermes_restore, restore_hermes_patch, validate_hermes_candidate,
 )
 
 
@@ -119,6 +119,46 @@ class HermesSourceTests(unittest.TestCase):
             self.assertIn("pre_turn_stop", (source / "hermes_cli/plugins.py").read_text())
             self.assertEqual((source / "hermes_cli/new_hook.py").read_text(), "ENABLED = True\n")
             self.assertEqual(runtime.read_text(), "runtime")
+
+    def interrupted(self, root, state):
+        source, revision, patches = self.fixture(root)
+        candidate = root / "candidate"
+        prepare_hermes(source, candidate, revision, patches, ("host.patch",))
+        config = root / "config.yaml"
+        config.write_text("model: local\n")
+        snapshot = root / "snapshot"
+        stage_hermes_patch(snapshot, source, candidate, config, revision, patches, ("host.patch",))
+        if state == "restoring":
+            apply_hermes_patch(snapshot, stop=lambda: None, start=lambda: None, verify=lambda: None)
+            request_hermes_restore(snapshot)
+        manifest = json.loads((snapshot / "manifest.json").read_text())
+        manifest["state"] = state
+        (snapshot / "manifest.json").write_text(json.dumps(manifest))
+        # The killed worker wrote only one patched file before it died.
+        (source / "hermes_cli/plugins.py").write_text("VALID_HOOKS = {'pre_tool_call', 'pre_turn_stop'}\n")
+        return source, snapshot
+
+    def test_recovery_returns_an_interrupted_host_change_to_stock(self):
+        for state in ("applying", "restoring"):
+            with self.subTest(state=state), tempfile.TemporaryDirectory() as directory:
+                source, snapshot = self.interrupted(Path(directory), state)
+                events = []
+                result = recover_hermes_patch(snapshot, stop=lambda: events.append("stop"),
+                                              start=lambda: events.append("start"),
+                                              verify=lambda: events.append("verify"))
+                self.assertEqual(result["state"], "rolled_back")
+                self.assertEqual(git("status", "--porcelain", cwd=source), "")
+                self.assertEqual(events, ["stop", "start", "verify"])
+                self.assertEqual(json.loads((snapshot / "manifest.json").read_text())["state"], "rolled_back")
+
+    def test_recovery_refuses_a_finished_host_change(self):
+        with tempfile.TemporaryDirectory() as directory:
+            source, snapshot = self.interrupted(Path(directory), "restoring")
+            manifest = json.loads((snapshot / "manifest.json").read_text())
+            manifest["state"] = "applied"
+            (snapshot / "manifest.json").write_text(json.dumps(manifest))
+            with self.assertRaisesRegex(IncompatibleLifeOS, "interrupted"):
+                recover_hermes_patch(snapshot, stop=lambda: None, start=lambda: None, verify=lambda: None)
 
     def test_restore_preserves_later_hermes_config_edit(self):
         with tempfile.TemporaryDirectory() as directory:

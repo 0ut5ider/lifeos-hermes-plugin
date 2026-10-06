@@ -630,6 +630,34 @@ def restore_hermes_patch(snapshot: Path, *, stop: Callable[[], None],
     return manifest
 
 
+def recover_hermes_patch(snapshot: Path, *, stop: Callable[[], None],
+                         start: Callable[[], None], verify: Callable[[], None]) -> dict:
+    """Return Hermes to stock files after a worker died while applying or restoring the patch."""
+    manifest = _read_patch_state(snapshot)
+    state = manifest.get("state")
+    if state not in {"applying", "restoring"}:
+        raise IncompatibleLifeOS("There is no interrupted Hermes patch change to recover")
+    current = Path(manifest["current"])
+    try:
+        stop()
+        _write_patch_files(snapshot / "files", current, manifest["files"], "before")
+        if state == "applying":
+            shutil.copy2(snapshot / "config.yaml", Path(manifest["config"]))
+        start()
+        verify()
+        if _git("status", "--porcelain", "--untracked-files=all", cwd=current):
+            raise IncompatibleLifeOS("Hermes source remained changed after recovery")
+    except BaseException as error:
+        manifest["state"] = "rollback_failed"
+        manifest["error"] = str(error)[:300]
+        _write_patch_state(snapshot, manifest)
+        raise IncompatibleLifeOS(f"Hermes patch recovery failed: {error}") from error
+    manifest["state"] = "rolled_back"
+    manifest["error"] = f"Recovered an interrupted {'apply' if state == 'applying' else 'restore'}"
+    _write_patch_state(snapshot, manifest)
+    return manifest
+
+
 def request_hermes_restore(snapshot: Path) -> None:
     manifest = _read_patch_state(snapshot)
     if manifest.get("state") == "restoring":
@@ -692,12 +720,14 @@ def _run_hermes_patch_job(snapshot: Path, action: str) -> dict:
     service_path = re.search(r"\bpath=([^ ;}]+)", command.stdout)
     if command.returncode or service_path is None or service_path.group(1) != launcher:
         raise IncompatibleLifeOS("The Hermes gateway service does not run the staged source")
-    if _systemctl("is-active", service) != "active":
-        raise IncompatibleLifeOS("A running Hermes gateway service is required")
     prior = subprocess.run(["systemctl", "--user", "show", service, "-p", "MainPID", "--value"],
                            text=True, capture_output=True, timeout=30)
-    if prior.returncode or not prior.stdout.strip().isdigit() or int(prior.stdout.strip()) <= 0:
-        raise IncompatibleLifeOS("A running Hermes gateway service is required")
+    if action != "recover":
+        # Recovery runs after a dead worker, often with the gateway stopped.
+        if _systemctl("is-active", service) != "active":
+            raise IncompatibleLifeOS("A running Hermes gateway service is required")
+        if prior.returncode or not prior.stdout.strip().isdigit() or int(prior.stdout.strip()) <= 0:
+            raise IncompatibleLifeOS("A running Hermes gateway service is required")
     previous_pid = prior.stdout.strip()
     stop = lambda: _systemctl("stop", service)
     start = lambda: _systemctl("start", service)
@@ -707,12 +737,14 @@ def _run_hermes_patch_job(snapshot: Path, action: str) -> dict:
                                   verify_restored=verify)
     if action == "restore":
         return restore_hermes_patch(snapshot, stop=stop, start=start, verify=verify)
+    if action == "recover":
+        return recover_hermes_patch(snapshot, stop=stop, start=start, verify=verify)
     raise IncompatibleLifeOS("Unknown Hermes patch action")
 
 
 def _main() -> int:
     parser = argparse.ArgumentParser(description="Apply a tested Hermes source patch")
-    parser.add_argument("action", choices=("apply", "restore"))
+    parser.add_argument("action", choices=("apply", "restore", "recover"))
     parser.add_argument("snapshot", type=Path)
     args = parser.parse_args()
     try:

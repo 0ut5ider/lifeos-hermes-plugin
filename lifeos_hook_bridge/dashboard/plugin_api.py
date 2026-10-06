@@ -907,17 +907,30 @@ def get_host_patch_status():
         manifest = json.loads((snapshot / "manifest.json").read_text())
     except (OSError, ValueError):
         return {"state": "error", "snapshot": str(snapshot)}
-    return {"state": manifest.get("state", "error"), "snapshot": str(snapshot),
-            "error": manifest.get("error")}
+    state = manifest.get("state", "error")
+    if state in {"applying", "restoring"} and manifest.get("unit"):
+        active = subprocess.run(["systemctl", "--user", "is-active", manifest["unit"]],
+                                text=True, capture_output=True, timeout=15)
+        if active.returncode or active.stdout.strip() != "active":
+            # The worker died while it changed Hermes files; the page offers recovery.
+            return {"state": "interrupted", "transaction_state": state, "snapshot": str(snapshot),
+                    "error": manifest.get("error")}
+    return {"state": state, "snapshot": str(snapshot), "error": manifest.get("error")}
 
 
 def _launch_host_patch(snapshot: Path, action: str):
-    service = subprocess.run(["systemctl", "--user", "is-active", "hermes-gateway.service"],
-                             text=True, capture_output=True, timeout=15)
-    if service.returncode or service.stdout.strip() != "active":
-        raise IncompatibleLifeOS("A running Hermes gateway user service is required")
+    if action != "recover":
+        service = subprocess.run(["systemctl", "--user", "is-active", "hermes-gateway.service"],
+                                 text=True, capture_output=True, timeout=15)
+        if service.returncode or service.stdout.strip() != "active":
+            raise IncompatibleLifeOS("A running Hermes gateway user service is required")
+    unit = f"lifeos-bridge-{action}-{uuid4().hex}"
+    manifest_path = snapshot / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["unit"] = unit
+    install_module.memory_administration().publish(manifest_path, (json.dumps(manifest) + "\n").encode())
     command = ["systemd-run", "--user", "--collect",
-               f"--unit=lifeos-bridge-{action}-{uuid4().hex}",
+               f"--unit={unit}",
                f"--setenv=HERMES_HOME={HERMES_HOME}", sys.executable,
                str(PLUGIN_DIR / "install_source.py"), action, str(snapshot)]
     launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
@@ -972,6 +985,23 @@ def _restore_hermes_installation():
             cancel_hermes_restore(snapshot, str(error))
         raise HTTPException(status_code=409, detail=str(error)) from error
     return {"state": "restoring", "snapshot": str(snapshot)}
+
+
+@router.post("/installation/recover-hermes", dependencies=[Depends(_fixed_mount_request)])
+def recover_hermes_installation():
+    return _installation_action(_recover_hermes_installation)
+
+
+def _recover_hermes_installation():
+    previous = get_host_patch_status()
+    if previous["state"] != "interrupted":
+        raise HTTPException(status_code=409, detail="There is no interrupted Hermes patch change to recover")
+    snapshot = Path(previous["snapshot"])
+    try:
+        _launch_host_patch(snapshot, "recover")
+    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "recovering", "snapshot": str(snapshot)}
 
 
 @router.get("/settings")

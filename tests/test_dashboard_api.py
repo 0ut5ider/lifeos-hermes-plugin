@@ -369,6 +369,32 @@ class DashboardApiTests(unittest.TestCase):
             self.assertTrue(any(command[0] == "systemd-run" for command in commands))
             self.assertEqual(api.get_host_patch_status()["state"], "staged")
 
+    def test_interrupted_host_change_reports_and_launches_recovery(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.HERMES_HOME = root / ".hermes"
+            api.HERMES_HOME.mkdir()
+            api.HOST_PATCH_ROOT = root / "patch-jobs"
+            snapshot = api.HOST_PATCH_ROOT / "patch-1"
+            snapshot.mkdir(parents=True)
+            (snapshot / "manifest.json").write_text(json.dumps({"state": "restoring", "unit": "lifeos-bridge-restore-1"}))
+            inactive = lambda command, **_: types.SimpleNamespace(returncode=3, stdout="inactive\n", stderr="")
+            with patch.object(api.subprocess, "run", side_effect=inactive):
+                status = api.get_host_patch_status()
+            self.assertEqual((status["state"], status["transaction_state"]), ("interrupted", "restoring"))
+            launched = []
+            with patch.object(api.subprocess, "run", side_effect=inactive), \
+                    patch.object(api, "_launch_host_patch", side_effect=lambda snap, action: launched.append((snap, action))):
+                result = api._recover_hermes_installation()
+            self.assertEqual(result, {"state": "recovering", "snapshot": str(snapshot)})
+            self.assertEqual(launched, [(snapshot, "recover")])
+            active = lambda command, **_: types.SimpleNamespace(returncode=0, stdout="active\n", stderr="")
+            with patch.object(api.subprocess, "run", side_effect=active):
+                self.assertEqual(api.get_host_patch_status()["state"], "restoring")
+                with self.assertRaises(api.HTTPException):
+                    api._recover_hermes_installation()
+
     def load_api(self, fields, save):
         settings = types.ModuleType("hermes_cli.plugins_settings")
         settings.plugin_settings_fields = fields

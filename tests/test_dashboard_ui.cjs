@@ -452,3 +452,49 @@ test("a host change waiting for a dashboard restart hides stale Hermes controls"
   assert.equal(find(view, (node) => node.type === "p" &&
     node.children.some((child) => typeof child === "string" && child.includes("Reduced mode cannot enforce"))), null);
 });
+
+test("an interrupted Hermes patch change offers recovery", async () => {
+  const state = [];
+  const calls = [];
+  let index = 0;
+  let effectRan = false;
+  let component;
+  const sdk = {
+    React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
+    hooks: {
+      useState(initial) {
+        const slot = index++;
+        if (!(slot in state)) state[slot] = initial;
+        return [state[slot], (value) => { state[slot] = typeof value === "function" ? value(state[slot]) : value; }];
+      },
+      useEffect(callback) { if (!effectRan) { effectRan = true; callback(); } },
+    },
+    fetchJSON: (url, init) => {
+      calls.push({ url, init });
+      if (url.endsWith("/installation/recover-hermes")) return Promise.resolve({ state: "recovering" });
+      if (url.endsWith("/installation/host-patch")) return Promise.resolve({ state: "interrupted", transaction_state: "restoring" });
+      if (url.endsWith("/installation")) return Promise.resolve({
+        lifeos: "installed", version: "7.40.4", hermes: "patched_hooks_present", setup_baseline_exists: true,
+      });
+      if (url.endsWith("/version-drift")) return Promise.resolve({ state: "missing" });
+      if (url.includes("/api/model/options")) return Promise.resolve({ providers: [] });
+      return Promise.resolve({ fields: [] });
+    },
+  };
+  vm.runInNewContext(bundle, {
+    window: {
+      __HERMES_PLUGIN_SDK__: sdk, setTimeout: () => 0,
+      __HERMES_PLUGINS__: { register: (_name, view) => { component = view; } },
+    },
+    console,
+  });
+  const render = () => { index = 0; return component(); };
+  render();
+  await new Promise(setImmediate);
+  const recover = find(render(), (node) => node.type === "button" &&
+    node.children.includes("Recover interrupted Hermes change"));
+  assert.ok(recover);
+  recover.props.onClick();
+  await new Promise(setImmediate);
+  assert.ok(calls.some((call) => call.url.endsWith("/installation/recover-hermes") && call.init?.method === "POST"));
+});

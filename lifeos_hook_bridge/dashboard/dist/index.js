@@ -634,6 +634,17 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function recoverHermes() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/recover-hermes", { method: "POST" }).then(function () {
+        setInstallationStatus("Returning Hermes to its stock files. The gateway will restart.");
+        refreshHostPatch(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not start Hermes recovery: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function refreshLifeOSUpdate(attempt) {
       SDK.fetchJSON(lifeosUpdateEndpoint).then(function (result) {
         setLifeosUpdate(result);
@@ -832,6 +843,10 @@
           }, "Restore previous Hermes")) : null,
         ["staged", "applying", "restoring"].includes(hostPatch?.state) ? h("p", { role: "status" },
           "Hermes patch job is " + hostPatch.state + ". The gateway may be unavailable during restart.") : null,
+        hostPatch?.state === "interrupted" ? h("div", { className: "space-y-2 text-sm" },
+          h("p", { role: "alert" }, "A Hermes patch change stopped before it finished. The gateway may be stopped. Recovery returns Hermes to its stock files and starts the gateway."),
+          h("button", { type: "button", disabled: installationBusy, onClick: recoverHermes,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Recover interrupted Hermes change")) : null,
         ["rolled_back", "rollback_failed", "restore_failed", "failed_preflight", "error"].includes(hostPatch?.state) ? h("p", { role: "status" },
           "Hermes patch job: " + hostPatch.state + (hostPatch.error ? ". " + hostPatch.error : "")) : null,
         installation?.lifeos === "installed" && installation.hermes === "patched_hooks_present" && !installation.dashboard_restart_required ? h("p", { className: "text-sm" },
