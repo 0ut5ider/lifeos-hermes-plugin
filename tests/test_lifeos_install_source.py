@@ -150,6 +150,23 @@ class InstallSourceTests(unittest.TestCase):
                                    revision, patches, ("lifeos-test.patch",))
             self.assertEqual(marker.read_text(), "yes")
 
+    def test_failed_install_step_reports_the_native_error_text(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            candidate = root / "candidate"
+            prepare_lifeos(str(upstream), candidate, revision, patches,
+                           ("lifeos-test.patch",))
+            binary = root / "private-bin/bun"
+            binary.parent.mkdir()
+            binary.write_text('#!/bin/sh\necho progress\necho "first detail" >&2\n'
+                              'echo "Synthetic native failure reason" >&2\nexit 23\n')
+            binary.chmod(0o755)
+            with self.assertRaisesRegex(IncompatibleLifeOS,
+                    "InstallSettings exited with code 23: first detail\nSynthetic native failure reason"):
+                install_lifeos(candidate, root / "home/.claude", root / "failed", str(binary),
+                               revision, patches, ("lifeos-test.patch",))
+
     def test_fresh_install_refuses_existing_claude_root(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

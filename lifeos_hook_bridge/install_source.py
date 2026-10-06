@@ -302,7 +302,7 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
                     cwd=installed.parent, environment=environment, timeout=300,
                 )
                 if result.returncode:
-                    raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
+                    raise IncompatibleLifeOS(memory_module("native_output").failure_message(f"LifeOS {name}", result))
         source_version = (skill_root / "install/LIFEOS/VERSION").read_text().strip()
         version = (installed / "LIFEOS/VERSION").read_text().strip()
         settings = json.loads((installed / "settings.json").read_text())

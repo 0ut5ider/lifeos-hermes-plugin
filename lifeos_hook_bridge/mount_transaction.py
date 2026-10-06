@@ -13,6 +13,7 @@ import sys
 from uuid import uuid4
 
 from .memory_transaction import publish
+from .native_output import failure_message
 
 
 FILES = ('config.yaml', 'SOUL.md', '.env', 'plugins/lifeos/__init__.py',
@@ -64,7 +65,7 @@ def _run(command, installed, environment, label):
     result = subprocess.run(command, cwd=installed.parent, env=environment, text=True,
                             capture_output=True, timeout=120)
     if result.returncode:
-        raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+        raise MountError(failure_message(f'LifeOS {label}', result))
     return result.stdout
 
 

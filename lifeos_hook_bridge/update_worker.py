@@ -29,6 +29,7 @@ from .version_drift import changed_paths, create_baseline, load_baseline, save_b
 from .memory_administration import (mount_environment, job_binding, required, revoke)
 from .memory_service import MemoryConfiguration
 from .installation_lock import installation_lock
+from .native_output import failure_message
 
 
 def _digest(path: Path) -> str:
@@ -84,7 +85,7 @@ def _run(command: list[str | Path], *, home: Path, timeout: int = 180, environme
                             env=dict(os.environ, HOME=str(home)) if environment is None else environment, capture_output=True,
                             text=True, timeout=timeout)
     if result.returncode:
-        raise RuntimeError(f"{Path(command[0]).name} exited with code {result.returncode}")
+        raise RuntimeError(failure_message(Path(command[0]).name, result))
     return result.stdout.strip()
 
 
