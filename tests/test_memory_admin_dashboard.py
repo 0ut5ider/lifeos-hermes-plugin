@@ -151,6 +151,18 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         self.assertEqual(request['profile'], str(self.fixture.profile))
         self.assertEqual((job / 'request.json').stat().st_mode & 0o777, 0o600)
 
+    def test_fresh_store_preparation_uses_the_selected_candidate(self):
+        self.login()
+        selected = self.fixture.candidate.with_name(self.fixture.candidate.name + '-' + 'c' * 32)
+        marker = self.fixture.candidate.with_name(self.fixture.candidate.name + '.selected.json')
+        marker.write_text(json.dumps({'name': selected.name}))
+        with patch.object(self.api, '_launch_fresh_store') as launched:
+            response = self.client.post('/api/plugins/lifeos-hook-bridge/memory/fresh/start',
+                                        json={'principal_name': 'Adrian', 'assistant_name': 'Cerebo'})
+        self.assertEqual(response.status_code, 202, response.text)
+        arguments = launched.call_args.args[0]
+        self.assertEqual(arguments[arguments.index('--candidate') + 1], str(selected))
+
     def test_selection_refuses_a_store_from_another_candidate(self):
         self.login()
         source = dict(self.api.validate_prepared_lifeos(self.api._candidate_path()), upstream_commit='0' * 40)

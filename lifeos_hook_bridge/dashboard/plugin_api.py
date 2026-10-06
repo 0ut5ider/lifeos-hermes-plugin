@@ -329,7 +329,7 @@ async def prepare_fresh_store(request: dict, account: str = Depends(_memory_acco
             or any(not isinstance(value,str) for value in request.values())):
         raise HTTPException(status_code=400, detail='Provide the principal and assistant display names')
     return await run_in_threadpool(_memory_action, lambda preferences: preferences.prepare_fresh(
-        INSTALL_CANDIDATE, **request, account=account))
+        _candidate_path(), **request, account=account))
 
 
 def _launch_fresh_store(arguments, unit):
@@ -355,7 +355,7 @@ def start_fresh_store(request: dict, account: str = Depends(_memory_account)):
         preferences._configuration(account=account)
         _name(request['principal_name']); _name(request['assistant_name'])
         identifier = uuid4().hex
-        _launch_fresh_store(['--configuration', str(preferences.configuration.path), '--candidate', str(INSTALL_CANDIDATE),
+        _launch_fresh_store(['--configuration', str(preferences.configuration.path), '--candidate', str(_candidate_path()),
                              '--identifier', identifier, '--principal-name', request['principal_name'],
                              '--assistant-name', request['assistant_name'], '--account', account],
                             'lifeos-fresh-store-' + identifier)
