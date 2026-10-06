@@ -46,9 +46,12 @@ class LifeOSInstallationTests(unittest.TestCase):
         self.assertEqual(setting.selection(self.profile).home, self.account)
 
     def test_account_home_of_default_and_named_profiles(self):
-        self.assertEqual(setting.account_home(Path('/home/owner/.hermes')), Path('/home/owner'))
+        with patch.dict(os.environ, {'HOME': '/home/owner'}):
+            self.assertEqual(setting.account_home(Path('/home/owner/.hermes')), Path('/home/owner'))
+            self.assertEqual(setting.account_home(Path('/srv/agent/profile')), Path('/home/owner'))
         self.assertEqual(setting.account_home(Path('/home/owner/.hermes/profiles/work')), Path('/home/owner'))
-        self.assertEqual(setting.account_home(Path('/srv/agent/profile')), Path('/srv/agent'))
+        self.assertEqual(setting.state_home(Path('/home/owner/.hermes/profiles/work')), Path('/home/owner'))
+        self.assertEqual(setting.state_home(Path('/srv/agent/profile')), Path('/srv/agent'))
 
     def test_named_profile_without_a_setting_uses_its_account_home(self):
         named = self.account / '.hermes/profiles/work'

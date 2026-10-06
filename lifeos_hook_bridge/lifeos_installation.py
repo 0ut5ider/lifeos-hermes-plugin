@@ -32,12 +32,20 @@ def _absolute(value, name):
     return Path(value)
 
 
-def account_home(profile: Path) -> Path:
-    """Return the account home that holds a Hermes profile, including named profiles."""
+def state_home(profile: Path) -> Path:
+    """Return the home for plugin state of a profile: the account home of a named profile, else its parent."""
     profile = Path(profile).absolute()
     if profile.parent.name == 'profiles' and profile.parent.parent.name == '.hermes':
         return profile.parent.parent.parent
     return profile.parent
+
+
+def account_home(profile: Path) -> Path:
+    """Return the account home of a Hermes profile: the owner of ~/.hermes/profiles/<name>, else HOME."""
+    profile = Path(profile).absolute()
+    if profile.parent.name == 'profiles' and profile.parent.parent.name == '.hermes':
+        return profile.parent.parent.parent
+    return Path.home()
 
 
 def selection(profile: Path) -> Selection:

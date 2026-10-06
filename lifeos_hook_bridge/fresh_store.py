@@ -12,7 +12,7 @@ from uuid import uuid4
 
 from .installation_lock import installation_lock,InstallationBusy
 from .install_source import install_prepared_lifeos,validate_prepared_lifeos
-from .lifeos_installation import account_home
+from .lifeos_installation import state_home
 from .memory_access import NativeMemory,MemoryUnavailable,HOT_FILES
 from .memory_backup import _directory,_read,ENTRY_LIMIT,TOTAL_LIMIT
 from .memory_transaction import publish
@@ -118,7 +118,7 @@ class FreshStore:
 
     def _base(self):
         identity=hashlib.sha256(str(self.profile).encode()).hexdigest()[:24]
-        return account_home(self.profile)/'.local/state/lifeos-hook-bridge/fresh-stores'/identity
+        return state_home(self.profile)/'.local/state/lifeos-hook-bridge/fresh-stores'/identity
 
     def _store(self,folder,running):
         info=folder.lstat()
