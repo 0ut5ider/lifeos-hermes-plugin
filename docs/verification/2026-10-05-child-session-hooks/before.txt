@@ -1,0 +1,22 @@
+F
+======================================================================
+FAIL: test_delegated_child_turn_runs_no_session_start_or_prompt_hooks_like_a_claude_subagent (test_bridge.HookBridgeTests.test_delegated_child_turn_runs_no_session_start_or_prompt_hooks_like_a_claude_subagent)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bridge.py", line 1247, in test_delegated_child_turn_runs_no_session_start_or_prompt_hooks_like_a_claude_subagent
+    self.assertEqual(marker.read_text().splitlines(), ["SessionStart", "UserPromptSubmit"])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['SessionStart', 'UserPromptSubmit', 'SessionStart', 'UserPromptSubmit'] != ['SessionStart', 'UserPromptSubmit']
+
+First list contains 2 additional elements.
+First extra element 2:
+'SessionStart'
+
+- ['SessionStart', 'UserPromptSubmit', 'SessionStart', 'UserPromptSubmit']
++ ['SessionStart', 'UserPromptSubmit']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.809s
+
+FAILED (failures=1)
+exit 1

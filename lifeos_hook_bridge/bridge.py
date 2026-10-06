@@ -593,6 +593,14 @@ def _project_root_for_cwd(cwd: str) -> Path:
 STOP_TRANSCRIPT_DELAY = 0.1
 
 
+def _delegated_child() -> bool:
+    try:
+        from agent.delegation_context import is_delegated_child_context, is_delegated_child_process_context
+    except ImportError:
+        return False
+    return is_delegated_child_context() or is_delegated_child_process_context()
+
+
 class HookBridge:
     def __init__(
         self, settings_path: Path, root: Path,
@@ -2011,6 +2019,9 @@ class HookBridge:
         self, user_message: Any, session_id: str = "", is_first_turn: bool | None = None,
         platform: str = "", **_: Any,
     ) -> dict[str, str] | None:
+        if _delegated_child():
+            # Claude Code runs SessionStart and UserPromptSubmit hooks for the main session only.
+            return None
         prompt = _prompt_text(user_message)
         if platform:
             with self.session_lock:
@@ -2225,6 +2236,9 @@ class HookBridge:
              model: str = "", platform: str = "", reasoning_effort: str = "",
              provider: str = "",
              **_: Any) -> dict[str, str] | None:
+        if _delegated_child():
+            # A Claude Code subagent ends with SubagentStop, not Stop; LifeOS registers no SubagentStop hook.
+            return None
         if platform:
             with self.session_lock:
                 self.session_platforms[session_id] = platform.lower()

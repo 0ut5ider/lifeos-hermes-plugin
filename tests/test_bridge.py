@@ -1230,6 +1230,38 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
         self.assertEqual(rows[-1]["message"]["content"], "revised")
 
+    def test_delegated_child_turn_runs_no_session_start_or_prompt_hooks_like_a_claude_subagent(self):
+        # Claude Code runs SessionStart and UserPromptSubmit hooks for the main session only, not for subagents.
+        from agent.delegation_context import delegated_child_context
+        marker = self.root / "child-events.jsonl"
+        command = self.make_hook(
+            "child_events.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).open('a').write(json.load(sys.stdin)['hook_event_name']+'\\n')\n",
+        )
+        group = [{"hooks": [{"type": "command", "command": command}]}]
+        bridge = self.bridge({"SessionStart": group, "UserPromptSubmit": group})
+        bridge.pre_llm_call("parent prompt", session_id="parent")
+        with delegated_child_context("child"):
+            self.assertIsNone(bridge.pre_llm_call("child task", session_id="child"))
+        self.assertEqual(marker.read_text().splitlines(), ["SessionStart", "UserPromptSubmit"])
+
+    def test_delegated_child_answer_runs_no_stop_hooks_like_a_claude_subagent(self):
+        from agent.delegation_context import delegated_child_context
+        marker = self.root / "child-stop.jsonl"
+        command = self.make_hook(
+            "child_stop.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).open('a').write(json.load(sys.stdin)['session_id']+'\\n')\n"
+            "print(json.dumps({'decision':'block','reason':'Main session gate'}))\n",
+        )
+        bridge = self.bridge({"Stop": [{"hooks": [{"type": "command", "command": command}]}]})
+        with delegated_child_context("child"):
+            self.assertIsNone(bridge.stop("child answer", session_id="child"))
+        self.assertFalse(marker.exists())
+        self.assertEqual(bridge.stop("parent answer", session_id="parent"),
+                         {"action": "continue", "message": "Main session gate"})
+
     def test_stop_candidate_reaches_the_transcript_during_the_stop_hook_like_claude_code(self):
         # Claude Code 2.1.272 shows the candidate in the transcript 50 to 150 ms after a Stop hook starts.
         # LifeOS Stop gates wait 150 ms before they parse the transcript for the final answer.
