@@ -1,0 +1,101 @@
+TAP version 13
+# Subtest: each store shows its state, names, and the reason for a failure
+not ok 1 - each store shows its state, names, and the reason for a failure
+  ---
+  duration_ms: 6.837533
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:67:1'
+  failureType: 'testCodeFailure'
+  error: 'The LifeOS page must include the fresh store controls'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    controls (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:51:10)
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:68:23)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: starting a store sends only the two names and shows the running preparation
+not ok 2 - starting a store sends only the two names and shows the running preparation
+  ---
+  duration_ms: 0.850327
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:76:1'
+  failureType: 'testCodeFailure'
+  error: 'The LifeOS page must include the fresh store controls'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    controls (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:51:10)
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:77:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: remove is offered for every store and confirms by identifier
+not ok 3 - remove is offered for every store and confirms by identifier
+  ---
+  duration_ms: 1.058936
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:87:1'
+  failureType: 'testCodeFailure'
+  error: 'The LifeOS page must include the fresh store controls'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    controls (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:51:10)
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:88:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: while an installation operation runs the start control is disabled
+not ok 4 - while an installation operation runs the start control is disabled
+  ---
+  duration_ms: 0.897316
+  type: 'test'
+  location: '/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:101:1'
+  failureType: 'testCodeFailure'
+  error: 'The LifeOS page must include the fresh store controls'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: ~
+  operator: '=='
+  stack: |-
+    controls (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:51:10)
+    TestContext.<anonymous> (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_ui.cjs:102:22)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 0
+# fail 4
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 79.916016
+exit 1

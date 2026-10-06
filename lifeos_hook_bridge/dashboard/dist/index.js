@@ -270,6 +270,72 @@
               h("button", { type: "submit", disabled: busy, className: "rounded border border-border px-3 py-2" }, "Add agent connection"))))) : null);
   }
 
+  function FreshStores() {
+    const endpoint = "/api/plugins/lifeos-hook-bridge/memory/fresh";
+    const [listing, setListing] = SDK.hooks.useState(null);
+    const [principalName, setPrincipalName] = SDK.hooks.useState("");
+    const [assistantName, setAssistantName] = SDK.hooks.useState("");
+    const [busy, setBusy] = SDK.hooks.useState(false);
+    const [notice, setNotice] = SDK.hooks.useState("");
+
+    async function load() {
+      try { setListing(await SDK.fetchJSON(endpoint + "/status")); }
+      catch (error) { setNotice("Could not list fresh stores: " + error.message); }
+    }
+    SDK.hooks.useEffect(function () { load(); }, []);
+
+    async function start(event) {
+      event.preventDefault();
+      setBusy(true);
+      try {
+        await SDK.fetchJSON(endpoint + "/start", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ principal_name: principalName, assistant_name: assistantName }) });
+        setNotice("Preparation started. It continues if this page closes.");
+        await load();
+      } catch (error) { setNotice(error.message); }
+      finally { setBusy(false); }
+    }
+    async function remove(identifier) {
+      setBusy(true);
+      try {
+        await SDK.fetchJSON(endpoint + "/stores/" + encodeURIComponent(identifier), { method: "DELETE" });
+        setNotice("Store removed. The current installation is unchanged.");
+        await load();
+      } catch (error) { setNotice(error.message); }
+      finally { setBusy(false); }
+    }
+    function describe(store) {
+      const names = store.names ? store.names.principal + " and " + store.names.assistant : "Unknown names";
+      if (store.state === "review") return names + ": ready for review, " + store.active_facts + " active facts";
+      if (store.state === "failed") return names + ": failed: " + store.reason;
+      if (store.state === "preparing") return names + ": preparing";
+      if (store.state === "interrupted") return names + ": interrupted. Remove it and start again.";
+      return "A store with unreadable or altered records";
+    }
+    const stores = listing ? listing.stores : [];
+    return h("section", { className: "space-y-3" },
+      h("h3", { className: "font-semibold" }, "Fresh LifeOS store"),
+      h("p", { className: "text-sm" }, "Prepare a separate store with no existing facts. The current installation stays selected; preparing a store does not switch memory."),
+      h("form", { id: "fresh_store_start", className: "space-y-2", onSubmit: start },
+        h("label", { className: "block text-sm", htmlFor: "fresh_principal" }, "Your name",
+          h("input", { id: "fresh_principal", value: principalName, required: true,
+            className: "mt-1 block w-full rounded border border-border bg-background p-2",
+            onChange: function (event) { setPrincipalName(event.target.value); } })),
+        h("label", { className: "block text-sm", htmlFor: "fresh_assistant" }, "Assistant name",
+          h("input", { id: "fresh_assistant", value: assistantName, required: true,
+            className: "mt-1 block w-full rounded border border-border bg-background p-2",
+            onChange: function (event) { setAssistantName(event.target.value); } })),
+        h("button", { type: "submit", disabled: busy || !listing || listing.busy,
+          className: "rounded border border-border px-3 py-2" }, "Prepare fresh store")),
+      stores.map(function (store) {
+        return h("article", { key: store.identifier, className: "rounded border border-border p-3 text-sm" },
+          h("p", null, describe(store)),
+          h("button", { type: "button", disabled: busy || store.state === "preparing",
+            onClick: function () { return remove(store.identifier); } }, "Remove " + store.identifier.slice(0, 8)));
+      }),
+      notice ? h("p", { role: "status", className: "text-sm" }, notice) : null);
+  }
+
   function LifeOSSettings() {
     const [fields, setFields] = SDK.hooks.useState([]);
     const [values, setValues] = SDK.hooks.useState({});
@@ -628,6 +694,7 @@
       h("div", null,
       h("h1", { className: "text-2xl font-semibold" }, "LifeOS Bridge"),
       h(MemoryPreferences),
+      h(FreshStores),
         h("p", { className: "text-muted-foreground" },
           "LifeOS asks for four levels of work. Choose a Hermes model and effort for each one. Using one model in every row is fine. The model currently selected in Hermes fills empty rows by default. Effort controls the amount of reasoning requested."),
         suggestedDefaults ? h("p", { role: "status", className: "mt-2 text-sm" },
