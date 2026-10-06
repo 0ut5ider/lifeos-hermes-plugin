@@ -245,7 +245,8 @@ class MemoryPreferences:
             raise ValueError('Provide the reviewed Hermes import signature')
         profile = self.configuration.path.parent.absolute()
         identity = hashlib.sha256(str(profile).encode()).hexdigest()[:24]
-        destination = profile.parent / '.local/state/lifeos-hook-bridge/imports' / identity / uuid4().hex
+        from .lifeos_installation import account_home
+        destination = account_home(profile) / '.local/state/lifeos-hook-bridge/imports' / identity / uuid4().hex
         return MemoryImport(self.configuration).prepare(destination, request['signature'], account=account)
 
     def preview_sources(self, paths: list[str], *, account: str | None = None):

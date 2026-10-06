@@ -6,7 +6,7 @@ import json
 import os
 from pathlib import Path
 
-from .lifeos_installation import SETTING, clear, publish, selection
+from .lifeos_installation import SETTING, account_home, clear, publish, selection
 from .memory_transaction import publish as publish_file
 
 STATES = ('prepared', 'stopped', 'published', 'mounted', 'applied', 'rolling_back', 'rolled_back')
@@ -36,7 +36,7 @@ def select_home(job: Path, *, profile: Path, target: Path | None, configuration,
     """Point the profile at target, or at the account home when target is None, and mount it."""
     profile = Path(profile).absolute()
     current = selection(profile)
-    home = Path.home() if target is None else Path(target).absolute()
+    home = account_home(profile) if target is None else Path(target).absolute()
     installed = home / '.claude'
     if installed.is_symlink() or not (installed / 'LIFEOS').is_dir():
         raise SelectionError('The selected home has no installed LifeOS')

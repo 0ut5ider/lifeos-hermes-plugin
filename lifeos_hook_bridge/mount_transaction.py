@@ -199,13 +199,13 @@ class MountTransaction:
         if not isinstance(value, str):
             raise MountError('The mount workspace is invalid')
         workspace = Path(value)
-        homes = {self.installed.parent}
         from .lifeos_installation import selection
-        if selection(self.profile).configured:
-            # A selected LifeOS home keeps the workspace in the account home that holds the profile.
-            homes.add(self.profile.parent)
-        if (not workspace.is_absolute() or workspace.resolve() != workspace or workspace in homes
-                or not any(workspace.is_relative_to(home) for home in homes)):
+        selected = selection(self.profile)
+        if selected.configured and workspace == selected.workspace and workspace.resolve() == workspace:
+            # A selected LifeOS home keeps the account workspace that the profile setting records.
+            return workspace
+        if (not workspace.is_absolute() or workspace.resolve() != workspace
+                or workspace == self.installed.parent or not workspace.is_relative_to(self.installed.parent)):
             raise MountError('The mount workspace must belong to the installed owner home')
         return workspace
 

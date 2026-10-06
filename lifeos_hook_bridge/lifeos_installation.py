@@ -32,10 +32,18 @@ def _absolute(value, name):
     return Path(value)
 
 
+def account_home(profile: Path) -> Path:
+    """Return the account home that holds a Hermes profile, including named profiles."""
+    profile = Path(profile).absolute()
+    if profile.parent.name == 'profiles' and profile.parent.parent.name == '.hermes':
+        return profile.parent.parent.parent
+    return profile.parent
+
+
 def selection(profile: Path) -> Selection:
     path = Path(profile) / SETTING
     if not path.exists() and not path.is_symlink():
-        home = Path.home()
+        home = account_home(profile)
         return Selection(home, home / 'HermesWorkspace', False)
     info = path.lstat()
     if not stat.S_ISREG(info.st_mode):
