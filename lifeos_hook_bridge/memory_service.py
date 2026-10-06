@@ -28,9 +28,12 @@ FIELDS = {
     "decision": {"type":"string", "enum":["accept", "reject", "edit", "applied_elsewhere"]},
     "proposal": {"type":"object", "properties":{
         "type":{"type":"string", "enum":["proposal"]},
-        "target_kind":{"type":"string"}, "target_file":{"type":"string"}, "edit":{"type":"string"},
-        "confidence":{"type":"number", "minimum":0, "maximum":1}, "rationale":{"type":"string"},
-        "source_session":{"type":"string"}, "observed_across_sessions":{"type":"integer", "minimum":1}},
+        "target_kind":{"type":"string", "maxLength":64}, "target_file":{"type":"string", "minLength":1, "maxLength":4096},
+        "edit":{"type":"string", "minLength":1, "maxLength":65536},
+        "confidence":{"type":"number", "minimum":0, "maximum":1},
+        "rationale":{"type":"string", "minLength":1, "maxLength":8192},
+        "source_session":{"type":"string", "maxLength":256},
+        "observed_across_sessions":{"type":"integer", "minimum":1, "maximum":1000000}},
         "required":["type", "target_file", "edit", "confidence", "rationale"], "additionalProperties":False},
     "category": {"type": "string", "enum": sorted(CATEGORIES)},
     "content": {"type": "string", "minLength": 1, "maxLength": 65536},
@@ -83,6 +86,17 @@ def _validate_arguments(name: str, arguments: Any) -> None:
             if (not isinstance(value, dict) or set(value) - set(schema["properties"])
                     or set(schema["required"]) - set(value) or value.get("type") != "proposal"):
                 raise ValueError("Invalid native proposal fields")
+            # A client controls every nested field; bound them before the native worker serializes them.
+            for field, item in value.items():
+                rule = schema["properties"][field]
+                if rule["type"] == "string":
+                    valid = isinstance(item, str) and rule.get("minLength", 0) <= len(item) <= rule.get("maxLength", 65536)
+                elif rule["type"] == "integer":
+                    valid = type(item) is int and rule["minimum"] <= item <= rule["maximum"]
+                else:
+                    valid = type(item) in (int, float) and rule["minimum"] <= item <= rule["maximum"]
+                if not valid:
+                    raise ValueError(f"Invalid native proposal field: {field}")
         elif key == "reference":
             if not isinstance(value, dict) or set(value) != {"id", "revision"} or not isinstance(value["id"], str) or not value["id"]:
                 raise ValueError("Invalid memory reference")
