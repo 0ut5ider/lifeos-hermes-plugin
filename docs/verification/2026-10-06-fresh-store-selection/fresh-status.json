@@ -1,0 +1,72 @@
+{
+ "method": "GET",
+ "path": "/memory/fresh/status",
+ "status": 200,
+ "body": {
+  "busy": false,
+  "stores": [
+   {
+    "identifier": "0302df718fd0424f8be68ec65e53f0d2",
+    "state": "review",
+    "names": {
+     "assistant": "Cerebo",
+     "principal": "Adrian"
+    },
+    "active_facts": 0,
+    "activation_ready": false,
+    "source": {
+     "patches": [
+      {
+       "name": "lifeos-task-governance.patch",
+       "sha256": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798"
+      },
+      {
+       "name": "lifeos-agent-watchdog.patch",
+       "sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808"
+      },
+      {
+       "name": "lifeos-terminal-audit.patch",
+       "sha256": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886"
+      },
+      {
+       "name": "lifeos-checkpoint-verification.patch",
+       "sha256": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f"
+      },
+      {
+       "name": "lifeos-failure-capture.patch",
+       "sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e"
+      },
+      {
+       "name": "lifeos-remote-desktop-gate.patch",
+       "sha256": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038"
+      },
+      {
+       "name": "lifeos-remote-isa-view.patch",
+       "sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b"
+      },
+      {
+       "name": "lifeos-model-rung-effort.patch",
+       "sha256": "5fe5987146d76f667cc878beb6be704ef25e5601ac80c81b6f9fe5d67ed72dc9"
+      },
+      {
+       "name": "lifeos-hermes-carrier-probe.patch",
+       "sha256": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae"
+      },
+      {
+       "name": "lifeos-memory-access.patch",
+       "sha256": "e665a19e4330cd0d538c40ae00c082c9e394e26dd8c0376e2b6cc3a95543d6aa"
+      },
+      {
+       "name": "lifeos-mount-yaml-blocks.patch",
+       "sha256": "a77bcadb08eb263b2ab3bb3a56821023732978867151ccd6ec3e17acea567084"
+      }
+     ],
+     "tree_sha256": "ea5b6064de0ea48d5f54048f697e4fbf3df483a0b4d3bd783ba90e7699ac3727",
+     "upstream": "https://github.com/danielmiessler/LifeOS.git",
+     "upstream_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c"
+    },
+    "retained_installation": "/home/hermes/.claude"
+   }
+  ]
+ }
+}
