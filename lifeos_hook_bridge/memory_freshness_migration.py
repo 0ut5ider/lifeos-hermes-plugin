@@ -1,5 +1,6 @@
 # ABOUTME: Supplies admitted sources to the native constitutional and state freshness migrations.
 # ABOUTME: Publishes source changes and original-byte backups through one recoverable journal.
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -17,6 +18,27 @@ def backup_name(relative):
 
 
 SYSTEM_BACKUPS = frozenset(backup_name(relative) for relative in SYSTEM_PUBLICATIONS)
+
+
+def is_system_backup(name):
+    """Accept a fixed system backup name or its digest variant for a later migration."""
+    if name in SYSTEM_BACKUPS:
+        return True
+    stem, _, digest = name[:-len('.md')].rpartition('-') if name.endswith('.md') else ('', '', '')
+    return stem + '.md' in SYSTEM_BACKUPS and len(digest) == 12 and all(c in '0123456789abcdef' for c in digest)
+
+
+def _backup_destinations(memory, sources):
+    """Map each source to its backup; a fixed name that holds other bytes gets a digest suffix."""
+    destinations = {}
+    for source in sources:
+        standard = backup_name(source['relative'])
+        original = source['content'].encode()
+        path = memory._publication_path(standard)
+        if path.is_file() and path.read_bytes() != original:
+            standard = standard[:-len('.md')] + '-' + hashlib.sha256(original).hexdigest()[:12] + '.md'
+        destinations[source['relative']] = standard
+    return destinations
 
 
 def _request(scope, dry_run, state):
@@ -37,12 +59,15 @@ def _sources(memory, scope, connection, state):
 
 def _paths(memory, sources, state):
     relatives = {source['relative'] for source in sources}
+    system = set(SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS)
     if not state:
-        relatives |= {backup_name(relative) for relative in relatives}
+        destinations = _backup_destinations(memory, sources)
+        relatives |= set(destinations.values())
+        system |= {destinations[relative] for relative in destinations if relative in SYSTEM_PUBLICATIONS}
     total = 0
     for relative in relatives:
         path = memory._publication_path(relative)
-        physical = (path.absolute() if relative in SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS else
+        physical = (path.absolute() if relative in system else
                     memory.root.parent / '.config/LIFEOS/USER' / Path(relative).relative_to('LIFEOS/USER'))
         if (path.resolve() != physical or path.is_symlink()
                 or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
@@ -114,9 +139,11 @@ def run(memory, scope, dry_run, state, *, check_current):
         except MemoryUnavailable as error:
             raise MemoryConflict(str(error)) from error
         publication_paths(memory, connection, scope, payload)
+        redirect = ({} if state else {backup_name(source): backup for source, backup
+                                      in _backup_destinations(memory, current).items()})
         for item in result['publications']:
             relative = Path(item['path']).relative_to(memory.root).as_posix()
-            publish(memory._publication_path(relative), item['content'].encode())
+            publish(memory._publication_path(redirect.get(relative, relative)), item['content'].encode())
         output.append({name: result[name] for name in ('status', 'stdout', 'stderr')})
         return {'status': 'committed' if result['publications'] else 'unchanged',
                 'artifacts': len(result['publications'])}

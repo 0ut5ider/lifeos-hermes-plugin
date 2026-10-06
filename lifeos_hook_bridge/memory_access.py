@@ -176,9 +176,9 @@ class NativeMemory:
         if name.startswith(("LIFEOS/USER/", "LIFEOS/MEMORY/")):
             return self._path(name)
         from .memory_freshness import SYSTEM_PUBLICATIONS
-        from .memory_freshness_migration import SYSTEM_BACKUPS
+        from .memory_freshness_migration import is_system_backup
         from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
-        if name not in SYSTEM_PUBLICATIONS | SYSTEM_BACKUPS | DENY_PUBLICATIONS:
+        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS and not is_system_backup(name):
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != self.physical_root / name or path.is_symlink()

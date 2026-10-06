@@ -1,5 +1,6 @@
 # ABOUTME: Exercises the native constitutional and state freshness migration commands.
 # ABOUTME: Verifies source bytes, dry runs, owner authority, and backup destinations.
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -45,6 +46,22 @@ class MemoryFreshnessMigrationTests(unittest.TestCase):
                 self.assertTrue(path.read_bytes().endswith(before[str(path)]))
                 backup = path.parent / 'Backups' / (path.stem + '-2026-05-03-23-00-00.md')
                 self.assertEqual(backup.read_bytes(), before[str(path)])
+
+    def test_repeat_migration_keeps_the_earlier_backup(self):
+        import hashlib
+        before = self.snapshot()
+        self.assertEqual(self.call().returncode, 0)
+        target = self.targets[0]
+        later = b'# Synthetic later owner body that needs migration again\n'
+        target.write_bytes(later)
+        result = self.call()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        backups = target.parent / 'Backups'
+        first = backups / (target.stem + '-2026-05-03-23-00-00.md')
+        self.assertEqual(first.read_bytes(), before[str(target)])
+        second = backups / (target.stem + '-2026-05-03-23-00-00-' + hashlib.sha256(later).hexdigest()[:12] + '.md')
+        self.assertEqual(second.read_bytes(), later)
+        self.assertTrue(target.read_bytes().endswith(later))
 
     def test_owner_dry_run_preserves_sources_and_creates_no_backups(self):
         before = self.snapshot()
@@ -169,7 +186,8 @@ class MemoryFreshnessMigrationTests(unittest.TestCase):
         result = self.process('interrupt')
         self.assertEqual(result.returncode, 73)
         self.assertNotEqual(target.read_bytes(), before[str(target)])
-        self.assertEqual(backup.read_bytes(), before[str(target)])
+        # The earlier backup keeps its bytes; the new original goes to a digest-named backup.
+        self.assertEqual(backup.read_bytes(), prior_backup)
         self.assertTrue(self.fixture.memory.transaction.journal.exists())
         with self.fixture.memory._transaction():
             self.assertEqual(self.snapshot(), before)
@@ -273,6 +291,10 @@ class MemoryFreshnessMigrationTests(unittest.TestCase):
                     with self.subTest(path=path.name):
                         self.assertTrue(path.read_bytes().endswith(before[str(path)]))
                         backup = path.parent / 'Backups' / (path.stem + '-2026-05-03-23-00-00.md')
+                        if character != 'x':
+                            # The first large run already holds the fixed name.
+                            digest = hashlib.sha256(before[str(path)]).hexdigest()[:12]
+                            backup = backup.with_name(backup.stem + '-' + digest + '.md')
                         self.assertEqual(backup.read_bytes(), before[str(path)])
 
     def test_invalid_service_options_refuse_before_source_or_backup_changes(self):
