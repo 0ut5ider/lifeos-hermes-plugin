@@ -125,12 +125,16 @@ class SelectedHomeRegistrationTests(unittest.TestCase):
             host = types.ModuleType('hermes_cli.plugins')
             host.VALID_HOOKS = set(PATCHED_HOOKS) | {'pre_tool_call', 'post_tool_call', 'on_session_finalize',
                                                      'api_request_error'}
-            constants = types.ModuleType('hermes_constants')
-            constants.get_hermes_home = lambda: profile
+            try:
+                import hermes_constants as constants
+            except ImportError:
+                constants = types.ModuleType('hermes_constants')
             ctx = Context()
             environment = {key: value for key, value in os.environ.items() if key != 'LIFEOS_HOOK_SETTINGS'}
+            # Earlier tests can leave the real Hermes inventory loaded; this test uses the plugin settings path.
             with patch.dict(sys.modules, {'hermes_cli': types.ModuleType('hermes_cli'), 'hermes_cli.plugins': host,
-                                          'hermes_constants': constants}), \
+                                          'hermes_cli.inventory': None, 'hermes_constants': constants}), \
+                    patch.object(constants, 'get_hermes_home', lambda: profile, create=True), \
                     patch.dict(os.environ, {**environment, 'HOME': str(account)}, clear=True):
                 register(ctx)
                 self.addCleanup(lambda: [callback() for callback in ctx.unload])
