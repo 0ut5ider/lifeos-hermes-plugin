@@ -83,7 +83,7 @@ class MemoryAgentTests(unittest.TestCase):
         saved = native.remember(prefix+marker, 'conversation-original','principal' if native_recall else 'project')
         if native_recall:
             connector = native.root/'LIFEOS/USER/CONFIG/memory-access.json'
-            connector.parent.mkdir()
+            connector.parent.mkdir(exist_ok=True)
             connector.write_text(json.dumps({'version':1,'command':[sys.executable,
                 str(Path(__file__).parents[1]/'lifeos_hook_bridge/memory_rpc.py'),
                 '--configuration',str(self.fixture.fixture.fixture.path)]}))
