@@ -126,6 +126,22 @@ def dependency_environment(installed,executable,directory):
     finally:shutil.rmtree(temporary)
 
 
+# Bun subcommands that change installed dependencies or lock files outside the frozen install.
+CHANGING_COMMANDS=frozenset({'add','a','remove','rm','update','upgrade','link','unlink','pm','patch','patch-commit'})
+# Global Bun options that take the next argument as their value.
+VALUE_OPTIONS=frozenset({'--cwd','-c','--config','--env-file','-r','--preload','--tsconfig-override'})
+
+
+def _subcommand(arguments):
+    """Return the first Bun argument that is not a global option or an option value."""
+    index=0
+    while index<len(arguments):
+        token=arguments[index]
+        if not token.startswith('-'):return token
+        index+=2 if token in VALUE_OPTIONS else 1
+    return None
+
+
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument('--executable',required=True)
@@ -135,8 +151,11 @@ def main():
     selected=parser.parse_args()
     arguments=selected.arguments
     if arguments[:1]==['--']:arguments=arguments[1:]
-    if arguments[:1]==['install']:
-        if arguments not in (['install'],['install','--frozen-lockfile']):
+    command=_subcommand(arguments)
+    if command in CHANGING_COMMANDS:
+        parser.error('Native installation cannot change dependencies outside the release locks')
+    if command in ('install','i'):
+        if arguments not in ([command],[command,'--frozen-lockfile']):
             parser.error('The native installer requires its fixed frozen-lock operation')
         try:_lock(selected.root,selected.catalog)
         except (ValueError,OSError,KeyError,TypeError) as error:

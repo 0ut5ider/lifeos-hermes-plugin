@@ -117,3 +117,45 @@ class NativeDependenciesTests(unittest.TestCase):
 
 if __name__=='__main__':
     unittest.main()
+
+
+class BunWrapperCommandTests(unittest.TestCase):
+    """The wrapper must not let any dependency-changing Bun command skip the release locks."""
+
+    def run_wrapper(self, *arguments):
+        import subprocess, sys
+        with tempfile.TemporaryDirectory(prefix='bun-wrapper-') as directory:
+            root = Path(directory) / 'home/.claude'
+            package = root / 'skills/Unreviewed/Tools'
+            package.mkdir(parents=True)
+            package.joinpath('package.json').write_text('{"dependencies":{"unreviewed":"latest"}}')
+            marker = Path(directory) / 'ran'
+            fake = Path(directory) / 'bun'
+            fake.write_text('#!/bin/sh\necho "$@" > ' + str(marker) + '\n')
+            fake.chmod(0o755)
+            result = subprocess.run([sys.executable, '-I', str(ROOT / 'lifeos_hook_bridge/native_dependencies.py'),
+                '--executable', str(fake), '--root', str(root), '--catalog', str(CATALOG), '--', *arguments],
+                cwd=package, text=True, capture_output=True, timeout=30)
+            return result, marker.read_text().strip() if marker.exists() else None
+
+    def test_install_aliases_and_global_flags_go_through_the_lock_check(self):
+        for arguments in (['install'], ['i'], ['--silent', 'install'], ['install', '--force']):
+            with self.subTest(arguments=arguments):
+                result, ran = self.run_wrapper(*arguments)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIsNone(ran)
+
+    def test_dependency_changing_commands_are_refused(self):
+        for arguments in (['add', 'left-pad'], ['a', 'left-pad'], ['remove', 'x'], ['rm', 'x'], ['update'],
+                          ['link'], ['unlink'], ['pm', 'cache', 'rm'], ['patch', 'x'], ['--cwd', '.', 'add', 'x']):
+            with self.subTest(arguments=arguments):
+                result, ran = self.run_wrapper(*arguments)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIsNone(ran)
+
+    def test_other_commands_reach_bun_unchanged(self):
+        for arguments in (['run', 'build'], ['--version'], ['scripts/tool.ts', '--apply']):
+            with self.subTest(arguments=arguments):
+                result, ran = self.run_wrapper(*arguments)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(ran, ' '.join(arguments))
