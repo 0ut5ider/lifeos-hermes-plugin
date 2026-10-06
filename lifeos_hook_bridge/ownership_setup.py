@@ -180,7 +180,8 @@ class OwnershipSetup:
                 plan = document['plan']
                 inspect(self.configuration, Path(plan['backup']), plan['backup_signature'], account=account)
                 status = ownership.status(account=account)
-                rollback_required = status['state'] != 'none'
+                # A rollback that already completed for this setup must not run again.
+                rollback_required = status['state'] not in {'none', 'rolled_back'}
                 if status['state'] == 'none' or (status['state'] == 'rolled_back'
                         and status['signature'] != plan['ownership_signature']):
                     preview = ownership.preview(Path(plan['backup']), plan['backup_signature'], account=account)

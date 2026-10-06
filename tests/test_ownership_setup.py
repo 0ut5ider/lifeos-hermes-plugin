@@ -6,6 +6,7 @@ from pathlib import Path
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 
 from lifeos_hook_bridge.memory_access import MemoryUnavailable
 from test_memory_ownership import install_connector
@@ -205,6 +206,23 @@ else:
         self.assertEqual(set(self.pids().values()), {'0'})
         self.assertTrue(self.setup_operation().status(account='dashboard:owner')['recovery_required'])
         self.record(pids=self.pids(), journal=json.loads(self.setup_operation().journal.read_text()))
+
+    def test_completed_rollback_with_failed_restart_recovers_after_a_later_edit(self):
+        from lifeos_hook_bridge import profile_services
+        plan = self.prepare()
+        self.setup_operation().apply(plan['signature'], account='dashboard:owner')
+        original_resume = profile_services.ProfileServices.resume
+        with patch.object(profile_services.ProfileServices, 'resume', side_effect=MemoryUnavailable('synthetic restart failure')):
+            with self.assertRaisesRegex(MemoryUnavailable, 'synthetic restart failure'):
+                self.setup_operation().recover(account='dashboard:owner')
+        self.assertTrue(self.setup_operation().status(account='dashboard:owner')['recovery_required'])
+        path = self.profile / 'config.yaml'
+        path.write_text(path.read_text() + 'synthetic_after_rollback: preserved\n')
+        result = self.setup_operation().recover(account='dashboard:owner')
+        self.assertEqual(result['state'], 'returned')
+        self.assertIn('synthetic_after_rollback', path.read_text())
+        self.assertTrue(all(pid != '0' for pid in self.pids().values()))
+        self.assertIs(profile_services.ProfileServices.resume, original_resume)
 
     def test_originally_inactive_service_stays_inactive_after_setup_and_return(self):
         self.services.command('systemctl', '--user', 'stop', self.services.units['pulse'])
