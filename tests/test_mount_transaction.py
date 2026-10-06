@@ -80,6 +80,15 @@ class MountTransactionTests(unittest.TestCase):
         self.assertEqual(config.count('\n  deny:'), 1, config)
         self.assertNotIn('synthetic-stale-glob', config)
 
+    def test_selected_home_keeps_the_configured_account_workspace(self):
+        from lifeos_hook_bridge import lifeos_installation
+        workspace = self.profile.parent / 'account-workspace'
+        lifeos_installation.publish(self.profile, self.root.parent, workspace)
+        self.execute()
+        self.assertTrue(workspace.is_dir())
+        self.assertFalse((self.root.parent / 'HermesWorkspace').exists())
+        self.assertIn(str(workspace), (self.profile / '.env').read_text())
+
     def test_native_preparation_does_not_change_live_profile_or_workspace(self):
         stage = self.profile / 'prepared-output'
         stage.mkdir(mode=0o700)

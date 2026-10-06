@@ -33,8 +33,8 @@ VERSION = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+\Z")
 HASH = re.compile(r"[0-9a-f]{64}\Z")
 
 
-def default_baseline_path() -> Path:
-    return Path.home() / ".local" / "state" / "lifeos-hook-bridge" / "version-drift-baseline.json"
+def default_baseline_path(home: Path | None = None) -> Path:
+    return (Path.home() if home is None else Path(home)) / ".local/state/lifeos-hook-bridge/version-drift-baseline.json"
 
 
 def adapter_error_path(baseline_path: Path) -> Path:

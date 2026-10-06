@@ -49,9 +49,11 @@ create_baseline = version_module.create_baseline
 default_baseline_path = version_module.default_baseline_path
 load_baseline = version_module.load_baseline
 save_baseline = version_module.save_baseline
-INSTALLED_ROOT = Path.home() / ".claude"
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-BASELINE_PATH = default_baseline_path()
+# The profile setting selects the LifeOS home; selection and return restart this dashboard.
+LIFEOS_HOME = install_module.memory_module('lifeos_installation').selection(HERMES_HOME).home
+INSTALLED_ROOT = LIFEOS_HOME / ".claude"
+BASELINE_PATH = default_baseline_path(LIFEOS_HOME)
 INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
 HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
 HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"

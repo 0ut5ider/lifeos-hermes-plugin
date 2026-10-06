@@ -607,10 +607,12 @@ class HookBridge:
     def __init__(
         self, settings_path: Path, root: Path,
         model_tiers_provider: Callable[[], dict[str, Any]] | None = None,
-        profile: Path | None = None, hold_turns: bool = False,
+        profile: Path | None = None, hold_turns: bool = False, lifeos_home: Path | None = None,
     ):
         self.settings_path = Path(settings_path)
         self.root = Path(root)
+        # Native hooks resolve their installation from HOME, so they run in the selected LifeOS home.
+        self.lifeos_home = Path(lifeos_home) if lifeos_home is not None else Path.home()
         # The Hermes profile whose program lock turns hold; None disables the lock.
         self.profile = Path(profile) if profile is not None else None
         self.hold_turns = hold_turns
@@ -829,9 +831,19 @@ class HookBridge:
         if not isinstance(hooks, dict):
             raise ValueError("LifeOS hooks setting must be an object")
         environment = dict(self.base_environment)
+        home = str(self.lifeos_home)
+        environment["HOME"] = home
+        account = Path.home()
+        if self.lifeos_home != account:
+            # Helper inference, Hermes commands, and Git identity stay with the account.
+            environment["LIFEOS_ACCOUNT_HOME"] = str(account)
+            if self.profile is not None:
+                environment.setdefault("HERMES_HOME", str(self.profile))
+            if (account / ".gitconfig").is_file():
+                environment.setdefault("GIT_CONFIG_GLOBAL", str(account / ".gitconfig"))
         for key, value in settings.get("env", {}).items():
             if isinstance(value, str):
-                environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+                environment[key] = value.replace("${HOME}", home).replace("$HOME", home)
         environment.setdefault("LIFEOS_DIR", str(self.root / "LIFEOS"))
         environment["PATH"] = (
             f"{Path(__file__).parent / 'bin'}:{Path.home() / '.bun/bin'}:"
@@ -1080,7 +1092,8 @@ class HookBridge:
                     settings = self.project_hook_settings.get(project / ".claude" / name, {})
                     for key, value in settings.get("env", {}).items():
                         if isinstance(value, str):
-                            environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+                            environment[key] = value.replace("${HOME}", str(self.lifeos_home)).replace(
+                                "$HOME", str(self.lifeos_home))
         if platform and platform not in {"cli", "tui", "desktop"}:
             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
         environment.pop("LIFEOS_CARRIER_OBSERVATION", None)
@@ -1270,7 +1283,7 @@ class HookBridge:
                     from .version_drift import default_baseline_path
                     hook_environment = dict(environment)
                     hook_environment["LIFEOS_VERSION_DRIFT_ROOT"] = str(self.root)
-                    hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path()))
+                    hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path(self.lifeos_home)))
                     system_path = os.pathsep.join(
                         path for path in environment.get("PATH", "").split(os.pathsep)
                         if Path(path).resolve() != (Path(__file__).parent / "bin").resolve()

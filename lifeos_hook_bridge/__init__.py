@@ -22,7 +22,15 @@ def register(ctx: Any) -> None:
     if hasattr(ctx, "register_memory_provider"):
         from .memory_provider import register_provider
         memory_runtime = register_provider(ctx)
-    settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(Path.home() / ".claude/settings.json"))).expanduser()
+    try:
+        from hermes_constants import get_hermes_home
+    except ImportError:
+        profile = None
+    else:
+        profile = get_hermes_home()
+    from .lifeos_installation import selection
+    home = selection(profile).home if profile is not None else Path.home()
+    settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(home / ".claude/settings.json"))).expanduser()
     if not settings.is_file():
         return
     def model_tiers() -> dict[str, Any]:
@@ -40,16 +48,10 @@ def register(ctx: Any) -> None:
     except ImportError:
         VALID_HOOKS = PATCHED_HOOKS
     patched_host = PATCHED_HOOKS <= VALID_HOOKS
-    try:
-        from hermes_constants import get_hermes_home
-    except ImportError:
-        profile = None
-    else:
-        profile = get_hermes_home()
     bridge = HookBridge(
         settings, settings.parent,
         model_tiers_provider=model_tiers,
-        profile=profile, hold_turns=patched_host,
+        profile=profile, hold_turns=patched_host, lifeos_home=home,
     )
     if hasattr(ctx, "on_unload"):
         ctx.on_unload(bridge.close)

@@ -195,8 +195,13 @@ class MountTransaction:
         if not isinstance(value, str):
             raise MountError('The mount workspace is invalid')
         workspace = Path(value)
-        if (not workspace.is_absolute() or workspace.resolve() != workspace
-                or workspace == self.installed.parent or not workspace.is_relative_to(self.installed.parent)):
+        homes = {self.installed.parent}
+        from .lifeos_installation import selection
+        if selection(self.profile).configured:
+            # A selected LifeOS home keeps the workspace in the account home that holds the profile.
+            homes.add(self.profile.parent)
+        if (not workspace.is_absolute() or workspace.resolve() != workspace or workspace in homes
+                or not any(workspace.is_relative_to(home) for home in homes)):
             raise MountError('The mount workspace must belong to the installed owner home')
         return workspace
 
@@ -333,7 +338,13 @@ class MountTransaction:
             environment.pop('LIFEOS_MEMORY_INTERNAL', None)
             environment.pop('LIFEOS_MEMORY_CONTEXT', None)
             environment.pop('LIFEOS_MOUNT_DESTINATION', None)
-            workspace = self._workspace(environment.get('HERMES_WORKSPACE', str(self.installed.parent / 'HermesWorkspace')))
+            if 'HERMES_WORKSPACE' not in environment:
+                from .lifeos_installation import selection
+                selected = selection(self.profile)
+                # A selected LifeOS home keeps the account workspace that the profile records.
+                environment['HERMES_WORKSPACE'] = str(selected.workspace if selected.configured
+                                                      else self.installed.parent / 'HermesWorkspace')
+            workspace = self._workspace(environment['HERMES_WORKSPACE'])
             snapshot = self.state / uuid4().hex
             snapshot.mkdir(mode=0o700)
             _json(snapshot / 'identity.json', self._snapshot_identity())

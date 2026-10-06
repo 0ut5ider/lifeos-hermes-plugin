@@ -379,6 +379,28 @@ class DashboardApiTests(unittest.TestCase):
             spec.loader.exec_module(module)
         return module
 
+    def test_installation_paths_follow_the_selected_lifeos_home(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            account, store = root / "account", root / "store/home"
+            profile = account / ".hermes"
+            profile.mkdir(parents=True, mode=0o700)
+            (store / ".claude").mkdir(parents=True)
+            setting = (profile / "lifeos-installation.json")
+            setting.write_text(json.dumps({"version": 1, "home": str(store),
+                                           "workspace": str(account / "HermesWorkspace")}))
+            setting.chmod(0o600)
+            with patch.dict(os.environ, {"HOME": str(account), "HERMES_HOME": str(profile)}):
+                api = self.load_api(lambda *_: [], lambda *_: None)
+            self.assertEqual(api.INSTALLED_ROOT, store / ".claude")
+            self.assertEqual(api.BASELINE_PATH,
+                             store / ".local/state/lifeos-hook-bridge/version-drift-baseline.json")
+            self.assertEqual(api.INSTALL_CANDIDATE, account / ".local/share/lifeos-bridge/lifeos-candidate")
+            setting.unlink()
+            with patch.dict(os.environ, {"HOME": str(account), "HERMES_HOME": str(profile)}):
+                api = self.load_api(lambda *_: [], lambda *_: None)
+            self.assertEqual(api.INSTALLED_ROOT, account / ".claude")
+
     def test_reads_declared_settings(self):
         expected = [{"key": "haiku_effort", "value": "low", "type": "enum"}]
         api = self.load_api(lambda name, path: expected, lambda *_: None)
