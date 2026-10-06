@@ -17,3 +17,5 @@ The final gate passes 103 tests ([after.txt](after.txt)).
 ## Third finding: not corrected
 
 The review reports that managed HTTP mode is lost when both marker files are absent after a restart. The design already has a persistent marker, `memory-http.json`, separate from the connector file. Existing tests cover the loss of the connector alone. The reported case needs the loss of both files, which is the loss of the whole configuration directory. A stock installation without the plugin has the same file state. A second marker in another directory would cover that case, and it needs a decision, because the return workflow must then remove that marker too. The primary agent rates this finding lower than the review does.
+
+On 2026-10-06, the primary agent chooses a plugin guard instead of a second marker. When ownership is enabled and both native marker files are absent, prompt admission refuses the turn and names the mount repair. The plugin return workflow therefore needs no extra marker. Native Pulse and command-line tools that run outside the bridge are not covered by this guard.

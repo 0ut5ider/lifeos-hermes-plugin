@@ -105,7 +105,7 @@ class ProfileRecoveryTests(unittest.TestCase):
 
     def test_recovered_native_connector_uses_the_disabled_candidate_configuration(self):
         connector = self.fixture.fixture.fixture.root / 'LIFEOS/USER/CONFIG/memory-access.json'
-        connector.parent.mkdir(parents=True)
+        connector.parent.mkdir(parents=True, exist_ok=True)
         command = [sys.executable, str(Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_rpc.py'),
                    '--configuration', str(self.configuration.path)]
         connector.write_text(json.dumps({'version': 1, 'command': command}))
@@ -122,7 +122,7 @@ class ProfileRecoveryTests(unittest.TestCase):
 
     def test_recovery_refuses_an_unrecognized_native_connector_without_replacing_live_data(self):
         connector = self.fixture.fixture.fixture.root / 'LIFEOS/USER/CONFIG/memory-access.json'
-        connector.parent.mkdir(parents=True)
+        connector.parent.mkdir(parents=True, exist_ok=True)
         connector.write_text(json.dumps({'version': 1, 'command': [sys.executable, '/unreviewed/agent.py']}))
         connector.chmod(0o600)
         signature = self.snapshot()

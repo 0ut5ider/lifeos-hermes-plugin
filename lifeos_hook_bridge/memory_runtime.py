@@ -181,6 +181,12 @@ class MemoryRuntime:
             return
         _BOUND.set(None)
         configuration = self.configuration.load()
+        markers = Path(configuration['root']) / 'LIFEOS/USER/CONFIG'
+        if not any((markers / name).exists() or (markers / name).is_symlink()
+                   for name in ('memory-access.json', 'memory-http.json')):
+            # Native code falls back to unmanaged memory reads when both markers are gone.
+            raise MemoryAdmissionError('LifeOS memory connection files are missing. Repair the LifeOS mount '
+                                       'from the plugin page before continuing.')
         metadata = dict(metadata)
         metadata['HERMES_SESSION_ID'] = session_id or metadata.get('HERMES_SESSION_ID', '')
         if not metadata.get('HERMES_SESSION_PLATFORM'):
