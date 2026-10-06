@@ -1,0 +1,126 @@
+[
+  {
+    "case": "generic-mcp-result",
+    "side": "native",
+    "session_id": "28c86dac-4712-44d8-8092-98a52446a5a2",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "cc0e6fd1167e54a0909b107a9d21581d63ddabe31efaec3d4f63d8462c3c0ddc",
+      "e7eb99869d27a3795cef760ca083648feb9ec34232a6ad455b15943afc677754"
+    ],
+    "response_sha256": [
+      "30228d78f73bd1a81389c83362aaabbf7de2000dca50a4b15538a445fc20ee93",
+      "8b7615207f44983e96127c9fa831a5e5d66ca6a7d78ebe2ddaba57fd0c2c65b4"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PostToolUse.4.1",
+    "hook_calls": 1,
+    "changed_files": [],
+    "decision": null,
+    "context_in_model": true,
+    "model_requests": 2
+  },
+  {
+    "case": "generic-mcp-result",
+    "side": "hermes",
+    "session_id": "20261006_005838_5804ef",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "5f7e67ae3a998b97f20bc4d64d963982c71982f18d14a25a8c4a71a047b52c38",
+      "1cb92de8e49dddf64fe462ebcae38584a4a8387216ba24b0b5c092aa97a836f2",
+      "9b22469e0ebe9155a5a7c53e125458ae2da558fe0dec99d18f34761103d078c0"
+    ],
+    "response_sha256": [
+      "3fce2ad2956a32df504e0e29d8aa74f651aec0a59049e529cd506f3ae453d15b",
+      "e32612e3a3f5592b57104f3078051342e02ec6b5c524469ce42a39ce5786bf58",
+      "742f2f43adbc95f98c66313835732648ec2dfb5e12d7ba377909ad28b57741a2"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200,
+      200
+    ],
+    "registration": "PostToolUse.4.1",
+    "hook_calls": 1,
+    "changed_files": [],
+    "decision": null,
+    "context_in_model": true,
+    "model_requests": 3
+  },
+  {
+    "case": "generic-mcp-permission",
+    "side": "native",
+    "session_id": "ef9fd11d-f5e6-4b4f-aefb-2ffeaaaf270a",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "9281ec83c372d4e82a9270352660e042987bc7e92ba4ebebf67a87eb19545617",
+      "2181c6aec207baac0297736c189935a2df38118835ca50c3eb2abccf257c4abc"
+    ],
+    "response_sha256": [
+      "c11135afdbac4ad896618b31068776f2ffd8e9d9a6ec8bdfe9be2b121db7d01f",
+      "80cd8a557dc57bd72b766816eb01eaddd2dba378dba23afd3db5e23468b72a72"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "PermissionRequest.2.1",
+    "hook_calls": 1,
+    "changed_files": [
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl",
+      ".claude/LIFEOS/MEMORY/STATE/permission-cache.json"
+    ],
+    "decision": {
+      "behavior": "allow"
+    },
+    "context_in_model": false,
+    "model_requests": 2
+  },
+  {
+    "case": "generic-mcp-permission",
+    "side": "hermes",
+    "session_id": "20261006_005853_6874f3",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "5f0ba92f519e049ebab0bb0f9e9c38c33e53e43b99d19278138d632767def972",
+      "6ddc751ea3e9e9dd6d28c4dcc2329e6511192249b6f0b5bb03f5eac4812bc88f",
+      "29d98cdbe40569af063529eb235958e03a661433c5ff1da051bd5e52d63b8c3e"
+    ],
+    "response_sha256": [
+      "b6ef2325e6d1b679f9c569249f307f3a0927dc03db2ab34e5d931e2a3df568d0",
+      "1c3e4b9978f2e15db4e42c35370af2fe742a512d1813aef95f605d6c17b0a0fc",
+      "e561d60134ea0df111d53ff1f8b1ec16afe55f85035c45cfe0339fb49a8adaab"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200,
+      200
+    ],
+    "registration": "PermissionRequest.2.1",
+    "hook_calls": 1,
+    "changed_files": [
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl",
+      ".claude/LIFEOS/MEMORY/STATE/permission-cache.json"
+    ],
+    "decision": {
+      "behavior": "allow"
+    },
+    "context_in_model": false,
+    "model_requests": 3
+  }
+]

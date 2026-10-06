@@ -1,0 +1,135 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl": "{\"ts\":\"<time>\",\"tool\":\"mcp__pair__ping\",\"cmd_prefix\":\"\",\"cmd_sha\":\"24ac9cb6c38df2b6\",\"decision\":\"allow\",\"reasons\":[\"mcp-pre-vetted\"],\"cache\":\"miss\"}\n",
+      ".claude/LIFEOS/MEMORY/STATE/permission-cache.json": "{\"24ac9cb6c38df2b6\":{\"decision\":\"allow\",\"ts\":\"<time>\"}}"
+    },
+    "outputs": [
+      "{\"hookSpecificOutput\":{\"hookEventName\":\"PermissionRequest\",\"decision\":{\"behavior\":\"allow\"}}}"
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PermissionRequest",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 2,
+  "model_successful_responses": 3,
+  "session_id": "20261006_005853_6874f3",
+  "seconds": 12.206,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "pair",
+    "-q",
+    "Call the ping tool once."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PermissionRequest.2.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PermissionRequest.2.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL1NhZmV0eS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/Safety.hook.ts": "5854fe967a40cd45209c3e9601e31f2002869b820e49509e79585fce5d80390e"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "5f0ba92f519e049ebab0bb0f9e9c38c33e53e43b99d19278138d632767def972",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "b6ef2325e6d1b679f9c569249f307f3a0927dc03db2ab34e5d931e2a3df568d0",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "6ddc751ea3e9e9dd6d28c4dcc2329e6511192249b6f0b5bb03f5eac4812bc88f",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1c3e4b9978f2e15db4e42c35370af2fe742a512d1813aef95f605d6c17b0a0fc",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "29d98cdbe40569af063529eb235958e03a661433c5ff1da051bd5e52d63b8c3e",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "e561d60134ea0df111d53ff1f8b1ec16afe55f85035c45cfe0339fb49a8adaab",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "c737b6e8d408ae1a2755c925e3cbd1afc10cffb53751c5df630e82cce8dbdd23",
+    "fixture-events.jsonl": "8100fc569d4f53723b37d5cc86b281daa46b472913484e48f6d9558f1688fd71",
+    "cli.log": "750bcec5f8adf1c5852f701ab642e54ebad7593c7583bfe8c7402dafe1e0869b",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "ecafb66b0dbac3b952b893050951cf005ae8f594e873cb30a023514af0b26ae5",
+    "fixture-files-before.json": "a1eaa5024aa6bc1aa42ffabc21a2782607f07e175bb20cb5c67b08e75c1986fa",
+    "fixture-files-after.json": "6beff38812bc465bd4113ca0f5a9340a801d22e55bb4319879d468fc52c1cecc"
+  }
+}

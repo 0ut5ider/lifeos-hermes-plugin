@@ -1,0 +1,126 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl": "{\"ts\":\"<time>\",\"tool\":\"mcp__pair__ping\",\"cmd_prefix\":\"\",\"cmd_sha\":\"24ac9cb6c38df2b6\",\"decision\":\"allow\",\"reasons\":[\"mcp-pre-vetted\"],\"cache\":\"miss\"}\n",
+      ".claude/LIFEOS/MEMORY/STATE/permission-cache.json": "{\"24ac9cb6c38df2b6\":{\"decision\":\"allow\",\"ts\":\"<time>\"}}"
+    },
+    "outputs": [
+      "{\"hookSpecificOutput\":{\"hookEventName\":\"PermissionRequest\",\"decision\":{\"behavior\":\"allow\"}}}"
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PermissionRequest",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "ef9fd11d-f5e6-4b4f-aefb-2ffeaaaf270a",
+  "seconds": 3.026,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission",
+    "/home/lifeos-claude-ref/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--mcp-config",
+    "/home/lifeos-claude-ref/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission/mcp-config.json",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Call the ping tool once. Then reply with exactly READY. If the tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Call the ping tool once."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PermissionRequest.2.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PermissionRequest.2.1 /home/lifeos-claude-ref/workspace/paired-generic-mcp-20261005/results/generic-mcp-permission/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvU2FmZXR5Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/Safety.hook.ts": "513a0cdfe13f76741de78bfc08e93d491e26a0cbf1c41792c5b9cbadb96ee470"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "9281ec83c372d4e82a9270352660e042987bc7e92ba4ebebf67a87eb19545617",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "c11135afdbac4ad896618b31068776f2ffd8e9d9a6ec8bdfe9be2b121db7d01f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "2181c6aec207baac0297736c189935a2df38118835ca50c3eb2abccf257c4abc",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "80cd8a557dc57bd72b766816eb01eaddd2dba378dba23afd3db5e23468b72a72",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "7d721f11e8f54c25037e5f6996ea7ac7c8c8409a107b1825ad51de1f11e385fc",
+    "fixture-events.jsonl": "add3b18f4ce4de95a84fbe9c62e003fe48ed9c35ce212133498500c382b8c40c",
+    "cli.log": "775a109f2a5b168cd127364c78c95d54b6c7f461df26ce53189cf157bc2a5d5f",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "ecafb66b0dbac3b952b893050951cf005ae8f594e873cb30a023514af0b26ae5",
+    "fixture-files-before.json": "ef110d8953e8b5172c0e228890d43f6b61b92eb46ca39ee96e2a9a80b0fa416c",
+    "fixture-files-after.json": "35823dfbb9379c789b2bce56a1ebb8dd7a1fa7b134dcb7f4d49abdf816597e47"
+  }
+}

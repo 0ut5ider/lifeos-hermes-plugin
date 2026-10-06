@@ -9,9 +9,9 @@ import json
 from pathlib import Path
 
 if __package__:
-    from .paired_lifecycle_effects import FILE_CASES, TOOL_REPEATS, check_pair
+    from .paired_lifecycle_effects import check_pair, model_chosen_calls
 else:
-    from paired_lifecycle_effects import FILE_CASES, TOOL_REPEATS, check_pair
+    from paired_lifecycle_effects import check_pair, model_chosen_calls
 
 ROOT = Path(__file__).resolve().parents[1]
 STATUSES = {'unverified', 'native_handler_checked', 'paired_case_verified', 'paired_effect_verified'}
@@ -23,7 +23,7 @@ MODEL_CHOSEN_COUNTS = ('model_generation_requests', 'model_successful_responses'
 def comparable(case_id: str, outcome: dict) -> dict:
     # The model chooses how many tool calls it makes in these cases. check_pair validates each side;
     # the equality rule then compares every other recorded field.
-    if case_id in TOOL_REPEATS or case_id in FILE_CASES:
+    if case_id in model_chosen_calls():
         return {key: value for key, value in outcome.items() if key not in MODEL_CHOSEN_COUNTS}
     return outcome
 
