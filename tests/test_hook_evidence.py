@@ -120,3 +120,15 @@ class TrackedEvidenceTests(unittest.TestCase):
                                      capture_output=True, text=True).stdout.split('\0'))
         ledger = json.loads((root / 'docs/parity/handler-effects.json').read_text())
         self.assertEqual(sorted(name for name in ledger['artifacts'] if name not in tracked), [])
+
+
+class ModelChosenCallTests(unittest.TestCase):
+    def test_only_model_chosen_call_counts_may_differ_between_sides(self):
+        from scripts.check_hook_evidence import comparable
+        side = {'after': {'ok': True}, 'hook_exit_codes': [0], 'event': 'PostToolUse',
+                'model_generation_requests': 2, 'model_successful_responses': 2}
+        other = {**side, 'model_generation_requests': 3, 'model_successful_responses': 3}
+        self.assertEqual(comparable('knowledge-index-file', side), comparable('knowledge-index-file', other))
+        self.assertNotEqual(comparable('version-drift-count', side), comparable('version-drift-count', other))
+        changed = {**other, 'after': {'ok': False}}
+        self.assertNotEqual(comparable('knowledge-index-file', side), comparable('knowledge-index-file', changed))

@@ -1,0 +1,82 @@
+.............................FFEFFFF...........................................................
+======================================================================
+ERROR: test_fixture_runs_inside_the_knowledge_tree_with_the_write_matcher (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_fixture_runs_inside_the_knowledge_tree_with_the_write_matcher)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1028, in test_fixture_runs_inside_the_knowledge_tree_with_the_write_matcher
+    from scripts.paired_lifecycle_effects import project_dir
+ImportError: cannot import name 'project_dir' from 'scripts.paired_lifecycle_effects' (/tmp/tmp.zFPyi0I4qw/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+FAIL: test_each_case_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_each_case_accepts_only_its_required_effect) (name='knowledge-off-schema')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1012, in test_each_case_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['knowledge-off-schema: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'knowledge-off-schema: unknown case'
+
+- ['knowledge-off-schema: unknown case']
++ []
+
+======================================================================
+FAIL: test_each_case_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_each_case_accepts_only_its_required_effect) (name='knowledge-index-file')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1012, in test_each_case_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['knowledge-index-file: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'knowledge-index-file: unknown case'
+
+- ['knowledge-index-file: unknown case']
++ []
+
+======================================================================
+FAIL: test_index_file_rejects_a_warning (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_index_file_rejects_a_warning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1025, in test_index_file_rejects_a_warning
+    self.assertIn('knowledge-index-file: knowledge guard effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'knowledge-index-file: knowledge guard effect is missing' not found in ['knowledge-index-file: unknown case']
+
+======================================================================
+FAIL: test_off_schema_note_requires_the_warning_and_its_delivery (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_off_schema_note_requires_the_warning_and_its_delivery) (key='warning_emitted')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1019, in test_off_schema_note_requires_the_warning_and_its_delivery
+    self.assertIn('knowledge-off-schema: knowledge guard effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'knowledge-off-schema: knowledge guard effect is missing' not found in ['knowledge-off-schema: unknown case']
+
+======================================================================
+FAIL: test_off_schema_note_requires_the_warning_and_its_delivery (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_off_schema_note_requires_the_warning_and_its_delivery) (key='model_received_warning')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1019, in test_off_schema_note_requires_the_warning_and_its_delivery
+    self.assertIn('knowledge-off-schema: knowledge guard effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'knowledge-off-schema: knowledge guard effect is missing' not found in ['knowledge-off-schema: unknown case']
+
+======================================================================
+FAIL: test_off_schema_note_requires_the_warning_and_its_delivery (test_paired_lifecycle_effects.PairedKnowledgeGuardTests.test_off_schema_note_requires_the_warning_and_its_delivery) (key='target_content_matches')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.zFPyi0I4qw/tests/test_paired_lifecycle_effects.py", line 1019, in test_off_schema_note_requires_the_warning_and_its_delivery
+    self.assertIn('knowledge-off-schema: knowledge guard effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'knowledge-off-schema: knowledge guard effect is missing' not found in ['knowledge-off-schema: unknown case']
+
+----------------------------------------------------------------------
+Ran 92 tests in 0.250s
+
+FAILED (failures=6, errors=1)
+exit 1

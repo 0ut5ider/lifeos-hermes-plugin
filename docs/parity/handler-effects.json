@@ -1,7 +1,7 @@
 {
   "date": "2026-10-05",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. Seventy-nine equal selected cases cover twenty-eight registrations; complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. Eighty-one equal selected cases cover twenty-nine registrations; complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -184,7 +184,7 @@
     "docs/verification/2026-10-03-paired-lifecycle-effects/run.log": "ec0c351e549f2258fb36ea9b1689a9db731e0504350ffa454b40b9911682b8c0",
     "docs/verification/2026-10-03-paired-lifecycle-effects/runtime-manifest.json": "52eb12b55e9150f1117e3dcdcaccb95f8766965730d83c9d466a52cd670fe286",
     "docs/verification/2026-10-03-paired-lifecycle-effects/verification-results.json": "737d65360ac1edb913ad8952ce199d3d50d684395c87e289eaf0d986ac8381e4",
-    "scripts/check_hook_evidence.py": "3fe8328a699091a1c1609a75f47e1f57dc871ef5211609de43ff488fa562cb97",
+    "scripts/check_hook_evidence.py": "dbf3bb1e03c0daaf262bc8994814a2b01310ff799a8618901bcce15200cb1471",
     "scripts/paired_hook_trace.py": "ec389ce6f6a69e78681addb94b2bf3d912c07af05f8f609a2e6fba4a812048f1",
     "docs/verification/2026-10-03-paired-lifecycle-effects/paired-lifecycle-driver.py": "f7d33cdf8c8ae30af8c23d88b4c2b565decc97f3e00a2dc1a1c92b8b8d4be88c",
     "docs/verification/2026-10-04-paired-lifecycle-effects/paired-results.json": "86a71dcce69af7e79d7d75c235a918896863230bcc9cb0eb86222bae59dff68b",
@@ -1695,7 +1695,57 @@
     "docs/verification/2026-10-05-paired-config-eval/run-output.txt": "50756a17dfaa805de195def368616cff14907deb535a832e64eb9fbb0807f0aa",
     "docs/verification/2026-10-05-paired-config-eval/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
     "docs/verification/2026-10-05-paired-config-eval/run.py": "03f313c46a5eceea9fcc1024fe8b3bcb73f8e7515cde5d6a97af0d8053421006",
-    "docs/verification/2026-10-05-paired-config-eval/runtime-check.json": "bab71cc730b1b7ca7ad2a7b452df9777d97e5925e227dbac83017e632be04cdf"
+    "docs/verification/2026-10-05-paired-config-eval/runtime-check.json": "bab71cc730b1b7ca7ad2a7b452df9777d97e5925e227dbac83017e632be04cdf",
+    "docs/verification/2026-10-05-paired-knowledge-guard/README.md": "dd72ed1deb43464fd7bf9cccbfd76617f6084fb507e0d79d221d22cd5c0675a4",
+    "docs/verification/2026-10-05-paired-knowledge-guard/before-output.txt": "5e0c7c728dac3f98009fb089626be29ba8aacf0a9005f6b88b399c3d98db7af0",
+    "docs/verification/2026-10-05-paired-knowledge-guard/collect.py": "ed9338254b8af384279a4d5552ccc56f5bdeb1f9da93a9eb0c6f516ba4e4be20",
+    "docs/verification/2026-10-05-paired-knowledge-guard/configuration.json": "1c8dc5fe2a7208e0258d196c74c27b18a6925f4207e7ce207133230bb0bc21fd",
+    "docs/verification/2026-10-05-paired-knowledge-guard/focused-command.json": "1ead33dd1d36ff8f89e2a65d8e3bff924e046cd0c3634e89633b39708bde3bd2",
+    "docs/verification/2026-10-05-paired-knowledge-guard/focused-output.txt": "6d2cfc3f66491515d2219045373ca1beb043dff3ebaa6435a4c50b6fb834eb55",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/after-state.json": "7bb40a40dd47c9bcb1dc74acf6056944b3b0bb9a71e6a11917158b7924680eca",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/before-state.json": "7c836bff4ed1d81a1ed41cd90fedabde243f44ef68231946b7dfa04f56feed53",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/cli.log": "fb35bec4d3d4a3bf96c3f322ef43cdfbd21a9bb74d04b88012482ab4ee338f04",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-events.jsonl": "e730a1ecbc0e65e8f0ed1ff08c4cff9f4c141bdd74ceaa02c4a731c6beb23cf8",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-files-after.json": "c92da05edf30804a4c22b089da2f40779c42f479c308fc342e4317d8d191ce9e",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-files-before.json": "936c8abb196fa37a9707df485df9024861e87097214636aeba61f1da1551d811",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/hooks.jsonl": "b768a51bd4ceb374ef1c240b8e2324fafae616e6fcd2819a7778b4c8d0f8d636",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/result.json": "01b2bdb8925f2f579d6d86e036a30fcbe01dae9a0e23ed1fe535010c631dc210",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/target-_index.md": "5ee52bcfa4e301f466daa21eda4362cd0973e2f90e36a6ce023e0aa44af46803",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/after-state.json": "c1a96bbd736207673af8e7c8f3a7a2b56692b4876e4d0f4f39380bcd3b3494c3",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/before-state.json": "7c836bff4ed1d81a1ed41cd90fedabde243f44ef68231946b7dfa04f56feed53",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/cli.log": "1d55e608451887f1e7d4a97de1c1cb90a2e95dd3ac7a49130999b75dbf821a65",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-events.jsonl": "a496c10ac8a1f2055da05cf683f6bc62836517d60dca0f08dff7cf0483a14a84",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-files-after.json": "2b88f0b9c1faafd9dbad357a948700488f844226aecf8c5c8475cac30514d6ab",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-files-before.json": "55f7b5b9b40c683e998af2a84fd2d04f59720a27dddad49eb23e8c187bcc92b7",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/hooks.jsonl": "ef9a3188fab4adadfde1509e3825396ace5401a1a0b70a69b6d9db5016113bf3",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/result.json": "bd255f6636199c2606a4f73d22532369a3357e11c18da910cc5712c015655b64",
+    "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/target-pair-idea.md": "5ee52bcfa4e301f466daa21eda4362cd0973e2f90e36a6ce023e0aa44af46803",
+    "docs/verification/2026-10-05-paired-knowledge-guard/knowledge-proof.json": "72ed6c3dbf4547eb54331907f65363c759f7162f5cb01205a23c91186f7248e9",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/after-state.json": "7bb40a40dd47c9bcb1dc74acf6056944b3b0bb9a71e6a11917158b7924680eca",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/before-state.json": "7c836bff4ed1d81a1ed41cd90fedabde243f44ef68231946b7dfa04f56feed53",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/cli.log": "c456c7d00ef3a8ac08150fa69a4d2e2a01727afc1e47cc46f1d9d5d7a989ec54",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-events.jsonl": "0023a8962d32043beb33d269168fdce80f032056b9a672c63e0cea9196920ba4",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-files-after.json": "ec327831ed1a266ab5b051e8fe256cc23847051c5e4009101881605c65250370",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-files-before.json": "f2806fbabc281b3e457e38b8694b5f9927cb7718ff7097fd61609718023767b6",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/hooks.jsonl": "e81449c1bd83842c0eedbd2b36a0972b44d87a57f1476cfc74943ea0ecc9189d",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/result.json": "e687d472f408f48cadb37b85547d888ba27988b46bbe92888ed0bdab781efc35",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/target-_index.md": "5ee52bcfa4e301f466daa21eda4362cd0973e2f90e36a6ce023e0aa44af46803",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/after-state.json": "c1a96bbd736207673af8e7c8f3a7a2b56692b4876e4d0f4f39380bcd3b3494c3",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/before-state.json": "7c836bff4ed1d81a1ed41cd90fedabde243f44ef68231946b7dfa04f56feed53",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/cli.log": "45bf884faee2ae5eecd85398a536890e9d03994c03f76a39f50e0b271dd92552",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-events.jsonl": "cd0e929739f94a74fca490c1183b6e0af55a6ead786ca6de636201f9be83c26d",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-files-after.json": "1e8ba157f71529299adec1fc9e68ebae854be0a97924481aa5f3266cc8a83a98",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-files-before.json": "cf514584f9bd2feafdfbbfa2a951264ec306c40b662e36ee6b1a38857d112316",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/hooks.jsonl": "2794977aace1506bea5f83a7c98ff1d1ef5d5057909811426b2b7b008c87c453",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/result.json": "47ae5df6fae7f3d5687a8e8451f3afbf0aa8fdce1b7dc5997bbf9b3216ab681c",
+    "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/target-pair-idea.md": "5ee52bcfa4e301f466daa21eda4362cd0973e2f90e36a6ce023e0aa44af46803",
+    "docs/verification/2026-10-05-paired-knowledge-guard/paired-lifecycle-driver.py": "fdcedb76d308b23b09e97645e3406d5c3c2724a072fc8b166ac00818b7ad1716",
+    "docs/verification/2026-10-05-paired-knowledge-guard/paired-response-server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-05-paired-knowledge-guard/paired-results.json": "b9e9704ae7d93196f0fddc3869255181f48baec596bb891d236bebe85e513f91",
+    "docs/verification/2026-10-05-paired-knowledge-guard/run-output.txt": "0a8477ee05048b57103e06b4e72fcffca04d4755f4034e43f34a19649ae98f28",
+    "docs/verification/2026-10-05-paired-knowledge-guard/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-05-paired-knowledge-guard/run.py": "8cdf6a8512f418d03fac8a2529c823bd3af192d10e35308ccd31cd2bfce98888",
+    "docs/verification/2026-10-05-paired-knowledge-guard/runtime-check.json": "56817965961df64d4adc37cd8325d8ff745e706f89d65bbfce47fe4172f2fcb8"
   },
   "registrations": [
     {
@@ -3392,10 +3442,217 @@
       "handler": "$HOME/.claude/hooks/KnowledgeWriteGuard.hook.ts",
       "expected_effect": "Enforce the native knowledge-write contract for applicable file changes.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "unverified",
-      "paired_cases": [],
+      "effect_status": "paired_case_verified",
+      "paired_cases": [
+        {
+          "id": "knowledge-off-schema",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-knowledge-guard/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-knowledge-guard/README.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/before-output.txt",
+            "docs/verification/2026-10-05-paired-knowledge-guard/collect.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/configuration.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/focused-command.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/focused-output.txt",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/target-_index.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/target-pair-idea.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/knowledge-proof.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/target-_index.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/target-pair-idea.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-results.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/run-output.txt",
+            "docs/verification/2026-10-05-paired-knowledge-guard/run.done",
+            "docs/verification/2026-10-05-paired-knowledge-guard/run.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "target_present": false
+            },
+            "after": {
+              "target_content_matches": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "warning_emitted": true,
+              "other_output": false,
+              "model_received_warning": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "target_present": false
+            },
+            "after": {
+              "target_content_matches": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "warning_emitted": true,
+              "other_output": false,
+              "model_received_warning": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          }
+        },
+        {
+          "id": "knowledge-index-file",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-05-paired-knowledge-guard/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-05-paired-knowledge-guard/README.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/before-output.txt",
+            "docs/verification/2026-10-05-paired-knowledge-guard/collect.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/configuration.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/focused-command.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/focused-output.txt",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-index-file/target-_index.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/hermes/knowledge-off-schema/target-pair-idea.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/knowledge-proof.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-index-file/target-_index.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/after-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/before-state.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/cli.log",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-events.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-files-after.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/fixture-files-before.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/hooks.jsonl",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/result.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/native/knowledge-off-schema/target-pair-idea.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-lifecycle-driver.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-response-server.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-results.json",
+            "docs/verification/2026-10-05-paired-knowledge-guard/run-output.txt",
+            "docs/verification/2026-10-05-paired-knowledge-guard/run.done",
+            "docs/verification/2026-10-05-paired-knowledge-guard/run.py",
+            "docs/verification/2026-10-05-paired-knowledge-guard/runtime-check.json"
+          ],
+          "native": {
+            "before": {
+              "target_present": false
+            },
+            "after": {
+              "target_content_matches": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "warning_emitted": false,
+              "other_output": false,
+              "model_received_warning": false,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
+          },
+          "hermes": {
+            "before": {
+              "target_present": false
+            },
+            "after": {
+              "target_content_matches": true,
+              "tool_names": [
+                "Write"
+              ],
+              "file_path_matches": true,
+              "warning_emitted": false,
+              "other_output": false,
+              "model_received_warning": false,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          }
+        }
+      ],
       "related_native_tests": [],
-      "remaining": "Attach paired state and delivery assertions; shared handler tests and dispatch alone do not close this row."
+      "remaining": "Verify a valid note, the Edit and MultiEdit registrations, and complete groups. Claude Code asks for approval before a write below its configuration directory; the native control uses bypass mode."
     },
     {
       "id": "PostToolUse.8.7",

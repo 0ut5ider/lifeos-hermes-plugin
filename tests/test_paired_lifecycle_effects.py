@@ -993,3 +993,48 @@ class PairedFileHintTests(unittest.TestCase):
                 for side in ('native', 'hermes'):
                     case[side]['after']['evaluation_state_preserved'] = False
                 self.assertIn(f'{name}: file hint effect is missing', check_pair(case))
+
+
+class PairedKnowledgeGuardTests(unittest.TestCase):
+    def case(self, name):
+        warned = name == 'knowledge-off-schema'
+        side = {'before': {'target_present': False},
+                'after': {'target_content_matches': True, 'tool_names': ['Write'], 'file_path_matches': True,
+                          'warning_emitted': warned, 'other_output': False, 'model_received_warning': warned,
+                          'user_response_delivered': True},
+                'hook_exit_codes': [0], 'event': 'PostToolUse', 'cli_exit_code': 0,
+                'model_generation_requests': 2, 'model_successful_responses': 2}
+        return {'id': name, 'native': side, 'hermes': json.loads(json.dumps(side))}
+
+    def test_each_case_accepts_only_its_required_effect(self):
+        for name in ('knowledge-off-schema', 'knowledge-index-file'):
+            with self.subTest(name=name):
+                self.assertEqual(check_pair(self.case(name)), [])
+
+    def test_off_schema_note_requires_the_warning_and_its_delivery(self):
+        for key in ('warning_emitted', 'model_received_warning', 'target_content_matches'):
+            with self.subTest(key=key):
+                case = self.case('knowledge-off-schema')
+                case['native']['after'][key] = case['hermes']['after'][key] = False
+                self.assertIn('knowledge-off-schema: knowledge guard effect is missing', check_pair(case))
+
+    def test_index_file_rejects_a_warning(self):
+        case = self.case('knowledge-index-file')
+        for side in ('native', 'hermes'):
+            case[side]['after']['warning_emitted'] = case[side]['after']['model_received_warning'] = True
+        self.assertIn('knowledge-index-file: knowledge guard effect is missing', check_pair(case))
+
+    def test_fixture_runs_inside_the_knowledge_tree_with_the_write_matcher(self):
+        from scripts.paired_lifecycle_effects import project_dir
+        folder = tempfile.TemporaryDirectory()
+        self.addCleanup(folder.cleanup)
+        base = Path(folder.name)
+        (base / 'source/hooks').mkdir(parents=True)
+        (base / 'source/hooks/KnowledgeWriteGuard.hook.ts').write_text('Fixture source identity\n')
+        home = base / 'home'
+        make_fixture(home, 'knowledge-off-schema', base / 'source', base / 'trace.py')
+        self.assertEqual(project_dir(home, 'knowledge-off-schema'), home / '.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas')
+        self.assertTrue(project_dir(home, 'knowledge-off-schema').is_dir())
+        group = json.loads((home / '.claude/settings.json').read_text())['hooks']['PostToolUse'][0]
+        self.assertEqual(group['matcher'], 'Write')
+        self.assertIn('PostToolUse.8.6', group['hooks'][0]['command'])

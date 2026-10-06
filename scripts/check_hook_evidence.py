@@ -9,12 +9,23 @@ import json
 from pathlib import Path
 
 if __package__:
-    from .paired_lifecycle_effects import check_pair
+    from .paired_lifecycle_effects import FILE_CASES, TOOL_REPEATS, check_pair
 else:
-    from paired_lifecycle_effects import check_pair
+    from paired_lifecycle_effects import FILE_CASES, TOOL_REPEATS, check_pair
 
 ROOT = Path(__file__).resolve().parents[1]
 STATUSES = {'unverified', 'native_handler_checked', 'paired_case_verified', 'paired_effect_verified'}
+
+
+MODEL_CHOSEN_COUNTS = ('model_generation_requests', 'model_successful_responses', 'hook_exit_codes')
+
+
+def comparable(case_id: str, outcome: dict) -> dict:
+    # The model chooses how many tool calls it makes in these cases. check_pair validates each side;
+    # the equality rule then compares every other recorded field.
+    if case_id in TOOL_REPEATS or case_id in FILE_CASES:
+        return {key: value for key, value in outcome.items() if key not in MODEL_CHOSEN_COUNTS}
+    return outcome
 
 
 def check_lifecycle_case(identifier: str, case: dict, artifacts: dict, root: Path) -> list[str]:
@@ -70,7 +81,8 @@ def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: 
             errors.append(f'paired case is missing: {identifier}')
         for case in cases:
             label = f'{identifier}/{case["id"]}'
-            if 'native' not in case or 'hermes' not in case or case['native'] != case['hermes']:
+            if ('native' not in case or 'hermes' not in case
+                    or comparable(case['id'], case['native']) != comparable(case['id'], case['hermes'])):
                 errors.append(f'unequal paired case: {label}')
             names = case.get('artifacts', [])
             if not names or any(name not in artifacts for name in names):
