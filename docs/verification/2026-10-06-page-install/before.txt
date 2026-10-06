@@ -1,0 +1,29 @@
+FF.
+======================================================================
+FAIL: test_plugin_list_after_column_zero_comment_stays_one_key (test_mount_transaction.MountTransactionTests.test_plugin_list_after_column_zero_comment_stays_one_key)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+AssertionError: 1 != 0 : 
+📋 Configuration Status
+
+Your settings file (/home/outsider/.cache/lifeos-test-tmp/native-memory-hw1gmscw/prepared-output/config.yaml) has a formatting error at line 9. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 9, then run `hermes config check`. A copy of the broken file was saved to /home/outsider/.cache/lifeos-test-tmp/native-memory-hw1gmscw/prepared-output/backups/config/config.yaml.corrupt.20261006-011656. Details: found duplicate key "enabled" with value "[]" (original value: "[]")
+⚠️  hermes config: Your settings file (/home/outsider/.cache/lifeos-test-tmp/native-memory-hw1gmscw/prepared-output/config.yaml) has a formatting error at line 9. Hermes is running on default settings until it is fixed, so none of your saved settings are applied. Open it with `hermes config edit`, fix line 9, then run `hermes config check`. A copy of the broken file was saved to /home/outsider/.cache/lifeos-test-tmp/native-memory-hw1gmscw/prepared-output/backups/config/config.yaml.corrupt.20261006-011656.
+✗ Cannot inspect /home/outsider/.cache/lifeos-test-tmp/native-memory-hw1gmscw/prepared-output/config.yaml: config.yaml is not valid YAML (while constructing a mapping
+  in "<unicode string>", line 2, column 3:
+found duplicate key "enabled" with value "[]" (original value: "[]")
+  in "<unicode string>", line 9, column 3:
+
+To suppress this check see:
+)
+
+
+======================================================================
+FAIL: test_deny_list_after_column_zero_comment_is_reconciled (test_mount_transaction.MountTransactionTests.test_deny_list_after_column_zero_comment_is_reconciled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+AssertionError: 'synthetic-stale-glob' unexpectedly found in 'approvals:\n  mode: manual\n# ====\n# Deny list\n# ====\n  deny:\n    - "synthetic-stale-glob"\nmodel:\n  default: local\ncontext_file_max_chars: 100000\nskills:\n  external_dirs:\n    - /home/outsider/.cache/lifeos-test-tmp/native-memory-iaqcj6af/.claude/skills\nplugins:\n  enabled:\n    - lifeos\n'
+
+----------------------------------------------------------------------
+Ran 3 tests in 4.341s
+
+FAILED (failures=2)
