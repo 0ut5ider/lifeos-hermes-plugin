@@ -53,6 +53,33 @@ class MountTransactionTests(unittest.TestCase):
         self.assertEqual(result.returncode, -signal.SIGKILL, result.stderr)
         self.assertEqual(result.stderr, '')
 
+    def prepare(self, config):
+        (self.profile / 'config.yaml').write_text(config)
+        stage = self.profile / 'prepared-output'
+        stage.mkdir(mode=0o700)
+        result = subprocess.run([self.fixture.fixture.memory.bun, '--no-install',
+            str(self.root / 'LIFEOS/HERMES/Mount.ts')], env={**self.environment,
+                'LIFEOS_MOUNT_DESTINATION': str(stage)}, text=True, capture_output=True, timeout=45)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        check = subprocess.run([str(self.hermes), 'config', 'check'], env={**self.environment,
+            'HERMES_HOME': str(stage)}, text=True, capture_output=True, timeout=120)
+        self.assertEqual(check.returncode, 0, check.stdout + check.stderr)
+        return (stage / 'config.yaml').read_text()
+
+    def test_plugin_list_after_column_zero_comment_stays_one_key(self):
+        # Stock Hermes writes plugins.enabled after a column-zero section banner.
+        config = self.prepare('plugins:\n  clone_timeout_seconds: 300\n\n'
+            '# ====\n# Model Configuration\n# ====\n  enabled:\n    - lifeos-hook-bridge\n'
+            '  disabled: []\nmodel:\n  default: local\n')
+        self.assertEqual(config.count('\n  enabled:'), 1, config)
+        self.assertIn('  enabled:\n    - lifeos\n    - lifeos-hook-bridge\n', config)
+
+    def test_deny_list_after_column_zero_comment_is_reconciled(self):
+        config = self.prepare('approvals:\n  mode: manual\n# ====\n# Deny list\n# ====\n'
+            '  deny:\n    - "synthetic-stale-glob"\nmodel:\n  default: local\n')
+        self.assertEqual(config.count('\n  deny:'), 1, config)
+        self.assertNotIn('synthetic-stale-glob', config)
+
     def test_native_preparation_does_not_change_live_profile_or_workspace(self):
         stage = self.profile / 'prepared-output'
         stage.mkdir(mode=0o700)

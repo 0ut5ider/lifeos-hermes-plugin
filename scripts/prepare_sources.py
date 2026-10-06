@@ -43,6 +43,7 @@ SOURCES = {
             "lifeos-model-rung-effort.patch",
             "lifeos-hermes-carrier-probe.patch",
             "lifeos-memory-access.patch",
+            "lifeos-mount-yaml-blocks.patch",
         ),
     },
 }

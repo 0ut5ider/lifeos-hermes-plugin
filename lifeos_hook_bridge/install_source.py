@@ -47,6 +47,7 @@ LIFEOS_PATCHES = (
     "lifeos-model-rung-effort.patch",
     "lifeos-hermes-carrier-probe.patch",
     "lifeos-memory-access.patch",
+    "lifeos-mount-yaml-blocks.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")
