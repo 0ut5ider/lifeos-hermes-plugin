@@ -163,6 +163,17 @@ class MemoryAdministrationTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             self.admin().mount_environment(self.root, self.profile, grant)
 
+    def test_owner_claim_without_ownership_keeps_standalone_mounting(self):
+        self.fixture.connector.unlink()
+        self.configuration.update(lambda config: config.update(ownership_enabled=False))
+        self.assertFalse(self.admin().required(self.root, self.profile))
+        environment = self.admin().mount_environment(self.root, self.profile)
+        self.assertNotIn('LIFEOS_MEMORY_ADMINISTRATION', environment)
+        self.configuration.update(lambda config: config.update(ownership_enabled=True))
+        self.assertTrue(self.admin().required(self.root, self.profile))
+        with self.assertRaises(PermissionError):
+            self.admin().mount_environment(self.root, self.profile)
+
     def test_environment_removes_inherited_internal_and_conversation_bypasses(self):
         grant = self.issue()
         self.addCleanup(self.admin().revoke, self.configuration, grant)

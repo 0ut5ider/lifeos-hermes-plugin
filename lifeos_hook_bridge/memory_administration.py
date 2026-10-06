@@ -85,8 +85,20 @@ def _key(configuration, *, create=False):
 
 def required(installed, profile):
     connector = Path(installed) / 'LIFEOS/USER/CONFIG/memory-access.json'
+    if connector.exists() or connector.is_symlink():
+        return True
     configuration = Path(profile) / 'lifeos-memory.json'
-    return any(path.exists() or path.is_symlink() for path in (connector, configuration))
+    if not configuration.exists() and not configuration.is_symlink():
+        return False
+    if not (Path(installed) / 'LIFEOS').is_dir():
+        # Without the installed tree, the connector state is unknown, as during update recovery.
+        return True
+    # An owner claim without enabled ownership keeps native memory standalone. Enabled
+    # ownership stays managed when the connector is lost, and unreadable settings fail closed.
+    try:
+        return MemoryConfiguration(configuration).load().get('ownership_enabled', False) is not False
+    except (ValueError, OSError, RuntimeError):
+        return True
 
 
 def _connector(configuration, config):
@@ -176,7 +188,9 @@ def mount_environment(installed, profile, authorization=None, *, binding=None):
     environment = {key: value for key, value in os.environ.items()
                    if key not in (ENVIRONMENT, 'LIFEOS_MEMORY_CONTEXT', 'LIFEOS_MEMORY_INTERNAL')}
     environment.update(HOME=str(installed.parent), HERMES_HOME=str(profile))
-    if required(installed, profile):
+    # A supplied grant is always validated, even while the connector is temporarily absent.
+    configured = (profile / 'lifeos-memory.json').exists() or (profile / 'lifeos-memory.json').is_symlink()
+    if required(installed, profile) or authorization is not None and configured:
         if authorization is None:
             raise PermissionError('Managed mounting requires installation owner authorization')
         configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
