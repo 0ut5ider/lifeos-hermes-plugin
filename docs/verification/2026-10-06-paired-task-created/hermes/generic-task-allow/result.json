@@ -1,0 +1,133 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "model_received_task_block": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "TaskCreated",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 2,
+  "model_successful_responses": 3,
+  "session_id": "20261006_161823_d9073c",
+  "seconds": 12.495,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-task-created-20261005/results/generic-task-allow",
+    "/home/lifeos-plugin-install-probe/workspace/paired-task-created-20261005/results/generic-task-allow",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Create one todo item whose content is exactly: Write the synthetic pair fixture report."
+  ],
+  "hook_definitions": [
+    {
+      "id": "TaskCreated.1.1",
+      "command": "bun /home/lifeos-plugin-install-probe/workspace/paired-task-created-20261005/results/generic-task-allow/.claude/hooks/TaskGovernance.hook.ts",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005e/lifeos/hooks/TaskGovernance.hook.ts": "d16926c8946e9e2ac9bd8a13c884c07c4e3da86c20a2159780e48f6de8840f74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "87d9316f4da790f3a006d7802337d8124511818ef479485dfb105ca838fc7aaf",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "d6c57a4951210f9e45602d8709e3ef34e7ff3d90d33a1bb35310a386be3b4b26",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "d5bccc6cfc962c31cc5e2fe4ec677c28d6e36ac5d5feb5bfc2892d9b57138411",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "30af9984576ad451ef4823efe8b9830dc2f2039a2ef646d6e1b46ddf92901e25",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "c85696827df684f7ce6eb8015325be3c5359a7b57c43bca993ff5aac040e449f",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "43c75fc44c5851a1a3f997d7a630210189cc0ecc6872d5cba1bb887d1f598dae",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "9729363b337be7f56f541cb02eed4893876977ebe21970d190f88874fc23cefc",
+    "fixture-events.jsonl": "5fbe9f8fc9553c50c3dbcd747fc3d616e940e95068e9639431dbac19a4ffd41a",
+    "cli.log": "b11e0c79314542f4e7db76130d7c8520cf09e413035be2206c15ea7844d5621b",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "d156cfa645434b867d7d708826dc4eaf6e8bd9c95b012435f3ec937a37116e91",
+    "fixture-files-before.json": "8bbf4b32f36e6b5a8151e2f03e8c4673b4b96ca07e09f04760c5051864c5d111",
+    "fixture-files-after.json": "2389d411df642540e33fd9feba3c6fc55662a107022200efdf4413b7eecf14fd"
+  }
+}

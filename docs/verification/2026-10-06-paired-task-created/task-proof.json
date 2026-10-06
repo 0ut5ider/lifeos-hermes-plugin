@@ -1,0 +1,124 @@
+[
+  {
+    "case": "generic-task-allow",
+    "side": "native",
+    "session_id": "732aa24f-9170-4cc3-8413-0f8f89c6b949",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "d9d844b7b31f5c5825ffd7c88a80f275744a65b4c0d1a2c7bed98a5d910bfe5b",
+      "3ff7c9a9336b6fd1f3fa86d5e642934e8d2a1e45f3b0814a279fe93a9c2dae2d"
+    ],
+    "response_sha256": [
+      "387c84a2a4b9415e96175e73d21570836285370ed44b337eb11e2d61a843f96f",
+      "4bbc8da53d81b704b38601812727fec226cca4b1a3838141a9d03c318ffc740a"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "TaskCreated.1.1",
+    "hook_calls": 1,
+    "changed_files": [],
+    "exit_codes": [
+      0
+    ],
+    "block_in_model": false,
+    "model_requests": 2
+  },
+  {
+    "case": "generic-task-allow",
+    "side": "hermes",
+    "session_id": "20261006_161823_d9073c",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "87d9316f4da790f3a006d7802337d8124511818ef479485dfb105ca838fc7aaf",
+      "d5bccc6cfc962c31cc5e2fe4ec677c28d6e36ac5d5feb5bfc2892d9b57138411",
+      "c85696827df684f7ce6eb8015325be3c5359a7b57c43bca993ff5aac040e449f"
+    ],
+    "response_sha256": [
+      "d6c57a4951210f9e45602d8709e3ef34e7ff3d90d33a1bb35310a386be3b4b26",
+      "30af9984576ad451ef4823efe8b9830dc2f2039a2ef646d6e1b46ddf92901e25",
+      "43c75fc44c5851a1a3f997d7a630210189cc0ecc6872d5cba1bb887d1f598dae"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200,
+      200
+    ],
+    "registration": "TaskCreated.1.1",
+    "hook_calls": 1,
+    "changed_files": [],
+    "exit_codes": [
+      0
+    ],
+    "block_in_model": false,
+    "model_requests": 3
+  },
+  {
+    "case": "generic-task-block",
+    "side": "native",
+    "session_id": "a5e6aaf6-04be-41ca-9f1f-4ffe38756187",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "07dcb72528644dde05f15e4a362156db0ca92373438087b5d0255c4bf9676726",
+      "80ddba5de8e22325d2ab48f36704ca0dec2ebfd184147fc6acb2cc9d3852af68"
+    ],
+    "response_sha256": [
+      "00011824f4e65717d9bb8c10e93eab76171712970b2179b32ee108e9ddda5074",
+      "ebd714ee66b618683a41fc6fd313b11632cff868874854062fcb28c9e2a3200e"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "registration": "TaskCreated.1.1",
+    "hook_calls": 1,
+    "changed_files": [],
+    "exit_codes": [
+      2
+    ],
+    "block_in_model": true,
+    "model_requests": 2
+  },
+  {
+    "case": "generic-task-block",
+    "side": "hermes",
+    "session_id": "20261006_161839_84973a",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "101dc2264990cfeb97ff3831d9edc783ea6e87647b302cda334f501ad54c0228",
+      "c24673565da05ac0787a3b5807047ad47c492e1e22cdc3f8e6abc3e4070d91aa",
+      "6315f5ae4f10fb47a8160ee3652c9423753cf6aeb50f0833e17460daa8aa39bb"
+    ],
+    "response_sha256": [
+      "9ce254d024eaba50ab3545aa2aea58f929a4b933c5330508920ad6b2fd8783d2",
+      "553c93ac547d478ec016ed5b8ec78d231ece77a9d8fb3b847342828926aadfe3",
+      "eb65b4b803c1fda50989f5c97b3f7bef032c51d27a9cef255d7d0df08dbc074b"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200,
+      200
+    ],
+    "registration": "TaskCreated.1.1",
+    "hook_calls": 1,
+    "changed_files": [],
+    "exit_codes": [
+      2
+    ],
+    "block_in_model": true,
+    "model_requests": 3
+  }
+]

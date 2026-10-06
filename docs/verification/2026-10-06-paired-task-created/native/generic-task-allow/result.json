@@ -1,0 +1,120 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "model_received_task_block": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "TaskCreated",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "732aa24f-9170-4cc3-8413-0f8f89c6b949",
+  "seconds": 2.828,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-task-created-20261005/results/generic-task-allow",
+    "/home/lifeos-claude-ref/workspace/paired-task-created-20261005/results/generic-task-allow",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "TaskCreate",
+    "--model",
+    "claude-haiku-4-5",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Create exactly one task with the task tool, using the subject and description that the user gives. Then reply with exactly READY. If the task tool is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Create one task. Subject: PAIR_TASK. Description: Write the synthetic pair fixture report."
+  ],
+  "hook_definitions": [
+    {
+      "id": "TaskCreated.1.1",
+      "command": "bun /home/lifeos-claude-ref/workspace/paired-task-created-20261005/results/generic-task-allow/.claude/hooks/TaskGovernance.hook.ts",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/TaskGovernance.hook.ts": "d8396aff89b9b4b904c49aac8e27ae8504c858579f1c158a3a3afe49e7afce4f"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "d9d844b7b31f5c5825ffd7c88a80f275744a65b4c0d1a2c7bed98a5d910bfe5b",
+      "model": "claude-haiku-4-5",
+      "upstream_status": 200,
+      "response_body_sha256": "387c84a2a4b9415e96175e73d21570836285370ed44b337eb11e2d61a843f96f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "3ff7c9a9336b6fd1f3fa86d5e642934e8d2a1e45f3b0814a279fe93a9c2dae2d",
+      "model": "claude-haiku-4-5",
+      "upstream_status": 200,
+      "response_body_sha256": "4bbc8da53d81b704b38601812727fec226cca4b1a3838141a9d03c318ffc740a",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "aad0e03ba6dc92ae8f09789e4c5bfdf456fed157eb6ca07e4aec49ed60a609db",
+    "fixture-events.jsonl": "35e8a9110c786bd86bc5d0bf92238339ae040ea25dc57e5809603573002c9187",
+    "cli.log": "f1af676300b738c4f58487199925c704dac441f1b305ae6856e582d3d2cf8631",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "d156cfa645434b867d7d708826dc4eaf6e8bd9c95b012435f3ec937a37116e91",
+    "fixture-files-before.json": "5dc7833ae2673d908a0e03d578f7cebd4aa53d1bba8402ea62f8f83098991d7e",
+    "fixture-files-after.json": "5dc7833ae2673d908a0e03d578f7cebd4aa53d1bba8402ea62f8f83098991d7e"
+  }
+}
