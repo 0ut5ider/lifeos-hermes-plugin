@@ -195,6 +195,18 @@ class FreshStore:
         document={'version':1,'state':'failed','profile':str(self.profile),'names':names,'reason':reason}
         publish(destination/'review.json',(json.dumps(document,sort_keys=True,indent=2)+'\n').encode())
 
+    def review_home(self,identifier,*,account=None):
+        """Return the LifeOS home and review record of one reviewed store."""
+        identifier=_identifier(identifier)
+        self._owner(account)
+        folder=self._base()/identifier
+        if folder.is_symlink() or not folder.is_dir():
+            raise MemoryUnavailable('The fresh store does not exist')
+        _,row=self._store(folder,False)
+        if row['state']!='review':
+            raise MemoryUnavailable('Only a reviewed fresh store can be selected')
+        return folder/'home',row
+
     def remove(self,identifier,*,account=None):
         identifier=_identifier(identifier)
         try:

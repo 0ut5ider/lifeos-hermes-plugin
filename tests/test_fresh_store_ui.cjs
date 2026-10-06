@@ -19,9 +19,10 @@ function text(node) {
   return (node.children || []).map(text).join('');
 }
 
-async function controls(listing) {
+async function controls(listing, selection) {
   const state = [], calls = []; let index = 0, mounted = false, root;
   let current = listing;
+  let selected = selection || { configured: false, home: '/home/owner', running_home: '/home/owner', job: { state: 'none' } };
   const sdk = {
     React: { createElement: (type, props, ...children) => ({ type, props: props || {}, children: children.flat() }) },
     hooks: {
@@ -42,6 +43,15 @@ async function controls(listing) {
         return Promise.resolve({ identifier, removed: true });
       }
       if (url.endsWith('/memory/fresh/status')) return Promise.resolve(current);
+      if (url.endsWith('/installation/selection') && init?.method === 'POST') {
+        selected = { ...selected, job: { state: 'queued' } };
+        return Promise.resolve({ state: 'queued', job: '/state/selection-1' });
+      }
+      if (url.endsWith('/installation/selection/return')) {
+        selected = { ...selected, job: { state: 'queued' } };
+        return Promise.resolve({ state: 'queued', job: '/state/selection-2' });
+      }
+      if (url.endsWith('/installation/selection')) return Promise.resolve(selected);
       return Promise.resolve({ state: 'not_configured', remaining_gates: {}, connections: [] });
     },
   };
@@ -102,4 +112,35 @@ test('while an installation operation runs the start control is disabled', async
   const page = await controls({ busy: true, stores: [] });
   const button = find(page.render(), n => n.type === 'button' && n.props.type === 'submit' && text(n).includes('Prepare'));
   assert.equal(button.props.disabled, true);
+});
+
+test('a reviewed store can be selected and a selected store offers return', async () => {
+  const page = await controls(listing);
+  const use = find(page.render(), node => node.type === 'button' && text(node) === 'Use ' + 'a'.repeat(8));
+  assert.ok(use, 'A reviewed store must offer selection');
+  await use.props.onClick();
+  await new Promise(setImmediate);
+  const request = page.calls.find(call => call.url.endsWith('/installation/selection') && call.init?.method === 'POST');
+  assert.deepEqual(JSON.parse(request.init.body), { store: 'a'.repeat(32) });
+  assert.ok(find(page.render(), node => node.props?.role === 'status' && text(node).includes('queued')));
+
+  const home = '/home/owner/.local/state/lifeos-hook-bridge/fresh-stores/p/' + 'a'.repeat(32) + '/home';
+  const chosen = await controls(listing, { configured: true, home, running_home: home, job: { state: 'applied' } });
+  const view = chosen.render();
+  assert.ok(find(view, node => node.type === 'p' && text(node).includes('This profile uses the fresh store ' + 'a'.repeat(8))));
+  assert.equal(find(view, node => node.type === 'button' && text(node) === 'Use ' + 'a'.repeat(8)), null);
+  const back = find(view, node => node.type === 'button' && text(node) === 'Return to the previous installation');
+  assert.ok(back);
+  await back.props.onClick();
+  const returned = chosen.calls.find(call => call.url.endsWith('/installation/selection/return'));
+  assert.equal(returned.init.method, 'POST');
+  assert.equal(returned.init.body, undefined);
+});
+
+test('an interrupted selection offers recovery', async () => {
+  const page = await controls(listing, { configured: false, home: '/home/owner', running_home: '/home/owner',
+    job: { state: 'interrupted', error: 'synthetic stop' } });
+  const recover = find(page.render(), node => node.type === 'button' && text(node) === 'Recover interrupted selection');
+  assert.ok(recover);
+  assert.equal(find(page.render(), node => node.type === 'button' && text(node) === 'Use ' + 'a'.repeat(8)), null);
 });

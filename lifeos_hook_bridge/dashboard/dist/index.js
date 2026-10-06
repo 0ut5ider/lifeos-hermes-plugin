@@ -280,7 +280,9 @@
 
   function FreshStores() {
     const endpoint = "/api/plugins/lifeos-hook-bridge/memory/fresh";
+    const selectionEndpoint = "/api/plugins/lifeos-hook-bridge/installation/selection";
     const [listing, setListing] = SDK.hooks.useState(null);
+    const [selection, setSelection] = SDK.hooks.useState(null);
     const [principalName, setPrincipalName] = SDK.hooks.useState("");
     const [assistantName, setAssistantName] = SDK.hooks.useState("");
     const [busy, setBusy] = SDK.hooks.useState(false);
@@ -289,6 +291,18 @@
     async function load() {
       try { setListing(await SDK.fetchJSON(endpoint + "/status")); }
       catch (error) { setNotice("Could not list fresh stores: " + error.message); }
+      try { setSelection(await SDK.fetchJSON(selectionEndpoint)); }
+      catch (error) { setNotice("Could not read the selected installation: " + error.message); }
+    }
+    async function choose(path, body, started) {
+      setBusy(true);
+      try {
+        await SDK.fetchJSON(selectionEndpoint + path, { method: "POST",
+          ...(body === undefined ? {} : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }) });
+        setNotice(started);
+        await load();
+      } catch (error) { setNotice(error.message); }
+      finally { setBusy(false); }
     }
     SDK.hooks.useEffect(function () { load(); }, []);
 
@@ -321,6 +335,11 @@
       return "A store with unreadable or altered records";
     }
     const stores = listing ? listing.stores : [];
+    const job = selection?.job?.state ?? "none";
+    const pending = ["queued", "running", "recovering", "rolling_back", "interrupted"].includes(job);
+    const selectedStore = selection?.configured ? stores.find(function (store) {
+      return selection.home.includes("/" + store.identifier + "/");
+    }) : null;
     return h("section", { className: "space-y-3" },
       h("h3", { className: "font-semibold" }, "Fresh LifeOS store"),
       h("p", { className: "text-sm" }, "Prepare a separate store with no existing facts. The current installation stays selected; preparing a store does not switch memory."),
@@ -335,9 +354,24 @@
             onChange: function (event) { setAssistantName(event.target.value); } })),
         h("button", { type: "submit", disabled: busy || !listing || listing.busy,
           className: "rounded border border-border px-3 py-2" }, "Prepare fresh store")),
+      selection?.configured ? h("div", { className: "space-y-2 text-sm" },
+        h("p", null, "This profile uses the fresh store " + (selectedStore ? selectedStore.identifier.slice(0, 8) : selection.home) +
+          ". The previous installation and its data stay unchanged."),
+        h("button", { type: "button", disabled: busy || pending,
+          onClick: function () { return choose("/return", undefined, "Return started. Hermes restarts when it finishes."); },
+          className: "rounded border border-border px-3 py-2" }, "Return to the previous installation")) : null,
+      job === "interrupted" ? h("button", { type: "button", disabled: busy,
+        onClick: function () { return choose("/recover", undefined, "Recovery started."); },
+        className: "rounded border border-border px-3 py-2" }, "Recover interrupted selection") : null,
+      job !== "none" ? h("p", { role: "status", className: "text-sm" }, "Installation selection: " + job +
+        (selection.job.error ? ". " + selection.job.error : "")) : null,
       stores.map(function (store) {
         return h("article", { key: store.identifier, className: "rounded border border-border p-3 text-sm" },
           h("p", null, describe(store)),
+          store.state === "review" && store !== selectedStore && !pending ? h("button", { type: "button", disabled: busy,
+            onClick: function () { return choose("", { store: store.identifier },
+              "Selection started. Hermes restarts with the fresh store when it finishes."); } },
+            "Use " + store.identifier.slice(0, 8)) : null,
           h("button", { type: "button", disabled: busy || store.state === "preparing",
             onClick: function () { return remove(store.identifier); } }, "Remove " + store.identifier.slice(0, 8)));
       }),

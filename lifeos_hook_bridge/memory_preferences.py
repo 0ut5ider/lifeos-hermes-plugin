@@ -221,6 +221,11 @@ class MemoryPreferences:
         except IncompatibleLifeOS as error:
             raise MemoryUnavailable('Fresh store preparation requires a verified native candidate') from error
 
+    def fresh_home(self, identifier, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).review_home(identifier, account=account)
+
     def remove_fresh(self, identifier, *, account=None):
         from .fresh_store import FreshStore
         self._configuration(account=account)

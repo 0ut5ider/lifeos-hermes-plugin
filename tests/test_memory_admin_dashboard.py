@@ -4,6 +4,7 @@ import importlib.util
 import contextlib
 from concurrent.futures import ThreadPoolExecutor
 import io
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -113,6 +114,53 @@ class MemoryAdminDashboardTests(unittest.TestCase):
         (self.fixture.root / 'LIFEOS/VERSION').unlink()
         self.assertEqual(self.client.post(claim).status_code, 409)
         self.assertFalse(self.configuration.path.exists())
+
+    def review_store(self, source):
+        from lifeos_hook_bridge.fresh_store import FreshStore
+        store = FreshStore(self.configuration)
+        folder = store._ensure_base() / ('a' * 32)
+        (folder / 'home/.claude/LIFEOS').mkdir(parents=True)
+        os.chmod(folder, 0o700)
+        document = {'version': 1, 'state': 'review', 'profile': str(self.fixture.profile.absolute()),
+                    'names': {'principal': 'Adrian', 'assistant': 'Cerebo'}, 'source': source,
+                    'active_facts': 0, 'activation_ready': False,
+                    'retained_installation': str(self.fixture.root)}
+        document['signature'] = hashlib.sha256((json.dumps(document, sort_keys=True, indent=2) + '\n').encode()).hexdigest()
+        (folder / 'review.json').write_text(json.dumps(document, sort_keys=True, indent=2) + '\n')
+        os.chmod(folder / 'review.json', 0o600)
+        return folder
+
+    def test_owner_queues_selection_of_a_reviewed_store_and_return(self):
+        self.login()
+        source = self.api.validate_prepared_lifeos(self.api._candidate_path())
+        folder = self.review_store(source)
+        self.api.SELECTION_ROOT = self.fixture.profile / 'state/selections'
+        path = '/api/plugins/lifeos-hook-bridge/installation/selection'
+        self.assertEqual(self.client.post(path, json={'store': 'b' * 32}).status_code, 409)
+        self.assertEqual(self.client.post(path, json={'store': 'a' * 32, 'home': '/'}).status_code, 400)
+        self.assertEqual(self.client.post(path, json={'store': 'a' * 32},
+                                          headers={'Origin': 'https://other.invalid'}).status_code, 403)
+        self.assertEqual(self.client.post(path + '/return').status_code, 409)
+        with patch.object(self.api, '_launch_selection') as launched:
+            response = self.client.post(path, json={'store': 'a' * 32})
+        self.assertEqual(response.status_code, 200, response.text)
+        job = Path(response.json()['job'])
+        launched.assert_called_once_with(job, 'select')
+        request = json.loads((job / 'request.json').read_text())
+        self.assertEqual(request['target_home'], str(folder / 'home'))
+        self.assertEqual(request['profile'], str(self.fixture.profile))
+        self.assertEqual((job / 'request.json').stat().st_mode & 0o777, 0o600)
+
+    def test_selection_refuses_a_store_from_another_candidate(self):
+        self.login()
+        source = dict(self.api.validate_prepared_lifeos(self.api._candidate_path()), upstream_commit='0' * 40)
+        self.review_store(source)
+        self.api.SELECTION_ROOT = self.fixture.profile / 'state/selections'
+        with patch.object(self.api, '_launch_selection', side_effect=AssertionError('must refuse first')):
+            response = self.client.post('/api/plugins/lifeos-hook-bridge/installation/selection',
+                                        json={'store': 'a' * 32})
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertIn('another LifeOS candidate', response.text)
 
     def test_verified_owner_finalizes_real_native_mount_and_revokes_grant(self):
         self.login()
