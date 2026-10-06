@@ -1,6 +1,6 @@
 # Fresh store selection and return
 
-Date: 2026-10-05. Status: proposal for Adrian's review. No code implements selection yet.
+Date: 2026-10-05. Status: Adrian approved the profile setting design on 2026-10-06. The implementation notes below refine it.
 
 A prepared fresh store is a complete LifeOS installation at `<state>/fresh-stores/<profile>/<identifier>/home/.claude`, with its user data at `home/.config/LIFEOS/USER`. Selection makes that installation the active LifeOS for one Hermes profile. Return makes the previous installation active again.
 
@@ -52,3 +52,16 @@ Point the plugin at the selected installation through one profile setting, not t
 ## Decision needed
 
 Approve the profile setting design, or choose the link swap.
+
+## Implementation notes (2026-10-06)
+
+The [installed root inventory](agents/2026-10-06-installed-root-inventory/installed-root-inventory.md) shows that native hooks, tools, Pulse, and `Mount.ts` resolve their root from `HOME`. About 300 native files hard-code `homedir()/.claude`. A prepared fresh store already has a home layout: `<store>/home/.claude` and `<store>/home/.config/LIFEOS/USER`. The plugin code also requires the installed root to be named `.claude` under a home directory.
+
+The setting therefore names one LifeOS home, not two separate paths:
+
+1. `lifeos-installation.json` in the Hermes profile contains `{"version": 1, "home": "<absolute path>"}`. The installed root is `<home>/.claude`. The user data is `<home>/.config/LIFEOS/USER`. Without the file, the LifeOS home is the account home.
+2. The plugin starts native hook processes, the mount, and update workers with `HOME` set to the LifeOS home. The Hermes workspace stays in the account home through `HERMES_WORKSPACE`.
+3. The dashboard, the hook settings lookup, and the VersionDrift baseline path follow the LifeOS home.
+4. The memory configuration `root` names the same installed root. Selection updates it in the same transaction.
+5. A native Pulse unit, when present, receives a systemd drop-in that sets its working directory and `HOME`. Return removes the drop-in.
+6. The page needs an owner claim before preparation. The first authenticated dashboard account can claim an installation that has no memory configuration. The claim creates a configuration with ownership and sharing disabled.
