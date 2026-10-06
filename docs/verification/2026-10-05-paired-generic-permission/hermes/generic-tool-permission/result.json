@@ -1,0 +1,120 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl": "{\"ts\":\"<time>\",\"tool\":\"Bash\",\"cmd_prefix\":\"touch pair-permission-marker\",\"cmd_sha\":\"2f3da5b062edc00a\",\"decision\":\"neutral\",\"reasons\":[\"default-defer\"],\"cache\":\"n/a\"}\n"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PermissionRequest",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_005501_1be22f",
+  "seconds": 11.631,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-permission-20261005/results/generic-tool-permission",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-permission-20261005/results/generic-tool-permission",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: touch pair-permission-marker"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PermissionRequest.1.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PermissionRequest.1.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-permission-20261005/results/generic-tool-permission/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL1NhZmV0eS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/Safety.hook.ts": "5854fe967a40cd45209c3e9601e31f2002869b820e49509e79585fce5d80390e"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "589928f2a0589a83e9f69ad5cd709c7c1154495aa76e1596a7c42fdca9a8ea26",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a211adaec883e8f44f9a95f3642611a7a9b61c23be34aa40c4aca70f352eab4e",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "99f70d9b04f88697a137d3867e19d3ac799fc75e00d5567a86b69075d49d67ec",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "c80c2e7754a7f73c05987c6deec1460ff7ea29b7327e7beaddad174bdaeac67c",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "136b2772b572b6f0241129d744b85fcef2fa6360f51c9f27941da0ad3b8effd9",
+    "fixture-events.jsonl": "10e9268325c0f936435051f78a8484b5a40ede8fb5f394facd5a9946d7af93f6",
+    "cli.log": "799ec785f8760761a0e7c8d967071df8c9234d6f2ddd5888de20226672aae940",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "67950752db429cb9edb00a7ec6034403ed2a4f675a5f54717de7e6c84b351f11",
+    "fixture-files-before.json": "2327fa375b4fb463be9f76e6833cf20ed3efe446868909de226259197380840b",
+    "fixture-files-after.json": "7fe7bdc1e016f6a68c4f2ab2325251eb180f03e4c0d28518f3d3fff00fe46910"
+  }
+}
