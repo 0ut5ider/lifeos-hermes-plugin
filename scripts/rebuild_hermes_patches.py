@@ -51,6 +51,9 @@ GROUPS = {
         "agent/auxiliary_hooks.py", "agent/turn_request_assembly.py", "hermes_cli/middleware.py",
         "hermes_cli/plugin_validate.py", "tests/hermes_cli/test_required_middleware.py",
     ),
+    "hermes-web-result-status.patch": (
+        "agent/display.py", "agent/tool_guardrails.py", "agent/tool_result_classification.py",
+    ),
 }
 
 
