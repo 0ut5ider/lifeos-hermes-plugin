@@ -1,0 +1,38 @@
+{
+  "date": "2026-10-07T19:12:27.661984+00:00",
+  "plugin_commit": "fce06e3aadf4b480203b6b5bd79a4f56e2f402e4",
+  "host_files": {
+    "gateway/run_agent_cache.py": {
+      "before": "e8247b6647c99c52ad5df23b3a57c9e58e2bb983584c5383158c95d788543b15",
+      "after": "a2084687aa1040ad90dee3cf86b455f7c7f843106911f86c348c2402bf1d8b58"
+    },
+    "tests/gateway/test_stop_clarify_waiters.py": {
+      "before": null,
+      "after": "36d6ba7db015f1f3738ca1f0950ebf3a7ede00e047a16dd533d79ec4aa8c8cbf"
+    },
+    "hermes-source-manifest.json": {
+      "before": "4b097872fa52337fe6a7361ff3ee90fda04c6453f9f9fc6074db2f4b58cb775e",
+      "after": "8560084f935a97acb4446e3b0db48c2ac4b9daa9dd1d1d02776c5e9916ad2364"
+    }
+  },
+  "capture_fingerprints": 10,
+  "service": "MainPID=248066\nActiveState=active",
+  "rollback": "/home/lifeos-hermes/migration/2026-10-07/cancellation-rollback-fce06e3",
+  "live_cancellation_acceptance": "pending",
+  "clarify_timeout_seconds": 120,
+  "discord_connected_at": "2026-10-07T19:12:36.410000+00:00",
+  "discord_bot": "Shiny Hermes Bot#3996",
+  "gateway_main_pid": 248066,
+  "gateway_restarts": 0,
+  "offline_regressions_passed": 4,
+  "patch_and_source_tests_passed": 13,
+  "capture_tests_passed": 34,
+  "capture_summary_after_deployment": {
+    "events": 1562,
+    "incomplete_invocations": 0,
+    "known_lost_events": 0,
+    "capture_failure_processes": 0,
+    "capture_gaps": 0,
+    "integrity_issues": {}
+  }
+}
