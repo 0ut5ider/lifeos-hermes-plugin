@@ -1,0 +1,122 @@
+{
+  "before": {
+    "project_files": [
+      "OpenRouter.ts"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      "OpenRouter.ts"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "target_content_matches": true,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_001857_87c838",
+  "seconds": 13.283,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-egress-public",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-egress-public",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: bun ./OpenRouter.ts --prompt PUBLIC_FIXTURE"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-egress-public/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "14c0bd7087a6f7768713332d3912e64186b79c360eea81844be715973e6148e5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "20018c525a9047feb4a537a6df1a2625a5497a37a97018e0ce8cb0798e426577",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "5fa4d2b062625f9a5fcf862a1c607df7d9aeff3df162062999b2aa4c18f3adbe",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "12eb1243163d6f93fc0d33e38470421eb01a71704fa949c78538dbd4513fd927",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "47423ec2c20e54d5d307c0c8dc137687019c21aa35955df30d07b8499b2d6d8a",
+    "fixture-events.jsonl": "2f44d467c56080f92b6dc82afd1f43018794839fcbd77f180e242adf5300fca8",
+    "cli.log": "527fd218821ea89a2cdc40e55a2abb94cb689a11044f180539f05dbf423a7456",
+    "before-state.json": "4f0a01e3544230ebb2d95fa95baca8418550d6e3e24aa4c95cf285ff568e6558",
+    "after-state.json": "6c1a352066bedd1e9041e346c754d6a16d265382ef894f51abc6344fc18485e9",
+    "fixture-files-before.json": "ce6bbd1149ce673bacf1fc4e6aef1ba4a701a47aef20616a45795f65e467a51c",
+    "fixture-files-after.json": "c120110bbd48dee6d0d7d5e64e774570925cc6b4523ea8ba116f3ef3c3c4f0cc"
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "before": {
+    "project_files": [
+      "gmail.ts"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      "gmail.ts"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": true,
+    "target_content_matches": true,
+    "model_received_block": true,
+    "tool_output_in_model": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_001547_a15632",
+  "seconds": 12.731,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-block",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-block",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT; bun ./gmail.ts send"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-block/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "a4b7b0f3d23d5d8fd13a60f95a040cd378cf81cd1fe71abe0d7d0a1618de6791",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1e1f3f12d506b4420eec9ac1d24b912b7b90cf07bb84a0c1af4e2b0d637a1957",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "4e6b3e51419aea14b0dce4fd201fae939a166b3f11f8df8354ef7011d27d20bb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "e7dab8957c31851d2e732dc197fef8cc1f19f0092c31f96e80f27485bc1e3a6c",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "ad9b00edfda265fdb3f1fca54bc93fcf9c2b8027a5a82f21e3d6f1b85d10f1c6",
+    "fixture-events.jsonl": "99ed2266daf912b03ec50cca080e3f4b0419c40acf6a17b016524e3aabb28c4b",
+    "cli.log": "7038308ea142ab221073b500d6dd548531c8d5112623677aa0567af1c983e499",
+    "before-state.json": "caa1664c94220dc8428a80608c4884589965ca40de74777653931e0c12c98431",
+    "after-state.json": "c06934246bbb9c1fa9a874e1a8e2129035f0bb99778b928c4c13a3afab813a87",
+    "fixture-files-before.json": "0b3d3e6ca5c9e38a4c95259d5d7fec997946c7ed717530703c6b8ebe056623d7",
+    "fixture-files-after.json": "6bb1105799021d2b83546b01151c8ffb8b6ada58d6efcf39e2b79f9dec66e247"
+  }
+}

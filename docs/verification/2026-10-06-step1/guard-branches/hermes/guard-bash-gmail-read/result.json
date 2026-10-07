@@ -1,0 +1,122 @@
+{
+  "before": {
+    "project_files": [
+      "gmail.ts"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      "gmail.ts"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "target_content_matches": true,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_001623_c24a42",
+  "seconds": 11.899,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-read",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-read",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: bun ./gmail.ts count"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-read/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "d56d5fa0ce165d6fae38aea28eea059fd7e989b1aec919427a629e364e7bb533",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "db404ca1bb87688e3715fe7ffb9dd398aee0f1a0e759dcd1b9de935fca08cd25",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "a498ef5690774a8fcb1132bce6c55aff88b8c4d6aeb96a556ec8219a1511205d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a2930d37dec0e2b48f4de5b98df74abfb6a0af10792d38be212e64906d17be87",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "2e803f6bef1d38e0d984f3cac05c0d9b06e47bdd7947ff008f7b520633fefaa9",
+    "fixture-events.jsonl": "fdaaff05685d2940424a4ad9b52b62477f2dc653e92f6f272132da479c350d25",
+    "cli.log": "7c1932839c7d8cfc95575f9df923c1c05d1c624bff3a338a78251c4df6cf6214",
+    "before-state.json": "caa1664c94220dc8428a80608c4884589965ca40de74777653931e0c12c98431",
+    "after-state.json": "b6a98ea87c4598b2e4c48e6b4fdaa9a9d992d37844603c16743861f860801dbb",
+    "fixture-files-before.json": "b41ed6871be172b8d47559a2b92676bacc6afeca7350ad5014861980e4dbb039",
+    "fixture-files-after.json": "9231ec93894e5cd8733b1837a491c92ae776692301fd3808cfb8ffa3e147f042"
+  }
+}

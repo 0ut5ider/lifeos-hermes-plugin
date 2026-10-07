@@ -1,0 +1,125 @@
+{
+  "before": {
+    "project_files": [
+      ".git"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      ".git"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": true,
+    "target_content_matches": true,
+    "model_received_block": true,
+    "tool_output_in_model": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "7cbcb78d-c53c-44c3-ae31-ea1415b1cd36",
+  "seconds": 5.682,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-results-corrected/guard-bash-public-scan-failure",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-results-corrected/guard-bash-public-scan-failure",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked or fails, do not retry it. Reply with exactly READY. The local fixture scripts contain only a marker print and no external transport. Execute only the exact requested command. Do not inspect files or run setup commands. The fixture already has every required file and permission.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT; false && gh repo create pair-guard-fixture --public"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-results-corrected/guard-bash-public-scan-failure/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "abc59047a82a489f8fdcc8e7be6b3b5c907d80f7da64c9a588054bff0c982518",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "df25fd3a7c0013388ab91939d4297dc7d907578c6503f78ae7e18e5c583664a8",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "7fcc36e5ce528e1e833baf859ea77050ca5c0f5749ca66e00e3c533de4c270e7",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "9c10a44e1a5f769a02e9de814c6d0388f95b3696d952e13a9bf7a5a9c4da1163",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "08d53781a9b305b9791418a2c9a958d135f592992aba609d2b20c2b9c7979c9a",
+    "fixture-events.jsonl": "fd673f4a9387aecbe43ee0396212dfb7e4c56ccf370b736757cf87b3b66acbd6",
+    "cli.log": "4f1160e0e2d29aa268837b074d224df00d4793b2ca85bd7e0380700e98db6478",
+    "before-state.json": "b8b4e0865d5afff2234b6fe41e8e3f3a8d9beeeba557697d9c46416f01f941ab",
+    "after-state.json": "a0efdc2219e7607f27c734fbe2a85787a65bfa6a51512777745c55737b3cae0c",
+    "fixture-files-before.json": "f7d2bf1c2c8d954e04a225ba61a8bd5c9eb049c744bb7c264f40f2c8cef6d545",
+    "fixture-files-after.json": "f7d2bf1c2c8d954e04a225ba61a8bd5c9eb049c744bb7c264f40f2c8cef6d545"
+  }
+}

@@ -1,0 +1,132 @@
+{
+  "before": {
+    "target_content_matches": true
+  },
+  "after": {
+    "target_content_matches": true,
+    "tool_names": [
+      "Write"
+    ],
+    "file_path_matches": true,
+    "input_content_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 2,
+  "model_successful_responses": 3,
+  "session_id": "20261007_002600_d720fa",
+  "seconds": 17.617,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-file-write-system-clean",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-file-write-system-clean",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "Read the existing file at /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-file-write-system-clean/.claude/hooks/guard-target.txt once. Then replace its entire content using the file writing tool once. The complete new content is exactly \"PAIR_PUBLIC_CONTENT\\n\". Remove every prior line. Do not use the editing tool or preserve existing content."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-file-write-system-clean/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "714d22f6b96808b4f5ccba3ce832c931c59e51c9e80eae471b7beaaa1960d89a",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "b995671f8ffcf43a694034814bd4797376a1e129b726531e74444d694dfae72f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "986a0ae679d247dc0dfcbf4736ed2c6e67acf77d6b7a263140810df99d825070",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "4ef5b44bc42c09de654a9b9be02c21878d1df4fc6509a010eac79ff2a37fc9e0",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "6317ebcde815dd691f9b5c7eaf844776d669fa22e2b3b51997b12659c62720be",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "f8c9ec13fa7116962f857ae40eba4ce43bab7d6a79c6f0aaae43a4ca732ce81a",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "027c598ee567323677a705dcba5526fc69e88c2f816c3263a7538a7608dee6a7",
+    "fixture-events.jsonl": "f5ff6c99584fd431f15fa2fbf68c201a60e3f89c5a078235ce1de84597c278e9",
+    "cli.log": "62a366a7f7d014299df2bd4e1253fc89efd11d185dba8f15b3b369aeacbb96a8",
+    "before-state.json": "edf28c5124632b797d18160e4ae380d3aabe3242cea275f5b69c538b2aa530f5",
+    "after-state.json": "85085b3cbdcd3ac0f68556295215cfde024b232b803a9fcc6d64d524383f4b30",
+    "fixture-files-before.json": "de539946a8c8122d73ff0af9245e0733f02a016803566a807dcad16ab7b291ec",
+    "fixture-files-after.json": "d40d36b8b9f1d99e51fb1d43a72f1892a23bd2b1896f6c4ca2d1efc2535e7df8"
+  }
+}

@@ -1,0 +1,8 @@
+{"type": "system", "subtype": "init", "model": "lifecycle-fixture", "session_id": "20261007_001605_925c61", "timestamp": 1791332165747}
+{"type": "tool_use", "name": "terminal", "input": {"command": "LIFEOS_SKILL=fixture bun ./gmail.ts send", "workdir": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-routed/project"}, "timestamp": 1791332171321}
+/var/tmp/lifeos-paired-runtime-20261005e/hermes/pm/shell.py:13: SyntaxWarning: "\W" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\W"? A raw string is also an option.
+  minus C:\Windows\System32\bash.exe (the WSL launcher stub, first on PATH
+{"type": "tool_result", "name": "terminal", "output": "{\"output\": \"PAIR_GUARD_OUTPUT\", \"exit_code\": 0, \"error\": null}", "duration_ms": 252, "is_error": false, "timestamp": 1791332171456}
+{"type": "result", "session_id": "20261007_001605_925c61", "exit_code": 0, "text": "READY", "tokens": {"input": 6907, "output": 146, "total": 7053, "cache_read": 0, "cache_write": 0}, "duration_ms": 6737, "timestamp": 1791332172485}
+
+session_id: 20261007_001605_925c61
