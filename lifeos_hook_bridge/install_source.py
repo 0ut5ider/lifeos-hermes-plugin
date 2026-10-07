@@ -51,6 +51,7 @@ LIFEOS_PATCHES = (
     "lifeos-memory-access.patch",
     "lifeos-mount-yaml-blocks.patch",
     "lifeos-config-audit.patch",
+    "lifeos-shell-literal-guard.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")

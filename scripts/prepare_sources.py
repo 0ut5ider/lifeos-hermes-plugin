@@ -46,6 +46,7 @@ SOURCES = {
             "lifeos-memory-access.patch",
             "lifeos-mount-yaml-blocks.patch",
             "lifeos-config-audit.patch",
+            "lifeos-shell-literal-guard.patch",
         ),
     },
 }

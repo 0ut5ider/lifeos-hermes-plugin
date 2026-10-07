@@ -102,6 +102,19 @@ class NativeCommandReductionTests(unittest.TestCase):
         result = self.run_command(['bash', '-c', updated])
         self.assertTrue(result.stdout.strip())
 
+    def test_command_chains_preserve_the_shell_execution_order(self):
+        (self.project / 'chain-proof.txt').write_text('Chain proof\n')
+        command = 'git status --short && printf PAIR_CHAIN_FINISHED'
+        _, output = self.native(command)
+        updated = output['hookSpecificOutput']['updatedInput']['command']
+        self.assertEqual(updated, 'rtk ' + command)
+        self.assertEqual(self.bridge(command)['args']['command'], updated)
+        result = self.run_command(['bash', '-c', updated])
+        self.assertIn('chain-proof.txt', result.stdout)
+        self.assertTrue(result.stdout.endswith('PAIR_CHAIN_FINISHED'))
+        _, output = self.native('printf PAIR_CHAIN_START && git status --short')
+        self.assertIsNone(output)
+
     def test_reads_existing_rtk_and_multiline_scripts_keep_the_command(self):
         for command in ('rtk git status', 'cat file.txt', 'rg needle file.txt', 'ls',
                         'printf first\nprintf second', 'cat <<EOF\nFixture\nEOF'):

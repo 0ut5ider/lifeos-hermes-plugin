@@ -1,0 +1,8 @@
+{
+  "source_sha256": "3250067787845d794319e2f9f6c4f58051d9d7868d753b4826fff73543cecec9",
+  "command": "python3 -c 'from pathlib import Path; Path('\"'\"'FIXTURE_HOME/.claude/hooks/target.txt'\"'\"').write_text(\"PAIR_DENY_TOKEN\")'",
+  "guard_exit": 0,
+  "guard_stderr": "",
+  "execution_exit": 0,
+  "protected_target_after": "PAIR_DENY_TOKEN"
+}
