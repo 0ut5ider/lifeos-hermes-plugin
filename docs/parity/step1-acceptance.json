@@ -353,7 +353,7 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "permission-safety-01",
@@ -382,20 +382,36 @@
         {
           "id": "permission-safety-03",
           "expected": "Prior approval, policy changes, managed policy, and trusted-project scope preserve denial precedence.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json"
+          ]
         },
         {
           "id": "permission-safety-04",
           "expected": "Compound commands, wrappers, redirects, path aliases, and remote namespaces preserve the supported rule contract.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json",
+            "docs/verification/2026-10-06-step1/remote-adapters/tests.txt"
+          ]
         },
         {
           "id": "permission-safety-05",
           "expected": "Malformed managed policy follows the installed review path without granting execution.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1556,19 +1572,32 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "event-contract-01",
           "expected": "SessionStart source matchers and SessionEnd reason matchers select the correct installed hooks.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json"
+          ]
         },
         {
           "id": "event-contract-02",
           "expected": "Changed inputs, ask decisions, hook failures, timeout, and asynchronous hook settings preserve the event contract.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json",
+            "notes/2026-09-28-async-timeout-parity.md",
+            "docs/agents/2026-09-28-native-contract-probe/async-timeout-reference.jsonl",
+            "docs/agents/2026-09-28-native-contract-probe/async-timeout-hermes.jsonl"
+          ]
         }
       ],
       "release_acceptance": false

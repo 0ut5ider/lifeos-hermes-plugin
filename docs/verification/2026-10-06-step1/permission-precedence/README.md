@@ -1,0 +1,9 @@
+# Actual permission precedence and event contracts
+
+Date: 2026-10-06. All 217 selected parser, bridge, file-policy, and Model Context Protocol (MCP) checks pass without skips. The installed policy matrix measures 15 actual file and shell outcomes. It approves a write through the real dispatcher callback, then changes the policy and refuses another write in that session. Managed denial overrides a user allow. Malformed managed policy requests review and creates no file. Trusted and untrusted projects retain distinct rule scope.
+
+The matrix uses the actual installed plugin and dispatcher. It binds the managed reader to a disposable directory in the fixture process. It does not replace permission logic, file operations, or shell execution. It leaves PermissionRequest hooks absent to isolate policy precedence. The earlier permission and approval controls separately verify the actual native Safety hook and interactive review. The retained MCP tests include actual native hook execution. Some broader bridge tests substitute optional host interfaces; those tests provide component evidence, not end-to-end transport claims. Separate SSH and Docker controls verify actual remote namespaces.
+
+The parser exposes supported env wrappers, leading assignments, and nested wrappers for deny and ask rules. Unknown env options and unresolved assigned directory changes retain review. The before log records the missed deny. The actual dispatcher confirms refusal after the correction. No external command or message is sent.
+
+The selected bridge tests execute real hook processes for start and end matchers, input replacement, ask decisions, errors, and asynchronous context handoff. The repeated local asynchronous timeout probe returns both markers. The pinned native timeout control retains the same observed behavior. This evidence describes the supported contract. It does not close complete installed group interactions.

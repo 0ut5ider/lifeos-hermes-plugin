@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 29 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 34 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -81,9 +81,9 @@ Registrations: PermissionRequest.1.1, PermissionRequest.2.1.
 
 - [x] `permission-safety-01`: Actual Bash, Write, Edit, batch, and MCP targets receive allow, ask, or deny decisions.
 - [x] `permission-safety-02`: Interactive approval permits the reviewed operation; cancellation and unattended mode do not grant approval.
-- [ ] `permission-safety-03`: Prior approval, policy changes, managed policy, and trusted-project scope preserve denial precedence.
-- [ ] `permission-safety-04`: Compound commands, wrappers, redirects, path aliases, and remote namespaces preserve the supported rule contract.
-- [ ] `permission-safety-05`: Malformed managed policy follows the installed review path without granting execution.
+- [x] `permission-safety-03`: Prior approval, policy changes, managed policy, and trusted-project scope preserve denial precedence.
+- [x] `permission-safety-04`: Compound commands, wrappers, redirects, path aliases, and remote namespaces preserve the supported rule contract.
+- [x] `permission-safety-05`: Malformed managed policy follows the installed review path without granting execution.
 
 ### isa-views (package 3)
 
@@ -370,8 +370,8 @@ Registrations: Stop.1.7.
 
 Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, PreToolUse.4.1, PreToolUse.5.1, PostToolUse.1.1, PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.1, PostToolUse.6.1, PostToolUse.7.1, PostToolUse.8.1, PostToolUse.8.2, PostToolUse.8.3, PostToolUse.8.4, PostToolUse.8.5, PostToolUse.8.6, PostToolUse.8.7, PostToolUse.9.1, PostToolUse.9.2, PostToolUse.9.3, PostToolUse.9.4, PostToolUse.9.5, PostToolUse.9.6, PostToolUse.9.7, PostToolUse.10.1, PostToolUse.10.2, PostToolUse.10.3, PostToolUse.10.4, PostToolUse.10.5, PostToolUse.10.6, PostToolUse.10.7, PostToolUse.11.1, PostToolUse.12.1, PostToolUse.12.2, PostToolUse.13.1, SessionEnd.1.1, SessionEnd.1.2, SessionEnd.1.3, SessionEnd.1.4, SessionEnd.1.5, SessionEnd.1.6, UserPromptSubmit.1.1, UserPromptSubmit.2.1, UserPromptSubmit.3.1, UserPromptSubmit.4.1, UserPromptSubmit.5.1, UserPromptSubmit.6.1, UserPromptSubmit.7.1, UserPromptSubmit.8.1, UserPromptSubmit.9.1, PostToolUseFailure.1.1, PostToolUseFailure.2.1, PostToolUseFailure.3.1, TaskCreated.1.1, ConfigChange.1.1, SessionStart.1.1, SessionStart.1.2, SessionStart.1.3, SessionStart.1.4, SessionStart.1.5, Stop.1.1, Stop.1.2, Stop.1.3, Stop.1.4, Stop.1.5, Stop.1.6, Stop.1.7, Stop.2.1, StopFailure.1.1, PermissionRequest.1.1, PermissionRequest.2.1.
 
-- [ ] `event-contract-01`: SessionStart source matchers and SessionEnd reason matchers select the correct installed hooks.
-- [ ] `event-contract-02`: Changed inputs, ask decisions, hook failures, timeout, and asynchronous hook settings preserve the event contract.
+- [x] `event-contract-01`: SessionStart source matchers and SessionEnd reason matchers select the correct installed hooks.
+- [x] `event-contract-02`: Changed inputs, ask decisions, hook failures, timeout, and asynchronous hook settings preserve the event contract.
 
 ### control-limits (package 7)
 

@@ -10,7 +10,7 @@ import tree_sitter_bash
 
 _LANGUAGE = Language(tree_sitter_bash.language())
 _DURATION = re.compile(r"[0-9]+(?:\.[0-9]+)?[smhd]?\Z")
-_WRAPPERS = frozenset({"timeout", "time", "nice", "nohup", "stdbuf", "command", "builtin", "noglob"})
+_WRAPPERS = frozenset({"timeout", "time", "nice", "nohup", "stdbuf", "command", "builtin", "noglob", "env"})
 _ALLOW_REQUIRES_REVIEW = frozenset({
     "process_substitution", "variable_assignment", "simple_expansion",
     "function_definition", "for_statement", "while_statement", "if_statement", "case_statement",
@@ -19,6 +19,11 @@ _ALLOW_REQUIRES_REVIEW = frozenset({
 
 def _unwrapped(node, source: bytes) -> str | None:
     children = node.named_children
+    position = 0
+    while position < len(children) and children[position].type == 'variable_assignment':
+        position += 1
+    if position and position < len(children) and children[position].type == 'command_name':
+        return source[children[position].start_byte:node.end_byte].decode('utf-8').strip()
     if not children or children[0].type != "command_name":
         return None
     words = [source[child.start_byte:child.end_byte].decode("utf-8") for child in children]
@@ -26,7 +31,25 @@ def _unwrapped(node, source: bytes) -> str | None:
     if name not in _WRAPPERS:
         return None
     position = 1
-    if name == "timeout":
+    if name == "env":
+        while position < len(words):
+            word = words[position]
+            if word in {'-i', '--ignore-environment'} or re.match(r'[A-Za-z_][A-Za-z0-9_]*=', word):
+                position += 1
+            elif word in {'-u', '--unset'}:
+                if position + 1 >= len(words) or not re.fullmatch(r'[A-Za-z_][A-Za-z0-9_]*', words[position + 1]):
+                    return None
+                position += 2
+            elif re.fullmatch(r'--unset=[A-Za-z_][A-Za-z0-9_]*', word):
+                position += 1
+            elif word == '--':
+                position += 1
+                break
+            elif word.startswith('-'):
+                return None
+            else:
+                break
+    elif name == "timeout":
         while position < len(words) and words[position].startswith("-"):
             option = words[position]
             position += 1
@@ -81,8 +104,18 @@ def bash_command_forms(command: str, *, checked_file_targets: bool = False) -> t
         if node.type == "command":
             raw = source[node.start_byte:node.end_byte].decode("utf-8").strip()
             if raw:
-                unwrapped = _unwrapped(node, source)
-                forms.append((raw, unwrapped) if unwrapped else (raw,))
+                aliases = [raw]
+                current, current_source = node, source
+                while (unwrapped := _unwrapped(current, current_source)) and unwrapped not in aliases:
+                    aliases.append(unwrapped)
+                    current_source = unwrapped.encode('utf-8')
+                    parsed_inner = Parser(_LANGUAGE).parse(current_source).root_node
+                    if parsed_inner.has_error or len(parsed_inner.named_children) != 1:
+                        break
+                    current = parsed_inner.named_children[0]
+                if any(alias.startswith('env ') for alias in aliases):
+                    allow_requires_review = True
+                forms.append(tuple(aliases))
         for child in node.named_children:
             visit(child)
 
@@ -394,6 +427,18 @@ def bash_file_targets(command: str) -> tuple[list[tuple[str, str]], bool]:
                                     with_directory(name, directory)))
         elif node.type == "command":
             children = node.named_children
+            if children and children[0].type == 'variable_assignment':
+                inner = _unwrapped(node, source)
+                if inner is None:
+                    certain = False
+                else:
+                    inner_targets, inner_certain = bash_file_targets(inner)
+                    targets.extend((operation, with_directory(target, directory)) for operation, target in inner_targets)
+                    certain = certain and inner_certain
+                    inner_source = inner.encode('utf-8')
+                    if changes_directory(Parser(_LANGUAGE).parse(inner_source).root_node, inner_source):
+                        certain = False
+                return directory
             if children and children[0].type == "command_name":
                 name = source[children[0].start_byte:children[0].end_byte].decode("utf-8")
                 if name == "cd":
