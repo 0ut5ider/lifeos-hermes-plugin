@@ -2,6 +2,23 @@
 
 Date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. The active `.212` profiles retain the October 4 tested code while candidate work proceeds in isolated fixtures.
 
+## Current daily-use release (October 7)
+
+Adrian authorizes a fresh daily-use release with Discord text. Voice input and spoken replies move to a later tested release. Import and reverse migration are deferred. The complete Hermes-managed installer is deferred in favor of a tested operator deployment and rollback procedure for this release. The existing private FlashNext tier mapping stays unchanged.
+
+Keep `.252` as the development server. Provision a separate daily-use server only after the release passes its acceptance gates. Give that server fresh Adrian and Cerebo data, a reserved address, and the existing Shiny Hermes Bot. Stop that bot on `.252` before starting it on the daily-use server. Development Discord needs a separate bot and channel. Preserve retained installations and test evidence.
+
+The dependency order is:
+
+1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.
+2. Verify background jobs with managed memory and the selected private model routes.
+3. Demonstrate separate backup recovery and configure off-server backups.
+4. Correct clarification cancellation reporting and verify one pinned release with deployment rollback.
+5. Provision and verify the separate daily-use server.
+6. Move daily Discord and isolate development access.
+
+The approved step 1 checklist passes all 152 scenarios, including live Discord acceptance. [The cutover evidence](verification/2026-10-07-discord-cutover/README.md) records its scope and limits. Managed memory application acceptance remains open. The sections below retain the earlier full-product plan and dated evidence; deferred workflows do not block this fresh daily-use release.
+
 On October 7, Adrian confirms that `.212` will be decommissioned. `192.168.8.252` is the sole future development server and the final deployment target. The existing Discord bot moves permanently to `.252` for step 1 acceptance. Disable the source gateway before starting the destination gateway. Keep recovery files on `.252`. The fresh-start choice, Adrian and Cerebo identity, existing tier mapping, and remaining activation gates still apply. Do not import source conversations or personal memory during the bot move.
 
 The four LifeOS tiers retain private FlashNext and the existing model-dependent effort mapping: Haiku low, Sonnet medium, Opus xhigh, and Fable xhigh. Adrian directs this mapping to remain unchanged on October 5. Voice is the only selected optional integration. It includes Discord voice input and spoken replies. Adrian puts voice last among feature work, after core LifeOS functionality. GitHub, Cloudflare, Claude subscription quota reporting, and remote project enrollment are outside the final account configuration. Existing supported remote behavior remains part of the compatibility checks.
