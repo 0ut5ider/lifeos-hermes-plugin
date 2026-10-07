@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 21 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 24 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -60,7 +60,7 @@ Registrations: PreToolUse.5.1.
 - [x] `nested-pre-guards-02`: Stale whole-file ISA writes deny after an external change; fresh views and supported edits pass.
 - [x] `nested-pre-guards-03`: Unsafe plutil extraction denies; the explicit output form passes.
 - [x] `nested-pre-guards-04`: Remote and headless speaker calls deny; health and explicitly silent calls pass.
-- [ ] `nested-pre-guards-05`: Public push policy tests blocked, admitted, bypass, scan failure, and private destination cases on disposable repositories.
+- [x] `nested-pre-guards-05`: Public push policy tests blocked, admitted, bypass, scan failure, and private destination cases on disposable repositories.
 - [x] `nested-pre-guards-06`: Raw Gmail and SES sends deny; skill-routed and read-only forms pass without external delivery.
 - [x] `nested-pre-guards-07`: Tier-2 classified egress tests allowed content, above-ceiling content, and classification failure.
 - [x] `nested-pre-guards-08`: Inline system writes through redirect, tee, copy, sed, and script forms preserve target classification.
@@ -80,7 +80,7 @@ Registrations: PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.
 Registrations: PermissionRequest.1.1, PermissionRequest.2.1.
 
 - [x] `permission-safety-01`: Actual Bash, Write, Edit, batch, and MCP targets receive allow, ask, or deny decisions.
-- [ ] `permission-safety-02`: Interactive approval permits the reviewed operation; cancellation and unattended mode do not grant approval.
+- [x] `permission-safety-02`: Interactive approval permits the reviewed operation; cancellation and unattended mode do not grant approval.
 - [ ] `permission-safety-03`: Prior approval, policy changes, managed policy, and trusted-project scope preserve denial precedence.
 - [ ] `permission-safety-04`: Compound commands, wrappers, redirects, path aliases, and remote namespaces preserve the supported rule contract.
 - [ ] `permission-safety-05`: Malformed managed policy follows the installed review path without granting execution.
@@ -91,7 +91,7 @@ Registrations: PostToolUse.7.1, PostToolUse.8.2, PostToolUse.9.2, PostToolUse.10
 
 - [ ] `isa-views-01`: Read and applied Write, Edit, and batch updates record the actual local file view.
 - [ ] `isa-views-02`: External mutation followed by a full-file write uses the changed file for the stale-write decision.
-- [ ] `isa-views-03`: SSH and Docker views identify the actual backend and file.
+- [x] `isa-views-03`: SSH and Docker views identify the actual backend and file.
 - [ ] `isa-views-04`: Failed and partial operations record only the applied file views.
 
 ### isa-sync (package 3)

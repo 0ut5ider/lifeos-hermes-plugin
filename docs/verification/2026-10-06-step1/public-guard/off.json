@@ -1,0 +1,38 @@
+{
+  "cases": [
+    {
+      "id": "clean",
+      "blocked": false,
+      "mode": "off",
+      "result": {
+        "output": "PAIR_PUBLIC_ADMITTED",
+        "exit_code": 1,
+        "error": null
+      }
+    },
+    {
+      "id": "restricted",
+      "blocked": true,
+      "mode": "off",
+      "result": {
+        "error": "[PublicPushGate] BLOCKED: this repo's destination is PUBLIC and the deny-scan hit.\nHEAD:tracked.txt:1:PAIR_DENY_TOKEN\n\nFix the content (and history if flagged) before pushing. Patterns: LIFEOS/USER/SECURITY/PublicScrubPatterns.txt (private). Never quote patterns into scannable artifacts."
+      }
+    },
+    {
+      "id": "history",
+      "blocked": true,
+      "mode": "off",
+      "result": {
+        "error": "[PublicPushGate] BLOCKED: this repo's destination is PUBLIC and the deny-scan hit.\nIN HISTORY (older commit blobs):\ne74a5c9b6a1cf9648793cfade804023983e4f6f0:tracked.txt:1:PAIR_DENY_TOKEN\n\nFix the content (and history if flagged) before pushing. Patterns: LIFEOS/USER/SECURITY/PublicScrubPatterns.txt (private). Never quote patterns into scannable artifacts."
+      }
+    },
+    {
+      "id": "scan-failure",
+      "blocked": true,
+      "mode": "off",
+      "result": {
+        "error": "[PublicPushGate] BLOCKED: destination is PUBLIC but the deny-scan could not complete (Error: HEAD scan failed). A public push without a completed scan is exactly the gap this gate exists to close; fix the scan, then push."
+      }
+    }
+  ]
+}

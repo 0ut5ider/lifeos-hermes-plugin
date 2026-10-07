@@ -210,7 +210,7 @@
       "registrations": [
         "PreToolUse.5.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "nested-pre-guards-01",
@@ -255,8 +255,16 @@
         {
           "id": "nested-pre-guards-05",
           "expected": "Public push policy tests blocked, admitted, bypass, scan failure, and private destination cases on disposable repositories.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/public-guard/manual.json",
+            "docs/verification/2026-10-06-step1/public-guard/off.json",
+            "docs/verification/2026-10-06-step1/public-guard/yolo.json",
+            "docs/verification/2026-10-06-step1/public-guard/permanent.json",
+            "docs/verification/2026-10-06-step1/public-guard/tests.txt",
+            "docs/verification/2026-10-06-step1/public-guard/source-identity.json",
+            "docs/verification/2026-10-06-step1/public-guard/README.md"
+          ]
         },
         {
           "id": "nested-pre-guards-06",
@@ -362,8 +370,14 @@
         {
           "id": "permission-safety-02",
           "expected": "Interactive approval permits the reviewed operation; cancellation and unattended mode do not grant approval.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/approval-lifecycle/approval-results.json",
+            "docs/verification/2026-10-06-step1/approval-lifecycle/wire-proof.json",
+            "docs/verification/2026-10-06-step1/approval-lifecycle/source-identity.json",
+            "docs/verification/2026-10-06-step1/approval-lifecycle/README.md",
+            "docs/verification/2026-10-06-step1/evaluation-branches/paired-results.json"
+          ]
         },
         {
           "id": "permission-safety-03",
@@ -395,7 +409,7 @@
         "PostToolUse.9.2",
         "PostToolUse.10.2"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "isa-views-01",
@@ -412,8 +426,12 @@
         {
           "id": "isa-views-03",
           "expected": "SSH and Docker views identify the actual backend and file.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/remote-adapters/tests.txt",
+            "docs/verification/2026-10-06-step1/remote-adapters/command.json",
+            "docs/verification/2026-10-06-step1/remote-adapters/README.md"
+          ]
         },
         {
           "id": "isa-views-04",
