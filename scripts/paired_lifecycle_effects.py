@@ -387,7 +387,7 @@ def render_page(home: Path) -> str:
 
 
 # Real tool cases: the model runs one exact shell command, so each client makes two requests.
-TOOL_PREFIXES = ('atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-',
+TOOL_PREFIXES = ('evaluation-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-',
                  'generic-tool-', 'generic-mcp-', 'generic-agent-', 'generic-task-', 'generic-skill-', 'generic-web-', 'question-')
 TOOL_SYSTEM_PROMPT = ('This is a synthetic hook fixture. Run the exact shell command from the user message once '
                       'with the shell tool. Do not change the command. Then reply with exactly READY. '

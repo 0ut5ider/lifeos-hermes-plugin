@@ -2,11 +2,30 @@
 # ABOUTME: Checks sentinel changes, debounce state, model execution, and failure publication.
 import copy
 import unittest
+import tempfile
+from pathlib import Path
 
-from scripts.paired_evaluation_effects import EVALUATION_CASES, expected_evaluation, check_evaluation
+from scripts.paired_evaluation_effects import EVALUATION_CASES, expected_evaluation, check_evaluation, seed_evaluation
+from scripts.paired_lifecycle_effects import check_pair
 
 
 class PairedEvaluationTests(unittest.TestCase):
+    def test_suite_preparation_creates_the_real_runner_link(self):
+        with tempfile.TemporaryDirectory() as directory:
+            home = Path(directory) / 'home'
+            source = Path(directory) / 'source'
+            (source / 'LIFEOS/TOOLS').mkdir(parents=True)
+            seed_evaluation(home, source, 'evaluation-write-pass')
+            self.assertEqual((home / '.claude/LIFEOS/TOOLS').resolve(), source / 'LIFEOS/TOOLS')
+            self.assertTrue((home / '.claude/LIFEOS/USER/CUSTOMIZATIONS/SKILLS/Evals/Suites/paired-config-fixture.yaml').is_file())
+
+    def test_real_runner_and_tool_turn_requests_are_both_accepted(self):
+        before, after = expected_evaluation('evaluation-write-pass')
+        side = {'before': before, 'after': after, 'event': 'PostToolUse', 'hook_exit_codes': [0],
+                'cli_exit_code': 0, 'model_generation_requests': 3, 'model_successful_responses': 3}
+        self.assertEqual(check_pair({'id': 'evaluation-write-pass', 'native': side,
+                                    'hermes': copy.deepcopy(side)}), [])
+
     def test_all_required_runner_outcomes_are_measured(self):
         for case in EVALUATION_CASES:
             before, after = expected_evaluation(case)

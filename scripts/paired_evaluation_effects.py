@@ -53,6 +53,7 @@ def check_evaluation(case, before, after):
 
 def seed_evaluation(home, source, case):
     root = home / '.claude'
+    (root / 'LIFEOS').mkdir(parents=True, exist_ok=True)
     _, _, branch = EVALUATION_CASES[case]
     if branch != 'no-runner':
         (root / 'LIFEOS/TOOLS').symlink_to(source / 'LIFEOS/TOOLS', target_is_directory=True)
