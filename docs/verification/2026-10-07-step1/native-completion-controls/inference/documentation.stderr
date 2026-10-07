@@ -1,0 +1,26 @@
+[DocAutoUpdate] === Starting hybrid doc integrity check (deterministic + inference) ===
+[DocAutoUpdate] Modified files in session: 1
+[DocAutoUpdate] System docs modified: false
+[DocAutoUpdate] Hook files modified: true
+[DocAutoUpdate] System file change detected: true
+[DocAutoUpdate] Inventory: 56 hooks, 9 handlers, 29 libs, 1 system docs
+[DocAutoUpdate] Checking 1 SYSTEM docs for cross-reference drift
+[DocAutoUpdate] [OK] Hook file references: all valid
+[DocAutoUpdate] [OK] Handler file references: all valid
+[DocAutoUpdate] [OK] Lib file references: all valid
+[DocAutoUpdate] [OK] System doc references: all valid
+[DocAutoUpdate] [OK] Hook counts: accurate
+[DocAutoUpdate] === Running inference analysis ===
+[DocAutoUpdate] [INFERENCE] Running semantic analysis (medium tier)...
+[DocAutoUpdate] [INFERENCE] Context size: 336 chars
+[DocAutoUpdate] [INFERENCE] Completed in 6150ms (success: true)
+[DocAutoUpdate] [INFERENCE] 1 valid edits from 1 raw
+[DocAutoUpdate] [UPDATED] [INFERENCE] Hooks/HookSystem.md: The source file uses console.error to report actual failures (exit status 7), not reporting failures as successful. ("FixtureControl.hook.ts reports all comma..." → "FixtureControl.hook.ts reports actual fi...")
+[DocAutoUpdate] === Summary (6153ms) ===
+[DocAutoUpdate] Docs checked: 1
+[DocAutoUpdate] Drift items found: 0
+[DocAutoUpdate] Updates applied: 1
+[DocAutoUpdate] All cross-references valid
+[DocAutoUpdate] Wall time: 6153ms
+[DocAutoUpdate] === Check complete ===
+[DocCrossRefIntegrity] Voice OFF (remote channel: headless)

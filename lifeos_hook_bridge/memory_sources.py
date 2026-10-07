@@ -366,10 +366,10 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
             values = ([json.loads(line) for line in content.splitlines() if line.strip()]
                       if source.suffix == '.jsonl' else [json.loads(content)])
             decoded = '\n'.join(text for value in values for text in _strings(value))
-        for text in (projection, decoded) if decoded else (projection,):
-            checked = memory._validate({'type':'idea','title':'Native retained source','content':text},text,'project')
-            if checked:
-                return {**rejected, 'reason':'Native validation rejected this source text'}
+        texts = list((projection, decoded) if decoded else (projection,))
+        checked = memory._native('validate_source_batch', contents=texts)['accepted']
+        if len(checked) != len(texts) or any(accepted is not True for accepted in checked):
+            return {**rejected, 'reason':'Native validation rejected this source text'}
         filtered = _admit(memory, connection, scope, '\n'.join((content, decoded)) if decoded else content,
                           relative, timestamp, projection='\n'.join((projection, decoded)) if decoded else projection)
         if filtered['excluded']:

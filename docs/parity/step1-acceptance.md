@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 96 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 128 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -194,16 +194,16 @@ Registrations: SessionEnd.1.4, Stop.2.1.
 
 Registrations: SessionEnd.1.5.
 
-- [ ] `doc-integrity-01`: Supported documentation handlers detect changed and stale documentation.
-- [ ] `doc-integrity-02`: Inference-dependent branches retain actual child routing and results.
-- [ ] `doc-integrity-03`: Concurrent lifecycle effects preserve documentation state.
+- [x] `doc-integrity-01`: Supported documentation handlers detect changed and stale documentation.
+- [x] `doc-integrity-02`: Inference-dependent branches retain actual child routing and results.
+- [x] `doc-integrity-03`: Concurrent lifecycle effects preserve documentation state.
 
 ### system-integrity (package 6)
 
 Registrations: SessionEnd.1.6.
 
-- [ ] `system-integrity-01`: Unchanged, changed, missing, and malformed baseline cases publish the applicable integrity result.
-- [ ] `system-integrity-02`: Interruption preserves prior valid integrity state.
+- [x] `system-integrity-01`: Unchanged, changed, missing, and malformed baseline cases publish the applicable integrity result.
+- [x] `system-integrity-02`: Interruption preserves prior valid integrity state.
 
 ### prompt-processing (package 6)
 
@@ -217,16 +217,16 @@ Registrations: UserPromptSubmit.1.1.
 
 Registrations: UserPromptSubmit.2.1.
 
-- [ ] `satisfaction-01`: Supported ratings, praise, directives, complaints, and numeric work text follow feedback eligibility.
-- [ ] `satisfaction-02`: Code/system exclusions and absent context avoid false feedback capture.
-- [ ] `satisfaction-03`: Very low ratings run actual FailureCapture and retain applicable learning.
-- [ ] `satisfaction-04`: ISA pulses, write failure, asynchronous interruption, and rapid shutdown preserve feedback state.
+- [x] `satisfaction-01`: Supported ratings, praise, directives, complaints, and numeric work text follow feedback eligibility.
+- [x] `satisfaction-02`: Code/system exclusions and absent context avoid false feedback capture.
+- [x] `satisfaction-03`: Very low ratings run actual FailureCapture and retain applicable learning.
+- [x] `satisfaction-04`: ISA pulses, write failure, asynchronous interruption, and rapid shutdown preserve feedback state.
 
 ### reminders (package 6)
 
 Registrations: UserPromptSubmit.3.1.
 
-- [ ] `reminders-01`: Disabled, not-due, due, and already-delivered reminders preserve scheduling and delivery policy.
+- [ ] `reminders-01`: Absent or unverified private repository configuration suppresses routing. Explicit reminder, research, and queued-work phrases retain native labels and date metadata.
 - [ ] `reminders-02`: Enabled supported reminder routing uses the configured test destination without duplicate operation.
 - [ ] `reminders-03`: Interruption and unavailable destination preserve retry state.
 
@@ -242,25 +242,25 @@ Registrations: UserPromptSubmit.4.1.
 
 Registrations: UserPromptSubmit.5.1.
 
-- [ ] `memory-turn-01`: First, subsequent, and resumed turns supply only admitted synthetic memory.
-- [ ] `memory-turn-02`: Unavailable memory, revoked caller, and changed destination do not expose prohibited context.
-- [ ] `memory-turn-03`: Interruption preserves turn injection bookkeeping.
+- [x] `memory-turn-01`: First, subsequent, and resumed turns supply only admitted synthetic memory.
+- [x] `memory-turn-02`: Unavailable memory, revoked caller, and changed destination do not expose prohibited context.
+- [x] `memory-turn-03`: Interruption preserves turn injection bookkeeping.
 
 ### drift-reminder (package 6)
 
 Registrations: UserPromptSubmit.6.1.
 
-- [ ] `drift-reminder-01`: Code exclusions, repeated prompts, and the exact staleness boundary preserve the line budget.
-- [ ] `drift-reminder-02`: Malformed input or state and write failure preserve the documented failure behavior.
-- [ ] `drift-reminder-03`: Synthetic managed source and destination enforce admission.
+- [x] `drift-reminder-01`: Code exclusions, repeated prompts, and the exact staleness boundary preserve the line budget.
+- [x] `drift-reminder-02`: Malformed input or state and write failure preserve the documented failure behavior.
+- [x] `drift-reminder-03`: Synthetic managed source and destination enforce admission.
 
 ### algorithm-nudge (package 6)
 
 Registrations: UserPromptSubmit.7.1, PostToolUseFailure.2.1.
 
-- [ ] `algorithm-nudge-01`: Initial, later, and late-ISA turns emit the applicable capability and algorithm nudge.
-- [ ] `algorithm-nudge-02`: Actual tool failure, absent state, and malformed state preserve counters and output.
-- [ ] `algorithm-nudge-03`: Restart and interruption preserve valid nudge state.
+- [x] `algorithm-nudge-01`: Initial, later, and late-ISA turns emit the applicable capability and algorithm nudge.
+- [x] `algorithm-nudge-02`: Actual tool failure, absent state, and malformed state preserve counters and output.
+- [x] `algorithm-nudge-03`: Restart and interruption preserve valid nudge state.
 
 ### time-context (package 5)
 
@@ -274,9 +274,9 @@ Registrations: UserPromptSubmit.8.1.
 
 Registrations: UserPromptSubmit.9.1.
 
-- [ ] `model-rung-01`: Actual served model and effort carriers produce the applicable rung guidance.
-- [ ] `model-rung-02`: Inherited, explicit, absent, and malformed carriers preserve the accepted tier mapping.
-- [ ] `model-rung-03`: Repeated turns and child requests retain the correct model context.
+- [x] `model-rung-01`: Actual served model and effort carriers produce the applicable rung guidance.
+- [x] `model-rung-02`: Inherited, explicit, absent, and malformed carriers preserve the accepted tier mapping.
+- [x] `model-rung-03`: Repeated turns and child requests retain the correct model context.
 
 ### task-governance (package 4)
 
@@ -304,8 +304,8 @@ Registrations: SessionStart.1.2.
 
 Registrations: SessionStart.1.3.
 
-- [ ] `load-context-01`: Enabled, disabled, missing, and synthetic managed sources retain identity and admission policy.
-- [ ] `load-context-02`: Active work and resumed sessions supply applicable context.
+- [x] `load-context-01`: Enabled, disabled, missing, and synthetic managed sources retain identity and admission policy.
+- [x] `load-context-02`: Active work and resumed sessions supply applicable context.
 - [ ] `load-context-03`: Actual model requests and generated user delivery preserve the admitted context boundary.
 
 ### freshness (package 6)
@@ -319,8 +319,8 @@ Registrations: SessionStart.1.4.
 
 Registrations: SessionStart.1.5.
 
-- [ ] `settings-merge-01`: System and user merge, direct edit backport, and settings deletion preserve source ownership.
-- [ ] `settings-merge-02`: Concurrent edits and malformed settings preserve atomic output and the configured merge policies.
+- [x] `settings-merge-01`: System and user merge, direct edit backport, and settings deletion preserve source ownership.
+- [x] `settings-merge-02`: Concurrent edits and malformed settings preserve atomic output and the configured merge policies.
 
 ### response-cache (package 6)
 
@@ -333,29 +333,29 @@ Registrations: Stop.1.1.
 
 Registrations: Stop.1.3.
 
-- [ ] `voice-completion-01`: Desktop, remote, headless, disabled, and malformed completion follow the configured notification policy.
-- [ ] `voice-completion-02`: Interruption and repeated Stop preserve applicable final voice state.
+- [x] `voice-completion-01`: Desktop, remote, headless, disabled, and malformed completion follow the configured notification policy.
+- [x] `voice-completion-02`: Interruption and repeated Stop preserve applicable final voice state.
 
 ### isa-render (package 6)
 
 Registrations: Stop.1.4.
 
-- [ ] `isa-render-01`: Absent, authored, missing-document, completed, resumed, and existing-page cases preserve native rendering.
-- [ ] `isa-render-02`: Newer-page, spawn failure, interruption, and concurrent render follow the freshness contract.
+- [x] `isa-render-01`: Absent, authored, missing-document, completed, resumed, and existing-page cases preserve native rendering.
+- [x] `isa-render-02`: Newer-page, spawn failure, interruption, and concurrent render follow the freshness contract.
 
 ### spend-audit (package 6)
 
 Registrations: Stop.1.5.
 
-- [ ] `spend-audit-01`: Below, at, and above spending thresholds use actual recorded costs and policy.
-- [ ] `spend-audit-02`: Missing and malformed usage, repeated Stop, and interrupted update preserve valid audit state.
+- [x] `spend-audit-01`: Below, at, and above the prompt-length floor follow actual capability-use policy. Eligible audit uses real low-effort inference.
+- [ ] `spend-audit-02`: Missing or malformed transcripts, repeated Stop, and interrupted marker publication preserve actual capability-audit state.
 
 ### stop-gates (package 6)
 
 Registrations: Stop.1.6.
 
-- [ ] `stop-gates-01`: Required format, verification, writing, stale-ISA, and structural gates return the specified continuation or block.
-- [ ] `stop-gates-02`: Satisfied gates permit completion through the actual final transcript.
+- [x] `stop-gates-01`: Required format, verification, writing, stale-ISA, and structural gates return the specified continuation or block.
+- [x] `stop-gates-02`: Satisfied gates permit completion through the actual final transcript.
 - [ ] `stop-gates-03`: Repeated gate feedback and interruption preserve continuation state.
 
 ### memory-review (package 6)

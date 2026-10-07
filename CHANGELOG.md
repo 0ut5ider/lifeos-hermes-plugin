@@ -6,6 +6,13 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Publish native completion state and ISA pages atomically. Preserve prior files after interruption.
+- Coordinate global review, capability audit, reminder routing, and work feedback state across concurrent hooks.
+- Apply actual documentation corrections from complete model JSON to reviewed documentation targets.
+- Require current source admission for response previews and accept native document metadata through its document validator.
+- Exclude code and quoted directives from standing feedback instructions.
+- Publish reminder delivery markers after confirmed command success.
+
 - Save the native response cache only after completed Hermes generation. Preserve the prior cache after interrupted or rejected candidates.
 - Retain real title-inference success and refusal controls, native startup branches, managed health admission, and isolated usage fetch evidence.
 

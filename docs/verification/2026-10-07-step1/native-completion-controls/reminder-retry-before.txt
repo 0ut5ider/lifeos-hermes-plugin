@@ -1,0 +1,15 @@
+test_unavailable_destination_does_not_mark_the_request_delivered (test_native_reminder_retry.NativeReminderRetryTests.test_unavailable_destination_does_not_mark_the_request_delivered) ... FAIL
+
+======================================================================
+FAIL: test_unavailable_destination_does_not_mark_the_request_delivered (test_native_reminder_retry.NativeReminderRetryTests.test_unavailable_destination_does_not_mark_the_request_delivered)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_reminder_retry.py", line 31, in test_unavailable_destination_does_not_mark_the_request_delivered
+    self.assertFalse((root/'LIFEOS/MEMORY/STATE/reminder-router-seen.json').exists())
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 1 test in 0.059s
+
+FAILED (failures=1)

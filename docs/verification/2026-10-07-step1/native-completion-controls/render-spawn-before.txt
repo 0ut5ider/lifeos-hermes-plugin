@@ -1,0 +1,22 @@
+test_render_missing_executable_records_spawn_failure_and_preserves_prior_page (test_native_stop_surfaces.NativeStopSurfaceTests.test_render_missing_executable_records_spawn_failure_and_preserves_prior_page) ... FAIL
+
+======================================================================
+FAIL: test_render_missing_executable_records_spawn_failure_and_preserves_prior_page (test_native_stop_surfaces.NativeStopSurfaceTests.test_render_missing_executable_records_spawn_failure_and_preserves_prior_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_stop_surfaces.py", line 174, in test_render_missing_executable_records_spawn_failure_and_preserves_prior_page
+    self.assertEqual(row['rendered'],[])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['/home/outsider/.cache/lhc6/tmplswt2p49/.claude/ISA.md'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'/home/outsider/.cache/lhc6/tmplswt2p49/.claude/ISA.md'
+
+- ['/home/outsider/.cache/lhc6/tmplswt2p49/.claude/ISA.md']
++ []
+
+----------------------------------------------------------------------
+Ran 1 test in 0.035s
+
+FAILED (failures=1)

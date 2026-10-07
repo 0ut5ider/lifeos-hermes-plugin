@@ -1,0 +1,33 @@
+test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions (test_native_completion_policies.NativeCompletionPolicyTests.test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions) ... 
+  test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions (test_native_completion_policies.NativeCompletionPolicyTests.test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions) (hook='SpendAuditor') ... FAIL
+  test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions (test_native_completion_policies.NativeCompletionPolicyTests.test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions) (hook='SatisfactionCapture') ... FAIL
+
+======================================================================
+FAIL: test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions (test_native_completion_policies.NativeCompletionPolicyTests.test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions) (hook='SpendAuditor')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_completion_policies.py", line 304, in test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions
+    if hook=='SpendAuditor':self.assertEqual(set(current),{'parallel-'+str(i) for i in range(8)},results)
+                            ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Items in the second set but not the first:
+'parallel-6'
+'parallel-5'
+'parallel-7'
+'parallel-3'
+'parallel-0'
+'parallel-2'
+'parallel-1' : [[(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)], [(CompletedProcess(args=['/bin/bash', '-c', 'bun /home/outsider/.cache/lhc6/tmpne9nz0ht/.claude/hooks/SpendAuditor.hook.ts'], returncode=0, stdout='', stderr=''), None)]]
+
+======================================================================
+FAIL: test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions (test_native_completion_policies.NativeCompletionPolicyTests.test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions) (hook='SatisfactionCapture')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_completion_policies.py", line 306, in test_concurrent_spend_markers_and_feedback_pulses_keep_all_sessions
+    self.assertEqual(len(current['sessions']['__pulse_strip']['ratings']),8,results)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 6 != 8 : [None, None, None, None, None, None, None, None]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.913s
+
+FAILED (failures=2)

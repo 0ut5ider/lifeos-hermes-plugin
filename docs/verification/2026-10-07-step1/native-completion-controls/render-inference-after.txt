@@ -1,0 +1,45 @@
+test_actual_failed_command_blocks_false_completion_and_accepts_recovery (test_native_stop_surfaces.NativeStopSurfaceTests.test_actual_failed_command_blocks_false_completion_and_accepts_recovery) ... ok
+test_format_final_message_observation_and_writing_detector_availability (test_native_stop_surfaces.NativeStopSurfaceTests.test_format_final_message_observation_and_writing_detector_availability) ... ok
+test_render_concurrent_publication_preserves_complete_page (test_native_stop_surfaces.NativeStopSurfaceTests.test_render_concurrent_publication_preserves_complete_page) ... ok
+test_render_interrupted_rename_keeps_prior_complete_page (test_native_stop_surfaces.NativeStopSurfaceTests.test_render_interrupted_rename_keeps_prior_complete_page) ... ok
+test_render_missing_executable_records_spawn_failure_and_preserves_prior_page (test_native_stop_surfaces.NativeStopSurfaceTests.test_render_missing_executable_records_spawn_failure_and_preserves_prior_page) ... ok
+test_voice_actual_notification_channel_policy_and_repeated_stop (test_native_stop_surfaces.NativeStopSurfaceTests.test_voice_actual_notification_channel_policy_and_repeated_stop) ... FAIL
+test_voice_failure_and_interruption_never_record_sent_notification (test_native_stop_surfaces.NativeStopSurfaceTests.test_voice_failure_and_interruption_never_record_sent_notification) ... ok
+test_actual_doc_handler_detects_broken_refs_and_repairs_count_without_teardown_inference (test_native_startup_surfaces.NativeStartupSurfaceTests.test_actual_doc_handler_detects_broken_refs_and_repairs_count_without_teardown_inference) ... ok
+test_dynamic_work_context_missing_enabled_disabled_and_terminal_phases (test_native_startup_surfaces.NativeStartupSurfaceTests.test_dynamic_work_context_missing_enabled_disabled_and_terminal_phases) ... ok
+test_isa_first_authoring_missing_completed_resumed_and_newer_mirror (test_native_startup_surfaces.NativeStartupSurfaceTests.test_isa_first_authoring_missing_completed_resumed_and_newer_mirror) ... ok
+test_merge_array_ownership_malformed_source_concurrency_and_deleted_live_output (test_native_startup_surfaces.NativeStartupSurfaceTests.test_merge_array_ownership_malformed_source_concurrency_and_deleted_live_output) ... ok
+test_absent_and_malformed_model_carriers_do_not_invent_a_tier (test_native_completion_policies.NativeCompletionPolicyTests.test_absent_and_malformed_model_carriers_do_not_invent_a_tier) ... ok
+test_algorithm_initial_repeat_missing_malformed_and_late_isa_state (test_native_completion_policies.NativeCompletionPolicyTests.test_algorithm_initial_repeat_missing_malformed_and_late_isa_state) ... ok
+test_concurrent_review_cadence_keeps_one_global_fire_and_separate_session_counts (test_native_completion_policies.NativeCompletionPolicyTests.test_concurrent_review_cadence_keeps_one_global_fire_and_separate_session_counts) ... ok
+test_drift_exact_age_boundary_code_exclusion_and_malformed_state (test_native_completion_policies.NativeCompletionPolicyTests.test_drift_exact_age_boundary_code_exclusion_and_malformed_state) ... ok
+test_drift_malformed_input_and_publication_failure_preserve_failure_policy (test_native_completion_policies.NativeCompletionPolicyTests.test_drift_malformed_input_and_publication_failure_preserve_failure_policy) ... ok
+test_integrity_missing_malformed_changed_duplicate_and_unchanged_state (test_native_completion_policies.NativeCompletionPolicyTests.test_integrity_missing_malformed_changed_duplicate_and_unchanged_state) ... ok
+test_interrupted_algorithm_publication_preserves_prior_state (test_native_completion_policies.NativeCompletionPolicyTests.test_interrupted_algorithm_publication_preserves_prior_state) ... ok
+test_interrupted_integrity_publication_preserves_prior_state (test_native_completion_policies.NativeCompletionPolicyTests.test_interrupted_integrity_publication_preserves_prior_state) ... ok
+test_interrupted_response_publication_preserves_prior_bytes (test_native_completion_policies.NativeCompletionPolicyTests.test_interrupted_response_publication_preserves_prior_bytes) ... ok
+test_interrupted_spend_publication_preserves_prior_state (test_native_completion_policies.NativeCompletionPolicyTests.test_interrupted_spend_publication_preserves_prior_state) ... ok
+test_spend_capability_floor_and_missing_transcript_use_native_policy (test_native_completion_policies.NativeCompletionPolicyTests.test_spend_capability_floor_and_missing_transcript_use_native_policy) ... ok
+
+======================================================================
+FAIL: test_voice_actual_notification_channel_policy_and_repeated_stop (test_native_stop_surfaces.NativeStopSurfaceTests.test_voice_actual_notification_channel_policy_and_repeated_stop)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_stop_surfaces.py", line 67, in test_voice_actual_notification_channel_policy_and_repeated_stop
+    self.assertEqual((result.returncode,result.stderr),(0,''))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: (0, '[VoiceCompletion] no 🗣️ line extracted — [33 chars]n\n') != (0, '')
+
+First differing element 1:
+'[VoiceCompletion] no 🗣️ line extracted — falling back to summary extraction\n'
+''
+
++ (0, '')
+- (0,
+-  '[VoiceCompletion] no 🗣️ line extracted — falling back to summary '
+-  'extraction\n')
+
+----------------------------------------------------------------------
+Ran 22 tests in 10.497s
+
+FAILED (failures=1)

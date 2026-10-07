@@ -1,0 +1,22 @@
+test_interrupted_response_publication_preserves_prior_bytes (test_native_completion_policies.NativeCompletionPolicyTests.test_interrupted_response_publication_preserves_prior_bytes) ... FAIL
+
+======================================================================
+FAIL: test_interrupted_response_publication_preserves_prior_bytes (test_native_completion_policies.NativeCompletionPolicyTests.test_interrupted_response_publication_preserves_prior_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_completion_policies.py", line 86, in test_interrupted_response_publication_preserves_prior_bytes
+    self.interruption('LastResponseCache','MEMORY/STATE/last-response.txt',
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'hook_event_name':'Stop','session_id':'cache','transcript_path':'/nonexistent/synthetic-transcript','last_assistant_message':'Completed generation'},
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        b'PREVIOUS_COMPLETED_RESPONSE\n')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_completion_policies.py", line 83, in interruption
+    self.assertEqual(target.read_bytes(),previous)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'' != b'PREVIOUS_COMPLETED_RESPONSE\n'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.068s
+
+FAILED (failures=1)

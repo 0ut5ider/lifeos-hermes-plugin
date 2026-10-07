@@ -2,6 +2,8 @@
 # ABOUTME: Uses a disposable ISA and transcript to verify a native block decision.
 
 import json
+import os
+import shutil
 import unittest
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -10,6 +12,10 @@ from lifeos_hook_bridge.bridge import HookBridge
 
 
 class NativeISAGateTests(unittest.TestCase):
+    def programs(self, name):
+        source = Path(os.environ.get("LIFEOS_GUARD_SOURCE", str(Path.home() / ".claude")))
+        return Path(shutil.which("bun") or str(Path.home() / ".bun/bin/bun")), source / "hooks" / name
+
     def active_run(self, root, session_id):
         state = root / "LIFEOS/MEMORY/STATE"
         state.mkdir(parents=True)
@@ -29,9 +35,7 @@ class NativeISAGateTests(unittest.TestCase):
         return HookBridge(settings, root)
 
     def test_closed_isa_with_hard_violations_blocks_stop(self):
-        home = Path.home()
-        bun = home / ".bun/bin/bun"
-        hook = home / ".claude/hooks/StopGates.hook.ts"
+        bun, hook = self.programs("StopGates.hook.ts")
         if not bun.exists() or not hook.exists():
             self.skipTest("installed LifeOS StopGates and Bun are required")
 
@@ -60,9 +64,7 @@ class NativeISAGateTests(unittest.TestCase):
             self.assertIn("fog-at-complete", result["message"])
 
     def test_stale_isa_blocks_completion_claim(self):
-        home = Path.home()
-        bun = home / ".bun/bin/bun"
-        hook = home / ".claude/hooks/ISACloseGate.hook.ts"
+        bun, hook = self.programs("ISACloseGate.hook.ts")
         if not bun.exists() or not hook.exists():
             self.skipTest("installed LifeOS ISACloseGate and Bun are required")
 
@@ -95,9 +97,7 @@ class NativeISAGateTests(unittest.TestCase):
             self.assertIn("ISA CLOSE GAP", result["message"])
 
     def test_production_mutation_without_isa_edit_blocks_stop(self):
-        home = Path.home()
-        bun = home / ".bun/bin/bun"
-        hook = home / ".claude/hooks/StopGates.hook.ts"
+        bun, hook = self.programs("StopGates.hook.ts")
         if not bun.exists() or not hook.exists():
             self.skipTest("installed LifeOS StopGates and Bun are required")
 

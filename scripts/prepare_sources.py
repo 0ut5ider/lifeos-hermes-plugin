@@ -53,6 +53,10 @@ SOURCES = {
             "lifeos-system-surface.patch",
             "lifeos-version-drift-state.patch",
             "lifeos-work-learning-identity.patch",
+            "lifeos-completion-state.patch",
+            "lifeos-render-inference.patch",
+            "lifeos-feedback-admission.patch",
+            "lifeos-reminder-publication.patch",
         ),
     },
 }

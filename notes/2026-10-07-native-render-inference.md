@@ -1,0 +1,11 @@
+# Native render and inference measurements
+
+Eight simultaneous ISA renders use the same ISA.html.tmp destination. With a 100 ms pause after the actual temporary write, seven processes fail with ENOENT during rename. The existing atomicWriteText helper gives each process a separate temporary file. The passing controls also preserve an existing page after a kill before rename. A missing Bun executable previously records the file as rendered. Synchronous Bun spawning lets the handler record the actual spawn failure.
+
+The real private model returns one valid documentation correction in a JSON array. Inference.ts extracts and parses its inner object first. DocCrossRefIntegrity rejects that object because it expects an array. Complete-response JSON parsing must precede extraction. The correction also names Hooks/HookSystem.md relative to DOCUMENTATION. Validation and application incorrectly resolve it relative to LIFEOS. The reviewed inventory now binds the target and both operations resolve from DOCUMENTATION.
+
+Managed startup rejects a legitimate ISA containing Markdown frontmatter. A direct source read reports native validation rejection, and the new-fact validator reports frontmatter injection. The existing native validate_source_batch action explicitly permits document metadata. Using that source validator preserves metadata without weakening the separate fact-write boundary. Private spans, current source authority, and retired-claim checks still apply.
+
+The managed feedback hook reads previous response text without source admission. A rating of nine copies the previous synthetic private response into its preview with no current caller context. The feedback preview now applies the same source and destination admission as the format reminder.
+
+A missing gh executable leaves a delivered marker before any issue exists. A second identical request then skips routing. The registered native hook already runs asynchronously. Waiting for the actual gh exit inside that worker lets failed attempts retry and only publishes a delivered marker after success. The existing process lock serializes shared reminder state. A network failure after server-side creation can still leave an unknown external outcome; this is not an exactly-once external delivery guarantee.

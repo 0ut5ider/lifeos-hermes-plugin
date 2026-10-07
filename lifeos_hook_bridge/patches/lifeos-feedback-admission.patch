@@ -1,0 +1,60 @@
+diff --git a/LifeOS/install/hooks/SatisfactionCapture.hook.ts b/LifeOS/install/hooks/SatisfactionCapture.hook.ts
+--- a/LifeOS/install/hooks/SatisfactionCapture.hook.ts
++++ b/LifeOS/install/hooks/SatisfactionCapture.hook.ts
+@@ -36,7 +36,7 @@
+  * precision-first phrase matching only, verbatim complaint as the summary.
+  */
+ 
+-import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync } from 'fs';
++import { appendFileSync, mkdirSync, existsSync, readFileSync, writeFileSync, statSync } from 'fs';
+ import { join } from 'path';
+ 
+ import { getIdentity, getPrincipal, getPrincipalName } from './lib/identity';
+@@ -44,6 +44,7 @@
+ import { getISOTimestamp, getPSTComponents } from './lib/time';
+ import { captureFailure } from '../LIFEOS/TOOLS/FailureCapture';
+ import { addUpgrade } from '../LIFEOS/TOOLS/Upgrades';
++import { canReadMemorySources, filterMemorySource } from '../LIFEOS/TOOLS/lib/MemoryAccess';
+ import { addRatingPulse } from './lib/isa-utils';
+ import { homedir } from "node:os";
+ 
+@@ -113,7 +114,10 @@
+ 
+ function getLastResponse(): string {
+   try {
+-    if (existsSync(LAST_RESPONSE_CACHE)) return readFileSync(LAST_RESPONSE_CACHE, 'utf-8');
++    if (canReadMemorySources() && existsSync(LAST_RESPONSE_CACHE)) {
++      const content = readFileSync(LAST_RESPONSE_CACHE, 'utf-8');
++      return filterMemorySource(content, statSync(LAST_RESPONSE_CACHE).mtime.toISOString()) ?? '';
++    }
+   } catch {}
+   return '';
+ }
+@@ -235,12 +239,17 @@
+ const WORK_REFERENCE = /\b(you|your|it|code|banner|test|tests|build|hook|hooks|file|page|deploy|fix|script|output|response)\b/;
+ const WORK_PROFANITY = /\b(fucking|wtf|what the fuck)\b/;
+ 
++function feedbackProse(prompt: string): string {
++  return prompt.replace(/```[\s\S]*?```/g, " ").replace(/`[^`\n]*`/g, " ")
++    .split("\n").filter(line => !/^\s*>/.test(line)).join("\n");
++}
++
+ export function detectExplicitCorrection(prompt: string): string | null {
+   const trimmed = prompt.trim();
+   if (trimmed.length < 10) return null;        // too short to be a real complaint
+   if (trimmed.startsWith('/')) return null;    // slash command
+ 
+-  const norm = trimmed.toLowerCase().replace(/[‘’ʼ`]/g, "'");
++  const norm = feedbackProse(trimmed).toLowerCase().replace(/[‘’ʼ`]/g, "'");
+ 
+   // Unambiguous correction opener
+   if (/^no[,.]/.test(norm) || /^nope\b/.test(norm)) return trimmed;
+@@ -278,7 +287,7 @@
+   const trimmed = prompt.trim();
+   if (trimmed.length < 15) return null;      // too short to carry a real rule
+   if (trimmed.startsWith('/')) return null;  // slash command
+-  const norm = trimmed.toLowerCase().replace(/[‘’ʼ`]/g, "'");
++  const norm = feedbackProse(trimmed).toLowerCase().replace(/[‘’ʼ`]/g, "'");
+   for (const re of DIRECTIVE_PATTERNS) {
+     if (re.test(norm)) return trimmed;
+   }

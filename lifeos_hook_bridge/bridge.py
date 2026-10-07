@@ -207,7 +207,8 @@ def _native_post_hook(command: str, root: Path) -> str:
     path = Path(token).expanduser().resolve()
     for name in ("ISASync", "ISAStaleWriteGuard", "PostToolObserver", "LoopDetector",
                  "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet", "AgentInvocation", "TimeContext",
-                 "WorkCompletionLearning", "SessionCleanup", "LastResponseCache"):
+                 "WorkCompletionLearning", "SessionCleanup", "LastResponseCache", "MemoryReviewFire",
+                 "SatisfactionCapture", "SpendAuditor", "ReminderRouter"):
         if path == (root / "hooks" / (name + ".hook.ts")).resolve():
             return name
     return ""
@@ -215,9 +216,15 @@ def _native_post_hook(command: str, root: Path) -> str:
 
 def _native_state_key(command: str, root: Path, event: str, session_id: str) -> str | None:
     native = _native_post_hook(command, root)
+    if native == "MemoryReviewFire":
+        return "global-memory-review"
+    if native == "SpendAuditor":
+        return "global-spend-audit"
+    if native == "ReminderRouter":
+        return "global-reminder-router"
     if native == "AgentInvocation":
         return "global-agent-invocations"
-    if native in {"WorkCompletionLearning", "SessionCleanup"}:
+    if native in {"WorkCompletionLearning", "SessionCleanup", "SatisfactionCapture"}:
         return "global-work-lifecycle"
     if event in {"PostToolUse", "PostToolUseFailure"} and native:
         return session_id

@@ -1,0 +1,29 @@
+test_complaint_without_previous_context_does_not_capture_a_failure (test_native_feedback.NativeFeedbackTests.test_complaint_without_previous_context_does_not_capture_a_failure) ... ok
+test_directive_capture_deduplicates_and_code_quotes_do_not_create_upgrades (test_native_feedback.NativeFeedbackTests.test_directive_capture_deduplicates_and_code_quotes_do_not_create_upgrades) ... FAIL
+test_explicit_praise_numeric_work_and_system_exclusions_keep_real_rating_pulses (test_native_feedback.NativeFeedbackTests.test_explicit_praise_numeric_work_and_system_exclusions_keep_real_rating_pulses) ... ok
+test_kill_after_actual_rating_append_retains_the_complete_row (test_native_feedback.NativeFeedbackTests.test_kill_after_actual_rating_append_retains_the_complete_row) ... ok
+test_low_rating_learning_uses_actual_prior_response_and_active_isa (test_native_feedback.NativeFeedbackTests.test_low_rating_learning_uses_actual_prior_response_and_active_isa) ... FAIL
+test_rating_write_failure_preserves_existing_state_and_reports_the_actual_error (test_native_feedback.NativeFeedbackTests.test_rating_write_failure_preserves_existing_state_and_reports_the_actual_error) ... ok
+
+======================================================================
+FAIL: test_directive_capture_deduplicates_and_code_quotes_do_not_create_upgrades (test_native_feedback.NativeFeedbackTests.test_directive_capture_deduplicates_and_code_quotes_do_not_create_upgrades)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_feedback.py", line 54, in test_directive_capture_deduplicates_and_code_quotes_do_not_create_upgrades
+    self.assertNotIn('Standing directive',result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Standing directive' unexpectedly found in '[SatisfactionCapture] Hook started\n[SatisfactionCapture] Standing directive → upgrade record 20261007-050241_from-now-on-always-include-synthetic-test-results_400321e663f0185a\n'
+
+======================================================================
+FAIL: test_low_rating_learning_uses_actual_prior_response_and_active_isa (test_native_feedback.NativeFeedbackTests.test_low_rating_learning_uses_actual_prior_response_and_active_isa)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_feedback.py", line 80, in test_low_rating_learning_uses_actual_prior_response_and_active_isa
+    self.assertIn('Wrote explicit rating 4',result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'Wrote explicit rating 4' not found in '[SatisfactionCapture] Hook started\n'
+
+----------------------------------------------------------------------
+Ran 6 tests in 1.256s
+
+FAILED (failures=2)
