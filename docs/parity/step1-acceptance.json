@@ -1544,7 +1544,7 @@
       "registrations": [
         "UserPromptSubmit.8.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "time-context-01",
@@ -1569,8 +1569,17 @@
         {
           "id": "time-context-03",
           "expected": "Interruption and synthetic managed source preserve admission and delivery policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/managed-clock-controls/tests.txt",
+            "docs/verification/2026-10-07-step1/managed-clock-controls/README.md",
+            "docs/verification/2026-10-07-step1/managed-clock-controls/source-identity.json",
+            "tests/test_async_native_delivery.py",
+            "tests/test_memory_delegation.py",
+            "tests/test_memory_native.py",
+            "lifeos_hook_bridge/bridge.py",
+            "lifeos_hook_bridge/bin/hook_runner.py"
+          ]
         }
       ],
       "release_acceptance": false

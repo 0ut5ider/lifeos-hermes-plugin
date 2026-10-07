@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 78 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 79 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -268,7 +268,7 @@ Registrations: UserPromptSubmit.8.1.
 
 - [x] `time-context-01`: Valid UTC, owner timezone, and invalid timezone follow the clock contract.
 - [x] `time-context-02`: Pinned asynchronous output reaches the next turn without duplicated stale clock context.
-- [ ] `time-context-03`: Interruption and synthetic managed source preserve admission and delivery policy.
+- [x] `time-context-03`: Interruption and synthetic managed source preserve admission and delivery policy.
 
 ### model-rung (package 6)
 
