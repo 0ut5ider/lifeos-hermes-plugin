@@ -253,3 +253,5 @@ Two [agent-start controls](docs/verification/2026-10-06-paired-agent-invocation/
 The LifeOS mount selects `file_tools.patch_format: v4a` when no explicit file capability exists. This setting exposes Hermes batch patch mode to the selected private model. An explicit `file_tools.patch_format` value stays unchanged. The setting does not change the model or effort mapping.
 
 ISA post hooks record the final file view after synchronization completes. The system-change line uses the latest observed criterion detail during the turn. These controls preserve independent hook concurrency and configured output order.
+
+Recognized native post-hook state updates for one session use private advisory locks. Parallel callbacks retain complete observer history. Other sessions and unrelated hook programs can proceed independently. The operating system releases held locks after interruption. [Observer, audit, and task controls](docs/verification/2026-10-06-step1/observer-audit-controls/README.md) retain the actual process and dispatcher results.

@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
 import unittest
@@ -72,6 +73,26 @@ class NativeObserverBranchesTests(unittest.TestCase):
             self.assertEqual(sum(row['failed'] for row in state['window']), 3)
         with ThreadPoolExecutor(max_workers=4) as workers:
             list(workers.map(check, range(4)))
+
+    def test_same_session_parallel_calls_preserve_all_observer_history(self):
+        settings = self.root / 'settings.json'
+        settings.write_text(json.dumps({'hooks': {'PostToolUse': [{'hooks': [
+            {'type': 'command', 'command': 'bun ' + str(self.source / 'hooks/PostToolObserver.hook.ts')}]}]}}))
+        (self.root / 'hooks').symlink_to(self.source / 'hooks', target_is_directory=True)
+        bridge = HookBridge(settings, self.root, lifeos_home=self.home)
+        bridge.environment.update(self.env)
+        count = 16
+        try:
+            with ThreadPoolExecutor(max_workers=8) as workers:
+                outputs = list(workers.map(lambda index: bridge.post_tool_call('terminal', {'command': 'true #' + str(index)},
+                    '{}', session_id='shared', tool_call_id='shared-' + str(index)), range(count)))
+            state = json.loads((self.lifeos / 'MEMORY/STATE/loop-detector/shared.json').read_text())
+            self.assertEqual(state['seq'], count, {'expected': count, 'actual': state['seq'], 'window': len(state['window'])})
+            self.assertEqual(len(state['window']), count)
+            self.assertEqual(len({row['sig'] for row in state['window']}), count)
+            self.assertFalse(any(output and '[LOOP DETECTED]' in output for output in outputs))
+        finally:
+            bridge.close()
 
     def test_system_surface_reads_actual_isa_and_preserves_other_session(self):
         isa = self.home / 'project/ISA.md'
@@ -142,3 +163,42 @@ class NativeObserverBranchesTests(unittest.TestCase):
         self.assertEqual(len(rows), count)
         self.assertEqual({row['session_id'] for row in rows}, {'audit-' + str(i) for i in range(count)})
         self.assertTrue(all(row['ground_truth']['exit_code'] == 0 for row in rows))
+
+    def test_detached_audit_rows_survive_abrupt_parent_death(self):
+        hook = self.source / 'hooks/EventLogger.hook.ts'
+        self.settings.write_text(json.dumps({'hooks': {'PostToolUse': [{'hooks': [
+            {'type': 'command', 'command': 'bun ' + str(hook), 'async': True}]}]}}))
+        marker = self.home / 'queued'
+        code = ('import json,sys,time\nfrom pathlib import Path\nfrom lifeos_hook_bridge.bridge import HookBridge\n'
+                'root=Path(sys.argv[1])\nbridge=HookBridge(root/"settings.json",root,lifeos_home=root.parent)\n'
+                'for index in range(24):\n'
+                ' bridge.post_tool_call("terminal",{"command":"true #"+str(index)},'
+                'json.dumps({"output":"","exit_code":0}),session_id="killed-"+str(index),tool_call_id="call-"+str(index))\n'
+                'Path(sys.argv[2]).touch()\ntime.sleep(30)\n')
+        env = {**self.env, 'PYTHONPATH': str(Path(__file__).resolve().parents[1])}
+        env.pop('XDG_RUNTIME_DIR', None)
+        process = subprocess.Popen([sys.executable, '-c', code, str(self.root), str(marker)],
+                                   env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        try:
+            deadline = time.monotonic() + 10
+            while not marker.exists() and process.poll() is None and time.monotonic() < deadline:
+                time.sleep(.02)
+            self.assertTrue(marker.exists())
+            process.kill()
+            out, err = process.communicate(timeout=5)
+            self.assertEqual(out, b'')
+            self.assertEqual(err, b'')
+            target = self.lifeos / 'MEMORY/OBSERVABILITY/tool-activity.jsonl'
+            deadline = time.monotonic() + 10
+            while time.monotonic() < deadline:
+                if target.exists() and len(target.read_text().splitlines()) == 24:
+                    break
+                time.sleep(.05)
+            rows = [json.loads(line) for line in target.read_text().splitlines()]
+            self.assertEqual({row['session_id'] for row in rows}, {'killed-' + str(i) for i in range(24)})
+            self.assertEqual(len(rows), 24)
+            self.assertTrue(all(row['ground_truth']['exit_code'] == 0 for row in rows))
+        finally:
+            if process.poll() is None:
+                process.kill()
+            process.communicate(timeout=5)

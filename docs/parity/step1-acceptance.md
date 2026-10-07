@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 50 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 57 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -147,17 +147,17 @@ Registrations: PostToolUse.8.7, PostToolUse.9.7, PostToolUse.10.7.
 
 Registrations: PostToolUse.11.1, PostToolUseFailure.1.1, ConfigChange.1.1, StopFailure.1.1.
 
-- [ ] `event-audit-01`: Skill execution, file activity, heartbeat, and work reconciliation record actual tool facts.
-- [ ] `event-audit-02`: Failure rows for shell, file, MCP, and terminal model errors retain the actual error and truncation policy.
+- [x] `event-audit-01`: Skill execution, file activity, heartbeat, and work reconciliation record actual tool facts.
+- [x] `event-audit-02`: Failure rows for shell, file, MCP, and terminal model errors retain the actual error and truncation policy.
 - [x] `event-audit-03`: External configuration first observation, change, no change, deletion, and malformed source preserve source-specific audit state.
-- [ ] `event-audit-04`: Asynchronous logging during interruption and parallel activity preserves complete rows.
+- [x] `event-audit-04`: Asynchronous logging during interruption and parallel activity preserves complete rows.
 
 ### tool-observers (package 4)
 
 Registrations: PostToolUse.12.1, PostToolUse.12.2, PostToolUseFailure.3.1.
 
 - [x] `tool-observers-01`: Exact repeats through the full observer produce the expected alert.
-- [ ] `tool-observers-02`: Oscillation, repeated failure, cooldown, and parallel activity preserve loop history and thresholds.
+- [x] `tool-observers-02`: Oscillation, repeated failure, cooldown, and parallel activity preserve loop history and thresholds.
 - [x] `tool-observers-03`: System-change observations use actual tool results and transcript state.
 
 ### work-learning (package 6)
@@ -282,9 +282,9 @@ Registrations: UserPromptSubmit.9.1.
 
 Registrations: TaskCreated.1.1.
 
-- [ ] `task-governance-01`: Allowed and rejected task descriptions preserve quality rules.
-- [ ] `task-governance-02`: The 50-task boundary and kanban task kinds follow their distinct rules.
-- [ ] `task-governance-03`: Delegated child tasks use the correct session count and governance.
+- [x] `task-governance-01`: Allowed and rejected task descriptions preserve quality rules.
+- [x] `task-governance-02`: The 50-task boundary and kanban task kinds follow their distinct rules.
+- [x] `task-governance-03`: Delegated child tasks use the correct session count and governance.
 
 ### hook-healer (package 6)
 

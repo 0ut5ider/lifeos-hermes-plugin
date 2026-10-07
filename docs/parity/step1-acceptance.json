@@ -890,19 +890,53 @@
         "ConfigChange.1.1",
         "StopFailure.1.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "event-audit-01",
           "expected": "Skill execution, file activity, heartbeat, and work reconciliation record actual tool facts.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         },
         {
           "id": "event-audit-02",
           "expected": "Failure rows for shell, file, MCP, and terminal model errors retain the actual error and truncation policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         },
         {
           "id": "event-audit-03",
@@ -927,8 +961,25 @@
         {
           "id": "event-audit-04",
           "expected": "Asynchronous logging during interruption and parallel activity preserves complete rows.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -941,7 +992,7 @@
         "PostToolUse.12.2",
         "PostToolUseFailure.3.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "tool-observers-01",
@@ -966,8 +1017,25 @@
         {
           "id": "tool-observers-02",
           "expected": "Oscillation, repeated failure, cooldown, and parallel activity preserve loop history and thresholds.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         },
         {
           "id": "tool-observers-03",
@@ -1423,25 +1491,76 @@
       "registrations": [
         "TaskCreated.1.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "task-governance-01",
           "expected": "Allowed and rejected task descriptions preserve quality rules.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         },
         {
           "id": "task-governance-02",
           "expected": "The 50-task boundary and kanban task kinds follow their distinct rules.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         },
         {
           "id": "task-governance-03",
           "expected": "Delegated child tasks use the correct session count and governance.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
         }
       ],
       "release_acceptance": false

@@ -189,7 +189,7 @@ def _is_native_version_drift(command: str, root: Path) -> bool:
     return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
 
 
-def _isa_post_hook(command: str, root: Path) -> str:
+def _native_post_hook(command: str, root: Path) -> str:
     try:
         tokens = shlex.split(command)
     except ValueError:
@@ -199,7 +199,8 @@ def _isa_post_hook(command: str, root: Path) -> str:
     if len(tokens) != 1:
         return ""
     path = Path(tokens[0].replace("${HOME}", "~").replace("$HOME", "~")).expanduser().resolve()
-    for name in ("ISASync", "ISAStaleWriteGuard"):
+    for name in ("ISASync", "ISAStaleWriteGuard", "PostToolObserver", "LoopDetector",
+                 "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet"):
         if path == (root / "hooks" / (name + ".hook.ts")).resolve():
             return name
     return ""
@@ -1373,7 +1374,7 @@ class HookBridge:
         if not sync_hooks:
             return outcomes
         roles = [
-            _isa_post_hook(arguments[1], self.root)
+            _native_post_hook(arguments[1], self.root)
             if event == "PostToolUse" and callback == self._run_command else ""
             for callback, arguments in sync_hooks
         ]
@@ -1401,11 +1402,17 @@ class HookBridge:
         environment: dict[str, str], process_cwd: str,
     ) -> subprocess.CompletedProcess[str] | None:
         try:
-            process = subprocess.run(
-                ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
-                capture_output=True, timeout=timeout, cwd=process_cwd,
-                env=environment, check=False,
-            )
+            from contextlib import nullcontext
+            from .hook_state import session_state
+            lock = (session_state(self.root, payload.get("session_id", ""))
+                    if event in {"PostToolUse", "PostToolUseFailure"}
+                    and _native_post_hook(command, self.root) else nullcontext())
+            with lock:
+                process = subprocess.run(
+                    ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
+                    capture_output=True, timeout=timeout, cwd=process_cwd,
+                    env=environment, check=False,
+                )
         except (OSError, subprocess.TimeoutExpired) as error:
             LOG.error("LifeOS %s hook failed to execute: %s", event, error)
             return None

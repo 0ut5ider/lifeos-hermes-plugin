@@ -1,0 +1,80 @@
+{
+  "activity": [
+    {
+      "timestamp": "2026-10-07T03:02:35+00:00",
+      "event": "tool_use",
+      "source": "tool-activity",
+      "type": "tool_use",
+      "session_id": "audit",
+      "tool_name": "Skill",
+      "tool_input_preview": "{\"skill\":\"audit-fixture\"}"
+    },
+    {
+      "timestamp": "2026-10-07T03:02:36+00:00",
+      "event": "tool_use",
+      "source": "tool-activity",
+      "type": "tool_use",
+      "session_id": "audit",
+      "tool_name": "Write",
+      "tool_input_preview": "{\"content\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...",
+      "ground_truth": {
+        "file_path": "/home/outsider/.cache/lhc6/audit-controls-0jymd9z6/project/file.txt",
+        "content_preview": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...[truncated]",
+        "content_bytes": 600
+      }
+    },
+    {
+      "timestamp": "2026-10-07T03:02:36+00:00",
+      "event": "tool_use",
+      "source": "tool-activity",
+      "type": "tool_use",
+      "session_id": "audit",
+      "tool_name": "Bash",
+      "tool_input_preview": "{\"command\":\"sed -i s/observe/build/ /home/outsider/.cache/lhc6/audit-controls-0jymd9z6/.claude/LIFEOS/MEMORY/WORK/audit/ISA.md\"}",
+      "ground_truth": {
+        "command": "sed -i s/observe/build/ /home/outsider/.cache/lhc6/audit-controls-0jymd9z6/.claude/LIFEOS/MEMORY/WORK/audit/ISA.md",
+        "combined_output_preview": "",
+        "combined_output_bytes": 0,
+        "exit_code": 0
+      }
+    }
+  ],
+  "skills": [
+    {
+      "ts": "2026-10-07T03:02:35Z",
+      "skill": "audit-fixture",
+      "args": "",
+      "input": "",
+      "source": "hook"
+    }
+  ],
+  "failures": [
+    {
+      "timestamp": "2026-10-07T03:02:36+00:00",
+      "event": "tool_failure",
+      "session_id": "audit",
+      "tool_name": "Bash",
+      "error": "Exit code 1",
+      "tool_input_preview": "{\"command\":\"false\"}"
+    },
+    {
+      "timestamp": "2026-10-07T03:02:36+00:00",
+      "event": "tool_failure",
+      "session_id": "audit",
+      "tool_name": "Write",
+      "error": "Failed to write file: /usr/bin/bash: line 5: /home/outsider/.cache/lhc6/audit-controls-0jymd9z6/locked/.hermes-tmp.2761746: Permission denied\n",
+      "tool_input_preview": "{\"content\":\"DENIED\",\"file_path\":\"/home/outsider/.cache/lhc6/audit-controls-0jymd9z6/locked/failure.txt\"}"
+    },
+    {
+      "timestamp": "2026-10-07T03:02:37+00:00",
+      "event": "tool_failure",
+      "session_id": "audit",
+      "tool_name": "mcp__audit__ping",
+      "error": "MCP call failed: MCPError: PAIR_ACTUAL_MCP_FAILURE",
+      "tool_input_preview": "{}"
+    }
+  ],
+  "actual_reconciled_phase": "build",
+  "heartbeat_advanced": true,
+  "actual_failed_file_retained": true
+}

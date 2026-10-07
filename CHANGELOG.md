@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Coordinate native post-hook state writes for parallel calls in one session.
+- Verify detached audit rows after parent interruption and real task-board governance.
+
 - Record ISA views after synchronization finishes its resume write.
 - Render the latest observed ISA criterion detail in the system-change line.
 
