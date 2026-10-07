@@ -20,11 +20,11 @@ These preparation checks do not close `release-adapter-01`. Managed memory owner
 
 ## Live acceptance
 
-Adrian confirms availability for the live tests. The first request uses marker `D252-ANSWER` and asks the model to call `clarify` with choices `D252-A` and `D252-B`. The actual tool result returns `D252-A`, and the delivered reply reports `D252-A`. Confirm which option Adrian clicks before claiming that the returned option matches his selection. Subsequent requests must verify a genuine timeout and cancellation through Discord.
+Adrian confirms availability for the live tests. The first request uses marker `D252-ANSWER` and asks the model to call `clarify` with choices `D252-A` and `D252-B`. The actual tool result returns `D252-A`, and the delivered reply reports `D252-A`. Adrian confirms that he clicks `D252-A`. The returned option matches his selection. Question delivery and answer return pass. Subsequent requests must verify a genuine timeout and cancellation through Discord.
 
 The [answer evidence](answer.json) records actual question delivery and answer return. The request arrives at 16:37:21 UTC. The bot posts the question at 16:37:36 UTC. The recorded tool result returns `D252-A` at 16:37:57 UTC. The bot delivers its matching report at 16:38:01 UTC. Both native question hooks complete with exit code 0. The capture contains 487 events with no reported losses, capture gaps, incomplete invocations, or integrity issues at this snapshot. Its 120 registration identities represent observed configuration versions, not 120 installed hooks.
 
-The selected-option confirmation, timeout, and cancellation remain pending. The acceptance timeout is temporarily 120 seconds. Restore 3600 seconds after the tests. The timeout request uses marker `D252-TIMEOUT`; Adrian must leave the question unanswered until the tool resolves.
+Timeout and cancellation remain pending. The acceptance timeout is temporarily 120 seconds. Restore 3600 seconds after the tests. The timeout request uses marker `D252-TIMEOUT`; Adrian must leave the question unanswered until the tool resolves.
 
 ## Evidence and recovery
 
