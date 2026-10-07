@@ -2,6 +2,8 @@
 
 Date: 2026-10-04. Adrian authorizes continuing the complete plan before using the integration. Production receives one tested release. The active `.212` profiles retain the October 4 tested code while candidate work proceeds in isolated fixtures.
 
+On October 7, Adrian confirms that `.212` will be decommissioned. `192.168.8.252` is the sole future development server and the final deployment target. The existing Discord bot moves permanently to `.252` for step 1 acceptance. Disable the source gateway before starting the destination gateway. Keep recovery files on `.252`. The fresh-start choice, Adrian and Cerebo identity, existing tier mapping, and remaining activation gates still apply. Do not import source conversations or personal memory during the bot move.
+
 The four LifeOS tiers retain private FlashNext and the existing model-dependent effort mapping: Haiku low, Sonnet medium, Opus xhigh, and Fable xhigh. Adrian directs this mapping to remain unchanged on October 5. Voice is the only selected optional integration. It includes Discord voice input and spoken replies. Adrian puts voice last among feature work, after core LifeOS functionality. GitHub, Cloudflare, Claude subscription quota reporting, and remote project enrollment are outside the final account configuration. Existing supported remote behavior remains part of the compatibility checks.
 
 On October 5, Adrian selects a fresh start on `.212` without importing existing personal data. The deployment selects no Hermes memory, cross-server archive, or conversation history for import. Preserve existing Hermes files and any existing LifeOS data. This choice does not authorize deletion or bypass memory activation checks. Prepare the owner identity, fresh-start preview, and return workflow for review. Supported optional migration remains product work for established profiles.
@@ -30,7 +32,7 @@ The October 4 [startup controls](verification/2026-10-04-paired-startup-effects/
 
 ## Execution and evidence
 
-Adrian directs work to continue through steps 2 to 7 on October 4. On October 5, he changes the immediate order to the remaining step 1 hook checks, then steps 3, 4, and 5. Resume the remaining memory activation gates before enabling ownership or memory-writing jobs. Voice remains the last feature workstream. Verify the combined package before deployment to `.212`.
+Adrian directs work to continue through steps 2 to 7 on October 4. On October 5, he changes the immediate order to the remaining step 1 hook checks, then steps 3, 4, and 5. Resume the remaining memory activation gates before enabling ownership or memory-writing jobs. Voice remains the last feature workstream. Verify the combined package before final activation on `.252`.
 
 Adrian authorizes using existing data from `.211` and `.213` to implement and test import and reverse migration. Use isolated destinations and preserve source data. This testing authorization does not change the fresh-start selection for `.212`. Shared Cortex records still use the memory MCP tools. If that connector is unavailable, report the failure and continue independent work.
 
@@ -46,4 +48,4 @@ Adrian provides `root@192.168.8.101` for disposable guests on October 5. CT `100
 
 The [selected hook completion report](verification/2026-10-06-hook-completion/README.md) records 118 equal cases across all 74 registrations. The original 15 gaps have selected passing effects. Cases for 65 registrations use native Claude Code events. The nine web and MultiEdit registrations use actual Hermes tools with direct native handler comparisons. Full handler branches remain open; the completion gate still refuses a universal parity claim.
 
-Development now runs on `192.168.8.252` in isolated accounts. The Discord gateway remains on `.212`. Final gateway migration targets `.252` after combined release validation. The real question queue and session state pass without Discord. Migrate the gateway configuration and verify actual Discord question and answer delivery during final combined acceptance. Do not start a second production bot session during development. Keep private FlashNext tier selection unchanged. Voice input and spoken replies remain the last feature workstream.
+Development now runs on `192.168.8.252` in isolated accounts. The October 7 instruction advances permanent Discord gateway migration to the current step 1 acceptance. The real question queue and session state pass without Discord. Migrate the gateway configuration and verify actual Discord question and answer delivery. Run one gateway with the existing bot token. Keep private FlashNext tier selection unchanged. Voice input and spoken replies remain the last feature workstream.

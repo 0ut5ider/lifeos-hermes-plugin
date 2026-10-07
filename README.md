@@ -248,7 +248,7 @@ from a reviewed full commit ID as shown above. Server deployment follows the
 
 Development evidence is collected with an [external recorder](development/README.md). It is excluded from the installed plugin. Captured prompts, tool data, and hook streams stay in a private directory outside this repository.
 
-The recorder is active on `.212`. Its [deployment record](notes/2026-09-30-development-capture-212.md) gives verified boundaries, coverage limits, private paths, and removal steps. The `.212` bot accepts ordinary messages in its dedicated `#hermes-212` channel. The [completed logging review](notes/2026-09-30-logging-review-fixes.md) records verified corrections and the updated deployment. No scheduled analysis or automatic log deletion is configured.
+The recorder is active on `.252` after the [permanent Discord cutover](docs/discord-setup.md). The bot accepts ordinary messages in the existing `#hermes-212` channel. The [original deployment record](notes/2026-09-30-development-capture-212.md) gives historical boundaries and coverage limits. The [completed logging review](notes/2026-09-30-logging-review-fixes.md) records verified corrections. The new capture stays private on `.252`. No scheduled analysis or automatic log deletion is configured.
 
 ## Reminder routing and privacy
 
