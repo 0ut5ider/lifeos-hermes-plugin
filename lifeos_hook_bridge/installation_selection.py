@@ -7,6 +7,8 @@ import os
 from pathlib import Path
 
 from .lifeos_installation import SETTING, account_home, clear, publish, selection
+from .installation_lock import installation_lock
+from .memory_service import MemoryConfiguration
 from .memory_transaction import publish as publish_file
 
 STATES = ('prepared', 'stopped', 'published', 'mounting', 'mounted', 'applied', 'rolling_back', 'rolled_back')
@@ -40,6 +42,41 @@ def selection_request(job: Path, profile: Path) -> dict:
     request = json.loads(path.read_text(encoding='utf-8'))
     if (not isinstance(request, dict) or request.get('profile') != str(profile)):
         raise SelectionError('The selection job belongs to another Hermes profile')
+    return request
+
+
+def account_selection_lock(profile: Path, *, wait: bool = False):
+    """Coordinate selection admission and shared service changes across account profiles."""
+    state = account_home(profile) / '.local/state/lifeos-hook-bridge/selection-coordination'
+    state.mkdir(parents=True, exist_ok=True, mode=0o700)
+    return installation_lock(state, wait=wait)
+
+
+def selection_authority(job: Path, profile: Path, account: str, action: str) -> dict:
+    request = selection_request(job, profile)
+    if not isinstance(account, str) or not account:
+        raise SelectionError('The selection worker needs a verified owner account')
+    configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
+    config = configuration.load()
+    configuration.check_owner(config, account)
+    if action == 'recover':
+        journal = json.loads((job / 'transaction/journal.json').read_text(encoding='utf-8'))
+        if not isinstance(journal, dict) or journal.get('profile') != str(profile):
+            raise SelectionError('The selection journal belongs to another Hermes profile')
+        try:
+            previous, target = journal['previous'], journal['target']
+            previous_home = Path(previous['home'])
+            target_home = account_home(profile) if target['home'] is None else Path(target['home'])
+            roots = {str(previous_home / '.claude'), str(target_home / '.claude')}
+            if (journal.get('version') != 1 or journal.get('state') not in
+                    {'prepared', 'stopped', 'published', 'mounting', 'mounted', 'rolling_back'}
+                    or not previous_home.is_absolute() or not target_home.is_absolute()
+                    or previous.get('root') not in {None, str(previous_home / '.claude')}
+                    or target['home'] != request['target_home']
+                    or config['root'] not in roots or str(selection(profile).installed) not in roots):
+                raise SelectionError('The selection recovery roots disagree with its journal')
+        except (KeyError, TypeError) as error:
+            raise SelectionError('The selection recovery journal is invalid') from error
     return request
 
 

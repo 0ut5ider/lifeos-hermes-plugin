@@ -4,6 +4,8 @@ Date: 2026-10-07. Branch: `feature/selection-recovery-fixes`. Base: merged PR3, 
 
 The post-merge review finds two defects. A process can die after publishing a target mount but before recording its completion. Recovery then restores the previous selection without restoring its mounted files. The dashboard can also launch another profile's recovery job after authorizing only its current profile's owner.
 
+The subsequent PR #4 review identifies three adjacent failures: completed-target owner-edit loss, recovery rejection by a running dashboard, and concurrent cross-profile admission. The [focused review corrections](../2026-10-07-selection-review-fixes/README.md) record their fixes and new regression evidence. The results below describe the initial correction, not those additional checks.
+
 ## Corrections
 
 The selection transaction records mount intent before publication. Rollback recovers a pending target mount before changing the selected home. It records that recovery so a retry does not recover the wrong mount after the previous home takes effect. It restores the previous mount and checks the selection and memory root before restarting services. Native Mount verifies the published files and Hermes configuration. Conflicting later edits prevent restoration and service restart.

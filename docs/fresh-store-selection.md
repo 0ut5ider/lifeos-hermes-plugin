@@ -74,6 +74,12 @@ The previous mount validates its native output and Hermes configuration. Selecti
 
 The dashboard selects jobs only for its physical Hermes profile. It checks the profile binding and current owner before launching recovery. The detached worker receives the verified account through `--account` and the invoking profile through `HERMES_HOME`. It checks both the request and recovery journal against that profile and rechecks the current owner before accessing services.
 
-Selection admission still checks pending jobs across the operating-system account because gateway and Pulse services are shared. Another profile's pending job requires that profile's owner to complete or recover it. The dashboard does not display or recover that job as its own.
+Selection admission holds an account lock across the pending-job scan, request publication, and launch because gateway and Pulse services are shared. Recovery admission holds the same lock. Detached selection workers wait for this account lock before accessing services and hold it through the transaction. Each path acquires the profile lock before the account lock. Another profile's pending job requires that profile's owner to complete or recover it. The dashboard does not display or recover that job as its own.
+
+Selection rollback checks a completed target mount against its recorded file fingerprints. A later edit blocks rollback before restoring the selection or restarting services. An explicit mount still accepts current files as its starting state.
+
+The dashboard and worker share a selection authority check. Recovery checks the current owner, request profile, journal profile, request target, selected root, and memory root. The roots must belong to the previous or target installation recorded in the interrupted journal. Recovery can proceed when the running dashboard retains its startup root. Ordinary memory requests keep their installed-root check.
 
 The [recovery regression evidence](verification/2026-10-07-selection-recovery/README.md) covers the original failures, native mounting with real process death, retry during rollback, later-edit preservation, and owner/profile refusal.
+
+The [focused review correction evidence](verification/2026-10-07-selection-review-fixes/README.md) covers committed-target owner edits, recovery through a running dashboard after root publication, and concurrent account admission.

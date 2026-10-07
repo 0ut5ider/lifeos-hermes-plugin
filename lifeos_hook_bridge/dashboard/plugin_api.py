@@ -831,8 +831,9 @@ def get_installation_selection(account: str = Depends(_memory_account)):
 def _launch_selection(job: Path, action: str, account: str):
     from hermes_cli import _launchers
     module = install_module.memory_module('installation_selection')
-    module.selection_request(job, HERMES_HOME)
-    _memory_preferences()._configuration(account=account)
+    module.selection_authority(job, HERMES_HOME, account, action)
+    if action != 'recover':
+        _memory_preferences()._configuration(account=account)
     unit = f'lifeos-bridge-selection-{uuid4().hex}'
     status = {'state': 'queued' if action == 'select' else 'recovering', 'unit': unit}
     (job / 'status.json').write_text(json.dumps(status) + '\n')
@@ -849,6 +850,18 @@ def _launch_selection(job: Path, action: str, account: str):
 
 
 def _queue_selection(account: str, store: str | None):
+    return _selection_action(lambda: _create_selection(account, store))
+
+
+def _selection_action(action):
+    try:
+        with install_module.memory_module('installation_selection').account_selection_lock(HERMES_HOME):
+            return action()
+    except (OSError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+def _create_selection(account: str, store: str | None):
     for job in _selection_jobs():
         if _selection_job_status(job)['state'] in {'queued', 'running', 'recovering', 'interrupted', 'rolling_back'}:
             raise HTTPException(status_code=409,
@@ -908,14 +921,13 @@ async def recover_installation_selection(request: Request, account: str = Depend
         if status['state'] != 'interrupted':
             raise HTTPException(status_code=409, detail='There is no interrupted LifeOS selection to recover')
         try:
-            _memory_preferences()._configuration(account=account)
             _launch_selection(Path(status['job']), 'recover', account)
         except PermissionError as error:
             raise HTTPException(status_code=403, detail='The installation owner must recover the selection') from error
         except (IncompatibleLifeOS, OSError, ValueError, RuntimeError) as error:
             raise HTTPException(status_code=409, detail=str(error)) from error
         return {'state': 'recovering', 'job': status['job']}
-    return await run_in_threadpool(_installation_action, recover)
+    return await run_in_threadpool(_installation_action, lambda: _selection_action(recover))
 
 
 @router.get("/installation/host-patch")

@@ -47,12 +47,18 @@ class SelectionProfileIsolationTests(unittest.TestCase):
         self.api = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(self.api)
 
-    def job(self, profile, name, state='interrupted'):
+    def job(self, profile, name, state='interrupted', *, journal=True):
         job = self.api.SELECTION_ROOT / name
         job.mkdir(parents=True, mode=0o700)
         (job / 'request.json').write_text(json.dumps({'profile': str(profile), 'target_home': None,
             'candidate': None, 'hermes_command': '/synthetic/hermes'}))
         (job / 'status.json').write_text(json.dumps({'state': state}))
+        if journal:
+            (job / 'transaction').mkdir()
+            (job / 'transaction/journal.json').write_text(json.dumps({'version': 1, 'profile': str(profile),
+                'state': 'published', 'previous': {'home': str(self.home), 'setting': None, 'configured': False,
+                    'root': str(self.home / '.claude')},
+                'target': {'home': None, 'workspace': str(self.home / 'HermesWorkspace')}}))
         return job
 
     def recover(self):
@@ -110,7 +116,6 @@ class SelectionProfileIsolationTests(unittest.TestCase):
 
     def test_worker_refuses_a_journal_bound_to_another_profile(self):
         own = self.job(self.b, 'selection-b')
-        (own / 'transaction').mkdir()
         (own / 'transaction/journal.json').write_text(json.dumps({'profile': str(self.a)}))
         self.worker_refuses(own, 'journal belongs to another Hermes profile')
 

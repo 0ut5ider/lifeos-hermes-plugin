@@ -1,0 +1,145 @@
+........................FFF.F..                               [100%]
+=================================== FAILURES ===================================
+_ SelectionRecoveryAdmissionTests.test_recovery_refuses_a_root_outside_the_interrupted_journal _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_recovery_refuses_a_root_outside_the_interrupted_journal>
+
+    def test_recovery_refuses_a_root_outside_the_interrupted_journal(self):
+>       self.interrupt_selection()
+
+tests/test_selection_recovery_admission.py:78: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_selection_recovery_admission.py:53: in interrupt_selection
+    self.assertEqual(result.returncode, 91, result.stdout + result.stderr)
+E   AssertionError: 1 != 91 : Traceback (most recent call last):
+E     File "<string>", line 16, in <module>
+E       module.select_home(job, profile=profile, target=target,
+E       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           mount=lambda installed, baseline: None, recover_mount=lambda installed: None,
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           verify=lambda: None, baseline_data=None)
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/installation_selection.py", line 96, in select_home
+E       job.mkdir(parents=True, mode=0o700)
+E       ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/usr/lib64/python3.14/pathlib/__init__.py", line 1011, in mkdir
+E       os.mkdir(self, mode)
+E       ~~~~~~~~^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/home/outsider/.cache/lhc6/tmpuc2gziuz/account/.local/state/lifeos-hook-bridge/selections/selection-own-interrupted/transaction'
+_ SelectionRecoveryAdmissionTests.test_recovery_still_refuses_a_revoked_owner_after_the_root_changes _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_recovery_still_refuses_a_revoked_owner_after_the_root_changes>
+
+    def test_recovery_still_refuses_a_revoked_owner_after_the_root_changes(self):
+>       job, _ = self.interrupt_selection()
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_selection_recovery_admission.py:68: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_selection_recovery_admission.py:53: in interrupt_selection
+    self.assertEqual(result.returncode, 91, result.stdout + result.stderr)
+E   AssertionError: 1 != 91 : Traceback (most recent call last):
+E     File "<string>", line 16, in <module>
+E       module.select_home(job, profile=profile, target=target,
+E       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           mount=lambda installed, baseline: None, recover_mount=lambda installed: None,
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           verify=lambda: None, baseline_data=None)
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/installation_selection.py", line 96, in select_home
+E       job.mkdir(parents=True, mode=0o700)
+E       ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/usr/lib64/python3.14/pathlib/__init__.py", line 1011, in mkdir
+E       os.mkdir(self, mode)
+E       ~~~~~~~~^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/home/outsider/.cache/lhc6/tmps4il7lz0/account/.local/state/lifeos-hook-bridge/selections/selection-own-interrupted/transaction'
+_ SelectionRecoveryAdmissionTests.test_running_dashboard_owner_can_recover_after_the_selected_root_changes _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_running_dashboard_owner_can_recover_after_the_selected_root_changes>
+
+    def test_running_dashboard_owner_can_recover_after_the_selected_root_changes(self):
+>       job, target = self.interrupt_selection()
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_selection_recovery_admission.py:59: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_selection_recovery_admission.py:53: in interrupt_selection
+    self.assertEqual(result.returncode, 91, result.stdout + result.stderr)
+E   AssertionError: 1 != 91 : Traceback (most recent call last):
+E     File "<string>", line 16, in <module>
+E       module.select_home(job, profile=profile, target=target,
+E       ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           mount=lambda installed, baseline: None, recover_mount=lambda installed: None,
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           verify=lambda: None, baseline_data=None)
+E           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/installation_selection.py", line 96, in select_home
+E       job.mkdir(parents=True, mode=0o700)
+E       ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/usr/lib64/python3.14/pathlib/__init__.py", line 1011, in mkdir
+E       os.mkdir(self, mode)
+E       ~~~~~~~~^^^^^^^^^^^^
+E   FileExistsError: [Errno 17] File exists: '/home/outsider/.cache/lhc6/tmpowycv7fk/account/.local/state/lifeos-hook-bridge/selections/selection-own-interrupted/transaction'
+_ SelectionRecoveryAdmissionTests.test_worker_waits_for_the_account_lock_before_accessing_services _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_worker_waits_for_the_account_lock_before_accessing_services>
+
+        def test_worker_waits_for_the_account_lock_before_accessing_services(self):
+            fixture = self.fixture
+            job = fixture.job(fixture.b, 'selection-worker', state='queued')
+            program = '''
+    import sys
+    from pathlib import Path
+    from lifeos_hook_bridge import selection_worker as worker
+    job, profile, marker = map(Path, sys.argv[1:4])
+    class Services:
+        def __init__(self, account): marker.write_text('services')
+        def stop(self): pass
+        def start(self): pass
+        def point_pulse(self, home): pass
+        def verify(self): pass
+    worker.SystemdServices = Services
+    worker._mount = lambda profile, request: lambda installed, baseline: None
+    print('ready', flush=True)
+    print(worker.run_selection_job(job, profile=profile, account=sys.argv[4])['state'], flush=True)
+    '''
+            marker = fixture.home / 'worker-services'
+            with installation_lock(fixture.home):
+                child = subprocess.Popen([sys.executable, '-c', program, str(job), str(fixture.b),
+                    str(marker), fixture.owner_b], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                self.addCleanup(self.finish, child)
+                self.assertTrue(select.select([child.stdout], [], [], 5)[0])
+                self.assertEqual(child.stdout.readline(), 'ready\n')
+                self.assertEqual(select.select([child.stdout], [], [], .3)[0], [])
+                self.assertFalse(marker.exists())
+            output, error = child.communicate(timeout=10)
+>           self.assertEqual(child.returncode, 0, output + error)
+E           AssertionError: 1 != 0 : Traceback (most recent call last):
+E             File "<string>", line 15, in <module>
+E               print(worker.run_selection_job(job, profile=profile, account=sys.argv[4])['state'], flush=True)
+E                     ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/selection_worker.py", line 157, in run_selection_job
+E               return select_home(snapshot, profile=profile, target=target, configuration=configuration,
+E                                  services=services, mount=mount, recover_mount=recover_mount,
+E                                  verify=services.verify, baseline_data=baseline)
+E             File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/installation_selection.py", line 96, in select_home
+E               job.mkdir(parents=True, mode=0o700)
+E               ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+E             File "/usr/lib64/python3.14/pathlib/__init__.py", line 1011, in mkdir
+E               os.mkdir(self, mode)
+E               ~~~~~~~~^^^^^^^^^^^^
+E           FileExistsError: [Errno 17] File exists: '/home/outsider/.cache/lhc6/tmpc_azrjd1/account/.local/state/lifeos-hook-bridge/selections/selection-worker/transaction'
+
+tests/test_selection_recovery_admission.py:176: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_recovery_refuses_a_root_outside_the_interrupted_journal
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_recovery_still_refuses_a_revoked_owner_after_the_root_changes
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_running_dashboard_owner_can_recover_after_the_selected_root_changes
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_worker_waits_for_the_account_lock_before_accessing_services
+4 failed, 27 passed, 11 subtests passed in 19.60s

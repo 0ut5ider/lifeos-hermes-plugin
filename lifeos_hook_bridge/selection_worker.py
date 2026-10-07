@@ -22,7 +22,8 @@ if not __package__:
 
 from . import program_lock
 from .installation_lock import installation_lock
-from .installation_selection import SelectionError, recover_selection, select_home, selection_request
+from .installation_selection import (SelectionError, account_selection_lock, recover_selection,
+                                     select_home, selection_authority)
 from .memory_administration import mount_environment
 from .memory_service import MemoryConfiguration
 from .mount_transaction import MountTransaction
@@ -116,10 +117,12 @@ def _baseline_data(candidate: Path | None, installed: Path) -> bytes | None:
         return path.read_bytes()
 
 
-def _recover_mount(installed: Path, profile: Path) -> None:
+def _recover_mount(installed: Path, profile: Path, *, check_completed: bool = True) -> None:
     transaction = MountTransaction(installed, profile, default_baseline_path(installed.parent))
     if transaction.status()['recovery_required']:
         transaction.recover()
+    if check_completed:
+        transaction.check_completed()
 
 
 def _mount(profile: Path, request: dict):
@@ -128,31 +131,19 @@ def _mount(profile: Path, request: dict):
 
     def mount(installed: Path, baseline_data: bytes | None) -> None:
         transaction = MountTransaction(installed, profile, default_baseline_path(installed.parent))
-        _recover_mount(installed, profile)
+        _recover_mount(installed, profile, check_completed=False)
         environment = mount_environment(installed, profile)
         environment['PATH'] = str(Path(bun).parent) + os.pathsep + environment.get('PATH', '')
         transaction.execute(environment, bun, hermes, baseline_data=baseline_data)
     return mount
 
 
-def _selection_authority(job: Path, profile: Path, account: str, action: str) -> dict:
-    request = selection_request(job, profile)
-    if not isinstance(account, str) or not account:
-        raise SelectionError('The selection worker needs a verified owner account')
-    configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
-    configuration.check_owner(configuration.load(), account)
-    if action == 'recover':
-        journal = json.loads((job / 'transaction/journal.json').read_text(encoding='utf-8'))
-        if journal.get('profile') != str(profile):
-            raise SelectionError('The selection journal belongs to another Hermes profile')
-    return request
-
-
 def run_selection_job(job: Path, action: str = 'select', *, profile: Path, account: str) -> dict:
     profile = Path(profile).absolute()
     configuration = MemoryConfiguration(profile / 'lifeos-memory.json')
-    with installation_lock(profile, wait=True), program_lock.exclusive(profile, TURN_WAIT_SECONDS):
-        request = _selection_authority(job, profile, account, action)
+    with installation_lock(profile, wait=True), account_selection_lock(profile, wait=True), \
+            program_lock.exclusive(profile, TURN_WAIT_SECONDS):
+        request = selection_authority(job, profile, account, action)
         services = SystemdServices(Path.home())
         mount = _mount(profile, request)
         recover_mount = lambda installed: _recover_mount(installed, profile)
@@ -179,7 +170,7 @@ def _main() -> int:
         if not os.environ.get('HERMES_HOME'):
             raise SelectionError('The selection worker needs its invoking Hermes profile')
         profile = Path(os.environ['HERMES_HOME']).absolute()
-        _selection_authority(arguments.job, profile, arguments.account, arguments.action)
+        selection_authority(arguments.job, profile, arguments.account, arguments.action)
         authorized = True
         _write_status(arguments.job, 'running' if arguments.action == 'select' else 'recovering')
         result = run_selection_job(arguments.job, arguments.action, profile=profile,

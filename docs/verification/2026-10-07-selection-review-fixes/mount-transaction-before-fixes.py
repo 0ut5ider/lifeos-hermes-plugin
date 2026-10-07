@@ -250,16 +250,6 @@ class MountTransaction:
             return {'state': manifest['state'] if manifest else 'none',
                     'recovery_required': manifest is not None and manifest['state'] in PENDING}
 
-    def check_completed(self):
-        """Refuse selection compensation when a finished mount has later owner edits."""
-        with self._lock():
-            manifest = self._manifest()
-            if manifest is not None:
-                if manifest['state'] not in {'committed', 'rolled_back'}:
-                    raise MountError('Recover the interrupted mount before checking completed files')
-                expected = 'after' if manifest['state'] == 'committed' else 'before'
-                self._checks(manifest['entries'], (expected,))
-
     def _source_stamp(self):
         names = ['LIFEOS/HERMES/Mount.ts', 'LIFEOS/HERMES/Policy.ts',
                  'LIFEOS/HERMES/RenderSoul.ts', 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md',

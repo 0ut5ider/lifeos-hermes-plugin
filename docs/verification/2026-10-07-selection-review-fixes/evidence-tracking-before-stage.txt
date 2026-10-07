@@ -1,0 +1,30 @@
+.........................................F......              [100%]
+=================================== FAILURES ===================================
+______ TrackedEvidenceTests.test_every_ledger_artifact_is_tracked_by_git _______
+
+self = <test_hook_evidence.TrackedEvidenceTests testMethod=test_every_ledger_artifact_is_tracked_by_git>
+
+    def test_every_ledger_artifact_is_tracked_by_git(self):
+        import json
+        import subprocess
+        from pathlib import Path
+        root = Path(__file__).resolve().parents[1]
+        if not (root / '.git').exists():
+            self.skipTest('A Git checkout is required')
+        tracked = set(subprocess.run(['git', 'ls-files', '-z'], cwd=root, check=True,
+                                     capture_output=True, text=True).stdout.split('\0'))
+        ledger = json.loads((root / 'docs/parity/handler-effects.json').read_text())
+>       self.assertEqual(sorted(name for name in ledger['artifacts'] if name not in tracked), [])
+E       AssertionError: Lists differ: ['docs/verification/2026-10-07-selection-r[42 chars].py'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'docs/verification/2026-10-07-selection-review-fixes/mount-transaction-before-fixes.py'
+E       
+E       - ['docs/verification/2026-10-07-selection-review-fixes/mount-transaction-before-fixes.py']
+E       + []
+
+tests/test_hook_evidence.py:183: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_hook_evidence.py::TrackedEvidenceTests::test_every_ledger_artifact_is_tracked_by_git
+1 failed, 47 passed, 11 subtests passed in 23.32s
