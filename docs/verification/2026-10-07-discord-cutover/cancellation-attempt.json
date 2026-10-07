@@ -1,6 +1,6 @@
 {
   "date": "2026-10-07",
-  "status": "cancellation_unverified",
+  "status": "failed_cancellation",
   "observed_resolution": "timeout",
   "host": "192.168.8.252",
   "source_message_id": "1557448720071786657",
@@ -24,8 +24,12 @@
     "marker": "D252-RECOVERY-PASS"
   },
   "limits": [
-    "This request times out. It does not prove interruption by /stop.",
-    "The user confirms which action was attempted before another cancellation test.",
+    "The confirmed /stop attempt resolves after the full timeout.",
+    "Existing logs do not establish which slash dispatch stage handled the interaction.",
     "The screenshot and Discord reply verify recovery after timeout, not recovery after cancellation."
-  ]
+  ],
+  "user_confirmation": {
+    "stop_sent_while_pending": true,
+    "command_application": "Shiny Hermes Bot"
+  }
 }

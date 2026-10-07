@@ -36,9 +36,10 @@ GROUPS = {
         "tests/tools/test_code_kernel.py", "tests/tools/test_code_kernel_remote.py",
     ),
     "hermes-session-lifecycle.patch": (
-        "cli.py", "gateway/slash_commands_session.py", "hermes_cli/cli_commands_mixin.py",
+        "cli.py", "gateway/slash_commands_session.py", "gateway/run_agent_cache.py", "hermes_cli/cli_commands_mixin.py",
         "hermes_cli/cli_session_mixin.py", "hermes_cli/cli_tui_runtime_mixin.py",
-        "tests/gateway/test_resume_command.py", "tests/hermes_cli/test_cli_resume_command.py",
+        "tests/gateway/test_resume_command.py", "tests/gateway/test_stop_clarify_waiters.py",
+        "tests/hermes_cli/test_cli_resume_command.py",
     ),
     "hermes-child-routing.patch": ("tools/delegate_tool.py", "tests/test_lifeos_delegate_tier_route.py"),
     "hermes-strict-inference.patch": ("agent/auxiliary_client.py", "tests/test_lifeos_aux_no_fallback.py"),

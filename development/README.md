@@ -2,7 +2,7 @@
 
 This recorder collects private evidence for development tests. The public plugin installer copies `lifeos_hook_bridge/`. It does not install this directory, its Python startup file, or captured data.
 
-The recorder observes Hermes callbacks, bridge translation, selected and skipped registrations, native command and HTTP results, remote transport, detached runners, host tool boundaries, model context construction, and Discord admission and delivery. It records the registered Hermes event separately from the bridge method. A returned directive is not proof of host enforcement.
+The recorder observes Hermes callbacks, bridge translation, selected and skipped registrations, native command and HTTP results, remote transport, detached runners, host tool boundaries, model context construction, and Discord admission, slash dispatch, and delivery. It records the registered Hermes event separately from the bridge method. A returned directive is not proof of host enforcement.
 
 ## Evidence layout
 
@@ -82,10 +82,12 @@ PYTHONPATH=/path/to/development python -m hook_capture.setup remove
 python3 -m unittest discover -s development/tests -v
 ```
 
-The 29 tests include real hook processes and traced versus native comparisons. They cover large streams, detached parent exit, HTTP limits, duplicate registrations, distinct settings origins, malformed output and evidence, credential redaction in JSON and encoded transport, URL and header credentials, echoed credentials, storage failure, reported capture loss, source drift, turn identity, partial JSON Lines tails, and thread context propagation.
+The 34 tests include real hook processes and traced versus native comparisons. They cover large streams, detached parent exit, HTTP limits, duplicate registrations, distinct settings origins, malformed output and evidence, credential redaction in JSON and encoded transport, URL and header credentials, echoed credentials, storage failure, reported capture loss, source drift, turn identity, partial JSON Lines tails, and thread context propagation.
 
 The initial 11-test suite passed locally and on `.212` on 2026-09-30. The corrected 29-test suite passes locally and in an isolated `.212` environment. The reviewed source is deployed on `.212`, with matching service process manifests. It also validates decoded transport declarations, malformed inventories, and integer bounds before index insertion, Bearer, Basic authorization, and cookie-value echoes, repeated HTTP headers, aliased containers, and per-reference checksum checks. Separate live probes verified an actual systemd detached runner, SSH and Docker detached success and failure, a Hermes terminal tool turn, and Discord admission and reply delivery. See the [deployment record](../notes/2026-09-30-development-capture-212.md). These observations do not establish all permission cases or semantic parity for every registration. Comparative latency has not been measured.
 
 The [independent review and fixes](../notes/2026-09-30-logging-review-fixes.md) distinguish the initial 11-test deployment from later review corrections. The record identifies which corrected revision has reached `.212`.
 
 `development/probes/remote_capture.py` runs against disposable SSH and Docker fixtures supplied through environment variables. It exercises the remote execution boundary directly. It does not establish trusted project selection or full remote tool behavior. The operator must prepare and remove its keys, container, account access, and workspace.
+
+Discord interaction routing records contain application, interaction, channel, and user IDs plus the command name. They exclude interaction tokens and option values. The observer records slash authorization, defer disposition, dispatch, and synchronous gateway interruption. Reinstall the capture configuration after this observer update to pin `gateway/run_agent_cache.py`.

@@ -22,6 +22,53 @@ sys.path.insert(0, str(ROOT / "development"))
 
 
 class EvidenceTests(unittest.TestCase):
+    def test_discord_slash_observer_preserves_dispatch_and_exception(self):
+        import asyncio
+        from types import SimpleNamespace
+        from hook_capture import instrument
+        from hook_capture.store import Recorder
+        interaction = SimpleNamespace(id=111, application_id=222, channel_id=333,
+            user=SimpleNamespace(id=444), type=SimpleNamespace(value=2),
+            token="SYNTHETIC-PRIVATE-TOKEN", data={"name": "stop"})
+        calls = []
+
+        async def dispatch(self, interaction, command_text):
+            calls.append(command_text)
+            if command_text == "/fail":
+                raise ValueError("synthetic dispatch failure")
+            return True
+
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            original = instrument.RECORDER
+            instrument.RECORDER = Recorder(root, "slash-test")
+            try:
+                observed = instrument.discord_interaction_observed(dispatch, "dispatch")
+                self.assertTrue(asyncio.run(observed(None, interaction, "/stop")))
+                with self.assertRaisesRegex(ValueError, "synthetic dispatch failure"):
+                    asyncio.run(observed(None, interaction, "/fail"))
+            finally:
+                instrument.RECORDER = original
+            self.assertEqual(calls, ["/stop", "/fail"])
+            events = [json.loads(line) for path in root.glob("runs/*/events/*/*.jsonl")
+                      for line in path.read_text().splitlines()]
+            self.assertEqual([event["stage"] for event in events], ["discord.dispatch.entered",
+                "discord.dispatch.returned", "discord.dispatch.entered", "discord.dispatch.failed"])
+            for artifact in root.glob("artifacts/**/*.json.gz"):
+                self.assertNotIn(interaction.token, gzip.decompress(artifact.read_bytes()).decode())
+
+    def test_discord_interaction_snapshot_excludes_tokens_and_options(self):
+        from types import SimpleNamespace
+        from hook_capture.instrument import discord_interaction_snapshot
+        interaction = SimpleNamespace(id=111, application_id=222, channel_id=333,
+            user=SimpleNamespace(id=444), type=SimpleNamespace(value=2),
+            token="SYNTHETIC-INTERACTION-TOKEN", data={"name": "stop",
+                "options": [{"name": "private", "value": "SYNTHETIC-PRIVATE-OPTION"}]})
+        snapshot = discord_interaction_snapshot(interaction)
+        self.assertEqual(snapshot, {"interaction_id": "111", "application_id": "222",
+            "channel_id": "333", "user_id": "444", "interaction_type": 2, "command_name": "stop"})
+        self.assertNotIn("SYNTHETIC", json.dumps(snapshot))
+
     def test_environment_values_and_unknown_credential_echoes_are_not_recorded(self):
         from hook_capture.store import Recorder
         environment = {'ANTHROPIC_KEY':'SYNTHETIC-KEY-311804', 'GH_PAT':'SYNTHETIC-PAT-311805',

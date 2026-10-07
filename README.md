@@ -15,6 +15,8 @@ The [October 6 selected hook completion checks](docs/verification/2026-10-06-hoo
 
 The [async lifecycle controls](docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md) verify correlated child completion through actual Hermes callbacks and private inference. The controls also preserve question terminal isolation, expire stale native clock output, and test detached output after parent interruption. Actual Discord transport remains a release gate.
 
+The [pending-question interruption regression](docs/verification/2026-10-07-discord-cutover/cancellation-regression/README.md) releases a clarification waiter when the gateway stops its turn. Four offline cases pass. The confirmed live `/stop` attempt still resolves by timeout, so Discord cancellation and recovery remain open acceptance checks.
+
 The [lifecycle state controls](docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md) preserve concurrent learning and cleanup, interrupted version warning state, and explicit child tier metadata. Actual private requests verify low and inherited xhigh effort. The real API gateway delivers native watchdog feedback to its parent session. The rebuilt component gate passes 284 tests without skips. Complete installed groups and remaining lifecycle branches stay open.
 
 The [startup and completion controls](docs/verification/2026-10-07-step1/startup-completion-controls/README.md) save the last-response cache only after completed Hermes generation. Actual private inference tests successful title naming and provider refusal. Native startup, memory health, freshness interruption, and unavailable subscription quota controls pass. The component gate passes 242 tests without skips. Discord delivery acknowledgement remains release acceptance.

@@ -1,6 +1,6 @@
 {
   "date": "2026-10-07",
-  "status": "question_answer_timeout_passed_cancellation_attempt_resolved_by_timeout",
+  "status": "question_answer_timeout_passed_cancellation_failed",
   "plugin_commit": "c0b26bd57d6abf5364f60e3c33c6b3bea53c5ab8",
   "hermes_base_commit": "758ad514eb0e800547e015edf05aa18f78b78d82",
   "hermes_patch_groups": 11,
@@ -63,7 +63,7 @@
     "question_delivery": "passed",
     "user_answer": "passed",
     "timeout": "passed",
-    "cancellation": "unverified_attempt_resolved_by_timeout",
+    "cancellation": "failed_confirmed_stop_attempt_resolved_by_timeout",
     "recovery_after_timeout": "passed"
   },
   "limits": [

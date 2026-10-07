@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Release pending clarification waiters when the gateway interrupts their turn.
+- Record Discord slash routing and dispatch without interaction tokens or option values.
+
 - Recover an interrupted target mount before restoring the previous LifeOS selection and mounted files.
 - Bind selection status and recovery to the invoking Hermes profile. Recheck the owner in the detached worker.
 - Check completed target mount files before selection rollback. Preserve later owner edits and refuse service restart.
