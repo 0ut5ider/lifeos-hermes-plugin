@@ -1,0 +1,236 @@
+[
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "link",
+      "--runtime",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "Created symlink /run/user/1007/systemd/user/lifeos-installed-update-control.service \u2192 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/lifeos-installed-update-control.service.\n"
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "daemon-reload"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "start",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "show",
+      "lifeos-installed-update-control.service",
+      "-p",
+      "MainPID",
+      "--value"
+    ],
+    "exit_code": 0,
+    "stdout": "224126\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "stop",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "start",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "is-active",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "active\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/.claude/LIFEOS/TOOLS/Doctor.ts",
+      "--hooks"
+    ],
+    "exit_code": 0,
+    "stdout": "hook interpreters: every registered hook resolves \u2705\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/.claude/LIFEOS/HERMES/Mount.ts",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "soul       35500 chars, digest d62ef4e7dede\n           current\nconfig     current\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/hermes",
+      "config",
+      "check"
+    ],
+    "exit_code": 0,
+    "stdout": "\n\ud83d\udccb Configuration Status\n\n  Config version: 0 \u2192 46 (update available)\n\n  Required:\n\n  Optional:\n    \u25cb NOUS_BASE_URL\n    \u25cb HERMES_ANON_API_SECRET\n    \u25cb OPENROUTER_API_KEY \u2192 vision_analyze\n    \u25cb GOOGLE_API_KEY\n    \u25cb GEMINI_API_KEY\n    \u25cb GEMINI_BASE_URL\n    \u25cb VERTEX_CREDENTIALS_PATH\n    \u25cb XAI_API_KEY\n    \u25cb XAI_BASE_URL\n    \u25cb NVIDIA_API_KEY\n    \u25cb NVIDIA_BASE_URL\n    \u25cb LM_API_KEY\n    \u25cb LM_BASE_URL\n    \u25cb GLM_API_KEY\n    \u25cb ZAI_API_KEY\n    \u25cb Z_AI_API_KEY\n    \u25cb GLM_BASE_URL\n    \u25cb KIMI_API_KEY\n    \u25cb KIMI_BASE_URL\n    \u25cb KIMI_CN_API_KEY\n    \u25cb STEPFUN_API_KEY\n    \u25cb STEPFUN_BASE_URL\n    \u25cb ARCEEAI_API_KEY\n    \u25cb ARCEE_BASE_URL\n    \u25cb GMI_API_KEY\n    \u25cb GMI_BASE_URL\n    \u25cb ACTUAL_API_KEY\n    \u25cb FIREWORKS_API_KEY\n    \u25cb MINIMAX_API_KEY\n    \u25cb MINIMAX_BASE_URL\n    \u25cb MINIMAX_CN_API_KEY\n    \u25cb MINIMAX_CN_BASE_URL\n    \u25cb DEEPSEEK_API_KEY\n    \u25cb DEEPSEEK_BASE_URL\n    \u25cb DASHSCOPE_API_KEY\n    \u25cb DASHSCOPE_BASE_URL\n    \u25cb HERMES_QWEN_BASE_URL\n    \u25cb OPENCODE_ZEN_API_KEY\n    \u25cb COMMANDCODE_API_KEY\n    \u25cb OPENCODE_ZEN_BASE_URL\n    \u25cb OPENCODE_GO_API_KEY\n    \u25cb OPENCODE_GO_BASE_URL\n    \u25cb HF_TOKEN\n    \u25cb HF_BASE_URL\n    \u25cb OLLAMA_API_KEY\n    \u25cb OLLAMA_BASE_URL\n    \u25cb XIAOMI_API_KEY\n    \u25cb XIAOMI_BASE_URL\n    \u25cb UPSTAGE_API_KEY\n    \u25cb UPSTAGE_BASE_URL\n    \u25cb AWS_REGION\n    \u25cb AWS_PROFILE\n    \u25cb AZURE_FOUNDRY_API_KEY\n    \u25cb AZURE_FOUNDRY_BASE_URL\n    \u25cb EXA_API_KEY \u2192 web_search, web_extract\n    \u25cb PARALLEL_API_KEY \u2192 web_search, web_extract\n    \u25cb FIRECRAWL_API_KEY \u2192 web_search, web_extract\n    \u25cb FIRECRAWL_API_URL\n    \u25cb FIRECRAWL_GATEWAY_URL\n    \u25cb TOOL_GATEWAY_URL\n    \u25cb CONNECTOR_GATEWAY_URL\n    \u25cb TOOL_GATEWAY_DOMAIN\n    \u25cb TOOL_GATEWAY_SCHEME\n    \u25cb TOOL_GATEWAY_USER_TOKEN\n    \u25cb TAVILY_API_KEY \u2192 web_search, web_extract\n    \u25cb PERPLEXITY_API_KEY \u2192 web_search, web_extract\n    \u25cb KEENABLE_API_KEY \u2192 web_search, web_extract\n    \u25cb SEARXNG_URL \u2192 web_search\n    \u25cb BRAVE_SEARCH_API_KEY \u2192 web_search\n    \u25cb BROWSERBASE_API_KEY \u2192 browser_navigate, browser_click\n    \u25cb BROWSERBASE_PROJECT_ID \u2192 browser_navigate, browser_click\n    \u25cb BROWSER_USE_API_KEY \u2192 browser_navigate, browser_click\n    \u25cb FIRECRAWL_BROWSER_TTL \u2192 browser_navigate, browser_click\n    \u25cb AGENT_BROWSER_ENGINE \u2192 browser_exec, browser_navigate\n    \u25cb CAMOFOX_URL \u2192 browser_navigate, browser_click\n    \u25cb CAMOFOX_API_KEY \u2192 browser_navigate, browser_click\n    \u25cb FAL_KEY \u2192 image_generate, video_generate\n    \u25cb KREA_API_KEY \u2192 image_generate\n    \u25cb VOICE_TOOLS_OPENAI_KEY \u2192 voice_transcription, openai_tts\n    \u25cb ELEVENLABS_API_KEY \u2192 elevenlabs_tts, voice_transcription\n    \u25cb MISTRAL_API_KEY\n    \u25cb PORCUPINE_ACCESS_KEY\n    \u25cb GITHUB_TOKEN\n    \u25cb NOTION_API_KEY\n    \u25cb LINEAR_API_KEY\n    \u25cb AIRTABLE_API_KEY\n    \u25cb TENOR_API_KEY\n    \u25cb HONCHO_API_KEY \u2192 honcho_context\n    \u25cb HONCHO_BASE_URL\n    \u25cb HINDSIGHT_API_KEY \u2192 hindsight_recall\n    \u25cb HINDSIGHT_API_URL\n    \u25cb SUPERMEMORY_API_KEY \u2192 supermemory_search\n    \u25cb MEM0_API_KEY \u2192 mem0_search\n    \u25cb RETAINDB_API_KEY \u2192 retaindb_search\n    \u25cb RETAINDB_BASE_URL\n    \u25cb BRV_API_KEY \u2192 brv_query\n    \u25cb OPENVIKING_API_KEY \u2192 viking_search\n    \u25cb OPENVIKING_ENDPOINT\n    \u25cb HERMES_LANGFUSE_PUBLIC_KEY\n    \u25cb HERMES_LANGFUSE_SECRET_KEY\n    \u25cb HERMES_LANGFUSE_BASE_URL\n    \u25cb TELEGRAM_BOT_TOKEN\n    \u25cb TELEGRAM_ALLOWED_USERS\n    \u25cb TELEGRAM_PROXY\n    \u25cb DISCORD_BOT_TOKEN\n    \u25cb DISCORD_ALLOWED_USERS\n    \u25cb DISCORD_REPLY_TO_MODE\n    \u25cb SLACK_BOT_TOKEN\n    \u25cb SLACK_APP_TOKEN\n    \u25cb SLACK_ALLOWED_USERS\n    \u25cb MATTERMOST_URL\n    \u25cb MATTERMOST_TOKEN\n    \u25cb MATTERMOST_ALLOWED_USERS\n    \u25cb MATTERMOST_REQUIRE_MENTION\n    \u25cb MATTERMOST_FREE_RESPONSE_CHANNELS\n    \u25cb MATRIX_HOMESERVER\n    \u25cb MATRIX_ACCESS_TOKEN\n    \u25cb MATRIX_USER_ID\n    \u25cb MATRIX_ALLOWED_USERS\n    \u25cb MATRIX_REQUIRE_MENTION\n    \u25cb MATRIX_FREE_RESPONSE_ROOMS\n    \u25cb MATRIX_AUTO_THREAD\n    \u25cb MATRIX_DM_AUTO_THREAD\n    \u25cb MATRIX_DEVICE_ID\n    \u25cb MATRIX_RECOVERY_KEY\n    \u25cb BLUEBUBBLES_SERVER_URL\n    \u25cb BLUEBUBBLES_PASSWORD\n    \u25cb BLUEBUBBLES_ALLOWED_USERS\n    \u25cb BLUEBUBBLES_ALLOW_ALL_USERS\n    \u25cb QQ_APP_ID\n    \u25cb QQ_CLIENT_SECRET\n    \u25cb QQ_ALLOWED_USERS\n    \u25cb QQ_GROUP_ALLOWED_USERS\n    \u25cb QQ_ALLOW_ALL_USERS\n    \u25cb QQBOT_HOME_CHANNEL\n    \u25cb QQBOT_HOME_CHANNEL_NAME\n    \u25cb QQ_SANDBOX\n    \u25cb IRC_SERVER\n    \u25cb IRC_CHANNEL\n    \u25cb IRC_NICKNAME\n    \u25cb IRC_SERVER_PASSWORD\n    \u25cb IRC_NICKSERV_PASSWORD\n    \u25cb GATEWAY_ALLOW_ALL_USERS\n    \u25cb API_SERVER_ENABLED\n    \u25cb API_SERVER_KEY\n    \u25cb API_SERVER_PORT\n    \u25cb API_SERVER_HOST\n    \u25cb API_SERVER_MODEL_NAME\n    \u25cb GATEWAY_PROXY_URL\n    \u25cb GATEWAY_PROXY_KEY\n    \u25cb WEBHOOK_ENABLED\n    \u25cb WEBHOOK_PORT\n    \u25cb WEBHOOK_SECRET\n    \u25cb SUDO_PASSWORD\n    \u25cb HERMES_PREFILL_MESSAGES_FILE\n    \u2713 HERMES_EPHEMERAL_SYSTEM_PROMPT\n    \u25cb AI_GATEWAY_API_KEY\n    \u25cb DASHSCOPE_CN_BASE_URL\n    \u25cb ALIBABA_TOKEN_PLAN_API_KEY\n    \u25cb ALIBABA_TOKEN_PLAN_BASE_URL\n    \u25cb ALIBABA_TOKEN_PLAN_CN_API_KEY\n    \u25cb ALIBABA_TOKEN_PLAN_CN_BASE_URL\n    \u25cb ALIBABA_CODING_PLAN_API_KEY\n    \u25cb ALIBABA_CODING_PLAN_BASE_URL\n    \u25cb ALIBABA_CODING_PLAN_CN_API_KEY\n    \u25cb ALIBABA_CODING_PLAN_CN_BASE_URL\n    \u25cb ANTHROPIC_API_KEY\n    \u25cb ANTHROPIC_TOKEN\n    \u25cb CLAUDE_CODE_OAUTH_TOKEN\n    \u25cb COMMANDCODE_BASE_URL\n    \u25cb COMMANDCODE_ANTHROPIC_BASE_URL\n    \u25cb DEEPINFRA_API_KEY\n    \u25cb DEEPINFRA_BASE_URL\n    \u25cb KILOCODE_API_KEY\n    \u25cb KIMI_CODING_API_KEY\n    \u25cb MODEL_API_KEY\n    \u25cb META_API_KEY\n    \u25cb META_MODEL_API_KEY\n    \u25cb META_BASE_URL\n    \u25cb NEBIUS_API_KEY\n    \u25cb NEBIUS_TOKEN_FACTORY_API_KEY\n    \u25cb NEBIUS_BASE_URL\n    \u25cb NOVITA_API_KEY\n    \u25cb NOVITA_BASE_URL\n    \u25cb RAMP_ROUTER_API_KEY\n    \u25cb ROUTER_API_KEY\n    \u25cb RAMP_ROUTER_BASE_URL\n    \u25cb TWILIO_ACCOUNT_SID\n    \u25cb TWILIO_AUTH_TOKEN\n    \u25cb TWILIO_PHONE_NUMBER\n    \u25cb SMS_ALLOWED_USERS\n    \u25cb SMS_HOME_CHANNEL\n    \u25cb FEISHU_APP_ID\n    \u25cb FEISHU_APP_SECRET\n    \u25cb FEISHU_DOMAIN\n    \u25cb FEISHU_ALLOWED_USERS\n    \u25cb FEISHU_ALLOW_ALL_USERS\n    \u25cb FEISHU_HOME_CHANNEL\n    \u25cb FEISHU_HOME_CHANNEL_NAME\n    \u25cb LINE_CHANNEL_ACCESS_TOKEN\n    \u25cb LINE_CHANNEL_SECRET\n    \u25cb LINE_PORT\n    \u25cb LINE_HOST\n    \u25cb LINE_PUBLIC_URL\n    \u25cb LINE_ALLOWED_USERS\n    \u25cb LINE_ALLOWED_GROUPS\n    \u25cb LINE_ALLOWED_ROOMS\n    \u25cb LINE_ALLOW_ALL_USERS\n    \u25cb LINE_HOME_CHANNEL\n    \u25cb LINE_SLOW_RESPONSE_THRESHOLD\n    \u25cb WHATSAPP_ENABLED\n    \u25cb WHATSAPP_ALLOWED_USERS\n    \u25cb WHATSAPP_ALLOW_ALL_USERS\n    \u25cb WHATSAPP_HOME_CHANNEL\n    \u25cb WHATSAPP_HOME_CHANNEL_NAME\n    \u25cb RAFT_PROFILE\n    \u25cb PHOTON_PROJECT_ID\n    \u25cb PHOTON_PROJECT_SECRET\n    \u25cb PHOTON_SIDECAR_PORT\n    \u25cb PHOTON_SIDECAR_AUTOSTART\n    \u25cb PHOTON_NODE_BIN\n    \u25cb PHOTON_DASHBOARD_HOST\n    \u25cb PHOTON_SPECTRUM_HOST\n    \u25cb PHOTON_ALLOWED_USERS\n    \u25cb PHOTON_ALLOW_ALL_USERS\n    \u25cb PHOTON_READ_RECEIPTS\n    \u25cb PHOTON_REQUIRE_MENTION\n    \u25cb PHOTON_MENTION_PATTERNS\n    \u25cb PHOTON_HOME_CHANNEL\n    \u25cb PHOTON_HOME_CHANNEL_NAME\n    \u25cb PHOTON_TELEMETRY\n    \u25cb PHOTON_MARKDOWN\n    \u25cb PHOTON_REACTIONS\n    \u25cb DINGTALK_CLIENT_ID\n    \u25cb DINGTALK_CLIENT_SECRET\n    \u25cb DINGTALK_WEBHOOK_URL\n    \u25cb DINGTALK_ALLOWED_USERS\n    \u25cb DINGTALK_HOME_CHANNEL\n    \u25cb DINGTALK_HOME_CHANNEL_NAME\n    \u25cb BUZZ_RELAY_URL\n    \u25cb BUZZ_PRIVATE_KEY\n    \u25cb BUZZ_TRANSPORT\n    \u25cb BUZZ_AUTH_TAG\n    \u25cb BUZZ_CHANNELS\n    \u25cb BUZZ_HOME_CHANNEL\n    \u25cb BUZZ_ALLOWED_USERS\n    \u25cb BUZZ_ALLOW_ALL_USERS\n    \u25cb BUZZ_POLL_INTERVAL\n    \u25cb BUZZ_CLI_PATH\n    \u25cb BUZZ_CREDENTIALS_FILE\n    \u25cb BUZZ_REPLY_IN_THREAD\n    \u25cb TEAMS_CLIENT_ID\n    \u25cb TEAMS_CLIENT_SECRET\n    \u25cb TEAMS_TENANT_ID\n    \u25cb TEAMS_PORT\n    \u25cb TEAMS_HOST\n    \u25cb TEAMS_ALLOWED_USERS\n    \u25cb TEAMS_ALLOW_ALL_USERS\n    \u25cb TEAMS_REQUIRE_MENTION\n    \u25cb TEAMS_HOME_CHANNEL\n    \u25cb TEAMS_HOME_CHANNEL_NAME\n    \u25cb SLACK_ALLOW_ALL_USERS\n    \u25cb SLACK_HOME_CHANNEL\n    \u25cb SLACK_HOME_CHANNEL_NAME\n    \u25cb SLACK_THREAD_REQUIRE_MENTION\n    \u25cb NTFY_TOPIC\n    \u25cb NTFY_SERVER_URL\n    \u25cb NTFY_TOKEN\n    \u25cb NTFY_PUBLISH_TOPIC\n    \u25cb NTFY_MARKDOWN\n    \u25cb NTFY_ALLOWED_USERS\n    \u25cb NTFY_ALLOW_ALL_USERS\n    \u25cb NTFY_HOME_CHANNEL\n    \u25cb NTFY_HOME_CHANNEL_NAME\n    \u25cb MATTERMOST_ALLOW_ALL_USERS\n    \u25cb MATTERMOST_HOME_CHANNEL\n    \u25cb MATTERMOST_REPLY_MODE\n    \u25cb MATTERMOST_ALLOWED_CHANNELS\n    \u25cb A2A_PEER_TOKENS\n    \u25cb A2A_BEARER_TOKEN\n    \u25cb A2A_HOST\n    \u25cb A2A_PORT\n    \u25cb A2A_AGENT_NAME\n    \u25cb A2A_ALLOW_ALL_USERS\n    \u25cb A2A_HOME_CHANNEL\n    \u25cb TELEGRAM_ALLOW_ALL_USERS\n    \u25cb TELEGRAM_HOME_CHANNEL\n    \u25cb TELEGRAM_HOME_CHANNEL_NAME\n    \u25cb IRC_PORT\n    \u25cb IRC_USE_TLS\n    \u25cb IRC_ALLOWED_USERS\n    \u25cb IRC_ALLOW_ALL_USERS\n    \u25cb IRC_HOME_CHANNEL\n    \u25cb WECOM_BOT_ID\n    \u25cb WECOM_SECRET\n    \u25cb WECOM_WEBSOCKET_URL\n    \u25cb WECOM_HOME_CHANNEL\n    \u25cb WECOM_ALLOWED_USERS\n    \u25cb WECOM_CALLBACK_CORP_ID\n    \u25cb WECOM_CALLBACK_CORP_SECRET\n    \u25cb WECOM_CALLBACK_AGENT_ID\n    \u25cb WECOM_CALLBACK_TOKEN\n    \u25cb WECOM_CALLBACK_ENCODING_AES_KEY\n    \u25cb DISCORD_ALLOW_ALL_USERS\n    \u25cb DISCORD_HOME_CHANNEL\n    \u25cb DISCORD_HOME_CHANNEL_NAME\n    \u25cb SIMPLEX_WS_URL\n    \u25cb SIMPLEX_ALLOWED_USERS\n    \u25cb SIMPLEX_ALLOW_ALL_USERS\n    \u25cb SIMPLEX_AUTO_ACCEPT\n    \u25cb SIMPLEX_GROUP_ALLOWED\n    \u25cb SIMPLEX_HOME_CHANNEL\n    \u25cb SIMPLEX_HOME_CHANNEL_NAME\n    \u25cb HERMES_SIMPLEX_TEXT_BATCH_DELAY\n    \u25cb EMAIL_ADDRESS\n    \u25cb EMAIL_PASSWORD\n    \u25cb EMAIL_SMTP_HOST\n    \u25cb EMAIL_SMTP_PORT\n    \u25cb EMAIL_IMAP_HOST\n    \u25cb EMAIL_ALLOWED_USERS\n    \u25cb EMAIL_HOME_ADDRESS\n    \u25cb GOOGLE_CHAT_SERVICE_ACCOUNT_JSON\n    \u25cb GOOGLE_CHAT_HTTP_EVENTS_URL\n    \u25cb GOOGLE_CHAT_HTTP_EVENTS_AUDIENCE\n    \u25cb GOOGLE_CHAT_HTTP_EVENTS_SERVICE_ACCOUNT_EMAIL\n    \u25cb GOOGLE_CHAT_PROJECT_ID\n    \u25cb GOOGLE_CHAT_SUBSCRIPTION_NAME\n    \u25cb GOOGLE_CHAT_ALLOWED_USERS\n    \u25cb GOOGLE_CHAT_HOME_CHANNEL\n    \u25cb HASS_TOKEN\n    \u25cb HASS_URL\n    \u25cb MATRIX_PASSWORD\n    \u25cb MATRIX_ALLOW_ALL_USERS\n    \u25cb MATRIX_HOME_CHANNEL\n    \u25cb MATRIX_HOME_CHANNEL_NAME\n\n",
+    "stderr": "\u26a0 install out of sync (ffmpeg: not installed or outdated; node: not installed or outdated; npm: not installed or outdated; ripgrep: not installed or outdated) \u2014 this unknown-managed install must rebuild the artifact to fix\n"
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "show",
+      "lifeos-installed-update-control.service",
+      "-p",
+      "MainPID",
+      "--value"
+    ],
+    "exit_code": 0,
+    "stdout": "224247\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "stop",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "start",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "is-active",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "active\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/.claude/LIFEOS/TOOLS/Doctor.ts",
+      "--hooks"
+    ],
+    "exit_code": 0,
+    "stdout": "hook interpreters: every registered hook resolves \u2705\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/.claude/LIFEOS/HERMES/Mount.ts",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "soul       35500 chars, digest d62ef4e7dede\n           current\nconfig     current\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/installed-update-current8/hermes",
+      "config",
+      "check"
+    ],
+    "exit_code": 0,
+    "stdout": "\n\ud83d\udccb Configuration Status\n\n  Config version: 0 \u2192 46 (update available)\n\n  Required:\n\n  Optional:\n    \u25cb NOUS_BASE_URL\n    \u25cb HERMES_ANON_API_SECRET\n    \u25cb OPENROUTER_API_KEY \u2192 vision_analyze\n    \u25cb GOOGLE_API_KEY\n    \u25cb GEMINI_API_KEY\n    \u25cb GEMINI_BASE_URL\n    \u25cb VERTEX_CREDENTIALS_PATH\n    \u25cb XAI_API_KEY\n    \u25cb XAI_BASE_URL\n    \u25cb NVIDIA_API_KEY\n    \u25cb NVIDIA_BASE_URL\n    \u25cb LM_API_KEY\n    \u25cb LM_BASE_URL\n    \u25cb GLM_API_KEY\n    \u25cb ZAI_API_KEY\n    \u25cb Z_AI_API_KEY\n    \u25cb GLM_BASE_URL\n    \u25cb KIMI_API_KEY\n    \u25cb KIMI_BASE_URL\n    \u25cb KIMI_CN_API_KEY\n    \u25cb STEPFUN_API_KEY\n    \u25cb STEPFUN_BASE_URL\n    \u25cb ARCEEAI_API_KEY\n    \u25cb ARCEE_BASE_URL\n    \u25cb GMI_API_KEY\n    \u25cb GMI_BASE_URL\n    \u25cb ACTUAL_API_KEY\n    \u25cb FIREWORKS_API_KEY\n    \u25cb MINIMAX_API_KEY\n    \u25cb MINIMAX_BASE_URL\n    \u25cb MINIMAX_CN_API_KEY\n    \u25cb MINIMAX_CN_BASE_URL\n    \u25cb DEEPSEEK_API_KEY\n    \u25cb DEEPSEEK_BASE_URL\n    \u25cb DASHSCOPE_API_KEY\n    \u25cb DASHSCOPE_BASE_URL\n    \u25cb HERMES_QWEN_BASE_URL\n    \u25cb OPENCODE_ZEN_API_KEY\n    \u25cb COMMANDCODE_API_KEY\n    \u25cb OPENCODE_ZEN_BASE_URL\n    \u25cb OPENCODE_GO_API_KEY\n    \u25cb OPENCODE_GO_BASE_URL\n    \u25cb HF_TOKEN\n    \u25cb HF_BASE_URL\n    \u25cb OLLAMA_API_KEY\n    \u25cb OLLAMA_BASE_URL\n    \u25cb XIAOMI_API_KEY\n    \u25cb XIAOMI_BASE_URL\n    \u25cb UPSTAGE_API_KEY\n    \u25cb UPSTAGE_BASE_URL\n    \u25cb AWS_REGION\n    \u25cb AWS_PROFILE\n    \u25cb AZURE_FOUNDRY_API_KEY\n    \u25cb AZURE_FOUNDRY_BASE_URL\n    \u25cb EXA_API_KEY \u2192 web_search, web_extract\n    \u25cb PARALLEL_API_KEY \u2192 web_search, web_extract\n    \u25cb FIRECRAWL_API_KEY \u2192 web_search, web_extract\n    \u25cb FIRECRAWL_API_URL\n    \u25cb FIRECRAWL_GATEWAY_URL\n    \u25cb TOOL_GATEWAY_URL\n    \u25cb CONNECTOR_GATEWAY_URL\n    \u25cb TOOL_GATEWAY_DOMAIN\n    \u25cb TOOL_GATEWAY_SCHEME\n    \u25cb TOOL_GATEWAY_USER_TOKEN\n    \u25cb TAVILY_API_KEY \u2192 web_search, web_extract\n    \u25cb PERPLEXITY_API_KEY \u2192 web_search, web_extract\n    \u25cb KEENABLE_API_KEY \u2192 web_search, web_extract\n    \u25cb SEARXNG_URL \u2192 web_search\n    \u25cb BRAVE_SEARCH_API_KEY \u2192 web_search\n    \u25cb BROWSERBASE_API_KEY \u2192 browser_navigate, browser_click\n    \u25cb BROWSERBASE_PROJECT_ID \u2192 browser_navigate, browser_click\n    \u25cb BROWSER_USE_API_KEY \u2192 browser_navigate, browser_click\n    \u25cb FIRECRAWL_BROWSER_TTL \u2192 browser_navigate, browser_click\n    \u25cb AGENT_BROWSER_ENGINE \u2192 browser_exec, browser_navigate\n    \u25cb CAMOFOX_URL \u2192 browser_navigate, browser_click\n    \u25cb CAMOFOX_API_KEY \u2192 browser_navigate, browser_click\n    \u25cb FAL_KEY \u2192 image_generate, video_generate\n    \u25cb KREA_API_KEY \u2192 image_generate\n    \u25cb VOICE_TOOLS_OPENAI_KEY \u2192 voice_transcription, openai_tts\n    \u25cb ELEVENLABS_API_KEY \u2192 elevenlabs_tts, voice_transcription\n    \u25cb MISTRAL_API_KEY\n    \u25cb PORCUPINE_ACCESS_KEY\n    \u25cb GITHUB_TOKEN\n    \u25cb NOTION_API_KEY\n    \u25cb LINEAR_API_KEY\n    \u25cb AIRTABLE_API_KEY\n    \u25cb TENOR_API_KEY\n    \u25cb HONCHO_API_KEY \u2192 honcho_context\n    \u25cb HONCHO_BASE_URL\n    \u25cb HINDSIGHT_API_KEY \u2192 hindsight_recall\n    \u25cb HINDSIGHT_API_URL\n    \u25cb SUPERMEMORY_API_KEY \u2192 supermemory_search\n    \u25cb MEM0_API_KEY \u2192 mem0_search\n    \u25cb RETAINDB_API_KEY \u2192 retaindb_search\n    \u25cb RETAINDB_BASE_URL\n    \u25cb BRV_API_KEY \u2192 brv_query\n    \u25cb OPENVIKING_API_KEY \u2192 viking_search\n    \u25cb OPENVIKING_ENDPOINT\n    \u25cb HERMES_LANGFUSE_PUBLIC_KEY\n    \u25cb HERMES_LANGFUSE_SECRET_KEY\n    \u25cb HERMES_LANGFUSE_BASE_URL\n    \u25cb TELEGRAM_BOT_TOKEN\n    \u25cb TELEGRAM_ALLOWED_USERS\n    \u25cb TELEGRAM_PROXY\n    \u25cb DISCORD_BOT_TOKEN\n    \u25cb DISCORD_ALLOWED_USERS\n    \u25cb DISCORD_REPLY_TO_MODE\n    \u25cb SLACK_BOT_TOKEN\n    \u25cb SLACK_APP_TOKEN\n    \u25cb SLACK_ALLOWED_USERS\n    \u25cb MATTERMOST_URL\n    \u25cb MATTERMOST_TOKEN\n    \u25cb MATTERMOST_ALLOWED_USERS\n    \u25cb MATTERMOST_REQUIRE_MENTION\n    \u25cb MATTERMOST_FREE_RESPONSE_CHANNELS\n    \u25cb MATRIX_HOMESERVER\n    \u25cb MATRIX_ACCESS_TOKEN\n    \u25cb MATRIX_USER_ID\n    \u25cb MATRIX_ALLOWED_USERS\n    \u25cb MATRIX_REQUIRE_MENTION\n    \u25cb MATRIX_FREE_RESPONSE_ROOMS\n    \u25cb MATRIX_AUTO_THREAD\n    \u25cb MATRIX_DM_AUTO_THREAD\n    \u25cb MATRIX_DEVICE_ID\n    \u25cb MATRIX_RECOVERY_KEY\n    \u25cb BLUEBUBBLES_SERVER_URL\n    \u25cb BLUEBUBBLES_PASSWORD\n    \u25cb BLUEBUBBLES_ALLOWED_USERS\n    \u25cb BLUEBUBBLES_ALLOW_ALL_USERS\n    \u25cb QQ_APP_ID\n    \u25cb QQ_CLIENT_SECRET\n    \u25cb QQ_ALLOWED_USERS\n    \u25cb QQ_GROUP_ALLOWED_USERS\n    \u25cb QQ_ALLOW_ALL_USERS\n    \u25cb QQBOT_HOME_CHANNEL\n    \u25cb QQBOT_HOME_CHANNEL_NAME\n    \u25cb QQ_SANDBOX\n    \u25cb IRC_SERVER\n    \u25cb IRC_CHANNEL\n    \u25cb IRC_NICKNAME\n    \u25cb IRC_SERVER_PASSWORD\n    \u25cb IRC_NICKSERV_PASSWORD\n    \u25cb GATEWAY_ALLOW_ALL_USERS\n    \u25cb API_SERVER_ENABLED\n    \u25cb API_SERVER_KEY\n    \u25cb API_SERVER_PORT\n    \u25cb API_SERVER_HOST\n    \u25cb API_SERVER_MODEL_NAME\n    \u25cb GATEWAY_PROXY_URL\n    \u25cb GATEWAY_PROXY_KEY\n    \u25cb WEBHOOK_ENABLED\n    \u25cb WEBHOOK_PORT\n    \u25cb WEBHOOK_SECRET\n    \u25cb SUDO_PASSWORD\n    \u25cb HERMES_PREFILL_MESSAGES_FILE\n    \u2713 HERMES_EPHEMERAL_SYSTEM_PROMPT\n    \u25cb AI_GATEWAY_API_KEY\n    \u25cb DASHSCOPE_CN_BASE_URL\n    \u25cb ALIBABA_TOKEN_PLAN_API_KEY\n    \u25cb ALIBABA_TOKEN_PLAN_BASE_URL\n    \u25cb ALIBABA_TOKEN_PLAN_CN_API_KEY\n    \u25cb ALIBABA_TOKEN_PLAN_CN_BASE_URL\n    \u25cb ALIBABA_CODING_PLAN_API_KEY\n    \u25cb ALIBABA_CODING_PLAN_BASE_URL\n    \u25cb ALIBABA_CODING_PLAN_CN_API_KEY\n    \u25cb ALIBABA_CODING_PLAN_CN_BASE_URL\n    \u25cb ANTHROPIC_API_KEY\n    \u25cb ANTHROPIC_TOKEN\n    \u25cb CLAUDE_CODE_OAUTH_TOKEN\n    \u25cb COMMANDCODE_BASE_URL\n    \u25cb COMMANDCODE_ANTHROPIC_BASE_URL\n    \u25cb DEEPINFRA_API_KEY\n    \u25cb DEEPINFRA_BASE_URL\n    \u25cb KILOCODE_API_KEY\n    \u25cb KIMI_CODING_API_KEY\n    \u25cb MODEL_API_KEY\n    \u25cb META_API_KEY\n    \u25cb META_MODEL_API_KEY\n    \u25cb META_BASE_URL\n    \u25cb NEBIUS_API_KEY\n    \u25cb NEBIUS_TOKEN_FACTORY_API_KEY\n    \u25cb NEBIUS_BASE_URL\n    \u25cb NOVITA_API_KEY\n    \u25cb NOVITA_BASE_URL\n    \u25cb RAMP_ROUTER_API_KEY\n    \u25cb ROUTER_API_KEY\n    \u25cb RAMP_ROUTER_BASE_URL\n    \u25cb TWILIO_ACCOUNT_SID\n    \u25cb TWILIO_AUTH_TOKEN\n    \u25cb TWILIO_PHONE_NUMBER\n    \u25cb SMS_ALLOWED_USERS\n    \u25cb SMS_HOME_CHANNEL\n    \u25cb FEISHU_APP_ID\n    \u25cb FEISHU_APP_SECRET\n    \u25cb FEISHU_DOMAIN\n    \u25cb FEISHU_ALLOWED_USERS\n    \u25cb FEISHU_ALLOW_ALL_USERS\n    \u25cb FEISHU_HOME_CHANNEL\n    \u25cb FEISHU_HOME_CHANNEL_NAME\n    \u25cb LINE_CHANNEL_ACCESS_TOKEN\n    \u25cb LINE_CHANNEL_SECRET\n    \u25cb LINE_PORT\n    \u25cb LINE_HOST\n    \u25cb LINE_PUBLIC_URL\n    \u25cb LINE_ALLOWED_USERS\n    \u25cb LINE_ALLOWED_GROUPS\n    \u25cb LINE_ALLOWED_ROOMS\n    \u25cb LINE_ALLOW_ALL_USERS\n    \u25cb LINE_HOME_CHANNEL\n    \u25cb LINE_SLOW_RESPONSE_THRESHOLD\n    \u25cb WHATSAPP_ENABLED\n    \u25cb WHATSAPP_ALLOWED_USERS\n    \u25cb WHATSAPP_ALLOW_ALL_USERS\n    \u25cb WHATSAPP_HOME_CHANNEL\n    \u25cb WHATSAPP_HOME_CHANNEL_NAME\n    \u25cb RAFT_PROFILE\n    \u25cb PHOTON_PROJECT_ID\n    \u25cb PHOTON_PROJECT_SECRET\n    \u25cb PHOTON_SIDECAR_PORT\n    \u25cb PHOTON_SIDECAR_AUTOSTART\n    \u25cb PHOTON_NODE_BIN\n    \u25cb PHOTON_DASHBOARD_HOST\n    \u25cb PHOTON_SPECTRUM_HOST\n    \u25cb PHOTON_ALLOWED_USERS\n    \u25cb PHOTON_ALLOW_ALL_USERS\n    \u25cb PHOTON_READ_RECEIPTS\n    \u25cb PHOTON_REQUIRE_MENTION\n    \u25cb PHOTON_MENTION_PATTERNS\n    \u25cb PHOTON_HOME_CHANNEL\n    \u25cb PHOTON_HOME_CHANNEL_NAME\n    \u25cb PHOTON_TELEMETRY\n    \u25cb PHOTON_MARKDOWN\n    \u25cb PHOTON_REACTIONS\n    \u25cb DINGTALK_CLIENT_ID\n    \u25cb DINGTALK_CLIENT_SECRET\n    \u25cb DINGTALK_WEBHOOK_URL\n    \u25cb DINGTALK_ALLOWED_USERS\n    \u25cb DINGTALK_HOME_CHANNEL\n    \u25cb DINGTALK_HOME_CHANNEL_NAME\n    \u25cb BUZZ_RELAY_URL\n    \u25cb BUZZ_PRIVATE_KEY\n    \u25cb BUZZ_TRANSPORT\n    \u25cb BUZZ_AUTH_TAG\n    \u25cb BUZZ_CHANNELS\n    \u25cb BUZZ_HOME_CHANNEL\n    \u25cb BUZZ_ALLOWED_USERS\n    \u25cb BUZZ_ALLOW_ALL_USERS\n    \u25cb BUZZ_POLL_INTERVAL\n    \u25cb BUZZ_CLI_PATH\n    \u25cb BUZZ_CREDENTIALS_FILE\n    \u25cb BUZZ_REPLY_IN_THREAD\n    \u25cb TEAMS_CLIENT_ID\n    \u25cb TEAMS_CLIENT_SECRET\n    \u25cb TEAMS_TENANT_ID\n    \u25cb TEAMS_PORT\n    \u25cb TEAMS_HOST\n    \u25cb TEAMS_ALLOWED_USERS\n    \u25cb TEAMS_ALLOW_ALL_USERS\n    \u25cb TEAMS_REQUIRE_MENTION\n    \u25cb TEAMS_HOME_CHANNEL\n    \u25cb TEAMS_HOME_CHANNEL_NAME\n    \u25cb SLACK_ALLOW_ALL_USERS\n    \u25cb SLACK_HOME_CHANNEL\n    \u25cb SLACK_HOME_CHANNEL_NAME\n    \u25cb SLACK_THREAD_REQUIRE_MENTION\n    \u25cb NTFY_TOPIC\n    \u25cb NTFY_SERVER_URL\n    \u25cb NTFY_TOKEN\n    \u25cb NTFY_PUBLISH_TOPIC\n    \u25cb NTFY_MARKDOWN\n    \u25cb NTFY_ALLOWED_USERS\n    \u25cb NTFY_ALLOW_ALL_USERS\n    \u25cb NTFY_HOME_CHANNEL\n    \u25cb NTFY_HOME_CHANNEL_NAME\n    \u25cb MATTERMOST_ALLOW_ALL_USERS\n    \u25cb MATTERMOST_HOME_CHANNEL\n    \u25cb MATTERMOST_REPLY_MODE\n    \u25cb MATTERMOST_ALLOWED_CHANNELS\n    \u25cb A2A_PEER_TOKENS\n    \u25cb A2A_BEARER_TOKEN\n    \u25cb A2A_HOST\n    \u25cb A2A_PORT\n    \u25cb A2A_AGENT_NAME\n    \u25cb A2A_ALLOW_ALL_USERS\n    \u25cb A2A_HOME_CHANNEL\n    \u25cb TELEGRAM_ALLOW_ALL_USERS\n    \u25cb TELEGRAM_HOME_CHANNEL\n    \u25cb TELEGRAM_HOME_CHANNEL_NAME\n    \u25cb IRC_PORT\n    \u25cb IRC_USE_TLS\n    \u25cb IRC_ALLOWED_USERS\n    \u25cb IRC_ALLOW_ALL_USERS\n    \u25cb IRC_HOME_CHANNEL\n    \u25cb WECOM_BOT_ID\n    \u25cb WECOM_SECRET\n    \u25cb WECOM_WEBSOCKET_URL\n    \u25cb WECOM_HOME_CHANNEL\n    \u25cb WECOM_ALLOWED_USERS\n    \u25cb WECOM_CALLBACK_CORP_ID\n    \u25cb WECOM_CALLBACK_CORP_SECRET\n    \u25cb WECOM_CALLBACK_AGENT_ID\n    \u25cb WECOM_CALLBACK_TOKEN\n    \u25cb WECOM_CALLBACK_ENCODING_AES_KEY\n    \u25cb DISCORD_ALLOW_ALL_USERS\n    \u25cb DISCORD_HOME_CHANNEL\n    \u25cb DISCORD_HOME_CHANNEL_NAME\n    \u25cb SIMPLEX_WS_URL\n    \u25cb SIMPLEX_ALLOWED_USERS\n    \u25cb SIMPLEX_ALLOW_ALL_USERS\n    \u25cb SIMPLEX_AUTO_ACCEPT\n    \u25cb SIMPLEX_GROUP_ALLOWED\n    \u25cb SIMPLEX_HOME_CHANNEL\n    \u25cb SIMPLEX_HOME_CHANNEL_NAME\n    \u25cb HERMES_SIMPLEX_TEXT_BATCH_DELAY\n    \u25cb EMAIL_ADDRESS\n    \u25cb EMAIL_PASSWORD\n    \u25cb EMAIL_SMTP_HOST\n    \u25cb EMAIL_SMTP_PORT\n    \u25cb EMAIL_IMAP_HOST\n    \u25cb EMAIL_ALLOWED_USERS\n    \u25cb EMAIL_HOME_ADDRESS\n    \u25cb GOOGLE_CHAT_SERVICE_ACCOUNT_JSON\n    \u25cb GOOGLE_CHAT_HTTP_EVENTS_URL\n    \u25cb GOOGLE_CHAT_HTTP_EVENTS_AUDIENCE\n    \u25cb GOOGLE_CHAT_HTTP_EVENTS_SERVICE_ACCOUNT_EMAIL\n    \u25cb GOOGLE_CHAT_PROJECT_ID\n    \u25cb GOOGLE_CHAT_SUBSCRIPTION_NAME\n    \u25cb GOOGLE_CHAT_ALLOWED_USERS\n    \u25cb GOOGLE_CHAT_HOME_CHANNEL\n    \u25cb HASS_TOKEN\n    \u25cb HASS_URL\n    \u25cb MATRIX_PASSWORD\n    \u25cb MATRIX_ALLOW_ALL_USERS\n    \u25cb MATRIX_HOME_CHANNEL\n    \u25cb MATRIX_HOME_CHANNEL_NAME\n\n",
+    "stderr": "\u26a0 install out of sync (ffmpeg: not installed or outdated; node: not installed or outdated; npm: not installed or outdated; ripgrep: not installed or outdated) \u2014 this unknown-managed install must rebuild the artifact to fix\n"
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "show",
+      "lifeos-installed-update-control.service",
+      "-p",
+      "MainPID",
+      "--value"
+    ],
+    "exit_code": 0,
+    "stdout": "224287\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "stop",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "disable",
+      "--runtime",
+      "lifeos-installed-update-control.service"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": "Removed \"/run/user/1007/systemd/user/lifeos-installed-update-control.service\".\n"
+  },
+  {
+    "command": [
+      "systemctl",
+      "--user",
+      "daemon-reload"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  }
+]

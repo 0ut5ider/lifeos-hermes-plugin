@@ -16,6 +16,16 @@ class PatchAssignmentTests(unittest.TestCase):
 
 @unittest.skipUnless((SOURCE / '.git').exists(), 'A prepared source checkout with new files marked for diff is required')
 class HermesPatchRegenerationTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        added = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard'],
+                                        cwd=SOURCE, text=True).splitlines()
+        owned = {path for paths in GROUPS.values() for path in paths}
+        selected = sorted(owned.intersection(added))
+        if selected:
+            subprocess.run(['git', 'add', '--intent-to-add', '--', *selected],
+                           cwd=SOURCE, check=True, capture_output=True, text=True)
+
     def test_regeneration_publishes_the_complete_ordered_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

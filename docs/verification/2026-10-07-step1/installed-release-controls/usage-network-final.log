@@ -1,0 +1,35 @@
+230882 socket(AF_NETLINK, SOCK_RAW|SOCK_CLOEXEC, NETLINK_ROUTE) = 14
+230882 bind(14, {sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, 12) = 0
+230882 getsockname(14, {sa_family=AF_NETLINK, nl_pid=230873, nl_groups=00000000}, [12]) = 0
+230882 sendto(14, [{nlmsg_len=20, nlmsg_type=RTM_GETADDR, nlmsg_flags=NLM_F_REQUEST|NLM_F_DUMP, nlmsg_seq=1791353435, nlmsg_pid=0}, {ifa_family=AF_UNSPEC, ...}], 20, 0, {sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, 12) = 20
+230882 recvmsg(14, {msg_name={sa_family=AF_NETLINK, nl_pid=0, nl_groups=00000000}, msg_namelen=12, msg_iov=[{iov_base=[{nlmsg_len=20, nlmsg_type=NLMSG_DONE, nlmsg_flags=NLM_F_MULTI, nlmsg_seq=1791353435, nlmsg_pid=230873}, 0], iov_len=4096}], msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 20
+230882 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 14
+230882 connect(14, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+230882 socket(AF_UNIX, SOCK_STREAM|SOCK_CLOEXEC|SOCK_NONBLOCK, 0) = 14
+230882 connect(14, {sa_family=AF_UNIX, sun_path="/var/run/nscd/socket"}, 110) = -1 ENOENT (No such file or directory)
+230882 socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, IPPROTO_IP) = 14
+230882 setsockopt(14, SOL_IP, IP_RECVERR, [1], 4) = 0
+230882 connect(14, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("192.168.8.1")}, 16) = -1 ENETUNREACH (Network is unreachable)
+230882 socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, IPPROTO_IP) = 14
+230882 setsockopt(14, SOL_IP, IP_RECVERR, [1], 4) = 0
+230882 connect(14, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("192.168.8.1")}, 16) = -1 ENETUNREACH (Network is unreachable)
+230882 socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, IPPROTO_IP) = 14
+230882 setsockopt(14, SOL_IP, IP_RECVERR, [1], 4) = 0
+230882 connect(14, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("192.168.8.1")}, 16) = -1 ENETUNREACH (Network is unreachable)
+230882 socket(AF_INET, SOCK_DGRAM|SOCK_CLOEXEC|SOCK_NONBLOCK, IPPROTO_IP) = 14
+230882 setsockopt(14, SOL_IP, IP_RECVERR, [1], 4) = 0
+230882 connect(14, {sa_family=AF_INET, sin_port=htons(53), sin_addr=inet_addr("192.168.8.1")}, 16) = -1 ENETUNREACH (Network is unreachable)
+230883 +++ exited with 0 +++
+230880 +++ exited with 0 +++
+230882 +++ exited with 0 +++
+230881 +++ exited with 0 +++
+230879 +++ exited with 0 +++
+230878 +++ exited with 0 +++
+230877 +++ exited with 0 +++
+230876 +++ exited with 0 +++
+230875 +++ exited with 0 +++
+230874 +++ exited with 0 +++
+230886 +++ exited with 0 +++
+230885 +++ exited with 0 +++
+230884 +++ exited with 0 +++
+230873 +++ exited with 0 +++

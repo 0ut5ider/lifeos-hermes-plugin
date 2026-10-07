@@ -23,6 +23,7 @@ profile = Path(os.environ['HERMES_HOME'])
 root.mkdir(exist_ok=True)
 (root / 'hooks').symlink_to(source / 'hooks', target_is_directory=True)
 shutil.copytree(source / 'LIFEOS/TOOLS', root / 'LIFEOS/TOOLS', ignore=shutil.ignore_patterns('node_modules'))
+(root / 'LIFEOS/PULSE').symlink_to(source / 'LIFEOS/PULSE', target_is_directory=True)
 (profile / 'config.yaml').write_text(json.dumps({'plugins': {'enabled': ['lifeos-hook-bridge']}, 'terminal': {'env_type': 'local'}}))
 settings.write_text('{"hooks":{}}')
 if side == 'hermes':
@@ -100,7 +101,13 @@ try:
         deadline = time.monotonic() + 8
         while not page.exists() and time.monotonic() < deadline:
             time.sleep(.05)
-        assert page.exists() and 'Fixture' in page.read_text(), (path, 'render missing')
+        if not page.exists():
+            diagnostic = subprocess.run(['bun', str(root / 'LIFEOS/TOOLS/ISARender.ts'), str(path), '--no-refresh'],
+                                        capture_output=True, text=True, timeout=15)
+            raise AssertionError({'path': str(path), 'render_missing': True,
+                                  'renderer_exit_code': diagnostic.returncode,
+                                  'renderer_stdout': diagnostic.stdout, 'renderer_stderr': diagnostic.stderr})
+        assert 'Fixture' in page.read_text(), (path, 'render content missing')
         complete = path.read_text()
         operation('Read', path, '', session + '-resumed', programs)
         assert path.read_text() == complete

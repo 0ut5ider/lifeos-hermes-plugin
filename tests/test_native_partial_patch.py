@@ -23,7 +23,8 @@ class NativePartialPatchTests(unittest.TestCase):
             self.skipTest("Hermes patch parser is required")
         home = Path.home()
         bun = shutil.which("bun")
-        hook = home / ".claude/hooks/ComplexityRatchet.hook.ts"
+        native = Path(os.environ.get("LIFEOS_GUARD_SOURCE", str(home / ".claude")))
+        hook = native / "hooks/ComplexityRatchet.hook.ts"
         if not bun or not hook.exists():
             self.skipTest("installed LifeOS complexity hook and Bun are required")
 
@@ -98,9 +99,10 @@ class NativePartialPatchTests(unittest.TestCase):
 
     def test_failed_patch_does_not_checkpoint_an_earlier_isa_edit(self):
         home = Path.home()
-        source = home / "workspace/lifeos-candidate"
+        source = Path(os.environ.get("LIFEOS_FRESH_SOURCE", str(home / "workspace/lifeos-candidate")))
         bun = shutil.which("bun")
-        hook = home / ".claude/hooks/CheckpointPerISC.hook.ts"
+        native = Path(os.environ.get("LIFEOS_GUARD_SOURCE", str(home / ".claude")))
+        hook = native / "hooks/CheckpointPerISC.hook.ts"
         if not (source / ".git").exists() or not bun or not hook.exists():
             self.skipTest("installed LifeOS checkout, checkpoint hook, and Bun are required")
 

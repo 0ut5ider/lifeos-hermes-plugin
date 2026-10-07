@@ -27,3 +27,5 @@ SpendAuditor checks capability use against prompt length. It does not audit mone
 The desktop voice control receives actual HTTP notifications. It verifies channel policy, repeated Stop behavior, failed delivery, and interruption. It does not establish Discord transcription or spoken replies. The writing detector control verifies the missing-detector policy and an explicit availability refusal. It does not claim successful detection through an unavailable external service.
 
 Production `.212` and the final model-tier mapping remain unchanged.
+
+The [final installed acceptance controls](../installed-release-controls/README.md) extend this historical 22-patch gate with the 23-patch candidate, actual pinned-version inference, concurrent admitted review, complete installed sessions, and full-tree update and restore. The final regression sweep reports zero failures and zero errors. Enabled private GitHub reminder delivery and actual Discord release acceptance remain open.

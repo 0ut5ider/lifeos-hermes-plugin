@@ -30,6 +30,7 @@ def respond(request: dict) -> dict | None:
         count = min(max(int(os.environ.get("PAIRED_MCP_TOOL_COUNT", "1")), 1), 150)
         description_length = min(max(int(os.environ.get("PAIRED_MCP_DESCRIPTION_LENGTH", "0")), 0), 4000)
         tool = dict(TOOL)
+        tool['description'] = os.environ.get('PAIRED_MCP_DESCRIPTION', TOOL['description'])
         if description_length:
             tool["description"] = (TOOL["description"] *
                                    ((description_length // len(TOOL["description"])) + 1))[:description_length]
@@ -37,7 +38,7 @@ def respond(request: dict) -> dict | None:
             {**tool, "name": f"reference_{index:03d}"} for index in range(1, count)
         )]}
     elif method == "tools/call" and request.get("params", {}).get("name") == "ping":
-        result = {"content": [{"type": "text", "text": "PAIR_MCP_212"}], "isError": False}
+        result = {"content": [{"type": "text", "text": os.environ.get('PAIRED_MCP_BODY', 'PAIR_MCP_212')}], "isError": False}
     else:
         return {"jsonrpc": "2.0", "id": identifier,
                 "error": {"code": -32601, "message": "Method not found"}}

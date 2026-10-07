@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-06",
+  "date": "2026-10-07",
   "complete": false,
   "registration_inventory_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "scope": "Step 1 accepted hook contract. Functional controls and unavailable native dispatch remain distinct. Actual Discord delivery is combined-release acceptance.",
@@ -379,31 +379,49 @@
         "PostToolUse.4.1",
         "PostToolUse.5.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "external-safety-01",
           "expected": "Ordinary and injection-shaped web, MCP, and discovery results reach the next request with the correct Safety context.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/external-delivery-current4/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/external-delivery-current4/all-wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/verification/2026-10-06-hook-completion/web-results.json",
+            "docs/verification/2026-10-06-hook-completion/wire-proof.json"
+          ]
         },
         {
           "id": "external-safety-02",
           "expected": "Supported string, object, content-block, empty, failure, and partial-success results retain their actual data.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json"
+          ]
         },
         {
           "id": "external-safety-03",
-          "expected": "Neutral nonexternal MCP results retain their documented treatment.",
-          "status": "unverified",
-          "evidence": []
+          "expected": "The pinned configuration annotates every MCP result as external data and keeps ordinary file reads neutral.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json"
+          ]
         },
         {
           "id": "external-safety-04",
           "expected": "Native ToolSearch continuation records the private gateway tool-reference limitation.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/verification/2026-10-03-hook-compatibility/README.md",
+            "docs/verification/2026-10-03-hook-compatibility/toolsearch-hook-outputs.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1504,13 +1522,17 @@
       "registrations": [
         "UserPromptSubmit.3.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "reminders-01",
           "expected": "Absent or unverified private repository configuration suppresses routing. Explicit reminder, research, and queued-work phrases retain native labels and date metadata.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/reminder-component-controls.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
         },
         {
           "id": "reminders-02",
@@ -1521,8 +1543,12 @@
         {
           "id": "reminders-03",
           "expected": "Interruption and unavailable destination preserve retry state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/reminder-component-controls.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1972,7 +1998,7 @@
       "registrations": [
         "SessionStart.1.3"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "load-context-01",
@@ -2001,8 +2027,12 @@
         {
           "id": "load-context-03",
           "expected": "Actual model requests and generated user delivery preserve the admitted context boundary.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/managed-startup-delivery-final/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/managed-startup-delivery-final/wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/managed-startup-delivery-final/revoked-result.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -2186,7 +2216,7 @@
       "registrations": [
         "Stop.1.5"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "spend-audit-01",
@@ -2204,8 +2234,12 @@
         {
           "id": "spend-audit-02",
           "expected": "Missing or malformed transcripts, repeated Stop, and interrupted marker publication preserve actual capability-audit state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-inference-pinned/result.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -2216,7 +2250,7 @@
       "registrations": [
         "Stop.1.6"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "stop-gates-01",
@@ -2245,8 +2279,13 @@
         {
           "id": "stop-gates-03",
           "expected": "Repeated gate feedback and interruption preserve continuation state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/recovery-result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/turns.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -2257,25 +2296,39 @@
       "registrations": [
         "Stop.1.7"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "memory-review-01",
           "expected": "Eligible review uses actual inference and records proposals without automatic approval.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-trigger-admitted/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-trigger-admitted/all-wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
         },
         {
           "id": "memory-review-02",
           "expected": "Ineligible, debounce, unavailable inference, and revoked synthetic memory preserve review policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-unavailable-current/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-unavailable-current/all-wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
         },
         {
           "id": "memory-review-03",
           "expected": "Concurrent or interrupted review does not duplicate publication.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-trigger-admitted/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/review-recovery-before.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/review-recovery-after.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
         }
       ],
       "release_acceptance": false
@@ -2468,19 +2521,26 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "control-limits-01",
           "expected": "WebFetch, WebSearch, and MultiEdit retain measured native CLI limitations and expanded Hermes functional evidence.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/verification/2026-10-06-hook-completion/README.md"
+          ]
         },
         {
           "id": "control-limits-02",
           "expected": "Combined output, checkpoint subject, Kitty isolation, private routing, and other intentional changes retain explicit accepted differences.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/hook-parity.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md"
+          ]
         }
       ],
       "release_acceptance": false
@@ -2564,37 +2624,61 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "installed-groups-01",
           "expected": "Complete startup and prompt groups run together in normal and resumed sessions.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/results.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/hook-trace.jsonl",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/resume-result.json"
+          ]
         },
         {
           "id": "installed-groups-02",
           "expected": "Complete pre-tool, permission, success, and failure groups preserve ordering and actual targets.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/turns.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/hook-trace.jsonl",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/host-result.json"
+          ]
         },
         {
           "id": "installed-groups-03",
           "expected": "Complete Stop and SessionEnd groups preserve delivery, durable learning, and transient cleanup.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/host-result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/delegation-delivery.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/hook-trace.jsonl"
+          ]
         },
         {
           "id": "installed-groups-04",
           "expected": "Multi-turn questions, delegation, parallel operations, denial, restart, and interruption preserve shared state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/turns.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/delegation-delivery.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/resume-result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/recovery-result.json"
+          ]
         },
         {
           "id": "installed-groups-05",
           "expected": "Clean install, update, and restore use the exact tested source and dependency manifests.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installation/installer-receipt.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-update-current8/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-update-current8/reference-installation.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
         }
       ],
       "release_acceptance": false
@@ -2696,19 +2780,29 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "regression-gates-01",
           "expected": "All paired acceptance results and retained artifact hashes pass the final evidence check.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-0.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-1.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-2.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-3.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json"
+          ]
         },
         {
           "id": "regression-gates-02",
           "expected": "The complete patch rebuild and installed source identity checks pass.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/patch-rebuild-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installation/installer-receipt.json"
+          ]
         },
         {
           "id": "regression-gates-03",
@@ -2725,8 +2819,20 @@
         {
           "id": "regression-gates-04",
           "expected": "Required regression suites pass with every skip explicitly classified against the acceptance scope.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/complete-command.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/complete-results.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/skip-classification.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/separate-modules.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/services/tests.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/remote-tools/tests.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/browser-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/usage-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-home-controls-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/reminder-component-controls.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/prompt-source-reuse.json"
+          ]
         }
       ],
       "release_acceptance": false

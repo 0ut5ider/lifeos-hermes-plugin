@@ -9,10 +9,11 @@ from pathlib import Path
 import shlex
 import subprocess
 import threading
+import time
 
 
 def run(configuration, output, plugins, modes):
-    from paired_response_server import response_handler
+    from paired_response_server import model_environment, response_handler
     from lifeos_hook_bridge.memory_context import route_identity
     from lifeos_hook_bridge.memory_runtime import MemoryRuntime
     from lifeos_hook_bridge.memory_service import MemoryConfiguration
@@ -21,7 +22,17 @@ def run(configuration, output, plugins, modes):
     plugins = plugins.resolve(strict=True)
     source = Path(spec['hook_root'])
     output.mkdir()
-    server = ThreadingHTTPServer(('127.0.0.1', 0), response_handler(config['model_environment']))
+    os.chown(output,spec['uid'],spec['gid'])
+    model_environment_path = Path(config['model_environment'])
+    rejected_environment = None
+    if modes == ['memory-review-unavailable']:
+        endpoint, model, _ = model_environment(model_environment_path)
+        rejected_environment = output/'rejected-model.env'
+        rejected_environment.write_text('ANTHROPIC_BASE_URL='+endpoint.geturl()+'\nANTHROPIC_MODEL='+model+
+                                        '\nANTHROPIC_AUTH_TOKEN=PAIR_REJECTED_REVIEW_AUTHORIZATION\n')
+        rejected_environment.chmod(0o600)
+        model_environment_path = rejected_environment
+    server = ThreadingHTTPServer(('127.0.0.1', 0), response_handler(model_environment_path))
     server.observed = []
     threading.Thread(target=server.serve_forever, daemon=True).start()
     endpoint = f'http://127.0.0.1:{server.server_port}/v1'
@@ -62,6 +73,7 @@ def run(configuration, output, plugins, modes):
                 'LIFEOS_DIR':str(root/'LIFEOS'),'LIFEOS_HOOK_SETTINGS':str(root/'settings.json'),
                 'LIFEOS_NOTIFICATION_CHANNEL':'headless','LIFEOS_ACCOUNT_HOME':str(home),
                 'LIFEOS_HOOK_MODEL_ENV':str(hook_env),'BUN_CONFIG_NO_AUTO_INSTALL':'1',
+                'PYTHONPATH':str(plugins.parent)+os.pathsep+spec['environment'].get('PYTHONPATH',''),
                 'PATH':str(binaries)+os.pathsep+str(plugins/'lifeos-hook-bridge/bin')+os.pathsep+spec['environment']['PATH'],
                 'LIFEOS_MODEL_TIER_MAP':json.dumps({name:{'provider':'custom','model':'lifecycle-fixture','effort':effort}
                     for name,effort in (('haiku','low'),('sonnet','medium'),('opus','xhigh'),('fable','xhigh'))})}
@@ -118,12 +130,68 @@ def run(configuration, output, plugins, modes):
                 environment['LIFEOS_MEMORY_CONFIGURATION']=str(configuration_path)
                 transcript.write_text(''.join(json.dumps(row)+'\n' for row in messages[:2]))
                 command=['bun',str(root/'LIFEOS/TOOLS/MemoryReviewer.ts'),'review','--input',str(transcript),'--turns','8']
+                if mode == 'memory-review-trigger':
+                    preload=home/'review-child-observer.cjs'
+                    preload.write_text('// ABOUTME: Records the actual detached reviewer output for acceptance.\n'
+                        '// ABOUTME: Preserves native arguments, environment, routing, and review policy.\n'
+                        "const cp=require('node:child_process');const fs=require('node:fs');const spawn=cp.spawn;"
+                        "cp.spawn=function(command,args,options){if(args.some(value=>String(value).endsWith('/MemoryReviewer.ts')))"
+                        "options={...options,stdio:['ignore',fs.openSync(process.env.LIFEOS_REVIEW_STDOUT,'a'),"
+                        "fs.openSync(process.env.LIFEOS_REVIEW_STDERR,'a')]};return spawn.call(this,command,args,options);};\n")
+                    environment.update(LIFEOS_REVIEW_STDOUT=str(output/'review-child.stdout'),
+                                       LIFEOS_REVIEW_STDERR=str(output/'review-child.stderr'))
+                    bun_launcher=binaries/'bun'
+                    import shutil
+                    native_bun=shutil.which('bun',path=spec['environment']['PATH'])
+                    assert native_bun,'The pinned Bun executable is required'
+                    bun_launcher.write_text('#!/bin/sh\nexec '+shlex.quote(native_bun)+' --preload '+shlex.quote(str(preload))+' "$@"\n')
+                    bun_launcher.chmod(0o755)
+                    (data/'CONFIG/memory-review.json').write_text(json.dumps({'turn_threshold':1,'min_minutes_between':30}))
+                    (root/'settings.json').write_text(json.dumps({'hooks':{'Stop':[{'hooks':[{'type':'command',
+                        'command':'bun '+str(root/'hooks/MemoryReviewFire.hook.ts')}]}]}}))
+                    driver=home/'review-trigger.py'
+                    driver.write_text('''# ABOUTME: Runs concurrent admitted native review triggers and checks real detached outcomes.
+# ABOUTME: Keeps proposals pending and verifies global cooldown across repeated Stops.
+from concurrent.futures import ThreadPoolExecutor
+import json,os,time
+from pathlib import Path
+from lifeos_hook_bridge.bridge import HookBridge
+from lifeos_hook_bridge.memory_runtime import MemoryRuntime
+root=Path.home()/'.claude'
+model=json.loads((Path.home()/'.hermes/config.yaml').read_text())['model']
+runtime=MemoryRuntime(Path.home()/'.hermes/lifeos-memory.json')
+bridges=[HookBridge(root/'settings.json',root,lifeos_home=Path.home()) for _ in range(8)]
+try:
+ def fire(index):
+  session='review-trigger-'+str(index)
+  runtime.admit({'HERMES_SESSION_PLATFORM':'chat-a','HERMES_SESSION_USER_ID':'100','HERMES_SESSION_CHAT_ID':'200',
+   'HERMES_SESSION_CHAT_TYPE':'private','HERMES_SESSION_ID':session},provider='custom',model='lifecycle-fixture',
+   base_url=model['base_url'],api_mode='chat_completions',is_first_turn=True,
+   user_message='Always confirm before deploying to the synthetic laboratory.')
+  bridges[index].environment.update(os.environ)
+  return bridges[index]._run('Stop',{'hook_event_name':'Stop','session_id':session,
+   'transcript_path':str(Path.home()/'synthetic-transcript.jsonl')})
+ with ThreadPoolExecutor(max_workers=8) as pool:results=list(pool.map(fire,range(8)))
+ assert all(row[0].returncode==0 and not row[0].stderr for rows in results for row in rows),results
+ log=root/'LIFEOS/MEMORY/OBSERVABILITY/reviewer-runs.jsonl'
+ deadline=time.monotonic()+150
+ while not log.exists() and time.monotonic()<deadline:time.sleep(.05)
+ assert log.exists(),'The actual detached reviewer did not publish its result'
+ with ThreadPoolExecutor(max_workers=8) as pool:list(pool.map(fire,range(8)))
+ fires=[json.loads(line) for line in (root/'LIFEOS/MEMORY/OBSERVABILITY/reviewer-fires.jsonl').read_text().splitlines()]
+ runs=[json.loads(line) for line in log.read_text().splitlines()]
+ assert len(fires)==1 and fires[0]['spawned'] and len(runs)==1,(fires,runs)
+ print(json.dumps({'fires':fires,'runs':runs}))
+finally:
+ for bridge in bridges:bridge.close()
+''')
+                    command=[spec['command'][0],str(driver)]
             for item in (home,*home.rglob('*')):
                 if not item.is_symlink():os.chown(item,spec['uid'],spec['gid'])
             before=len(server.observed)
             actual=subprocess.run(command,input=json.dumps({'prompt':'2/10. You claimed success after a failing command.','session_id':'native-failure-control','transcript_path':str(transcript)}) if mode=='failure-capture' else None,
                 env=environment,cwd=home,user=spec['uid'],group=spec['gid'],
-                extra_groups=[],text=True,capture_output=True,timeout=150)
+                extra_groups=[],text=True,capture_output=True,timeout=180)
             (output/(mode+'.stdout')).write_text(actual.stdout)
             (output/(mode+'.stderr')).write_text(actual.stderr)
             wire=server.observed[before:]
@@ -134,8 +202,18 @@ def run(configuration, output, plugins, modes):
                 if actual.returncode:
                     assert actual.returncode==1 and review_result['parse_ok'] and review_result['dispatch_summary']['proposals_auto_apply_failed']>0,review_result
                     assert review_result.get('error','').startswith('auto-apply failed for '),review_result
-            else:
+            elif mode != 'memory-review-unavailable':
                 assert actual.returncode==0,(mode,actual.stdout,actual.stderr)
+            if mode=='memory-review-unavailable':
+                result=json.loads(actual.stdout)
+                assert actual.returncode==1 and not result['parse_ok'] and result['error'].startswith('inference failed:'),result
+                assert requests and all(row['upstream_status']==401 for row in requests),(mode,wire)
+                queue=data/'MEMORY/OBSERVABILITY/pending-proposals.jsonl'
+                assert not queue.exists() and target.read_text()=='# Operational rules\n',result
+                results.append({'mode':mode,'returncode':actual.returncode,'review':result,
+                                'requests':len(requests),'proposal_queue_absent':True,'target_unchanged':True})
+                (output/'result.json').write_text(json.dumps(results,indent=2)+'\n')
+                continue
             assert requests and all(row['upstream_status']==200 for row in requests),(mode,wire,actual.stderr)
             assert all(row['body']['reasoning_effort']==('low' if mode=='capability-audit' else 'medium') for row in requests),(mode,wire)
             detail={'mode':mode,'command':command,'returncode':actual.returncode,'requests':len(requests)}
@@ -155,6 +233,9 @@ def run(configuration, output, plugins, modes):
                 detail['document_after']=document.read_text()
             else:
                 result=json.loads(actual.stdout)
+                if mode=='memory-review-trigger':
+                    detail['trigger']=result
+                    result=result['runs'][0]
                 assert result['parse_ok'] and not result.get('skipped'),result
                 queue=data/'MEMORY/OBSERVABILITY/pending-proposals.jsonl'
                 proposals=[json.loads(line) for line in queue.read_text().splitlines()] if queue.exists() else []
@@ -168,6 +249,8 @@ def run(configuration, output, plugins, modes):
     finally:
         (output/'all-wire.json').write_text(json.dumps(server.observed,indent=2)+'\n')
         server.shutdown();server.server_close()
+        if rejected_environment:
+            rejected_environment.unlink()
 
 
 if __name__=='__main__':
@@ -175,7 +258,8 @@ if __name__=='__main__':
     parser.add_argument('configuration',type=Path)
     parser.add_argument('output',type=Path)
     parser.add_argument('plugins',type=Path)
-    parser.add_argument('--modes',nargs='+',choices=('failure-capture','documentation','capability-audit','memory-review'),
+    parser.add_argument('--modes',nargs='+',choices=('failure-capture','documentation','capability-audit','memory-review',
+        'memory-review-trigger','memory-review-unavailable'),
         default=['failure-capture','documentation','capability-audit','memory-review'])
     args=parser.parse_args()
     run(args.configuration,args.output,args.plugins,args.modes)

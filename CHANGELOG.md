@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Stamp global memory-review admission before starting detached inference. Preserve cadence across interrupted publication.
+- Verify complete installed sessions, real external-data delivery, actual request interruption, and full dependency-tree update and restore.
+
 - Publish native completion state and ISA pages atomically. Preserve prior files after interruption.
 - Coordinate global review, capability audit, reminder routing, and work feedback state across concurrent hooks.
 - Apply actual documentation corrections from complete model JSON to reviewed documentation targets.

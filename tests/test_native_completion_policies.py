@@ -306,3 +306,24 @@ fs.writeFileSync=function(path,...args) {
                     self.assertEqual(len(current['sessions']['__pulse_strip']['ratings']),8,results)
                     ratings=root/'LIFEOS/MEMORY/LEARNING/SIGNALS/ratings.jsonl'
                     self.assertEqual(len(ratings.read_text().splitlines()),8)
+
+    def test_spend_malformed_transcript_and_repeated_stop_keep_one_actual_audit(self):
+        _,root,environment=self.fixture()
+        transcript=root/'malformed-transcript.jsonl';transcript.write_text('{invalid\n')
+        state=root/'LIFEOS/MEMORY/STATE/spend-audit-state.json';state.write_text('{invalid')
+        payload={'hook_event_name':'Stop','session_id':'repeat-audit','transcript_path':str(transcript)}
+        first=self.run_hook(root,environment,'SpendAuditor',payload)
+        self.assertEqual((first.returncode,first.stdout,first.stderr),(0,'',''))
+        marked=json.loads(state.read_text());self.assertIn('repeat-audit',marked)
+        log=root/'LIFEOS/MEMORY/OBSERVABILITY/spend-audit.jsonl'
+        deadline=time.monotonic()+5
+        while not log.exists() and time.monotonic()<deadline:time.sleep(.02)
+        self.assertTrue(log.exists())
+        rows=[json.loads(line) for line in log.read_text().splitlines()]
+        self.assertEqual(len(rows),1,rows)
+        self.assertEqual((rows[0]['audited'],rows[0]['reason']),(False,'not-eligible'))
+        for _ in range(3):
+            result=self.run_hook(root,environment,'SpendAuditor',payload)
+            self.assertEqual((result.returncode,result.stdout,result.stderr),(0,'',''))
+        self.assertEqual(json.loads(state.read_text()),marked)
+        self.assertEqual([json.loads(line) for line in log.read_text().splitlines()],rows)

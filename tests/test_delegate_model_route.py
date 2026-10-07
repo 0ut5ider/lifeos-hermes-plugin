@@ -23,6 +23,7 @@ class DelegateModelRouteTests(unittest.TestCase):
                 verdict = bridge.pre_tool_call("delegate_task", args, session_id="tier-route")
                 self.assertEqual(verdict, {"action": "modify", "args": {
                     "tasks": [{"goal": "Inspect the report", "model": "largest-local",
+                               "_lifeos_requested_model": "fable",
                                "reasoning_effort": "ultra"}],
                 }})
             finally:

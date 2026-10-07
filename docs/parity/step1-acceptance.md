@@ -1,10 +1,10 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 128 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-07. This checklist implements the nine-package plan accepted by Adrian. 150 of 152 scenarios have verified evidence. Enabled reminder delivery needs an approved private GitHub test repository. Actual Discord delivery remains combined-release acceptance.
 
-The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
+The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Native web and batch dispatch limits remain distinct from functional handler evidence.
 
-The [machine-readable checklist](step1-acceptance.json) binds the registration inventory. The [effect ledger](handler-effects.json) retains earlier selected passing cases. The final gate must validate both records.
+The [machine-readable checklist](step1-acceptance.json) binds the registration inventory. The [effect ledger](handler-effects.json) retains paired comparisons and current acceptance evidence. The [final installed controls](../verification/2026-10-07-step1/installed-release-controls/README.md) record actual requests, source identity, regression results, and limits.
 
 ## Requirements
 
@@ -70,10 +70,10 @@ Registrations: PreToolUse.5.1.
 
 Registrations: PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.1.
 
-- [ ] `external-safety-01`: Ordinary and injection-shaped web, MCP, and discovery results reach the next request with the correct Safety context.
-- [ ] `external-safety-02`: Supported string, object, content-block, empty, failure, and partial-success results retain their actual data.
-- [ ] `external-safety-03`: Neutral nonexternal MCP results retain their documented treatment.
-- [ ] `external-safety-04`: Native ToolSearch continuation records the private gateway tool-reference limitation.
+- [x] `external-safety-01`: Ordinary and injection-shaped web, MCP, and discovery results reach the next request with the correct Safety context.
+- [x] `external-safety-02`: Supported string, object, content-block, empty, failure, and partial-success results retain their actual data.
+- [x] `external-safety-03`: The pinned configuration annotates every MCP result as external data and keeps ordinary file reads neutral.
+- [x] `external-safety-04`: Native ToolSearch continuation records the private gateway tool-reference limitation.
 
 ### permission-safety (package 2)
 
@@ -226,9 +226,9 @@ Registrations: UserPromptSubmit.2.1.
 
 Registrations: UserPromptSubmit.3.1.
 
-- [ ] `reminders-01`: Absent or unverified private repository configuration suppresses routing. Explicit reminder, research, and queued-work phrases retain native labels and date metadata.
+- [x] `reminders-01`: Absent or unverified private repository configuration suppresses routing. Explicit reminder, research, and queued-work phrases retain native labels and date metadata.
 - [ ] `reminders-02`: Enabled supported reminder routing uses the configured test destination without duplicate operation.
-- [ ] `reminders-03`: Interruption and unavailable destination preserve retry state.
+- [x] `reminders-03`: Interruption and unavailable destination preserve retry state.
 
 ### version-drift (package 5)
 
@@ -306,7 +306,7 @@ Registrations: SessionStart.1.3.
 
 - [x] `load-context-01`: Enabled, disabled, missing, and synthetic managed sources retain identity and admission policy.
 - [x] `load-context-02`: Active work and resumed sessions supply applicable context.
-- [ ] `load-context-03`: Actual model requests and generated user delivery preserve the admitted context boundary.
+- [x] `load-context-03`: Actual model requests and generated user delivery preserve the admitted context boundary.
 
 ### freshness (package 6)
 
@@ -348,7 +348,7 @@ Registrations: Stop.1.4.
 Registrations: Stop.1.5.
 
 - [x] `spend-audit-01`: Below, at, and above the prompt-length floor follow actual capability-use policy. Eligible audit uses real low-effort inference.
-- [ ] `spend-audit-02`: Missing or malformed transcripts, repeated Stop, and interrupted marker publication preserve actual capability-audit state.
+- [x] `spend-audit-02`: Missing or malformed transcripts, repeated Stop, and interrupted marker publication preserve actual capability-audit state.
 
 ### stop-gates (package 6)
 
@@ -356,15 +356,15 @@ Registrations: Stop.1.6.
 
 - [x] `stop-gates-01`: Required format, verification, writing, stale-ISA, and structural gates return the specified continuation or block.
 - [x] `stop-gates-02`: Satisfied gates permit completion through the actual final transcript.
-- [ ] `stop-gates-03`: Repeated gate feedback and interruption preserve continuation state.
+- [x] `stop-gates-03`: Repeated gate feedback and interruption preserve continuation state.
 
 ### memory-review (package 6)
 
 Registrations: Stop.1.7.
 
-- [ ] `memory-review-01`: Eligible review uses actual inference and records proposals without automatic approval.
-- [ ] `memory-review-02`: Ineligible, debounce, unavailable inference, and revoked synthetic memory preserve review policy.
-- [ ] `memory-review-03`: Concurrent or interrupted review does not duplicate publication.
+- [x] `memory-review-01`: Eligible review uses actual inference and records proposals without automatic approval.
+- [x] `memory-review-02`: Ineligible, debounce, unavailable inference, and revoked synthetic memory preserve review policy.
+- [x] `memory-review-03`: Concurrent or interrupted review does not duplicate publication.
 
 ### event-contract (package 2)
 
@@ -377,18 +377,18 @@ Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, P
 
 Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, PreToolUse.4.1, PreToolUse.5.1, PostToolUse.1.1, PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.1, PostToolUse.6.1, PostToolUse.7.1, PostToolUse.8.1, PostToolUse.8.2, PostToolUse.8.3, PostToolUse.8.4, PostToolUse.8.5, PostToolUse.8.6, PostToolUse.8.7, PostToolUse.9.1, PostToolUse.9.2, PostToolUse.9.3, PostToolUse.9.4, PostToolUse.9.5, PostToolUse.9.6, PostToolUse.9.7, PostToolUse.10.1, PostToolUse.10.2, PostToolUse.10.3, PostToolUse.10.4, PostToolUse.10.5, PostToolUse.10.6, PostToolUse.10.7, PostToolUse.11.1, PostToolUse.12.1, PostToolUse.12.2, PostToolUse.13.1, SessionEnd.1.1, SessionEnd.1.2, SessionEnd.1.3, SessionEnd.1.4, SessionEnd.1.5, SessionEnd.1.6, UserPromptSubmit.1.1, UserPromptSubmit.2.1, UserPromptSubmit.3.1, UserPromptSubmit.4.1, UserPromptSubmit.5.1, UserPromptSubmit.6.1, UserPromptSubmit.7.1, UserPromptSubmit.8.1, UserPromptSubmit.9.1, PostToolUseFailure.1.1, PostToolUseFailure.2.1, PostToolUseFailure.3.1, TaskCreated.1.1, ConfigChange.1.1, SessionStart.1.1, SessionStart.1.2, SessionStart.1.3, SessionStart.1.4, SessionStart.1.5, Stop.1.1, Stop.1.2, Stop.1.3, Stop.1.4, Stop.1.5, Stop.1.6, Stop.1.7, Stop.2.1, StopFailure.1.1, PermissionRequest.1.1, PermissionRequest.2.1.
 
-- [ ] `control-limits-01`: WebFetch, WebSearch, and MultiEdit retain measured native CLI limitations and expanded Hermes functional evidence.
-- [ ] `control-limits-02`: Combined output, checkpoint subject, Kitty isolation, private routing, and other intentional changes retain explicit accepted differences.
+- [x] `control-limits-01`: WebFetch, WebSearch, and MultiEdit retain measured native CLI limitations and expanded Hermes functional evidence.
+- [x] `control-limits-02`: Combined output, checkpoint subject, Kitty isolation, private routing, and other intentional changes retain explicit accepted differences.
 
 ### installed-groups (package 8)
 
 Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, PreToolUse.4.1, PreToolUse.5.1, PostToolUse.1.1, PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.1, PostToolUse.6.1, PostToolUse.7.1, PostToolUse.8.1, PostToolUse.8.2, PostToolUse.8.3, PostToolUse.8.4, PostToolUse.8.5, PostToolUse.8.6, PostToolUse.8.7, PostToolUse.9.1, PostToolUse.9.2, PostToolUse.9.3, PostToolUse.9.4, PostToolUse.9.5, PostToolUse.9.6, PostToolUse.9.7, PostToolUse.10.1, PostToolUse.10.2, PostToolUse.10.3, PostToolUse.10.4, PostToolUse.10.5, PostToolUse.10.6, PostToolUse.10.7, PostToolUse.11.1, PostToolUse.12.1, PostToolUse.12.2, PostToolUse.13.1, SessionEnd.1.1, SessionEnd.1.2, SessionEnd.1.3, SessionEnd.1.4, SessionEnd.1.5, SessionEnd.1.6, UserPromptSubmit.1.1, UserPromptSubmit.2.1, UserPromptSubmit.3.1, UserPromptSubmit.4.1, UserPromptSubmit.5.1, UserPromptSubmit.6.1, UserPromptSubmit.7.1, UserPromptSubmit.8.1, UserPromptSubmit.9.1, PostToolUseFailure.1.1, PostToolUseFailure.2.1, PostToolUseFailure.3.1, TaskCreated.1.1, ConfigChange.1.1, SessionStart.1.1, SessionStart.1.2, SessionStart.1.3, SessionStart.1.4, SessionStart.1.5, Stop.1.1, Stop.1.2, Stop.1.3, Stop.1.4, Stop.1.5, Stop.1.6, Stop.1.7, Stop.2.1, StopFailure.1.1, PermissionRequest.1.1, PermissionRequest.2.1.
 
-- [ ] `installed-groups-01`: Complete startup and prompt groups run together in normal and resumed sessions.
-- [ ] `installed-groups-02`: Complete pre-tool, permission, success, and failure groups preserve ordering and actual targets.
-- [ ] `installed-groups-03`: Complete Stop and SessionEnd groups preserve delivery, durable learning, and transient cleanup.
-- [ ] `installed-groups-04`: Multi-turn questions, delegation, parallel operations, denial, restart, and interruption preserve shared state.
-- [ ] `installed-groups-05`: Clean install, update, and restore use the exact tested source and dependency manifests.
+- [x] `installed-groups-01`: Complete startup and prompt groups run together in normal and resumed sessions.
+- [x] `installed-groups-02`: Complete pre-tool, permission, success, and failure groups preserve ordering and actual targets.
+- [x] `installed-groups-03`: Complete Stop and SessionEnd groups preserve delivery, durable learning, and transient cleanup.
+- [x] `installed-groups-04`: Multi-turn questions, delegation, parallel operations, denial, restart, and interruption preserve shared state.
+- [x] `installed-groups-05`: Clean install, update, and restore use the exact tested source and dependency manifests.
 
 ### release-adapter (package 8)
 
@@ -400,7 +400,7 @@ Registrations: PreToolUse.4.1, PostToolUse.6.1.
 
 Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, PreToolUse.4.1, PreToolUse.5.1, PostToolUse.1.1, PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.1, PostToolUse.6.1, PostToolUse.7.1, PostToolUse.8.1, PostToolUse.8.2, PostToolUse.8.3, PostToolUse.8.4, PostToolUse.8.5, PostToolUse.8.6, PostToolUse.8.7, PostToolUse.9.1, PostToolUse.9.2, PostToolUse.9.3, PostToolUse.9.4, PostToolUse.9.5, PostToolUse.9.6, PostToolUse.9.7, PostToolUse.10.1, PostToolUse.10.2, PostToolUse.10.3, PostToolUse.10.4, PostToolUse.10.5, PostToolUse.10.6, PostToolUse.10.7, PostToolUse.11.1, PostToolUse.12.1, PostToolUse.12.2, PostToolUse.13.1, SessionEnd.1.1, SessionEnd.1.2, SessionEnd.1.3, SessionEnd.1.4, SessionEnd.1.5, SessionEnd.1.6, UserPromptSubmit.1.1, UserPromptSubmit.2.1, UserPromptSubmit.3.1, UserPromptSubmit.4.1, UserPromptSubmit.5.1, UserPromptSubmit.6.1, UserPromptSubmit.7.1, UserPromptSubmit.8.1, UserPromptSubmit.9.1, PostToolUseFailure.1.1, PostToolUseFailure.2.1, PostToolUseFailure.3.1, TaskCreated.1.1, ConfigChange.1.1, SessionStart.1.1, SessionStart.1.2, SessionStart.1.3, SessionStart.1.4, SessionStart.1.5, Stop.1.1, Stop.1.2, Stop.1.3, Stop.1.4, Stop.1.5, Stop.1.6, Stop.1.7, Stop.2.1, StopFailure.1.1, PermissionRequest.1.1, PermissionRequest.2.1.
 
-- [ ] `regression-gates-01`: All paired acceptance results and retained artifact hashes pass the final evidence check.
-- [ ] `regression-gates-02`: The complete patch rebuild and installed source identity checks pass.
+- [x] `regression-gates-01`: All paired acceptance results and retained artifact hashes pass the final evidence check.
+- [x] `regression-gates-02`: The complete patch rebuild and installed source identity checks pass.
 - [x] `regression-gates-03`: Concurrent service admission errors are instrumented and resolved without weakening admission.
-- [ ] `regression-gates-04`: Required regression suites pass with every skip explicitly classified against the acceptance scope.
+- [x] `regression-gates-04`: Required regression suites pass with every skip explicitly classified against the acceptance scope.
