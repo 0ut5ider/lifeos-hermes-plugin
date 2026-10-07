@@ -6,6 +6,12 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Preserve learning identity across concurrent sessions and repeated capture days.
+- Coordinate installed learning and cleanup programs during synchronous and detached execution.
+- Preserve the prior version warning marker after interrupted native publication.
+- Record requested child tiers and actual reasoning effort alongside selected and observed models.
+- Verify actual private child effort and API gateway watchdog delivery.
+
 - Correlate native child starts and stops with actual Hermes subagent callbacks.
 - Record the observed response model separately from the selected child model.
 - Coalesce current native clock context and discard stale asynchronous clock results.

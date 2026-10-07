@@ -34,7 +34,8 @@ class ChildLifecycleTests(unittest.TestCase):
             def run(index):
                 values = {'parent_session_id': 'parent', 'child_session_id': 'child-' + str(index),
                     'child_goal': args['goal'], 'child_role': 'leaf', 'child_model': 'private-child-model',
-                    'child_provider': 'custom'}
+                    'child_provider': 'custom', 'child_requested_model': 'haiku' if index % 2 == 0 else '',
+                    'child_reasoning_config': {'effort': 'low' if index % 2 == 0 else 'xhigh'}}
                 bridge.child_start(**values)
                 bridge.child_start(**values)
                 bridge.observe_api_response(session_id=values['child_session_id'], response_model='actual-child-model', provider='private')
@@ -56,6 +57,9 @@ class ChildLifecycleTests(unittest.TestCase):
             self.assertEqual({row['subagent_id'] for row in starts}, {row['subagent_id'] for row in stops})
             self.assertEqual(len({row['subagent_id'] for row in starts}), count)
             self.assertTrue(all(row['subagent_model'] == 'private-child-model' for row in starts))
+            self.assertEqual(sum(row.get('subagent_requested_model') == 'haiku' for row in starts), 4)
+            self.assertEqual({row.get('subagent_reasoning_effort') for row in starts}, {'low', 'xhigh'})
+            self.assertEqual(sum(row['subagent_level'] == 'session-inherited' for row in starts), 4)
             self.assertTrue(all(row.get('subagent_observed_model') == 'actual-child-model' for row in stops), stops)
             self.assertEqual(json.loads((root / 'LIFEOS/MEMORY/OBSERVABILITY/agent-starts.json').read_text()), {})
             bridge.child_start(parent_session_id='parent', child_session_id='unobserved', child_goal='No response model')

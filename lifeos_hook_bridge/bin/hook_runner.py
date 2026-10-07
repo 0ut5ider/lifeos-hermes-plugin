@@ -4,11 +4,13 @@
 from __future__ import annotations
 
 import json
+import importlib.util
 import os
 import subprocess
 import sys
 import tempfile
 import time
+from contextlib import nullcontext
 from pathlib import Path
 
 
@@ -21,7 +23,7 @@ def main() -> int:
     if request.get("remote"):
         return _run_remote(request)
     try:
-        with tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as output:
+        with _state_lock(request), tempfile.TemporaryFile(mode="w+t", encoding="utf-8") as output:
             result = subprocess.run(
                 ["/bin/bash", "-c", request["command"]],
                 input=json.dumps(request["payload"]), text=True,
@@ -36,6 +38,21 @@ def main() -> int:
         return result.returncode
     except (OSError, subprocess.TimeoutExpired):
         return 1
+
+
+def _state_lock(request: dict):
+    key = request.get("state_key")
+    if key is None:
+        return nullcontext()
+    if not isinstance(key, str) or not isinstance(request.get("state_root"), str):
+        raise ValueError("Native hook state scope is invalid")
+    path = Path(__file__).resolve().parents[1] / "hook_state.py"
+    spec = importlib.util.spec_from_file_location("lifeos_hook_state", path)
+    if spec is None or spec.loader is None:
+        raise ImportError("Native hook state coordination is unavailable")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module.session_state(Path(request["state_root"]), key)
 
 
 def _run_remote(request: dict) -> int:

@@ -102,7 +102,7 @@
       "registrations": [
         "PreToolUse.3.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "pulse-agent-01",
@@ -116,14 +116,28 @@
         {
           "id": "pulse-agent-02",
           "expected": "The live gateway delivers asynchronous policy feedback to the parent.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/proof.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/result.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/wire.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/host.log"
+          ]
         },
         {
           "id": "pulse-agent-03",
           "expected": "Unavailable daemon, malformed decision, restart denial, and watchdog cleanup preserve their policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_pulse_guards.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-lifecycle-final.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-decision-final.txt"
+          ]
         }
       ],
       "release_acceptance": false
@@ -135,13 +149,20 @@
         "PreToolUse.3.2",
         "PostToolUse.1.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "agent-lifecycle-01",
           "expected": "Inherited and explicit tier metadata describe the served model.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/tiers-final/proof.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/tiers-final/result.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/tiers-final/wire.json"
+          ]
         },
         {
           "id": "agent-lifecycle-02",
@@ -168,8 +189,15 @@
         {
           "id": "agent-lifecycle-04",
           "expected": "Cancellation and parent shutdown clean up watchdogs and incomplete child state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_pulse_guards.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-lifecycle-final.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-decision-final.txt",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/cancel-carrier-final3/result.json"
+          ]
         },
         {
           "id": "agent-lifecycle-05",
@@ -1100,19 +1128,33 @@
       "registrations": [
         "SessionEnd.1.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "work-learning-01",
           "expected": "Eligible completed work produces learning; ineligible, incomplete, and repeated sessions preserve eligibility rules.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
         },
         {
           "id": "work-learning-02",
           "expected": "Concurrent learning and cleanup in both scheduling orders preserve the durable result.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1123,19 +1165,33 @@
       "registrations": [
         "SessionEnd.1.2"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "session-cleanup-01",
           "expected": "Normal, resumed, failed, and interrupted sessions remove only applicable transient work.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
         },
         {
           "id": "session-cleanup-02",
           "expected": "Concurrent sessions retain each other's active state and durable results.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1350,25 +1406,46 @@
       "registrations": [
         "UserPromptSubmit.4.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "version-drift-01",
           "expected": "Changed-file count, tag age, no tag, bump in flight, and recent warning obey the thresholds.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_version_drift.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-before.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-after.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-boundary-final.txt"
+          ]
         },
         {
           "id": "version-drift-02",
           "expected": "The exact nag interval boundary and next-turn asynchronous delivery preserve warning policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_version_drift.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-before.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-after.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-boundary-final.txt"
+          ]
         },
         {
           "id": "version-drift-03",
           "expected": "Interrupted execution preserves prior valid warning state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_version_drift.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-before.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-after.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-boundary-final.txt"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1472,8 +1549,12 @@
         {
           "id": "time-context-01",
           "expected": "Valid UTC, owner timezone, and invalid timezone follow the clock contract.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-05-paired-time-context/README.md",
+            "docs/verification/2026-10-05-paired-time-context/clock-proof.json",
+            "docs/verification/2026-10-05-paired-time-context/paired-results.json"
+          ]
         },
         {
           "id": "time-context-02",

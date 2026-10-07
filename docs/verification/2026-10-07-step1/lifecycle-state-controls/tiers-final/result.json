@@ -1,0 +1,369 @@
+{
+  "actual_parent_response": "PAIR_PARENT_DISPATCHED",
+  "actual_completions": [
+    {
+      "type": "async_delegation",
+      "delegation_id": "deleg_e612b153",
+      "session_key": "20261007_040650_3a156e",
+      "origin_ui_session_id": "",
+      "origin_session_id": "",
+      "parent_session_id": "20261007_040650_3a156e",
+      "goal": "2 parallel subagents: Reply with exactly: PAIR_CHILD_A. Do not; Reply with exactly: PAIR_CHILD_B. Do not",
+      "goals": [
+        "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A.",
+        "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B."
+      ],
+      "context": null,
+      "toolsets": null,
+      "role": "leaf",
+      "model": null,
+      "status": "completed",
+      "is_batch": true,
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 2.7,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3364,
+            "output": 37
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 2.83,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3376,
+            "output": 43
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-1.log"
+        }
+      ],
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-1.log"
+      ],
+      "error": null,
+      "total_duration_seconds": 3.19,
+      "dispatched_at": 1791346018.177496,
+      "completed_at": 1791346021.1538882
+    }
+  ],
+  "native_events": [
+    {
+      "timestamp": "2026-10-07T04:06:58+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_040650_3a156e",
+      "subagent_id": "20261007_040650_3a156e::Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, n [20261007_040657_bbbfde]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "low",
+      "subagent_requested_model": "haiku",
+      "subagent_reasoning_effort": "low",
+      "description": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, n [20261007_040657_bbbfde]",
+      "prompt_preview": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A."
+    },
+    {
+      "timestamp": "2026-10-07T04:06:58+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_040650_3a156e",
+      "subagent_id": "20261007_040650_3a156e::Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, n [20261007_040658_730454]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "session-inherited",
+      "subagent_reasoning_effort": "xhigh",
+      "description": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, n [20261007_040658_730454]",
+      "prompt_preview": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B."
+    },
+    {
+      "timestamp": "2026-10-07T04:07:01+00:00",
+      "event": "subagent_stop",
+      "subagent_observed_model": "flashnext-w4a16-fp8ple",
+      "session_id": "20261007_040650_3a156e",
+      "subagent_id": "20261007_040650_3a156e::Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, n [20261007_040657_bbbfde]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, n [20261007_040657_bbbfde]",
+      "duration_seconds": 3
+    },
+    {
+      "timestamp": "2026-10-07T04:07:01+00:00",
+      "event": "subagent_stop",
+      "subagent_observed_model": "flashnext-w4a16-fp8ple",
+      "session_id": "20261007_040650_3a156e",
+      "subagent_id": "20261007_040650_3a156e::Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, n [20261007_040658_730454]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, n [20261007_040658_730454]",
+      "duration_seconds": 3
+    }
+  ],
+  "parent_session_id": "20261007_040650_3a156e",
+  "progress": [
+    {
+      "event": "tool.started",
+      "tool": "delegate_task"
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A.",
+      "subagent_id": "sa-0-09132498",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040657_bbbfde",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B.",
+      "subagent_id": "sa-1-fe7b407b",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040658_730454",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A.",
+      "subagent_id": "sa-0-09132498",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040657_bbbfde",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B.",
+      "subagent_id": "sa-1-fe7b407b",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040658_730454",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0
+    },
+    {
+      "event": "tool.completed",
+      "tool": "delegate_task",
+      "duration": 0.24905061721801758,
+      "is_error": false,
+      "result": "{\"status\": \"dispatched\", \"mode\": \"background\", \"count\": 2, \"delegation_id\": \"deleg_e612b153\", \"goals\": [\"Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A.\", \"Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B.\"], \"note\": \"2 subagents are running in parallel in the background as 1 completion unit(s); each unit's results re-enter the conversation as their own new message when THAT unit finishes. Results are delivered only after you END YOUR TURN: do anything that does not depend on them, then stop with a one-line status. Do not poll transcripts or artifacts to wait for them.\", \"subagent_ids\": [\"sa-0-09132498\", \"sa-1-fe7b407b\"], \"control_hint\": \"While a child runs you can orchestrate it live with this same tool: delegate_task(action='list') to see live children, action='steer' with subagent_id + message to redirect one, action='stop' with subagent_id to end one early.\", \"live_transcripts\": [\"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-0.log\", \"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-1.log\"], \"live_transcripts_hint\": \"Each subagent streams a human-readable transcript of its operations to the file listed above (append-only, one per task). Read or `tail -f` these paths at any time to watch a child work while it runs.\"}"
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A.",
+      "subagent_id": "sa-0-09132498",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040657_bbbfde",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_A. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_A.",
+      "subagent_id": "sa-0-09132498",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040657_bbbfde",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0,
+      "status": "completed",
+      "duration_seconds": 2.7,
+      "summary": "PAIR_CHILD_A",
+      "input_tokens": 3364,
+      "output_tokens": 37,
+      "reasoning_tokens": 31,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "cost_usd": 0.0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B.",
+      "subagent_id": "sa-1-fe7b407b",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040658_730454",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly: PAIR_CHILD_B. Do not use any tools \u2014 no terminal, no file, no web, nothing. Your entire answer is the single token PAIR_CHILD_B.",
+      "subagent_id": "sa-1-fe7b407b",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_040658_730454",
+      "delegation_id": "deleg_e612b153",
+      "tool_count": 0,
+      "status": "completed",
+      "duration_seconds": 2.83,
+      "summary": "PAIR_CHILD_B",
+      "input_tokens": 3376,
+      "output_tokens": 43,
+      "reasoning_tokens": 37,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "cost_usd": 0.0
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    }
+  ],
+  "gateway_delivery": null,
+  "actual_watchdog_events": [],
+  "parent_completion_response": "Delegation unit deleg_e612b153 complete \u2014 both children returned their required tokens:\n\n- Task 1: PAIR_CHILD_A (completed, 1 api call, 2.7s)\n- Task 2: PAIR_CHILD_B (completed, 1 api call, 2.83s)\n\nNo follow-up action needed; the control ran as intended.",
+  "durable_delivery": {
+    "delegation_id": "deleg_e612b153",
+    "origin_session": "20261007_040650_3a156e",
+    "state": "completed",
+    "dispatched_at": 1791346018.177496,
+    "completed_at": 1791346021.1538882,
+    "result": {
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 2.7,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3364,
+            "output": 37
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 2.83,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3376,
+            "output": 43
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-1.log"
+        }
+      ],
+      "total_duration_seconds": 3.19,
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/tiers-final/.hermes/cache/delegation/live/deleg_e612b153/task-1.log"
+      ]
+    },
+    "delivery_state": "delivered",
+    "delivery_attempts": 1,
+    "origin_session_id": ""
+  },
+  "main_callbacks": [
+    {
+      "session_id": "20261007_040650_3a156e",
+      "event": "SessionStart"
+    },
+    {
+      "session_id": "20261007_040650_3a156e",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_040650_3a156e",
+      "event": "Stop"
+    },
+    {
+      "session_id": "20261007_040650_3a156e",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_040650_3a156e",
+      "event": "Stop"
+    }
+  ]
+}

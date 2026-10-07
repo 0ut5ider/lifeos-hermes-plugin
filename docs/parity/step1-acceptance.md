@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 66 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 78 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -30,17 +30,17 @@ Registrations: PreToolUse.2.1.
 Registrations: PreToolUse.3.1.
 
 - [x] `pulse-agent-01`: Foreground, background, fast-model, and timing agents receive their applicable policy.
-- [ ] `pulse-agent-02`: The live gateway delivers asynchronous policy feedback to the parent.
-- [ ] `pulse-agent-03`: Unavailable daemon, malformed decision, restart denial, and watchdog cleanup preserve their policy.
+- [x] `pulse-agent-02`: The live gateway delivers asynchronous policy feedback to the parent.
+- [x] `pulse-agent-03`: Unavailable daemon, malformed decision, restart denial, and watchdog cleanup preserve their policy.
 
 ### agent-lifecycle (package 5)
 
 Registrations: PreToolUse.3.2, PostToolUse.1.1.
 
-- [ ] `agent-lifecycle-01`: Inherited and explicit tier metadata describe the served model.
+- [x] `agent-lifecycle-01`: Inherited and explicit tier metadata describe the served model.
 - [x] `agent-lifecycle-02`: Background success and failure correlate one start with one completion.
 - [x] `agent-lifecycle-03`: Concurrent children retain separate starts, results, and parent delivery.
-- [ ] `agent-lifecycle-04`: Cancellation and parent shutdown clean up watchdogs and incomplete child state.
+- [x] `agent-lifecycle-04`: Cancellation and parent shutdown clean up watchdogs and incomplete child state.
 - [x] `agent-lifecycle-05`: Child dispatch does not run main-session lifecycle hooks.
 
 ### question-state (package 5)
@@ -164,15 +164,15 @@ Registrations: PostToolUse.12.1, PostToolUse.12.2, PostToolUseFailure.3.1.
 
 Registrations: SessionEnd.1.1.
 
-- [ ] `work-learning-01`: Eligible completed work produces learning; ineligible, incomplete, and repeated sessions preserve eligibility rules.
-- [ ] `work-learning-02`: Concurrent learning and cleanup in both scheduling orders preserve the durable result.
+- [x] `work-learning-01`: Eligible completed work produces learning; ineligible, incomplete, and repeated sessions preserve eligibility rules.
+- [x] `work-learning-02`: Concurrent learning and cleanup in both scheduling orders preserve the durable result.
 
 ### session-cleanup (package 6)
 
 Registrations: SessionEnd.1.2.
 
-- [ ] `session-cleanup-01`: Normal, resumed, failed, and interrupted sessions remove only applicable transient work.
-- [ ] `session-cleanup-02`: Concurrent sessions retain each other's active state and durable results.
+- [x] `session-cleanup-01`: Normal, resumed, failed, and interrupted sessions remove only applicable transient work.
+- [x] `session-cleanup-02`: Concurrent sessions retain each other's active state and durable results.
 
 ### usage-counts (package 6)
 
@@ -234,9 +234,9 @@ Registrations: UserPromptSubmit.3.1.
 
 Registrations: UserPromptSubmit.4.1.
 
-- [ ] `version-drift-01`: Changed-file count, tag age, no tag, bump in flight, and recent warning obey the thresholds.
-- [ ] `version-drift-02`: The exact nag interval boundary and next-turn asynchronous delivery preserve warning policy.
-- [ ] `version-drift-03`: Interrupted execution preserves prior valid warning state.
+- [x] `version-drift-01`: Changed-file count, tag age, no tag, bump in flight, and recent warning obey the thresholds.
+- [x] `version-drift-02`: The exact nag interval boundary and next-turn asynchronous delivery preserve warning policy.
+- [x] `version-drift-03`: Interrupted execution preserves prior valid warning state.
 
 ### memory-turn (package 6)
 
@@ -266,7 +266,7 @@ Registrations: UserPromptSubmit.7.1, PostToolUseFailure.2.1.
 
 Registrations: UserPromptSubmit.8.1.
 
-- [ ] `time-context-01`: Valid UTC, owner timezone, and invalid timezone follow the clock contract.
+- [x] `time-context-01`: Valid UTC, owner timezone, and invalid timezone follow the clock contract.
 - [x] `time-context-02`: Pinned asynchronous output reaches the next turn without duplicated stale clock context.
 - [ ] `time-context-03`: Interruption and synthetic managed source preserve admission and delivery policy.
 

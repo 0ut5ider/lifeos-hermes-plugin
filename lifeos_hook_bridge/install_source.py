@@ -56,6 +56,8 @@ LIFEOS_PATCHES = (
     "lifeos-pulse-hook-switch.patch",
     "lifeos-evaluation-publication.patch",
     "lifeos-system-surface.patch",
+    "lifeos-version-drift-state.patch",
+    "lifeos-work-learning-identity.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")

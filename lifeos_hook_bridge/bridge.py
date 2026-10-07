@@ -206,10 +206,22 @@ def _native_post_hook(command: str, root: Path) -> str:
             break
     path = Path(token).expanduser().resolve()
     for name in ("ISASync", "ISAStaleWriteGuard", "PostToolObserver", "LoopDetector",
-                 "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet", "AgentInvocation", "TimeContext"):
+                 "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet", "AgentInvocation", "TimeContext",
+                 "WorkCompletionLearning", "SessionCleanup"):
         if path == (root / "hooks" / (name + ".hook.ts")).resolve():
             return name
     return ""
+
+
+def _native_state_key(command: str, root: Path, event: str, session_id: str) -> str | None:
+    native = _native_post_hook(command, root)
+    if native == "AgentInvocation":
+        return "global-agent-invocations"
+    if native in {"WorkCompletionLearning", "SessionCleanup"}:
+        return "global-work-lifecycle"
+    if event in {"PostToolUse", "PostToolUseFailure"} and native:
+        return session_id
+    return None
 
 
 def _is_native_checkpoint(command: str) -> bool:
@@ -1267,7 +1279,8 @@ class HookBridge:
 
     def child_start(
         self, parent_session_id: str = "", child_session_id: str = "", child_goal: str = "",
-        child_role: str = "", child_model: str = "", child_provider: str = "", **_: Any,
+        child_role: str = "", child_model: str = "", child_provider: str = "",
+        child_requested_model: str = "", child_reasoning_config: Any = None, **_: Any,
     ) -> None:
         if not self.child_lifecycle_enabled or not parent_session_id or not child_session_id:
             return
@@ -1280,7 +1293,12 @@ class HookBridge:
             }
             self.child_invocations[child_session_id] = (parent_session_id, native_input)
             payload = self._payload("PreToolUse", parent_session_id, tool_name="Agent", tool_input=native_input)
-            payload["hermes_runtime"] = {"model": child_model, "provider": child_provider}
+            effort = child_reasoning_config.get("effort", "") if isinstance(child_reasoning_config, dict) else ""
+            payload["hermes_runtime"] = {
+                "model": child_model, "provider": child_provider,
+                "child_requested_model": child_requested_model if isinstance(child_requested_model, str) else "",
+                "reasoning_effort": effort if isinstance(effort, str) else "",
+            }
             self._run("PreToolUse", payload, "Agent", child_tracking_only=True)
 
     def child_stop(
@@ -1463,10 +1481,8 @@ class HookBridge:
         try:
             from contextlib import nullcontext
             from .hook_state import session_state
-            native = _native_post_hook(command, self.root)
-            lock = (session_state(self.root, "global-agent-invocations") if native == "AgentInvocation" else
-                    session_state(self.root, payload.get("session_id", ""))
-                    if event in {"PostToolUse", "PostToolUseFailure"} and native else nullcontext())
+            key = _native_state_key(command, self.root, event, payload.get("session_id", ""))
+            lock = session_state(self.root, key) if key is not None else nullcontext()
             with lock:
                 process = subprocess.run(
                     ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
@@ -1516,6 +1532,8 @@ class HookBridge:
                            "cwd": process_cwd, "environment": environment,
                            "context_kind": "clock" if _native_post_hook(command, self.root) == "TimeContext" else "",
                            "queued_at": time.time(),
+                           "state_key": _native_state_key(command, self.root, payload.get("hook_event_name", ""), session_id),
+                           "state_root": str(self.root),
                            "result_path": str(result_path) if result_path else None}, spool)
             self._start_async_runner(spool_path, process_cwd, environment)
         except (OSError, subprocess.TimeoutExpired) as error:

@@ -1,0 +1,14 @@
+======================================================================
+FAIL: test_repeat_finalization_does_not_duplicate_eligible_learning (test_native_work_lifecycle.NativeWorkLifecycleTests.test_repeat_finalization_does_not_duplicate_eligible_learning)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_work_lifecycle.py", line 173, in test_repeat_finalization_does_not_duplicate_eligible_learning
+    self.assertEqual({str(path):path.read_bytes() for path in (root/'LIFEOS/MEMORY/LEARNING').rglob('*_work_*.md')}, initial)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'/ho[594 chars]d*\n', '/home/outsider/.cache/lhc6/tmpawmwn5yy[561 chars]*\n'} != {'/ho[594 chars]d*\n'}
+Diff is 32674 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 1 test in 0.345s
+
+FAILED (failures=1)

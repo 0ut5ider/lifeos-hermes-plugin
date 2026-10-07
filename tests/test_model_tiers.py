@@ -87,8 +87,10 @@ class ModelTierTests(unittest.TestCase):
             "haiku_provider": "local-fast", "haiku_model": "small-model",
         }.get)
         routed = route_delegate_args({"tasks": [{"goal": "quick", "model": "haiku"}]}, mapping)
+        self.assertEqual(routed["tasks"][0]["_lifeos_requested_model"], "haiku")
         self.assertEqual(routed["tasks"], [{
             "goal": "quick", "model": "small-model", "provider": "local-fast", "reasoning_effort": "low",
+            "_lifeos_requested_model": "haiku",
         }])
 
     def test_delegated_tiers_use_configured_routes(self):
@@ -113,7 +115,7 @@ class ModelTierTests(unittest.TestCase):
         routed = route_delegate_args(
             {"goal": "advise", "model": "fable"}, configured_model_map(lambda key, default: default),
         )
-        self.assertEqual(routed, {"tasks": [{"goal": "advise", "reasoning_effort": "xhigh"}]})
+        self.assertEqual(routed, {"tasks": [{"goal": "advise", "reasoning_effort": "xhigh", "_lifeos_requested_model": "fable"}]})
 
 
 if __name__ == "__main__":

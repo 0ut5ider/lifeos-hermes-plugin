@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_plugin_baseline_drives_native_hook_without_git_in_home (test_native_version_drift.NativeVersionDriftTests.test_plugin_baseline_drives_native_hook_without_git_in_home)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_version_drift.py", line 156, in test_plugin_baseline_drives_native_hook_without_git_in_home
+    self.assertEqual(state.read_bytes(), prior, 'Interrupted native publication destroyed the prior nag state')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'' != b'{"ts":"2026-10-07T03:42:04.975Z","count":1,"tag":"v7.40.4"}\n' : Interrupted native publication destroyed the prior nag state
+
+----------------------------------------------------------------------
+Ran 1 test in 1.763s
+
+FAILED (failures=1)

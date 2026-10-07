@@ -2,6 +2,7 @@
 # ABOUTME: Starts a disposable daemon with no scheduled jobs or optional integrations.
 
 import json
+from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import os
 from pathlib import Path
 import re
@@ -11,6 +12,7 @@ import socket
 import subprocess
 import tempfile
 import time
+import threading
 import unittest
 from urllib.error import URLError
 from urllib.request import Request, urlopen
@@ -130,6 +132,55 @@ class NativePulseGuardTests(unittest.TestCase):
         verdict = self.bridge.pre_tool_call("skill_view", {"name": "keybindings-help"}, session_id="outage")
         self.assertEqual(verdict["action"], "block")
 
+    def test_agent_outage_and_malformed_native_input_preserve_failure_policy(self):
+        self.fixture.stop()
+        with self.assertLogs('lifeos_hook_bridge.bridge', level='WARNING') as messages:
+            self.assertIsNone(self.bridge.pre_tool_call('delegate_task',
+                {'goal':'Inspect report', 'background':False}, session_id='agent-outage'))
+        self.assertEqual(len(messages.output), 1)
+        self.assertIn('LifeOS HTTP hook unavailable', messages.output[0])
+        self.assertEqual(self.bridge.pending_tool_context, {})
+        self.fixture.start()
+        request = Request(f'http://127.0.0.1:{self.fixture.port}/hooks/agent-guard', data=b'{',
+                          headers={'Content-Type':'application/json'})
+        with urlopen(request, timeout=2) as response:
+            self.assertEqual((response.status, response.read()), (200, b''))
+        args = {'goal':'Inspect report', 'background':False}
+        self.assertIsNone(self.bridge.pre_tool_call('delegate_task', args, session_id='agent-outage',tool_call_id='restart'))
+        result = self.bridge.augment_tool_result('delegate_task', args, 'Report inspected', 'Report inspected',
+                                                 session_id='agent-outage', tool_call_id='restart')
+        self.assertIn('WARNING: Foreground agent', result)
+
+    def test_malformed_decision_transport_cannot_deny_or_start_a_watchdog(self):
+        # These actual HTTP responses test decision admission, not native daemon policy generation.
+        class DecisionEndpoint(BaseHTTPRequestHandler):
+            body = b''
+            def do_POST(self):
+                self.rfile.read(int(self.headers.get('Content-Length', 0)))
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(self.body)
+            def log_message(self, *_):
+                pass
+        server = ThreadingHTTPServer(('127.0.0.1', 0), DecisionEndpoint)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            self.bridge.hooks = {'PreToolUse':[{'matcher':'Agent','hooks':[{'type':'http',
+                'url':f'http://127.0.0.1:{server.server_port}/hooks/agent-guard'}]}]}
+            for body in (b'{', b'[]', b'null', b'{"hookSpecificOutput":17}',
+                         b'{"hookSpecificOutput":{"hookEventName":"PostToolUse","permissionDecision":"deny"}}'):
+                with self.subTest(body=body), self.assertNoLogs('lifeos_hook_bridge.bridge', level='WARNING'):
+                    DecisionEndpoint.body = body
+                    self.assertIsNone(self.bridge.pre_tool_call('delegate_task',
+                        {'goal':'Inspect report','background':True}, session_id='malformed-decision'))
+                    self.assertEqual(self.bridge.watchdog_processes, {})
+                    self.assertEqual(self.bridge.pending_tool_context, {})
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=5)
+
     def test_invalid_native_skill_input_is_fail_open(self):
         body = self.fixture.request("skill-guard", {"tool_input": {"skill": {"invalid": "type"}}})
         self.assertEqual(body, "")
@@ -200,7 +251,7 @@ class NativePulseGuardTests(unittest.TestCase):
         self.assertIn("Check the background task status in Hermes", notification["output"])
         self.bridge._sync_agent_watchdogs([])
         self.assertEqual(json.loads(starts.read_text()), {})
-        self.bridge._stop_agent_watchdog("fixture-parent")
+        self.bridge.session_end(session_id="fixture-parent", reason="prompt_input_exit")
         self.assertNotIn("fixture-parent", self.bridge.watchdog_processes)
         self.assertFalse(starts.exists())
         self.assertFalse(activity.exists())

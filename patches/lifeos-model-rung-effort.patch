@@ -90,7 +90,7 @@ diff --git a/LifeOS/install/hooks/AgentInvocation.hook.ts b/LifeOS/install/hooks
  }
  
  const OBS_DIR = paiPath('MEMORY', 'OBSERVABILITY');
-@@ -163,7 +166,10 @@
+@@ -163,13 +166,22 @@
        // the transcript tail and skips sidechain rows; when it can't answer
        // (first turn, nested spawns) the record keeps the honest 'inherited'.
        if (dispatch.model === 'inherited') {
@@ -102,7 +102,28 @@ diff --git a/LifeOS/install/hooks/AgentInvocation.hook.ts b/LifeOS/install/hooks
          if (carrier) {
            dispatch.model = carrier;
            dispatch.level = 'session-inherited';
-@@ -219,9 +225,13 @@
+         }
+       }
+ 
++      const runtime = data.hermes_runtime;
++      const requestedModel = runtime && typeof runtime === 'object' && 'child_requested_model' in runtime &&
++        typeof runtime.child_requested_model === 'string' ? runtime.child_requested_model.trim() : '';
++      const reasoningEffort = runtime && typeof runtime === 'object' && 'reasoning_effort' in runtime &&
++        typeof runtime.reasoning_effort === 'string' ? runtime.reasoning_effort.trim() : '';
++      if (requestedModel) dispatch.level = levelForModel(requestedModel);
+       const starts = readStarts();
+       starts[key] = {
+         epoch: now,
+@@ -189,6 +201,8 @@
+         subagent_type: subagentType,
+         subagent_model: dispatch.model,
+         subagent_level: dispatch.level,
++        ...(requestedModel ? { subagent_requested_model: requestedModel } : {}),
++        ...(reasoningEffort ? { subagent_reasoning_effort: reasoningEffort } : {}),
+         description,
+         prompt_preview: prompt.slice(0, 200),
+       };
+@@ -219,9 +233,13 @@
          : JSON.stringify(data.tool_response ?? '');
        const isAsyncSpawn = /Spawned successfully|running and will receive instructions via mailbox/i.test(respStr);
  

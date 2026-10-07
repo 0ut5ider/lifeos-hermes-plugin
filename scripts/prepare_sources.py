@@ -51,6 +51,8 @@ SOURCES = {
             "lifeos-pulse-hook-switch.patch",
             "lifeos-evaluation-publication.patch",
             "lifeos-system-surface.patch",
+            "lifeos-version-drift-state.patch",
+            "lifeos-work-learning-identity.patch",
         ),
     },
 }

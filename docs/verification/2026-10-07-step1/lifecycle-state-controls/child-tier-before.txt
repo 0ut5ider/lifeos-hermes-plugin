@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_callbacks_record_one_start_and_one_stop_per_actual_child_identity (test_child_lifecycle.ChildLifecycleTests.test_callbacks_record_one_start_and_one_stop_per_actual_child_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_lifecycle.py", line 60, in test_callbacks_record_one_start_and_one_stop_per_actual_child_identity
+    self.assertEqual(sum(row.get('subagent_requested_model') == 'haiku' for row in starts), 4)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 != 4
+
+----------------------------------------------------------------------
+Ran 1 test in 1.930s
+
+FAILED (failures=1)
