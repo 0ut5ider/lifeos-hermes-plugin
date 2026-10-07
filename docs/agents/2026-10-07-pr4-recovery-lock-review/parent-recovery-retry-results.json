@@ -1,0 +1,292 @@
+[
+  {
+    "phase": "checkpoint",
+    "selection_source": "current",
+    "children": [
+      {
+        "phase": "select",
+        "code": 91,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "phase": "checkpoint",
+        "code": 92,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "outer_before_retry": {
+      "previous": {
+        "configured": false,
+        "home": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5",
+        "root": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/.claude",
+        "setting": null
+      },
+      "profile": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5",
+      "remount": true,
+      "state": "rolling_back",
+      "target": {
+        "home": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/selection-target/home",
+        "workspace": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/HermesWorkspace"
+      },
+      "target_mount_recovered": true,
+      "version": 1
+    },
+    "inner_before_retry": {
+      "absent_directories": [],
+      "baseline": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/selection-target/home/.local/state/lifeos-hook-bridge/version-drift-baseline.json",
+      "entries": [
+        {
+          "after": {
+            "digest": "1fbd388715e091ff7595e17228b44dc4fda51e04729fdf18e358a16aeba724dd",
+            "mode": 384
+          },
+          "before": {
+            "digest": "914fbf411a51b4dfa8fb5a0821f3e04f847a730348a39e65849a903626bd7452",
+            "mode": 384
+          },
+          "copy": 0,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/config.yaml"
+        },
+        {
+          "after": {
+            "digest": "3cf05256c40ef3062ef1c8a65345ce2b68cdd129ac98e62095c7b2d03a8069a1",
+            "mode": 384
+          },
+          "before": {
+            "digest": "a9507ab189aa22771420a37b03c0137bfa7ce856d58937f75714d5d9460d2139",
+            "mode": 384
+          },
+          "copy": 1,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/SOUL.md"
+        },
+        {
+          "after": {
+            "digest": "faba723cad4b29b9c82d82830a85942726e0493c4135cd9494093ecfdaca9aae",
+            "mode": 384
+          },
+          "before": {
+            "digest": "faba723cad4b29b9c82d82830a85942726e0493c4135cd9494093ecfdaca9aae",
+            "mode": 384
+          },
+          "copy": 2,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/.env"
+        },
+        {
+          "after": {
+            "digest": "9250dc96226630e804cb09225d4be03b27cc00f5c2b5e6772e5d1c4f95af9ce9",
+            "mode": 384
+          },
+          "before": {
+            "digest": "9250dc96226630e804cb09225d4be03b27cc00f5c2b5e6772e5d1c4f95af9ce9",
+            "mode": 384
+          },
+          "copy": 3,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/plugins/lifeos/__init__.py"
+        },
+        {
+          "after": {
+            "digest": "7bd912722c160efa834f254a6dfed527c3885ff754b1732891218e4d632795c9",
+            "mode": 384
+          },
+          "before": {
+            "digest": "7bd912722c160efa834f254a6dfed527c3885ff754b1732891218e4d632795c9",
+            "mode": 384
+          },
+          "copy": 4,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/plugins/lifeos/guard.py"
+        },
+        {
+          "after": {
+            "digest": "fc470cb66a03ec8da6a3ef5969a13520159a10a80766009e0e2fecdcc17a4502",
+            "mode": 384
+          },
+          "before": {
+            "digest": "fc470cb66a03ec8da6a3ef5969a13520159a10a80766009e0e2fecdcc17a4502",
+            "mode": 384
+          },
+          "copy": 5,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/plugins/lifeos/plugin.yaml"
+        },
+        {
+          "after": {
+            "digest": "40b9dd6664e75ba95ce350c2658c620ac62e1a37fc61aabc31ee436175ed39b4",
+            "mode": 384
+          },
+          "before": {
+            "digest": "40b9dd6664e75ba95ce350c2658c620ac62e1a37fc61aabc31ee436175ed39b4",
+            "mode": 384
+          },
+          "copy": 6,
+          "target": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/plugins/lifeos/policy.json"
+        }
+      ],
+      "installed": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/selection-target/home/.claude",
+      "profile": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5",
+      "snapshot": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/.lifeos-mount/a74f98d502cd4077b07281c2e11b7bd7",
+      "state": "committed",
+      "version": 1,
+      "workspace": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/HermesWorkspace"
+    },
+    "retry": {
+      "state": "rolled_back"
+    },
+    "service_events": [
+      "stop",
+      "pulse",
+      "start",
+      "verify"
+    ],
+    "owner_edit_preserved": false,
+    "soul_after_retry_sha256": "a9507ab189aa22771420a37b03c0137bfa7ce856d58937f75714d5d9460d2139",
+    "soul_contains_target": false,
+    "selected_after_retry": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/.claude",
+    "config_root_after_retry": "/home/outsider/.cache/lhc6/native-memory-dwxlfzc5/.claude"
+  },
+  {
+    "phase": "previous-committed",
+    "selection_source": "current",
+    "children": [
+      {
+        "phase": "select",
+        "code": 91,
+        "stdout": "",
+        "stderr": ""
+      },
+      {
+        "phase": "previous-committed",
+        "code": 91,
+        "stdout": "",
+        "stderr": ""
+      }
+    ],
+    "outer_before_retry": {
+      "previous": {
+        "configured": false,
+        "home": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0",
+        "root": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.claude",
+        "setting": null
+      },
+      "profile": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0",
+      "remount": true,
+      "state": "rolling_back",
+      "target": {
+        "home": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/selection-target/home",
+        "workspace": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/HermesWorkspace"
+      },
+      "target_mount_recovered": true,
+      "version": 1
+    },
+    "inner_before_retry": {
+      "absent_directories": [],
+      "baseline": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.local/state/lifeos-hook-bridge/version-drift-baseline.json",
+      "entries": [
+        {
+          "after": {
+            "digest": "ad1661a1cc3b6fd252a456b41f036e64a19f6e29f4f3148f217b0b0896ca20c6",
+            "mode": 384
+          },
+          "before": {
+            "digest": "7e9781ec4f7e4ca960a16b2c1f23547d56c6f1277f3d5ca7116357b03dd12b26",
+            "mode": 384
+          },
+          "copy": 0,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/config.yaml"
+        },
+        {
+          "after": {
+            "digest": "a9507ab189aa22771420a37b03c0137bfa7ce856d58937f75714d5d9460d2139",
+            "mode": 384
+          },
+          "before": {
+            "digest": "3cf05256c40ef3062ef1c8a65345ce2b68cdd129ac98e62095c7b2d03a8069a1",
+            "mode": 384
+          },
+          "copy": 1,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/SOUL.md"
+        },
+        {
+          "after": {
+            "digest": "37eee146c114140e828323b8e94940c8efd40f5612726e288393f429443810da",
+            "mode": 384
+          },
+          "before": {
+            "digest": "37eee146c114140e828323b8e94940c8efd40f5612726e288393f429443810da",
+            "mode": 384
+          },
+          "copy": 2,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.env"
+        },
+        {
+          "after": {
+            "digest": "9250dc96226630e804cb09225d4be03b27cc00f5c2b5e6772e5d1c4f95af9ce9",
+            "mode": 384
+          },
+          "before": {
+            "digest": "9250dc96226630e804cb09225d4be03b27cc00f5c2b5e6772e5d1c4f95af9ce9",
+            "mode": 384
+          },
+          "copy": 3,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/plugins/lifeos/__init__.py"
+        },
+        {
+          "after": {
+            "digest": "7bd912722c160efa834f254a6dfed527c3885ff754b1732891218e4d632795c9",
+            "mode": 384
+          },
+          "before": {
+            "digest": "7bd912722c160efa834f254a6dfed527c3885ff754b1732891218e4d632795c9",
+            "mode": 384
+          },
+          "copy": 4,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/plugins/lifeos/guard.py"
+        },
+        {
+          "after": {
+            "digest": "fc470cb66a03ec8da6a3ef5969a13520159a10a80766009e0e2fecdcc17a4502",
+            "mode": 384
+          },
+          "before": {
+            "digest": "fc470cb66a03ec8da6a3ef5969a13520159a10a80766009e0e2fecdcc17a4502",
+            "mode": 384
+          },
+          "copy": 5,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/plugins/lifeos/plugin.yaml"
+        },
+        {
+          "after": {
+            "digest": "40b9dd6664e75ba95ce350c2658c620ac62e1a37fc61aabc31ee436175ed39b4",
+            "mode": 384
+          },
+          "before": {
+            "digest": "40b9dd6664e75ba95ce350c2658c620ac62e1a37fc61aabc31ee436175ed39b4",
+            "mode": 384
+          },
+          "copy": 6,
+          "target": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/plugins/lifeos/policy.json"
+        }
+      ],
+      "installed": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.claude",
+      "profile": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0",
+      "snapshot": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.lifeos-mount/e24223faa5414fdc9452c0fa6f94af75",
+      "state": "committed",
+      "version": 1,
+      "workspace": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/HermesWorkspace"
+    },
+    "retry": {
+      "state": "rolled_back"
+    },
+    "service_events": [
+      "stop",
+      "pulse",
+      "start",
+      "verify"
+    ],
+    "owner_edit_preserved": false,
+    "soul_after_retry_sha256": "a9507ab189aa22771420a37b03c0137bfa7ce856d58937f75714d5d9460d2139",
+    "soul_contains_target": false,
+    "selected_after_retry": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.claude",
+    "config_root_after_retry": "/home/outsider/.cache/lhc6/native-memory-wiu84w_0/.claude"
+  }
+]

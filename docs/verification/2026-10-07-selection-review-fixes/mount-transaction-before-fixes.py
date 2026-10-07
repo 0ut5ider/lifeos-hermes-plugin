@@ -124,20 +124,6 @@ class MountTransaction:
         self.state = self.profile / '.lifeos-mount'
         self.journal = self.state / 'operation.json'
 
-    @classmethod
-    def for_selection(cls, installed, previous, profile):
-        """Bind compensation to the active journal within the selection's two installations."""
-        from .version_drift import default_baseline_path
-        roots = {str(Path(root).absolute()) for root in (installed, previous)}
-        data, metadata = _read(Path(profile) / '.lifeos-mount/operation.json')
-        active = Path(installed).absolute()
-        if data is not None:
-            value = json.loads(data)
-            if metadata['mode'] & 0o077 or not isinstance(value, dict) or value.get('installed') not in roots:
-                raise MountError('The active mount does not belong to this selection')
-            active = Path(value['installed'])
-        return cls(active, profile, default_baseline_path(active.parent))
-
     @contextmanager
     def _lock(self):
         info = self.profile.stat()
@@ -250,8 +236,8 @@ class MountTransaction:
         workspace = Path(value)
         from .lifeos_installation import selection
         selected = selection(self.profile)
-        if workspace == selected.workspace and workspace.resolve() == workspace:
-            # Selection and return keep the account workspace recorded or derived for the profile.
+        if selected.configured and workspace == selected.workspace and workspace.resolve() == workspace:
+            # A selected LifeOS home keeps the account workspace that the profile setting records.
             return workspace
         if (not workspace.is_absolute() or workspace.resolve() != workspace
                 or workspace == self.installed.parent or not workspace.is_relative_to(self.installed.parent)):
@@ -263,16 +249,6 @@ class MountTransaction:
             manifest = self._manifest()
             return {'state': manifest['state'] if manifest else 'none',
                     'recovery_required': manifest is not None and manifest['state'] in PENDING}
-
-    def check_completed(self):
-        """Refuse selection compensation when a finished mount has later owner edits."""
-        with self._lock():
-            manifest = self._manifest()
-            if manifest is not None:
-                if manifest['state'] not in {'committed', 'rolled_back'}:
-                    raise MountError('Recover the interrupted mount before checking completed files')
-                expected = 'after' if manifest['state'] == 'committed' else 'before'
-                self._checks(manifest['entries'], (expected,))
 
     def _source_stamp(self):
         names = ['LIFEOS/HERMES/Mount.ts', 'LIFEOS/HERMES/Policy.ts',

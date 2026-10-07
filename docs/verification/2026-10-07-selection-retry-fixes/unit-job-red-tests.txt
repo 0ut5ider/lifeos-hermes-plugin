@@ -1,0 +1,41 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ SelectionRecoveryAdmissionTests.test_failed_unit_query_cannot_confirm_a_dead_worker _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_failed_unit_query_cannot_confirm_a_dead_worker>
+
+    def test_failed_unit_query_cannot_confirm_a_dead_worker(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-partial-query', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\n'
+            'print("ActiveState=inactive\\nJob=" if "--property=Job" in sys.argv else "inactive")\n'
+            'sys.exit(1)\n')
+>       self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+E       AssertionError: 'failed' != 'queued'
+E       - failed
+E       + queued
+
+tests/test_selection_recovery_admission.py:251: AssertionError
+_ SelectionRecoveryAdmissionTests.test_inactive_worker_with_a_pending_systemd_job_remains_pending _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_inactive_worker_with_a_pending_systemd_job_remains_pending>
+
+    def test_inactive_worker_with_a_pending_systemd_job_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-pending-start', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\n'
+            'print("ActiveState=inactive\\nJob=42" if "--property=Job" in sys.argv else "inactive")\n')
+>       self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+E       AssertionError: 'failed' != 'queued'
+E       - failed
+E       + queued
+
+tests/test_selection_recovery_admission.py:237: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_failed_unit_query_cannot_confirm_a_dead_worker
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_inactive_worker_with_a_pending_systemd_job_remains_pending
+2 failed, 15 deselected in 0.66s

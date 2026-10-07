@@ -6,6 +6,14 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Recover an interrupted target mount before restoring the previous LifeOS selection and mounted files.
+- Bind selection status and recovery to the invoking Hermes profile. Recheck the owner in the detached worker.
+- Check completed target mount files before selection rollback. Preserve later owner edits and refuse service restart.
+- Authorize interrupted selection recovery against its journal roots and current profile owner.
+- Serialize selection admission and shared service changes across account profiles with an account lock.
+- Validate the active native mount on every selection recovery attempt. Preserve edits after interrupted compensation.
+- Permit selection retry after a confirmed stopped launch with no transaction journal. Keep uncertain workers pending.
+
 - Verify actual private GitHub reminder delivery, concurrent repeat suppression, authentication refusal, and retry.
 
 - Stamp global memory-review admission before starting detached inference. Preserve cadence across interrupted publication.

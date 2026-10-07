@@ -1,0 +1,20 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryAdminDashboardTests.test_owner_queues_selection_of_a_reviewed_store_and_return _
+tests/test_memory_admin_dashboard.py:146: in test_owner_queues_selection_of_a_reviewed_store_and_return
+    self.assertEqual(response.status_code, 200, response.text)
+E   AssertionError: 409 != 200 : {"detail":"Another installation operation is running"}
+_ MemoryAdminDashboardTests.test_selection_refuses_a_store_from_another_candidate _
+tests/test_memory_admin_dashboard.py:175: in test_selection_refuses_a_store_from_another_candidate
+    self.assertIn('another LifeOS candidate', response.text)
+E   AssertionError: 'another LifeOS candidate' not found in '{"detail":"Another installation operation is running"}'
+=============================== warnings summary ===============================
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53
+  /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+FAILED tests/test_memory_admin_dashboard.py::MemoryAdminDashboardTests::test_owner_queues_selection_of_a_reviewed_store_and_return
+FAILED tests/test_memory_admin_dashboard.py::MemoryAdminDashboardTests::test_selection_refuses_a_store_from_another_candidate
+2 failed, 1 warning in 1.58s

@@ -1,0 +1,24 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ SelectionNativeMountTests.test_selection_recovery_remounts_the_previous_native_installation_after_process_death _
+
+self = <test_selection_native_mount.SelectionNativeMountTests testMethod=test_selection_recovery_remounts_the_previous_native_installation_after_process_death>
+
+    def test_selection_recovery_remounts_the_previous_native_installation_after_process_death(self):
+        from lifeos_hook_bridge.installation_selection import recover_selection
+        from lifeos_hook_bridge.lifeos_installation import selection
+        from lifeos_hook_bridge.selection_worker import _mount, _recover_mount
+        self.fixture.configuration.update(lambda config: config.update(ownership_enabled=False))
+        (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+        target = self.root.parent / 'selection-target/home/.claude'
+        shutil.copytree(self.root, target)
+        (target / 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md').write_text('# SyntheticTargetConstitution\n')
+>       environment = {key: value for key, value in self.environment.items()
+                                                    ^^^^^^^^^^^^^^^^
+                       if key != 'LIFEOS_MEMORY_ADMINISTRATION'}
+E       AttributeError: 'SelectionNativeMountTests' object has no attribute 'environment'
+
+tests/test_selection_native_mount.py:31: AttributeError
+=========================== short test summary info ============================
+FAILED tests/test_selection_native_mount.py::SelectionNativeMountTests::test_selection_recovery_remounts_the_previous_native_installation_after_process_death
+1 failed in 0.27s

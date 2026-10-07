@@ -1,0 +1,78 @@
+.F                                                                    [100%]
+=================================== FAILURES ===================================
+_ SelectionRecoveryAdmissionTests.test_transitioning_worker_without_a_journal_remains_pending (state='activating') _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_transitioning_worker_without_a_journal_remains_pending>
+
+    def test_transitioning_worker_without_a_journal_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-starting-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-starting-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        for state in ('activating', 'deactivating', 'reloading'):
+            with self.subTest(state=state):
+                controller.write_text('#!' + sys.executable + f'\nimport sys\nprint({state!r})\nsys.exit(3)\n')
+>               self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+E               AssertionError: 'failed' != 'queued'
+E               - failed
+E               + queued
+
+tests/test_selection_recovery_admission.py:219: AssertionError
+_ SelectionRecoveryAdmissionTests.test_transitioning_worker_without_a_journal_remains_pending (state='deactivating') _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_transitioning_worker_without_a_journal_remains_pending>
+
+    def test_transitioning_worker_without_a_journal_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-starting-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-starting-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        for state in ('activating', 'deactivating', 'reloading'):
+            with self.subTest(state=state):
+                controller.write_text('#!' + sys.executable + f'\nimport sys\nprint({state!r})\nsys.exit(3)\n')
+>               self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+E               AssertionError: 'failed' != 'queued'
+E               - failed
+E               + queued
+
+tests/test_selection_recovery_admission.py:219: AssertionError
+_ SelectionRecoveryAdmissionTests.test_transitioning_worker_without_a_journal_remains_pending (state='reloading') _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_transitioning_worker_without_a_journal_remains_pending>
+
+    def test_transitioning_worker_without_a_journal_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-starting-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-starting-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        for state in ('activating', 'deactivating', 'reloading'):
+            with self.subTest(state=state):
+                controller.write_text('#!' + sys.executable + f'\nimport sys\nprint({state!r})\nsys.exit(3)\n')
+>               self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+E               AssertionError: 'failed' != 'queued'
+E               - failed
+E               + queued
+
+tests/test_selection_recovery_admission.py:219: AssertionError
+_ SelectionRecoveryAdmissionTests.test_unavailable_unit_status_does_not_release_pending_admission _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_unavailable_unit_status_does_not_release_pending_admission>
+
+    def test_unavailable_unit_status_does_not_release_pending_admission(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-unavailable-unit', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\nsys.exit(1)\n')
+>       self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+E       AssertionError: 'failed' != 'queued'
+E       - failed
+E       + queued
+
+tests/test_selection_recovery_admission.py:227: AssertionError
+=========================== short test summary info ============================
+SUBFAILED(state='activating') tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_transitioning_worker_without_a_journal_remains_pending
+SUBFAILED(state='deactivating') tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_transitioning_worker_without_a_journal_remains_pending
+SUBFAILED(state='reloading') tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_transitioning_worker_without_a_journal_remains_pending
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_unavailable_unit_status_does_not_release_pending_admission
+4 failed, 1 passed in 1.03s

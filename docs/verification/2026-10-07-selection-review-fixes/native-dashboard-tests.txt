@@ -1,0 +1,8 @@
+....................................................................                            [100%]
+=============================== warnings summary ===============================
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53
+  /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+68 passed, 1 warning, 49 subtests passed in 165.72s (0:02:45)

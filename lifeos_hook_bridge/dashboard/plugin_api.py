@@ -780,27 +780,50 @@ def _resume_lifeos_update(previous: dict, account: str, action: str):
     return {"state": "recovering" if action == 'recover' else 'restoring', "job": str(job)}
 
 
-def _latest_selection():
+def _selection_jobs():
     if not SELECTION_ROOT.is_dir() or SELECTION_ROOT.is_symlink():
-        return None
-    jobs = [path for path in SELECTION_ROOT.iterdir()
-            if path.is_dir() and not path.is_symlink() and (path / 'request.json').is_file()]
+        return []
+    return [path for path in SELECTION_ROOT.iterdir()
+             if path.is_dir() and not path.is_symlink() and (path / 'request.json').is_file()]
+
+
+def _latest_selection():
+    module = install_module.memory_module('installation_selection')
+    jobs = []
+    for job in _selection_jobs():
+        try:
+            module.selection_request(job, HERMES_HOME)
+        except (OSError, ValueError, module.SelectionError):
+            continue
+        jobs.append(job)
     return max(jobs, key=lambda path: path.stat().st_mtime_ns) if jobs else None
 
 
 def _selection_status():
     job = _latest_selection()
+    return _selection_job_status(job)
+
+
+def _selection_job_status(job):
     if job is None:
         return {'state': 'none'}
     try:
         status = json.loads((job / 'status.json').read_text(encoding='utf-8'))
         if status.get('state') in {'queued', 'running', 'recovering'} and status.get('unit'):
-            active = subprocess.run(['systemctl', '--user', 'is-active', status['unit']],
-                                    text=True, capture_output=True, timeout=15)
-            if active.returncode or active.stdout.strip() != 'active':
+            try:
+                active = subprocess.run(['systemctl', '--user', 'show', status['unit'],
+                                         '--property=ActiveState', '--property=Job', '--all'],
+                                        text=True, capture_output=True, timeout=15)
+            except (OSError, subprocess.TimeoutExpired):
+                return {**status, 'error': 'The selection worker status is unavailable', 'job': str(job)}
+            properties = dict(line.split('=', 1) for line in active.stdout.splitlines() if '=' in line)
+            unit_state = properties.get('ActiveState')
+            if active.returncode or not unit_state or 'Job' not in properties:
+                status['error'] = 'The selection worker status is unavailable'
+            elif unit_state in {'inactive', 'failed'} and properties['Job'] == '':
                 journal = job / 'transaction/journal.json'
                 state = json.loads(journal.read_text())['state'] if journal.is_file() else 'failed'
-                status['state'] = state if state in {'applied', 'rolled_back'} else 'interrupted'
+                status['state'] = state if state in {'applied', 'rolled_back', 'failed'} else 'interrupted'
         return {**status, 'job': str(job)}
     except (OSError, ValueError, KeyError, subprocess.TimeoutExpired):
         return {'state': 'error', 'job': str(job)}
@@ -813,13 +836,17 @@ def get_installation_selection(account: str = Depends(_memory_account)):
             'running_home': str(LIFEOS_HOME), 'job': _selection_status()}
 
 
-def _launch_selection(job: Path, action: str):
+def _launch_selection(job: Path, action: str, account: str):
     from hermes_cli import _launchers
+    module = install_module.memory_module('installation_selection')
+    module.selection_authority(job, HERMES_HOME, account, action)
+    if action != 'recover':
+        _memory_preferences()._configuration(account=account)
     unit = f'lifeos-bridge-selection-{uuid4().hex}'
     status = {'state': 'queued' if action == 'select' else 'recovering', 'unit': unit}
     (job / 'status.json').write_text(json.dumps(status) + '\n')
     os.chmod(job / 'status.json', 0o600)
-    arguments = [str(PLUGIN_DIR / 'selection_worker.py'), str(job), '--action', action]
+    arguments = [str(PLUGIN_DIR / 'selection_worker.py'), str(job), '--action', action, '--account', account]
     code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
     runtime = _launchers.runtime_command(_host_source(), arguments, code=code, python=sys.executable)
     command = ['systemd-run', '--user', '--collect', f'--unit={unit}', f'--setenv=HOME={Path.home()}',
@@ -831,8 +858,22 @@ def _launch_selection(job: Path, action: str):
 
 
 def _queue_selection(account: str, store: str | None):
-    if _selection_status()['state'] in {'queued', 'running', 'recovering', 'interrupted', 'rolling_back'}:
-        raise HTTPException(status_code=409, detail='A LifeOS selection job already owns this installation')
+    return _selection_action(lambda: _create_selection(account, store))
+
+
+def _selection_action(action):
+    try:
+        with install_module.memory_module('installation_selection').account_selection_lock(HERMES_HOME):
+            return action()
+    except (OSError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+
+
+def _create_selection(account: str, store: str | None):
+    for job in _selection_jobs():
+        if _selection_job_status(job)['state'] in {'queued', 'running', 'recovering', 'interrupted', 'rolling_back'}:
+            raise HTTPException(status_code=409,
+                detail='A LifeOS selection is pending in this account. Its profile owner must complete or recover it.')
     selected = install_module.memory_module('lifeos_installation').selection(HERMES_HOME)
     request = {'profile': str(HERMES_HOME), 'target_home': None, 'candidate': None,
                'hermes_command': str(_host_source() / '.hermes/bin/hermes')}
@@ -856,7 +897,7 @@ def _queue_selection(account: str, store: str | None):
         job.mkdir(mode=0o700)
         (job / 'request.json').write_text(json.dumps(request) + '\n')
         os.chmod(job / 'request.json', 0o600)
-        _launch_selection(job, 'select')
+        _launch_selection(job, 'select', account)
     except PermissionError as error:
         raise HTTPException(status_code=403, detail='The installation owner must select the LifeOS home') from error
     except (IncompatibleLifeOS, OSError, ValueError, RuntimeError) as error:
@@ -888,14 +929,13 @@ async def recover_installation_selection(request: Request, account: str = Depend
         if status['state'] != 'interrupted':
             raise HTTPException(status_code=409, detail='There is no interrupted LifeOS selection to recover')
         try:
-            _memory_preferences()._configuration(account=account)
-            _launch_selection(Path(status['job']), 'recover')
+            _launch_selection(Path(status['job']), 'recover', account)
         except PermissionError as error:
             raise HTTPException(status_code=403, detail='The installation owner must recover the selection') from error
         except (IncompatibleLifeOS, OSError, ValueError, RuntimeError) as error:
             raise HTTPException(status_code=409, detail=str(error)) from error
         return {'state': 'recovering', 'job': status['job']}
-    return await run_in_threadpool(_installation_action, recover)
+    return await run_in_threadpool(_installation_action, lambda: _selection_action(recover))
 
 
 @router.get("/installation/host-patch")

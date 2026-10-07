@@ -1,0 +1,114 @@
+F.F....FFF                                                            [100%]
+=================================== FAILURES ===================================
+_ InstallationSelectionTests.test_death_after_mount_publication_restores_the_previous_mounted_files _
+
+self = <test_installation_selection.InstallationSelectionTests testMethod=test_death_after_mount_publication_restores_the_previous_mounted_files>
+
+        def test_death_after_mount_publication_restores_the_previous_mounted_files(self):
+            soul = self.profile / 'SOUL.md'
+            soul.write_text(str(self.account / '.claude'))
+            program = '''
+    import os, sys
+    from pathlib import Path
+    from lifeos_hook_bridge.installation_selection import select_home
+    from lifeos_hook_bridge.memory_service import MemoryConfiguration
+    class Services:
+        def stop(self): pass
+        def start(self): pass
+        def point_pulse(self, home): pass
+    profile, target, job = map(Path, sys.argv[1:])
+    def mount(installed, baseline):
+        (profile / 'SOUL.md').write_text(str(installed))
+        os._exit(91)
+    select_home(job, profile=profile, target=target,
+        configuration=MemoryConfiguration(profile / 'lifeos-memory.json'),
+        services=Services(), mount=mount, verify=lambda: None, baseline_data=None)
+    '''
+            result = subprocess.run([sys.executable, '-c', program, str(self.profile), str(self.store), str(self.job)],
+                                    text=True, capture_output=True, timeout=30)
+            self.assertEqual(result.returncode, 91, result.stderr)
+            self.assertEqual(result.stderr, '')
+            self.assertEqual(soul.read_text(), str(self.store / '.claude'))
+
+            def mount(installed, baseline):
+                soul.write_text(str(installed))
+
+            recovered = recover_selection(self.job, configuration=self.configuration,
+                                          services=Services(self.events), mount=mount, verify=lambda: None)
+            self.assertEqual(recovered['state'], 'rolled_back')
+>           self.assertEqual(soul.read_text(), str(self.account / '.claude'))
+E           AssertionError: '/home/outsider/.cache/lhc6/tmp1sc3wfwh/store/home/.claude' != '/home/outsider/.cache/lhc6/tmp1sc3wfwh/account/.claude'
+E           - /home/outsider/.cache/lhc6/tmp1sc3wfwh/store/home/.claude
+E           ?                                        ^ --------
+E           + /home/outsider/.cache/lhc6/tmp1sc3wfwh/account/.claude
+E           ?                                        ^^^^^^
+
+tests/test_installation_selection.py:161: AssertionError
+_ InstallationSelectionTests.test_mount_exception_after_publication_restores_the_previous_mounted_files _
+
+self = <test_installation_selection.InstallationSelectionTests testMethod=test_mount_exception_after_publication_restores_the_previous_mounted_files>
+
+    def test_mount_exception_after_publication_restores_the_previous_mounted_files(self):
+        soul = self.profile / 'SOUL.md'
+
+        def mount(installed, baseline):
+            soul.write_text(str(installed))
+            if installed == self.store / '.claude':
+                raise RuntimeError('synthetic failure after publication')
+
+        with self.assertRaisesRegex(SelectionError, 'failure after publication'):
+            select_home(self.job, profile=self.profile, target=self.store, configuration=self.configuration,
+                        services=Services(self.events), mount=mount, verify=lambda: None, baseline_data=None)
+>       self.assertEqual(soul.read_text(), str(self.account / '.claude'))
+E       AssertionError: '/home/outsider/.cache/lhc6/tmp1pm5050n/store/home/.claude' != '/home/outsider/.cache/lhc6/tmp1pm5050n/account/.claude'
+E       - /home/outsider/.cache/lhc6/tmp1pm5050n/store/home/.claude
+E       ?                                        ^ --------
+E       + /home/outsider/.cache/lhc6/tmp1pm5050n/account/.claude
+E       ?                                        ^^^^^^
+
+tests/test_installation_selection.py:176: AssertionError
+_ SelectionProfileIsolationTests.test_latest_selection_belongs_to_the_current_profile _
+
+self = <test_selection_profile_isolation.SelectionProfileIsolationTests testMethod=test_latest_selection_belongs_to_the_current_profile>
+
+    def test_latest_selection_belongs_to_the_current_profile(self):
+        own = self.job(self.b, 'selection-b')
+        other = self.job(self.a, 'selection-a')
+        os.utime(own, ns=(1, 1))
+        os.utime(other, ns=(2, 2))
+>       self.assertEqual(self.api._latest_selection(), own)
+E       AssertionError: Posix[46 chars]ccount/.local/state/lifeos-hook-bridge/selections/selection-a') != Posix[46 chars]ccount/.local/state/lifeos-hook-bridge/selections/selection-b')
+
+tests/test_selection_profile_isolation.py:72: AssertionError
+_ SelectionProfileIsolationTests.test_recovery_refuses_another_profiles_job_before_launch _
+
+self = <test_selection_profile_isolation.SelectionProfileIsolationTests testMethod=test_recovery_refuses_another_profiles_job_before_launch>
+
+    def test_recovery_refuses_another_profiles_job_before_launch(self):
+        other = self.job(self.a, 'selection-a')
+>       with self.assertRaises(self.api.HTTPException) as raised:
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: HTTPException not raised
+
+tests/test_selection_profile_isolation.py:76: AssertionError
+_ SelectionProfileIsolationTests.test_status_does_not_show_another_profiles_interrupted_job _
+
+self = <test_selection_profile_isolation.SelectionProfileIsolationTests testMethod=test_status_does_not_show_another_profiles_interrupted_job>
+
+    def test_status_does_not_show_another_profiles_interrupted_job(self):
+        self.job(self.a, 'selection-a')
+        result = self.api.get_installation_selection(account=self.owner_b)
+>       self.assertEqual(result['job'], {'state': 'none'})
+E       AssertionError: {'state': 'interrupted', 'job': '/home/outsider/.cac[79 chars]n-a'} != {'state': 'none'}
+E       + {'state': 'none'}
+E       - {'job': '/home/outsider/.cache/lhc6/tmpsaqax4u0/account/.local/state/lifeos-hook-bridge/selections/selection-a',
+E       -  'state': 'interrupted'}
+
+tests/test_selection_profile_isolation.py:65: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_installation_selection.py::InstallationSelectionTests::test_death_after_mount_publication_restores_the_previous_mounted_files
+FAILED tests/test_installation_selection.py::InstallationSelectionTests::test_mount_exception_after_publication_restores_the_previous_mounted_files
+FAILED tests/test_selection_profile_isolation.py::SelectionProfileIsolationTests::test_latest_selection_belongs_to_the_current_profile
+FAILED tests/test_selection_profile_isolation.py::SelectionProfileIsolationTests::test_recovery_refuses_another_profiles_job_before_launch
+FAILED tests/test_selection_profile_isolation.py::SelectionProfileIsolationTests::test_status_does_not_show_another_profiles_interrupted_job
+5 failed, 5 passed, 3 subtests passed in 0.92s

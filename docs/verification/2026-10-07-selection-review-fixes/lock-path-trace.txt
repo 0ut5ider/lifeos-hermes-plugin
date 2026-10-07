@@ -1,0 +1,9 @@
+Before the lock-path correction, the diagnostic fixture reports:
+profile /home/outsider/.cache/lhc6/native-memory-10b0xpma
+home /home/outsider/.cache/lhc6/native-memory-10b0xpma
+LOCK /home/outsider/.cache/lhc6/native-memory-10b0xpma {}
+LOCK /home/outsider/.cache/lhc6/native-memory-10b0xpma {wait: False}
+409 {detail: Another installation operation is running}
+
+The correction uses <account>/.local/state/lifeos-hook-bridge/selection-coordination as the account lock scope.
+The native dashboard fixtures verify a profile at the account home. The named-profile tests verify distinct profiles.

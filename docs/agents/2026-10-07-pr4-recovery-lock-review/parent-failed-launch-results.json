@@ -1,0 +1,45 @@
+{
+  "results": [
+    {
+      "action": "initial_return_failed_launch",
+      "result": {
+        "http_status": 409,
+        "detail": "Could not start the LifeOS selection worker"
+      }
+    },
+    {
+      "action": "stored_job",
+      "request": {
+        "profile": "/home/outsider/.cache/lhc6/tmpupvc68_4/account/.hermes/profiles/b",
+        "target_home": null,
+        "candidate": null,
+        "hermes_command": "/home/outsider/.cache/lifeos-step1-20261007/prepared-review-final/hermes/.hermes/bin/hermes"
+      },
+      "status_file": {
+        "state": "queued",
+        "unit": "lifeos-bridge-selection-a832b046e5d04b8fad4d53542d77852b"
+      },
+      "transaction_journal_exists": false,
+      "observed_status": {
+        "state": "interrupted",
+        "unit": "lifeos-bridge-selection-a832b046e5d04b8fad4d53542d77852b",
+        "job": "/home/outsider/.cache/lhc6/tmpupvc68_4/account/.local/state/lifeos-hook-bridge/selections/selection-eed067d130d940ee93fc6f2cf5f83f36"
+      }
+    },
+    {
+      "action": "next_return",
+      "result": {
+        "http_status": 409,
+        "detail": "A LifeOS selection is pending in this account. Its profile owner must complete or recover it."
+      }
+    },
+    {
+      "action": "recover",
+      "result": {
+        "http_status": 409,
+        "detail": "[Errno 2] No such file or directory: '/home/outsider/.cache/lhc6/tmpupvc68_4/account/.local/state/lifeos-hook-bridge/selections/selection-eed067d130d940ee93fc6f2cf5f83f36/transaction/journal.json'"
+      }
+    }
+  ],
+  "scope": "Local failing launch/control transport; no live systemd services."
+}

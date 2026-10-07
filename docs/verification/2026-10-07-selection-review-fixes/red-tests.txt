@@ -1,0 +1,338 @@
+...........FFFFF                                                     [100%]
+=================================== FAILURES ===================================
+_ SelectionRecoveryAdmissionTests.test_recovery_still_refuses_a_revoked_owner_after_the_root_changes _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_recovery_still_refuses_a_revoked_owner_after_the_root_changes>
+
+    def test_recovery_still_refuses_a_revoked_owner_after_the_root_changes(self):
+        job, _ = self.interrupt_selection()
+        fixture = self.fixture
+        MemoryConfiguration(fixture.b / 'lifeos-memory.json').update(lambda config: config['accounts'].clear())
+        with self.assertRaises(fixture.api.HTTPException) as raised:
+            fixture.recover()
+>       self.assertEqual(raised.exception.status_code, 403)
+E       AssertionError: 409 != 403
+
+tests/test_selection_recovery_admission.py:73: AssertionError
+_ SelectionRecoveryAdmissionTests.test_running_dashboard_owner_can_recover_after_the_selected_root_changes _
+
+    def recover():
+        status = _selection_status()
+        if status['state'] != 'interrupted':
+            raise HTTPException(status_code=409, detail='There is no interrupted LifeOS selection to recover')
+        try:
+>           _memory_preferences()._configuration(account=account)
+
+lifeos_hook_bridge/dashboard/plugin_api.py:911: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <lifeos_memory_settings.memory_preferences.MemoryPreferences object at 0x7fc26d7450f0>
+account = 'dashboard:basic:owner-b'
+
+    def _configuration(self, *, account: str | None = None):
+        config = self.configuration.load()
+        if Path(config['root']).absolute() != self.root:
+>           raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+E           lifeos_memory_settings.memory_access.MemoryUnavailable: Memory configuration belongs to a different LifeOS installation
+
+lifeos_hook_bridge/memory_preferences.py:94: MemoryUnavailable
+
+The above exception was the direct cause of the following exception:
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_running_dashboard_owner_can_recover_after_the_selected_root_changes>
+
+    def test_running_dashboard_owner_can_recover_after_the_selected_root_changes(self):
+        job, target = self.interrupt_selection()
+        fixture = self.fixture
+        self.assertNotEqual(fixture.api.INSTALLED_ROOT, target / '.claude')
+>       self.assertEqual(fixture.recover(), {'state': 'recovering', 'job': str(job)})
+                         ^^^^^^^^^^^^^^^^^
+
+tests/test_selection_recovery_admission.py:62: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_selection_profile_isolation.py:63: in recover
+    return asyncio.run(self.api.recover_installation_selection(request, account=self.owner_b))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/asyncio/runners.py:205: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/asyncio/runners.py:128: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib64/python3.14/asyncio/base_events.py:720: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+lifeos_hook_bridge/dashboard/plugin_api.py:918: in recover_installation_selection
+    return await run_in_threadpool(_installation_action, recover)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/concurrency.py:34: in run_in_threadpool
+    return await anyio.to_thread.run_sync(func)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/to_thread.py:65: in run_sync
+    return await get_async_backend().run_sync_in_worker_thread(
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/_backends/_asyncio.py:2706: in run_sync_in_worker_thread
+    return await future
+           ^^^^^^^^^^^^
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/anyio/_backends/_asyncio.py:1100: in run
+    result = context.run(func, *args)
+             ^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/dashboard/plugin_api.py:163: in _installation_action
+    return action()
+           ^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    def recover():
+        status = _selection_status()
+        if status['state'] != 'interrupted':
+            raise HTTPException(status_code=409, detail='There is no interrupted LifeOS selection to recover')
+        try:
+            _memory_preferences()._configuration(account=account)
+            _launch_selection(Path(status['job']), 'recover', account)
+        except PermissionError as error:
+            raise HTTPException(status_code=403, detail='The installation owner must recover the selection') from error
+        except (IncompatibleLifeOS, OSError, ValueError, RuntimeError) as error:
+>           raise HTTPException(status_code=409, detail=str(error)) from error
+E           fastapi.exceptions.HTTPException: 409: Memory configuration belongs to a different LifeOS installation
+
+lifeos_hook_bridge/dashboard/plugin_api.py:916: HTTPException
+_ SelectionRecoveryAdmissionTests.test_two_profiles_admit_exactly_one_pending_account_selection _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_two_profiles_admit_exactly_one_pending_account_selection>
+
+        def test_two_profiles_admit_exactly_one_pending_account_selection(self):
+            fixture = self.fixture
+            gate = fixture.home / 'gate'
+            gate.mkdir()
+            for name, profile in (('a', fixture.a), ('b', fixture.b)):
+                home = fixture.home / ('fresh-' + name) / 'home'
+                (home / '.claude/LIFEOS').mkdir(parents=True)
+                publish(profile, home, fixture.home / 'HermesWorkspace')
+                MemoryConfiguration(profile / 'lifeos-memory.json').update(
+                    lambda config, home=home: config.update(root=str(home / '.claude')))
+            program = '''
+    import importlib.util, json, sys, time
+    from pathlib import Path
+    api_path, gate, name, owner = sys.argv[1:]
+    gate = Path(gate)
+    other = 'b' if name == 'a' else 'a'
+    spec = importlib.util.spec_from_file_location('concurrent_selection_api_' + name, api_path)
+    api = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(api)
+    def wait_for(predicate):
+        deadline = time.monotonic() + 10
+        while not predicate():
+            if time.monotonic() > deadline: raise RuntimeError('selection scheduling timeout')
+            time.sleep(.01)
+    scan = api._selection_jobs
+    def paused_scan():
+        result = scan()
+        (gate / (name + '.scanned')).touch()
+        wait_for(lambda: (gate / (other + '.scanned')).exists() or (gate / (other + '.done')).exists())
+        return result
+    api._selection_jobs = paused_scan
+    (gate / (name + '.ready')).touch()
+    wait_for(lambda: (gate / (other + '.ready')).exists())
+    try:
+        try:
+            response = api._installation_action(lambda: api._queue_selection(owner, None))
+        except api.HTTPException as error:
+            response = {'http_status': error.status_code, 'detail': error.detail}
+        print(json.dumps(response))
+    finally:
+        (gate / (name + '.done')).touch()
+    '''
+            children = []
+            api_path = Path(__file__).parents[1] / 'lifeos_hook_bridge/dashboard/plugin_api.py'
+            for name, profile, owner in (('a', fixture.a, fixture.owner_a), ('b', fixture.b, fixture.owner_b)):
+                child = subprocess.Popen([sys.executable, '-c', program, str(api_path), str(gate), name, owner],
+                    env={**os.environ, 'HERMES_HOME': str(profile)}, text=True,
+                    stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                children.append(child)
+                self.addCleanup(self.finish, child)
+            responses = []
+            for child in children:
+                output, error = child.communicate(timeout=30)
+                self.assertEqual(child.returncode, 0, output + error)
+                self.assertEqual(error, '')
+                responses.append(json.loads(output))
+>           self.assertEqual(sum(response.get('state') == 'queued' for response in responses), 1, responses)
+E           AssertionError: 2 != 1 : [{'state': 'queued', 'job': '/home/outsider/.cache/lhc6/tmpud1zaxf1/account/.local/state/lifeos-hook-bridge/selections/selection-b26b59f382b14a629e2b35fe7b2f5f9e'}, {'state': 'queued', 'job': '/home/outsider/.cache/lhc6/tmpud1zaxf1/account/.local/state/lifeos-hook-bridge/selections/selection-0b439a6b7d274faa91840bd648460c0e'}]
+
+tests/test_selection_recovery_admission.py:143: AssertionError
+_ SelectionRecoveryAdmissionTests.test_worker_waits_for_the_account_lock_before_accessing_services _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_worker_waits_for_the_account_lock_before_accessing_services>
+
+        def test_worker_waits_for_the_account_lock_before_accessing_services(self):
+            fixture = self.fixture
+            job = fixture.job(fixture.b, 'selection-worker', state='queued')
+            program = '''
+    import sys
+    from pathlib import Path
+    from lifeos_hook_bridge import selection_worker as worker
+    job, profile, marker = map(Path, sys.argv[1:4])
+    class Services:
+        def __init__(self, account): marker.write_text('services')
+        def stop(self): pass
+        def start(self): pass
+        def point_pulse(self, home): pass
+        def verify(self): pass
+    worker.SystemdServices = Services
+    worker._mount = lambda profile, request: lambda installed, baseline: None
+    print('ready', flush=True)
+    print(worker.run_selection_job(job, profile=profile, account=sys.argv[4])['state'], flush=True)
+    '''
+            marker = fixture.home / 'worker-services'
+            with installation_lock(fixture.home):
+                child = subprocess.Popen([sys.executable, '-c', program, str(job), str(fixture.b),
+                    str(marker), fixture.owner_b], text=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                self.addCleanup(self.finish, child)
+                self.assertTrue(select.select([child.stdout], [], [], 5)[0])
+                self.assertEqual(child.stdout.readline(), 'ready\n')
+>               self.assertEqual(select.select([child.stdout], [], [], .3)[0], [])
+E               AssertionError: Lists differ: [<_io.TextIOWrapper name=12 encoding='UTF-8'>] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               <_io.TextIOWrapper name=12 encoding='UTF-8'>
+E               
+E               - [<_io.TextIOWrapper name=12 encoding='UTF-8'>]
+E               + []
+
+tests/test_selection_recovery_admission.py:173: AssertionError
+_ SelectionNativeMountTests.test_committed_target_owner_edit_blocks_recovery_and_service_restart (attempt=0) _
+
+self = <test_selection_native_mount.SelectionNativeMountTests testMethod=test_committed_target_owner_edit_blocks_recovery_and_service_restart>
+
+        def test_committed_target_owner_edit_blocks_recovery_and_service_restart(self):
+            from lifeos_hook_bridge.installation_selection import recover_selection
+            from lifeos_hook_bridge.lifeos_installation import selection
+            from lifeos_hook_bridge.selection_worker import _mount, _recover_mount
+            self.fixture.configuration.update(lambda config: config.update(ownership_enabled=False))
+            (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+            target = self.root.parent / 'selection-target/home/.claude'
+            shutil.copytree(self.root, target)
+            (target / 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md').write_text('# SyntheticTargetConstitution\n')
+            environment = {key: value for key, value in self.environment.items()
+                           if key != 'LIFEOS_MEMORY_ADMINISTRATION'}
+            program = '''
+    import os, sys
+    from pathlib import Path
+    from lifeos_hook_bridge.installation_selection import select_home
+    from lifeos_hook_bridge.memory_service import MemoryConfiguration
+    from lifeos_hook_bridge.selection_worker import _mount, _recover_mount
+    profile, target, job = map(Path, sys.argv[1:4])
+    class Services:
+        def stop(self): pass
+        def start(self): pass
+        def point_pulse(self, home): pass
+    native = _mount(profile, {'hermes_command': sys.argv[4]})
+    def mount(installed, baseline):
+        native(installed, baseline)
+        os._exit(91)
+    select_home(job, profile=profile, target=target,
+        configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
+        mount=mount, recover_mount=lambda installed: _recover_mount(installed, profile),
+        verify=lambda: None, baseline_data=None)
+    '''
+            events = []
+    
+            class Services:
+                def stop(self): events.append('stop')
+                def start(self): events.append('start')
+                def point_pulse(self, home): events.append('pulse')
+    
+            with patch.dict(os.environ, environment, clear=True):
+                mount = _mount(self.profile, {'hermes_command': str(self.hermes)})
+                mount(self.root, None)
+                job = self.profile / 'selection-owner-edit'
+                result = subprocess.run([sys.executable, '-c', program, str(self.profile), str(target.parent),
+                    str(job), str(self.hermes)], text=True, capture_output=True, timeout=120)
+                self.assertEqual(result.returncode, 91, result.stdout + result.stderr)
+                self.assertEqual(result.stderr, '')
+                self.assertEqual(json.loads((job / 'journal.json').read_text())['state'], 'mounting')
+                self.assertEqual(json.loads((self.profile / '.lifeos-mount/operation.json').read_text())['state'],
+                                 'committed')
+                soul = self.profile / 'SOUL.md'
+                soul.write_text('# SyntheticLaterOwnerEdit\n')
+                for attempt in range(2):
+>                   with self.subTest(attempt=attempt), self.assertRaisesRegex(RuntimeError, 'later edit'):
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E                   AssertionError: RuntimeError not raised
+
+tests/test_selection_native_mount.py:76: AssertionError
+_ SelectionNativeMountTests.test_committed_target_owner_edit_blocks_recovery_and_service_restart _
+
+self = <test_selection_native_mount.SelectionNativeMountTests testMethod=test_committed_target_owner_edit_blocks_recovery_and_service_restart>
+
+        def test_committed_target_owner_edit_blocks_recovery_and_service_restart(self):
+            from lifeos_hook_bridge.installation_selection import recover_selection
+            from lifeos_hook_bridge.lifeos_installation import selection
+            from lifeos_hook_bridge.selection_worker import _mount, _recover_mount
+            self.fixture.configuration.update(lambda config: config.update(ownership_enabled=False))
+            (self.root / 'LIFEOS/USER/CONFIG/memory-access.json').unlink()
+            target = self.root.parent / 'selection-target/home/.claude'
+            shutil.copytree(self.root, target)
+            (target / 'LIFEOS/LIFEOS_SYSTEM_PROMPT.md').write_text('# SyntheticTargetConstitution\n')
+            environment = {key: value for key, value in self.environment.items()
+                           if key != 'LIFEOS_MEMORY_ADMINISTRATION'}
+            program = '''
+    import os, sys
+    from pathlib import Path
+    from lifeos_hook_bridge.installation_selection import select_home
+    from lifeos_hook_bridge.memory_service import MemoryConfiguration
+    from lifeos_hook_bridge.selection_worker import _mount, _recover_mount
+    profile, target, job = map(Path, sys.argv[1:4])
+    class Services:
+        def stop(self): pass
+        def start(self): pass
+        def point_pulse(self, home): pass
+    native = _mount(profile, {'hermes_command': sys.argv[4]})
+    def mount(installed, baseline):
+        native(installed, baseline)
+        os._exit(91)
+    select_home(job, profile=profile, target=target,
+        configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
+        mount=mount, recover_mount=lambda installed: _recover_mount(installed, profile),
+        verify=lambda: None, baseline_data=None)
+    '''
+            events = []
+    
+            class Services:
+                def stop(self): events.append('stop')
+                def start(self): events.append('start')
+                def point_pulse(self, home): events.append('pulse')
+    
+            with patch.dict(os.environ, environment, clear=True):
+                mount = _mount(self.profile, {'hermes_command': str(self.hermes)})
+                mount(self.root, None)
+                job = self.profile / 'selection-owner-edit'
+                result = subprocess.run([sys.executable, '-c', program, str(self.profile), str(target.parent),
+                    str(job), str(self.hermes)], text=True, capture_output=True, timeout=120)
+                self.assertEqual(result.returncode, 91, result.stdout + result.stderr)
+                self.assertEqual(result.stderr, '')
+                self.assertEqual(json.loads((job / 'journal.json').read_text())['state'], 'mounting')
+                self.assertEqual(json.loads((self.profile / '.lifeos-mount/operation.json').read_text())['state'],
+                                 'committed')
+                soul = self.profile / 'SOUL.md'
+                soul.write_text('# SyntheticLaterOwnerEdit\n')
+                for attempt in range(2):
+                    with self.subTest(attempt=attempt), self.assertRaisesRegex(RuntimeError, 'later edit'):
+                        recover_selection(job, configuration=self.fixture.configuration, services=Services(),
+                            mount=mount, recover_mount=lambda installed: _recover_mount(installed, self.profile),
+                            verify=lambda: None)
+>                   self.assertEqual(soul.read_text(), '# SyntheticLaterOwnerEdit\n')
+E                   AssertionError: "# Constitution and identity for LifeOS i[2473 chars]s.\n" != '# SyntheticLaterOwnerEdit\n'
+E                   Diff is 2653 characters long. Set self.maxDiff to None to see it.
+
+tests/test_selection_native_mount.py:80: AssertionError
+----------------------------- Captured stdout call -----------------------------
+u
+=========================== short test summary info ============================
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_recovery_still_refuses_a_revoked_owner_after_the_root_changes
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_running_dashboard_owner_can_recover_after_the_selected_root_changes
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_two_profiles_admit_exactly_one_pending_account_selection
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_worker_waits_for_the_account_lock_before_accessing_services
+SUBFAILED(attempt=0) tests/test_selection_native_mount.py::SelectionNativeMountTests::test_committed_target_owner_edit_blocks_recovery_and_service_restart
+FAILED tests/test_selection_native_mount.py::SelectionNativeMountTests::test_committed_target_owner_edit_blocks_recovery_and_service_restart
+6 failed, 11 passed, 3 subtests passed in 11.55s

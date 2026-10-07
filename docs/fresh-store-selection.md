@@ -65,3 +65,25 @@ The setting therefore names one LifeOS home, not two separate paths:
 4. The memory configuration `root` names the same installed root. Selection updates it in the same transaction.
 5. A native Pulse unit, when present, receives a systemd drop-in that sets its working directory and `HOME`. Return removes the drop-in.
 6. The page needs an owner claim before preparation. The first authenticated dashboard account can claim an installation that has no memory configuration. The claim creates a configuration with ownership and sharing disabled.
+
+## Selection recovery and profile authorization (2026-10-07)
+
+Selection records the `mounting` state before the native mount can publish profile files. Each rollback attempt validates the active native mount before restoring the previous setting and memory root. That mount can belong to the target or previous installation, depending on the interrupted compensation stage. The durable target recovery checkpoint records progress and does not suppress validation on retry. Recovery treats a `published` journal as a possible completed publication, because that state cannot establish whether files changed.
+
+The previous mount validates its native output and Hermes configuration. Selection checks that its setting and memory root agree before restarting services and reporting success. A later owner edit that conflicts with the mount journal prevents rollback and service restart. Recovery preserves that edit and reports the interruption for owner review.
+
+The dashboard selects jobs only for its physical Hermes profile. It checks the profile binding and current owner before launching recovery. The detached worker receives the verified account through `--account` and the invoking profile through `HERMES_HOME`. It checks both the request and recovery journal against that profile and rechecks the current owner before accessing services.
+
+Selection admission holds an account lock across the pending-job scan, request publication, and launch because gateway and Pulse services are shared. Recovery admission holds the same lock. Detached selection workers wait for this account lock before accessing services and hold it through the transaction. Each path acquires the profile lock before the account lock. Another profile's pending job requires that profile's owner to complete or recover it. The dashboard does not display or recover that job as its own.
+
+Selection rollback checks a completed target mount against its recorded file fingerprints. A later edit blocks rollback before restoring the selection or restarting services. An explicit mount still accepts current files as its starting state.
+
+The dashboard queries both the worker's active state and queued systemd job before classifying an unfinished launch. A confirmed inactive or failed unit with no queued job and no transaction journal becomes failed. This permits another selection without recovery. A live or transitioning unit, a queued systemd job, or an unavailable query remains pending. A stopped worker with an unfinished transaction journal still requires recovery.
+
+The dashboard and worker share a selection authority check. Recovery checks the current owner, request profile, journal profile, request target, selected root, and memory root. The roots must belong to the previous or target installation recorded in the interrupted journal. Recovery can proceed when the running dashboard retains its startup root. Ordinary memory requests keep their installed-root check.
+
+The [recovery regression evidence](verification/2026-10-07-selection-recovery/README.md) covers the original failures, native mounting with real process death, retry during rollback, later-edit preservation, and owner/profile refusal.
+
+The [focused review correction evidence](verification/2026-10-07-selection-review-fixes/README.md) covers committed-target owner edits, recovery through a running dashboard after root publication, and concurrent account admission.
+
+The [compensation retry evidence](verification/2026-10-07-selection-retry-fixes/README.md) covers later edits after recovery checkpoints, interrupted previous mounts, and safe admission after failed launches.
