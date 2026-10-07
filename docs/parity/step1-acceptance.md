@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 79 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 96 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -178,17 +178,17 @@ Registrations: SessionEnd.1.2.
 
 Registrations: SessionEnd.1.3.
 
-- [ ] `usage-counts-01`: Absent, invalid, and expired OAuth credentials preserve the documented usage-cache behavior.
-- [ ] `usage-counts-02`: Network failure preserves the prior valid usage state.
-- [ ] `usage-counts-03`: An authenticated real usage refresh is tested or recorded as an explicit unavailable enabled-feature control.
+- [x] `usage-counts-01`: Absent, invalid, and expired OAuth credentials preserve the documented usage-cache behavior.
+- [x] `usage-counts-02`: Network failure preserves the prior valid usage state.
+- [x] `usage-counts-03`: An authenticated real usage refresh is tested or recorded as an explicit unavailable enabled-feature control.
 
 ### memory-health (package 6)
 
 Registrations: SessionEnd.1.4, Stop.2.1.
 
-- [ ] `memory-health-01`: Healthy, warning, and unavailable-tool states produce the applicable report at both registered events.
-- [ ] `memory-health-02`: Synthetic managed memory enforces caller and destination admission.
-- [ ] `memory-health-03`: Pinned asynchronous execution, interruption, and subsequent turn delivery preserve the report.
+- [x] `memory-health-01`: Healthy, warning, and unavailable-tool states produce the applicable report at both registered events.
+- [x] `memory-health-02`: Synthetic managed memory enforces caller and destination admission.
+- [x] `memory-health-03`: Pinned asynchronous execution, interruption, and subsequent turn delivery preserve the report.
 
 ### doc-integrity (package 6)
 
@@ -209,9 +209,9 @@ Registrations: SessionEnd.1.6.
 
 Registrations: UserPromptSubmit.1.1.
 
-- [ ] `prompt-processing-01`: First and subsequent prompts create or retain the correct session name and work state.
-- [ ] `prompt-processing-02`: Actual title inference success and failure preserve the naming contract.
-- [ ] `prompt-processing-03`: Restart and concurrent prompts preserve session identity.
+- [x] `prompt-processing-01`: First and subsequent prompts create or retain the correct session name and work state.
+- [x] `prompt-processing-02`: Actual title inference success and failure preserve the naming contract.
+- [x] `prompt-processing-03`: Restart and concurrent prompts preserve session identity.
 
 ### satisfaction (package 6)
 
@@ -290,15 +290,15 @@ Registrations: TaskCreated.1.1.
 
 Registrations: SessionStart.1.1.
 
-- [ ] `hook-healer-01`: Actual interpreter and executable permission repairs affect only registered installed hooks.
-- [ ] `hook-healer-02`: Already valid, missing, and unsupported interpreter cases preserve the documented repair policy.
+- [x] `hook-healer-01`: Actual interpreter and executable permission repairs affect only registered installed hooks.
+- [x] `hook-healer-02`: Already valid, missing, and unsupported interpreter cases preserve the documented repair policy.
 
 ### kitty-environment (package 6)
 
 Registrations: SessionStart.1.2.
 
-- [ ] `kitty-environment-01`: Desktop persistence, absent terminal, and subagent startup follow native terminal rules.
-- [ ] `kitty-environment-02`: Remote startup preserves the accepted isolation from native Kitty files.
+- [x] `kitty-environment-01`: Desktop persistence, absent terminal, and subagent startup follow native terminal rules.
+- [x] `kitty-environment-02`: Remote startup preserves the accepted isolation from native Kitty files.
 
 ### load-context (package 6)
 
@@ -312,8 +312,8 @@ Registrations: SessionStart.1.3.
 
 Registrations: SessionStart.1.4.
 
-- [ ] `freshness-01`: Complete installed tree, stale cache, and missing source produce the applicable freshness result.
-- [ ] `freshness-02`: Concurrent startup and interrupted refresh preserve valid cache state.
+- [x] `freshness-01`: Complete installed tree, stale cache, and missing source produce the applicable freshness result.
+- [x] `freshness-02`: Concurrent startup and interrupted refresh preserve valid cache state.
 
 ### settings-merge (package 6)
 
@@ -326,8 +326,8 @@ Registrations: SessionStart.1.5.
 
 Registrations: Stop.1.1.
 
-- [ ] `response-cache-01`: Absent and prior cache, short and long response, and repeated Stop retain the delivered final response with the exact limit.
-- [ ] `response-cache-02`: Interrupted completion does not publish an undelivered response as a completed answer.
+- [x] `response-cache-01`: Absent and prior cache, short and long response, and repeated Stop retain the delivered final response with the exact limit.
+- [x] `response-cache-02`: Interrupted completion does not publish an undelivered response as a completed answer.
 
 ### voice-completion (package 6)
 

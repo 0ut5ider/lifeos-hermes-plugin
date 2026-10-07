@@ -126,10 +126,14 @@ def host(output, mode):
             assert durable['delivery_state'] == 'delivered', durable
         path = home / '.claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl'
         events = [json.loads(line) for line in path.read_text().splitlines()]
+        cache = home/'.claude/LIFEOS/MEMORY/STATE/last-response.txt'
+        final = delivered.get('final_response') if delivered else result.get('final_response')
+        assert cache.read_text() == final[:2000], 'The native cache does not contain the completed parent response'
         output.write_text(json.dumps({'actual_parent_response': result.get('final_response'),
             'actual_completions': completions, 'native_events': events,
             'parent_session_id': agent.session_id, 'progress': progress,
             'gateway_delivery': gateway_delivery, 'actual_watchdog_events': watchdog,
+            'actual_response_cache': cache.read_text(),
             'parent_completion_response': delivered.get('final_response') if delivered else None,
             'durable_delivery': durable, 'main_callbacks': [json.loads(line) for line in (home/'main-callbacks.jsonl').read_text().splitlines()]}, indent=2) + '\n')
         main_callbacks = [json.loads(line) for line in (home/'main-callbacks.jsonl').read_text().splitlines()]
@@ -219,6 +223,8 @@ def run(configuration, output, plugins, mode):
     settings = json.loads((root / 'settings.json').read_text())
     for event in ('SessionStart', 'UserPromptSubmit', 'Stop'):
         settings['hooks'][event] = [{'hooks': [{'type': 'command', 'command': shlex.join([spec['command'][0],str(Path(__file__).resolve()),'record'])}]}]
+    settings['hooks']['Stop'][0]['hooks'].append({'type':'command',
+        'command':'bun '+str(root/'hooks/LastResponseCache.hook.ts')})
     (root / 'settings.json').write_text(json.dumps(settings))
     pulse = None
     if mode == 'gateway-pulse':

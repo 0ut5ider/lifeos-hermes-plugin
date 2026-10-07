@@ -44,7 +44,7 @@ index 9028cb926..05740e2c6 100644
  
      # Per-turn agent state (the gateway caches agents across turns, so none of this may
      # leak into the next message): interim-commentary dedup spans the whole turn but not
-@@ -1697,6 +1710,20 @@ def run_conversation(
+@@ -1697,6 +1710,21 @@ def run_conversation(
          )
      result = export_current_turn_boundary(agent, result, user_message)
      _close_durable_failed_turn(agent, result)
@@ -55,6 +55,7 @@ index 9028cb926..05740e2c6 100644
 +                "on_turn_result", session_id=agent.session_id,
 +                turn_id=result.get("turn_id", ""),
 +                failed=result.get("failed", False),
++                completed=result.get("completed", False),
 +                interrupted=result.get("interrupted", False),
 +                failure_reason=result.get("failure_reason", ""),
 +                turn_exit_reason=result.get("turn_exit_reason", ""),

@@ -1202,25 +1202,46 @@
       "registrations": [
         "SessionEnd.1.3"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "usage-counts-01",
           "expected": "Absent, invalid, and expired OAuth credentials preserve the documented usage-cache behavior.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-network-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-fetch-network.log"
+          ]
         },
         {
           "id": "usage-counts-02",
           "expected": "Network failure preserves the prior valid usage state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-network-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-fetch-network.log"
+          ]
         },
         {
           "id": "usage-counts-03",
           "expected": "An authenticated real usage refresh is tested or recorded as an explicit unavailable enabled-feature control.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-network-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-fetch-network.log"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1232,25 +1253,40 @@
         "SessionEnd.1.4",
         "Stop.2.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "memory-health-01",
           "expected": "Healthy, warning, and unavailable-tool states produce the applicable report at both registered events.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         },
         {
           "id": "memory-health-02",
           "expected": "Synthetic managed memory enforces caller and destination admission.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         },
         {
           "id": "memory-health-03",
           "expected": "Pinned asynchronous execution, interruption, and subsequent turn delivery preserve the report.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1313,25 +1349,49 @@
       "registrations": [
         "UserPromptSubmit.1.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "prompt-processing-01",
           "expected": "First and subsequent prompts create or retain the correct session name and work state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/success-wire.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/provider-failure-wire.json"
+          ]
         },
         {
           "id": "prompt-processing-02",
           "expected": "Actual title inference success and failure preserve the naming contract.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/success-wire.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/provider-failure-wire.json"
+          ]
         },
         {
           "id": "prompt-processing-03",
           "expected": "Restart and concurrent prompts preserve session identity.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/success-wire.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/provider-failure-wire.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1699,19 +1759,29 @@
       "registrations": [
         "SessionStart.1.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "hook-healer-01",
           "expected": "Actual interpreter and executable permission repairs affect only registered installed hooks.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         },
         {
           "id": "hook-healer-02",
           "expected": "Already valid, missing, and unsupported interpreter cases preserve the documented repair policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1722,19 +1792,31 @@
       "registrations": [
         "SessionStart.1.2"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "kitty-environment-01",
           "expected": "Desktop persistence, absent terminal, and subagent startup follow native terminal rules.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/kitty-tests.txt"
+          ]
         },
         {
           "id": "kitty-environment-02",
           "expected": "Remote startup preserves the accepted isolation from native Kitty files.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/kitty-tests.txt"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1774,19 +1856,29 @@
       "registrations": [
         "SessionStart.1.4"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "freshness-01",
           "expected": "Complete installed tree, stale cache, and missing source produce the applicable freshness result.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         },
         {
           "id": "freshness-02",
           "expected": "Concurrent startup and interrupted refresh preserve valid cache state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1820,19 +1912,33 @@
       "registrations": [
         "Stop.1.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "response-cache-01",
           "expected": "Absent and prior cache, short and long response, and repeated Stop retain the delivered final response with the exact limit.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/wire.json"
+          ]
         },
         {
           "id": "response-cache-02",
           "expected": "Interrupted completion does not publish an undelivered response as a completed answer.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/wire.json"
+          ]
         }
       ],
       "release_acceptance": false

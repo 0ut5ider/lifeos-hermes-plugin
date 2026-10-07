@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Save the native response cache only after completed Hermes generation. Preserve the prior cache after interrupted or rejected candidates.
+- Retain real title-inference success and refusal controls, native startup branches, managed health admission, and isolated usage fetch evidence.
+
 - Preserve learning identity across concurrent sessions and repeated capture days.
 - Coordinate installed learning and cleanup programs during synchronous and detached execution.
 - Preserve the prior version warning marker after interrupted native publication.

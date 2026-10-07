@@ -207,7 +207,7 @@ def _native_post_hook(command: str, root: Path) -> str:
     path = Path(token).expanduser().resolve()
     for name in ("ISASync", "ISAStaleWriteGuard", "PostToolObserver", "LoopDetector",
                  "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet", "AgentInvocation", "TimeContext",
-                 "WorkCompletionLearning", "SessionCleanup"):
+                 "WorkCompletionLearning", "SessionCleanup", "LastResponseCache"):
         if path == (root / "hooks" / (name + ".hook.ts")).resolve():
             return name
     return ""
@@ -1344,7 +1344,7 @@ class HookBridge:
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
-        child_tracking_only: bool = False,
+        child_tracking_only: bool = False, response_cache_only: bool = False,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         host_paths = _task_uses_host_paths(task_id)
@@ -1367,6 +1367,8 @@ class HookBridge:
             if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
                 values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
             for hook in group.get("hooks", []):
+                if response_cache_only and hook.get("type") != "command":
+                    continue
                 if child_tracking_only and hook.get("type") != "command":
                     continue
                 if hook.get("type") == "http":
@@ -1399,6 +1401,10 @@ class HookBridge:
                     continue
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
+                    continue
+                if event == "Stop" and (
+                    _native_post_hook(command, self.root) == "LastResponseCache"
+                ) != response_cache_only:
                     continue
                 native_tracker = remote_project is None and _native_post_hook(command, self.root) == "AgentInvocation"
                 if child_tracking_only and not native_tracker:
@@ -2445,9 +2451,12 @@ class HookBridge:
     def turn_end(
         self, session_id: str = "", turn_id: str = "", failed: bool = False,
         turn_exit_reason: str = "", failure_reason: str = "", final_response: str = "",
-        interrupted: bool = False, **_: Any,
+        interrupted: bool = False, completed: bool = False, **_: Any,
     ) -> None:
         try:
+            if completed and not failed and not interrupted and final_response and not _delegated_child():
+                self._run("Stop", self._payload("Stop", session_id,
+                    last_assistant_message=final_response), response_cache_only=True)
             self._turn_end(session_id, turn_id, failed, turn_exit_reason, failure_reason,
                            final_response, interrupted)
         finally:

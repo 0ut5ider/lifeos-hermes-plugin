@@ -1,0 +1,370 @@
+{
+  "actual_parent_response": "PAIR_PARENT_DISPATCHED",
+  "actual_completions": [
+    {
+      "type": "async_delegation",
+      "delegation_id": "deleg_fec7d8c4",
+      "session_key": "20261007_042345_afb434",
+      "origin_ui_session_id": "",
+      "origin_session_id": "",
+      "parent_session_id": "20261007_042345_afb434",
+      "goal": "2 parallel subagents: Reply with exactly the text PAIR_CHILD_A; Reply with exactly the text PAIR_CHILD_B",
+      "goals": [
+        "Reply with exactly the text PAIR_CHILD_A and nothing else.",
+        "Reply with exactly the text PAIR_CHILD_B and nothing else."
+      ],
+      "context": null,
+      "toolsets": null,
+      "role": "leaf",
+      "model": null,
+      "status": "completed",
+      "is_batch": true,
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 2.53,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3313,
+            "output": 38
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 2.66,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3325,
+            "output": 31
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-1.log"
+        }
+      ],
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-1.log"
+      ],
+      "error": null,
+      "total_duration_seconds": 3.02,
+      "dispatched_at": 1791347034.4441106,
+      "completed_at": 1791347037.2445052
+    }
+  ],
+  "native_events": [
+    {
+      "timestamp": "2026-10-07T04:23:54+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_042345_afb434",
+      "subagent_id": "20261007_042345_afb434::Reply with exactly the text PAIR_CHILD_A and nothing else. [20261007_042354_ad0f7b]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "low",
+      "subagent_requested_model": "haiku",
+      "subagent_reasoning_effort": "low",
+      "description": "Reply with exactly the text PAIR_CHILD_A and nothing else. [20261007_042354_ad0f7b]",
+      "prompt_preview": "Reply with exactly the text PAIR_CHILD_A and nothing else."
+    },
+    {
+      "timestamp": "2026-10-07T04:23:54+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_042345_afb434",
+      "subagent_id": "20261007_042345_afb434::Reply with exactly the text PAIR_CHILD_B and nothing else. [20261007_042354_d4a925]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "session-inherited",
+      "subagent_reasoning_effort": "xhigh",
+      "description": "Reply with exactly the text PAIR_CHILD_B and nothing else. [20261007_042354_d4a925]",
+      "prompt_preview": "Reply with exactly the text PAIR_CHILD_B and nothing else."
+    },
+    {
+      "timestamp": "2026-10-07T04:23:57+00:00",
+      "event": "subagent_stop",
+      "subagent_observed_model": "flashnext-w4a16-fp8ple",
+      "session_id": "20261007_042345_afb434",
+      "subagent_id": "20261007_042345_afb434::Reply with exactly the text PAIR_CHILD_A and nothing else. [20261007_042354_ad0f7b]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly the text PAIR_CHILD_A and nothing else. [20261007_042354_ad0f7b]",
+      "duration_seconds": 3
+    },
+    {
+      "timestamp": "2026-10-07T04:23:57+00:00",
+      "event": "subagent_stop",
+      "subagent_observed_model": "flashnext-w4a16-fp8ple",
+      "session_id": "20261007_042345_afb434",
+      "subagent_id": "20261007_042345_afb434::Reply with exactly the text PAIR_CHILD_B and nothing else. [20261007_042354_d4a925]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly the text PAIR_CHILD_B and nothing else. [20261007_042354_d4a925]",
+      "duration_seconds": 3
+    }
+  ],
+  "parent_session_id": "20261007_042345_afb434",
+  "progress": [
+    {
+      "event": "tool.started",
+      "tool": "delegate_task"
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_A and nothing else.",
+      "subagent_id": "sa-0-1830953d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_ad0f7b",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_B and nothing else.",
+      "subagent_id": "sa-1-032f9b5d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_d4a925",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_A and nothing else.",
+      "subagent_id": "sa-0-1830953d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_ad0f7b",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_B and nothing else.",
+      "subagent_id": "sa-1-032f9b5d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_d4a925",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0
+    },
+    {
+      "event": "tool.completed",
+      "tool": "delegate_task",
+      "duration": 0.2503397464752197,
+      "is_error": false,
+      "result": "{\"status\": \"dispatched\", \"mode\": \"background\", \"count\": 2, \"delegation_id\": \"deleg_fec7d8c4\", \"goals\": [\"Reply with exactly the text PAIR_CHILD_A and nothing else.\", \"Reply with exactly the text PAIR_CHILD_B and nothing else.\"], \"note\": \"2 subagents are running in parallel in the background as 1 completion unit(s); each unit's results re-enter the conversation as their own new message when THAT unit finishes. Results are delivered only after you END YOUR TURN: do anything that does not depend on them, then stop with a one-line status. Do not poll transcripts or artifacts to wait for them.\", \"subagent_ids\": [\"sa-0-1830953d\", \"sa-1-032f9b5d\"], \"control_hint\": \"While a child runs you can orchestrate it live with this same tool: delegate_task(action='list') to see live children, action='steer' with subagent_id + message to redirect one, action='stop' with subagent_id to end one early.\", \"live_transcripts\": [\"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-0.log\", \"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-1.log\"], \"live_transcripts_hint\": \"Each subagent streams a human-readable transcript of its operations to the file listed above (append-only, one per task). Read or `tail -f` these paths at any time to watch a child work while it runs.\"}"
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_A and nothing else.",
+      "subagent_id": "sa-0-1830953d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_ad0f7b",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_A and nothing else.",
+      "subagent_id": "sa-0-1830953d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_ad0f7b",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0,
+      "status": "completed",
+      "duration_seconds": 2.53,
+      "summary": "PAIR_CHILD_A",
+      "input_tokens": 3313,
+      "output_tokens": 38,
+      "reasoning_tokens": 32,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "cost_usd": 0.0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_B and nothing else.",
+      "subagent_id": "sa-1-032f9b5d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_d4a925",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly the text PAIR_CHILD_B and nothing else.",
+      "subagent_id": "sa-1-032f9b5d",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_042354_d4a925",
+      "delegation_id": "deleg_fec7d8c4",
+      "tool_count": 0,
+      "status": "completed",
+      "duration_seconds": 2.66,
+      "summary": "PAIR_CHILD_B",
+      "input_tokens": 3325,
+      "output_tokens": 31,
+      "reasoning_tokens": 25,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "cost_usd": 0.0
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    }
+  ],
+  "gateway_delivery": null,
+  "actual_watchdog_events": [],
+  "actual_response_cache": "PAIR_CHILD_A\nPAIR_CHILD_B\n\nBoth children completed (1 API call each, ~2.5s); consolidated results above are their exact final outputs. Nothing left pending \u2014 no sibling units reported for deleg_fec7d8c4.",
+  "parent_completion_response": "PAIR_CHILD_A\nPAIR_CHILD_B\n\nBoth children completed (1 API call each, ~2.5s); consolidated results above are their exact final outputs. Nothing left pending \u2014 no sibling units reported for deleg_fec7d8c4.",
+  "durable_delivery": {
+    "delegation_id": "deleg_fec7d8c4",
+    "origin_session": "20261007_042345_afb434",
+    "state": "completed",
+    "dispatched_at": 1791347034.4441106,
+    "completed_at": 1791347037.2445052,
+    "result": {
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 2.53,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3313,
+            "output": 38
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 2.66,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3325,
+            "output": 31
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-1.log"
+        }
+      ],
+      "total_duration_seconds": 3.02,
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/final-response-tiers-after/.hermes/cache/delegation/live/deleg_fec7d8c4/task-1.log"
+      ]
+    },
+    "delivery_state": "delivered",
+    "delivery_attempts": 1,
+    "origin_session_id": ""
+  },
+  "main_callbacks": [
+    {
+      "session_id": "20261007_042345_afb434",
+      "event": "SessionStart"
+    },
+    {
+      "session_id": "20261007_042345_afb434",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_042345_afb434",
+      "event": "Stop"
+    },
+    {
+      "session_id": "20261007_042345_afb434",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_042345_afb434",
+      "event": "Stop"
+    }
+  ]
+}
