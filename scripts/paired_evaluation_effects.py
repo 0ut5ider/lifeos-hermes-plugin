@@ -96,7 +96,7 @@ def configure_evaluation(home, side, spec, endpoint, environment):
         (folder / 'claude').write_text(adapter)
         (folder / 'claude').chmod(0o755)
     else:
-        shim = Path(spec['plugins_path']) / 'lifeos-hook-bridge/lifeos_hook_bridge/bin/claude'
+        shim = Path(spec['plugins_path']) / 'lifeos-hook-bridge/bin/claude'
         (folder / 'claude').symlink_to(shim)
         environment.update(LIFEOS_HOOK_MODEL_ENV=str(private), LIFEOS_CHILD_INFERENCE_DIRECT='1',
                            LIFEOS_MODEL_TIER_MAP=json.dumps({'sonnet': {'model': 'lifecycle-fixture', 'effort': 'medium'}}))

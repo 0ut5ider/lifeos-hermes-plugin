@@ -5,11 +5,23 @@ import unittest
 import tempfile
 from pathlib import Path
 
-from scripts.paired_evaluation_effects import EVALUATION_CASES, expected_evaluation, check_evaluation, seed_evaluation
+from scripts.paired_evaluation_effects import (EVALUATION_CASES, expected_evaluation, check_evaluation,
+                                             seed_evaluation, configure_evaluation)
 from scripts.paired_lifecycle_effects import check_pair
 
 
 class PairedEvaluationTests(unittest.TestCase):
+    def test_child_route_uses_the_installed_plugin_layout(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            shim = root / 'plugins/lifeos-hook-bridge/bin/claude'
+            shim.parent.mkdir(parents=True)
+            shim.write_text('Installed inference entry point\n')
+            environment = {'PATH': '/usr/bin'}
+            configure_evaluation(root / 'home', 'hermes', {'plugins_path': str(root / 'plugins')},
+                                 'http://127.0.0.1:1234', environment)
+            self.assertTrue((root / 'home/.local/bin/claude').is_file())
+
     def test_suite_preparation_creates_the_real_runner_link(self):
         with tempfile.TemporaryDirectory() as directory:
             home = Path(directory) / 'home'
