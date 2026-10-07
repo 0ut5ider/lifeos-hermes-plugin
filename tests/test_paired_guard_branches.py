@@ -2,8 +2,11 @@
 # ABOUTME: Checks real-client assertions for the remaining nested Bash guard branches.
 import copy
 import unittest
+import json
+import tempfile
+from pathlib import Path
 
-from scripts.paired_lifecycle_effects import GUARD_BRANCHES, guard_expectation, check_pair
+from scripts.paired_lifecycle_effects import GUARD_BRANCHES, guard_expectation, check_pair, make_fixture
 
 
 class PairedGuardBranchTests(unittest.TestCase):
@@ -47,3 +50,17 @@ class PairedGuardBranchTests(unittest.TestCase):
                     for side in ('native', 'hermes'):
                         altered[side]['after'][field] = False
                     self.assertTrue(check_pair(altered))
+
+    def test_real_branch_fixture_admits_bash_while_retaining_the_native_guard(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / 'source'
+            (source / 'hooks').mkdir(parents=True)
+            (source / 'hooks/PreToolGuard.hook.ts').write_text('Source identity\n')
+            home = root / 'home'
+            make_fixture(home, 'guard-bash-gmail-routed', source, root / 'trace.py')
+            settings = json.loads((home / '.claude/settings.json').read_text())
+            self.assertEqual(settings.get('permissions'), {'allow': ['Bash']})
+            self.assertEqual(settings['hooks']['PreToolUse'][0]['matcher'], 'Bash|Write|Edit|MultiEdit')
+            self.assertEqual((home / 'project/gmail.ts').read_text().splitlines()[-1],
+                             'console.log("PAIR_GUARD_OUTPUT");')

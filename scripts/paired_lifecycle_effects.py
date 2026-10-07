@@ -1449,6 +1449,8 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
     if case in GUARD_BRANCHES:
         seed_guard(home, case)
     settings = {'hooks': hooks}
+    if case in GUARD_BRANCHES:
+        settings['permissions'] = {'allow': ['Bash']}
     if case.startswith('time-context-'):
         settings['principal'] = {'timezone': clock_timezone(case)}
     if case == 'generic-model-rung':
@@ -1819,6 +1821,10 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
         command[-1] = 'Run this exact shell command once: ' + (GENERIC_CASES[case][2] if case in GENERIC_CASES
                                                               else TOOL_COMMANDS[case])
         system_prompt = TOOL_SYSTEM_PROMPT
+        if case in GUARD_BRANCHES:
+            system_prompt += (' The local fixture scripts contain only a marker print and no external transport. '
+                              'Execute only the exact requested command. Do not inspect files or run setup commands. '
+                              'The fixture already has every required file and permission.')
         if case in TOOL_REPEATS:
             command[-1] = 'Run this exact shell command three times: ' + TOOL_COMMANDS[case]
             system_prompt = TOOL_REPEAT_SYSTEM_PROMPT
