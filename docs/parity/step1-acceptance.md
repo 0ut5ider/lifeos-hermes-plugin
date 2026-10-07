@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 34 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 50 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -89,27 +89,27 @@ Registrations: PermissionRequest.1.1, PermissionRequest.2.1.
 
 Registrations: PostToolUse.7.1, PostToolUse.8.2, PostToolUse.9.2, PostToolUse.10.2.
 
-- [ ] `isa-views-01`: Read and applied Write, Edit, and batch updates record the actual local file view.
-- [ ] `isa-views-02`: External mutation followed by a full-file write uses the changed file for the stale-write decision.
+- [x] `isa-views-01`: Read and applied Write, Edit, and batch updates record the actual local file view.
+- [x] `isa-views-02`: External mutation followed by a full-file write uses the changed file for the stale-write decision.
 - [x] `isa-views-03`: SSH and Docker views identify the actual backend and file.
-- [ ] `isa-views-04`: Failed and partial operations record only the applied file views.
+- [x] `isa-views-04`: Failed and partial operations record only the applied file views.
 
 ### isa-sync (package 3)
 
 Registrations: PostToolUse.8.1, PostToolUse.9.1, PostToolUse.10.1.
 
-- [ ] `isa-sync-01`: New ISA, phase change, completion, and resumed work synchronize registry and render state.
-- [ ] `isa-sync-02`: Work-tree, skill-owned, and outside-tree ISAs follow their applicable synchronization rules.
-- [ ] `isa-sync-03`: Failed and partial operations synchronize only applied changes.
+- [x] `isa-sync-01`: New ISA, phase change, completion, and resumed work synchronize registry and render state.
+- [x] `isa-sync-02`: Work-tree, skill-owned, and outside-tree ISAs follow their applicable synchronization rules.
+- [x] `isa-sync-03`: Failed and partial operations synchronize only applied changes.
 
 ### checkpoints (package 3)
 
 Registrations: PostToolUse.8.3, PostToolUse.9.3, PostToolUse.10.3.
 
-- [ ] `checkpoints-01`: Verified criterion closure creates one retrievable checkpoint in the admitted repository.
-- [ ] `checkpoints-02`: Repeated closure produces no duplicate checkpoint; multiple new closures retain criterion identity.
-- [ ] `checkpoints-03`: Skill-owned ISAs and repository boundaries preserve the checkpoint contract.
-- [ ] `checkpoints-04`: Git failure and partial patch do not falsely record a completed checkpoint.
+- [x] `checkpoints-01`: Verified criterion closure creates one retrievable checkpoint in the admitted repository.
+- [x] `checkpoints-02`: Repeated closure produces no duplicate checkpoint; multiple new closures retain criterion identity.
+- [x] `checkpoints-03`: Skill-owned ISAs and repository boundaries preserve the checkpoint contract.
+- [x] `checkpoints-04`: Git failure and partial patch do not falsely record a completed checkpoint.
 
 ### evaluation (package 3)
 
@@ -125,8 +125,8 @@ Registrations: PostToolUse.8.4, PostToolUse.9.4, PostToolUse.10.4.
 Registrations: PostToolUse.8.5, PostToolUse.9.5, PostToolUse.10.5, PostToolUse.13.1.
 
 - [x] `atlas-01`: Projects, gear, inventory, and service-unit changes emit the correct event for each applicable file tool.
-- [ ] `atlas-02`: Supported shell mutation patterns emit their systemd, DNS, and Cloudflare hints.
-- [ ] `atlas-03`: Read-only, unrelated, failed, and unapplied partial changes do not emit mutation events.
+- [x] `atlas-02`: Supported shell mutation patterns emit their systemd, DNS, and Cloudflare hints.
+- [x] `atlas-03`: Read-only, unrelated, failed, and unapplied partial changes do not emit mutation events.
 
 ### knowledge-writes (package 3)
 
@@ -141,7 +141,7 @@ Registrations: PostToolUse.8.7, PostToolUse.9.7, PostToolUse.10.7.
 
 - [x] `complexity-01`: Write, Edit, and batch source changes accumulate actual line and dependency counts.
 - [x] `complexity-02`: Below, at, and above the configured budget produce the specified warning behavior.
-- [ ] `complexity-03`: Partial and failed changes add only applied work; repeated events follow the documented counting contract.
+- [x] `complexity-03`: Partial and failed changes add only applied work; repeated events follow the documented counting contract.
 
 ### event-audit (package 4)
 
@@ -149,16 +149,16 @@ Registrations: PostToolUse.11.1, PostToolUseFailure.1.1, ConfigChange.1.1, StopF
 
 - [ ] `event-audit-01`: Skill execution, file activity, heartbeat, and work reconciliation record actual tool facts.
 - [ ] `event-audit-02`: Failure rows for shell, file, MCP, and terminal model errors retain the actual error and truncation policy.
-- [ ] `event-audit-03`: External configuration first observation, change, no change, deletion, and malformed source preserve source-specific audit state.
+- [x] `event-audit-03`: External configuration first observation, change, no change, deletion, and malformed source preserve source-specific audit state.
 - [ ] `event-audit-04`: Asynchronous logging during interruption and parallel activity preserves complete rows.
 
 ### tool-observers (package 4)
 
 Registrations: PostToolUse.12.1, PostToolUse.12.2, PostToolUseFailure.3.1.
 
-- [ ] `tool-observers-01`: Exact repeats through the full observer produce the expected alert.
+- [x] `tool-observers-01`: Exact repeats through the full observer produce the expected alert.
 - [ ] `tool-observers-02`: Oscillation, repeated failure, cooldown, and parallel activity preserve loop history and thresholds.
-- [ ] `tool-observers-03`: System-change observations use actual tool results and transcript state.
+- [x] `tool-observers-03`: System-change observations use actual tool results and transcript state.
 
 ### work-learning (package 6)
 

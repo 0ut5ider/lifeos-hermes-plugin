@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Record ISA views after synchronization finishes its resume write.
+- Render the latest observed ISA criterion detail in the system-change line.
+
 - Apply MCP deny and ask rules before transport execution. Preserve managed policy precedence and malformed policy review.
 - Publish concurrent evaluation fire state through separate temporary files. Preserve the evaluator's single-run lock.
 - Verify actual batch and concurrent file evaluations with private model responses.

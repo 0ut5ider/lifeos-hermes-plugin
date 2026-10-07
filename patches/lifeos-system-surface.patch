@@ -1,0 +1,23 @@
+diff --git a/LifeOS/install/hooks/lib/system-surfaces.ts b/LifeOS/install/hooks/lib/system-surfaces.ts
+--- a/LifeOS/install/hooks/lib/system-surfaces.ts
++++ b/LifeOS/install/hooks/lib/system-surfaces.ts
+@@ -1,3 +1,5 @@
++// ABOUTME: Classifies changed system files and renders their latest observed detail.
++// ABOUTME: Groups labels by surface and keeps bounded output for the current turn.
+ /**
+  * system-surfaces.ts — which files ARE "the system", and how a turn's changes
+  * to them render as one line.
+@@ -122,11 +124,11 @@
+ export function renderSystemLine(entries: ChangeEntry[]): string | null {
+   if (entries.length === 0) return null;
+ 
+-  // Deduplicate by label, keeping the richest detail seen for it.
++  // Deduplicate by label, retaining the latest observed detail.
+   const byLabel = new Map<string, ChangeEntry>();
+   for (const e of entries) {
+     const prior = byLabel.get(e.label);
+-    if (!prior || (!prior.detail && e.detail)) byLabel.set(e.label, e);
++    if (!prior || e.detail || !prior.detail) byLabel.set(e.label, e);
+   }
+ 
+   const sorted = [...byLabel.values()].sort(

@@ -50,6 +50,7 @@ SOURCES = {
             "lifeos-shell-literal-guard.patch",
             "lifeos-pulse-hook-switch.patch",
             "lifeos-evaluation-publication.patch",
+            "lifeos-system-surface.patch",
         ),
     },
 }

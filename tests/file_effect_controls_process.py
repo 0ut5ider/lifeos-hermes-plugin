@@ -116,6 +116,73 @@ try:
         assert state['deps'] == 1 and 'COMPLEXITY RATCHET' in context, (session, state, context)
         rows.append({'id': session, 'state': state, 'warning': True, 'applied': True,
                      'context': context, 'arguments': args, 'result': result})
+    for number in range(2):
+        session = 'complexity-repeated'
+        content = '\n'.join('line ' + str(i) for i in range(201))
+        context, args, result = operation('Write', home / 'project/repeated.ts', content, session, 'ComplexityRatchet')
+        state = read(root / 'LIFEOS/MEMORY/STATE/complexity-ratchet' / (session + '.json'))
+        assert state['cumulative'] == 201 * (number + 1), state
+        rows.append({'id': session + '-' + str(number), 'cumulative': state['cumulative'], 'applied': True})
+
+    for program, relative, state_relative in (
+        ('AtlasEventCapture', 'locked/PROJECTS.md', '.local/state/lifeos/atlas/events.jsonl'),
+        ('ComplexityRatchet', 'locked/complexity.ts', '.claude/LIFEOS/MEMORY/STATE/complexity-ratchet/failed-ComplexityRatchet.json'),
+        ('ISASync', 'locked/ISA.md', '.claude/LIFEOS/MEMORY/STATE/work.json'),
+        ('ISAStaleWriteGuard', 'locked/ISA.md', '.claude/LIFEOS/MEMORY/STATE/isa-session-view/failed-ISAStaleWriteGuard.json'),
+        ('KnowledgeWriteGuard', '.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/locked/note.md', 'absent-knowledge-state')):
+        path = home / relative
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text('OLD')
+        session = 'failed-' + program
+        target = home / state_relative
+        before = target.read_bytes() if target.exists() else None
+        settings.write_text(json.dumps({'permissions': {'allow': ['Read', 'Write', 'Edit']}, 'hooks': {'PostToolUse': [
+            {'matcher': 'Write', 'hooks': [{'type': 'command', 'command': 'bun ' + str(source / 'hooks' / (program + '.hook.ts'))}]}]}}))
+        path.chmod(0o444)
+        path.parent.chmod(0o555)
+        try:
+            assert not json.loads(read_file_tool(str(path), task_id=session)).get('error')
+            args = {'path': str(path), 'content': 'DENIED'}
+            result = (handle_function_call('write_file', args, task_id=session, session_id=session, tool_call_id=session)
+                      if side == 'hermes' else write_file_tool(**args, task_id=session))
+            value, end = json.JSONDecoder().raw_decode(result)
+            assert value.get('error') and 'Permission denied' in value['error'], value
+            assert 'off-schema' not in result[end:]
+            assert path.read_text() == 'OLD'
+            assert (target.read_bytes() if target.exists() else None) == before
+            rows.append({'id': session, 'actual_os_denial': True, 'file_retained': True, 'state_retained': True})
+        finally:
+            path.parent.chmod(0o755)
+            path.chmod(0o644)
+
+    from tools.terminal_tool import terminal_tool
+    for index, text, expected, failed in (
+        (0, 'systemctl --user start fixture.service', ['systemd'], False),
+        (1, 'systemctl --user daemon-reload', ['systemd'], False),
+        (2, 'wrangler deploy fixture', ['cloudflare'], False),
+        (3, 'zones/fixture/dns dns_records', ['cloudflare'], False),
+        (4, 'systemctl --user status fixture.service', [], False),
+        (5, 'systemctl --user start fixture.service', [], True)):
+        import shlex
+        session = 'atlas-shell-' + str(index)
+        command = ('false # ' if failed else "printf '%s' ") + shlex.quote(text)
+        settings.write_text(json.dumps({'permissions': {'allow': ['Bash']}, 'hooks': {'PostToolUse': [
+            {'matcher': 'Bash', 'hooks': [{'type': 'command', 'command': 'bun ' + str(source / 'hooks/AtlasEventCapture.hook.ts')}]}]}}))
+        events = home / '.local/state/lifeos/atlas/events.jsonl'
+        before = len(events.read_text().splitlines()) if events.exists() else 0
+        args = {'command': command}
+        result = (handle_function_call('terminal', args, task_id=session, session_id=session, tool_call_id=session)
+                  if side == 'hermes' else terminal_tool(**args, task_id=session))
+        value, _ = json.JSONDecoder().raw_decode(result)
+        assert value.get('exit_code', value.get('returncode')) == (1 if failed else 0), value
+        if side == 'native' and not failed:
+            process = subprocess.run(['bun', str(source / 'hooks/AtlasEventCapture.hook.ts')],
+                input=json.dumps({'hook_event_name': 'PostToolUse', 'tool_name': 'Bash', 'tool_input': args,
+                                  'tool_response': value, 'session_id': session}), capture_output=True, text=True, timeout=15)
+            assert process.returncode == 0 and not process.stderr, process
+        after = [json.loads(line) for line in events.read_text().splitlines()[before:]] if events.exists() else []
+        assert [row['source'] for row in after] == expected, after
+        rows.append({'id': session, 'actual_shell_exit': 1 if failed else 0, 'sources': expected, 'lexical_hint_control': True})
 finally:
     if side == 'hermes':
         plugins.unload_plugins()

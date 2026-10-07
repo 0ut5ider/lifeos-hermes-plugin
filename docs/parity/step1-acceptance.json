@@ -425,19 +425,47 @@
         "PostToolUse.9.2",
         "PostToolUse.10.2"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "isa-views-01",
           "expected": "Read and applied Write, Edit, and batch updates record the actual local file view.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "isa-views-02",
           "expected": "External mutation followed by a full-file write uses the changed file for the stale-write decision.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "isa-views-03",
@@ -452,8 +480,22 @@
         {
           "id": "isa-views-04",
           "expected": "Failed and partial operations record only the applied file views.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -466,25 +508,67 @@
         "PostToolUse.9.1",
         "PostToolUse.10.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "isa-sync-01",
           "expected": "New ISA, phase change, completion, and resumed work synchronize registry and render state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "isa-sync-02",
           "expected": "Work-tree, skill-owned, and outside-tree ISAs follow their applicable synchronization rules.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "isa-sync-03",
           "expected": "Failed and partial operations synchronize only applied changes.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -497,31 +581,87 @@
         "PostToolUse.9.3",
         "PostToolUse.10.3"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "checkpoints-01",
           "expected": "Verified criterion closure creates one retrievable checkpoint in the admitted repository.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "checkpoints-02",
           "expected": "Repeated closure produces no duplicate checkpoint; multiple new closures retain criterion identity.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "checkpoints-03",
           "expected": "Skill-owned ISAs and repository boundaries preserve the checkpoint contract.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "checkpoints-04",
           "expected": "Git failure and partial patch do not falsely record a completed checkpoint.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -588,7 +728,7 @@
         "PostToolUse.10.5",
         "PostToolUse.13.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "atlas-01",
@@ -605,14 +745,42 @@
         {
           "id": "atlas-02",
           "expected": "Supported shell mutation patterns emit their systemd, DNS, and Cloudflare hints.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "atlas-03",
           "expected": "Read-only, unrelated, failed, and unapplied partial changes do not emit mutation events.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -664,7 +832,7 @@
         "PostToolUse.9.7",
         "PostToolUse.10.7"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "complexity-01",
@@ -693,8 +861,22 @@
         {
           "id": "complexity-03",
           "expected": "Partial and failed changes add only applied work; repeated events follow the documented counting contract.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -708,7 +890,7 @@
         "ConfigChange.1.1",
         "StopFailure.1.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "event-audit-01",
@@ -725,8 +907,22 @@
         {
           "id": "event-audit-03",
           "expected": "External configuration first observation, change, no change, deletion, and malformed source preserve source-specific audit state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "event-audit-04",
@@ -745,13 +941,27 @@
         "PostToolUse.12.2",
         "PostToolUseFailure.3.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "tool-observers-01",
           "expected": "Exact repeats through the full observer produce the expected alert.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         },
         {
           "id": "tool-observers-02",
@@ -762,8 +972,22 @@
         {
           "id": "tool-observers-03",
           "expected": "System-change observations use actual tool results and transcript state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
         }
       ],
       "release_acceptance": false

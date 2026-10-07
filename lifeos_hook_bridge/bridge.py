@@ -189,6 +189,22 @@ def _is_native_version_drift(command: str, root: Path) -> bool:
     return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
 
 
+def _isa_post_hook(command: str, root: Path) -> str:
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return ""
+    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
+        tokens = tokens[1:]
+    if len(tokens) != 1:
+        return ""
+    path = Path(tokens[0].replace("${HOME}", "~").replace("$HOME", "~")).expanduser().resolve()
+    for name in ("ISASync", "ISAStaleWriteGuard"):
+        if path == (root / "hooks" / (name + ".hook.ts")).resolve():
+            return name
+    return ""
+
+
 def _is_native_checkpoint(command: str) -> bool:
     try:
         tokens = shlex.split(command)
@@ -1356,16 +1372,28 @@ class HookBridge:
                 sync_hooks.append((callback, arguments))
         if not sync_hooks:
             return outcomes
+        roles = [
+            _isa_post_hook(arguments[1], self.root)
+            if event == "PostToolUse" and callback == self._run_command else ""
+            for callback, arguments in sync_hooks
+        ]
+        # ISASync can rewrite a completed ISA. Its recorded view must describe that final file.
+        deferred = {index for index, role in enumerate(roles)
+                    if role == "ISAStaleWriteGuard" and "ISASync" in roles}
+        completed = {}
         with ThreadPoolExecutor(max_workers=min(len(sync_hooks), 32)) as executor:
-            futures = [executor.submit(callback, *arguments) for callback, arguments in sync_hooks]
-            for future in futures:
-                try:
-                    process = future.result()
-                except Exception as error:
-                    LOG.error("LifeOS %s hook failed: %s", event, error)
-                    continue
-                if process is not None:
-                    outcomes.append((process, _decode_output(process.stdout)))
+            for indexes in ([index for index in range(len(sync_hooks)) if index not in deferred], sorted(deferred)):
+                futures = [(index, executor.submit(sync_hooks[index][0], *sync_hooks[index][1]))
+                           for index in indexes]
+                for index, future in futures:
+                    try:
+                        process = future.result()
+                    except Exception as error:
+                        LOG.error("LifeOS %s hook failed: %s", event, error)
+                        continue
+                    if process is not None:
+                        completed[index] = (process, _decode_output(process.stdout))
+        outcomes.extend(completed[index] for index in sorted(completed))
         return outcomes
 
     def _run_command(

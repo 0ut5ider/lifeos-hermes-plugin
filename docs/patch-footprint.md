@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The bundle uses eleven Hermes patch groups and fifteen LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
+The bundle uses eleven Hermes patch groups and sixteen LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
 
 ## Hermes patch groups
 
@@ -18,7 +18,7 @@ The bundle uses eleven Hermes patch groups and fifteen LifeOS patches. It target
 | `hermes-web-result-status.patch` | External Safety delivery after successful and partial web extraction |
 | `hermes-protected-instruction-approval.patch` | Immediate refusal of unattended protected instruction writes |
 
-The additional native patches bind configuration audit rows to their actual source, detect shell-quoted literal write targets, honor the Pulse hook switch, and publish concurrent evaluation state through separate temporary files. The full declared order is in `scripts/prepare_sources.py`.
+The additional native patches bind configuration audit rows to their actual source, detect shell-quoted literal write targets, honor the Pulse hook switch, and publish concurrent evaluation state through separate temporary files. The system-surface patch retains the latest observed criterion detail in the visible system line. The full declared order is in `scripts/prepare_sources.py`.
 
 The groups replace the earlier 20-patch development sequence. Each changed file belongs to one group. Required callback registration belongs to the plugin-event group, and actual turn-route metadata belongs to the turn-gate group. The required-middleware group supplies model-request admission and its tests. It does not remove the required host behavior.
 
