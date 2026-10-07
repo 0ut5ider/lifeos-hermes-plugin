@@ -226,7 +226,7 @@ ADVISORY_KEY = 'doc.integrity.memory_dir missing_active:KNOWLEDGE'
 RELATIONSHIP_TEXT = '- PAIR_RELATIONSHIP_NOTE\n'
 WISDOM_TEXT = '### PAIR_WISDOM_GUIDANCE [CRYSTAL: 95%]\n### PAIR_LOW_CONFIDENCE [CRYSTAL: 50%]\n'
 RESPONSE_PREFIXES = ('context-response-', 'response-cache-', 'feedback-', 'format-contract-', 'time-context-',
-                     'version-drift-', 'isa-render-', 'atlas-bash-', 'guard-bash-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-', 'question-')
+                     'version-drift-', 'isa-render-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-', 'question-')
 FEEDBACK_PROMPTS = {'feedback-rating': '8 great result', 'feedback-bare-rating': '10',
                     'feedback-praise': 'great job', 'feedback-neutral': '2 of the files were inspected',
                     'feedback-low-rating': '4 needs clearer details'}
@@ -381,7 +381,7 @@ def render_page(home: Path) -> str:
 
 
 # Real tool cases: the model runs one exact shell command, so each client makes two requests.
-TOOL_PREFIXES = ('atlas-bash-', 'guard-bash-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-',
+TOOL_PREFIXES = ('atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-',
                  'generic-tool-', 'generic-mcp-', 'generic-agent-', 'generic-task-', 'generic-skill-', 'generic-web-', 'question-')
 TOOL_SYSTEM_PROMPT = ('This is a synthetic hook fixture. Run the exact shell command from the user message once '
                       'with the shell tool. Do not change the command. Then reply with exactly READY. '
@@ -730,6 +730,10 @@ def check_pair(case: dict) -> list[str]:
                 'tool_output_in_model': not failure, 'user_response_delivered': True}
             if before != {'activity_rows': 0, 'failure_rows': 0, 'loop_states': 0} or after != expected:
                 errors.append(f'{name}: tool log effect is missing')
+        elif name in GUARD_FILE_BRANCHES:
+            expected_before, expected_after = file_guard_expectation(name)
+            if before != expected_before or after != expected_after:
+                errors.append(f'{name}: file guard decision is missing')
         elif name.startswith('guard-bash-'):
             expected_before, expected = guard_expectation(name)
             if before != expected_before or after != expected:
@@ -1012,6 +1016,22 @@ def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool =
                 'tool_names': sorted({payload.get('tool_name') for payload in payloads}),
                 'commands_match': all(payload.get('tool_input', {}).get('command') == command
                                       for payload in payloads[:required * len(CASES[case])])}
+    if case in GUARD_FILE_BRANCHES:
+        definition = GUARD_FILE_BRANCHES[case]
+        target = project_dir(home, case) / 'guard-target.txt'
+        expected = FILE_SEED if not after or definition['blocked'] else (
+            definition['content'] if definition['tool'] == 'Write' else
+            FILE_SEED.replace('PAIR_OLD_LINE', definition['content']))
+        result = {'target_content_matches': target.is_file() and target.read_text().rstrip('\n') == expected.rstrip('\n')}
+        if after:
+            traces = read_json_lines(home / 'hooks.jsonl')
+            payloads = [json.loads(base64.b64decode(trace['stdin_base64'])) for trace in traces]
+            key = 'content' if definition['tool'] == 'Write' else 'new_string'
+            result.update(tool_names=sorted({payload.get('tool_name') for payload in payloads}),
+                          file_path_matches=all(payload.get('tool_input', {}).get('file_path') == str(target) for payload in payloads),
+                          input_content_matches=all(payload.get('tool_input', {}).get(key, '').rstrip('\n') == definition['content'] for payload in payloads),
+                          block_message_emitted=any('SystemFileGuard' in trace['stderr'] for trace in traces))
+        return result
     if case.startswith('guard-bash-'):
         result = {'project_files': sorted(path.name for path in project_dir(home, case).iterdir())}
         if after:
@@ -1448,6 +1468,13 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
         hooks[event][-1]['hooks'][0].update(timeout=10, **{'async': True})
     if case in GUARD_BRANCHES:
         seed_guard(home, case)
+    if case in GUARD_FILE_BRANCHES:
+        target = project_dir(home, case) / 'guard-target.txt'
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(FILE_SEED)
+        security = home / '.claude/LIFEOS/USER/SECURITY'
+        security.mkdir(parents=True, exist_ok=True)
+        (security / 'DENY_LIST.txt').write_text('PAIR_DENY_TOKEN\n')
     settings = {'hooks': hooks}
     if case in GUARD_BRANCHES:
         settings['permissions'] = {'allow': ['Bash']}
@@ -1555,7 +1582,7 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
     write_json(root / 'settings.json', settings)
     if case.startswith('version-drift-'):
         seed_drift(root, case)
-    if event == 'SessionStart' or case in {'update-counts-no-oauth', 'memory-health-critical', 'question-round-trip'} or case.startswith(('doc-inventory-', 'response-cache-', 'feedback-', 'format-contract-', 'time-context-', 'version-drift-', 'atlas-bash-', 'guard-bash-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-')):
+    if event == 'SessionStart' or case in {'update-counts-no-oauth', 'memory-health-critical', 'question-round-trip'} or case.startswith(('doc-inventory-', 'response-cache-', 'feedback-', 'format-contract-', 'time-context-', 'version-drift-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-')):
         write_json(home / 'before-state.json', state_snapshot(home, case))
         if case.startswith('generic-'):
             write_json(home / 'generic-before.json', generic_files(home, '', case))
@@ -1579,6 +1606,27 @@ FILE_CASES = {
     'isa-write-create': ('Write', 'ISA.md', []),
     'isa-read-view': ('Read', 'ISA.md', []),
 }
+GUARD_FILE_BRANCHES = {
+    f'guard-file-{tool.lower()}-{zone}-{effect}': {
+        'tool': tool, 'zone': zone, 'content': 'PAIR_DENY_TOKEN' if effect == 'block' or zone != 'system' else 'PAIR_PUBLIC_CONTENT',
+        'blocked': effect == 'block'}
+    for tool in ('Write', 'Edit') for zone, effect in (
+        ('system', 'block'), ('system', 'clean'), ('user', 'allow'), ('outside', 'allow'))
+}
+FILE_CASES.update({name: (definition['tool'], 'guard-target.txt', []) for name, definition in GUARD_FILE_BRANCHES.items()})
+CASES.update({name: [('PreToolUse.5.1', 'hooks/PreToolGuard.hook.ts')] for name in GUARD_FILE_BRANCHES})
+EXPECTED_EXITS.update({name: [2] for name, definition in GUARD_FILE_BRANCHES.items() if definition['blocked']})
+
+
+def file_guard_expectation(case: str) -> tuple[dict, dict]:
+    definition = GUARD_FILE_BRANCHES[case]
+    blocked = definition['blocked']
+    return {'target_content_matches': True}, {
+        'target_content_matches': True, 'tool_names': [definition['tool']], 'file_path_matches': True,
+        'input_content_matches': True, 'block_message_emitted': blocked,
+        'model_received_block': blocked, 'user_response_delivered': True}
+
+
 ISA_CASES = ('isa-edit-close', 'isa-write-create', 'isa-read-view')
 ISA_SEED = ('---\ntask: PAIR_ISA_TASK\nslug: pair-run\nphase: execute\nprogress: 0/1\nstarted: {started}\n---\n'
             '# Paired run\n\n## ISC Criteria\n- [ ] ISC-1: Paired criterion closes\n')
@@ -1600,6 +1648,8 @@ ISA_EDIT_AFTER = {
 # so both clients grant the write without a separate permission rule.
 PROJECT_DIRS = {name: '.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas' for name in ('knowledge-off-schema', 'knowledge-index-file')}
 PROJECT_DIRS.update({name: '.claude/LIFEOS/MEMORY/WORK/pair-run' for name in ISA_CASES})
+PROJECT_DIRS.update({name: {'system': '.claude/hooks', 'user': '.claude/LIFEOS/USER/CONFIG', 'outside': 'project'}[definition['zone']]
+                     for name, definition in GUARD_FILE_BRANCHES.items()})
 KNOWLEDGE_WARNING = '\u26a0 Knowledge note written off-schema \u2014 `Ideas/pair-idea.md`'
 
 
@@ -1797,6 +1847,12 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                        'PAIR_FILE_CONTENT. Use the file writing tool once.' if tool == 'Write' else
                        f'In the file at the absolute path {target}, replace the text PAIR_OLD_LINE with '
                        'PAIR_NEW_LINE. Use the file editing tool. Do not rewrite the whole file.')
+        if case in GUARD_FILE_BRANCHES:
+            content = GUARD_FILE_BRANCHES[case]['content']
+            command[-1] = (f'Write the complete single line {content} to the absolute path {target} with the file writing tool once.'
+                           if tool == 'Write' else
+                           f'In the file at the absolute path {target}, replace the exact text PAIR_OLD_LINE with {content}. '
+                           'Use the file editing tool once. Do not change any other text.')
         if case == 'isa-edit-close':
             command[-1] = (f'In the file at the absolute path {target}, replace the exact text "- [ ] ISC-1:" with '
                            '"- [x] ISC-1:". Use the file editing tool once. Do not change anything else.')
@@ -2034,6 +2090,9 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                 later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
                 after['model_received_loop_alert'] = LOOP_ALERT in later
                 after['tool_output_in_model'] = 'PAIR_TOOL_LOG' in later
+            if case in GUARD_FILE_BRANCHES:
+                later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
+                after['model_received_block'] = 'SystemFileGuard' in later
             if case.startswith('guard-bash-'):
                 later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
                 after['model_received_block'] = guard_message(case) in later
