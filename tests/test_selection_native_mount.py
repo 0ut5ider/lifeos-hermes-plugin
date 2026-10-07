@@ -49,7 +49,7 @@ def mount(installed, baseline):
     os._exit(91)
 select_home(job, profile=profile, target=target,
     configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
-    mount=mount, recover_mount=lambda installed: _recover_mount(installed, profile),
+    mount=mount, recover_mount=lambda installed, previous: _recover_mount(installed, profile, previous=previous),
     verify=lambda: None, baseline_data=None)
 '''
         events = []
@@ -75,7 +75,7 @@ select_home(job, profile=profile, target=target,
             for attempt in range(2):
                 with self.subTest(attempt=attempt), self.assertRaisesRegex(RuntimeError, 'later edit'):
                     recover_selection(job, configuration=self.fixture.configuration, services=Services(),
-                        mount=mount, recover_mount=lambda installed: _recover_mount(installed, self.profile),
+                        mount=mount, recover_mount=lambda installed, previous: _recover_mount(installed, self.profile, previous=previous),
                         verify=lambda: None)
                 self.assertEqual(soul.read_text(), '# SyntheticLaterOwnerEdit\n')
                 self.assertEqual(selection(self.profile).installed, target)
@@ -121,7 +121,7 @@ def mount(installed, baseline):
     os._exit(91)
 select_home(job, profile=profile, target=target,
     configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
-    mount=mount, recover_mount=lambda installed: _recover_mount(installed, profile),
+    mount=mount, recover_mount=lambda installed, previous: _recover_mount(installed, profile, previous=previous),
     verify=lambda: None, baseline_data=None)
 '''
 
@@ -143,7 +143,7 @@ select_home(job, profile=profile, target=target,
                     self.assertIn('SyntheticTargetConstitution', (self.profile / 'SOUL.md').read_text())
                     recovered = recover_selection(job, configuration=self.fixture.configuration,
                         services=Services(), mount=mount,
-                        recover_mount=lambda installed: _recover_mount(installed, self.profile), verify=lambda: None)
+                        recover_mount=lambda installed, previous: _recover_mount(installed, self.profile, previous=previous), verify=lambda: None)
                     self.assertEqual(recovered['state'], 'rolled_back')
                     self.assertEqual(selection(self.profile).installed, self.root)
                     self.assertEqual(self.fixture.configuration.load()['root'], str(self.root))

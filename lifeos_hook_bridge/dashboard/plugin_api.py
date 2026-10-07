@@ -810,12 +810,20 @@ def _selection_job_status(job):
     try:
         status = json.loads((job / 'status.json').read_text(encoding='utf-8'))
         if status.get('state') in {'queued', 'running', 'recovering'} and status.get('unit'):
-            active = subprocess.run(['systemctl', '--user', 'is-active', status['unit']],
-                                    text=True, capture_output=True, timeout=15)
-            if active.returncode or active.stdout.strip() != 'active':
+            try:
+                active = subprocess.run(['systemctl', '--user', 'show', status['unit'],
+                                         '--property=ActiveState', '--property=Job', '--all'],
+                                        text=True, capture_output=True, timeout=15)
+            except (OSError, subprocess.TimeoutExpired):
+                return {**status, 'error': 'The selection worker status is unavailable', 'job': str(job)}
+            properties = dict(line.split('=', 1) for line in active.stdout.splitlines() if '=' in line)
+            unit_state = properties.get('ActiveState')
+            if active.returncode or not unit_state or 'Job' not in properties:
+                status['error'] = 'The selection worker status is unavailable'
+            elif unit_state in {'inactive', 'failed'} and properties['Job'] == '':
                 journal = job / 'transaction/journal.json'
                 state = json.loads(journal.read_text())['state'] if journal.is_file() else 'failed'
-                status['state'] = state if state in {'applied', 'rolled_back'} else 'interrupted'
+                status['state'] = state if state in {'applied', 'rolled_back', 'failed'} else 'interrupted'
         return {**status, 'job': str(job)}
     except (OSError, ValueError, KeyError, subprocess.TimeoutExpired):
         return {'state': 'error', 'job': str(job)}

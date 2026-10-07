@@ -117,8 +117,10 @@ def _baseline_data(candidate: Path | None, installed: Path) -> bytes | None:
         return path.read_bytes()
 
 
-def _recover_mount(installed: Path, profile: Path, *, check_completed: bool = True) -> None:
-    transaction = MountTransaction(installed, profile, default_baseline_path(installed.parent))
+def _recover_mount(installed: Path, profile: Path, *, previous: Path | None = None,
+                   check_completed: bool = True) -> None:
+    transaction = (MountTransaction.for_selection(installed, previous, profile) if previous is not None else
+                   MountTransaction(installed, profile, default_baseline_path(installed.parent)))
     if transaction.status()['recovery_required']:
         transaction.recover()
     if check_completed:
@@ -146,7 +148,7 @@ def run_selection_job(job: Path, action: str = 'select', *, profile: Path, accou
         request = selection_authority(job, profile, account, action)
         services = SystemdServices(Path.home())
         mount = _mount(profile, request)
-        recover_mount = lambda installed: _recover_mount(installed, profile)
+        recover_mount = lambda installed, previous: _recover_mount(installed, profile, previous=previous)
         snapshot = job / 'transaction'
         if action == 'recover':
             return recover_selection(snapshot, configuration=configuration, services=services, mount=mount,

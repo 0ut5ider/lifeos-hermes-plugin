@@ -1,0 +1,114 @@
+FF..FF.......                                                          [100%]
+=================================== FAILURES ===================================
+_ SelectionRetryTests.test_owner_edit_after_previous_native_commit_blocks_retry (attempt=0) _
+
+self = <test_selection_retry.SelectionRetryTests testMethod=test_owner_edit_after_previous_native_commit_blocks_retry>
+phase = 'previous-committed'
+
+    def assert_edit_preserved(self, phase):
+        self.crash('select')
+        self.crash(phase)
+        self.assertTrue(json.loads((self.job / 'journal.json').read_text())['target_mount_recovered'])
+        soul = self.fixture.profile / 'SOUL.md'
+        soul.write_text('# SyntheticOwnerEditAfterRecoveryExit\n')
+        for attempt in range(2):
+>           with self.subTest(attempt=attempt), self.assertRaisesRegex(RuntimeError, 'later edit'):
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: RuntimeError not raised
+
+tests/test_selection_retry.py:104: AssertionError
+_ SelectionRetryTests.test_owner_edit_after_previous_native_commit_blocks_retry _
+
+self = <test_selection_retry.SelectionRetryTests testMethod=test_owner_edit_after_previous_native_commit_blocks_retry>
+
+    def test_owner_edit_after_previous_native_commit_blocks_retry(self):
+>       self.assert_edit_preserved('previous-committed')
+
+tests/test_selection_retry.py:95: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_selection_retry.py:106: in assert_edit_preserved
+    self.assertEqual(soul.read_text(), '# SyntheticOwnerEditAfterRecoveryExit\n')
+E   AssertionError: "# Constitution and identity for LifeOS i[2473 chars]s.\n" != '# SyntheticOwnerEditAfterRecoveryExit\n'
+E   Diff is 2665 characters long. Set self.maxDiff to None to see it.
+----------------------------- Captured stdout call -----------------------------
+u
+_ SelectionRetryTests.test_owner_edit_after_target_recovery_checkpoint_blocks_retry (attempt=0) _
+
+self = <test_selection_retry.SelectionRetryTests testMethod=test_owner_edit_after_target_recovery_checkpoint_blocks_retry>
+phase = 'checkpoint'
+
+    def assert_edit_preserved(self, phase):
+        self.crash('select')
+        self.crash(phase)
+        self.assertTrue(json.loads((self.job / 'journal.json').read_text())['target_mount_recovered'])
+        soul = self.fixture.profile / 'SOUL.md'
+        soul.write_text('# SyntheticOwnerEditAfterRecoveryExit\n')
+        for attempt in range(2):
+>           with self.subTest(attempt=attempt), self.assertRaisesRegex(RuntimeError, 'later edit'):
+                                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E           AssertionError: RuntimeError not raised
+
+tests/test_selection_retry.py:104: AssertionError
+_ SelectionRetryTests.test_owner_edit_after_target_recovery_checkpoint_blocks_retry _
+
+self = <test_selection_retry.SelectionRetryTests testMethod=test_owner_edit_after_target_recovery_checkpoint_blocks_retry>
+
+    def test_owner_edit_after_target_recovery_checkpoint_blocks_retry(self):
+>       self.assert_edit_preserved('checkpoint')
+
+tests/test_selection_retry.py:92: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+tests/test_selection_retry.py:106: in assert_edit_preserved
+    self.assertEqual(soul.read_text(), '# SyntheticOwnerEditAfterRecoveryExit\n')
+E   AssertionError: "# Constitution and identity for LifeOS i[2473 chars]s.\n" != '# SyntheticOwnerEditAfterRecoveryExit\n'
+E   Diff is 2665 characters long. Set self.maxDiff to None to see it.
+----------------------------- Captured stdout call -----------------------------
+u
+_ SelectionRecoveryAdmissionTests.test_dead_queued_job_without_a_journal_is_safe_to_retry _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_dead_queued_job_without_a_journal_is_safe_to_retry>
+
+    def test_dead_queued_job_without_a_journal_is_safe_to_retry(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-dead-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-dead-unit'}))
+>       self.assertEqual(fixture.api._selection_status()['state'], 'failed')
+E       AssertionError: 'interrupted' != 'failed'
+E       - interrupted
+E       + failed
+
+tests/test_selection_recovery_admission.py:197: AssertionError
+_ SelectionRecoveryAdmissionTests.test_failed_launch_without_a_journal_does_not_block_another_selection _
+
+self = <test_selection_recovery_admission.SelectionRecoveryAdmissionTests testMethod=test_failed_launch_without_a_journal_does_not_block_another_selection>
+
+    def test_failed_launch_without_a_journal_does_not_block_another_selection(self):
+        fixture = self.fixture
+        target = fixture.home / 'fresh/home'
+        (target / '.claude/LIFEOS').mkdir(parents=True)
+        publish(fixture.b, target, fixture.home / 'HermesWorkspace')
+        MemoryConfiguration(fixture.b / 'lifeos-memory.json').update(
+            lambda config: config.update(root=str(target / '.claude')))
+        fixture.api.INSTALLED_ROOT = target / '.claude'
+        launcher = fixture.home / 'bin/systemd-run'
+        success = launcher.read_bytes()
+        launcher.write_text('#!' + sys.executable + '\nimport sys\nsys.exit(23)\n')
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\nprint("inactive")\nsys.exit(3)\n')
+        with self.assertRaises(fixture.api.HTTPException) as raised:
+            fixture.api._queue_selection(fixture.owner_b, None)
+        self.assertEqual(raised.exception.status_code, 409)
+>       self.assertEqual(fixture.api._selection_status()['state'], 'failed')
+E       AssertionError: 'interrupted' != 'failed'
+E       - interrupted
+E       + failed
+
+tests/test_selection_recovery_admission.py:185: AssertionError
+=========================== short test summary info ============================
+SUBFAILED(attempt=0) tests/test_selection_retry.py::SelectionRetryTests::test_owner_edit_after_previous_native_commit_blocks_retry
+FAILED tests/test_selection_retry.py::SelectionRetryTests::test_owner_edit_after_previous_native_commit_blocks_retry
+SUBFAILED(attempt=0) tests/test_selection_retry.py::SelectionRetryTests::test_owner_edit_after_target_recovery_checkpoint_blocks_retry
+FAILED tests/test_selection_retry.py::SelectionRetryTests::test_owner_edit_after_target_recovery_checkpoint_blocks_retry
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_dead_queued_job_without_a_journal_is_safe_to_retry
+FAILED tests/test_selection_recovery_admission.py::SelectionRecoveryAdmissionTests::test_failed_launch_without_a_journal_does_not_block_another_selection
+6 failed, 9 passed in 33.37s

@@ -2,6 +2,8 @@
 
 Date: 2026-10-07. Branch: `feature/selection-recovery-fixes`. Reviewed starting point: `e9337a29848379b44a3fe8ba224d62adc1286d62`, PR #4.
 
+The follow-up review at `e7c10d02f2e4385bcea76e9dc0880aabb962c3f3` finds two adjacent failures. The [compensation retry corrections](../2026-10-07-selection-retry-fixes/README.md) address later edits after recovery checkpoints and failed-launch admission. The counts below describe this initial correction gate.
+
 The focused review reproduces three failures. Recovery overwrites a later owner edit when the target mount commits before the outer completion stamp. A running dashboard refuses valid owner recovery after the worker publishes a different root. Concurrent profiles can both admit a selection job in the same operating system account.
 
 ## Corrections

@@ -11,6 +11,8 @@ Keep it equal to the version in both plugin manifests.
 - Check completed target mount files before selection rollback. Preserve later owner edits and refuse service restart.
 - Authorize interrupted selection recovery against its journal roots and current profile owner.
 - Serialize selection admission and shared service changes across account profiles with an account lock.
+- Validate the active native mount on every selection recovery attempt. Preserve edits after interrupted compensation.
+- Permit selection retry after a confirmed stopped launch with no transaction journal. Keep uncertain workers pending.
 
 - Verify actual private GitHub reminder delivery, concurrent repeat suppression, authentication refusal, and retry.
 

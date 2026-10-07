@@ -36,7 +36,9 @@ class SelectionProfileIsolationTests(unittest.TestCase):
         launcher.write_text('#!' + sys.executable + '\nimport json,sys\nfrom pathlib import Path\n'
                             f'Path({str(self.recorder)!r}).write_text(json.dumps(sys.argv[1:]))\n')
         launcher.chmod(0o700)
-        (binaries / 'systemctl').write_bytes(launcher.read_bytes())
+        (binaries / 'systemctl').write_text('#!' + sys.executable + '\nimport json,sys\nfrom pathlib import Path\n'
+            'if sys.argv[1:3] == ["--user", "show"]:\n print("ActiveState=inactive\\nJob=")\n sys.exit(0)\n'
+            f'Path({str(self.recorder)!r}).write_text(json.dumps(sys.argv[1:]))\n')
         (binaries / 'systemctl').chmod(0o700)
         environment = patch.dict(os.environ, {'HOME': str(self.home), 'HERMES_HOME': str(self.b),
             'PATH': str(binaries) + os.pathsep + os.environ['PATH']})

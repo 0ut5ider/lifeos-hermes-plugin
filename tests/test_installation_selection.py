@@ -60,7 +60,7 @@ class InstallationSelectionTests(unittest.TestCase):
 
     def select(self, target, services=None, verify=lambda: None):
         return select_home(self.job, profile=self.profile, target=target, configuration=self.configuration,
-                           services=services or Services(self.events), mount=self.mount, recover_mount=lambda installed: None, verify=verify,
+                           services=services or Services(self.events), mount=self.mount, recover_mount=lambda installed, previous: None, verify=verify,
                            baseline_data=b'synthetic baseline' if target is not None else None)
 
     def test_selects_a_store_and_returns_to_the_account_home(self):
@@ -114,7 +114,7 @@ class InstallationSelectionTests(unittest.TestCase):
                 with patch.object(selection_module, '_record', interrupted), self.assertRaises(KeyboardInterrupt):
                     self.select(self.store)
                 result = recover_selection(self.job, configuration=self.configuration,
-                                           services=Services(self.events), mount=self.mount, recover_mount=lambda installed: None, verify=lambda: None)
+                                           services=Services(self.events), mount=self.mount, recover_mount=lambda installed, previous: None, verify=lambda: None)
                 self.assertEqual(result['state'], 'rolled_back')
                 self.assertFalse((self.profile / lifeos_installation.SETTING).exists())
                 self.assertEqual(self.configuration.load()['root'], str(self.account / '.claude'))
@@ -145,7 +145,7 @@ def mount(installed, baseline):
     os._exit(91)
 select_home(job, profile=profile, target=target,
     configuration=MemoryConfiguration(profile / 'lifeos-memory.json'),
-    services=Services(), mount=mount, recover_mount=lambda installed: None, verify=lambda: None, baseline_data=None)
+    services=Services(), mount=mount, recover_mount=lambda installed, previous: None, verify=lambda: None, baseline_data=None)
 '''
         result = subprocess.run([sys.executable, '-c', program, str(self.profile), str(self.store), str(self.job)],
                                 text=True, capture_output=True, timeout=30)
@@ -157,7 +157,7 @@ select_home(job, profile=profile, target=target,
             soul.write_text(str(installed))
 
         recovered = recover_selection(self.job, configuration=self.configuration,
-                                      services=Services(self.events), mount=mount, recover_mount=lambda installed: None, verify=lambda: None)
+                                      services=Services(self.events), mount=mount, recover_mount=lambda installed, previous: None, verify=lambda: None)
         self.assertEqual(recovered['state'], 'rolled_back')
         self.assertEqual(soul.read_text(), str(self.account / '.claude'))
         self.assertEqual(self.configuration.load()['root'], soul.read_text())
@@ -173,7 +173,7 @@ select_home(job, profile=profile, target=target,
 
         with self.assertRaisesRegex(SelectionError, 'failure after publication'):
             select_home(self.job, profile=self.profile, target=self.store, configuration=self.configuration,
-                        services=Services(self.events), mount=mount, recover_mount=lambda installed: None, verify=lambda: None, baseline_data=None)
+                        services=Services(self.events), mount=mount, recover_mount=lambda installed, previous: None, verify=lambda: None, baseline_data=None)
         self.assertEqual(soul.read_text(), str(self.account / '.claude'))
 
     def test_changed_memory_root_prevents_starting_the_target_services(self):
@@ -183,7 +183,7 @@ select_home(job, profile=profile, target=target,
 
         with self.assertRaisesRegex(SelectionError, 'configuration disagree'):
             select_home(self.job, profile=self.profile, target=self.store, configuration=self.configuration,
-                services=Services(self.events), mount=mount, recover_mount=lambda installed: None,
+                services=Services(self.events), mount=mount, recover_mount=lambda installed, previous: None,
                 verify=lambda: None, baseline_data=None)
         self.assertEqual(self.events.count('start'), 1, 'Only the restored installation can start')
         self.assertEqual(json.loads((self.job / 'journal.json').read_text())['state'], 'rolled_back')
@@ -195,7 +195,7 @@ select_home(job, profile=profile, target=target,
 
         with self.assertRaisesRegex(SelectionError, 'configuration disagree'):
             select_home(self.job, profile=self.profile, target=self.store, configuration=self.configuration,
-                services=Services(self.events), mount=mount, recover_mount=lambda installed: None,
+                services=Services(self.events), mount=mount, recover_mount=lambda installed, previous: None,
                 verify=lambda: None, baseline_data=None)
         self.assertEqual(self.events.count('start'), 1)
         self.assertEqual(json.loads((self.job / 'journal.json').read_text())['state'], 'rolled_back')
@@ -241,7 +241,7 @@ def mount(installed, baseline):
             manifest['state'] = 'committed'
             native._json(transaction.journal, manifest)
         os._exit(93 if phase == 'recover-previous' else 91)
-recover_mount = lambda installed: _recover_mount(installed, profile)
+recover_mount = lambda installed, previous: _recover_mount(installed, profile, previous=previous)
 if phase.startswith('select-'):
     select_home(job, profile=profile, target=target, configuration=configuration, services=Services(),
         mount=mount, recover_mount=recover_mount, verify=lambda: None, baseline_data=None)
@@ -270,7 +270,7 @@ else:
             (self.profile / 'SOUL.md').write_text(str(installed))
 
         return recover_selection(self.job, configuration=self.configuration, services=Services(self.events),
-            mount=mount, recover_mount=lambda installed: _recover_mount(installed, self.profile),
+            mount=mount, recover_mount=lambda installed, previous: _recover_mount(installed, self.profile, previous=previous),
             verify=lambda: None)
 
     def prepare_previous_mount(self):

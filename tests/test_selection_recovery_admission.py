@@ -7,6 +7,7 @@ import select
 import subprocess
 import sys
 import unittest
+from unittest.mock import patch
 
 import test_selection_profile_isolation as profile_fixture
 from lifeos_hook_bridge.installation_selection import account_selection_lock
@@ -45,7 +46,7 @@ def interrupted(job, journal, state):
 module._record = interrupted
 module.select_home(job, profile=profile, target=target,
     configuration=MemoryConfiguration(profile / 'lifeos-memory.json'), services=Services(),
-    mount=lambda installed, baseline: None, recover_mount=lambda installed: None,
+    mount=lambda installed, baseline: None, recover_mount=lambda installed, previous: None,
     verify=lambda: None, baseline_data=None)
 '''
         result = subprocess.run([sys.executable, '-c', program, str(fixture.b), str(target),
@@ -165,6 +166,129 @@ finally:
         self.assertEqual(sum(response.get('state') == 'queued' for response in responses), 1, responses)
         self.assertEqual(sum(response.get('http_status') == 409 for response in responses), 1, responses)
         self.assertEqual(len(list(fixture.api.SELECTION_ROOT.glob('*/request.json'))), 1)
+
+    def test_failed_launch_without_a_journal_does_not_block_another_selection(self):
+        fixture = self.fixture
+        target = fixture.home / 'fresh/home'
+        (target / '.claude/LIFEOS').mkdir(parents=True)
+        publish(fixture.b, target, fixture.home / 'HermesWorkspace')
+        MemoryConfiguration(fixture.b / 'lifeos-memory.json').update(
+            lambda config: config.update(root=str(target / '.claude')))
+        fixture.api.INSTALLED_ROOT = target / '.claude'
+        launcher = fixture.home / 'bin/systemd-run'
+        success = launcher.read_bytes()
+        launcher.write_text('#!' + sys.executable + '\nimport sys\nsys.exit(23)\n')
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nprint("ActiveState=inactive\\nJob=")\n')
+        with self.assertRaises(fixture.api.HTTPException) as raised:
+            fixture.api._queue_selection(fixture.owner_b, None)
+        self.assertEqual(raised.exception.status_code, 409)
+        self.assertEqual(fixture.api._selection_status()['state'], 'failed')
+        failed = fixture.api._latest_selection()
+        self.assertFalse((failed / 'transaction/journal.json').exists())
+        launcher.write_bytes(success)
+        result = fixture.api._queue_selection(fixture.owner_b, None)
+        self.assertEqual(result['state'], 'queued')
+        self.assertNotEqual(result['job'], str(failed))
+
+    def test_dead_queued_job_without_a_journal_is_safe_to_retry(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-dead-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-dead-unit'}))
+        self.assertEqual(fixture.api._selection_status()['state'], 'failed')
+
+    def test_live_queued_worker_without_a_journal_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-live-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-live-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nprint("ActiveState=active\\nJob=")\n')
+        self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+        with self.assertRaises(fixture.api.HTTPException) as raised:
+            fixture.api._queue_selection(fixture.owner_b, None)
+        self.assertEqual(raised.exception.status_code, 409)
+        self.assertIn('pending', raised.exception.detail)
+
+    def test_transitioning_worker_without_a_journal_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-starting-launch', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-starting-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        for state in ('activating', 'deactivating', 'reloading'):
+            with self.subTest(state=state):
+                controller.write_text('#!' + sys.executable + f'\nprint("ActiveState=" + {state!r} + "\\nJob=")\n')
+                self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+
+    def test_unavailable_unit_status_does_not_release_pending_admission(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-unavailable-unit', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\nsys.exit(1)\n')
+        self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+
+    def test_inactive_worker_with_a_pending_systemd_job_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-pending-start', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\n'
+            'print("ActiveState=inactive\\nJob=42" if "--property=Job" in sys.argv else "inactive")\n')
+        self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+        with self.assertRaises(fixture.api.HTTPException) as raised:
+            fixture.api._queue_selection(fixture.owner_b, None)
+        self.assertEqual(raised.exception.status_code, 409)
+        self.assertIn('pending', raised.exception.detail)
+
+    def test_failed_unit_query_cannot_confirm_a_dead_worker(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-partial-query', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport sys\n'
+            'print("ActiveState=inactive\\nJob=" if "--property=Job" in sys.argv else "inactive")\n'
+            'sys.exit(1)\n')
+        self.assertEqual(fixture.api._selection_status()['state'], 'queued')
+
+    def test_unit_query_without_the_job_property_remains_pending(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-incomplete-query', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nprint("ActiveState=inactive")\n')
+        status = fixture.api._selection_status()
+        self.assertEqual(status['state'], 'queued')
+        self.assertIn('unavailable', status['error'])
+
+    def test_missing_unit_controller_does_not_release_pending_admission(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-missing-controller', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        (fixture.home / 'bin/systemctl').unlink()
+        with patch.dict(os.environ, {'PATH': str(fixture.home / 'bin')}):
+            status = fixture.api._selection_status()
+        self.assertEqual(status['state'], 'queued')
+        self.assertIn('unavailable', status['error'])
+
+    def test_unit_query_timeout_does_not_release_pending_admission(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-controller-timeout', state='queued', journal=False)
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-unit'}))
+        controller = fixture.home / 'bin/systemctl'
+        controller.write_text('#!' + sys.executable + '\nimport time\ntime.sleep(20)\n')
+        status = fixture.api._selection_status()
+        self.assertEqual(status['state'], 'queued')
+        self.assertIn('unavailable', status['error'])
+
+    def test_dead_worker_with_a_journal_still_requires_recovery(self):
+        fixture = self.fixture
+        job = fixture.job(fixture.b, 'selection-interrupted-launch', state='queued')
+        (job / 'status.json').write_text(json.dumps({'state': 'queued', 'unit': 'synthetic-dead-unit'}))
+        self.assertEqual(fixture.api._selection_status()['state'], 'interrupted')
+        with self.assertRaises(fixture.api.HTTPException) as raised:
+            fixture.api._queue_selection(fixture.owner_b, None)
+        self.assertEqual(raised.exception.status_code, 409)
+        self.assertIn('pending', raised.exception.detail)
 
     def test_worker_waits_for_the_account_lock_before_accessing_services(self):
         fixture = self.fixture
