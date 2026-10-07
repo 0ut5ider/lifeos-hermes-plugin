@@ -1,0 +1,75 @@
+{
+  "date": "2026-10-07",
+  "status": "gateway_connected_live_acceptance_pending",
+  "plugin_commit": "c0b26bd57d6abf5364f60e3c33c6b3bea53c5ab8",
+  "hermes_base_commit": "758ad514eb0e800547e015edf05aa18f78b78d82",
+  "hermes_patch_groups": 11,
+  "lifeos_base_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "lifeos_patch_groups": 23,
+  "lifeos_version": "7.40.4",
+  "source": {
+    "host": "192.168.8.212",
+    "account": "lifeos-hermes",
+    "uid": 1004,
+    "gateway_active_state": "inactive",
+    "gateway_unit_file_state": "masked",
+    "gateway_main_pid": 0,
+    "active_config_bot_token_removed": true,
+    "existing_backups_erased": false
+  },
+  "destination": {
+    "host": "192.168.8.252",
+    "account": "lifeos-hermes",
+    "uid": 1008,
+    "gateway_active_state": "active",
+    "gateway_unit_file_state": "enabled",
+    "gateway_main_pid": 239172,
+    "linger": true,
+    "bot_identity": "Shiny Hermes Bot#3996",
+    "discord_connected_at": "2026-10-07T16:13:49Z",
+    "channel_name": "hermes-212",
+    "channel_id": "1554859357374513222",
+    "private_recovery_directory": "/home/lifeos-hermes/migration/2026-10-07",
+    "credential_and_config_mode": "0600",
+    "capture_root_mode": "0700",
+    "clarify_timeout_seconds": 120
+  },
+  "verification": {
+    "runtime_install_exit": 0,
+    "native_install_exit": 0,
+    "plugin_validation_exit": 0,
+    "transactional_mount_exit": 0,
+    "carrier_probe_exit": 0,
+    "carrier_probe_verdict": "HOLDS",
+    "carrier_probe_model": "flashnext-w4a16-fp8ple",
+    "carrier_probe_effort": "xhigh",
+    "discord_history_http_status": 200,
+    "capture_initial_events": 29,
+    "capture_initial_known_registrations": 74,
+    "capture_initial_gaps": 0,
+    "capture_initial_integrity_issues": {},
+    "capture_initial_reported_losses": 0
+  },
+  "fresh_installation": {
+    "principal": "Adrian",
+    "assistant": "Cerebo",
+    "source_conversations_imported": false,
+    "source_personal_memory_imported": false,
+    "source_jobs_imported": false,
+    "managed_memory_configuration_present": false,
+    "sharing_enabled": false
+  },
+  "live_acceptance": {
+    "question_delivery": "pending",
+    "user_answer": "pending",
+    "timeout": "pending",
+    "cancellation": "pending"
+  },
+  "limits": [
+    "Registration inventory and connection checks do not prove live question acceptance.",
+    "Restore the normal 3600-second clarify timeout after live tests.",
+    "The development recorder is external to the public plugin installer.",
+    "Voice and managed memory activation remain unfinished.",
+    "The staged native mount requires conventional YAML list indentation in this prepared account."
+  ]
+}
