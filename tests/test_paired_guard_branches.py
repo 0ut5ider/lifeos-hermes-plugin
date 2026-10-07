@@ -6,10 +6,23 @@ import json
 import tempfile
 from pathlib import Path
 
-from scripts.paired_lifecycle_effects import GUARD_BRANCHES, guard_expectation, check_pair, make_fixture
+from scripts.paired_lifecycle_effects import GUARD_BRANCHES, guard_expectation, check_pair, make_fixture, successful_tool_outputs
 
 
 class PairedGuardBranchTests(unittest.TestCase):
+    def test_execution_markers_require_successful_tool_results(self):
+        requests = [{'body': {'messages': [
+            {'role': 'assistant', 'content': 'PAIR_GUARD_OUTPUT'},
+            {'role': 'user', 'content': [{'type': 'tool_result', 'is_error': True,
+                                       'content': 'Denied command prints PAIR_GUARD_OUTPUT'}]},
+            {'role': 'tool', 'content': json.dumps({'status': 'blocked', 'error': 'PAIR_GUARD_OUTPUT'})}]}}]
+        self.assertEqual(successful_tool_outputs(requests), [])
+        requests[0]['body']['messages'].extend([
+            {'role': 'user', 'content': [{'type': 'tool_result', 'is_error': False,
+                                       'content': 'NATIVE_EXECUTED'}]},
+            {'role': 'tool', 'content': json.dumps({'output': 'HERMES_EXECUTED', 'exit_code': 0})}])
+        self.assertEqual(successful_tool_outputs(requests), ['NATIVE_EXECUTED', 'HERMES_EXECUTED'])
+
     def case(self, name):
         before, after = guard_expectation(name)
         blocked = GUARD_BRANCHES[name]['blocked']

@@ -1769,6 +1769,25 @@ def conversation_request(row: dict, case: str) -> bool:
     return True
 
 
+def successful_tool_outputs(requests: list[dict]) -> list[str]:
+    outputs = []
+    for request in requests:
+        for message in request['body'].get('messages', []):
+            content = message.get('content', '')
+            if message.get('role') == 'tool' and isinstance(content, str):
+                try:
+                    result = json.loads(content)
+                except ValueError:
+                    outputs.append(content)
+                    continue
+                if isinstance(result, dict) and not result.get('error') and result.get('status') != 'blocked':
+                    outputs.append(str(result.get('output', '')))
+            elif message.get('role') == 'user' and isinstance(content, list):
+                outputs.extend(block.get('content', '') for block in content
+                               if block.get('type') == 'tool_result' and not block.get('is_error'))
+    return outputs
+
+
 def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guard) -> dict:
     home = Path(spec['home_root']) / output.name / case
     definitions = make_fixture(home, case, Path(spec['hook_root']), Path(spec['trace_script']))
@@ -1797,6 +1816,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
             **({'auxiliary': {'title_generation': {'model_upgrade_enabled': False}}}
                if case.startswith(RESPONSE_PREFIXES) else {}),
             'plugins': {'enabled': ['lifeos-hook-bridge']},
+            **({'approvals': {'single_query_mode': 'approve'}}
+               if case in {'guard-bash-system-clean', 'guard-bash-system-user'} else {}),
             **({'mcp_servers': {MCP_SERVER: {'command': sys.executable,
                                              'args': [str(Path(__file__).with_name('paired_mcp_server.py'))]}}}
                if case.startswith('generic-mcp-') else {})})
@@ -1849,7 +1870,9 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                        'PAIR_NEW_LINE. Use the file editing tool. Do not rewrite the whole file.')
         if case in GUARD_FILE_BRANCHES:
             content = GUARD_FILE_BRANCHES[case]['content']
-            command[-1] = (f'Read the existing file at {target} once. Then write the complete single line {content} to that absolute path with the file writing tool once.'
+            command[-1] = (f'Read the existing file at {target} once. Then replace its entire content using the file writing tool once. '
+                           f'The complete new content is exactly "{content}\\n". Remove every prior line. '
+                           'Do not use the editing tool or preserve existing content.'
                            if tool == 'Write' else
                            f'In the file at the absolute path {target}, replace the exact text PAIR_OLD_LINE with {content}. '
                            'Use the file editing tool once. Do not change any other text.')
@@ -2101,7 +2124,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
             if case.startswith('guard-bash-'):
                 later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
                 after['model_received_block'] = guard_message(case) in later
-                after['tool_output_in_model'] = 'PAIR_GUARD_OUTPUT' in later
+                after['tool_output_in_model'] = any('PAIR_GUARD_OUTPUT' in value
+                                                   for value in successful_tool_outputs(generation[1:]))
             if case.startswith('version-drift-'):
                 combined = json.dumps([row['body'] for row in generation], ensure_ascii=False)
                 after['model_nag_present'] = bool(after['hook_context']) and after['hook_context'] in combined
