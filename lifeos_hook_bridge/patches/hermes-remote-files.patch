@@ -1,3 +1,59 @@
+diff --git a/tests/test_lifeos_batch_schema.py b/tests/test_lifeos_batch_schema.py
+new file mode 100644
+index 000000000..e7a092a61
+--- /dev/null
++++ b/tests/test_lifeos_batch_schema.py
+@@ -0,0 +1,50 @@
++# ABOUTME: Verifies batch patch schema selection from actual Hermes profile configuration.
++# ABOUTME: Preserves the ordinary schema and model routing when an explicit file capability is absent.
++import json
++import os
++from pathlib import Path
++import subprocess
++import sys
++import tempfile
++import unittest
++
++
++SOURCE = str(Path(__file__).resolve().parents[1])
++
++
++@unittest.skipUnless(SOURCE, 'Prepared Hermes is required')
++class InstalledBatchSchemaTests(unittest.TestCase):
++    def schema(self, options=None, model='flashnext-w4a16-fp8ple'):
++        with tempfile.TemporaryDirectory(prefix='batch-schema-') as directory:
++            home = Path(directory)
++            profile = home / '.hermes'
++            profile.mkdir()
++            config = {'model': {'provider': 'custom', 'default': model}}
++            if options is not None:
++                config['file_tools'] = options
++            (profile / 'config.yaml').write_text(json.dumps(config))
++            env = {**os.environ, 'HOME': str(home), 'HERMES_HOME': str(profile), 'PYTHONPATH': str(SOURCE)}
++            code = ('import json\nfrom tools.file_tools import _patch_schema_overrides\n'
++                    'print(json.dumps(_patch_schema_overrides()))\n')
++            result = subprocess.run([sys.executable, '-c', code], env=env, cwd=home,
++                                    text=True, capture_output=True, timeout=20)
++            self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
++            self.assertEqual(result.stderr, '')
++            return json.loads(result.stdout)
++
++    def test_default_private_model_keeps_single_file_schema(self):
++        self.assertEqual(self.schema(), {})
++
++    def test_default_openai_family_keeps_its_batch_schema(self):
++        result = self.schema(model='gpt-fixture')
++        self.assertIn('patch', result['parameters']['properties'])
++
++    def test_explicit_batch_capability_exposes_mode_and_patch(self):
++        result = self.schema({'patch_format': 'v4a'})
++        self.assertIn('mode', result.get('parameters', {}).get('properties', {}))
++        self.assertIn('patch', result['parameters']['properties'])
++        self.assertEqual(result['parameters']['required'], ['mode'])
++
++    def test_unrecognized_capability_does_not_enable_batch(self):
++        self.assertEqual(self.schema({'patch_format': 'unknown'}), {})
++        self.assertEqual(self.schema('invalid'), {})
 diff --git a/tests/tools/test_remote_file_staleness.py b/tests/tools/test_remote_file_staleness.py
 new file mode 100644
 index 000000000..f65dfccdd
@@ -162,7 +218,7 @@ index e2002e06a..38a5fec57 100644
      def _matches_size(data: bytes, size_segment: str) -> bool:
          """Whether DATA is exactly as long as the file's own ``wc -c``. Noise inside the payload
 diff --git a/tools/file_tools.py b/tools/file_tools.py
-index 9e5b74524..8b02f0f54 100644
+index 9e5b74524..e1410266c 100644
 --- a/tools/file_tools.py
 +++ b/tools/file_tools.py
 @@ -1,4 +1,6 @@
@@ -266,6 +322,37 @@ index 9e5b74524..8b02f0f54 100644
                  _note_edited(task_id, [path], path_to_resolved, session_id)
          return json.dumps(result_dict, ensure_ascii=False)
      except Exception as e:
+@@ -1187,10 +1228,11 @@ PATCH_SCHEMA = {
+     "name": "patch",
+     # BASE = replace-only (what nearly every model family was trained on).
+     # The V4A patch mode (mode + patch params, dual-mode description) is
+-    # LAYERED ON dynamically for OpenAI-family mains only — V4A is the
++    # LAYERED ON dynamically for OpenAI-family mains by default — V4A is the
+     # OpenAI apply_patch dialect their models emit natively; advertising
+     # it to everyone cost every other session ~148 tok/call
+-    # (_patch_schema_overrides below). The handler accepts BOTH shapes
++    # (_patch_schema_overrides below). A reviewed file capability can opt
++    # another main model into the batch schema. The handler accepts BOTH shapes
+     # from any model regardless (replay compat + strong models that know
+     # V4A anyway): mode defaults to 'replace' when omitted.
+     "description": (
+@@ -1386,11 +1428,14 @@ registry.register(name="read_file", toolset="file", schema=READ_FILE_SCHEMA, han
+ registry.register(name="write_file", toolset="file", schema=WRITE_FILE_SCHEMA, handler=_handle_write_file, check_fn=_check_file_reqs, emoji="✍️", max_result_size_chars=100_000)
+ def _patch_schema_overrides():
+     """Layer the V4A patch mode onto the base replace-only schema for
+-    OpenAI-family mains (see PATCH_SCHEMA comment). Config/context probe
++    OpenAI-family mains or an explicit profile capability (see PATCH_SCHEMA comment). Config/context probe
+     only — no I/O at schema-build time; compaction's tool refresh
+     (#97073) re-evaluates on model switches."""
+     try:
+-        if not _is_openai_family_main():
++        from hermes_cli.config import load_config_readonly
++        options = load_config_readonly().get('file_tools', {})
++        batch_enabled = isinstance(options, dict) and options.get('patch_format') == 'v4a'
++        if not batch_enabled and not _is_openai_family_main():
+             return {}
+         params = {
+             "type": "object",
 diff --git a/tools/file_tools_read_tracking.py b/tools/file_tools_read_tracking.py
 index 80dcdb141..df4fd9ff6 100644
 --- a/tools/file_tools_read_tracking.py

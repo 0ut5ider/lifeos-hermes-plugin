@@ -1,0 +1,582 @@
+{
+  "cases": [
+    {
+      "id": "atlas-Write-projects",
+      "sources": [
+        "projects"
+      ],
+      "applied": true,
+      "native_tool": "Write",
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md",
+        "content": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"bytes_written\": 16, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\"]}"
+    },
+    {
+      "id": "atlas-Write-gear",
+      "sources": [
+        "gear"
+      ],
+      "applied": true,
+      "native_tool": "Write",
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md",
+        "content": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"bytes_written\": 16, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\"]}"
+    },
+    {
+      "id": "atlas-Write-inventory",
+      "sources": [
+        "infra-inventory"
+      ],
+      "applied": true,
+      "native_tool": "Write",
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts",
+        "content": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"bytes_written\": 16, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm warn exec The following package was not found and will be installed: tsc@2.0.4\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\"]}"
+    },
+    {
+      "id": "atlas-Write-systemd",
+      "sources": [
+        "systemd"
+      ],
+      "applied": true,
+      "native_tool": "Write",
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service",
+        "content": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"bytes_written\": 16, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .service files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\"]}"
+    },
+    {
+      "id": "atlas-Write-unrelated",
+      "sources": [],
+      "applied": true,
+      "native_tool": "Write",
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt",
+        "content": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"bytes_written\": 16, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .txt files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\"]}"
+    },
+    {
+      "id": "knowledge-Write-valid",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md",
+        "content": "---\nid: kb_fixture\ntype: idea\ntitle: Fixture\ntags: [fixture]\nquality: 3\ncreated: 2026-10-06\nupdated: 2026-10-06\nconvention: kb-v3\n---\n# Fixture\n"
+      },
+      "result": "{\"bytes_written\": 144, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\"]}"
+    },
+    {
+      "id": "knowledge-Write-invalid",
+      "warning": true,
+      "applied": true,
+      "context": "\u26a0 Knowledge note written off-schema \u2014 `Ideas/invalid.md`\n  - `convention` \u2014 not kb-v3 (dialect not migrated)\n  - `id` \u2014 required envelope field missing\n  - `type` \u2014 required envelope field missing\n  - `title` \u2014 required envelope field missing\n  - `tags` \u2014 required envelope field missing\n  - `quality` \u2014 required envelope field missing\n  \u2026and 3 more\n\nNotes are born on the schema via `MemorySystem.renderInitialNote`. Do not hand-write frontmatter by copying a sibling \u2014 that is how a legacy dialect spreads. Fix this note now, or run `bun LIFEOS/TOOLS/MigrateKnowledge.ts` (dry-run by default) for a bulk repair.",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md",
+        "content": "# Off schema"
+      },
+      "result": "{\"bytes_written\": 12, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\"]}\n\n\u26a0 Knowledge note written off-schema \u2014 `Ideas/invalid.md`\n  - `convention` \u2014 not kb-v3 (dialect not migrated)\n  - `id` \u2014 required envelope field missing\n  - `type` \u2014 required envelope field missing\n  - `title` \u2014 required envelope field missing\n  - `tags` \u2014 required envelope field missing\n  - `quality` \u2014 required envelope field missing\n  \u2026and 3 more\n\nNotes are born on the schema via `MemorySystem.renderInitialNote`. Do not hand-write frontmatter by copying a sibling \u2014 that is how a legacy dialect spreads. Fix this note now, or run `bun LIFEOS/TOOLS/MigrateKnowledge.ts` (dry-run by default) for a bulk repair."
+    },
+    {
+      "id": "knowledge-Write-index",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md",
+        "content": "# Index"
+      },
+      "result": "{\"bytes_written\": 7, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\"]}"
+    },
+    {
+      "id": "knowledge-Write-outside",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md",
+        "content": "# Outside"
+      },
+      "result": "{\"bytes_written\": 9, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\"]}"
+    },
+    {
+      "id": "complexity-Write-199",
+      "state": {
+        "cumulative": 199,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": []
+      },
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-199.ts",
+        "content": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\nline 80\nline 81\nline 82\nline 83\nline 84\nline 85\nline 86\nline 87\nline 88\nline 89\nline 90\nline 91\nline 92\nline 93\nline 94\nline 95\nline 96\nline 97\nline 98\nline 99\nline 100\nline 101\nline 102\nline 103\nline 104\nline 105\nline 106\nline 107\nline 108\nline 109\nline 110\nline 111\nline 112\nline 113\nline 114\nline 115\nline 116\nline 117\nline 118\nline 119\nline 120\nline 121\nline 122\nline 123\nline 124\nline 125\nline 126\nline 127\nline 128\nline 129\nline 130\nline 131\nline 132\nline 133\nline 134\nline 135\nline 136\nline 137\nline 138\nline 139\nline 140\nline 141\nline 142\nline 143\nline 144\nline 145\nline 146\nline 147\nline 148\nline 149\nline 150\nline 151\nline 152\nline 153\nline 154\nline 155\nline 156\nline 157\nline 158\nline 159\nline 160\nline 161\nline 162\nline 163\nline 164\nline 165\nline 166\nline 167\nline 168\nline 169\nline 170\nline 171\nline 172\nline 173\nline 174\nline 175\nline 176\nline 177\nline 178\nline 179\nline 180\nline 181\nline 182\nline 183\nline 184\nline 185\nline 186\nline 187\nline 188\nline 189\nline 190\nline 191\nline 192\nline 193\nline 194\nline 195\nline 196\nline 197\nline 198"
+      },
+      "result": "{\"bytes_written\": 1680, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-199.ts\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-199.ts\"]}"
+    },
+    {
+      "id": "complexity-Write-200",
+      "state": {
+        "cumulative": 200,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": []
+      },
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-200.ts",
+        "content": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\nline 80\nline 81\nline 82\nline 83\nline 84\nline 85\nline 86\nline 87\nline 88\nline 89\nline 90\nline 91\nline 92\nline 93\nline 94\nline 95\nline 96\nline 97\nline 98\nline 99\nline 100\nline 101\nline 102\nline 103\nline 104\nline 105\nline 106\nline 107\nline 108\nline 109\nline 110\nline 111\nline 112\nline 113\nline 114\nline 115\nline 116\nline 117\nline 118\nline 119\nline 120\nline 121\nline 122\nline 123\nline 124\nline 125\nline 126\nline 127\nline 128\nline 129\nline 130\nline 131\nline 132\nline 133\nline 134\nline 135\nline 136\nline 137\nline 138\nline 139\nline 140\nline 141\nline 142\nline 143\nline 144\nline 145\nline 146\nline 147\nline 148\nline 149\nline 150\nline 151\nline 152\nline 153\nline 154\nline 155\nline 156\nline 157\nline 158\nline 159\nline 160\nline 161\nline 162\nline 163\nline 164\nline 165\nline 166\nline 167\nline 168\nline 169\nline 170\nline 171\nline 172\nline 173\nline 174\nline 175\nline 176\nline 177\nline 178\nline 179\nline 180\nline 181\nline 182\nline 183\nline 184\nline 185\nline 186\nline 187\nline 188\nline 189\nline 190\nline 191\nline 192\nline 193\nline 194\nline 195\nline 196\nline 197\nline 198\nline 199"
+      },
+      "result": "{\"bytes_written\": 1689, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-200.ts\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-200.ts\"]}"
+    },
+    {
+      "id": "complexity-Write-201",
+      "state": {
+        "cumulative": 201,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": [
+          "big:201"
+        ]
+      },
+      "warning": true,
+      "applied": true,
+      "context": "[COMPLEXITY RATCHET] this edit added 201 net lines in one shot \u2014 a blob that large is usually worth a second look for something simpler.",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-201.ts",
+        "content": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\nline 80\nline 81\nline 82\nline 83\nline 84\nline 85\nline 86\nline 87\nline 88\nline 89\nline 90\nline 91\nline 92\nline 93\nline 94\nline 95\nline 96\nline 97\nline 98\nline 99\nline 100\nline 101\nline 102\nline 103\nline 104\nline 105\nline 106\nline 107\nline 108\nline 109\nline 110\nline 111\nline 112\nline 113\nline 114\nline 115\nline 116\nline 117\nline 118\nline 119\nline 120\nline 121\nline 122\nline 123\nline 124\nline 125\nline 126\nline 127\nline 128\nline 129\nline 130\nline 131\nline 132\nline 133\nline 134\nline 135\nline 136\nline 137\nline 138\nline 139\nline 140\nline 141\nline 142\nline 143\nline 144\nline 145\nline 146\nline 147\nline 148\nline 149\nline 150\nline 151\nline 152\nline 153\nline 154\nline 155\nline 156\nline 157\nline 158\nline 159\nline 160\nline 161\nline 162\nline 163\nline 164\nline 165\nline 166\nline 167\nline 168\nline 169\nline 170\nline 171\nline 172\nline 173\nline 174\nline 175\nline 176\nline 177\nline 178\nline 179\nline 180\nline 181\nline 182\nline 183\nline 184\nline 185\nline 186\nline 187\nline 188\nline 189\nline 190\nline 191\nline 192\nline 193\nline 194\nline 195\nline 196\nline 197\nline 198\nline 199\nline 200"
+      },
+      "result": "{\"bytes_written\": 1698, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-201.ts\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Write-201.ts\"]}\n\n[COMPLEXITY RATCHET] this edit added 201 net lines in one shot \u2014 a blob that large is usually worth a second look for something simpler."
+    },
+    {
+      "id": "dependencies-Write",
+      "state": {
+        "cumulative": 3,
+        "deps": 1,
+        "lastBand": 0,
+        "alerted": [
+          "dep:1"
+        ]
+      },
+      "warning": true,
+      "applied": true,
+      "context": "[COMPLEXITY RATCHET] added 1 new dependency (1 this session) \u2014 a dependency is the most expensive kind of complexity to walk back; confirm it earns its keep.",
+      "arguments": {
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json",
+        "content": "{\n  \"fixture-dependency\": \"^1.2.3\"\n}"
+      },
+      "result": "{\"bytes_written\": 36, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"ok\", \"output\": \"\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\"]}\n\n[COMPLEXITY RATCHET] added 1 new dependency (1 this session) \u2014 a dependency is the most expensive kind of complexity to walk back; confirm it earns its keep."
+    },
+    {
+      "id": "atlas-Edit-projects",
+      "sources": [
+        "projects"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md",
+        "old_string": "OLD",
+        "new_string": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\"}"
+    },
+    {
+      "id": "atlas-Edit-gear",
+      "sources": [
+        "gear"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md",
+        "old_string": "OLD",
+        "new_string": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\"}"
+    },
+    {
+      "id": "atlas-Edit-inventory",
+      "sources": [
+        "infra-inventory"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts",
+        "old_string": "OLD",
+        "new_string": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\"], \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\"}"
+    },
+    {
+      "id": "atlas-Edit-systemd",
+      "sources": [
+        "systemd"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service",
+        "old_string": "OLD",
+        "new_string": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .service files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\"}"
+    },
+    {
+      "id": "atlas-Edit-unrelated",
+      "sources": [],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt",
+        "old_string": "OLD",
+        "new_string": "PAIR_FILE_EFFECT"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .txt files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\"}"
+    },
+    {
+      "id": "knowledge-Edit-valid",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md",
+        "old_string": "OLD",
+        "new_string": "---\nid: kb_fixture\ntype: idea\ntitle: Fixture\ntags: [fixture]\nquality: 3\ncreated: 2026-10-06\nupdated: 2026-10-06\nconvention: kb-v3\n---\n# Fixture\n"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\\n@@ -1 +1,12 @@\\n-OLD\\n+---\\n+id: kb_fixture\\n+type: idea\\n+title: Fixture\\n+tags: [fixture]\\n+quality: 3\\n+created: 2026-10-06\\n+updated: 2026-10-06\\n+convention: kb-v3\\n+---\\n+# Fixture\\n+\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\"}"
+    },
+    {
+      "id": "knowledge-Edit-invalid",
+      "warning": true,
+      "applied": true,
+      "context": "\u26a0 Knowledge note written off-schema \u2014 `Ideas/invalid.md`\n  - `convention` \u2014 not kb-v3 (dialect not migrated)\n  - `id` \u2014 required envelope field missing\n  - `type` \u2014 required envelope field missing\n  - `title` \u2014 required envelope field missing\n  - `tags` \u2014 required envelope field missing\n  - `quality` \u2014 required envelope field missing\n  \u2026and 3 more\n\nNotes are born on the schema via `MemorySystem.renderInitialNote`. Do not hand-write frontmatter by copying a sibling \u2014 that is how a legacy dialect spreads. Fix this note now, or run `bun LIFEOS/TOOLS/MigrateKnowledge.ts` (dry-run by default) for a bulk repair.",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md",
+        "old_string": "OLD",
+        "new_string": "# Off schema"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\\n@@ -1 +1 @@\\n-OLD\\n+# Off schema\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\"}\n\n\u26a0 Knowledge note written off-schema \u2014 `Ideas/invalid.md`\n  - `convention` \u2014 not kb-v3 (dialect not migrated)\n  - `id` \u2014 required envelope field missing\n  - `type` \u2014 required envelope field missing\n  - `title` \u2014 required envelope field missing\n  - `tags` \u2014 required envelope field missing\n  - `quality` \u2014 required envelope field missing\n  \u2026and 3 more\n\nNotes are born on the schema via `MemorySystem.renderInitialNote`. Do not hand-write frontmatter by copying a sibling \u2014 that is how a legacy dialect spreads. Fix this note now, or run `bun LIFEOS/TOOLS/MigrateKnowledge.ts` (dry-run by default) for a bulk repair."
+    },
+    {
+      "id": "knowledge-Edit-index",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md",
+        "old_string": "OLD",
+        "new_string": "# Index"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\\n@@ -1 +1 @@\\n-OLD\\n+# Index\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\"}"
+    },
+    {
+      "id": "knowledge-Edit-outside",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md",
+        "old_string": "OLD",
+        "new_string": "# Outside"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\\n@@ -1 +1 @@\\n-OLD\\n+# Outside\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\"], \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\"}"
+    },
+    {
+      "id": "complexity-Edit-199",
+      "state": {
+        "cumulative": 199,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": []
+      },
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-199.ts",
+        "old_string": "OLD",
+        "new_string": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\nline 80\nline 81\nline 82\nline 83\nline 84\nline 85\nline 86\nline 87\nline 88\nline 89\nline 90\nline 91\nline 92\nline 93\nline 94\nline 95\nline 96\nline 97\nline 98\nline 99\nline 100\nline 101\nline 102\nline 103\nline 104\nline 105\nline 106\nline 107\nline 108\nline 109\nline 110\nline 111\nline 112\nline 113\nline 114\nline 115\nline 116\nline 117\nline 118\nline 119\nline 120\nline 121\nline 122\nline 123\nline 124\nline 125\nline 126\nline 127\nline 128\nline 129\nline 130\nline 131\nline 132\nline 133\nline 134\nline 135\nline 136\nline 137\nline 138\nline 139\nline 140\nline 141\nline 142\nline 143\nline 144\nline 145\nline 146\nline 147\nline 148\nline 149\nline 150\nline 151\nline 152\nline 153\nline 154\nline 155\nline 156\nline 157\nline 158\nline 159\nline 160\nline 161\nline 162\nline 163\nline 164\nline 165\nline 166\nline 167\nline 168\nline 169\nline 170\nline 171\nline 172\nline 173\nline 174\nline 175\nline 176\nline 177\nline 178\nline 179\nline 180\nline 181\nline 182\nline 183\nline 184\nline 185\nline 186\nline 187\nline 188\nline 189\nline 190\nline 191\nline 192\nline 193\nline 194\nline 195\nline 196\nline 197\nline 198\nline 199"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-199.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-199.ts\\n@@ -1 +1,200 @@\\n-OLD\\n+line 0\\n+line 1\\n+line 2\\n+line 3\\n+line 4\\n+line 5\\n+line 6\\n+line 7\\n+line 8\\n+line 9\\n+line 10\\n+line 11\\n+line 12\\n+line 13\\n+line 14\\n+line 15\\n+line 16\\n+line 17\\n+line 18\\n+line 19\\n+line 20\\n+line 21\\n+line 22\\n+line 23\\n+line 24\\n+line 25\\n+line 26\\n+line 27\\n+line 28\\n+line 29\\n+line 30\\n+line 31\\n+line 32\\n+line 33\\n+line 34\\n+line 35\\n+line 36\\n+line 37\\n+line 38\\n+line 39\\n+line 40\\n+line 41\\n+line 42\\n+line 43\\n+line 44\\n+line 45\\n+line 46\\n+line 47\\n+line 48\\n+line 49\\n+line 50\\n+line 51\\n+line 52\\n+line 53\\n+line 54\\n+line 55\\n+line 56\\n+line 57\\n+line 58\\n+line 59\\n+line 60\\n+line 61\\n+line 62\\n+line 63\\n+line 64\\n+line 65\\n+line 66\\n+line 67\\n+line 68\\n+line 69\\n+line 70\\n+line 71\\n+line 72\\n+line 73\\n+line 74\\n+line 75\\n+line 76\\n+line 77\\n+line 78\\n+line 79\\n+line 80\\n+line 81\\n+line 82\\n+line 83\\n+line 84\\n+line 85\\n+line 86\\n+line 87\\n+line 88\\n+line 89\\n+line 90\\n+line 91\\n+line 92\\n+line 93\\n+line 94\\n+line 95\\n+line 96\\n+line 97\\n+line 98\\n+line 99\\n+line 100\\n+line 101\\n+line 102\\n+line 103\\n+line 104\\n+line 105\\n+line 106\\n+line 107\\n+line 108\\n+line 109\\n+line 110\\n+line 111\\n+line 112\\n+line 113\\n+line 114\\n+line 115\\n+line 116\\n+line 117\\n+line 118\\n+line 119\\n+line 120\\n+line 121\\n+line 122\\n+line 123\\n+line 124\\n+line 125\\n+line 126\\n+line 127\\n+line 128\\n+line 129\\n+line 130\\n+line 131\\n+line 132\\n+line 133\\n+line 134\\n+line 135\\n+line 136\\n+line 137\\n+line 138\\n+line 139\\n+line 140\\n+line 141\\n+line 142\\n+line 143\\n+line 144\\n+line 145\\n+line 146\\n+line 147\\n+line 148\\n+line 149\\n+line 150\\n+line 151\\n+line 152\\n+line 153\\n+line 154\\n+line 155\\n+line 156\\n+line 157\\n+line 158\\n+line 159\\n+line 160\\n+line 161\\n+line 162\\n+line 163\\n+line 164\\n+line 165\\n+line 166\\n+line 167\\n+line 168\\n+line 169\\n+line 170\\n+line 171\\n+line 172\\n+line 173\\n+line 174\\n+line 175\\n+line 176\\n+line 177\\n+line 178\\n+line 179\\n+line 180\\n+line 181\\n+line 182\\n+line 183\\n+line 184\\n+line 185\\n+line 186\\n+line 187\\n+line 188\\n+line 189\\n+line 190\\n+line 191\\n+line 192\\n+line 193\\n+line 194\\n+line 195\\n+line 196\\n+line 197\\n+line 198\\n+line 199\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-199.ts\"], \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-199.ts\"}"
+    },
+    {
+      "id": "complexity-Edit-200",
+      "state": {
+        "cumulative": 200,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": []
+      },
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-200.ts",
+        "old_string": "OLD",
+        "new_string": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\nline 80\nline 81\nline 82\nline 83\nline 84\nline 85\nline 86\nline 87\nline 88\nline 89\nline 90\nline 91\nline 92\nline 93\nline 94\nline 95\nline 96\nline 97\nline 98\nline 99\nline 100\nline 101\nline 102\nline 103\nline 104\nline 105\nline 106\nline 107\nline 108\nline 109\nline 110\nline 111\nline 112\nline 113\nline 114\nline 115\nline 116\nline 117\nline 118\nline 119\nline 120\nline 121\nline 122\nline 123\nline 124\nline 125\nline 126\nline 127\nline 128\nline 129\nline 130\nline 131\nline 132\nline 133\nline 134\nline 135\nline 136\nline 137\nline 138\nline 139\nline 140\nline 141\nline 142\nline 143\nline 144\nline 145\nline 146\nline 147\nline 148\nline 149\nline 150\nline 151\nline 152\nline 153\nline 154\nline 155\nline 156\nline 157\nline 158\nline 159\nline 160\nline 161\nline 162\nline 163\nline 164\nline 165\nline 166\nline 167\nline 168\nline 169\nline 170\nline 171\nline 172\nline 173\nline 174\nline 175\nline 176\nline 177\nline 178\nline 179\nline 180\nline 181\nline 182\nline 183\nline 184\nline 185\nline 186\nline 187\nline 188\nline 189\nline 190\nline 191\nline 192\nline 193\nline 194\nline 195\nline 196\nline 197\nline 198\nline 199\nline 200"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-200.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-200.ts\\n@@ -1 +1,201 @@\\n-OLD\\n+line 0\\n+line 1\\n+line 2\\n+line 3\\n+line 4\\n+line 5\\n+line 6\\n+line 7\\n+line 8\\n+line 9\\n+line 10\\n+line 11\\n+line 12\\n+line 13\\n+line 14\\n+line 15\\n+line 16\\n+line 17\\n+line 18\\n+line 19\\n+line 20\\n+line 21\\n+line 22\\n+line 23\\n+line 24\\n+line 25\\n+line 26\\n+line 27\\n+line 28\\n+line 29\\n+line 30\\n+line 31\\n+line 32\\n+line 33\\n+line 34\\n+line 35\\n+line 36\\n+line 37\\n+line 38\\n+line 39\\n+line 40\\n+line 41\\n+line 42\\n+line 43\\n+line 44\\n+line 45\\n+line 46\\n+line 47\\n+line 48\\n+line 49\\n+line 50\\n+line 51\\n+line 52\\n+line 53\\n+line 54\\n+line 55\\n+line 56\\n+line 57\\n+line 58\\n+line 59\\n+line 60\\n+line 61\\n+line 62\\n+line 63\\n+line 64\\n+line 65\\n+line 66\\n+line 67\\n+line 68\\n+line 69\\n+line 70\\n+line 71\\n+line 72\\n+line 73\\n+line 74\\n+line 75\\n+line 76\\n+line 77\\n+line 78\\n+line 79\\n+line 80\\n+line 81\\n+line 82\\n+line 83\\n+line 84\\n+line 85\\n+line 86\\n+line 87\\n+line 88\\n+line 89\\n+line 90\\n+line 91\\n+line 92\\n+line 93\\n+line 94\\n+line 95\\n+line 96\\n+line 97\\n+line 98\\n+line 99\\n+line 100\\n+line 101\\n+line 102\\n+line 103\\n+line 104\\n+line 105\\n+line 106\\n+line 107\\n+line 108\\n+line 109\\n+line 110\\n+line 111\\n+line 112\\n+line 113\\n+line 114\\n+line 115\\n+line 116\\n+line 117\\n+line 118\\n+line 119\\n+line 120\\n+line 121\\n+line 122\\n+line 123\\n+line 124\\n+line 125\\n+line 126\\n+line 127\\n+line 128\\n+line 129\\n+line 130\\n+line 131\\n+line 132\\n+line 133\\n+line 134\\n+line 135\\n+line 136\\n+line 137\\n+line 138\\n+line 139\\n+line 140\\n+line 141\\n+line 142\\n+line 143\\n+line 144\\n+line 145\\n+line 146\\n+line 147\\n+line 148\\n+line 149\\n+line 150\\n+line 151\\n+line 152\\n+line 153\\n+line 154\\n+line 155\\n+line 156\\n+line 157\\n+line 158\\n+line 159\\n+line 160\\n+line 161\\n+line 162\\n+line 163\\n+line 164\\n+line 165\\n+line 166\\n+line 167\\n+line 168\\n+line 169\\n+line 170\\n+line 171\\n+line 172\\n+line 173\\n+line 174\\n+line 175\\n+line 176\\n+line 177\\n+line 178\\n+line 179\\n+line 180\\n+line 181\\n+line 182\\n+line 183\\n+line 184\\n+line 185\\n+line 186\\n+line 187\\n+line 188\\n+line 189\\n+line 190\\n+line 191\\n+line 192\\n+line 193\\n+line 194\\n+line 195\\n+line 196\\n+line 197\\n+line 198\\n+line 199\\n+line 200\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-200.ts\"], \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-200.ts\"}"
+    },
+    {
+      "id": "complexity-Edit-201",
+      "state": {
+        "cumulative": 201,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": [
+          "big:201"
+        ]
+      },
+      "warning": true,
+      "applied": true,
+      "context": "[COMPLEXITY RATCHET] this edit added 201 net lines in one shot \u2014 a blob that large is usually worth a second look for something simpler.",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-201.ts",
+        "old_string": "OLD",
+        "new_string": "line 0\nline 1\nline 2\nline 3\nline 4\nline 5\nline 6\nline 7\nline 8\nline 9\nline 10\nline 11\nline 12\nline 13\nline 14\nline 15\nline 16\nline 17\nline 18\nline 19\nline 20\nline 21\nline 22\nline 23\nline 24\nline 25\nline 26\nline 27\nline 28\nline 29\nline 30\nline 31\nline 32\nline 33\nline 34\nline 35\nline 36\nline 37\nline 38\nline 39\nline 40\nline 41\nline 42\nline 43\nline 44\nline 45\nline 46\nline 47\nline 48\nline 49\nline 50\nline 51\nline 52\nline 53\nline 54\nline 55\nline 56\nline 57\nline 58\nline 59\nline 60\nline 61\nline 62\nline 63\nline 64\nline 65\nline 66\nline 67\nline 68\nline 69\nline 70\nline 71\nline 72\nline 73\nline 74\nline 75\nline 76\nline 77\nline 78\nline 79\nline 80\nline 81\nline 82\nline 83\nline 84\nline 85\nline 86\nline 87\nline 88\nline 89\nline 90\nline 91\nline 92\nline 93\nline 94\nline 95\nline 96\nline 97\nline 98\nline 99\nline 100\nline 101\nline 102\nline 103\nline 104\nline 105\nline 106\nline 107\nline 108\nline 109\nline 110\nline 111\nline 112\nline 113\nline 114\nline 115\nline 116\nline 117\nline 118\nline 119\nline 120\nline 121\nline 122\nline 123\nline 124\nline 125\nline 126\nline 127\nline 128\nline 129\nline 130\nline 131\nline 132\nline 133\nline 134\nline 135\nline 136\nline 137\nline 138\nline 139\nline 140\nline 141\nline 142\nline 143\nline 144\nline 145\nline 146\nline 147\nline 148\nline 149\nline 150\nline 151\nline 152\nline 153\nline 154\nline 155\nline 156\nline 157\nline 158\nline 159\nline 160\nline 161\nline 162\nline 163\nline 164\nline 165\nline 166\nline 167\nline 168\nline 169\nline 170\nline 171\nline 172\nline 173\nline 174\nline 175\nline 176\nline 177\nline 178\nline 179\nline 180\nline 181\nline 182\nline 183\nline 184\nline 185\nline 186\nline 187\nline 188\nline 189\nline 190\nline 191\nline 192\nline 193\nline 194\nline 195\nline 196\nline 197\nline 198\nline 199\nline 200\nline 201"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-201.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-201.ts\\n@@ -1 +1,202 @@\\n-OLD\\n+line 0\\n+line 1\\n+line 2\\n+line 3\\n+line 4\\n+line 5\\n+line 6\\n+line 7\\n+line 8\\n+line 9\\n+line 10\\n+line 11\\n+line 12\\n+line 13\\n+line 14\\n+line 15\\n+line 16\\n+line 17\\n+line 18\\n+line 19\\n+line 20\\n+line 21\\n+line 22\\n+line 23\\n+line 24\\n+line 25\\n+line 26\\n+line 27\\n+line 28\\n+line 29\\n+line 30\\n+line 31\\n+line 32\\n+line 33\\n+line 34\\n+line 35\\n+line 36\\n+line 37\\n+line 38\\n+line 39\\n+line 40\\n+line 41\\n+line 42\\n+line 43\\n+line 44\\n+line 45\\n+line 46\\n+line 47\\n+line 48\\n+line 49\\n+line 50\\n+line 51\\n+line 52\\n+line 53\\n+line 54\\n+line 55\\n+line 56\\n+line 57\\n+line 58\\n+line 59\\n+line 60\\n+line 61\\n+line 62\\n+line 63\\n+line 64\\n+line 65\\n+line 66\\n+line 67\\n+line 68\\n+line 69\\n+line 70\\n+line 71\\n+line 72\\n+line 73\\n+line 74\\n+line 75\\n+line 76\\n+line 77\\n+line 78\\n+line 79\\n+line 80\\n+line 81\\n+line 82\\n+line 83\\n+line 84\\n+line 85\\n+line 86\\n+line 87\\n+line 88\\n+line 89\\n+line 90\\n+line 91\\n+line 92\\n+line 93\\n+line 94\\n+line 95\\n+line 96\\n+line 97\\n+line 98\\n+line 99\\n+line 100\\n+line 101\\n+line 102\\n+line 103\\n+line 104\\n+line 105\\n+line 106\\n+line 107\\n+line 108\\n+line 109\\n+line 110\\n+line 111\\n+line 112\\n+line 113\\n+line 114\\n+line 115\\n+line 116\\n+line 117\\n+line 118\\n+line 119\\n+line 120\\n+line 121\\n+line 122\\n+line 123\\n+line 124\\n+line 125\\n+line 126\\n+line 127\\n+line 128\\n+line 129\\n+line 130\\n+line 131\\n+line 132\\n+line 133\\n+line 134\\n+line 135\\n+line 136\\n+line 137\\n+line 138\\n+line 139\\n+line 140\\n+line 141\\n+line 142\\n+line 143\\n+line 144\\n+line 145\\n+line 146\\n+line 147\\n+line 148\\n+line 149\\n+line 150\\n+line 151\\n+line 152\\n+line 153\\n+line 154\\n+line 155\\n+line 156\\n+line 157\\n+line 158\\n+line 159\\n+line 160\\n+line 161\\n+line 162\\n+line 163\\n+line 164\\n+line 165\\n+line 166\\n+line 167\\n+line 168\\n+line 169\\n+line 170\\n+line 171\\n+line 172\\n+line 173\\n+line 174\\n+line 175\\n+line 176\\n+line 177\\n+line 178\\n+line 179\\n+line 180\\n+line 181\\n+line 182\\n+line 183\\n+line 184\\n+line 185\\n+line 186\\n+line 187\\n+line 188\\n+line 189\\n+line 190\\n+line 191\\n+line 192\\n+line 193\\n+line 194\\n+line 195\\n+line 196\\n+line 197\\n+line 198\\n+line 199\\n+line 200\\n+line 201\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-201.ts\"], \"lint\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-Edit-201.ts\"}\n\n[COMPLEXITY RATCHET] this edit added 201 net lines in one shot \u2014 a blob that large is usually worth a second look for something simpler."
+    },
+    {
+      "id": "dependencies-Edit",
+      "state": {
+        "cumulative": 2,
+        "deps": 1,
+        "lastBand": 0,
+        "alerted": [
+          "dep:1"
+        ]
+      },
+      "warning": true,
+      "applied": true,
+      "context": "[COMPLEXITY RATCHET] added 1 new dependency (1 this session) \u2014 a dependency is the most expensive kind of complexity to walk back; confirm it earns its keep.",
+      "arguments": {
+        "mode": "replace",
+        "path": "/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json",
+        "old_string": "OLD",
+        "new_string": "{\n  \"fixture-dependency\": \"^1.2.3\"\n}"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\\n@@ -1 +1,3 @@\\n-OLD\\n+{\\n+  \\\"fixture-dependency\\\": \\\"^1.2.3\\\"\\n+}\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\"], \"lint\": {\"status\": \"ok\", \"output\": \"\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\"}\n\n[COMPLEXITY RATCHET] added 1 new dependency (1 this session) \u2014 a dependency is the most expensive kind of complexity to walk back; confirm it earns its keep."
+    },
+    {
+      "id": "atlas-MultiEdit-projects",
+      "sources": [
+        "projects"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\n-OLD\n+PAIR_FILE_EFFECT\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/PROJECTS.md\"}"
+    },
+    {
+      "id": "atlas-MultiEdit-gear",
+      "sources": [
+        "gear"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\n-OLD\n+PAIR_FILE_EFFECT\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/GEAR.md\"}"
+    },
+    {
+      "id": "atlas-MultiEdit-inventory",
+      "sources": [
+        "infra-inventory"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\n-OLD\n+PAIR_FILE_EFFECT\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/infra-inventory.ts\"}"
+    },
+    {
+      "id": "atlas-MultiEdit-systemd",
+      "sources": [
+        "systemd"
+      ],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\n-OLD\n+PAIR_FILE_EFFECT\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\": {\"status\": \"skipped\", \"message\": \"No linter for .service files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.config/systemd/user/com.lifeos.fixture.service\"}"
+    },
+    {
+      "id": "atlas-MultiEdit-unrelated",
+      "sources": [],
+      "applied": true,
+      "native_tool": "Edit",
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\n-OLD\n+PAIR_FILE_EFFECT\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\\n@@ -1 +1 @@\\n-OLD\\n+PAIR_FILE_EFFECT\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\": {\"status\": \"skipped\", \"message\": \"No linter for .txt files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/ordinary.txt\"}"
+    },
+    {
+      "id": "knowledge-MultiEdit-valid",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\n-OLD\n+---\n+id: kb_fixture\n+type: idea\n+title: Fixture\n+tags: [fixture]\n+quality: 3\n+created: 2026-10-06\n+updated: 2026-10-06\n+convention: kb-v3\n+---\n+# Fixture\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\\n@@ -1 +1,11 @@\\n-OLD\\n+---\\n+id: kb_fixture\\n+type: idea\\n+title: Fixture\\n+tags: [fixture]\\n+quality: 3\\n+created: 2026-10-06\\n+updated: 2026-10-06\\n+convention: kb-v3\\n+---\\n+# Fixture\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/valid.md\"}"
+    },
+    {
+      "id": "knowledge-MultiEdit-invalid",
+      "warning": true,
+      "applied": true,
+      "context": "\u26a0 Knowledge note written off-schema \u2014 `Ideas/invalid.md`\n  - `convention` \u2014 not kb-v3 (dialect not migrated)\n  - `id` \u2014 required envelope field missing\n  - `type` \u2014 required envelope field missing\n  - `title` \u2014 required envelope field missing\n  - `tags` \u2014 required envelope field missing\n  - `quality` \u2014 required envelope field missing\n  \u2026and 3 more\n\nNotes are born on the schema via `MemorySystem.renderInitialNote`. Do not hand-write frontmatter by copying a sibling \u2014 that is how a legacy dialect spreads. Fix this note now, or run `bun LIFEOS/TOOLS/MigrateKnowledge.ts` (dry-run by default) for a bulk repair.",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\n-OLD\n+# Off schema\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\\n@@ -1 +1 @@\\n-OLD\\n+# Off schema\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/invalid.md\"}\n\n\u26a0 Knowledge note written off-schema \u2014 `Ideas/invalid.md`\n  - `convention` \u2014 not kb-v3 (dialect not migrated)\n  - `id` \u2014 required envelope field missing\n  - `type` \u2014 required envelope field missing\n  - `title` \u2014 required envelope field missing\n  - `tags` \u2014 required envelope field missing\n  - `quality` \u2014 required envelope field missing\n  \u2026and 3 more\n\nNotes are born on the schema via `MemorySystem.renderInitialNote`. Do not hand-write frontmatter by copying a sibling \u2014 that is how a legacy dialect spreads. Fix this note now, or run `bun LIFEOS/TOOLS/MigrateKnowledge.ts` (dry-run by default) for a bulk repair."
+    },
+    {
+      "id": "knowledge-MultiEdit-index",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\n-OLD\n+# Index\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\\n@@ -1 +1 @@\\n-OLD\\n+# Index\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/_index.md\"}"
+    },
+    {
+      "id": "knowledge-MultiEdit-outside",
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\n-OLD\n+# Outside\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\\n@@ -1 +1 @@\\n-OLD\\n+# Outside\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\": {\"status\": \"skipped\", \"message\": \"No linter for .md files\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/outside.md\"}"
+    },
+    {
+      "id": "complexity-MultiEdit-199",
+      "state": {
+        "cumulative": 199,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": []
+      },
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-199.ts\n-OLD\n+line 0\n+line 1\n+line 2\n+line 3\n+line 4\n+line 5\n+line 6\n+line 7\n+line 8\n+line 9\n+line 10\n+line 11\n+line 12\n+line 13\n+line 14\n+line 15\n+line 16\n+line 17\n+line 18\n+line 19\n+line 20\n+line 21\n+line 22\n+line 23\n+line 24\n+line 25\n+line 26\n+line 27\n+line 28\n+line 29\n+line 30\n+line 31\n+line 32\n+line 33\n+line 34\n+line 35\n+line 36\n+line 37\n+line 38\n+line 39\n+line 40\n+line 41\n+line 42\n+line 43\n+line 44\n+line 45\n+line 46\n+line 47\n+line 48\n+line 49\n+line 50\n+line 51\n+line 52\n+line 53\n+line 54\n+line 55\n+line 56\n+line 57\n+line 58\n+line 59\n+line 60\n+line 61\n+line 62\n+line 63\n+line 64\n+line 65\n+line 66\n+line 67\n+line 68\n+line 69\n+line 70\n+line 71\n+line 72\n+line 73\n+line 74\n+line 75\n+line 76\n+line 77\n+line 78\n+line 79\n+line 80\n+line 81\n+line 82\n+line 83\n+line 84\n+line 85\n+line 86\n+line 87\n+line 88\n+line 89\n+line 90\n+line 91\n+line 92\n+line 93\n+line 94\n+line 95\n+line 96\n+line 97\n+line 98\n+line 99\n+line 100\n+line 101\n+line 102\n+line 103\n+line 104\n+line 105\n+line 106\n+line 107\n+line 108\n+line 109\n+line 110\n+line 111\n+line 112\n+line 113\n+line 114\n+line 115\n+line 116\n+line 117\n+line 118\n+line 119\n+line 120\n+line 121\n+line 122\n+line 123\n+line 124\n+line 125\n+line 126\n+line 127\n+line 128\n+line 129\n+line 130\n+line 131\n+line 132\n+line 133\n+line 134\n+line 135\n+line 136\n+line 137\n+line 138\n+line 139\n+line 140\n+line 141\n+line 142\n+line 143\n+line 144\n+line 145\n+line 146\n+line 147\n+line 148\n+line 149\n+line 150\n+line 151\n+line 152\n+line 153\n+line 154\n+line 155\n+line 156\n+line 157\n+line 158\n+line 159\n+line 160\n+line 161\n+line 162\n+line 163\n+line 164\n+line 165\n+line 166\n+line 167\n+line 168\n+line 169\n+line 170\n+line 171\n+line 172\n+line 173\n+line 174\n+line 175\n+line 176\n+line 177\n+line 178\n+line 179\n+line 180\n+line 181\n+line 182\n+line 183\n+line 184\n+line 185\n+line 186\n+line 187\n+line 188\n+line 189\n+line 190\n+line 191\n+line 192\n+line 193\n+line 194\n+line 195\n+line 196\n+line 197\n+line 198\n+line 199\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-199.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-199.ts\\n@@ -1 +1,200 @@\\n-OLD\\n+line 0\\n+line 1\\n+line 2\\n+line 3\\n+line 4\\n+line 5\\n+line 6\\n+line 7\\n+line 8\\n+line 9\\n+line 10\\n+line 11\\n+line 12\\n+line 13\\n+line 14\\n+line 15\\n+line 16\\n+line 17\\n+line 18\\n+line 19\\n+line 20\\n+line 21\\n+line 22\\n+line 23\\n+line 24\\n+line 25\\n+line 26\\n+line 27\\n+line 28\\n+line 29\\n+line 30\\n+line 31\\n+line 32\\n+line 33\\n+line 34\\n+line 35\\n+line 36\\n+line 37\\n+line 38\\n+line 39\\n+line 40\\n+line 41\\n+line 42\\n+line 43\\n+line 44\\n+line 45\\n+line 46\\n+line 47\\n+line 48\\n+line 49\\n+line 50\\n+line 51\\n+line 52\\n+line 53\\n+line 54\\n+line 55\\n+line 56\\n+line 57\\n+line 58\\n+line 59\\n+line 60\\n+line 61\\n+line 62\\n+line 63\\n+line 64\\n+line 65\\n+line 66\\n+line 67\\n+line 68\\n+line 69\\n+line 70\\n+line 71\\n+line 72\\n+line 73\\n+line 74\\n+line 75\\n+line 76\\n+line 77\\n+line 78\\n+line 79\\n+line 80\\n+line 81\\n+line 82\\n+line 83\\n+line 84\\n+line 85\\n+line 86\\n+line 87\\n+line 88\\n+line 89\\n+line 90\\n+line 91\\n+line 92\\n+line 93\\n+line 94\\n+line 95\\n+line 96\\n+line 97\\n+line 98\\n+line 99\\n+line 100\\n+line 101\\n+line 102\\n+line 103\\n+line 104\\n+line 105\\n+line 106\\n+line 107\\n+line 108\\n+line 109\\n+line 110\\n+line 111\\n+line 112\\n+line 113\\n+line 114\\n+line 115\\n+line 116\\n+line 117\\n+line 118\\n+line 119\\n+line 120\\n+line 121\\n+line 122\\n+line 123\\n+line 124\\n+line 125\\n+line 126\\n+line 127\\n+line 128\\n+line 129\\n+line 130\\n+line 131\\n+line 132\\n+line 133\\n+line 134\\n+line 135\\n+line 136\\n+line 137\\n+line 138\\n+line 139\\n+line 140\\n+line 141\\n+line 142\\n+line 143\\n+line 144\\n+line 145\\n+line 146\\n+line 147\\n+line 148\\n+line 149\\n+line 150\\n+line 151\\n+line 152\\n+line 153\\n+line 154\\n+line 155\\n+line 156\\n+line 157\\n+line 158\\n+line 159\\n+line 160\\n+line 161\\n+line 162\\n+line 163\\n+line 164\\n+line 165\\n+line 166\\n+line 167\\n+line 168\\n+line 169\\n+line 170\\n+line 171\\n+line 172\\n+line 173\\n+line 174\\n+line 175\\n+line 176\\n+line 177\\n+line 178\\n+line 179\\n+line 180\\n+line 181\\n+line 182\\n+line 183\\n+line 184\\n+line 185\\n+line 186\\n+line 187\\n+line 188\\n+line 189\\n+line 190\\n+line 191\\n+line 192\\n+line 193\\n+line 194\\n+line 195\\n+line 196\\n+line 197\\n+line 198\\n+line 199\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-199.ts\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-199.ts\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-199.ts\"}"
+    },
+    {
+      "id": "complexity-MultiEdit-200",
+      "state": {
+        "cumulative": 200,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": []
+      },
+      "warning": false,
+      "applied": true,
+      "context": "",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-200.ts\n-OLD\n+line 0\n+line 1\n+line 2\n+line 3\n+line 4\n+line 5\n+line 6\n+line 7\n+line 8\n+line 9\n+line 10\n+line 11\n+line 12\n+line 13\n+line 14\n+line 15\n+line 16\n+line 17\n+line 18\n+line 19\n+line 20\n+line 21\n+line 22\n+line 23\n+line 24\n+line 25\n+line 26\n+line 27\n+line 28\n+line 29\n+line 30\n+line 31\n+line 32\n+line 33\n+line 34\n+line 35\n+line 36\n+line 37\n+line 38\n+line 39\n+line 40\n+line 41\n+line 42\n+line 43\n+line 44\n+line 45\n+line 46\n+line 47\n+line 48\n+line 49\n+line 50\n+line 51\n+line 52\n+line 53\n+line 54\n+line 55\n+line 56\n+line 57\n+line 58\n+line 59\n+line 60\n+line 61\n+line 62\n+line 63\n+line 64\n+line 65\n+line 66\n+line 67\n+line 68\n+line 69\n+line 70\n+line 71\n+line 72\n+line 73\n+line 74\n+line 75\n+line 76\n+line 77\n+line 78\n+line 79\n+line 80\n+line 81\n+line 82\n+line 83\n+line 84\n+line 85\n+line 86\n+line 87\n+line 88\n+line 89\n+line 90\n+line 91\n+line 92\n+line 93\n+line 94\n+line 95\n+line 96\n+line 97\n+line 98\n+line 99\n+line 100\n+line 101\n+line 102\n+line 103\n+line 104\n+line 105\n+line 106\n+line 107\n+line 108\n+line 109\n+line 110\n+line 111\n+line 112\n+line 113\n+line 114\n+line 115\n+line 116\n+line 117\n+line 118\n+line 119\n+line 120\n+line 121\n+line 122\n+line 123\n+line 124\n+line 125\n+line 126\n+line 127\n+line 128\n+line 129\n+line 130\n+line 131\n+line 132\n+line 133\n+line 134\n+line 135\n+line 136\n+line 137\n+line 138\n+line 139\n+line 140\n+line 141\n+line 142\n+line 143\n+line 144\n+line 145\n+line 146\n+line 147\n+line 148\n+line 149\n+line 150\n+line 151\n+line 152\n+line 153\n+line 154\n+line 155\n+line 156\n+line 157\n+line 158\n+line 159\n+line 160\n+line 161\n+line 162\n+line 163\n+line 164\n+line 165\n+line 166\n+line 167\n+line 168\n+line 169\n+line 170\n+line 171\n+line 172\n+line 173\n+line 174\n+line 175\n+line 176\n+line 177\n+line 178\n+line 179\n+line 180\n+line 181\n+line 182\n+line 183\n+line 184\n+line 185\n+line 186\n+line 187\n+line 188\n+line 189\n+line 190\n+line 191\n+line 192\n+line 193\n+line 194\n+line 195\n+line 196\n+line 197\n+line 198\n+line 199\n+line 200\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-200.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-200.ts\\n@@ -1 +1,201 @@\\n-OLD\\n+line 0\\n+line 1\\n+line 2\\n+line 3\\n+line 4\\n+line 5\\n+line 6\\n+line 7\\n+line 8\\n+line 9\\n+line 10\\n+line 11\\n+line 12\\n+line 13\\n+line 14\\n+line 15\\n+line 16\\n+line 17\\n+line 18\\n+line 19\\n+line 20\\n+line 21\\n+line 22\\n+line 23\\n+line 24\\n+line 25\\n+line 26\\n+line 27\\n+line 28\\n+line 29\\n+line 30\\n+line 31\\n+line 32\\n+line 33\\n+line 34\\n+line 35\\n+line 36\\n+line 37\\n+line 38\\n+line 39\\n+line 40\\n+line 41\\n+line 42\\n+line 43\\n+line 44\\n+line 45\\n+line 46\\n+line 47\\n+line 48\\n+line 49\\n+line 50\\n+line 51\\n+line 52\\n+line 53\\n+line 54\\n+line 55\\n+line 56\\n+line 57\\n+line 58\\n+line 59\\n+line 60\\n+line 61\\n+line 62\\n+line 63\\n+line 64\\n+line 65\\n+line 66\\n+line 67\\n+line 68\\n+line 69\\n+line 70\\n+line 71\\n+line 72\\n+line 73\\n+line 74\\n+line 75\\n+line 76\\n+line 77\\n+line 78\\n+line 79\\n+line 80\\n+line 81\\n+line 82\\n+line 83\\n+line 84\\n+line 85\\n+line 86\\n+line 87\\n+line 88\\n+line 89\\n+line 90\\n+line 91\\n+line 92\\n+line 93\\n+line 94\\n+line 95\\n+line 96\\n+line 97\\n+line 98\\n+line 99\\n+line 100\\n+line 101\\n+line 102\\n+line 103\\n+line 104\\n+line 105\\n+line 106\\n+line 107\\n+line 108\\n+line 109\\n+line 110\\n+line 111\\n+line 112\\n+line 113\\n+line 114\\n+line 115\\n+line 116\\n+line 117\\n+line 118\\n+line 119\\n+line 120\\n+line 121\\n+line 122\\n+line 123\\n+line 124\\n+line 125\\n+line 126\\n+line 127\\n+line 128\\n+line 129\\n+line 130\\n+line 131\\n+line 132\\n+line 133\\n+line 134\\n+line 135\\n+line 136\\n+line 137\\n+line 138\\n+line 139\\n+line 140\\n+line 141\\n+line 142\\n+line 143\\n+line 144\\n+line 145\\n+line 146\\n+line 147\\n+line 148\\n+line 149\\n+line 150\\n+line 151\\n+line 152\\n+line 153\\n+line 154\\n+line 155\\n+line 156\\n+line 157\\n+line 158\\n+line 159\\n+line 160\\n+line 161\\n+line 162\\n+line 163\\n+line 164\\n+line 165\\n+line 166\\n+line 167\\n+line 168\\n+line 169\\n+line 170\\n+line 171\\n+line 172\\n+line 173\\n+line 174\\n+line 175\\n+line 176\\n+line 177\\n+line 178\\n+line 179\\n+line 180\\n+line 181\\n+line 182\\n+line 183\\n+line 184\\n+line 185\\n+line 186\\n+line 187\\n+line 188\\n+line 189\\n+line 190\\n+line 191\\n+line 192\\n+line 193\\n+line 194\\n+line 195\\n+line 196\\n+line 197\\n+line 198\\n+line 199\\n+line 200\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-200.ts\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-200.ts\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-200.ts\"}"
+    },
+    {
+      "id": "complexity-MultiEdit-201",
+      "state": {
+        "cumulative": 201,
+        "deps": 0,
+        "lastBand": 0,
+        "alerted": [
+          "big:201"
+        ]
+      },
+      "warning": true,
+      "applied": true,
+      "context": "[COMPLEXITY RATCHET] this edit added 201 net lines in one shot \u2014 a blob that large is usually worth a second look for something simpler.",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-201.ts\n-OLD\n+line 0\n+line 1\n+line 2\n+line 3\n+line 4\n+line 5\n+line 6\n+line 7\n+line 8\n+line 9\n+line 10\n+line 11\n+line 12\n+line 13\n+line 14\n+line 15\n+line 16\n+line 17\n+line 18\n+line 19\n+line 20\n+line 21\n+line 22\n+line 23\n+line 24\n+line 25\n+line 26\n+line 27\n+line 28\n+line 29\n+line 30\n+line 31\n+line 32\n+line 33\n+line 34\n+line 35\n+line 36\n+line 37\n+line 38\n+line 39\n+line 40\n+line 41\n+line 42\n+line 43\n+line 44\n+line 45\n+line 46\n+line 47\n+line 48\n+line 49\n+line 50\n+line 51\n+line 52\n+line 53\n+line 54\n+line 55\n+line 56\n+line 57\n+line 58\n+line 59\n+line 60\n+line 61\n+line 62\n+line 63\n+line 64\n+line 65\n+line 66\n+line 67\n+line 68\n+line 69\n+line 70\n+line 71\n+line 72\n+line 73\n+line 74\n+line 75\n+line 76\n+line 77\n+line 78\n+line 79\n+line 80\n+line 81\n+line 82\n+line 83\n+line 84\n+line 85\n+line 86\n+line 87\n+line 88\n+line 89\n+line 90\n+line 91\n+line 92\n+line 93\n+line 94\n+line 95\n+line 96\n+line 97\n+line 98\n+line 99\n+line 100\n+line 101\n+line 102\n+line 103\n+line 104\n+line 105\n+line 106\n+line 107\n+line 108\n+line 109\n+line 110\n+line 111\n+line 112\n+line 113\n+line 114\n+line 115\n+line 116\n+line 117\n+line 118\n+line 119\n+line 120\n+line 121\n+line 122\n+line 123\n+line 124\n+line 125\n+line 126\n+line 127\n+line 128\n+line 129\n+line 130\n+line 131\n+line 132\n+line 133\n+line 134\n+line 135\n+line 136\n+line 137\n+line 138\n+line 139\n+line 140\n+line 141\n+line 142\n+line 143\n+line 144\n+line 145\n+line 146\n+line 147\n+line 148\n+line 149\n+line 150\n+line 151\n+line 152\n+line 153\n+line 154\n+line 155\n+line 156\n+line 157\n+line 158\n+line 159\n+line 160\n+line 161\n+line 162\n+line 163\n+line 164\n+line 165\n+line 166\n+line 167\n+line 168\n+line 169\n+line 170\n+line 171\n+line 172\n+line 173\n+line 174\n+line 175\n+line 176\n+line 177\n+line 178\n+line 179\n+line 180\n+line 181\n+line 182\n+line 183\n+line 184\n+line 185\n+line 186\n+line 187\n+line 188\n+line 189\n+line 190\n+line 191\n+line 192\n+line 193\n+line 194\n+line 195\n+line 196\n+line 197\n+line 198\n+line 199\n+line 200\n+line 201\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-201.ts\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-201.ts\\n@@ -1 +1,202 @@\\n-OLD\\n+line 0\\n+line 1\\n+line 2\\n+line 3\\n+line 4\\n+line 5\\n+line 6\\n+line 7\\n+line 8\\n+line 9\\n+line 10\\n+line 11\\n+line 12\\n+line 13\\n+line 14\\n+line 15\\n+line 16\\n+line 17\\n+line 18\\n+line 19\\n+line 20\\n+line 21\\n+line 22\\n+line 23\\n+line 24\\n+line 25\\n+line 26\\n+line 27\\n+line 28\\n+line 29\\n+line 30\\n+line 31\\n+line 32\\n+line 33\\n+line 34\\n+line 35\\n+line 36\\n+line 37\\n+line 38\\n+line 39\\n+line 40\\n+line 41\\n+line 42\\n+line 43\\n+line 44\\n+line 45\\n+line 46\\n+line 47\\n+line 48\\n+line 49\\n+line 50\\n+line 51\\n+line 52\\n+line 53\\n+line 54\\n+line 55\\n+line 56\\n+line 57\\n+line 58\\n+line 59\\n+line 60\\n+line 61\\n+line 62\\n+line 63\\n+line 64\\n+line 65\\n+line 66\\n+line 67\\n+line 68\\n+line 69\\n+line 70\\n+line 71\\n+line 72\\n+line 73\\n+line 74\\n+line 75\\n+line 76\\n+line 77\\n+line 78\\n+line 79\\n+line 80\\n+line 81\\n+line 82\\n+line 83\\n+line 84\\n+line 85\\n+line 86\\n+line 87\\n+line 88\\n+line 89\\n+line 90\\n+line 91\\n+line 92\\n+line 93\\n+line 94\\n+line 95\\n+line 96\\n+line 97\\n+line 98\\n+line 99\\n+line 100\\n+line 101\\n+line 102\\n+line 103\\n+line 104\\n+line 105\\n+line 106\\n+line 107\\n+line 108\\n+line 109\\n+line 110\\n+line 111\\n+line 112\\n+line 113\\n+line 114\\n+line 115\\n+line 116\\n+line 117\\n+line 118\\n+line 119\\n+line 120\\n+line 121\\n+line 122\\n+line 123\\n+line 124\\n+line 125\\n+line 126\\n+line 127\\n+line 128\\n+line 129\\n+line 130\\n+line 131\\n+line 132\\n+line 133\\n+line 134\\n+line 135\\n+line 136\\n+line 137\\n+line 138\\n+line 139\\n+line 140\\n+line 141\\n+line 142\\n+line 143\\n+line 144\\n+line 145\\n+line 146\\n+line 147\\n+line 148\\n+line 149\\n+line 150\\n+line 151\\n+line 152\\n+line 153\\n+line 154\\n+line 155\\n+line 156\\n+line 157\\n+line 158\\n+line 159\\n+line 160\\n+line 161\\n+line 162\\n+line 163\\n+line 164\\n+line 165\\n+line 166\\n+line 167\\n+line 168\\n+line 169\\n+line 170\\n+line 171\\n+line 172\\n+line 173\\n+line 174\\n+line 175\\n+line 176\\n+line 177\\n+line 178\\n+line 179\\n+line 180\\n+line 181\\n+line 182\\n+line 183\\n+line 184\\n+line 185\\n+line 186\\n+line 187\\n+line 188\\n+line 189\\n+line 190\\n+line 191\\n+line 192\\n+line 193\\n+line 194\\n+line 195\\n+line 196\\n+line 197\\n+line 198\\n+line 199\\n+line 200\\n+line 201\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-201.ts\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-201.ts\": {\"status\": \"skipped\", \"message\": \"npx not usable: npm notice run npx\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/complexity-MultiEdit-201.ts\"}\n\n[COMPLEXITY RATCHET] this edit added 201 net lines in one shot \u2014 a blob that large is usually worth a second look for something simpler."
+    },
+    {
+      "id": "dependencies-MultiEdit",
+      "state": {
+        "cumulative": 2,
+        "deps": 1,
+        "lastBand": 0,
+        "alerted": [
+          "dep:1"
+        ]
+      },
+      "warning": true,
+      "applied": true,
+      "context": "[COMPLEXITY RATCHET] added 1 new dependency (1 this session) \u2014 a dependency is the most expensive kind of complexity to walk back; confirm it earns its keep.",
+      "arguments": {
+        "mode": "patch",
+        "patch": "*** Begin Patch\n*** Update File: /home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\n-OLD\n+{\n+  \"fixture-dependency\": \"^1.2.3\"\n+}\n*** End Patch"
+      },
+      "result": "{\"success\": true, \"diff\": \"--- a//home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\\n+++ b//home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\\n@@ -1 +1,3 @@\\n-OLD\\n+{\\n+  \\\"fixture-dependency\\\": \\\"^1.2.3\\\"\\n+}\\n\", \"files_modified\": [\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\"], \"lint\": {\"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\": {\"status\": \"ok\", \"output\": \"\"}}, \"resolved_path\": \"/home/outsider/.cache/lhc6/file-effects-bi9962os/project/package.json\"}\n\n[COMPLEXITY RATCHET] added 1 new dependency (1 this session) \u2014 a dependency is the most expensive kind of complexity to walk back; confirm it earns its keep."
+    }
+  ]
+}

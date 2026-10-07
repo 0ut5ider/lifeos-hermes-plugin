@@ -3,6 +3,7 @@
 from contextlib import contextmanager
 import fcntl
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -80,6 +81,40 @@ def _check_prepared_config(installed, environment, stage):
             'config_command(Namespace(config_command="check"))\n')
     command = _launchers.runtime_command(source, [str(stage)], code=code, python=sys.executable)
     return _run(command, installed, environment, 'Hermes prepared config check')
+
+
+def _enable_batch_edits(stage):
+    from ruamel.yaml import YAML
+    from ruamel.yaml.error import YAMLError
+    path = stage / 'config.yaml'
+    data, _ = _read(path)
+    yaml = YAML()
+    try:
+        config = yaml.load(data.decode())
+    except (YAMLError, UnicodeError, AttributeError) as error:
+        raise MountError('The staged Hermes configuration cannot select file capabilities') from error
+    if not isinstance(config, dict):
+        raise MountError('The staged Hermes configuration requires a mapping')
+    existing = 'file_tools' in config
+    options = config.setdefault('file_tools', {})
+    if not isinstance(options, dict):
+        raise MountError('The staged Hermes file capabilities require a mapping')
+    if 'patch_format' in options:
+        return
+    options['patch_format'] = 'v4a'
+    output = io.StringIO()
+    yaml.dump({'file_tools': options}, output)
+    text = data.decode()
+    if existing:
+        lines = text.splitlines(keepends=True)
+        start = config.lc.key('file_tools')[0]
+        following = [config.lc.key(key)[0] for key in config if key != 'file_tools'
+                     and config.lc.key(key)[0] > start]
+        end = min(following, default=len(lines))
+        text = ''.join(lines[:start]) + output.getvalue() + ''.join(lines[end:])
+    else:
+        text = text.rstrip('\n') + '\n' + output.getvalue()
+    publish(path, text.encode())
 
 
 class MountTransaction:
@@ -366,6 +401,7 @@ class MountTransaction:
             if (set(plan) != {'version', 'home', 'keepOutputFormat', 'signature', 'previous_digest'}
                     or plan['version'] != 1 or plan['home'] != str(self.profile) or type(plan['keepOutputFormat']) is not bool):
                 raise MountError('The native mount plan is invalid')
+            _enable_batch_edits(stage)
             entries = []
             outputs = [(self.profile / name, *originals[name], _read(stage / name)[0]) for name in FILES]
             if baseline_data is not None:

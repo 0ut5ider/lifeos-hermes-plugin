@@ -1033,6 +1033,16 @@ class PairedKnowledgeGuardTests(unittest.TestCase):
             case[side]['after']['warning_emitted'] = case[side]['after']['model_received_warning'] = True
         self.assertIn('knowledge-index-file: knowledge guard effect is missing', check_pair(case))
 
+    def test_edit_requires_an_applied_edit_and_warning_delivery(self):
+        case = self.case('knowledge-off-schema')
+        case['id'] = 'knowledge-edit-off-schema'
+        for side in ('native', 'hermes'):
+            case[side]['before']['target_present'] = True
+            case[side]['after']['tool_names'] = ['Edit']
+        self.assertEqual(check_pair(case), [])
+        case['hermes']['after']['model_received_warning'] = False
+        self.assertIn('knowledge-edit-off-schema: knowledge guard effect is missing', check_pair(case))
+
     def test_fixture_runs_inside_the_knowledge_tree_with_the_write_matcher(self):
         from scripts.paired_lifecycle_effects import project_dir
         folder = tempfile.TemporaryDirectory()

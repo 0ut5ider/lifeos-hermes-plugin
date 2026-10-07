@@ -9,6 +9,8 @@ Keep it equal to the version in both plugin manifests.
 - Apply MCP deny and ask rules before transport execution. Preserve managed policy precedence and malformed policy review.
 - Publish concurrent evaluation fire state through separate temporary files. Preserve the evaluator's single-run lock.
 - Verify actual batch and concurrent file evaluations with private model responses.
+- Enable the batch patch schema for mounted private model profiles. Preserve explicit capability selections.
+- Verify applied file effects and actual Write, Edit, and batch knowledge warning delivery.
 - Include the protected instruction approval patch in Hermes patch regeneration.
 - Deny unattended protected instruction writes before Hermes waits on an unavailable interactive approval queue.
 - Honor the native Pulse hook switch before dispatching skill or agent policy requests.

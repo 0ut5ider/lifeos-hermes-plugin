@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 24 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 29 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -124,7 +124,7 @@ Registrations: PostToolUse.8.4, PostToolUse.9.4, PostToolUse.10.4.
 
 Registrations: PostToolUse.8.5, PostToolUse.9.5, PostToolUse.10.5, PostToolUse.13.1.
 
-- [ ] `atlas-01`: Projects, gear, inventory, and service-unit changes emit the correct event for each applicable file tool.
+- [x] `atlas-01`: Projects, gear, inventory, and service-unit changes emit the correct event for each applicable file tool.
 - [ ] `atlas-02`: Supported shell mutation patterns emit their systemd, DNS, and Cloudflare hints.
 - [ ] `atlas-03`: Read-only, unrelated, failed, and unapplied partial changes do not emit mutation events.
 
@@ -132,15 +132,15 @@ Registrations: PostToolUse.8.5, PostToolUse.9.5, PostToolUse.10.5, PostToolUse.1
 
 Registrations: PostToolUse.8.6, PostToolUse.9.6, PostToolUse.10.6.
 
-- [ ] `knowledge-writes-01`: Valid notes, invalid notes, index files, and outside-tree changes follow the knowledge-write contract.
-- [ ] `knowledge-writes-02`: Write, Edit, and batch warnings reach the model for the actual applied changes.
+- [x] `knowledge-writes-01`: Valid notes, invalid notes, index files, and outside-tree changes follow the knowledge-write contract.
+- [x] `knowledge-writes-02`: Write, Edit, and batch warnings reach the model for the actual applied changes.
 
 ### complexity (package 3)
 
 Registrations: PostToolUse.8.7, PostToolUse.9.7, PostToolUse.10.7.
 
-- [ ] `complexity-01`: Write, Edit, and batch source changes accumulate actual line and dependency counts.
-- [ ] `complexity-02`: Below, at, and above the configured budget produce the specified warning behavior.
+- [x] `complexity-01`: Write, Edit, and batch source changes accumulate actual line and dependency counts.
+- [x] `complexity-02`: Below, at, and above the configured budget produce the specified warning behavior.
 - [ ] `complexity-03`: Partial and failed changes add only applied work; repeated events follow the documented counting contract.
 
 ### event-audit (package 4)

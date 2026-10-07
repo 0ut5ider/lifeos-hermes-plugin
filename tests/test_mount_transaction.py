@@ -80,6 +80,44 @@ class MountTransactionTests(unittest.TestCase):
         self.assertEqual(config.count('\n  deny:'), 1, config)
         self.assertNotIn('synthetic-stale-glob', config)
 
+    def test_mount_enables_batch_without_changing_the_model(self):
+        from ruamel.yaml import YAML
+        yaml = YAML(typ='safe')
+        before = yaml.load((self.profile / 'config.yaml').read_text())
+        self.execute()
+        after = yaml.load((self.profile / 'config.yaml').read_text())
+        self.assertEqual(after['file_tools']['patch_format'], 'v4a')
+        self.assertEqual(after.get('model'), before.get('model'))
+
+    def test_mount_preserves_an_explicit_file_tool_capability(self):
+        from ruamel.yaml import YAML
+        yaml = YAML(typ='safe')
+        path = self.profile / 'config.yaml'
+        path.write_text(path.read_text() + '\nfile_tools:\n  patch_format: replace\n')
+        self.execute()
+        self.assertEqual(yaml.load(path.read_text())['file_tools']['patch_format'], 'replace')
+
+    def test_batch_capability_preserves_other_config_bytes(self):
+        from lifeos_hook_bridge.mount_transaction import _enable_batch_edits
+        from ruamel.yaml import YAML
+        for options in ('', 'file_tools: {other: keep}\n',
+                        'file_tools:\n  other: keep\n'):
+            with self.subTest(options=options):
+                stage = self.profile / 'capability-stage'
+                stage.mkdir(exist_ok=True)
+                prefix = 'model:\n  default: "local"\nplugins:\n  enabled:\n    - lifeos\n'
+                suffix = 'skills:\n  external_dirs:\n    - "/synthetic/skills"\n'
+                original = prefix + options + suffix
+                (stage / 'config.yaml').write_text(original)
+                _enable_batch_edits(stage)
+                actual = (stage / 'config.yaml').read_text()
+                self.assertTrue(actual.startswith(prefix), actual)
+                self.assertIn(suffix, actual)
+                parsed = YAML(typ='safe').load(actual)
+                self.assertEqual(parsed['file_tools']['patch_format'], 'v4a')
+                if options:
+                    self.assertEqual(parsed['file_tools']['other'], 'keep')
+
     def test_finished_journal_of_another_installation_does_not_block_a_new_mount(self):
         from lifeos_hook_bridge.mount_transaction import MountError, MountTransaction
         self.execute()

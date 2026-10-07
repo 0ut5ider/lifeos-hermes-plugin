@@ -45,6 +45,7 @@ GROUPS = {
     "hermes-remote-files.patch": (
         "tools/file_operations.py", "tools/file_tools.py", "tools/file_tools_read_tracking.py",
         "tests/tools/test_remote_file_staleness.py",
+        "tests/test_lifeos_batch_schema.py",
     ),
     "hermes-cron-bootstrap.patch": ("cron/scheduler.py",),
     "hermes-required-middleware.patch": (

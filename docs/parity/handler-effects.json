@@ -1,7 +1,7 @@
 {
   "date": "2026-10-06",
   "complete": false,
-  "scope": "Pinned local, SSH, and Docker evidence. 118 equal selected cases cover all 74 registrations. Cases for 65 registrations use native client events; nine use Hermes tools with direct native handler controls. Complete handler effects remain open.",
+  "scope": "Pinned local, SSH, and Docker evidence. 152 equal selected cases cover all 74 registrations. Cases for 65 registrations use native client events; nine use Hermes tools with direct native handler controls. Complete handler effects remain open.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -3314,7 +3314,78 @@
     "docs/verification/2026-10-06-step1/remote-adapters/test_live_ssh_web_cache.py": "2aa1359773aa1168e192eb16bdb880d00128fd10273473328c8153445b808ffc",
     "docs/verification/2026-10-06-step1/remote-adapters/tests.txt": "a92acabdfa1d3ceaae6c841861afcafe0c07995cba5427b6c19b99bd3d150455",
     "docs/verification/2026-10-06-step1/remote-adapters/README.md": "0082f24a14b6677c57d2fdbc891566c86aa3389ff9e1babde7efa3a86fe441a1",
-    "scripts/permission_approval_controls.py": "71d9498c9df0b1b4113a39561b121ffa78c6ed31a596455801b81132fff23de6"
+    "scripts/permission_approval_controls.py": "71d9498c9df0b1b4113a39561b121ffa78c6ed31a596455801b81132fff23de6",
+    "docs/verification/2026-10-06-step1/file-effects/native.json": "d4a07d8ea4aceb89163d6b3f5215f9026c92b5012960b4a6ec39c060265a07aa",
+    "docs/verification/2026-10-06-step1/file-effects/hermes.json": "939f0c06a90f8ac436266f1595f76f25cdf5a73660509450752eecfd36cc9ccd",
+    "docs/verification/2026-10-06-step1/file-effects/tests.txt": "a4cd2efdf56918bf7eff6f815544881ed83c93238ecd5764606c4396a3d0abdb",
+    "docs/verification/2026-10-06-step1/file-effects/source-identity.json": "1858e37f81696c5c33fb1337265eb6d2db9928a8fefc8adecaa0f3b8c78c3345",
+    "docs/verification/2026-10-06-step1/file-effects/README.md": "4b6c60bfc5ab18f4d3186f7bb92c59c5472f266c5772abc15d6190d754c4ea94",
+    "tests/test_installed_file_effects.py": "f8161473d114a67723d2bb85ec740055a93a978159e4e324502962afd0328d06",
+    "tests/file_effect_controls_process.py": "14673be493a7fff163b5eb70e2dfade0afd9159ada24486ee7ab851b1027d50d",
+    "scripts/paired_lifecycle_effects.py": "2815d867e1caa22b4fc92d8e2b3f33c563ae836ef2151012c18ce48beb10788e",
+    "tests/test_paired_lifecycle_effects.py": "b6bdfbfeac9ac8f24a2cbc8790dfde629b7cdcd93dcb082a8bfcc3cc802fb4f0",
+    "docs/verification/2026-10-06-step1/knowledge-edit/paired-results.json": "4200aaa1ae99e011b2d6b251d6b1d494f153e8112bebf99d7781ddd03e901e09",
+    "docs/verification/2026-10-06-step1/knowledge-edit/wire-proof.json": "8606c7305b21b310019a2e3b2b10cc51ac428d295f309a7219271fc9014fe9a4",
+    "docs/verification/2026-10-06-step1/knowledge-edit/README.md": "5aa935d58a91e870684d019a2f6579b31bdbfd59eeb6ec97174961fcbdb445a7",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/paired_evaluation_effects.py": "fbab5e4a011f470bad95fc2f9a3018da474c87196d3521f97e9c4605cce42da7",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/paired_lifecycle_effects.py": "2815d867e1caa22b4fc92d8e2b3f33c563ae836ef2151012c18ce48beb10788e",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/paired_response_server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/run.log": "685a550a03258b8b33a0f6375501e3a803818c31682950c0c45827ae6868c261",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/run.py": "9e22625498e110ad4a63d9bfa923676865ee353d1be28cc82b0d40873d1330ac",
+    "docs/verification/2026-10-06-step1/knowledge-edit/runners/runner-manifest.json": "004167c297329049004c0d1e63e01ee9bab9e9180d26d3c86607ef375595a8d3",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/after-state.json": "4a154343ab6e1d84d41448f0984042846a487f5fff1881638170925af243af98",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/before-state.json": "de6d76f7e98d9412ee3880df81afb80478efb34a1610bb80b8af4beb03f92b49",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/cli.log": "9509d14c0c5d886857624db0458412af2ddd96a1b4a83cb92d51650ce512db02",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/fixture-events.jsonl": "c7736f7caa9d0fc01541cd175d932547db40c1297bdda1ae26baf55010fafdae",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/fixture-files-after.json": "84003beb1a214dfa693c559174144ba9bb2a926ff5aea720209436d9afec0a5c",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/fixture-files-before.json": "c0e9290a77590ea01a95b64a8ff525389104413855cb258b997c54bcd24c5338",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/hooks.jsonl": "ef18217ce7e8232b45c53067dc6017b6b2e2e7d7d2130bfc2643e7070b8d53f9",
+    "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/result.json": "36ef1ef99a75746d5fe78b323ae33ec806ee03542b96df2bbcf7aad4380281f9",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/after-state.json": "4a154343ab6e1d84d41448f0984042846a487f5fff1881638170925af243af98",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/before-state.json": "de6d76f7e98d9412ee3880df81afb80478efb34a1610bb80b8af4beb03f92b49",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/cli.log": "1b8046924e5d592d0635231b302d60c45a9e2569ab1e15d8f9e9c24bf247225b",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/fixture-events.jsonl": "96fcd1152046224ed792dad20004a0211d6e7b58007fbc6682be0bd62c087c8d",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/fixture-files-after.json": "be5c87a4138e44a09675fe744fe7a8e802657dcaefe03cd29c90a40eb9b7ac7b",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/fixture-files-before.json": "704e3316827338f4639c72bea202162adbf19ccfa2ca28c54cd868ca33f623d8",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/hooks.jsonl": "e2e0887ca57861ca5a8871712c7e059fa1faf9f5aa265f20078606ab6e6e2ed7",
+    "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/result.json": "7e24b66bcacb3d1c376db70e2a112ec3dec12f42e781d6db211f56963eca8c5e",
+    "docs/verification/2026-10-06-step1/knowledge-batch/cli.log": "9c2988129c341eb1344bdc8a91d15e28ad9d8c12efbcafa9073f535ed99107ce",
+    "docs/verification/2026-10-06-step1/knowledge-batch/fixture-events.jsonl": "d059f35b15bc3218f29f12fbf06e02203a2544ff24f2760a8ef0f18b232a34d5",
+    "docs/verification/2026-10-06-step1/knowledge-batch/hooks.jsonl": "ce0f4b92210fa653a63e3e30590404c730b935756961e7383d8d07b7c4a51fd1",
+    "docs/verification/2026-10-06-step1/knowledge-batch/result.json": "ee8d5a78a14855304b7213784fdc6bad5436d44533209e5105a8f593700d5f6d",
+    "docs/verification/2026-10-06-step1/knowledge-batch/source-identity.json": "573edce6a2bb511657f74430808197fd96d45b241e24edf2510e677e99b720a7",
+    "docs/verification/2026-10-06-step1/knowledge-batch/wire-proof.json": "17a1f6678786758fd012e177b9a647a8f8a10c31fcca14927f052090380c0a6a",
+    "docs/verification/2026-10-06-step1/knowledge-batch/README.md": "15537e0418bc2b0e7bd9202ebfb294d8da4944f748d66238d2bd5cdb6148e5b8",
+    "docs/verification/2026-10-06-step1/knowledge-batch/mount-tests.txt": "a2746cddbfd5c70f799fb38427da4e8a00b2cb43bd55fecf09a4bff4d436b5c0",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/knowledge_batch_delivery.py": "62ae6b4b45ae5861401fffca3f7db7fad1a0a8d0eddf5729c8c783c583f9c870",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/paired_evaluation_effects.py": "fbab5e4a011f470bad95fc2f9a3018da474c87196d3521f97e9c4605cce42da7",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/paired_lifecycle_effects.py": "2815d867e1caa22b4fc92d8e2b3f33c563ae836ef2151012c18ce48beb10788e",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/paired_response_server.py": "db924a0ce13178f95c841a1368e9aa640946ff62c643639950ba1bd4cbaeea44",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/run.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/run.py": "823a2f78a4779591deeb3dcc24d780f705d2a4d94e13826da8dd613a066597f4",
+    "docs/verification/2026-10-06-step1/knowledge-batch/runners/source-identity.json": "612e2decb07cbe572ce003226a5ed8277c658b242790dc0304774592ace031e6",
+    "docs/verification/2026-10-06-step1/service-manager/command.json": "a5197dbcc0d2044a782f412d215b150b7bde35e6fceffde664d0b763022c4d10",
+    "docs/verification/2026-10-06-step1/service-manager/profile_service_writer.py": "34b5d64349c1661be3ab777f5ea70c4ba15537aaaf2ca6b6b93a9be062bb6e9f",
+    "docs/verification/2026-10-06-step1/service-manager/run.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-06-step1/service-manager/run.py": "8233b95b5531ddaa24e02e4386b3cd01a3b25bc015a22e079d56efe71b3076f6",
+    "docs/verification/2026-10-06-step1/service-manager/test_ownership_setup.py": "99daf637cd4ff190d699438eda7e74b478f4592c3929bb6deaf0c420a027b255",
+    "docs/verification/2026-10-06-step1/service-manager/test_ownership_setup_host.py": "8313fe4973461624c0c97d60f16fd03bebde16f157d084a00122d794598dfc9e",
+    "docs/verification/2026-10-06-step1/service-manager/test_profile_services.py": "93e1bc1e2a33aaf8889b494e0fa9d0d32b317f22bb8ca24a93187fccd22d88f3",
+    "docs/verification/2026-10-06-step1/service-manager/tests.txt": "332dd58169f837b0d93d09475e31662b17e2d4c536d645fdc7b3152733dca478",
+    "docs/verification/2026-10-06-step1/service-manager/README.md": "ef32a5082478a66c6dbca89888cb4d60e1e28cad4b08be8178f6f3d5224e9861",
+    "docs/verification/2026-10-06-step1/service-manager/refusals.jsonl": "48ab3046d60fba9d4937384d4af569fa94f85fb9b5b3ce0305efe88cf3ebc884",
+    "docs/verification/2026-10-06-step1/service-manager/watch-count.json": "0a0b072b86c09ecd062bb07e8a09ab06e0e79c4e977b7eadffa8eabbdc622f3c",
+    "scripts/knowledge_batch_delivery.py": "62ae6b4b45ae5861401fffca3f7db7fad1a0a8d0eddf5729c8c783c583f9c870",
+    "tests/test_installed_batch_schema.py": "36ba2f6a376f092cb743464c20a76bfe8128b3eb5c27263b77f431761d7bec1a",
+    "tests/test_mount_transaction.py": "aad6f2f8a8b97942f11261320175f679c745d54a131b44d057704d6108387587",
+    "lifeos_hook_bridge/mount_transaction.py": "a1f8fb6c4ac728284e85dd05960fe35d1ebfaa747ee3f878fe0580af0a0d7857",
+    "scripts/rebuild_hermes_patches.py": "5fdd52c009ddaa7d6d5a8a751757908f93d79c34cfea71375ad36a1187b701f0",
+    "patches/hermes-remote-files.patch": "4e97e2866afeb86a7243a63858a2dd1e48c906c4690d2fa39fc7deb6d4a6ff10",
+    "lifeos_hook_bridge/patches/hermes-remote-files.patch": "4e97e2866afeb86a7243a63858a2dd1e48c906c4690d2fa39fc7deb6d4a6ff10",
+    "docs/verification/2026-10-06-step1/knowledge-batch/source-tests.txt": "fa027520bd52e53cf818daa8c92747ec8af7d858d212ea54983d57d016bbbdf8",
+    "docs/verification/2026-10-06-step1/knowledge-batch/plugin-source-identity.json": "f9096589b0f1a21bf614022a849b7eb5cddedd8b46b6063d8f7bc7088424358b"
   },
   "registrations": [
     {
@@ -22110,6 +22181,85 @@
             "cli_exit_code": 0,
             "model_generation_requests": 3,
             "model_successful_responses": 3
+          }
+        },
+        {
+          "id": "knowledge-edit-off-schema",
+          "kind": "paired_lifecycle",
+          "result_artifact": "docs/verification/2026-10-06-step1/knowledge-edit/paired-results.json",
+          "artifacts": [
+            "docs/verification/2026-10-06-step1/knowledge-edit/paired-results.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/wire-proof.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/README.md",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/paired_evaluation_effects.py",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/paired_lifecycle_effects.py",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/paired_response_server.py",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/run.done",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/run.log",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/run.py",
+            "docs/verification/2026-10-06-step1/knowledge-edit/runners/runner-manifest.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/after-state.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/before-state.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/cli.log",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/fixture-events.jsonl",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/fixture-files-after.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/fixture-files-before.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/hooks.jsonl",
+            "docs/verification/2026-10-06-step1/knowledge-edit/native/knowledge-edit-off-schema/result.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/after-state.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/before-state.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/cli.log",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/fixture-events.jsonl",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/fixture-files-after.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/fixture-files-before.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/hooks.jsonl",
+            "docs/verification/2026-10-06-step1/knowledge-edit/hermes/knowledge-edit-off-schema/result.json"
+          ],
+          "native": {
+            "before": {
+              "target_present": true
+            },
+            "after": {
+              "target_content_matches": true,
+              "tool_names": [
+                "Edit"
+              ],
+              "file_path_matches": true,
+              "warning_emitted": true,
+              "other_output": false,
+              "model_received_warning": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 3,
+            "model_successful_responses": 3
+          },
+          "hermes": {
+            "before": {
+              "target_present": true
+            },
+            "after": {
+              "target_content_matches": true,
+              "tool_names": [
+                "Edit"
+              ],
+              "file_path_matches": true,
+              "warning_emitted": true,
+              "other_output": false,
+              "model_received_warning": true,
+              "user_response_delivered": true
+            },
+            "hook_exit_codes": [
+              0
+            ],
+            "event": "PostToolUse",
+            "cli_exit_code": 0,
+            "model_generation_requests": 2,
+            "model_successful_responses": 2
           }
         }
       ],
