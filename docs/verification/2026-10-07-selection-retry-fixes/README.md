@@ -77,3 +77,9 @@ selection_python=/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-e
 ```
 
 Adrian's review should focus on the recovery boundary before every remount, legitimate previous-root journal binding, and pending admission for uncertain workers.
+
+## Final targeted review
+
+The [closure review](../../agents/2026-10-07-pr4-retry-closure-review/pr4-retry-closure-review.md) checks implementation commit `564ea994d03450dd454764406b5f144021c8a645`. It finds no new correctness failures in the bounded recovery and admission scope and recommends merge for these corrections. The reviewer independently passes 50 tests and 20 subtests across the five selection modules, plus 17 supplementary guard and status probes.
+
+The primary agent reruns the same five modules and all 17 probes at that exact commit. Both subprocesses return zero. The [parent verification record](../../agents/2026-10-07-pr4-retry-closure-review/parent-verification.json) retains the exact head and exit status. The subsequent closure-record commit changes documentation and evidence only.
