@@ -57,6 +57,7 @@ SOURCES = {
             "lifeos-render-inference.patch",
             "lifeos-feedback-admission.patch",
             "lifeos-reminder-publication.patch",
+            "lifeos-review-admission.patch",
         ),
     },
 }

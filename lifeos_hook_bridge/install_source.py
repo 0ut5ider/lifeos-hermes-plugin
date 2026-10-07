@@ -62,6 +62,7 @@ LIFEOS_PATCHES = (
     "lifeos-render-inference.patch",
     "lifeos-feedback-admission.patch",
     "lifeos-reminder-publication.patch",
+    "lifeos-review-admission.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")
