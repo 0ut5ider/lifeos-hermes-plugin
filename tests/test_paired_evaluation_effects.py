@@ -3,6 +3,7 @@
 import copy
 import unittest
 import tempfile
+import sys
 from pathlib import Path
 
 from scripts.paired_evaluation_effects import (EVALUATION_CASES, expected_evaluation, check_evaluation,
@@ -18,9 +19,10 @@ class PairedEvaluationTests(unittest.TestCase):
             shim.parent.mkdir(parents=True)
             shim.write_text('Installed inference entry point\n')
             environment = {'PATH': '/usr/bin'}
-            configure_evaluation(root / 'home', 'hermes', {'plugins_path': str(root / 'plugins')},
+            configure_evaluation(root / 'home', 'hermes', {'plugins_path': str(root / 'plugins'), 'command': [sys.executable]},
                                  'http://127.0.0.1:1234', environment)
             self.assertTrue((root / 'home/.local/bin/claude').is_file())
+            self.assertIn('-m hermes_cli.main', (root / 'home/.local/bin/hermes').read_text())
 
     def test_suite_preparation_creates_the_real_runner_link(self):
         with tempfile.TemporaryDirectory() as directory:

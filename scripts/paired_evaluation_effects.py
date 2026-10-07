@@ -97,7 +97,23 @@ def configure_evaluation(home, side, spec, endpoint, environment):
         (folder / 'claude').chmod(0o755)
     else:
         shim = Path(spec['plugins_path']) / 'lifeos-hook-bridge/bin/claude'
-        (folder / 'claude').symlink_to(shim)
+        (folder / 'claude').write_text(
+            '#!/usr/bin/env bash\n'
+            '# ABOUTME: Records actual child inference output in the isolated fixture.\n'
+            '# ABOUTME: Preserves the installed inference process output and exit status.\n'
+            'set -euo pipefail\n'
+            f'{shlex.quote(str(shim))} "$@" 2>>{shlex.quote(str(home / "child-stderr.log"))} '
+            f'| tee -a {shlex.quote(str(home / "child-stdout.log"))}\n')
+        (folder / 'claude').chmod(0o755)
+        (folder / 'hermes').write_text(
+            '#!/usr/bin/env bash\n'
+            '# ABOUTME: Runs child inference through the same installed Hermes source as the parent.\n'
+            '# ABOUTME: Records diagnostics without changing the real model response.\n'
+            'set -euo pipefail\n'
+            f'{shlex.quote(spec["command"][0])} -m hermes_cli.main "$@" '
+            f'2>>{shlex.quote(str(home / "child-stderr.log"))} '
+            f'| tee -a {shlex.quote(str(home / "child-stdout.log"))}\n')
+        (folder / 'hermes').chmod(0o755)
         environment.update(LIFEOS_HOOK_MODEL_ENV=str(private), LIFEOS_CHILD_INFERENCE_DIRECT='1',
                            LIFEOS_MODEL_TIER_MAP=json.dumps({'sonnet': {'model': 'lifecycle-fixture', 'effort': 'medium'}}))
     environment['PATH'] = str(folder) + ':' + environment['PATH']

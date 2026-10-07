@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. Every scenario starts unverified. Existing passing evidence must be linked and checked before a scenario changes status. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. Six scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -12,11 +12,11 @@ The [machine-readable checklist](step1-acceptance.json) binds the registration i
 
 Registrations: PreToolUse.1.1.
 
-- [ ] `context-reduction-01`: Installed RTK rewrites git status and preserves other input fields.
-- [ ] `context-reduction-02`: Installed RTK rewrites supported gh metadata commands.
-- [ ] `context-reduction-03`: Environment prefixes, git flags, and command chains retain supported command semantics.
-- [ ] `context-reduction-04`: Already rewritten commands, heredocs, multiline scripts, and unsupported reads stay unchanged.
-- [ ] `context-reduction-05`: A later deny still blocks the rewritten command.
+- [x] `context-reduction-01`: Installed RTK rewrites git status and preserves other input fields.
+- [x] `context-reduction-02`: Installed RTK rewrites supported gh metadata commands.
+- [x] `context-reduction-03`: Environment prefixes, git flags, and command chains retain supported command semantics.
+- [x] `context-reduction-04`: Already rewritten commands, heredocs, multiline scripts, and unsupported reads stay unchanged.
+- [x] `context-reduction-05`: A later deny still blocks the rewritten command.
 
 ### pulse-skill (package 2)
 
@@ -63,7 +63,7 @@ Registrations: PreToolUse.5.1.
 - [ ] `nested-pre-guards-05`: Public push policy tests blocked, admitted, bypass, scan failure, and private destination cases on disposable repositories.
 - [ ] `nested-pre-guards-06`: Raw Gmail and SES sends deny; skill-routed and read-only forms pass without external delivery.
 - [ ] `nested-pre-guards-07`: Tier-2 classified egress tests allowed content, above-ceiling content, and classification failure.
-- [ ] `nested-pre-guards-08`: Inline system writes through redirect, tee, copy, sed, and script forms preserve target classification.
+- [x] `nested-pre-guards-08`: Inline system writes through redirect, tee, copy, sed, and script forms preserve target classification.
 - [ ] `nested-pre-guards-09`: Malformed dispatcher input and isolated guard failure preserve each documented failure policy.
 
 ### external-safety (package 7)

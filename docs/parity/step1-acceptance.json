@@ -10,37 +10,57 @@
       "registrations": [
         "PreToolUse.1.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "context-reduction-01",
           "expected": "Installed RTK rewrites git status and preserves other input fields.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "tests/test_native_command_reduction.py"
+          ]
         },
         {
           "id": "context-reduction-02",
           "expected": "Installed RTK rewrites supported gh metadata commands.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "tests/test_native_command_reduction.py"
+          ]
         },
         {
           "id": "context-reduction-03",
           "expected": "Environment prefixes, git flags, and command chains retain supported command semantics.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "tests/test_native_command_reduction.py"
+          ]
         },
         {
           "id": "context-reduction-04",
           "expected": "Already rewritten commands, heredocs, multiline scripts, and unsupported reads stay unchanged.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "tests/test_native_command_reduction.py"
+          ]
         },
         {
           "id": "context-reduction-05",
           "expected": "A later deny still blocks the rewritten command.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "tests/test_native_command_reduction.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -182,7 +202,7 @@
       "registrations": [
         "PreToolUse.5.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "nested-pre-guards-01",
@@ -229,8 +249,12 @@
         {
           "id": "nested-pre-guards-08",
           "expected": "Inline system writes through redirect, tee, copy, sed, and script forms preserve target classification.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/guard-parser-after.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         },
         {
           "id": "nested-pre-guards-09",
