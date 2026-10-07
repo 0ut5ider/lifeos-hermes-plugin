@@ -1,0 +1,29 @@
+test_entry_without_detail_keeps_prior_observation (test_native_system_surfaces.NativeSystemSurfaceTests.test_entry_without_detail_keeps_prior_observation) ... ok
+test_group_order_deduplication_and_six_item_limit (test_native_system_surfaces.NativeSystemSurfaceTests.test_group_order_deduplication_and_six_item_limit) ... ok
+test_latest_observed_detail_replaces_the_first_detail (test_native_system_surfaces.NativeSystemSurfaceTests.test_latest_observed_detail_replaces_the_first_detail) ... FAIL
+test_no_changes_returns_no_line (test_native_system_surfaces.NativeSystemSurfaceTests.test_no_changes_returns_no_line) ... ok
+
+======================================================================
+FAIL: test_latest_observed_detail_replaces_the_first_detail (test_native_system_surfaces.NativeSystemSurfaceTests.test_latest_observed_detail_replaces_the_first_detail)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_system_surfaces.py", line 27, in test_latest_observed_detail_replaces_the_first_detail
+    self.assertEqual(self.render([{'tier': 'isa', 'label': 'fixture', 'detail': '0 closed'},
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                  {'tier': 'isa', 'label': 'fixture', 'detail': '0→1'},
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                                  {'tier': 'isa', 'label': 'fixture', 'detail': '0→2'}]),
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                     '⚙️ SYSTEM: ISA fixture 0→2')
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: '⚙️ SYSTEM: ISA fixture 0 closed' != '⚙️ SYSTEM: ISA fixture 0→2'
+- ⚙️ SYSTEM: ISA fixture 0 closed
+?                         ^^^^^^^
++ ⚙️ SYSTEM: ISA fixture 0→2
+?                         ^^
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.079s
+
+FAILED (failures=1)

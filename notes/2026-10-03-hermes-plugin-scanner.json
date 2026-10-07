@@ -1,0 +1,16 @@
+{
+  "verdict": "dangerous",
+  "total_findings": 48,
+  "critical_findings": 16,
+  "critical_patterns": {
+    "ssh_backdoor": 16
+  },
+  "ordinary_install": [
+    false,
+    "Blocked (dangerous verdict, 16 critical of 48 findings (ssh_backdoor)). --force does not override a dangerous verdict."
+  ],
+  "force_install": [
+    false,
+    "Blocked (dangerous verdict, 16 critical of 48 findings (ssh_backdoor)). --force does not override a dangerous verdict."
+  ]
+}

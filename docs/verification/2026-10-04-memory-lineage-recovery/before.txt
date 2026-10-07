@@ -1,0 +1,31 @@
+FF.......F                                                               [100%]
+=================================== FAILURES ===================================
+_ MemoryLineageRecoveryTests.test_recovery_preserves_fact_retirement_for_foreground_history_repair _
+tests/test_memory_lineage_recovery.py:62: in test_recovery_preserves_fact_retirement_for_foreground_history_repair
+    runtime = self.resume()
+              ^^^^^^^^^^^^^
+tests/test_memory_lineage_recovery.py:42: in resume
+    runtime.admit(self.fixture.metadata(session='child'), **self.fixture.route, is_first_turn=False,
+lifeos_hook_bridge/memory_runtime.py:201: in admit
+    raise MemoryAdmissionError('This conversation has no verified memory context. Start a new conversation.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: This conversation has no verified memory context. Start a new conversation.
+_ MemoryLineageRecoveryTests.test_recovery_records_only_the_verified_compression_child_and_preserves_parent _
+tests/test_memory_lineage_recovery.py:53: in test_recovery_records_only_the_verified_compression_child_and_preserves_parent
+    runtime = self.resume()
+              ^^^^^^^^^^^^^
+tests/test_memory_lineage_recovery.py:42: in resume
+    runtime.admit(self.fixture.metadata(session='child'), **self.fixture.route, is_first_turn=False,
+lifeos_hook_bridge/memory_runtime.py:201: in admit
+    raise MemoryAdmissionError('This conversation has no verified memory context. Start a new conversation.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: This conversation has no verified memory context. Start a new conversation.
+_ MemoryCompressionTests.test_actual_process_restarts_after_native_child_commit_before_lineage_publication _
+tests/test_memory_compression.py:22: in test_actual_process_restarts_after_native_child_commit_before_lineage_publication
+    self.compression(in_place=False, interruption=True)
+tests/test_memory_compression.py:74: in compression
+    self.assertNotEqual(outcome['continuation'].get('turn_exit_reason'), 'prompt_blocked', information)
+E   AssertionError: 'prompt_blocked' == 'prompt_blocked' : {'parent': 'session', 'child': '20261004_120423_06b99c', 'diagnostics': '', 'response': 'pre_prompt_admission plugin callback prompt_admission raised MemoryAdmissionError: This conversation has no verified memory context. Start a new conversation.'}
+=========================== short test summary info ============================
+FAILED tests/test_memory_lineage_recovery.py::MemoryLineageRecoveryTests::test_recovery_preserves_fact_retirement_for_foreground_history_repair
+FAILED tests/test_memory_lineage_recovery.py::MemoryLineageRecoveryTests::test_recovery_records_only_the_verified_compression_child_and_preserves_parent
+FAILED tests/test_memory_compression.py::MemoryCompressionTests::test_actual_process_restarts_after_native_child_commit_before_lineage_publication
+3 failed, 7 passed, 2 deselected in 14.97s

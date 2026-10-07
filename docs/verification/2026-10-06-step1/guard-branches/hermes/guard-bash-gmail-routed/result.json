@@ -1,0 +1,122 @@
+{
+  "before": {
+    "project_files": [
+      "gmail.ts"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      "gmail.ts"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": false,
+    "target_content_matches": true,
+    "model_received_block": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_001605_925c61",
+  "seconds": 12.717,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-routed",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-routed",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: LIFEOS_SKILL=fixture bun ./gmail.ts send"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-gmail-routed/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "faff5a03ba858b92c5d2a1683853b66af6d8bd69b21442440afa9805d291e343",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "66a9414792138b06f5eba2fcb668ce9110a7c728bba99300c5863beea3f20433",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "d4cdc64143a711fa5b5d8adb1e27e632bc1b128a2d86a6ddf7fc72c0ff9a276d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "de1771902b9a46348ef8536424d1cf91886ed197b7cf07f8023ee27bd8ed1aa2",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "5c4835d5cf531268d6d3ebc2ba64b8403bd5b32e13a6c0fff393b5a4e9ea1be4",
+    "fixture-events.jsonl": "966068ed4171e3d6ed7ec9f54ddd35fff7b6481181fb7222da65f73f15475073",
+    "cli.log": "5fbbe9f8745f213b34f0036784491b909945ac1992fd27aa2120f0efb0f3c59d",
+    "before-state.json": "caa1664c94220dc8428a80608c4884589965ca40de74777653931e0c12c98431",
+    "after-state.json": "b6a98ea87c4598b2e4c48e6b4fdaa9a9d992d37844603c16743861f860801dbb",
+    "fixture-files-before.json": "4c28fc2cf435ee379b31b45235582c2e33eeac00cd1143e7ba0b28dc6f2af003",
+    "fixture-files-after.json": "dc084a286923617df1fd1a7f6cb8d9cc47765db03827e026abbfd3e45b908bb9"
+  }
+}

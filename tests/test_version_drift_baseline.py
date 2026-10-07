@@ -116,6 +116,28 @@ class VersionDriftBaselineTests(unittest.TestCase):
         (self.installed / name).write_text('{"running": false}')
         self.assertEqual(changed_paths(baseline, self.installed), [])
 
+    def test_generated_architecture_summary_does_not_report_drift(self):
+        # The native SessionEnd hook regenerates this file with a new timestamp.
+        name = "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md"
+        self._file(name, "last_updated: 2026-08-14")
+        self._file("LIFEOS/DOCUMENTATION/Guide.md", "system documentation")
+        subprocess.run(["git", "-C", str(self.source), "add", "LIFEOS/DOCUMENTATION"], check=True)
+        baseline = create_baseline(self.source, self.installed)
+        self.assertNotIn(name, baseline["files"])
+        self.assertIn("LIFEOS/DOCUMENTATION/Guide.md", baseline["files"])
+        (self.installed / name).write_text("last_updated: 2026-10-06")
+        self.assertEqual(changed_paths(baseline, self.installed), [])
+        (self.installed / "LIFEOS/DOCUMENTATION/Guide.md").write_text("edited")
+        self.assertEqual(changed_paths(baseline, self.installed), ["LIFEOS/DOCUMENTATION/Guide.md"])
+
+    def test_existing_baseline_entry_for_generated_file_is_ignored(self):
+        name = "LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md"
+        baseline = create_baseline(self.source, self.installed)
+        self._file(name, "last_updated: 2026-08-14")
+        baseline["files"][name] = hashlib.sha256(b"last_updated: 2026-08-14").hexdigest()
+        (self.installed / name).write_text("last_updated: 2026-10-06")
+        self.assertEqual(changed_paths(baseline, self.installed), [])
+
     def test_loaded_baseline_requires_source_manifest(self):
         baseline = create_baseline(self.source, self.installed)
         destination = self.root / "baseline.json"

@@ -150,18 +150,18 @@ index 000000000..97fa8ee97
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tools/delegate_tool.py b/tools/delegate_tool.py
-index 9e2379f10..21e8c2d1c 100644
 --- a/tools/delegate_tool.py
 +++ b/tools/delegate_tool.py
-@@ -162,6 +162,7 @@ def _build_child_agent(
+@@ -162,6 +162,8 @@
      max_iterations: int,
      task_count: int,
      parent_agent,
 +    reasoning_config_override: Optional[Dict[str, Any]] = None,
++    requested_model: Optional[str] = None,
      # Credential overrides from delegation config
      override_provider: Optional[str] = None,
      override_base_url: Optional[str] = None,
-@@ -223,6 +224,8 @@ def _build_child_agent(
+@@ -223,6 +225,8 @@
          override_acp_args=override_acp_args,
          routing_cfg=routing_cfg,
      )
@@ -170,7 +170,17 @@ index 9e2379f10..21e8c2d1c 100644
      if override_request_overrides is not None:
          # honored whenever set, incl. the inherit branch where
          # _resolve_delegation_credentials already merged OVER the parent's
-@@ -362,6 +365,36 @@ def _run_single_child(
+@@ -293,6 +297,9 @@
+             parent_turn_id=getattr(parent_agent, "_current_turn_id", "") or "", parent_subagent_id=parent_subagent_id,
+             child_session_id=getattr(child, "session_id", None), child_subagent_id=subagent_id,
+             child_role=effective_role, child_goal=goal,
++            child_model=getattr(child, "model", ""), child_provider=getattr(child, "provider", ""),
++            child_reasoning_config=getattr(child, "reasoning_config", None),
++            child_requested_model=requested_model if isinstance(requested_model, str) else model or "",
+         )
+     return child
+ 
+@@ -362,6 +369,36 @@
          run.cleanup(heartbeat=heartbeat, child_pool=child_pool, leased_cred_id=leased_cred_id, close_deferred=_child_close_deferred)
  
  
@@ -207,7 +217,7 @@ index 9e2379f10..21e8c2d1c 100644
  def _build_children(
      task_list: List[Dict[str, Any]], task_schemas: List[Optional[Dict[str, Any]]], creds: Dict[str, Any], *,
      top_role: str, max_iterations: int, parent_agent, routing_cfg: Dict[str, Any],
-@@ -371,16 +404,24 @@ def _build_children(
+@@ -371,16 +408,24 @@
      ``(children, None)`` or ``([], error)`` on an explicit-pin preflight failure."""
      from tools.delegation_live_log import wrap_progress_callback
      from tools.delegation_output_schema import append_output_contract
@@ -240,18 +250,19 @@ index 9e2379f10..21e8c2d1c 100644
          _task_schema = task_schemas[i] if i < len(task_schemas) else None
          _child_context = t.get("context")
          if _task_schema is not None:
-@@ -389,7 +430,9 @@ def _build_children(
+@@ -389,7 +434,10 @@
              child = _build_child_preserving_parent_tools(
                  task_index=i, goal=t["goal"], context=_child_context,
                  toolsets=None,  # always inherit the parent's toolsets
 -                model=creds["model"], max_iterations=max_iterations, task_count=len(task_list),
 +                model=selected_creds["model"] if t.get("provider") else routes[i][0],
 +                reasoning_config_override=routes[i][1],
++                requested_model=t.get("_lifeos_requested_model") or t.get("model") or "",
 +                max_iterations=max_iterations, task_count=len(task_list),
                  parent_agent=parent_agent, role=_normalize_role(t.get("role") or top_role), **overrides,
              )
          except ValueError as exc:
-@@ -685,6 +728,13 @@ DELEGATE_TASK_SCHEMA = {
+@@ -685,6 +733,13 @@
                              "together in ONE message; ungrouped tasks return individually as each finishes. This does not "
                              "order execution; if B needs A's output, dispatch B after A returns.",
                          ),

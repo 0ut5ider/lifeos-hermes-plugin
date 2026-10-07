@@ -1,0 +1,38 @@
+{
+  "case": "test_revoked_parent_preserves_both_previous_artifacts",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts",
+        "--apply"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"written\": true,\n  \"ran\": [\n    \"GenerateTelosSummary.ts\",\n    \"UpdateLifeosState.ts\"\n  ],\n  \"failed\": [],\n  \"missing\": []\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts",
+        "--apply"
+      ],
+      "status": 1,
+      "stdout": "{\n  \"ok\": false,\n  \"written\": false,\n  \"ran\": [],\n  \"failed\": [\n    {\n      \"tool\": \"GenerateTelosSummary.ts\",\n      \"error\": \"Command failed: bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-8_3rgb_6/.claude/LIFEOS/TOOLS/GenerateTelosSummary.ts\\n833 | function main(): void {\\n834 |   const governed = memoryAccess('telos_summary', {root: TELOS_DIR},\\n835 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === 'boolean');\\n836 |   if (governed !== undefined) {\\n837 |     if (governed.ok !== true || typeof governed.stdout !== 'string' || typeof governed.stderr !== 'string') {\\n838 |       throw new Error('TELOS summary publication is unavailable under current memory policy');\\n                      ^\\nerror: TELOS summary publication is unavailable under current memory policy\\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:838:17)\\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GenerateTelosSummary.ts:851:23\\n\\nBun v1.3.14 (Linux x64)\\n\"\n    },\n    {\n      \"tool\": \"UpdateLifeosState.ts\",\n      \"error\": \"Command failed: bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-8_3rgb_6/.claude/LIFEOS/TOOLS/UpdateLifeosState.ts\\n176 |   const jsonOutput = process.argv.includes(\\\"--json\\\");\\n177 |   const governed = memoryAccess(\\\"lifeos_state\\\", {root: LIFEOS_DIR, json_output: jsonOutput},\\n178 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \\\"boolean\\\");\\n179 |   if (governed !== undefined) {\\n180 |     if (governed.ok !== true || typeof governed.stdout !== \\\"string\\\" || typeof governed.stderr !== \\\"string\\\") {\\n181 |       throw new Error(\\\"TELOS state publication is unavailable under current memory policy\\\");\\n                      ^\\nerror: TELOS state publication is unavailable under current memory policy\\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:181:17)\\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:194:23\\n\\nBun v1.3.14 (Linux x64)\\n\"\n    }\n  ],\n  \"missing\": []\n}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+      "content": "---\nlast_updated: 2026-10-05T03:37:09.146Z\nlast_updated_by: GenerateTelosSummary\nconvention: pai-freshness-v1\nderived_from: LIFEOS/USER/TELOS/TELOS.md\ngenerator: LIFEOS/TOOLS/GenerateTelosSummary.ts\n---\n\n# Principal TELOS \u2014 SyntheticOperator\n\n> Auto-generated from TELOS source files. Do not edit manually.\n> Generated: 2026-10-05T03:37:09.146Z | Sources: MISSION, GOALS, PROBLEMS, STRATEGIES, PROJECTS, NARRATIVES, CHALLENGES, WRONG, TRAUMAS, MODELS, WISDOM\n\n## Missions\n\n- **M0**: Synthetic unified mission\n\n## Active Goals (2026)\n\n- **G0**: Synthetic current goal\n\n## Problems Being Solved\n\n\n## Strategies\n\n\n## Active Narratives\n\n\n## Personal Challenges\n\n\n## Context Filter\n\nSynthetic owner context filter.\n",
+      "mode": "0o600"
+    },
+    "LIFEOS/USER/TELOS/LIFEOS_STATE.json": {
+      "content": "{\n  \"generated_at\": \"2026-10-05T03:37:09.475Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install"
+}

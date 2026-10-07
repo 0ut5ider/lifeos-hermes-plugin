@@ -1,0 +1,118 @@
+{
+  "before": {
+    "target_content_matches": true
+  },
+  "after": {
+    "target_content_matches": true,
+    "tool_names": [
+      "Edit"
+    ],
+    "file_path_matches": true,
+    "input_content_matches": true,
+    "block_message_emitted": true,
+    "model_received_block": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_002349_1ccd40",
+  "seconds": 12.231,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-system-block",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-system-block",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "In the file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-system-block/.claude/hooks/guard-target.txt, replace the exact text PAIR_OLD_LINE with PAIR_DENY_TOKEN. Use the file editing tool once. Do not change any other text."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-system-block/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "6c9221b93e1ba46d5161b7a9722db524986fab463bf987005140ce2a0e201bd4",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "603367139857a2ea6889fd41c68c1b4bd28cb16231ea7b4ff758fd6470a1039a",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "3f6b11bbcace8fa1d85773d66e1cc9d557c1bbbe881ec55ceff279e815ac56a9",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "71c6ec63347991362203f6c44754b08415af4f4bd0295c4ec163e31093b37088",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "e4148140a56d771f4820d503a3cc1d1723261800713926e3f24c94251e65b93c",
+    "fixture-events.jsonl": "0c2fded5b41248891ae9725a69e00441b3a6bfa5e4a2874c69afc45f12842789",
+    "cli.log": "c39305a001efe1a5d42e083d0258fec4ea0a8e7e0fecc782ed953e87cf2872b7",
+    "before-state.json": "edf28c5124632b797d18160e4ae380d3aabe3242cea275f5b69c538b2aa530f5",
+    "after-state.json": "51baff0e70965e411e097b92d6d685ecf0a00f8701ab490f2110a250ef9d3738",
+    "fixture-files-before.json": "fe5dc07b4dd50ed5c614b4ac966a97b2a1f62174661e93abbeb0df936487003a",
+    "fixture-files-after.json": "1d7e253a9d49e1e53a6af6996a07b1beaf70ae85e62f3af5c556b858a599efe6"
+  }
+}

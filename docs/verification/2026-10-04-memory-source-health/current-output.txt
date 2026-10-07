@@ -1,0 +1,35 @@
+FFFFFF                                                                   [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessHealthCurrentTests.test_backend_loss_refuses_without_reusing_health _
+tests/test_memory_freshness_health_current.py:66: in test_backend_loss_refuses_without_reusing_health
+    self.assertEqual(client.get(self.native+self.route).status_code,200)
+E   AssertionError: 400 != 200
+_ MemoryFreshnessHealthCurrentTests.test_invalid_bearer_cannot_borrow_valid_owner_health_cookies _
+tests/test_memory_freshness_health_current.py:53: in test_invalid_bearer_cannot_borrow_valid_owner_health_cookies
+    self.assertEqual(response.status_code,401,response.text)
+E   AssertionError: 400 != 401 : {"error": "Choose a supported native memory view"}
+_ MemoryFreshnessHealthCurrentTests.test_later_source_edit_changes_counts_on_the_next_health_request _
+tests/test_memory_freshness_health_current.py:35: in test_later_source_edit_changes_counts_on_the_next_health_request
+    self.assertEqual(current.status_code, 200, current.text)
+E   AssertionError: 400 != 200 : {"error": "Choose a supported native memory view"}
+_ MemoryFreshnessHealthCurrentTests.test_missing_connector_refuses_without_reusing_health _
+tests/test_memory_freshness_health_current.py:58: in test_missing_connector_refuses_without_reusing_health
+    self.assertEqual(client.get(self.native+self.route).status_code,200)
+E   AssertionError: 400 != 200
+_ MemoryFreshnessHealthCurrentTests.test_original_native_health_matches_selected_current_source_metadata _
+tests/test_memory_freshness_health_current.py:76: in test_original_native_health_matches_selected_current_source_metadata
+    self.assertEqual(response.status_code,200,response.text)
+E   AssertionError: 400 != 200 : {"error": "Choose a supported native memory view"}
+_ MemoryFreshnessHealthCurrentTests.test_retired_source_cannot_retain_previous_health_counts _
+tests/test_memory_freshness_health_current.py:41: in test_retired_source_cannot_retain_previous_health_counts
+    self.assertGreater(client.get(self.native+self.route).json()['details']['telos_sections_total'], 0)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   KeyError: 'details'
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness_health_current.py::MemoryFreshnessHealthCurrentTests::test_backend_loss_refuses_without_reusing_health
+FAILED tests/test_memory_freshness_health_current.py::MemoryFreshnessHealthCurrentTests::test_invalid_bearer_cannot_borrow_valid_owner_health_cookies
+FAILED tests/test_memory_freshness_health_current.py::MemoryFreshnessHealthCurrentTests::test_later_source_edit_changes_counts_on_the_next_health_request
+FAILED tests/test_memory_freshness_health_current.py::MemoryFreshnessHealthCurrentTests::test_missing_connector_refuses_without_reusing_health
+FAILED tests/test_memory_freshness_health_current.py::MemoryFreshnessHealthCurrentTests::test_original_native_health_matches_selected_current_source_metadata
+FAILED tests/test_memory_freshness_health_current.py::MemoryFreshnessHealthCurrentTests::test_retired_source_cannot_retain_previous_health_counts
+6 failed in 8.25s

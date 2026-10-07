@@ -1,0 +1,80 @@
+.............................................FF.        [100%]
+=================================== FAILURES ===================================
+_ PairedTimeContextTests.test_async_first_turn_cannot_claim_delivery_without_a_clock_in_the_request _
+
+self = <test_paired_lifecycle_effects.PairedTimeContextTests testMethod=test_async_first_turn_cannot_claim_delivery_without_a_clock_in_the_request>
+
+    def test_async_first_turn_cannot_claim_delivery_without_a_clock_in_the_request(self):
+        case = self.case('time-context-async-utc')
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['time-context-async-utc: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'time-context-async-utc: unknown case'
+E       
+E       - ['time-context-async-utc: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:487: AssertionError
+_ PairedTimeContextTests.test_invalid_timezone_fails_open_without_clock_or_configuration_changes _
+
+self = <test_paired_lifecycle_effects.PairedTimeContextTests testMethod=test_invalid_timezone_fails_open_without_clock_or_configuration_changes>
+
+    def test_invalid_timezone_fails_open_without_clock_or_configuration_changes(self):
+        case = self.case('time-context-invalid-zone')
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['time-context-invalid-zone: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'time-context-invalid-zone: unknown case'
+E       
+E       - ['time-context-invalid-zone: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:493: AssertionError
+_ PairedTimeContextTests.test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery (name='time-context-sync-utc') _
+
+self = <test_paired_lifecycle_effects.PairedTimeContextTests testMethod=test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery>
+
+    def test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery(self):
+        for name in ('time-context-sync-utc', 'time-context-sync-toronto'):
+            with self.subTest(name=name):
+                case = self.case(name)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['time-context-sync-utc: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'time-context-sync-utc: unknown case'
+E               
+E               - ['time-context-sync-utc: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:481: AssertionError
+_ PairedTimeContextTests.test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery (name='time-context-sync-toronto') _
+
+self = <test_paired_lifecycle_effects.PairedTimeContextTests testMethod=test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery>
+
+    def test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery(self):
+        for name in ('time-context-sync-utc', 'time-context-sync-toronto'):
+            with self.subTest(name=name):
+                case = self.case(name)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['time-context-sync-toronto: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'time-context-sync-toronto: unknown case'
+E               
+E               - ['time-context-sync-toronto: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:481: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_paired_lifecycle_effects.py::PairedTimeContextTests::test_async_first_turn_cannot_claim_delivery_without_a_clock_in_the_request
+FAILED tests/test_paired_lifecycle_effects.py::PairedTimeContextTests::test_invalid_timezone_fails_open_without_clock_or_configuration_changes
+SUBFAILED(name='time-context-sync-utc') tests/test_paired_lifecycle_effects.py::PairedTimeContextTests::test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery
+SUBFAILED(name='time-context-sync-toronto') tests/test_paired_lifecycle_effects.py::PairedTimeContextTests::test_synchronous_live_clock_requires_current_timezone_value_and_model_delivery
+4 failed, 46 passed, 15 subtests passed in 0.15s

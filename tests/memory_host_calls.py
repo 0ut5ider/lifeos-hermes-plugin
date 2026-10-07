@@ -40,7 +40,8 @@ def main():
         diagnostics = io.StringIO()
         if settings.get('operation') == 'conversation':
             with redirect_stdout(diagnostics):
-                conversation = agent.run_conversation(settings['message'])
+                conversation = agent.run_conversation(settings['message'],
+                                                       conversation_history=settings.get('conversation_history'))
         review_done = None
         review_summaries = []
         followup = None

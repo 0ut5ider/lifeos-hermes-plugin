@@ -1,0 +1,19 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemorySeedRecoveryTests.test_grouped_seed_runs_both_native_calculations_with_private_artifacts _
+tests/test_memory_seed_recovery.py:46: in test_grouped_seed_runs_both_native_calculations_with_private_artifacts
+    self.assertTrue(result['ok'], result)
+E   AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Unsupported native memory operation or arguments'}
+_ MemorySeedRecoveryTests.test_native_parent_preserves_both_artifacts_when_the_second_generator_fails _
+tests/test_memory_seed_recovery.py:41: in test_native_parent_preserves_both_artifacts_when_the_second_generator_fails
+    self.assertFalse(outcome['written'])
+E   AssertionError: True is not false
+_ MemorySeedRecoveryTests.test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed _
+tests/test_memory_seed_recovery.py:72: in test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed
+    self.assertEqual(child.returncode, 73, child.stdout + child.stderr)
+E   AssertionError: 0 != 73 : {"ok": false, "code": "EINVAL_PATH", "message": "Unsupported native memory operation or arguments"}
+=========================== short test summary info ============================
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_grouped_seed_runs_both_native_calculations_with_private_artifacts
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_native_parent_preserves_both_artifacts_when_the_second_generator_fails
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_process_exit_after_first_artifact_restores_both_before_a_fresh_seed
+3 failed in 0.70s

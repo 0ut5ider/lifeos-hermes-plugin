@@ -1,0 +1,73 @@
+{
+  "test": "test_memory_ownership.MemoryOwnershipTests.test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings",
+  "configuration": {
+    "version": 1,
+    "root": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-2tnd7wk0/.claude",
+    "principal": "owner",
+    "ownership_enabled": false,
+    "accounts": {
+      "chat-a:100": "owner",
+      "chat-b:300": "owner",
+      "dashboard:owner": "owner"
+    },
+    "destinations": {
+      "chat-a:200": {
+        "visibility": "private",
+        "participants": [
+          "owner"
+        ],
+        "read": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "write": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "projects": [
+          "*"
+        ],
+        "model_routes": [
+          "be94ca2b2472c15f327335802cd4e18acc5888fa2368e7268234e77e7e923c62"
+        ]
+      },
+      "chat-b:400": {
+        "visibility": "private",
+        "participants": [
+          "owner"
+        ],
+        "read": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "write": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "projects": [
+          "*"
+        ],
+        "model_routes": [
+          "be94ca2b2472c15f327335802cd4e18acc5888fa2368e7268234e77e7e923c62"
+        ]
+      }
+    },
+    "sharing_enabled": false,
+    "clients": {}
+  },
+  "files": {
+    "config.yaml": {
+      "sha256": "094ab656265f12426f929e24f9cdc39c0d5a546dccfa07eefea9ca8ca7b40073",
+      "mode": 420
+    },
+    "lifeos-memory.json": {
+      "sha256": "adad2c5e68f3f0c7cd04b99f88b19b4e3d93672937456c4f0f2e2a47c1d19bf9",
+      "mode": 384
+    }
+  },
+  "journal": null
+}

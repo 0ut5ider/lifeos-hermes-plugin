@@ -1,0 +1,112 @@
+{
+  "before": {
+    "state": {
+      "last_fired_turn": 6,
+      "turn_count": 6,
+      "last_text": "PAIR_PRIOR_CONTRACT",
+      "schema_version": 1
+    },
+    "cache_present": true
+  },
+  "after": {
+    "state": {
+      "last_fired_turn": 7,
+      "turn_count": 7,
+      "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).",
+      "schema_version": 1
+    },
+    "cache_preserved": true,
+    "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).",
+    "model_contract_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_134753_00b27a",
+  "seconds": 9.47,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-violations",
+    "/home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-violations",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.6.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.6.1 /home/lifeos-plugin-install-probe/workspace/paired-format-contract-20261005/results/format-contract-violations/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvRHJpZnRSZW1pbmRlci5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/DriftReminder.hook.ts": "3c92fa459d9a8b2f519b7acc3fc0b6ec6cc4364cf1b9f9f7e30516d3a0457ec5",
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/lib/banned-vocab.ts": "42fd8460fd6374abf6a0a19f5526834c9d38f99f59f0a7cf8b6bf661820ca4b8"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "5ab97d4115aaa2793d577685fab991e4f1a37660bd292fb390b3c445082988af",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "9f9f6cf77569b291586c6e6762d13be9ca9a097f796eeece3c1ed18422bca5f3",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "a17b64a680272fdaf877d75a090b9fbd92c3afac1cc7cd02c73d0d6e77baee51",
+    "fixture-events.jsonl": "e874caa52fe841ef28f358f138628839fc5e23d6da958a41b64dedc129b5d13a",
+    "cli.log": "f09a5230fabfa0c9c1cbd8d6d3d6d9f4c4d5dd1fa0fc1f38cc886d19b9310b5e",
+    "before-state.json": "950c5dfc86b2ae7d0078dd015a20929cd8c495b7288ad0bacfa903ab721fd073",
+    "after-state.json": "1f50d0fe90118e1bc3c44cc993c5be09e1ff3418e2139fdc72a1c2ffb8172b62",
+    "fixture-files-before.json": "654d8b561f1eac188d1bd0073b3de0a1f1472faaab85df8a72ed8ae41825bd7a",
+    "fixture-files-after.json": "dd35d068da132509210cdd34e067243a70648f5853034e0f1fe02bc843626be9"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "case": "test_disabled_stores_refuse_deletion_without_changing_files",
+  "before": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "after": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "events": [
+    {
+      "operation": "delete",
+      "source": "memory",
+      "flags": [
+        false,
+        false
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"message\": \"Built-in MEMORY.md is disabled in the selected profile\"}, \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "operation": "delete",
+      "source": "profile",
+      "flags": [
+        false,
+        false
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"message\": \"Built-in USER.md is disabled in the selected profile\"}, \"unchanged\": true, \"bytes\": \"Synthetic preserved journey preference.\\n\"}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-learning-flags-final-distributed/hermes"
+}

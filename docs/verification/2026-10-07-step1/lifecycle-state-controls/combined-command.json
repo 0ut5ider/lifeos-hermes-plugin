@@ -1,0 +1,40 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_child_lifecycle",
+    "test_async_native_delivery",
+    "test_bridge",
+    "test_native_clarify",
+    "test_native_kitty_channel",
+    "test_native_pulse_guards",
+    "test_patch_bundle",
+    "test_plugin_lifecycle",
+    "test_prepare_sources",
+    "test_lifeos_install_source",
+    "test_hermes_install_source",
+    "test_native_work_lifecycle",
+    "test_native_session_end_learning",
+    "test_native_version_drift",
+    "test_version_drift_baseline",
+    "test_hook_state",
+    "test_model_tiers",
+    "-q"
+  ],
+  "environment": {
+    "TMPDIR": "/home/outsider/.cache/lhc6",
+    "PYTHONPATH": "tests:.:/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/hermes",
+    "LIFEOS_GUARD_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install",
+    "LIFEOS_TAB_STATE_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install",
+    "LIFEOS_PULSE_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install",
+    "LIFEOS_PREPARE_HERMES_REPO": "/home/outsider/.cache/lifeos-footprint-20260929/hermes-clean",
+    "LIFEOS_PREPARE_LIFEOS_REPO": "/home/outsider/.cache/lifeos-footprint-20260929/lifeos-clean",
+    "LIFEOS_KITTY_HOOK_PATH": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install/hooks/KittyEnvPersist.hook.ts",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "LIFEOS_WORK_COMPLETION_PATH": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install/hooks/WorkCompletionLearning.hook.ts",
+    "LIFEOS_SESSION_CLEANUP_PATH": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install/hooks/SessionCleanup.hook.ts",
+    "LIFEOS_VERSION_DRIFT_PATH": "/home/outsider/.cache/lifeos-step1-20261006/prepared-lifecycle-origin-final/lifeos/LifeOS/install/hooks/VersionDrift.hook.ts",
+    "LIFEOS_VERSION_DRIFT_TAGGED_REPO_PATH": "/home/outsider/.cache/lifeos-step1-20261006/tagged-control-final/lifeos-tagged"
+  }
+}

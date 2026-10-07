@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-05",
+  "command": [
+    "ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=8", "outsider@192.168.8.212",
+    "sudo -n -u lifeos-hermes -H readlink -f /home/lifeos-hermes/.claude /home/lifeos-hermes/.hermes"
+  ],
+  "exit_code": 0,
+  "stdout": "/home/lifeos-hermes/.hermes\n/home/lifeos-hermes/.hermes\n",
+  "operation": "Read installed root and profile path metadata only"
+}

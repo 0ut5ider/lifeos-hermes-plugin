@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryAgentTests.test_actual_agent_preserves_whitespace_and_the_current_quote_of_a_forgotten_fact _
+tests/test_memory_agent.py:69: in test_actual_agent_preserves_whitespace_and_the_current_quote_of_a_forgotten_fact
+    self.assertFalse(turn.get('failed'), turn)
+E   AssertionError: True is not false : {'final_response': "custom didn't answer after 3 attempts — it looks temporarily unavailable. Wait a minute and send /retry, or switch models with /model. To avoid this in future, add a backup provider with `hermes fallback add`.\n\nProvider said: Memory history cannot verify the current user input", 'messages': [{'role': 'user', 'content': '  Explain this exact quote: Synthetic forgotten quoted whitespace claim  \n', 'timestamp': 1791128847.306582}], 'api_calls': 1, 'completed': False, 'failed': True, 'error': 'Memory history cannot verify the current user input', 'failure_reason': 'unknown', 'failure_retryable': True, 'billing_unverified': False, 'billing_block': None, 'turn_id': 'session:713d122b-e1d0-4ff7-8c42-fc136fd0a9bb:8753b182', 'current_turn_user_idx': 0}
+=========================== short test summary info ============================
+FAILED tests/test_memory_agent.py::MemoryAgentTests::test_actual_agent_preserves_whitespace_and_the_current_quote_of_a_forgotten_fact
+1 failed, 8 deselected in 11.99s

@@ -1,0 +1,73 @@
+{
+  "case": "MemoryStateTests.test_owner_output_matches_standalone_current_and_ideal_fallback",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [
+        "--json"
+      ],
+      "options": {
+        "context": true
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": null
+      },
+      "status": 0,
+      "stdout": "{\n  \"generated_at\": \"2026-10-04T20:05:40.057Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+      "stderr": "",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "5c52db4f6e0c7cd87a37f5db210949ed83e42b960783bd33e1a3366771081ac2",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.057Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      }
+    },
+    {
+      "kind": "native_cli",
+      "arguments": [
+        "--json"
+      ],
+      "options": {
+        "context": false
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "5c52db4f6e0c7cd87a37f5db210949ed83e42b960783bd33e1a3366771081ac2",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.057Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      },
+      "status": 0,
+      "stdout": "{\n  \"generated_at\": \"2026-10-04T20:05:40.183Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+      "stderr": "",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": {
+          "sha256": "e4e19f08f5b6b89ed5f8d03a7e2a3db54149ffeabdbed263abb59da30c458211",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:40.183Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 50,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"CURRENT_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

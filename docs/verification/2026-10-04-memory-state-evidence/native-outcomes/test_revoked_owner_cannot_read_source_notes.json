@@ -1,0 +1,67 @@
+{
+  "case": "test_revoked_owner_cannot_read_source_notes",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-5zqezhdm/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "health"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "108 |   if (governed === undefined) return undefined;\n109 |   if (governed.ok === true) {\n110 |     if (domain === null && isEvidence(governed.value)) return governed.value;\n111 |     if (domain !== null && isDomainEvidence(governed.value)) return governed.value;\n112 |   }\n113 |   throw new Error(\"State evidence is unavailable under the current policy\");\n                  ^\nerror: State evidence is unavailable under the current policy\n      at managedEvidence (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts:113:13)\n      at gatherHealth (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts:244:22)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/StateEvidence.ts:670:32\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

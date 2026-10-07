@@ -1,0 +1,38 @@
+{
+  "scope": "The before source differs only by reversing the catalog result callback fix in the disposable prepared tree.",
+  "runs": {
+    "before": {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_host_catalog_hooks"
+      ],
+      "hermes_source": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared/hermes",
+      "model_tools_sha256": "6c23dc6c7fccf6dac0a28f863f223bfa3c567c67ac6cc5dcf975ed169046d55a",
+      "expected_exit_code": 1,
+      "exit_code": 1,
+      "seconds": 3.183
+    },
+    "after": {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error::ResourceWarning",
+        "-m",
+        "unittest",
+        "-v",
+        "test_host_catalog_hooks"
+      ],
+      "hermes_source": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared/hermes",
+      "model_tools_sha256": "ca07054ca98d5bd2b28b9e45d2efacddea5e583330f4daa8efd4d327c31734dc",
+      "expected_exit_code": 0,
+      "exit_code": 0,
+      "seconds": 3.235
+    }
+  },
+  "scratch_source_restored": true
+}

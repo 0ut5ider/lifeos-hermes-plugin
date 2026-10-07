@@ -1461,7 +1461,10 @@
     "entry_point": "declared_entry",
     "behavioral_status": "requires_source_policy_or_existing_test_evidence",
     "source_policy": "contains_governed_api_reference",
-    "source_sha256": "fafe0fa745d2459cd32ae2203270547331f8747c249f1e92b29d31b2a66717fb"
+    "source_sha256": "fafe0fa745d2459cd32ae2203270547331f8747c249f1e92b29d31b2a66717fb",
+    "graph_http_status": "authenticated_current_graph_view_verified",
+    "graph_http_evidence": "docs/verification/2026-10-04-memory-graph-relay/README.md",
+    "graph_http_limits": "Graph route only. Other Observability source routes and complete browser service acceptance remain open."
   },
   {
     "path": "LIFEOS/PULSE/Observability/src/app/memory/knowledge/layout.tsx",
@@ -8126,9 +8129,11 @@
     ],
     "resolved_callers": [],
     "entry_point": "declared_entry",
-    "behavioral_status": "requires_source_policy_or_existing_test_evidence",
-    "source_policy": "requires_boundary_review",
-    "source_sha256": "96223afa04e57e784a0a5f9c5502ccbf9b8e06a7720a3644b78954a78954c0e6"
+    "behavioral_status": "governed_current_note_navigation_verified",
+    "source_policy": "registered_current_note_corpus",
+    "source_sha256": "96223afa04e57e784a0a5f9c5502ccbf9b8e06a7720a3644b78954a78954c0e6",
+    "behavioral_evidence": "docs/verification/2026-10-04-memory-knowledge-graph/README.md",
+    "verified_source_sha256": "69e934e0fdf46d1c3dd78f90b2cfad0eefc8e6a18722d5c6f7a1653f8f40ab5e"
   },
   {
     "path": "LIFEOS/TOOLS/KnowledgeHarvester.ts",
@@ -8994,9 +8999,12 @@
     ],
     "resolved_callers": [],
     "entry_point": "declared_entry",
-    "behavioral_status": "requires_source_policy_or_existing_test_evidence",
-    "source_policy": "requires_boundary_review",
-    "source_sha256": "5252a637094b5ab731e5eb590e948b4544f2623d53fd3631096af335aec1ee6a"
+    "behavioral_status": "governed_native_graph_commands_verified",
+    "source_policy": "registered_current_notes_and_admitted_retained_silos",
+    "source_sha256": "5252a637094b5ab731e5eb590e948b4544f2623d53fd3631096af335aec1ee6a",
+    "behavioral_evidence": "docs/verification/2026-10-04-memory-graph/README.md",
+    "verified_source_sha256": "adb09bf50309e45e199a79c21061825120c730a5a633d656dd24f64e001faf65",
+    "verified_cli_guard": true
   },
   {
     "path": "LIFEOS/TOOLS/MemoryHealthCheck.ts",

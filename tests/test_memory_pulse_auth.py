@@ -180,7 +180,7 @@ class MemoryPulseAuthTests(unittest.TestCase):
     def test_read_only_routes_ignore_no_caller_scope_or_source_arguments(self):
         self.login()
         self.assertEqual(self.client.post(self.endpoint + 'snapshot', json={}).status_code, 405)
-        self.assertEqual(self.client.get(self.endpoint + 'graph').status_code, 422)
+        self.assertEqual(self.client.get(self.endpoint + 'unsupported').status_code, 422)
         self.assertEqual(self.client.get(self.endpoint + 'snapshot', params={'account': 'owner'}).status_code, 400)
 
     def test_host_and_framework_denials_always_disable_response_storage(self):
@@ -188,7 +188,7 @@ class MemoryPulseAuthTests(unittest.TestCase):
         self.assertEqual(anonymous.headers.get('cache-control'), 'no-store')
         self.login()
         denied = [self.client.get(self.endpoint + 'snapshot', headers={'Authorization': 'Bearer invalid-token'}),
-                  self.client.get(self.endpoint + 'graph'), self.client.post(self.endpoint + 'snapshot', json={})]
+                  self.client.get(self.endpoint + 'unsupported'), self.client.post(self.endpoint + 'snapshot', json={})]
         for response in denied:
             self.assertEqual(response.headers.get('cache-control'), 'no-store', response.text)
 

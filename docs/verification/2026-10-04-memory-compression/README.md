@@ -1,0 +1,17 @@
+# Verified compression and exact user input
+
+Date: 2026-10-04. The combined gate passes 149 tests and 95 subtests without skips, failures, or uncaptured warnings. The [command](regression-command.json), [result](regression-result.json), and [complete output](regression.txt) retain the test environment. The focused compression gate passes 59 tests and 11 subtests before the in-place control is added to the combined gate.
+
+The complete conversation controls use the actual Hermes agent, session database, memory manager, plugin loader, native compressor, and SDK HTTP requests. Each control completes six owner turns, compresses the conversation, and completes its next turn. Rotation publishes the expected parent reference. In-place compression retains the session identifier. The controls capture title, summary, and foreground requests. They use a scripted local protocol server and do not measure model reasoning quality.
+
+The [caller failure](caller-before.txt) and [trace](binding-before.json) establish the thread boundary. Compression publishes the child in a worker. The caller's Hermes session changes, but its LifeOS binding retains the parent. The corrected runtime records the parent in the same private admission publication. The caller adopts the child only through that lineage, unchanged authority fields, and matching host metadata. Ordinary session admission cannot transfer the caller into another conversation.
+
+Auxiliary final admission can adopt the current human-input proof when authority remains unchanged. Generated requests cannot use that proof as a quote exception. The gate checks stale generations, retired generated content, changed authors and permissions, unknown parents, occupied targets, duplicate rotation, and provider failure. Foreground history repair remains available after a fact retirement. It removes the retired content from the model request and preserves the source request.
+
+The [whitespace failure](whitespace-before.txt) uses a complete owner turn with a leading and trailing whitespace quote of a forgotten fact. Native API assembly strips the user text and invalidates the exact input proof. The host patch preserves user whitespace. The [passing control](whitespace-after.txt) verifies exact HTTP input and confirms that ordinary recall still excludes the forgotten fact.
+
+The [source identities](source-identities.json) bind the measured candidate files and pinned source revisions. Fresh preparation applies all patches and reproduces every assigned host file exactly. Both distributed required-middleware patches contain the whitespace change. The test interpreter links SQLite 3.51.2. Hermes selects DELETE journal mode for its known WAL guard. The complete controls capture and assert that warning. Raw native output retains its original punctuation.
+
+The [rotation](rotation/outcome.json) and [in-place](in-place/outcome.json) outcomes retain actual database lineage, compressed history, continuation, and diagnostics. Their adjacent `requests.json` files retain actual HTTP bodies. Neither outcome records an admission exception.
+
+This gate does not establish recovery after process death between native child publication and LifeOS lineage publication. It does not close restricted-context prompt delivery, aggregate ownership backup and restore, or activation review. Memory ownership remains disabled on running installations. No server deployment occurs in this unit.

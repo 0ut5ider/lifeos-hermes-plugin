@@ -22,7 +22,15 @@ def register(ctx: Any) -> None:
     if hasattr(ctx, "register_memory_provider"):
         from .memory_provider import register_provider
         memory_runtime = register_provider(ctx)
-    settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(Path.home() / ".claude/settings.json"))).expanduser()
+    try:
+        from hermes_constants import get_hermes_home
+    except ImportError:
+        profile = None
+    else:
+        profile = get_hermes_home()
+    from .lifeos_installation import selection
+    home = selection(profile).home if profile is not None else Path.home()
+    settings = Path(os.environ.get("LIFEOS_HOOK_SETTINGS", str(home / ".claude/settings.json"))).expanduser()
     if not settings.is_file():
         return
     def model_tiers() -> dict[str, Any]:
@@ -35,17 +43,24 @@ def register(ctx: Any) -> None:
         current = load_picker_context()
         return configured_model_map(ctx.get_config, current.current_provider, current.current_model)
 
-    bridge = HookBridge(
-        settings, settings.parent,
-        model_tiers_provider=model_tiers,
-    )
     try:
         from hermes_cli.plugins import VALID_HOOKS
     except ImportError:
         VALID_HOOKS = PATCHED_HOOKS
     patched_host = PATCHED_HOOKS <= VALID_HOOKS
+    bridge = HookBridge(
+        settings, settings.parent,
+        model_tiers_provider=model_tiers,
+        profile=profile, hold_turns=patched_host, lifeos_home=home,
+    )
+    if {"subagent_start", "subagent_stop"} <= VALID_HOOKS:
+        bridge.child_lifecycle_enabled = True
+        ctx.register_hook("subagent_start", bridge.child_start)
+        ctx.register_hook("subagent_stop", bridge.child_stop)
     if hasattr(ctx, "on_unload"):
         ctx.on_unload(bridge.close)
+    if "post_api_request" in VALID_HOOKS:
+        ctx.register_hook("post_api_request", bridge.observe_api_response)
     ctx.register_hook("pre_tool_call", bridge.pre_tool_call)
     ctx.register_hook("post_tool_call", bridge.task_result)
     def prompt_admission(**kwargs):

@@ -1,0 +1,110 @@
+{
+  "before": {
+    "marker_present": false
+  },
+  "after": {
+    "relationship_present": true,
+    "wisdom_present": true,
+    "low_confidence_present": false,
+    "advisory_present": true,
+    "sources_preserved": true,
+    "marker": {
+      "keys": [
+        "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+      ],
+      "sessions_since_emit": 0,
+      "last_emitted_at_present": true
+    },
+    "timing_recorded": true,
+    "ready_present": false,
+    "model_context_contains": {
+      "relationship": true,
+      "wisdom": true,
+      "advisory": true,
+      "low_confidence": false
+    },
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "be6f99f4-4d2a-47e9-b36f-718a527056e1",
+  "seconds": 3.028,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-response-20261005-v3/results/context-response-desktop",
+    "/home/lifeos-claude-ref/workspace/paired-response-20261005-v3/results/context-response-desktop",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.3",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.3 /home/lifeos-claude-ref/workspace/paired-response-20261005-v3/results/context-response-desktop/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTG9hZENvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/LoadContext.hook.ts": "8bc6f039c8a23fb3283ee306ba05ea76d0bf72c26fb36b8bcf3147b6e2fcc8f8",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/learning-readback.ts": "55f814badd6dc15cb0ebfd5019dc559683b3d8f53f1e24a6f61e4d883bfad0c8",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/advisory-readback.ts": "2a1304b352c3c9736165e82f8357ac63adc5e67d32c539c69caf059ca88e6a4b",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/notifications.ts": "91315d1e4eef6a1cee4d16ebd236edb3a3b3f437911aa65ecab9a3c611e21127"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "8155eb604a5135517762fcc5fdda022d2cf0d2477cd86237626ed94950e227cd",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "277dfe3c08380b311ba8881e20575379a3e65470dcd8ee723f947e06490c815f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "2cf41e7ed791ec1987b30a508c08cb6156dbb5a72655d7b036af12cf6dff1616",
+    "fixture-events.jsonl": "92a33a808f92f9aab34be05f4a2984257eda15ca36cf9af44095f8a99db390d2",
+    "cli.log": "20d83166f6ea3d0b2e67793ca4b440823613e4b7b6a8b3a0d5c578afcf38199b",
+    "before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "after-state.json": "cfb45040322bb854ca98ea2f967392cfeb436d35c64703a886e563ac9659f0c8",
+    "fixture-files-before.json": "d78139dd1b4a0453d398e68a76cb87986242cb011851d950f86dcf75e6ff4469",
+    "fixture-files-after.json": "07c586dd2584574de44e478eb8e950b4ef21528aeafef374e6e44a21c1acef17"
+  }
+}

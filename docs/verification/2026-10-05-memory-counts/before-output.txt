@@ -1,0 +1,56 @@
+F.FFF                                                          [100%]
+=================================== FAILURES ===================================
+_ MemoryCountsTests.test_foreign_data_directory_refuses_before_returning_counts _
+tests/test_memory_counts.py:94: in test_foreign_data_directory_refuses_before_returning_counts
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryCountsTests.test_owner_json_shell_and_every_single_count_match_native_formats (arguments=()) _
+tests/test_memory_counts.py:69: in test_owner_json_shell_and_every_single_count_match_native_formats
+    self.assertEqual(result.stdout, expected)
+E   AssertionError: '{"sk[28 chars]":2,"signals":1,"files":8,"work":1,"research":2,"ratings":2}\n' != '{"sk[28 chars]":2,"signals":1,"files":9,"work":1,"research":2,"ratings":2}\n'
+E   - {"skills":0,"workflows":0,"hooks":2,"signals":1,"files":8,"work":1,"research":2,"ratings":2}
+E   ?                                                         ^
+E   + {"skills":0,"workflows":0,"hooks":2,"signals":1,"files":9,"work":1,"research":2,"ratings":2}
+E   ?                                                         ^
+_ MemoryCountsTests.test_owner_json_shell_and_every_single_count_match_native_formats (arguments=('--shell',)) _
+tests/test_memory_counts.py:69: in test_owner_json_shell_and_every_single_count_match_native_formats
+    self.assertEqual(result.stdout, expected)
+E   AssertionError: 'skil[65 chars]les_count=8\nwork_count=1\nresearch_count=2\nratings_count=2\n' != 'skil[65 chars]les_count=9\nwork_count=1\nresearch_count=2\nratings_count=2\n'
+E     skills_count=0
+E     workflows_count=0
+E     hooks_count=2
+E     signals_count=1
+E   - files_count=8
+E   ?             ^
+E   + files_count=9
+E   ?             ^
+E     work_count=1
+E     research_count=2
+E     ratings_count=2
+_ MemoryCountsTests.test_owner_json_shell_and_every_single_count_match_native_formats (arguments=('--single', 'files')) _
+tests/test_memory_counts.py:69: in test_owner_json_shell_and_every_single_count_match_native_formats
+    self.assertEqual(result.stdout, expected)
+E   AssertionError: '8\n' != '9\n'
+E   - 8
+E   + 9
+________ MemoryCountsTests.test_restricted_counts_refuse_without_output ________
+tests/test_memory_counts.py:86: in test_restricted_counts_refuse_without_output
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_________ MemoryCountsTests.test_revoked_counts_refuse_without_output __________
+tests/test_memory_counts.py:79: in test_revoked_counts_refuse_without_output
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_________ MemoryCountsTests.test_unbound_counts_refuse_without_output __________
+tests/test_memory_counts.py:73: in test_unbound_counts_refuse_without_output
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_counts.py::MemoryCountsTests::test_foreign_data_directory_refuses_before_returning_counts
+SUBFAILED(arguments=()) tests/test_memory_counts.py::MemoryCountsTests::test_owner_json_shell_and_every_single_count_match_native_formats
+SUBFAILED(arguments=('--shell',)) tests/test_memory_counts.py::MemoryCountsTests::test_owner_json_shell_and_every_single_count_match_native_formats
+SUBFAILED(arguments=('--single', 'files')) tests/test_memory_counts.py::MemoryCountsTests::test_owner_json_shell_and_every_single_count_match_native_formats
+FAILED tests/test_memory_counts.py::MemoryCountsTests::test_restricted_counts_refuse_without_output
+FAILED tests/test_memory_counts.py::MemoryCountsTests::test_revoked_counts_refuse_without_output
+FAILED tests/test_memory_counts.py::MemoryCountsTests::test_unbound_counts_refuse_without_output
+7 failed, 1 passed, 7 subtests passed in 0.84s

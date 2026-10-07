@@ -1,0 +1,7 @@
+# Native backup reconstruction
+
+Date: 2026-10-04. Native backup inspection verifies bytes and schema, but a complete recovery also has to exercise the real native readers on reconstructed data. The new component builds a separate private recovery tree, restores its data boundary, and validates every active reference before publishing it. It retains backup retirements and metadata. Later writes and forget decisions in the original store remain unchanged.
+
+The target is a separate tree. Replacing a live snapshot with an older backup could erase later facts or restore a forgotten claim. This reconstruction creates no profile memory configuration and starts no service. Its receipt reports inactive ownership and the linked native tools. Aggregate ownership recovery still needs current-state review, configuration and service recovery, and verified cutover.
+
+The first test repeats an earlier incorrect recall assumption. Native ranking returns another current fact with score 2. The corrected assertion excludes the forgotten claim by content and checks its referenced conflict status. The combined gate passes 69 tests and 15 subtests. Actual Hermes command discovery, native readers, missing live USER_DATA, and process death before publication all pass. The staging tree remains private and keeps its source signature after process exit. Evidence is `docs/verification/2026-10-04-native-backup-recovery/`.

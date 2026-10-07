@@ -1,0 +1,95 @@
+{
+  "case": "test_all_streams_and_capture_timestamps_match_original_native",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-cfzr83kj/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"vgate:T1\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"verification-gate\",\"detail\":\"synthetic-unit \u2014 Synthetic evidence\"},{\"classId\":\"fgate:synthetic\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"format-gate\",\"detail\":\"Synthetic format\"},{\"classId\":\"wgate:block\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"writing-gate\",\"detail\":\"strong=3 weak=1\"},{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"},{\"classId\":\"healer:synthetic-warning\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"hook-healer\",\"detail\":\"hooks/Synthetic.ts\"},{\"classId\":\"capture:wrong-approach\",\"ts\":\"2026-10-05T05:22:36.749Z\",\"source\":\"failure-capture\",\"detail\":\"Synthetic wrong approach\",\"sessionId\":\"synthetic\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"vgate:T1\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"verification-gate\",\"detail\":\"synthetic-unit \u2014 Synthetic evidence\"},{\"classId\":\"fgate:synthetic\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"format-gate\",\"detail\":\"Synthetic format\"},{\"classId\":\"wgate:block\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"writing-gate\",\"detail\":\"strong=3 weak=1\"},{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"},{\"classId\":\"healer:synthetic-warning\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"hook-healer\",\"detail\":\"hooks/Synthetic.ts\"},{\"classId\":\"capture:wrong-approach\",\"ts\":\"2026-10-05T05:22:36.749Z\",\"source\":\"failure-capture\",\"detail\":\"Synthetic wrong approach\",\"sessionId\":\"synthetic\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-cfzr83kj/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectObservabilityClusters(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"vgate:T1\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"synthetic-unit \u2014 Synthetic evidence\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"fgate:synthetic\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"Synthetic format\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"wgate:block\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"strong=3 weak=1\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"Synthetic recurrence failure\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"healer:synthetic-warning\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"hooks/Synthetic.ts\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectObservabilityClusters(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"vgate:T1\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"synthetic-unit \u2014 Synthetic evidence\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"fgate:synthetic\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"Synthetic format\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"wgate:block\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"strong=3 weak=1\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"Synthetic recurrence failure\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]},{\"classId\":\"healer:synthetic-warning\",\"count\":1,\"lastSeen\":\"2026-10-05T05:22:36.749100+00:00\",\"examples\":[\"hooks/Synthetic.ts\"],\"sigRefs\":[\"obs:2026-10-05T05:22:36.749100+00:00\"]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-cfzr83kj/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.buildReport(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"class_id\":\"vgate:T1\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"verification-gate\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"fgate:synthetic\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"format-gate\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"wgate:block\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"writing-gate\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"tool-failures\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"healer:synthetic-warning\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"hook-healer\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"capture:wrong-approach\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749Z\",\"last_seen\":\"2026-10-05T05:22:36.749Z\",\"sources\":[\"failure-capture\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.buildReport(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"class_id\":\"vgate:T1\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"verification-gate\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"fgate:synthetic\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"format-gate\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"wgate:block\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"writing-gate\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"tool:terminal:synthetic-recurrence-failure\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"tool-failures\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"healer:synthetic-warning\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"last_seen\":\"2026-10-05T05:22:36.749100+00:00\",\"sources\":[\"hook-healer\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]},{\"class_id\":\"capture:wrong-approach\",\"count\":1,\"count_in_window\":1,\"first_seen\":\"2026-10-05T05:22:36.749Z\",\"last_seen\":\"2026-10-05T05:22:36.749Z\",\"sources\":[\"failure-capture\"],\"patch\":null,\"recurrences_since_patch\":0,\"flags\":[]}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-cfzr83kj/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"vgate:T1\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"verification-gate\",\"detail\":\"synthetic-unit \u2014 Synthetic evidence\"},{\"classId\":\"fgate:synthetic\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"format-gate\",\"detail\":\"Synthetic format\"},{\"classId\":\"wgate:block\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"writing-gate\",\"detail\":\"strong=3 weak=1\"},{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"},{\"classId\":\"healer:synthetic-warning\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"hook-healer\",\"detail\":\"hooks/Synthetic.ts\"},{\"classId\":\"capture:wrong-approach\",\"ts\":\"2026-10-05T05:22:36.749Z\",\"source\":\"failure-capture\",\"detail\":\"Synthetic wrong approach\",\"sessionId\":\"synthetic\"}]\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-cfzr83kj/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.collectFailureEvents(30)));"
+      ],
+      "status": 0,
+      "stdout": "[{\"classId\":\"vgate:T1\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"verification-gate\",\"detail\":\"synthetic-unit \u2014 Synthetic evidence\"},{\"classId\":\"fgate:synthetic\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"format-gate\",\"detail\":\"Synthetic format\"},{\"classId\":\"wgate:block\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"writing-gate\",\"detail\":\"strong=3 weak=1\"},{\"classId\":\"tool:terminal:synthetic-recurrence-failure\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"tool-failures\",\"detail\":\"Synthetic recurrence failure\",\"sessionId\":\"synthetic\"},{\"classId\":\"healer:synthetic-warning\",\"ts\":\"2026-10-05T05:22:36.749100+00:00\",\"source\":\"hook-healer\",\"detail\":\"hooks/Synthetic.ts\"}]\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

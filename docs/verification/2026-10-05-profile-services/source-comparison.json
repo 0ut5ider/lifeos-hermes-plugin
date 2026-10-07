@@ -1,0 +1,39 @@
+{
+  "source_hashes_unchanged": {
+    "lifeos_hook_bridge/profile_services.py": true,
+    "tests/test_profile_services.py": true,
+    "tests/profile_service_writer.py": true,
+    "lifeos_hook_bridge/memory_ownership.py": true,
+    "tests/test_memory_ownership.py": true
+  },
+  "native_outcomes": [
+    "test_changed_installed_root_alias_refuses_recovery_before_any_restart-changed-alias.json",
+    "test_changed_service_definition_refuses_before_any_restart-changed-definition.json",
+    "test_definition_change_during_drain_preserves_the_remaining_live_services-interleaved-definition.json",
+    "test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units-lifecycle.json",
+    "test_external_service_restart_invalidates_the_stopped_writer_barrier-external-start.json",
+    "test_fixed_installed_root_alias_drains_the_same_physical_services-installed-alias.json",
+    "test_process_exit_after_first_restart_resumes_the_original_service_selection-interrupted-restart.json",
+    "test_process_exit_after_one_stop_retains_original_service_state_for_recovery-recovery.json",
+    "test_recovery_preserves_an_originally_inactive_service-inactive.json",
+    "test_unit_from_another_profile_refuses_before_any_writer_stops-refusal.json"
+  ],
+  "ownership_outcomes": [
+    "test_current_backup_review_preserves_other_yaml_settings_and_comments.json",
+    "test_edit_after_disabling_stores_prevents_ownership_from_becoming_enabled.json",
+    "test_edit_during_recovery_is_preserved_before_the_second_publication.json",
+    "test_fresh_host_processes_load_the_selected_owner_and_return_to_preserved_stores.json",
+    "test_invalid_journal_metadata_refuses_without_configuration_changes.json",
+    "test_lost_or_changed_connector_refuses_before_ownership_publication.json",
+    "test_process_exit_after_first_file_recovers_configuration_without_data_restore.json",
+    "test_process_exit_during_mode_restoration_can_resume_the_original_mode.json",
+    "test_recovery_preserves_later_configuration_edits.json",
+    "test_recovery_restores_exact_configuration_and_preserves_later_native_writes.json",
+    "test_review_refuses_changed_configuration_or_backup_without_publication.json",
+    "test_reviewed_configuration_disables_both_stores_and_preserves_files.json",
+    "test_setup_requires_owner_disabled_sharing_and_unambiguous_memory_settings.json",
+    "test_shared_or_merged_memory_settings_require_review_without_changing_other_sections.json"
+  ],
+  "upstream_patch_changes": [],
+  "new_dependencies": []
+}

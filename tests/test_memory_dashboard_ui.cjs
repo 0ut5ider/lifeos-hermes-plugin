@@ -124,6 +124,24 @@ test('owner search displays references and new connections default to read-only 
   assert.deepEqual(JSON.parse(request.init.body),{client:'reader',public_key:'ssh-ed25519 synthetic',projects:['lab'],model_route:'unknown',read:['project'],write_project:false});
 });
 
+test('connection form is replaced by an installation note without the sharing component',async()=>{
+  const p=await panel({state:'prepared',native_health:'ok',sharing_enabled:false,connection_enrollment_available:false,
+    connections:[{client:'reader',enabled:true}],remaining_gates:{}});
+  const view=p.render();
+  assert.equal(find(view,n=>n.type==='form'&&n.props.id==='memory_enrollment'),null);
+  assert.ok(find(view,n=>n.type==='p'&&n.props.id==='memory_enrollment_unavailable'));
+  assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Revoke reader')));
+});
+
+test('a disabled connection with a remaining SSH entry offers removal only with the component',async()=>{
+  const connection={client:'reader',enabled:false,credential_entry_pending:true};
+  let view=(await panel({state:'prepared',native_health:'ok',connection_enrollment_available:true,connections:[connection],remaining_gates:{}})).render();
+  assert.ok(find(view,n=>n.type==='button'&&n.children.includes('Remove SSH entry of reader')));
+  view=(await panel({state:'prepared',native_health:'ok',connection_enrollment_available:false,connections:[connection],remaining_gates:{}})).render();
+  assert.equal(find(view,n=>n.type==='button'&&n.children.includes('Remove SSH entry of reader')),null);
+  assert.ok(find(view,n=>n.type==='p'&&n.children.some(c=>typeof c==='string'&&c.includes('still present'))));
+});
+
 
 test('source adoption previews historical records and sends exact project assignments',async()=>{
   const source={path:'LIFEOS/MEMORY/LEARNING/SYSTEM/sample.md',content:'Synthetic historical source marker',
@@ -157,4 +175,17 @@ test('source adoption retains a conflicted preview and reuses its request identi
   assert.equal(requests[0].request_id,requests[1].request_id);
   assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes('Synthetic stale source marker')));
   assert.ok(find(p.render(),n=>n.type==='p'&&n.children.includes('The native source preview changed.')));
+});
+
+test('an unconfigured installation offers the owner claim and shows the claimed state',async()=>{
+  const p=await panel({state:'not_configured',activation_ready:false,remaining_gates:{},connections:[]});
+  const claim=find(p.render(),n=>n.type==='button'&&n.children.includes('Claim this LifeOS installation'));
+  assert.ok(claim,'An unconfigured installation must offer the owner claim');
+  await claim.props.onClick();
+  await new Promise(setImmediate);
+  const request=p.calls.find(c=>c.url.endsWith('/memory/owner'));
+  assert.equal(request.init.method,'POST');
+  assert.equal(request.init.body,undefined);
+  const configured=await panel({state:'prepared',native_health:'ok',remaining_gates:{},connections:[]});
+  assert.equal(find(configured.render(),n=>n.type==='button'&&n.children.includes('Claim this LifeOS installation')),null);
 });

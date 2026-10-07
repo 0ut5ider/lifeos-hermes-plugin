@@ -1,0 +1,9 @@
+...F.                                                                    [100%]
+=================================== FAILURES ===================================
+_ MemoryPulseAdapterInferenceTests.test_source_change_during_http_refuses_page_publication _
+tests/test_memory_pulse_adapter_inference.py:124: in test_source_change_during_http_refuses_page_publication
+    self.assertIn('PULSE adapter inputs changed', result.stderr)
+E   AssertionError: 'PULSE adapter inputs changed' not found in 'error: adapter "synthetic" crashed: Error: The native memory service returned an invalid result\n    at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)\n    at checkCurrent (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_sx4tzpf/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:112:5)\n    at runAdapter (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_sx4tzpf/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:173:3)\n    at processTicksAndRejections (native:7:39)\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_pulse_adapter_inference.py::MemoryPulseAdapterInferenceTests::test_source_change_during_http_refuses_page_publication
+1 failed, 4 passed in 23.52s

@@ -1,0 +1,44 @@
+FFF.FF.FFF.                                                              [100%]
+=================================== FAILURES ===================================
+_____ MemoryStateTests.test_foreign_source_link_refuses_before_publication _____
+tests/test_memory_state.py:103: in test_foreign_source_link_refuses_before_publication
+    self.assertNotEqual(self.call('--json').returncode, 0)
+E   AssertionError: 0 == 0
+__ MemoryStateTests.test_managed_marker_refuses_connector_loss_after_restart ___
+tests/test_memory_state.py:117: in test_managed_marker_refuses_connector_loss_after_restart
+    self.assertNotEqual(self.call('--json', context=False).returncode, 0)
+E   AssertionError: 0 == 0
+___ MemoryStateTests.test_missing_context_refuses_before_output_publication ____
+tests/test_memory_state.py:67: in test_missing_context_refuses_before_output_publication
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+___________________ MemoryStateTests.test_output_is_private ____________________
+tests/test_memory_state.py:122: in test_output_is_private
+    self.assertEqual(self.output.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+___ MemoryStateTests.test_output_link_refuses_without_modifying_foreign_file ___
+tests/test_memory_state.py:110: in test_output_link_refuses_without_modifying_foreign_file
+    self.assertNotEqual(self.call('--json').returncode, 0)
+E   AssertionError: 0 == 0
+______ MemoryStateTests.test_restricted_owner_refuses_before_publication _______
+tests/test_memory_state.py:82: in test_restricted_owner_refuses_before_publication
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryStateTests.test_retired_source_falls_back_without_reading_retained_claim _
+tests/test_memory_state.py:94: in test_retired_source_falls_back_without_reading_retained_claim
+    self.assertEqual(result['dimensions']['health']['pct'], 90)
+E   AssertionError: 100 != 90
+__________ MemoryStateTests.test_revocation_preserves_previous_output __________
+tests/test_memory_state.py:75: in test_revocation_preserves_previous_output
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_state.py::MemoryStateTests::test_foreign_source_link_refuses_before_publication
+FAILED tests/test_memory_state.py::MemoryStateTests::test_managed_marker_refuses_connector_loss_after_restart
+FAILED tests/test_memory_state.py::MemoryStateTests::test_missing_context_refuses_before_output_publication
+FAILED tests/test_memory_state.py::MemoryStateTests::test_output_is_private
+FAILED tests/test_memory_state.py::MemoryStateTests::test_output_link_refuses_without_modifying_foreign_file
+FAILED tests/test_memory_state.py::MemoryStateTests::test_restricted_owner_refuses_before_publication
+FAILED tests/test_memory_state.py::MemoryStateTests::test_retired_source_falls_back_without_reading_retained_claim
+FAILED tests/test_memory_state.py::MemoryStateTests::test_revocation_preserves_previous_output
+8 failed, 3 passed in 1.36s

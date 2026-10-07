@@ -4,6 +4,7 @@ import importlib.util
 import contextlib
 from concurrent.futures import ThreadPoolExecutor
 import io
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -85,6 +86,93 @@ class MemoryAdminDashboardTests(unittest.TestCase):
 
     def post(self, path):
         return self.client.post(self.prefix + path)
+
+    def test_first_dashboard_account_claims_an_unconfigured_installation(self):
+        self.login()
+        self.configuration.path.unlink()
+        claim = '/api/plugins/lifeos-hook-bridge/memory/owner'
+        self.assertEqual(self.client.post(claim, headers={'Origin': 'https://other.invalid'}).status_code, 403)
+        self.assertFalse(self.configuration.path.exists())
+        response = self.client.post(claim)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()['state'], 'prepared')
+        config = self.configuration.load()
+        self.assertEqual(config['root'], str(self.fixture.root.absolute()))
+        self.assertEqual(config['accounts'], {self.account: config['principal']})
+        self.assertIs(config['ownership_enabled'], False)
+        self.assertIs(config['sharing_enabled'], False)
+        self.assertEqual(self.configuration.path.stat().st_mode & 0o777, 0o600)
+        second = self.client.post(claim)
+        self.assertEqual(second.status_code, 409, second.text)
+        self.assertEqual(self.configuration.load(), config)
+
+    def test_owner_claim_requires_a_session_and_an_installed_lifeos(self):
+        self.configuration.path.unlink()
+        claim = '/api/plugins/lifeos-hook-bridge/memory/owner'
+        self.assertEqual(self.client.post(claim).status_code, 401)
+        self.login()
+        (self.fixture.root / 'LIFEOS/VERSION').unlink()
+        self.assertEqual(self.client.post(claim).status_code, 409)
+        self.assertFalse(self.configuration.path.exists())
+
+    def review_store(self, source):
+        from lifeos_hook_bridge.fresh_store import FreshStore
+        store = FreshStore(self.configuration)
+        folder = store._ensure_base() / ('a' * 32)
+        (folder / 'home/.claude/LIFEOS').mkdir(parents=True)
+        os.chmod(folder, 0o700)
+        document = {'version': 1, 'state': 'review', 'profile': str(self.fixture.profile.absolute()),
+                    'names': {'principal': 'Adrian', 'assistant': 'Cerebo'}, 'source': source,
+                    'active_facts': 0, 'activation_ready': False,
+                    'retained_installation': str(self.fixture.root)}
+        document['signature'] = hashlib.sha256((json.dumps(document, sort_keys=True, indent=2) + '\n').encode()).hexdigest()
+        (folder / 'review.json').write_text(json.dumps(document, sort_keys=True, indent=2) + '\n')
+        os.chmod(folder / 'review.json', 0o600)
+        return folder
+
+    def test_owner_queues_selection_of_a_reviewed_store_and_return(self):
+        self.login()
+        source = self.api.validate_prepared_lifeos(self.api._candidate_path())
+        folder = self.review_store(source)
+        self.api.SELECTION_ROOT = self.fixture.profile / 'state/selections'
+        path = '/api/plugins/lifeos-hook-bridge/installation/selection'
+        self.assertEqual(self.client.post(path, json={'store': 'b' * 32}).status_code, 409)
+        self.assertEqual(self.client.post(path, json={'store': 'a' * 32, 'home': '/'}).status_code, 400)
+        self.assertEqual(self.client.post(path, json={'store': 'a' * 32},
+                                          headers={'Origin': 'https://other.invalid'}).status_code, 403)
+        self.assertEqual(self.client.post(path + '/return').status_code, 409)
+        with patch.object(self.api, '_launch_selection') as launched:
+            response = self.client.post(path, json={'store': 'a' * 32})
+        self.assertEqual(response.status_code, 200, response.text)
+        job = Path(response.json()['job'])
+        launched.assert_called_once_with(job, 'select')
+        request = json.loads((job / 'request.json').read_text())
+        self.assertEqual(request['target_home'], str(folder / 'home'))
+        self.assertEqual(request['profile'], str(self.fixture.profile))
+        self.assertEqual((job / 'request.json').stat().st_mode & 0o777, 0o600)
+
+    def test_fresh_store_preparation_uses_the_selected_candidate(self):
+        self.login()
+        selected = self.fixture.candidate.with_name(self.fixture.candidate.name + '-' + 'c' * 32)
+        marker = self.fixture.candidate.with_name(self.fixture.candidate.name + '.selected.json')
+        marker.write_text(json.dumps({'name': selected.name}))
+        with patch.object(self.api, '_launch_fresh_store') as launched:
+            response = self.client.post('/api/plugins/lifeos-hook-bridge/memory/fresh/start',
+                                        json={'principal_name': 'Adrian', 'assistant_name': 'Cerebo'})
+        self.assertEqual(response.status_code, 202, response.text)
+        arguments = launched.call_args.args[0]
+        self.assertEqual(arguments[arguments.index('--candidate') + 1], str(selected))
+
+    def test_selection_refuses_a_store_from_another_candidate(self):
+        self.login()
+        source = dict(self.api.validate_prepared_lifeos(self.api._candidate_path()), upstream_commit='0' * 40)
+        self.review_store(source)
+        self.api.SELECTION_ROOT = self.fixture.profile / 'state/selections'
+        with patch.object(self.api, '_launch_selection', side_effect=AssertionError('must refuse first')):
+            response = self.client.post('/api/plugins/lifeos-hook-bridge/installation/selection',
+                                        json={'store': 'a' * 32})
+        self.assertEqual(response.status_code, 409, response.text)
+        self.assertIn('another LifeOS candidate', response.text)
 
     def test_verified_owner_finalizes_real_native_mount_and_revokes_grant(self):
         self.login()
@@ -535,19 +623,18 @@ class MemoryAdminDashboardTests(unittest.TestCase):
                 self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
                                 Path(request['memory_authorization']))
 
-    def test_changed_user_data_refuses_restore_without_changing_job(self):
+    def test_changed_embedded_user_data_does_not_block_restore(self):
         self.login()
         job = self.applied_job()
-        before_request = (job / 'request.json').read_bytes()
-        before_status = (job / 'status.json').read_bytes()
         (self.fixture.root / 'USER.md').write_text('Synthetic later user edit')
-        with patch.object(self.api, '_launch_lifeos_update', side_effect=AssertionError('Data must be checked first')):
+        with patch.object(self.api, '_launch_lifeos_update') as launched:
             response = self.post('/update/restore')
-        self.assertEqual(response.status_code, 409, response.text)
-        self.assertIn('User data changed', response.text)
-        self.assertEqual(self.grants(), [])
-        self.assertEqual((job / 'request.json').read_bytes(), before_request)
-        self.assertEqual((job / 'status.json').read_bytes(), before_status)
+        self.assertEqual(response.status_code, 200, response.text)
+        launched.assert_called_once_with(job, 'restore')
+        self.assertEqual(json.loads((job / 'status.json').read_text())['state'], 'restoring')
+        request = json.loads((job / 'request.json').read_text())
+        self.addCleanup(self.fixture.fixture.admin().revoke, self.configuration,
+                        Path(request['memory_authorization']))
 
     def test_failed_recovery_launch_preserves_retryable_job_state(self):
         self.login()

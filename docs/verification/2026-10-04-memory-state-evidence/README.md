@@ -1,0 +1,19 @@
+# Governed native StateEvidence
+
+Date: 2026-10-04. This unit covers the four domain calculations and state-evidence cache publication. All sources are synthetic. Production remains unchanged.
+
+The [baseline](before-output.txt) reports 13 failures, three passed parent tests, and four passed subtests. The failures cover ownerless source reads, cache directory creation, read-only writes, revocation, retired names, redirected paths, public cache permissions, arbitrary writer destinations, and old cache restoration. The [escaped JSON controls](escaped-before-output.txt) add two failures. The native parser exposes private markup and a retired name that raw escape sequences hide.
+
+The bridge admits decoded JSON keys and string values before native calculation. It retains original bytes for the declared native source map and exact source review. Malformed JSON, nonfinite values, and invalid Unicode stay outside that map. Exact owner review cannot admit decoded private or known retired text. Markdown source readers retain their existing format boundary.
+
+Managed reads require unrestricted owner recall and current configuration. Reads check sources again after actual native rendering. Managed cache reads preserve the missing-cache contract, then recalculate from current admitted sources when the cache exists. They do not deliver the previous file body. This is an intentional managed behavior difference that prevents retired names from returning through old caches.
+
+Cache publication requires unrestricted owner write access and the one installed destination. The bridge compares the supplied payload with the native result over current sources before publication. The publication journal preserves previous bytes after actual process termination. First-publication recovery removes an uncommitted cache. Source and authority changes, redirected destinations, and registry aliases refuse publication. The native Boolean write contract remains intact, so read-only callers can calculate without replacing the cache.
+
+The first candidate passes 14 tests and four subtests. The expanded candidate passes 22 tests and 18 subtests. The [final regression gate](final-output.txt) passes 183 tests and 124 subtests without failures, errors, skips, or warnings. It covers StateEvidence, source admission/review, registry aliases, service dispatch, native facts, freshness reads and publication, native/profile recovery, source preparation, patch packaging, and footprint checks. [Recorded commands](final-command.json) retain the environment, source hashes, and pinned source manifest.
+
+The corrected recorder captures [24 passing controls](controls-output.txt) with complete [synthetic source bytes and native outputs](native-outcomes). The initial recorder stops on a missing registry file. Its next run emits a Python SyntaxWarning. Both recorder failures remain in this directory and do not count as clean gates. The final recorder handles absent registries and completes cleanup without suppressing errors.
+
+An [independent comparison](original-comparison.json) matches all four domain payloads against the pinned original native implementation at the same date. All 39 [distributed native files](distributed-comparison.json) match the scratch candidate. Both patch copies are equal. The [Bun build](build-result.json) passes. Bundling does not validate TypeScript types. The native runtime and TOOLS packages declare no typecheck, lint, or test scripts.
+
+No external feeds are configured or verified. The synthetic controls do not establish live health, activity, work, or finance integrations. InterviewDue and InterviewScan, other derivative publishers, aggregate recovery, restricted delivery, ownership activation, import, and combined release verification remain open. The cooperative writer boundary does not protect against hostile same-UID filesystem replacement between the final path check and publication.

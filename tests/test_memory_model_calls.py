@@ -65,7 +65,7 @@ class MemoryModelCallTests(unittest.TestCase):
         self.host_config = {'plugins':{'enabled':[]},'model':dict(self.route,default='synthetic-model',api_key='synthetic-key'),
                             'auxiliary':{'compression':dict(self.route,api_key='synthetic-key')}}
 
-    def run_call(self, operation, *, route=None, first=True, author='100', refresh_after_load=False, request_variant='',bind_input=False,aux_task='compression'):
+    def run_call(self, operation, *, route=None, first=True, author='100', refresh_after_load=False, request_variant='',bind_input=False,aux_task='compression', project_history=False):
         route = route or self.route
         self.host_config['auxiliary']['compression'] = dict(route,api_key='synthetic-key')
         (self.fixture.home/'config.yaml').write_text(json.dumps(self.host_config))
@@ -75,7 +75,8 @@ class MemoryModelCallTests(unittest.TestCase):
                            BUN_CONFIG_NO_AUTO_INSTALL='1')
         settings = dict(operation=operation,route=route,parent_route=self.route,first=first,
                         author=author,marker='Synthetic admitted private model marker',refresh_after_load=refresh_after_load,
-                        request_variant=request_variant,bind_input=bind_input,aux_task=aux_task)
+                        request_variant=request_variant,bind_input=bind_input,aux_task=aux_task,
+                        project_history=project_history)
         return subprocess.run([sys.executable,str(PROGRAM)],input=json.dumps(settings),env=environment,
                               capture_output=True,text=True,timeout=30)
 
@@ -124,6 +125,30 @@ class MemoryModelCallTests(unittest.TestCase):
         self.assertIn('model system prompt',result.stderr)
         self.assertEqual(self.received,[])
 
+    def test_actual_responses_sdk_repairs_history_before_transport(self):
+        route = self.retire_responses_marker()
+        for variant in ('responses-history', 'responses-history-extra'):
+            with self.subTest(variant=variant):
+                result = self.run_call('responses-primary', route=route, request_variant=variant,
+                                       project_history=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stderr, '')
+                self.assertEqual(self.received[-1]['path'], '/v1/responses')
+                body = self.received[-1]['body']
+                self.assertNotIn('Synthetic admitted private model marker', json.dumps(body))
+                self.assertEqual(body['input'][1]['id'], 'message-one')
+                self.assertEqual(body['input'][2]['call_id'], body['input'][3]['call_id'])
+                self.assertEqual(json.loads(body['input'][3]['output'])['reference'], 'native:synthetic-reference')
+        self.assertEqual(len(self.received), 2)
+
+    def test_actual_responses_sdk_refuses_retired_protocol_id_before_transport(self):
+        route = self.retire_responses_marker()
+        result = self.run_call('responses-primary', route=route, request_variant='responses-history-id',
+                               project_history=True)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn('model history', result.stderr)
+        self.assertEqual(self.received, [])
+
     def test_actual_primary_and_auxiliary_requests_reject_unapproved_routes(self):
         for operation in ('primary','sync','async','compression'):
             with self.subTest(operation=operation):
@@ -142,7 +167,7 @@ class MemoryModelCallTests(unittest.TestCase):
                 self.assertIn('current author or destination differs',result.stderr)
         self.assertEqual(self.received,[])
 
-    def test_actual_model_paths_cannot_resume_forgotten_context(self):
+    def test_actual_model_paths_cannot_resume_forgotten_context_without_history_repair(self):
         saved = self.fixture.fixture.remember('Synthetic obsolete model fact','model-fact')
         first = self.run_call('primary')
         self.assertEqual(first.returncode,0,first.stderr)
@@ -150,9 +175,36 @@ class MemoryModelCallTests(unittest.TestCase):
         for operation in ('primary','sync','async','compression'):
             with self.subTest(operation=operation):
                 result = self.run_call(operation,first=False)
-                self.assertNotEqual(result.returncode,0)
-                self.assertIn('current facts changed',result.stderr)
+                if operation == 'compression':
+                    self.assertEqual(result.returncode,0,result.stderr)
+                    self.assertIsNone(json.loads(result.stdout)['result'])
+                else:
+                    self.assertNotEqual(result.returncode,0)
+                self.assertIn('invalidated memory context',result.stderr)
         self.assertEqual(len(self.received),1)
+
+    def test_actual_sdk_resumes_with_repaired_chat_and_responses_history(self):
+        marker = 'Synthetic admitted private model marker'
+        saved = self.fixture.fixture.remember(marker, 'resumed-model-fact')
+        responses = dict(self.route, api_mode='responses')
+        self.fixture.configuration['destinations']['chat-a:200']['model_routes'].append(route_identity(**responses))
+        MemoryConfiguration(self.fixture.path).save(self.fixture.configuration)
+        first = self.run_call('primary', project_history=True)
+        self.assertEqual(first.returncode, 0, first.stderr)
+        self.assertEqual(first.stderr, '')
+        self.fixture.fixture.memory.forget(native_fixture.OWNER, saved['reference'], 'resumed-model-forget')
+        self.received.clear()
+        for operation, route, variant in [('primary', self.route, 'chat-history'),
+                                           ('responses-primary', responses, 'responses-history'),
+                                           ('responses-primary', responses, 'responses-history-extra')]:
+            with self.subTest(operation=operation, variant=variant):
+                result = self.run_call(operation, route=route, first=False, request_variant=variant,
+                                       project_history=True)
+                self.assertEqual(result.returncode, 0, result.stderr)
+                self.assertEqual(result.stderr, '')
+                self.assertIn('SYNTHETIC-MODEL-OK', json.loads(result.stdout)['result'])
+                self.assertNotIn(marker, json.dumps(self.received[-1]['body']))
+        self.assertEqual(len(self.received), 3)
 
     def test_actual_host_soul_loader_cannot_send_a_cached_removed_claim(self):
         marker = 'Synthetic removed cached model marker'

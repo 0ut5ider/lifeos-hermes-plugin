@@ -1,0 +1,35 @@
+{
+  "case": "MemoryStateTests.test_managed_marker_refuses_connector_loss_after_restart",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [
+        "--json"
+      ],
+      "options": {
+        "context": false
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": null
+      },
+      "status": 1,
+      "stdout": "",
+      "stderr": "31 | \n32 | export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,\n33 |                                 valid: (value: unknown) => value is T): T | undefined {\n34 |   if (operation !== \"pulse_http\" && !hasMemoryAccess()) return undefined;\n35 |   const path = resolve(homedir(), \".claude/LIFEOS/USER/CONFIG/memory-access.json\");\n36 |   const info = lstatSync(path);\n                    ^\nENOENT: no such file or directory, statx '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-zm8l82eh/.claude/LIFEOS/USER/CONFIG/memory-access.json'\n    path: \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-zm8l82eh/.claude/LIFEOS/USER/CONFIG/memory-access.json\",\n syscall: \"statx\",\n   errno: -2,\n    code: \"ENOENT\"\n\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:36:16)\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:177:20)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/UpdateLifeosState.ts:194:23\n\nBun v1.3.14 (Linux x64)\n",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: have\nstatus: partial\nstatus: missing\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n"
+        },
+        "artifact": null
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

@@ -1,0 +1,124 @@
+{
+  "before": {
+    "project_files": [
+      ".git",
+      "tracked.txt"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      ".git",
+      "tracked.txt"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": true,
+    "target_content_matches": true,
+    "model_received_block": true,
+    "tool_output_in_model": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_002703_0521c7",
+  "seconds": 12.32,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-bash-public-block",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-bash-public-block",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT; false && gh repo create pair-guard-fixture --public"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/results/guard-bash-public-block/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "73fbe37363a7e5deda0d5ba949c5b9b97fac8e42719dae31d8d76c0831724403",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "2675eea670528ad55cecd8189f97b6b01ab7a89c4f9d10a82634ae9992e84dca",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "997ff5861c3ae53ccaad20fe5229ac21ab57e315667ffb9a518b19b080100655",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "19bfa95bd96cc93064499e1eaa2fc5480dd0c168704f8f7b982d174899de171c",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "6545c1ee6f1c49f4fba850f3effbc0c82c6bd7eed4ad408672b054d1d8c9043f",
+    "fixture-events.jsonl": "20d49b54b140e92050a543131ec92823e047b4307f166e452b3383d5f3ba78f2",
+    "cli.log": "bccf3c7f538ad12afc9b7e5412e2d85b51a3a15cb94bf7a92a4ef5be6abb9bee",
+    "before-state.json": "52222168d1726afb1e079e4b5464942959caccadd54451b3a32b56bd8af1b55d",
+    "after-state.json": "170f576070414d439776dc77b13863801d09ce1e472aef5605c33876c5115afe",
+    "fixture-files-before.json": "c45d317dc675d7db822e4fe98a911fff02b95c28d1b60ce78bb85f18bdc8bbbb",
+    "fixture-files-after.json": "95465474e5e255cde8f6e7ce74b925e075e2dc5581c068be21edcf6635dd092f"
+  }
+}

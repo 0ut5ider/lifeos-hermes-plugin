@@ -1,0 +1,39 @@
+FF.FFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+____ MemoryWisdomReaderTests.test_managed_reports_have_private_permissions _____
+tests/test_memory_wisdom_readers.py:105: in test_managed_reports_have_private_permissions
+    self.assertEqual(self.principles.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryWisdomReaderTests.test_missing_context_refuses_before_report_publication _
+tests/test_memory_wisdom_readers.py:63: in test_missing_context_refuses_before_report_publication
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryWisdomReaderTests.test_private_frame_is_absent_from_native_loading_and_synthesis _
+tests/test_memory_wisdom_readers.py:73: in test_private_frame_is_absent_from_native_loading_and_synthesis
+    self.assertNotIn('Synthetic private Wisdom principle', result.stdout)
+E   AssertionError: 'Synthetic private Wisdom principle' unexpectedly found in '[{"domain":"communication","content":"# Synthetic frame\\n## Meta\\n- **Confidence:** 70%\\n- **Observation Count:** 12\\n- **Last Crystallized:** 2026-10-01\\n\\n## Core Principles\\n### <private>Synthetic private Wisdom principle</private> [CRYSTAL]\\n"}]\n'
+_ MemoryWisdomReaderTests.test_read_only_owner_can_read_but_cannot_publish_reports _
+tests/test_memory_wisdom_readers.py:98: in test_read_only_owner_can_read_but_cannot_publish_reports
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryWisdomReaderTests.test_redirected_frame_refuses_without_loading_foreign_content _
+tests/test_memory_wisdom_readers.py:114: in test_redirected_frame_refuses_without_loading_foreign_content
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryWisdomReaderTests.test_retired_frame_is_absent_from_current_native_loading _
+tests/test_memory_wisdom_readers.py:86: in test_retired_frame_is_absent_from_current_native_loading
+    self.assertNotIn(marker, result.stdout)
+E   AssertionError: 'Synthetic retired Wisdom principle' unexpectedly found in '[{"domain":"communication","content":"# Synthetic frame\\n## Meta\\n- **Confidence:** 70%\\n- **Observation Count:** 12\\n- **Last Crystallized:** 2026-10-01\\n\\n## Core Principles\\n### Synthetic retired Wisdom principle [CRYSTAL]\\n"}]\n'
+__ MemoryWisdomReaderTests.test_revoked_account_refuses_loading_and_synthesis __
+tests/test_memory_wisdom_readers.py:92: in test_revoked_account_refuses_loading_and_synthesis
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_managed_reports_have_private_permissions
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_missing_context_refuses_before_report_publication
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_private_frame_is_absent_from_native_loading_and_synthesis
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_read_only_owner_can_read_but_cannot_publish_reports
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_redirected_frame_refuses_without_loading_foreign_content
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_retired_frame_is_absent_from_current_native_loading
+FAILED tests/test_memory_wisdom_readers.py::MemoryWisdomReaderTests::test_revoked_account_refuses_loading_and_synthesis
+7 failed, 1 passed in 1.53s

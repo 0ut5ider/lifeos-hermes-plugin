@@ -1,0 +1,25 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ ProfileServicesTests.test_changed_installed_root_alias_refuses_recovery_before_any_restart _
+tests/test_profile_services.py:260: in test_changed_installed_root_alias_refuses_recovery_before_any_restart
+    barrier.drain()
+lifeos_hook_bridge/profile_services.py:209: in drain
+    values, definition = self._inspect(role)
+                         ^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:153: in _inspect
+    raise MemoryUnavailable('The service working directory belongs to another profile')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The service working directory belongs to another profile
+_ ProfileServicesTests.test_fixed_installed_root_alias_drains_the_same_physical_services _
+tests/test_profile_services.py:249: in test_fixed_installed_root_alias_drains_the_same_physical_services
+    result = barrier.drain()
+             ^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:209: in drain
+    values, definition = self._inspect(role)
+                         ^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_services.py:153: in _inspect
+    raise MemoryUnavailable('The service working directory belongs to another profile')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The service working directory belongs to another profile
+=========================== short test summary info ============================
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_changed_installed_root_alias_refuses_recovery_before_any_restart
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_fixed_installed_root_alias_drains_the_same_physical_services
+2 failed, 9 deselected in 1.91s

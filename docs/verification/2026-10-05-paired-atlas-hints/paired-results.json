@@ -1,0 +1,179 @@
+{
+  "cases": [
+    {
+      "id": "atlas-bash-systemd",
+      "registrations": [
+        "PostToolUse.13.1"
+      ],
+      "native": {
+        "before": {
+          "event_rows": 1
+        },
+        "after": {
+          "prior_event_preserved": true,
+          "hints": [
+            {
+              "source": "systemd",
+              "tool": "Bash",
+              "timestamp_current": true
+            }
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "event_rows": 1
+        },
+        "after": {
+          "prior_event_preserved": true,
+          "hints": [
+            {
+              "source": "systemd",
+              "tool": "Bash",
+              "timestamp_current": true
+            }
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "atlas-bash-plain",
+      "registrations": [
+        "PostToolUse.13.1"
+      ],
+      "native": {
+        "before": {
+          "event_rows": 1
+        },
+        "after": {
+          "prior_event_preserved": true,
+          "hints": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "event_rows": 1
+        },
+        "after": {
+          "prior_event_preserved": true,
+          "hints": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "atlas-bash-multiple",
+      "registrations": [
+        "PostToolUse.13.1"
+      ],
+      "native": {
+        "before": {
+          "event_rows": 1
+        },
+        "after": {
+          "prior_event_preserved": true,
+          "hints": [
+            {
+              "source": "github",
+              "tool": "Bash",
+              "timestamp_current": true
+            },
+            {
+              "source": "launchd",
+              "tool": "Bash",
+              "timestamp_current": true
+            }
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "event_rows": 1
+        },
+        "after": {
+          "prior_event_preserved": true,
+          "hints": [
+            {
+              "source": "github",
+              "tool": "Bash",
+              "timestamp_current": true
+            },
+            {
+              "source": "launchd",
+              "tool": "Bash",
+              "timestamp_current": true
+            }
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    }
+  ]
+}

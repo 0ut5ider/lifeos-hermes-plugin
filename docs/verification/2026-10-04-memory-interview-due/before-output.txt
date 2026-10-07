@@ -1,0 +1,49 @@
+FFFFFFF..FF                                                              [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewDueTests.test_completion_and_cache_publications_have_private_permissions _
+tests/test_memory_interview_due.py:102: in test_completion_and_cache_publications_have_private_permissions
+    self.assertEqual(self.state.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryInterviewDueTests.test_completion_library_cannot_publish_to_an_arbitrary_path _
+tests/test_memory_interview_due.py:120: in test_completion_library_cannot_publish_to_an_arbitrary_path
+    self.assertEqual(json.loads(result.stdout), False)
+E   AssertionError: True != False
+_ MemoryInterviewDueTests.test_foreign_completion_source_is_not_replaced_by_mark_done _
+tests/test_memory_interview_due.py:96: in test_foreign_completion_source_is_not_replaced_by_mark_done
+    self.assertEqual(json.loads(result.stdout), False)
+E   AssertionError: True != False
+_ MemoryInterviewDueTests.test_foreign_completion_source_refuses_without_using_its_date _
+tests/test_memory_interview_due.py:87: in test_foreign_completion_source_refuses_without_using_its_date
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryInterviewDueTests.test_library_writers_cannot_publish_to_an_arbitrary_path _
+tests/test_memory_interview_due.py:110: in test_library_writers_cannot_publish_to_an_arbitrary_path
+    self.assertEqual(json.loads(result.stdout), False)
+E   AssertionError: True != False
+_ MemoryInterviewDueTests.test_missing_context_cannot_mark_completion_before_refused_read _
+tests/test_memory_interview_due.py:74: in test_missing_context_cannot_mark_completion_before_refused_read
+    self.assertEqual(self.state.read_bytes(), state)
+E   AssertionError: b'{\n  "last_interview": "2026-10-04T23:05:5[43 chars]n}\n' != b'{"last_interview": "2026-10-04T00:00:00Z",[32 chars]ew"}'
+__ MemoryInterviewDueTests.test_missing_context_cannot_read_completion_inputs __
+tests/test_memory_interview_due.py:79: in test_missing_context_cannot_read_completion_inputs
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryInterviewDueTests.test_read_only_owner_preserves_state_and_verdict_cache _
+tests/test_memory_interview_due.py:67: in test_read_only_owner_preserves_state_and_verdict_cache
+    self.assertEqual(self.state.read_bytes(), state)
+E   AssertionError: b'{\n  "last_interview": "2026-10-04T23:06:0[43 chars]n}\n' != b'{"last_interview": "2026-10-04T00:00:00Z",[32 chars]ew"}'
+______ MemoryInterviewDueTests.test_revoked_owner_cannot_mark_completion _______
+tests/test_memory_interview_due.py:127: in test_revoked_owner_cannot_mark_completion
+    self.assertEqual(self.state.read_bytes(), state)
+E   AssertionError: b'{\n  "last_interview": "2026-10-04T23:06:0[43 chars]n}\n' != b'{"last_interview": "2026-10-04T00:00:00Z",[32 chars]ew"}'
+=========================== short test summary info ============================
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_completion_and_cache_publications_have_private_permissions
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_completion_library_cannot_publish_to_an_arbitrary_path
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_foreign_completion_source_is_not_replaced_by_mark_done
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_foreign_completion_source_refuses_without_using_its_date
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_library_writers_cannot_publish_to_an_arbitrary_path
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_missing_context_cannot_mark_completion_before_refused_read
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_missing_context_cannot_read_completion_inputs
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_read_only_owner_preserves_state_and_verdict_cache
+FAILED tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_revoked_owner_cannot_mark_completion
+9 failed, 2 passed in 11.52s

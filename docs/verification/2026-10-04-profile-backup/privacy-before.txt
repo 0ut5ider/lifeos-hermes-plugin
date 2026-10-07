@@ -1,0 +1,64 @@
+FFFF..............                                                       [100%]
+=================================== FAILURES ===================================
+_ ProfileBackupTests.test_snapshot_captures_committed_wal_history_without_changing_live_journal_mode _
+tests/test_profile_backup.py:75: in test_snapshot_captures_committed_wal_history_without_changing_live_journal_mode
+    _, manifest = self.snapshot()
+                  ^^^^^^^^^^^^^^^
+tests/test_profile_backup.py:46: in snapshot
+    result = create(self.configuration, self.destination)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_backup.py:127: in create
+    inspect(configuration, stage, signature, account=account)
+lifeos_hook_bridge/profile_backup.py:149: in inspect
+    _directory(destination / 'profile', private=True)
+lifeos_hook_bridge/memory_backup.py:36: in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions
+_ ProfileBackupTests.test_snapshot_is_private_and_inspection_refuses_changed_copies _
+tests/test_profile_backup.py:109: in test_snapshot_is_private_and_inspection_refuses_changed_copies
+    result, manifest = self.snapshot()
+                       ^^^^^^^^^^^^^^^
+tests/test_profile_backup.py:46: in snapshot
+    result = create(self.configuration, self.destination)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_backup.py:127: in create
+    inspect(configuration, stage, signature, account=account)
+lifeos_hook_bridge/profile_backup.py:149: in inspect
+    _directory(destination / 'profile', private=True)
+lifeos_hook_bridge/memory_backup.py:36: in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions
+_ ProfileBackupTests.test_snapshot_keeps_internal_links_and_native_data_links_without_following_them _
+tests/test_profile_backup.py:87: in test_snapshot_keeps_internal_links_and_native_data_links_without_following_them
+    _, manifest = self.snapshot()
+                  ^^^^^^^^^^^^^^^
+tests/test_profile_backup.py:46: in snapshot
+    result = create(self.configuration, self.destination)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_backup.py:127: in create
+    inspect(configuration, stage, signature, account=account)
+lifeos_hook_bridge/profile_backup.py:149: in inspect
+    _directory(destination / 'profile', private=True)
+lifeos_hook_bridge/memory_backup.py:36: in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions
+_ ProfileBackupTests.test_snapshot_keeps_profile_files_history_skills_and_native_references_together _
+tests/test_profile_backup.py:51: in test_snapshot_keeps_profile_files_history_skills_and_native_references_together
+    result, manifest = self.snapshot()
+                       ^^^^^^^^^^^^^^^
+tests/test_profile_backup.py:46: in snapshot
+    result = create(self.configuration, self.destination)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/profile_backup.py:127: in create
+    inspect(configuration, stage, signature, account=account)
+lifeos_hook_bridge/profile_backup.py:149: in inspect
+    _directory(destination / 'profile', private=True)
+lifeos_hook_bridge/memory_backup.py:36: in _directory
+    raise MemoryUnavailable('The backup directory changes its physical path or owner permissions')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The backup directory changes its physical path or owner permissions
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_snapshot_captures_committed_wal_history_without_changing_live_journal_mode
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_snapshot_is_private_and_inspection_refuses_changed_copies
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_snapshot_keeps_internal_links_and_native_data_links_without_following_them
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_snapshot_keeps_profile_files_history_skills_and_native_references_together
+4 failed, 14 passed in 16.04s

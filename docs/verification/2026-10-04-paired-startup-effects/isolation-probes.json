@@ -1,0 +1,84 @@
+[
+  {
+    "case": "plain",
+    "command": [
+      "sudo",
+      "-u",
+      "lifeos-claude-ref",
+      "bwrap",
+      "--ro-bind",
+      "/",
+      "/",
+      "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+      "--version"
+    ],
+    "exit_code": 134,
+    "stdout": "",
+    "stderr": "============================================================\nBun v1.4.3 (8c28b3167) Linux x64\nLinux Kernel v7.2.7 | glibc v2.43\nCPU: sse42 popcnt avx avx2\nArgs: \"/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272\" \"--version\"\nFeatures: jsc standalone_executable claude_code \n\nElapsed: 2ms | User: 1ms | Sys: 4ms\nRSS: 15.39 MB | Peak: 15.16 MB | Commit: 29.10 MB | Faults: 0\n\npanic(main thread): abort() called\noh no: Bun has crashed. This indicates a bug in Bun, not your code.\n\nTo send a redacted crash report to Bun's team,\nplease file a GitHub issue using the link below:\n\n https://bun.report/1.4.3/l_18c28b31kggggQggggC2gsd6oyGk7Lw74jjCyrlj2D2mlj2D24hj2D8uv++Eknrg/E0tynlCy+n5/Cg966/C8p7xgC0p0wgC24ywiCgobu5b6i2oyBAa\n\n"
+  },
+  {
+    "case": "temporary-files",
+    "command": [
+      "sudo",
+      "-u",
+      "lifeos-claude-ref",
+      "bwrap",
+      "--ro-bind",
+      "/",
+      "/",
+      "--tmpfs",
+      "/tmp",
+      "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+      "--version"
+    ],
+    "exit_code": 134,
+    "stdout": "",
+    "stderr": "============================================================\nBun v1.4.3 (8c28b3167) Linux x64\nLinux Kernel v7.2.7 | glibc v2.43\nCPU: sse42 popcnt avx avx2\nArgs: \"/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272\" \"--version\"\nFeatures: jsc standalone_executable claude_code \n\nElapsed: 2ms | User: 1ms | Sys: 4ms\nRSS: 15.39 MB | Peak: 15.16 MB | Commit: 29.17 MB | Faults: 0\n\npanic(main thread): abort() called\noh no: Bun has crashed. This indicates a bug in Bun, not your code.\n\nTo send a redacted crash report to Bun's team,\nplease file a GitHub issue using the link below:\n\n https://bun.report/1.4.3/l_18c28b31kggggQggggC2gsd6oyGk7Lw74jjCyrlj2D2mlj2D24hj2D8uv++Eknrg/E0tynlCy+n5/Cg966/C8p7xgC0p0wgC24ywiCgobu5b6i2oyBAa\n\n"
+  },
+  {
+    "case": "device-bind",
+    "command": [
+      "sudo",
+      "-u",
+      "lifeos-claude-ref",
+      "bwrap",
+      "--ro-bind",
+      "/",
+      "/",
+      "--dev-bind",
+      "/dev",
+      "/dev",
+      "--tmpfs",
+      "/tmp",
+      "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+      "--version"
+    ],
+    "exit_code": 0,
+    "stdout": "2.1.272 (Claude Code)\n",
+    "stderr": ""
+  },
+  {
+    "case": "proc-and-device",
+    "command": [
+      "sudo",
+      "-u",
+      "lifeos-claude-ref",
+      "bwrap",
+      "--ro-bind",
+      "/",
+      "/",
+      "--proc",
+      "/proc",
+      "--dev-bind",
+      "/dev",
+      "/dev",
+      "--tmpfs",
+      "/tmp",
+      "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+      "--version"
+    ],
+    "exit_code": 0,
+    "stdout": "2.1.272 (Claude Code)\n",
+    "stderr": ""
+  }
+]

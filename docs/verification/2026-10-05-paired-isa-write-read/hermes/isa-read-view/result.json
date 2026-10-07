@@ -1,0 +1,143 @@
+{
+  "before": {
+    "isa_closed": false,
+    "repo_commits": 1,
+    "repo_dirty": true
+  },
+  "after": {
+    "isa_closed": false,
+    "tool_names": [
+      "Read"
+    ],
+    "file_path_matches": true,
+    "registry": {
+      "phase": null,
+      "progress": null,
+      "isa": null,
+      "task": null
+    },
+    "view_matches_content": true,
+    "render_state_lists_isa": false,
+    "checkpoint_state": null,
+    "checkpoint_commit": {
+      "count": 1,
+      "names_criterion": false,
+      "changed_files": [
+        "tracked.txt"
+      ]
+    },
+    "repo_dirty": true,
+    "atlas_rows": 1,
+    "evaluation_state_present": false,
+    "outputs": {
+      "PostToolUse.7.1": {
+        "continue_only": true,
+        "empty": false,
+        "context_head": ""
+      }
+    },
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_002301_bfb3e8",
+  "seconds": 11.697,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-isa-write-read-20261005/results/isa-read-view",
+    "/home/lifeos-plugin-install-probe/workspace/paired-isa-write-read-20261005/results/isa-read-view",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "Read the file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-isa-write-read-20261005/results/isa-read-view/.claude/LIFEOS/MEMORY/WORK/pair-run/ISA.md once with the file reading tool."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.7.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.7.1 /home/lifeos-plugin-install-probe/workspace/paired-isa-write-read-20261005/results/isa-read-view/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0lTQVN0YWxlV3JpdGVHdWFyZC5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/ISAStaleWriteGuard.hook.ts": "7e0627b6f95d736ce861cca5b0fdd8bd1591bc4a2e90d1c31b6af69f8c84f798"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "d4b5ea75992c5ea4aa014157a5be60f653aade75d76ab767232c9c7badb8d210",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "28b41d1140efdf2a46825361a90fe8f7832285bc8db0199109e6e67998b1f8fe",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "260ccdcd9fcef555a7cb50a60f3c8d2275f0145aaf348b941a17432e2fe6cf32",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "70c6b5081a5a27af4f71b3bc21bed16b9a4647cf915cc4744ac3deb1a25d7e06",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "cf19b49a4d7e2850ab02ece307ab0d302aa66328bc8e1312936f88fc03d65a23",
+    "fixture-events.jsonl": "33a940cc800bcbbac216cfe805199c0ef3243e8c36401f4770fe2f34df098ea6",
+    "cli.log": "3b9f7b6f50290c1085f4d87cd7faca205c09b8a5937b085f7b5e2b0401712c6e",
+    "before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "after-state.json": "47d9b57476bfecbaa978b01f02175f2d49fb5b67e21ec1041ca759c0980c321c",
+    "fixture-files-before.json": "81c9224605708c5af6a497e19146807ee0fa92cda2eb309cbfc5bb044b48953b",
+    "fixture-files-after.json": "1a2873a6444f3dc34b87636f37c1a1a14164252cd4b15afea0ea22dcfbf1f3b2"
+  }
+}

@@ -38,6 +38,34 @@ class UpdateWorkerTests(unittest.TestCase):
                 self.assertEqual(data['unit'], 'synthetic-unit')
                 self.assertEqual(data['error'], 'Synthetic restore failure')
 
+    def job(self, root):
+        installed, profile, job = root / 'home/.claude', root / 'home/.hermes', root / 'job'
+        for path in (installed, profile, job):
+            path.mkdir(parents=True, mode=0o700)
+        (job / 'request.json').write_text(json.dumps({'installed': str(installed), 'hermes_home': str(profile)}))
+        return job, profile
+
+    def test_update_job_waits_for_running_turns_and_excludes_new_ones(self):
+        from lifeos_hook_bridge import program_lock
+        with tempfile.TemporaryDirectory() as directory:
+            job, profile = self.job(Path(directory))
+            turn = program_lock.shared(profile)
+            executed = []
+            with patch.object(update_worker, 'TURN_WAIT_SECONDS', 0.3), \
+                    patch.object(update_worker, '_execute_update_job', side_effect=lambda *args: executed.append(args)):
+                with self.assertRaisesRegex(program_lock.ProgramBusy, 'still running'):
+                    update_worker.run_update_job(job, 'apply')
+                self.assertEqual(executed, [])
+                program_lock.release(turn)
+
+                def execute(job, action):
+                    executed.append(program_lock.shared(profile))
+                    return {'state': 'applied'}
+
+                with patch.object(update_worker, '_execute_update_job', side_effect=execute):
+                    self.assertEqual(update_worker.run_update_job(job, 'restore'), {'state': 'applied'})
+            self.assertEqual(executed, [None])
+
     def test_changed_generated_templates_need_a_reviewed_migration(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)

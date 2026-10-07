@@ -1,0 +1,15 @@
+test_same_session_parallel_calls_preserve_all_observer_history (test_native_observer_branches.NativeObserverBranchesTests.test_same_session_parallel_calls_preserve_all_observer_history) ... FAIL
+
+======================================================================
+FAIL: test_same_session_parallel_calls_preserve_all_observer_history (test_native_observer_branches.NativeObserverBranchesTests.test_same_session_parallel_calls_preserve_all_observer_history)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_observer_branches.py", line 89, in test_same_session_parallel_calls_preserve_all_observer_history
+    self.assertEqual(state['seq'], count, {'expected': count, 'actual': state['seq'], 'window': len(state['window'])})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 12 != 16 : {'expected': 16, 'actual': 12, 'window': 12}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.792s
+
+FAILED (failures=1)

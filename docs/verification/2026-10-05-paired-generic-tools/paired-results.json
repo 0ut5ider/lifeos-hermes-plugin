@@ -1,0 +1,179 @@
+{
+  "cases": [
+    {
+      "id": "generic-tool-observer",
+      "registrations": [
+        "PostToolUse.12.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":1,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":1,\"lastNudgeAt\":{}}",
+            ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json": "{\n  \"window\": [\n    {\n      \"sig\": \"Bash:<id>\",\n      \"tool\": \"Bash\",\n      \"failed\": false,\n      \"ts\": \"<time>\"\n    }\n  ],\n  \"alerted\": [],\n  \"seq\": 1,\n  \"lastAlert\": 0\n}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":1,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":1,\"lastNudgeAt\":{}}",
+            ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json": "{\n  \"window\": [\n    {\n      \"sig\": \"Bash:<id>\",\n      \"tool\": \"Bash\",\n      \"failed\": false,\n      \"ts\": \"<time>\"\n    }\n  ],\n  \"alerted\": [],\n  \"seq\": 1,\n  \"lastAlert\": 0\n}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-tool-failure-nudge",
+      "registrations": [
+        "PostToolUseFailure.2.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{}}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUseFailure",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{}}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUseFailure",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-tool-context-reduction",
+      "registrations": [
+        "PreToolUse.1.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    }
+  ]
+}

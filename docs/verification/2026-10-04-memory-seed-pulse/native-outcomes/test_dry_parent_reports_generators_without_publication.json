@@ -1,0 +1,17 @@
+{
+  "case": "test_dry_parent_reports_generators_without_publication",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install/skills/LifeOS/Tools/SeedPulse.ts"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"ok\": true,\n  \"dryRun\": true,\n  \"willRun\": [\n    \"GenerateTelosSummary.ts\",\n    \"UpdateLifeosState.ts\"\n  ],\n  \"missing\": [],\n  \"toolsDir\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_g27e07p/.claude/LIFEOS/TOOLS\"\n}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-synthesis-candidate-distributed/lifeos/LifeOS/install"
+}

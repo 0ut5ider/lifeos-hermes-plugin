@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryHermesSoulBackupTests.test_native_backup_refuses_pending_soul_pair_then_succeeds_after_recovery _
+tests/test_memory_hermes_soul_backup.py:22: in test_native_backup_refuses_pending_soul_pair_then_succeeds_after_recovery
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+FAILED tests/test_memory_hermes_soul_backup.py::MemoryHermesSoulBackupTests::test_native_backup_refuses_pending_soul_pair_then_succeeds_after_recovery
+1 failed in 4.22s

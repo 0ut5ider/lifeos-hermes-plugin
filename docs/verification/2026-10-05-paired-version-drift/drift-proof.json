@@ -1,0 +1,348 @@
+[
+  {
+    "case": "version-drift-count",
+    "side": "native",
+    "session_id": "b165b1bd-f06f-4ab8-9842-20922a23a9ea",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "⏫ VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight — run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, or defer explicitly to the principal.",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:04.882060+00:00",
+      "finished_at": "2026-10-05T17:16:08.009096+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": true,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "15c6048e88ceb081fabd6a3bac762992b2989f8e4e2fe093bbcc5e113433060f",
+    "response_sha256": "d5c88ef9eeb0686b7af64090c62ff51042659628182f8d435e2f6410c118325c",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-count",
+    "side": "hermes",
+    "session_id": "20261005_171611_665a23",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "⏫ VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight — run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, or defer explicitly to the principal.",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:08.034943+00:00",
+      "finished_at": "2026-10-05T17:16:17.728855+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": true,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "a3f17476639e9737408f24d0a6fbb64ae6c10a5b53b1af77a84ea2548a394200",
+    "response_sha256": "0cdf7f621b22e24c519e9a79ec4a68e128bbbc7fcd724116f1e04c03d1da2f14",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-aged",
+    "side": "native",
+    "session_id": "f278151f-4f97-4df8-b8fa-6d6e278becc1",
+    "changed_core_files": 1,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 72,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "⏫ VERSION-DRIFT: 1 core file(s) ahead of v1.0.0 (tag 72h old), no bump in flight — run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, or defer explicitly to the principal.",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:17.751705+00:00",
+      "finished_at": "2026-10-05T17:16:19.470837+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": true,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "52c70398cd3ff574ebebb4b55e358dcf8515606cb2c59b1cb33ea8a7176bcaed",
+    "response_sha256": "bc33ccb0d52cc00f3aa94f5e587e70504b6150902366df747a90e240f47ff5a6",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-aged",
+    "side": "hermes",
+    "session_id": "20261005_171622_a72662",
+    "changed_core_files": 1,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 72,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "⏫ VERSION-DRIFT: 1 core file(s) ahead of v1.0.0 (tag 72h old), no bump in flight — run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, or defer explicitly to the principal.",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:19.493218+00:00",
+      "finished_at": "2026-10-05T17:16:28.453886+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": true,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "d273a74ff4b6e86bf8c7cbf411ad165e7c848a24df26f56e95291eda52422d53",
+    "response_sha256": "0c3267f38facbc247232911d5f76d389057e8a40b689cbaa174f2b98c8ab55ee",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-below",
+    "side": "native",
+    "session_id": "5a8c1546-1e70-4e6e-be0d-ac5749c92417",
+    "changed_core_files": 1,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:28.476387+00:00",
+      "finished_at": "2026-10-05T17:16:31.649271+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "4601017a904cd39248b342cdf6d516bf9382a3dcd9f23d004c89de5856812e6e",
+    "response_sha256": "11b1ac6f589a0f5c83bf1a447da8ad6633811966b9d7c5ba84034c67bf08cadf",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-below",
+    "side": "hermes",
+    "session_id": "20261005_171634_897993",
+    "changed_core_files": 1,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:31.673644+00:00",
+      "finished_at": "2026-10-05T17:16:40.429995+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "c3dab772f667e1b8d5070373dc8ee942e1c4722d0b0a7e1296f523baa15ddf24",
+    "response_sha256": "186666015df273730d1ac3e297a3b611f68358d60f97f87afe9954734cf9ddfb",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-bump",
+    "side": "native",
+    "session_id": "16b09ed8-c8d4-4daa-8f2b-33623e59eb83",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.1",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:40.455119+00:00",
+      "finished_at": "2026-10-05T17:16:42.326321+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "8744130276400b1fa698b453936fa08227d551bc4cca59d6cc90606761a69a53",
+    "response_sha256": "9de34b53bfb1a9a87bc31327dd7ac7d5dd7a0981ae544554c2c806485618dd18",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-bump",
+    "side": "hermes",
+    "session_id": "20261005_171645_8e31a0",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.1",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:42.350725+00:00",
+      "finished_at": "2026-10-05T17:16:51.041941+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "b29d1a31c0f82d930eea1e3dd7a91b75bce4f35d0983111d838ddabc0ab0c06c",
+    "response_sha256": "38b4dd04bf91ccb2817d21f02e88f519b4132ea6966ab517aeb71a526a7c5581",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-recent",
+    "side": "native",
+    "session_id": "bbf8c465-1cd3-4f69-a920-3759fd8bbf31",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": true,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:51.068939+00:00",
+      "finished_at": "2026-10-05T17:16:52.939321+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "8f41bcaa70a9aa2cea544e548660079c752c731fb501652f5d6443348395d0ed",
+    "response_sha256": "2f56746e4af7b1199becdfff6616396a8b699b5ce96569722616b4bebfb181f1",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-recent",
+    "side": "hermes",
+    "session_id": "20261005_171656_4229bb",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": true,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:16:52.966022+00:00",
+      "finished_at": "2026-10-05T17:17:01.620730+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "7dd65c66960f397d3cab589f27bf657736963674f9f29d0c29612271dbce2f72",
+    "response_sha256": "25f1e9add8834a23a677d8cd312622d0a1a011491f6d8eb600daa29cb73a4c59",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-untagged",
+    "side": "native",
+    "session_id": "1cea7754-263f-4d9b-82c7-00ed3e505b74",
+    "changed_core_files": 10,
+    "tags": [],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:17:01.643553+00:00",
+      "finished_at": "2026-10-05T17:17:03.414362+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "7a5a77ae48ca0af325f10554aeae269b574e241f5afbc2974eec075ca5da536d",
+    "response_sha256": "e7baab5971df032ef58a0946c2f522a9f8704516e7e1df75106802e9dabae14b",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-untagged",
+    "side": "hermes",
+    "session_id": "20261005_171706_1746a8",
+    "changed_core_files": 10,
+    "tags": [],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false,
+    "nag_line": "",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:17:03.437805+00:00",
+      "finished_at": "2026-10-05T17:17:12.280108+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "dc13959e80b74b9361c08e6322d4580fcbc7d577e6ca9da244d78539b5f37aa5",
+    "response_sha256": "2cdbe645c0e0f9bcf7d40585f84807b28fa3f772eb2deca67c61cbe00ade57d7",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-async-count",
+    "side": "native",
+    "session_id": "0359c1e1-7693-4494-9012-f100207fae12",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": true,
+    "nag_line": "⏫ VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight — run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, or defer explicitly to the principal.",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:17:12.306391+00:00",
+      "finished_at": "2026-10-05T17:17:14.178948+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": "a753707b50df1653755630be58238975af0332b532104d482321b1d3b44adf9c",
+    "response_sha256": "d34c063fc396e82ca8008240e90cc013ed3d9dbee79c79efca3a2229e61f44c2",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  },
+  {
+    "case": "version-drift-async-count",
+    "side": "hermes",
+    "session_id": "20261005_171717_eeaa88",
+    "changed_core_files": 10,
+    "tags": [
+      "v1.0.0"
+    ],
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": true,
+    "nag_line": "⏫ VERSION-DRIFT: 10 core file(s) ahead of v1.0.0, no bump in flight — run the VersionBump workflow (/vb: classify → bump → ship) before this ages further, or defer explicitly to the principal.",
+    "clock_bounds": {
+      "started_at": "2026-10-05T17:17:14.203185+00:00",
+      "finished_at": "2026-10-05T17:17:23.387353+00:00"
+    },
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": "dd21612b378a365e9bcc2d072c113faf86806fe3368ca8a18a20344e36f79642",
+    "response_sha256": "36fec20972842e046ae8ff8a54857aec4a274dfec3b558ab98c521dc125155a9",
+    "actual_model": "flashnext-w4a16-fp8ple",
+    "upstream_status": 200
+  }
+]

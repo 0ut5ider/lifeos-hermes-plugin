@@ -1,0 +1,53 @@
+2026-10-05-paired-atlas-hints atlas-bash-systemd SAME
+2026-10-05-paired-atlas-hints atlas-bash-plain SAME
+2026-10-05-paired-atlas-hints atlas-bash-multiple SAME
+2026-10-05-paired-context-response context-response-desktop DIFF {"hooks/LoadContext.hook.ts": ["8bc6f039c8", "fad2cf437b"], "lib/MemoryAccess.ts": ["", "d65bae1395"], "lib/advisory-readback.ts": ["2a1304b352", "cd06025d13"], "lib/learning-readback.ts": ["55f814badd", "52403f16d9"]}
+2026-10-05-paired-context-response context-response-remote DIFF {"hooks/LoadContext.hook.ts": ["8bc6f039c8", "fad2cf437b"], "lib/MemoryAccess.ts": ["", "d65bae1395"], "lib/advisory-readback.ts": ["2a1304b352", "cd06025d13"], "lib/learning-readback.ts": ["55f814badd", "52403f16d9"]}
+2026-10-05-paired-context-response context-response-disabled DIFF {"hooks/LoadContext.hook.ts": ["8bc6f039c8", "fad2cf437b"], "lib/MemoryAccess.ts": ["", "d65bae1395"], "lib/advisory-readback.ts": ["2a1304b352", "cd06025d13"], "lib/learning-readback.ts": ["55f814badd", "52403f16d9"]}
+2026-10-05-paired-feedback-async feedback-async-rating SAME
+2026-10-05-paired-feedback-async feedback-async-bare-rating SAME
+2026-10-05-paired-feedback-async feedback-async-praise SAME
+2026-10-05-paired-feedback-async feedback-async-neutral SAME
+2026-10-05-paired-feedback-async feedback-async-low-rating SAME
+2026-10-05-paired-feedback feedback-rating SAME
+2026-10-05-paired-feedback feedback-bare-rating SAME
+2026-10-05-paired-feedback feedback-praise SAME
+2026-10-05-paired-feedback feedback-neutral SAME
+2026-10-05-paired-feedback feedback-low-rating SAME
+2026-10-05-paired-file-hints file-hint-write-projects DIFF {"hooks/ConfigEvalFire.hook.ts": ["999dcaa059", "74c7012187"]}
+2026-10-05-paired-file-hints file-hint-write-plain DIFF {"hooks/ConfigEvalFire.hook.ts": ["999dcaa059", "74c7012187"]}
+2026-10-05-paired-file-hints file-hint-edit-gear DIFF {"hooks/ConfigEvalFire.hook.ts": ["999dcaa059", "74c7012187"]}
+2026-10-05-paired-format-contract format-contract-empty DIFF {"hooks/DriftReminder.hook.ts": ["4a7e48a1fb", "3c92fa459d"]}
+2026-10-05-paired-format-contract format-contract-clean DIFF {"hooks/DriftReminder.hook.ts": ["4a7e48a1fb", "3c92fa459d"]}
+2026-10-05-paired-format-contract format-contract-violations DIFF {"hooks/DriftReminder.hook.ts": ["4a7e48a1fb", "3c92fa459d"]}
+2026-10-05-paired-format-contract format-contract-depth DIFF {"hooks/DriftReminder.hook.ts": ["4a7e48a1fb", "3c92fa459d"]}
+2026-10-05-paired-format-contract format-contract-stale DIFF {"hooks/DriftReminder.hook.ts": ["4a7e48a1fb", "3c92fa459d"]}
+2026-10-05-paired-isa-render isa-render-absent SAME
+2026-10-05-paired-isa-render isa-render-first-authoring SAME
+2026-10-05-paired-isa-render isa-render-missing SAME
+2026-10-05-paired-isa-render isa-render-complete SAME
+2026-10-05-paired-isa-render isa-render-resumed SAME
+2026-10-05-paired-isa-render isa-render-existing-page SAME
+2026-10-05-paired-pre-tool-guard guard-bash-plutil-block SAME
+2026-10-05-paired-pre-tool-guard guard-bash-plutil-safe SAME
+2026-10-05-paired-pre-tool-guard guard-bash-plain SAME
+2026-10-05-paired-response-cache response-cache-empty SAME
+2026-10-05-paired-response-cache response-cache-replace SAME
+2026-10-05-paired-response-cache response-cache-limit SAME
+2026-10-05-paired-time-context time-context-sync-utc SAME
+2026-10-05-paired-time-context time-context-sync-toronto SAME
+2026-10-05-paired-time-context time-context-async-utc SAME
+2026-10-05-paired-time-context time-context-invalid-zone SAME
+2026-10-05-paired-tool-log tool-log-success DIFF {"hooks/EventLogger.hook.ts": ["bed11b455b", "c2b454d372"]}
+2026-10-05-paired-tool-log tool-log-repeat SAME
+2026-10-05-paired-tool-log tool-log-failure DIFF {"hooks/EventLogger.hook.ts": ["bed11b455b", "c2b454d372"]}
+2026-10-05-paired-version-drift version-drift-count SAME
+2026-10-05-paired-version-drift version-drift-aged SAME
+2026-10-05-paired-version-drift version-drift-below SAME
+2026-10-05-paired-version-drift version-drift-bump SAME
+2026-10-05-paired-version-drift version-drift-recent SAME
+2026-10-05-paired-version-drift version-drift-untagged SAME
+2026-10-05-paired-version-drift version-drift-async-count SAME
+2026-10-05-paired-context-response/final context-response-desktop DIFF {"hooks/LoadContext.hook.ts": ["8bc6f039c8", "fad2cf437b"], "lib/MemoryAccess.ts": ["", "d65bae1395"], "lib/advisory-readback.ts": ["2a1304b352", "cd06025d13"], "lib/learning-readback.ts": ["55f814badd", "52403f16d9"]}
+2026-10-05-paired-context-response/final context-response-remote DIFF {"hooks/LoadContext.hook.ts": ["8bc6f039c8", "fad2cf437b"], "lib/MemoryAccess.ts": ["", "d65bae1395"], "lib/advisory-readback.ts": ["2a1304b352", "cd06025d13"], "lib/learning-readback.ts": ["55f814badd", "52403f16d9"]}
+2026-10-05-paired-context-response/final context-response-disabled DIFF {"hooks/LoadContext.hook.ts": ["8bc6f039c8", "fad2cf437b"], "lib/MemoryAccess.ts": ["", "d65bae1395"], "lib/advisory-readback.ts": ["2a1304b352", "cd06025d13"], "lib/learning-readback.ts": ["55f814badd", "52403f16d9"]}

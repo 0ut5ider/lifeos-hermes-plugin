@@ -45,6 +45,52 @@ class MemoryHistoryTests(unittest.TestCase):
         self.assertEqual(self.project(request),original)
         self.assertEqual(request,original)
 
+    def test_responses_projection_removes_retired_content_and_preserves_protocol_ids(self):
+        request = {'input': [{'role': 'user', 'content': 'Synthetic current request'},
+            {'type': 'message', 'role': 'assistant', 'id': 'message-one',
+             'content': [{'type': 'output_text', 'text': self.marker}]},
+            {'type': 'function_call', 'id': 'call-item', 'call_id': 'call-one', 'name': 'lifeos_memory_get',
+             'arguments': json.dumps({'query': self.marker, 'request_id': 'stable-request'})},
+            {'type': 'function_call_output', 'call_id': 'call-one',
+             'output': json.dumps({'content': self.marker, 'reference': self.saved['reference']})}]}
+        original = deepcopy(request)
+        self.forget()
+        result = self.project(request)
+        self.assertEqual(request, original)
+        self.assertNotIn(self.marker, json.dumps(result))
+        self.assertEqual(result['input'][1]['id'], 'message-one')
+        self.assertEqual(result['input'][1]['content'][0]['text'], REMOVED)
+        self.assertEqual(result['input'][2]['call_id'], result['input'][3]['call_id'])
+        self.assertEqual(json.loads(result['input'][2]['arguments'])['request_id'], 'stable-request')
+        self.assertEqual(json.loads(result['input'][3]['output'])['reference'], self.saved['reference'])
+
+    def test_responses_extra_body_projects_effective_input_and_preserves_other_options(self):
+        self.forget()
+        request = {'input': [{'role': 'user', 'content': 'Synthetic typed input'}],
+                   'extra_body': {'input': [{'role': 'assistant', 'content': self.marker}], 'temperature': 0.2}}
+        original = deepcopy(request)
+        result = self.project(request)
+        self.assertEqual(result['input'], result['extra_body']['input'])
+        self.assertEqual(result['extra_body']['temperature'], 0.2)
+        self.assertNotIn(self.marker, json.dumps(result))
+        self.assertEqual(request, original)
+
+    def test_responses_projection_preserves_the_current_quote_and_removes_appended_context(self):
+        original = [{'type': 'input_text', 'text': self.marker}]
+        self.fixture.runtime.admit(self.fixture.metadata(), **self.fixture.route, is_first_turn=True,
+                                   user_message=original)
+        self.forget()
+        result = self.project({'input': [{'role': 'user', 'content': original + [
+            {'type': 'input_text', 'text': self.marker}]}]})
+        self.assertEqual(result['input'][0]['content'][0], original[0])
+        self.assertEqual(result['input'][0]['content'][1]['text'], REMOVED)
+
+    def test_responses_projection_refuses_to_rewrite_protocol_identifiers(self):
+        self.forget()
+        with self.assertRaisesRegex(MemoryAdmissionError, 'model history'):
+            self.project({'input': [{'type': 'function_call_output', 'call_id': self.marker,
+                                     'output': self.marker}]})
+
     def worker_turn(self):
         self.fixture.runtime.admit(self.fixture.metadata(),**self.fixture.route,is_first_turn=True,
                                    user_message='Synthetic previous user input')
@@ -62,14 +108,40 @@ class MemoryHistoryTests(unittest.TestCase):
         with self.assertRaisesRegex(MemoryAdmissionError,'verify the current user input'):
             self.project({'messages':[{'role':'user','content':'Synthetic previous user input'}]})
 
-    def test_worker_input_proof_does_not_refresh_auxiliary_or_direct_final_checks(self):
+    def test_worker_input_proof_rebinds_auxiliary_execution_and_keeps_direct_checks_closed(self):
         self.worker_turn()
         request = {'messages':[{'role':'user','content':'Synthetic admitted next user input'}]}
         with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
             self.fixture.runtime.check_call(request=request,**self.fixture.route,session_id='session')
-        with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
-            self.fixture.runtime.project_call(request=request,next_call=lambda _:self.fail('Dispatch reached'),
-                **self.fixture.route,session_id='session',aux_task='compression')
+        sent = []
+        def dispatch(projected):
+            self.fixture.runtime.check_call(request=projected, **self.fixture.route, session_id='session', aux_task='compression')
+            sent.append(projected)
+        self.fixture.runtime.project_call(request=request, next_call=dispatch,
+                                         **self.fixture.route, session_id='session', aux_task='compression')
+        self.assertEqual(sent, [request])
+
+    def test_worker_input_proof_does_not_authorize_retired_auxiliary_content(self):
+        self.forget()
+        self.project({'messages': [{'role': 'user', 'content': 'Synthetic clean current request'}]})
+        self.worker_turn()
+        with self.assertRaisesRegex(MemoryAdmissionError, 'compression prompt'):
+            self.fixture.runtime.project_call(request={'messages': [{'role': 'user', 'content': self.marker}]},
+                next_call=lambda _: self.fail('Auxiliary dispatch reached'),
+                **self.fixture.route, session_id='session', aux_task='compression')
+
+    def test_auxiliary_final_admission_rebinds_only_the_unchanged_input_proof(self):
+        self.worker_turn()
+        self.fixture.runtime.check_call(request={'messages': [{'role': 'user', 'content': 'Synthetic generated title request'}]},
+            **self.fixture.route, session_id='session', aux_task='title_generation')
+
+    def test_worker_input_proof_does_not_refresh_a_retired_generation_for_auxiliary_calls(self):
+        self.worker_turn()
+        self.forget()
+        with self.assertRaisesRegex(MemoryAdmissionError, 'invalidated memory context'):
+            self.fixture.runtime.project_call(request={'messages': [{'role': 'user', 'content': 'Synthetic generated request'}]},
+                next_call=lambda _: self.fail('Auxiliary dispatch reached'),
+                **self.fixture.route, session_id='session', aux_task='compression')
 
     def test_generation_refresh_removes_retired_tool_and_assistant_content(self):
         request = {'messages':[{'role':'user','content':'Synthetic current request'},

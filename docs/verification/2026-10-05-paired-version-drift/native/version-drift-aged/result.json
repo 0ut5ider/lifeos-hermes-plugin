@@ -1,0 +1,102 @@
+{
+  "before": {
+    "changed_core_files": 1,
+    "tag": "v1.0.0",
+    "tag_age_hours": 72,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false
+  },
+  "after": {
+    "hook_context": "\u23eb VERSION-DRIFT: 1 core file(s) ahead of v1.0.0 (tag 72h old), no bump in flight \u2014 run the VersionBump workflow (/vb: classify \u2192 bump \u2192 ship) before this ages further, or defer explicitly to the principal.",
+    "state": {
+      "count": 1,
+      "tag": "v1.0.0",
+      "timestamp_current": true
+    },
+    "worktree_preserved": true,
+    "model_nag_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "f278151f-4f97-4df8-b8fa-6d6e278becc1",
+  "seconds": 1.722,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-version-drift-20261005/results/version-drift-aged",
+    "/home/lifeos-claude-ref/workspace/paired-version-drift-20261005/results/version-drift-aged",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.4.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.4.1 /home/lifeos-claude-ref/workspace/paired-version-drift-20261005/results/version-drift-aged/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvVmVyc2lvbkRyaWZ0Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/VersionDrift.hook.ts": "f246a7bf2ba340fd0255ddf6f873c76f61434abc7161afecb2da9436ecde4497"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "52c70398cd3ff574ebebb4b55e358dcf8515606cb2c59b1cb33ea8a7176bcaed",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "bc33ccb0d52cc00f3aa94f5e587e70504b6150902366df747a90e240f47ff5a6",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "2ac333df09db582a1d7362d7563db7f4e8fb8df5bf6c4f859c7ef6ded03d9f79",
+    "fixture-events.jsonl": "73a953df6f6d6f4fd49b5b714ba684b43962beddca9bf0351d9353fe9b9a6da4",
+    "cli.log": "2e592603cb7ca25699ba2faa888b27d70d18b2ab1b8ddba44b1ed286ad093ea3",
+    "before-state.json": "326f51001c6f6c77dda09e9686e41d085b23b655786ba5c0d7530d3c125752ec",
+    "after-state.json": "a7937a8df0164a49f19f132d8e2daedf9f15bd3a18fb720dccd5d4c1fedfba10",
+    "fixture-files-before.json": "ad004ab98e8acaa4a1829e4050dddbfe8ffe51aab3d80f246b5b2b5d0763caf2",
+    "fixture-files-after.json": "4769c3ceb577dc5c252859d2f451386c9a40c9be323e2ccc04e50ea684f777d2"
+  }
+}

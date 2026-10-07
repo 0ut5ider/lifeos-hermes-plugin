@@ -1,0 +1,15 @@
+......F.                                                                 [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupTests.test_snapshot_keeps_native_references_retirements_and_current_contents_together _
+tests/test_memory_backup.py:56: in test_snapshot_keeps_native_references_retirements_and_current_contents_together
+    self.assertEqual(recovered.recall(native_fixture.OWNER, 'forgotten backup claim'), [])
+E   AssertionError: Lists differ: [{'reference': {'id': '6a773f9e48dc4f8c92a[657 chars]319}] != []
+E   
+E   First list contains 2 additional elements.
+E   First extra element 0:
+E   {'reference': {'id': '6a773f9e48dc4f8c92a349520e6a1695', 'revision': 1}, 'content': 'RULE: synthetic private backup preference', 'category': 'principal', 'project': '', 'writer': 'local:owner', 'status': 'active', 'source': {'kind': 'explicit', 'session': '', 'path': 'LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md'}, 'score': 1.042654028436019}
+E   
+E   Diff is 831 characters long. Set self.maxDiff to None to see it.
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup.py::MemoryBackupTests::test_snapshot_keeps_native_references_retirements_and_current_contents_together
+1 failed, 7 passed in 14.80s

@@ -1,0 +1,94 @@
+{
+  "before": {
+    "cache_present": false,
+    "prior_marker_present": false
+  },
+  "after": {
+    "cache_present": true,
+    "prior_marker_present": false,
+    "cache_is_nonempty": true,
+    "cache_within_limit": true,
+    "user_response_delivered": true,
+    "cache_matches_stop_message": true,
+    "stop_message_matches_user_response": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "Stop",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "e8861202-2e4a-4e3f-bc34-35d774cc742a",
+  "seconds": 2.674,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-response-cache-20261005-v2/results/response-cache-empty",
+    "/home/lifeos-claude-ref/workspace/paired-response-cache-20261005-v2/results/response-cache-empty",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "Stop.1.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run Stop.1.1 /home/lifeos-claude-ref/workspace/paired-response-cache-20261005-v2/results/response-cache-empty/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTGFzdFJlc3BvbnNlQ2FjaGUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/LastResponseCache.hook.ts": "094652b94990ce05adaa12ea4a21115bfbea4bace86d2154b1773ce8e8ac306c"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "bb91e44fa6c87427eba9b96542f9f6b3a732f45a069097f5a018bf4380310ac5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a3db65c4a652dd2bd51162ed04905b39f1ca763b72e2832e34cbf90c7585c798",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "669fc248695674c8fbb4e2b672d19af4dedfabcaa75534dafcd5f5e91653abac",
+    "fixture-events.jsonl": "d5fdc53434d54747b713d66afc3db06c0aa49c73a21cc14f15bc69330518aca0",
+    "cli.log": "cb19b8718ade893fe23c90c2052cef334c9f9636101b71eeeed14af713aa95f6",
+    "before-state.json": "3a6f2f19658731815f48e360677a85f10cf910f54717291ec4a980483abb5b9b",
+    "after-state.json": "95f165e5f7afff31d365e83311a032b2153674f4d7ddd91391fd4f5ae9a4b4b5",
+    "fixture-files-before.json": "ea2b564c1a388d3d5ead7d25d3bd4255d82113cc198bccc196ede906e93e7866",
+    "fixture-files-after.json": "d14fb307b134c07bb95ef0c35b8de60979445a9c3f5f5527078ab67788180eb8"
+  }
+}

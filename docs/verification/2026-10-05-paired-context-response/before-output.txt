@@ -1,0 +1,40 @@
+......F..F..........F......                                              [100%]
+=================================== FAILURES ===================================
+_ PairedLifecycleEffectTests.test_context_response_requires_successful_generation_and_user_delivery _
+tests/test_paired_lifecycle_effects.py:63: in test_context_response_requires_successful_generation_and_user_delivery
+    self.assertEqual(check_pair(case), [])
+E   AssertionError: Lists differ: ['context-response-desktop: unknown case'] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   'context-response-desktop: unknown case'
+E   
+E   - ['context-response-desktop: unknown case']
+E   + []
+_ PairedLifecycleEffectTests.test_disabled_response_cannot_count_an_unsuccessful_model_request _
+tests/test_paired_lifecycle_effects.py:75: in test_disabled_response_cannot_count_an_unsuccessful_model_request
+    self.assertEqual(check_pair(case), [])
+E   AssertionError: Lists differ: ['context-response-disabled: unknown case'] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   'context-response-disabled: unknown case'
+E   
+E   - ['context-response-disabled: unknown case']
+E   + []
+_ PairedLifecycleEffectTests.test_remote_response_preserves_owner_context_exclusion _
+tests/test_paired_lifecycle_effects.py:69: in test_remote_response_preserves_owner_context_exclusion
+    self.assertEqual(check_pair(case), [])
+E   AssertionError: Lists differ: ['context-response-remote: unknown case'] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   'context-response-remote: unknown case'
+E   
+E   - ['context-response-remote: unknown case']
+E   + []
+=========================== short test summary info ============================
+FAILED tests/test_paired_lifecycle_effects.py::PairedLifecycleEffectTests::test_context_response_requires_successful_generation_and_user_delivery
+FAILED tests/test_paired_lifecycle_effects.py::PairedLifecycleEffectTests::test_disabled_response_cannot_count_an_unsuccessful_model_request
+FAILED tests/test_paired_lifecycle_effects.py::PairedLifecycleEffectTests::test_remote_response_preserves_owner_context_exclusion
+3 failed, 24 passed in 0.08s

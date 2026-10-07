@@ -1,0 +1,9 @@
+# ISA and observer state failures
+
+Date: 2026-10-06. Fixture: actual local file tools, native LifeOS hooks, and the installed Hermes dispatcher. All data is synthetic.
+
+A completed ISA resumes when its body changes. ISASync rewrites the frontmatter to `phase: learn`, increments iteration, and appends an audit decision. The parallel ISAStaleWriteGuard hook recorded the submitted file before that rewrite. Its recorded hash exactly matched the submitted content and differed from the final file. The sequential native control passed. The installed Hermes control failed twice with captured file hashes. This is a dependency between these two hooks. The bridge now waits for synchronization before it records the view. Independent hooks still execute concurrently, and returned context retains configured order.
+
+The full observer test found a separate native defect. Its system ledger recorded `0→1` after a real criterion closure. The visible system line retained `0 closed`. The pure renderer also retained the first detail when inputs progressed from `0 closed` to `0→1` to `0→2`. Three characterization cases passed: empty output, retaining detail when the next entry has none, and grouped output with a six-item limit. The latest-detail regression failed. The compatibility patch retains the latest observed detail. This is an intentional correction to the pinned native renderer, not an equal-output claim for the defective branch.
+
+The first fixture attempt also exhausted the workstation's temporary-files quota by copying unrelated tool dependency trees. The corrected fixture excludes `node_modules` and uses the disk-backed test directory. A later attempt triggered Hermes's repeated-read guard because the helper read twice before an explicit Read. The helper now reads once. Neither fixture correction changes product guard behavior.

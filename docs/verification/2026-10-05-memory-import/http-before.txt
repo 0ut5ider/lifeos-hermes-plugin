@@ -1,0 +1,14 @@
+F
+======================================================================
+FAIL: test_verified_owner_reviews_and_captures_private_source_snapshot (test_memory_import_dashboard.MemoryImportDashboardTests.test_verified_owner_reviews_and_captures_private_source_snapshot)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import_dashboard.py", line 27, in test_verified_owner_reviews_and_captures_private_source_snapshot
+    self.assertEqual(response.status_code,200,response.text)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 404 != 200 : {"detail":"Not Found"}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.167s
+
+FAILED (failures=1)

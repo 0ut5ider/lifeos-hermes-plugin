@@ -1,0 +1,101 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/format-gate.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"decision\":\"flag\",\"code\":\"no-banner\",\"detail\":\"first visible line is not the LifeOS banner: \\\"READY\\\"\"}\n",
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/verification-gate.jsonl": "{\"ts\":\"<time>\",\"decision\":\"no-claim\"}\n",
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/writing-gate.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"decision\":\"no-content\",\"strong\":false,\"weak\":false,\"words\":1}\n"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "Stop",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "1e4a1102-bb40-40a4-b89d-eb077719a815",
+  "seconds": 2.024,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-stop-gates",
+    "/home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-stop-gates",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "Stop.1.6",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run Stop.1.6 /home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-stop-gates/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvU3RvcEdhdGVzLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/StopGates.hook.ts": "95860f854df8cc22aee3f442af0998cd3d6a9019de5c0d24c86c54990a0e0ec5"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "482ae1bb856a31a99e51e9b0af97d7c30825258e35fab866064d5ba8c7e1fbbf",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "efe2eb33db7b53236fb19a02dc592019330b0e716f1618684adb6915c1ca70a7",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "cc4d27e7a1f64d9681658bae5db925c3c53c731b77895e527d7ec4ed638bf0fc",
+    "fixture-events.jsonl": "10f8ea67000ab5404f5fe5e8fc498da4244050a6413d5849d41743e2273bafb2",
+    "cli.log": "c1a626b8966fc8217cbe3ee97c5415a67308d2b338bd9d55c1c6b6c93deed05a",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "2a5a10666c89807f4d04befa1e50a073c722a429f6cbc404da98b3b31b6689d6",
+    "fixture-files-before.json": "387947be4173473ac9205d555a5ad9983b1551ba4dde5c3069440b4a253bfd0d",
+    "fixture-files-after.json": "24a918628663ea24ebd40b8d69ff20c1b071451b80f68a34a57882efc7b53c6d"
+  }
+}

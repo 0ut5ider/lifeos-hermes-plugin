@@ -1,0 +1,10 @@
+{
+  "arguments": [
+    "related",
+    "synthetic-lab-routing"
+  ],
+  "context": true,
+  "status": 1,
+  "stdout": "",
+  "stderr": "31 | \n32 | export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,\n33 |                                 valid: (value: unknown) => value is T): T | undefined {\n34 |   if (operation !== \"pulse_http\" && !hasMemoryAccess()) return undefined;\n35 |   const path = resolve(homedir(), \".claude/LIFEOS/USER/CONFIG/memory-access.json\");\n36 |   const info = lstatSync(path);\n                    ^\nENOENT: no such file or directory, statx '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-dfznomfy/.claude/LIFEOS/USER/CONFIG/memory-access.json'\n    path: \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-dfznomfy/.claude/LIFEOS/USER/CONFIG/memory-access.json\",\n syscall: \"statx\",\n   errno: -2,\n    code: \"ENOENT\"\n\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:36:16)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts:683:18\n\nBun v1.3.14 (Linux x64)\n"
+}

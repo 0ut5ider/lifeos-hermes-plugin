@@ -1,0 +1,26 @@
+[DocAutoUpdate] === Starting hybrid doc integrity check (deterministic + inference) ===
+[DocAutoUpdate] Modified files in session: 1
+[DocAutoUpdate] System docs modified: false
+[DocAutoUpdate] Hook files modified: true
+[DocAutoUpdate] System file change detected: true
+[DocAutoUpdate] Inventory: 56 hooks, 9 handlers, 29 libs, 1 system docs
+[DocAutoUpdate] Checking 1 SYSTEM docs for cross-reference drift
+[DocAutoUpdate] [OK] Hook file references: all valid
+[DocAutoUpdate] [OK] Handler file references: all valid
+[DocAutoUpdate] [OK] Lib file references: all valid
+[DocAutoUpdate] [OK] System doc references: all valid
+[DocAutoUpdate] [OK] Hook counts: accurate
+[DocAutoUpdate] === Running inference analysis ===
+[DocAutoUpdate] [INFERENCE] Running semantic analysis (medium tier)...
+[DocAutoUpdate] [INFERENCE] Context size: 336 chars
+[DocAutoUpdate] [INFERENCE] Completed in 7370ms (success: true)
+[DocAutoUpdate] [INFERENCE] 1 valid edits from 1 raw
+[DocAutoUpdate] [UPDATED] [INFERENCE] Hooks/HookSystem.md: Source ABOUTME comments state it reports actual file-operation failures and emits a warning for exit status 7. The code uses console.error to output an error message. The doc incorrectly claimed it reports failures as successful. ("FixtureControl.hook.ts reports all comma..." → "FixtureControl.hook.ts reports actual fi...")
+[DocAutoUpdate] === Summary (7375ms) ===
+[DocAutoUpdate] Docs checked: 1
+[DocAutoUpdate] Drift items found: 0
+[DocAutoUpdate] Updates applied: 1
+[DocAutoUpdate] All cross-references valid
+[DocAutoUpdate] Wall time: 7375ms
+[DocAutoUpdate] === Check complete ===
+[DocCrossRefIntegrity] Voice OFF (remote channel: headless)

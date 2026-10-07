@@ -1,0 +1,44 @@
+.FFFF.FF                                                               [100%]
+=================================== FAILURES ===================================
+_ MemoryPulseAdapterDataTests.test_changed_or_private_sources_exclude_cached_page_and_metadata (content='# Synthetic collection\nA later synthetic book.\n') _
+tests/test_memory_pulse_adapter_data.py:61: in test_changed_or_private_sources_exclude_cached_page_and_metadata
+    self.assertIsNone(result['value'])
+E   AssertionError: {'schemaVersion': '1.0.0', 'data': {'kind': 'collection', 'title': 'Synthetic fixture', 'category': 'taste', 'items': [{'name': 'A synthetic book', 'private': False}], 'meta': {'schemaVersion': '1.0.0', 'pageId': 'synthetic', 'lastBuildAt': '2026-10-04T00:00:00.000Z', 'sourceHashes': {'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-qct91ozs/.claude/LIFEOS/USER/TELOS/BOOKS.md': '88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620'}, 'adapterVersion': '1.0.0', 'model': 'haiku', 'costUSD': 0, 'latencyMs': 0, 'provenance': 'customized', 'warnings': [], 'cacheKey': 'cd7f81969b33f760b3da410130111e8cf7bb9aec9ad20c4bf4cc903fc066ffdd'}}, '_meta': {'schemaVersion': '1.0.0', 'pageId': 'synthetic', 'lastBuildAt': '2026-10-04T00:00:00.000Z', 'sourceHashes': {'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-qct91ozs/.claude/LIFEOS/USER/TELOS/BOOKS.md': '88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620'}, 'adapterVersion': '1.0.0', 'model': 'haiku', 'costUSD': 0, 'latencyMs': 0, 'provenance': 'customized', 'warnings': [], 'cacheKey': 'cd7f81969b33f760b3da410130111e8cf7bb9aec9ad20c4bf4cc903fc066ffdd'}} is not None
+_ MemoryPulseAdapterDataTests.test_changed_or_private_sources_exclude_cached_page_and_metadata (content='<private>Synthetic hidden collection.</private>\n') _
+tests/test_memory_pulse_adapter_data.py:61: in test_changed_or_private_sources_exclude_cached_page_and_metadata
+    self.assertIsNone(result['value'])
+E   AssertionError: {'schemaVersion': '1.0.0', 'data': {'kind': 'collection', 'title': 'Synthetic fixture', 'category': 'taste', 'items': [{'name': 'A synthetic book', 'private': False}], 'meta': {'schemaVersion': '1.0.0', 'pageId': 'synthetic', 'lastBuildAt': '2026-10-04T00:00:00.000Z', 'sourceHashes': {'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-qct91ozs/.claude/LIFEOS/USER/TELOS/BOOKS.md': '88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620'}, 'adapterVersion': '1.0.0', 'model': 'haiku', 'costUSD': 0, 'latencyMs': 0, 'provenance': 'customized', 'warnings': [], 'cacheKey': 'cd7f81969b33f760b3da410130111e8cf7bb9aec9ad20c4bf4cc903fc066ffdd'}}, '_meta': {'schemaVersion': '1.0.0', 'pageId': 'synthetic', 'lastBuildAt': '2026-10-04T00:00:00.000Z', 'sourceHashes': {'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-qct91ozs/.claude/LIFEOS/USER/TELOS/BOOKS.md': '88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620'}, 'adapterVersion': '1.0.0', 'model': 'haiku', 'costUSD': 0, 'latencyMs': 0, 'provenance': 'customized', 'warnings': [], 'cacheKey': 'cd7f81969b33f760b3da410130111e8cf7bb9aec9ad20c4bf4cc903fc066ffdd'}} is not None
+___ MemoryPulseAdapterDataTests.test_changed_source_refuses_page_publication ___
+tests/test_memory_pulse_adapter_data.py:93: in test_changed_source_refuses_page_publication
+    self.assertFalse(self.call('write_page', value=value)['ok'])
+E   AssertionError: True is not false
+____ MemoryPulseAdapterDataTests.test_escaped_private_page_text_is_excluded ____
+tests/test_memory_pulse_adapter_data.py:69: in test_escaped_private_page_text_is_excluded
+    self.assertIsNone(result['value'])
+E   AssertionError: {'schemaVersion': '1.0.0', 'data': {'kind': 'collection', 'title': 'Synthetic fixture', 'category': 'taste', 'items': [{'name': '<private>Synthetic hidden page.</private>', 'private': False}], 'meta': {'schemaVersion': '1.0.0', 'pageId': 'synthetic', 'lastBuildAt': '2026-10-04T00:00:00.000Z', 'sourceHashes': {'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-4oe7c2gh/.claude/LIFEOS/USER/TELOS/BOOKS.md': '88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620'}, 'adapterVersion': '1.0.0', 'model': 'haiku', 'costUSD': 0, 'latencyMs': 0, 'provenance': 'customized', 'warnings': [], 'cacheKey': '5476164f2e9ad70dcff770e2cd149c61d86f0d14ddcde7358560ae7ceee89354'}}, '_meta': {'schemaVersion': '1.0.0', 'pageId': 'synthetic', 'lastBuildAt': '2026-10-04T00:00:00.000Z', 'sourceHashes': {'/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-4oe7c2gh/.claude/LIFEOS/USER/TELOS/BOOKS.md': '88acb198a23f5505a30b72557bd94d0091c39a907205144f204c454c9f53b620'}, 'adapterVersion': '1.0.0', 'model': 'haiku', 'costUSD': 0, 'latencyMs': 0, 'provenance': 'customized', 'warnings': [], 'cacheKey': '5476164f2e9ad70dcff770e2cd149c61d86f0d14ddcde7358560ae7ceee89354'}} is not None
+___ MemoryPulseAdapterDataTests.test_missing_context_refuses_cache_readback ____
+tests/test_memory_pulse_adapter_data.py:46: in test_missing_context_refuses_cache_readback
+    self.assertFalse(self.call('read_page', context=False)['ok'])
+E   AssertionError: True is not false
+_ MemoryPulseAdapterDataTests.test_owner_page_pair_publication_retains_native_data_and_private_permissions _
+tests/test_memory_pulse_adapter_data.py:79: in test_owner_page_pair_publication_retains_native_data_and_private_permissions
+    self.assertEqual(self.page().stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryPulseAdapterDataTests.test_read_only_owner_page_write_preserves_previous_pair _
+tests/test_memory_pulse_adapter_data.py:86: in test_read_only_owner_page_write_preserves_previous_pair
+    self.assertFalse(self.call('write_page', value=value)['ok'])
+E   AssertionError: True is not false
+_ MemoryPulseAdapterDataTests.test_restricted_reader_refuses_unclassified_cache _
+tests/test_memory_pulse_adapter_data.py:51: in test_restricted_reader_refuses_unclassified_cache
+    self.assertFalse(self.call('read_page')['ok'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+SUBFAILED(content='# Synthetic collection\nA later synthetic book.\n') tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_changed_or_private_sources_exclude_cached_page_and_metadata
+SUBFAILED(content='<private>Synthetic hidden collection.</private>\n') tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_changed_or_private_sources_exclude_cached_page_and_metadata
+FAILED tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_changed_source_refuses_page_publication
+FAILED tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_escaped_private_page_text_is_excluded
+FAILED tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_missing_context_refuses_cache_readback
+FAILED tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_owner_page_pair_publication_retains_native_data_and_private_permissions
+FAILED tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_read_only_owner_page_write_preserves_previous_pair
+FAILED tests/test_memory_pulse_adapter_data.py::MemoryPulseAdapterDataTests::test_restricted_reader_refuses_unclassified_cache
+8 failed, 2 passed in 0.51s

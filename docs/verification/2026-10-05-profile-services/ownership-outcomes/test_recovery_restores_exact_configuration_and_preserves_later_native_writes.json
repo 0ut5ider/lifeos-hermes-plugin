@@ -1,0 +1,109 @@
+{
+  "test": "test_memory_ownership.MemoryOwnershipTests.test_recovery_restores_exact_configuration_and_preserves_later_native_writes",
+  "configuration": {
+    "version": 1,
+    "root": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-76woq7nv/.claude",
+    "principal": "owner",
+    "ownership_enabled": false,
+    "accounts": {
+      "chat-a:100": "owner",
+      "chat-b:300": "owner",
+      "dashboard:owner": "owner"
+    },
+    "destinations": {
+      "chat-a:200": {
+        "visibility": "private",
+        "participants": [
+          "owner"
+        ],
+        "read": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "write": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "projects": [
+          "*"
+        ],
+        "model_routes": [
+          "be94ca2b2472c15f327335802cd4e18acc5888fa2368e7268234e77e7e923c62"
+        ]
+      },
+      "chat-b:400": {
+        "visibility": "private",
+        "participants": [
+          "owner"
+        ],
+        "read": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "write": [
+          "principal",
+          "assistant",
+          "project"
+        ],
+        "projects": [
+          "*"
+        ],
+        "model_routes": [
+          "be94ca2b2472c15f327335802cd4e18acc5888fa2368e7268234e77e7e923c62"
+        ]
+      }
+    },
+    "sharing_enabled": false,
+    "clients": {}
+  },
+  "files": {
+    "config.yaml": {
+      "sha256": "c5abf72869243a3422ee17e02ebea33600ddc69cc1ed8d5eae9ad0787575b76d",
+      "mode": 420
+    },
+    "lifeos-memory.json": {
+      "sha256": "ac4cfe25ca6381bcc6e4dedd0c9540752b2d51b006e5c19339215c050b310699",
+      "mode": 384
+    }
+  },
+  "journal": {
+    "backup": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-76woq7nv/profile-backups/one",
+    "backup_signature": "ec9fbe2f0d57e795a51ce0afbe2df00a2088c57011b138924811238beb31a534",
+    "connector_digest": "900898d453b59da382bf12df647dcfae19d6554003f8bdbdbfc1d0f95517ad20",
+    "entries": [
+      {
+        "after": {
+          "digest": "585146a53ce755f33d07a3b19cf285ed60ac9de2d034d068333be5d66fbc2062",
+          "mode": 384
+        },
+        "before": {
+          "digest": "c5abf72869243a3422ee17e02ebea33600ddc69cc1ed8d5eae9ad0787575b76d",
+          "mode": 420
+        },
+        "copy": 1,
+        "name": "config.yaml"
+      },
+      {
+        "after": {
+          "digest": "8c3c70d0e125a155725c82eeacf360dde5eb475fc10a496d4d704cbb0e4195b9",
+          "mode": 384
+        },
+        "before": {
+          "digest": "ac4cfe25ca6381bcc6e4dedd0c9540752b2d51b006e5c19339215c050b310699",
+          "mode": 384
+        },
+        "copy": 3,
+        "name": "lifeos-memory.json"
+      }
+    ],
+    "principal": "owner",
+    "profile": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-76woq7nv/hermes",
+    "root": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-76woq7nv/.claude",
+    "signature": "176c6bbb9051686f195888a3833c9aad666ec1c4aa729de778200ff7b06cc9db",
+    "state": "rolled_back",
+    "version": 1
+  }
+}

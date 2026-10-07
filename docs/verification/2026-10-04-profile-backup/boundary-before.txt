@@ -1,0 +1,22 @@
+.F                                                           [100%]
+=================================== FAILURES ===================================
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T17:13:02.763007+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133982413577340, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133982405749353, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:138: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T17:13:02.763007+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133982413577340, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133982405749353, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:138: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inventory_refuses_a_pipe_before_any_file_reader_can_block _
+tests/test_profile_backup.py:231: in test_inventory_refuses_a_pipe_before_any_file_reader_can_block
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+SUBFAILED(candidate={'created': '2026-10-04T17:13:02.763007+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133982413577340, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133982405749353, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T17:13:02.763007+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133982413577340, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133982405749353, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_inventory_refuses_a_pipe_before_any_file_reader_can_block
+3 failed, 1 passed, 9 deselected, 10 subtests passed in 1.46s

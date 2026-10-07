@@ -1,0 +1,13 @@
+======================================================================
+ERROR: test_delegated_tier_carries_selected_provider (test_model_tiers.ModelTierTests.test_delegated_tier_carries_selected_provider)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_model_tiers.py", line 90, in test_delegated_tier_carries_selected_provider
+    self.assertEqual(routed["tasks"][0]["_lifeos_requested_model"], "haiku")
+                     ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: '_lifeos_requested_model'
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
+FAILED (errors=1)

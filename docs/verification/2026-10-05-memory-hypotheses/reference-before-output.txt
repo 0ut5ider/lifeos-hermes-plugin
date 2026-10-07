@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_derivation_cannot_remove_a_registered_fact_from_a_note _
+tests/test_memory_hypotheses.py:284: in test_derivation_cannot_remove_a_registered_fact_from_a_note
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_derivation_cannot_remove_a_registered_fact_from_a_note
+1 failed in 2.94s

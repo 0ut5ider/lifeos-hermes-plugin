@@ -1,0 +1,364 @@
+{
+  "actual_parent_response": "PAIR_PARENT_DISPATCHED",
+  "actual_completions": [
+    {
+      "type": "async_delegation",
+      "delegation_id": "deleg_8b30e131",
+      "session_key": "20261007_033051_957030",
+      "origin_ui_session_id": "",
+      "origin_session_id": "",
+      "parent_session_id": "20261007_033051_957030",
+      "goal": "2 parallel subagents: Reply with exactly PAIR_CHILD_A; Reply with exactly PAIR_CHILD_B",
+      "goals": [
+        "Reply with exactly PAIR_CHILD_A",
+        "Reply with exactly PAIR_CHILD_B"
+      ],
+      "context": null,
+      "toolsets": null,
+      "role": "leaf",
+      "model": null,
+      "status": "completed",
+      "is_batch": true,
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 2.44,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3281,
+            "output": 21
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 2.32,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3281,
+            "output": 22
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-1.log"
+        }
+      ],
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-1.log"
+      ],
+      "error": null,
+      "total_duration_seconds": 2.81,
+      "dispatched_at": 1791343864.115021,
+      "completed_at": 1791343866.7091098
+    }
+  ],
+  "native_events": [
+    {
+      "timestamp": "2026-10-07T03:31:04+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_033051_957030",
+      "subagent_id": "20261007_033051_957030::Reply with exactly PAIR_CHILD_A [20261007_033103_3d82ee]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "session-inherited",
+      "description": "Reply with exactly PAIR_CHILD_A [20261007_033103_3d82ee]",
+      "prompt_preview": "Reply with exactly PAIR_CHILD_A"
+    },
+    {
+      "timestamp": "2026-10-07T03:31:04+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_033051_957030",
+      "subagent_id": "20261007_033051_957030::Reply with exactly PAIR_CHILD_B [20261007_033104_b0f92e]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "session-inherited",
+      "description": "Reply with exactly PAIR_CHILD_B [20261007_033104_b0f92e]",
+      "prompt_preview": "Reply with exactly PAIR_CHILD_B"
+    },
+    {
+      "timestamp": "2026-10-07T03:31:06+00:00",
+      "event": "subagent_stop",
+      "subagent_observed_model": "flashnext-w4a16-fp8ple",
+      "session_id": "20261007_033051_957030",
+      "subagent_id": "20261007_033051_957030::Reply with exactly PAIR_CHILD_A [20261007_033103_3d82ee]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly PAIR_CHILD_A [20261007_033103_3d82ee]",
+      "duration_seconds": 3
+    },
+    {
+      "timestamp": "2026-10-07T03:31:06+00:00",
+      "event": "subagent_stop",
+      "subagent_observed_model": "flashnext-w4a16-fp8ple",
+      "session_id": "20261007_033051_957030",
+      "subagent_id": "20261007_033051_957030::Reply with exactly PAIR_CHILD_B [20261007_033104_b0f92e]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly PAIR_CHILD_B [20261007_033104_b0f92e]",
+      "duration_seconds": 3
+    }
+  ],
+  "parent_session_id": "20261007_033051_957030",
+  "progress": [
+    {
+      "event": "tool.started",
+      "tool": "delegate_task"
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-dd46b345",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033104_b0f92e",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-b9f4c479",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033103_3d82ee",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0
+    },
+    {
+      "event": "tool.completed",
+      "tool": "delegate_task",
+      "duration": 0.24521565437316895,
+      "is_error": false,
+      "result": "{\"status\": \"dispatched\", \"mode\": \"background\", \"count\": 2, \"delegation_id\": \"deleg_8b30e131\", \"goals\": [\"Reply with exactly PAIR_CHILD_A\", \"Reply with exactly PAIR_CHILD_B\"], \"note\": \"2 subagents are running in parallel in the background as 1 completion unit(s); each unit's results re-enter the conversation as their own new message when THAT unit finishes. Results are delivered only after you END YOUR TURN: do anything that does not depend on them, then stop with a one-line status. Do not poll transcripts or artifacts to wait for them.\", \"subagent_ids\": [\"sa-0-b9f4c479\", \"sa-1-dd46b345\"], \"control_hint\": \"While a child runs you can orchestrate it live with this same tool: delegate_task(action='list') to see live children, action='steer' with subagent_id + message to redirect one, action='stop' with subagent_id to end one early.\", \"live_transcripts\": [\"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-0.log\", \"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-1.log\"], \"live_transcripts_hint\": \"Each subagent streams a human-readable transcript of its operations to the file listed above (append-only, one per task). Read or `tail -f` these paths at any time to watch a child work while it runs.\"}"
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-b9f4c479",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033103_3d82ee",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-dd46b345",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033104_b0f92e",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-dd46b345",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033104_b0f92e",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-dd46b345",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033104_b0f92e",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0,
+      "status": "completed",
+      "duration_seconds": 2.32,
+      "summary": "PAIR_CHILD_B",
+      "input_tokens": 3281,
+      "output_tokens": 22,
+      "reasoning_tokens": 16,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "cost_usd": 0.0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-b9f4c479",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033103_3d82ee",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-b9f4c479",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033103_3d82ee",
+      "delegation_id": "deleg_8b30e131",
+      "tool_count": 0,
+      "status": "completed",
+      "duration_seconds": 2.44,
+      "summary": "PAIR_CHILD_A",
+      "input_tokens": 3281,
+      "output_tokens": 21,
+      "reasoning_tokens": 15,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "cost_usd": 0.0
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    }
+  ],
+  "parent_completion_response": "Both children in unit deleg_8b30e131 completed successfully:\n\n- Task 1: PAIR_CHILD_A\n- Task 2: PAIR_CHILD_B\n\nBoth returned exactly the required strings (1 API call each, ~2.4s per child). The paired fan-out is done \u2014 nothing left pending. Transcripts are at:\n- /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-0.log\n- /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-1.log",
+  "durable_delivery": {
+    "delegation_id": "deleg_8b30e131",
+    "origin_session": "20261007_033051_957030",
+    "state": "completed",
+    "dispatched_at": 1791343864.115021,
+    "completed_at": 1791343866.7091098,
+    "result": {
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 2.44,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3281,
+            "output": 21
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 2.32,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 3281,
+            "output": 22
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-1.log"
+        }
+      ],
+      "total_duration_seconds": 2.81,
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/concurrent-carrier-final2/.hermes/cache/delegation/live/deleg_8b30e131/task-1.log"
+      ]
+    },
+    "delivery_state": "delivered",
+    "delivery_attempts": 1,
+    "origin_session_id": ""
+  },
+  "main_callbacks": [
+    {
+      "session_id": "20261007_033051_957030",
+      "event": "SessionStart"
+    },
+    {
+      "session_id": "20261007_033051_957030",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_033051_957030",
+      "event": "Stop"
+    },
+    {
+      "session_id": "20261007_033051_957030",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_033051_957030",
+      "event": "Stop"
+    }
+  ]
+}

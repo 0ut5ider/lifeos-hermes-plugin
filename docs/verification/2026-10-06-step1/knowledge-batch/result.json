@@ -1,0 +1,27 @@
+{
+  "native_cli_dispatch": false,
+  "hermes_tool_dispatch": true,
+  "patch_mode": "patch",
+  "files_applied": 1,
+  "hook_calls": 1,
+  "actual_warning_delivered": true,
+  "actual_response_delivered": true,
+  "model_requests": 3,
+  "home": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-batch-delivery-final-results/knowledge-batch",
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.9.6",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.6 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-batch-delivery-final-results/knowledge-batch/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1zdGVwMS0yMDI2MTAwNi9saWZlb3MtZXZhbHVhdGlvbi1maW5hbC9ob29rcy9Lbm93bGVkZ2VXcml0ZUd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-step1-20261006/lifeos-evaluation-final/hooks/KnowledgeWriteGuard.hook.ts": "ef1063ceb4ef0696368901931bae9169e4f28a7547f9c281eccc0ad29eba0a58"
+      }
+    }
+  ],
+  "patch_arguments": [
+    {
+      "mode": "patch",
+      "path": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-batch-delivery-final-results/knowledge-batch/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/pair-idea.md",
+      "patch": "*** Begin Patch\n*** Update File: /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-batch-delivery-final-results/knowledge-batch/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/pair-idea.md\n@@\n First fixture line\n-PAIR_OLD_LINE\n+PAIR_NEW_LINE\n Last fixture line\n*** End Patch"
+    }
+  ]
+}

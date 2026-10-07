@@ -1,0 +1,73 @@
+{
+  "before": {
+    "marker_present": false
+  },
+  "after": {
+    "relationship_present": false,
+    "wisdom_present": false,
+    "low_confidence_present": false,
+    "advisory_present": false,
+    "sources_preserved": true,
+    "marker": null,
+    "timing_recorded": false,
+    "ready_present": false
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "a989a004-9a7d-4c4b-9296-78c6fab6c986",
+  "seconds": 0.568,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-startup-20261004/run-v3/context-subagent",
+    "/home/lifeos-claude-ref/workspace/paired-startup-20261004/run-v3/context-subagent",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.3",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.3 /home/lifeos-claude-ref/workspace/paired-startup-20261004/run-v3/context-subagent/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTG9hZENvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/LoadContext.hook.ts": "8bc6f039c8a23fb3283ee306ba05ea76d0bf72c26fb36b8bcf3147b6e2fcc8f8",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/learning-readback.ts": "55f814badd6dc15cb0ebfd5019dc559683b3d8f53f1e24a6f61e4d883bfad0c8",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/advisory-readback.ts": "2a1304b352c3c9736165e82f8357ac63adc5e67d32c539c69caf059ca88e6a4b",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/notifications.ts": "91315d1e4eef6a1cee4d16ebd236edb3a3b3f437911aa65ecab9a3c611e21127"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "ea251db4edd775427dfd4db5309cbe443883c400478d0a9d646d18bba5aae436",
+    "fixture-events.jsonl": "bc13060ac931f4e237b2ae7752f8acdd0ec6f72dec4ea8c9a7b3b0798a60150f",
+    "cli.log": "c868fecf8c49f2a999a1e68c4b4d26a7df8fb84ca6380b1770cff5523b6ffffd",
+    "before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "after-state.json": "0bd562d6bace20fdbe415626c47343b542e5a6d0722e633b8d5c6e81569e9432",
+    "fixture-files-before.json": "c412eeca5ddfcd473ff4ad19456819ade045444fc02e72ac2d1003a2d253cb09",
+    "fixture-files-after.json": "c412eeca5ddfcd473ff4ad19456819ade045444fc02e72ac2d1003a2d253cb09"
+  }
+}

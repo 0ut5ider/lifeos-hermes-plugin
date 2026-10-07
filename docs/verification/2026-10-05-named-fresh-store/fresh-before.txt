@@ -1,0 +1,93 @@
+EEEEEEEE
+======================================================================
+ERROR: test_named_store_has_no_adopted_facts_and_preserves_originals (test_fresh_store.FreshStoreTests.test_named_store_has_no_adopted_facts_and_preserves_originals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 38, in test_named_store_has_no_adopted_facts_and_preserves_originals
+    result=self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (account=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 77, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account=account)
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (account='chat:owner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 77, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account=account)
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (account='dashboard:other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 77, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account=account)
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (name='')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 81, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name=name,assistant_name='Cerebo',account='dashboard:owner')
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (name='A\nB')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 81, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name=name,assistant_name='Cerebo',account='dashboard:owner')
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (name='<private>name</private>')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 81, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name=name,assistant_name='Cerebo',account='dashboard:owner')
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+======================================================================
+ERROR: test_unbound_owner_and_invalid_names_refuse_before_native_installation (test_fresh_store.FreshStoreTests.test_unbound_owner_and_invalid_names_refuse_before_native_installation) (name='name/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 81, in test_unbound_owner_and_invalid_names_refuse_before_native_installation
+    self.operation().prepare(CANDIDATE,principal_name=name,assistant_name='Cerebo',account='dashboard:owner')
+    ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 34, in operation
+    from lifeos_hook_bridge.fresh_store import FreshStore
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.fresh_store'
+
+----------------------------------------------------------------------
+Ran 2 tests in 1.230s
+
+FAILED (errors=8)

@@ -1,0 +1,17 @@
+test_regeneration_publishes_the_complete_ordered_bundle (test_hermes_patch_regeneration.HermesPatchRegenerationTests.test_regeneration_publishes_the_complete_ordered_bundle) ... ERROR
+
+======================================================================
+ERROR: test_regeneration_publishes_the_complete_ordered_bundle (test_hermes_patch_regeneration.HermesPatchRegenerationTests.test_regeneration_publishes_the_complete_ordered_bundle)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_hermes_patch_regeneration.py", line 17, in test_regeneration_publishes_the_complete_ordered_bundle
+    rebuild(SOURCE, output)
+    ~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/rebuild_hermes_patches.py", line 64, in rebuild
+    raise ValueError(f"Patch assignment differs: {sorted(changed ^ set(assigned))}")
+ValueError: Patch assignment differs: ['agent/display.py', 'agent/tool_guardrails.py', 'agent/tool_result_classification.py']
+
+----------------------------------------------------------------------
+Ran 1 test in 0.105s
+
+FAILED (errors=1)

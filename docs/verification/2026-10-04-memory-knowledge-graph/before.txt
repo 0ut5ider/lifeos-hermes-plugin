@@ -1,0 +1,69 @@
+FF.FF.FFFF                                                     [100%]
+=================================== FAILURES ===================================
+_ KnowledgeGraphTests.test_changed_registered_note_refuses_before_graph_metadata_delivery _
+tests/test_memory_knowledge_graph.py:126: in test_changed_registered_note_refuses_before_graph_metadata_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_correction_removes_the_superseded_wikilink_from_the_current_graph _
+tests/test_memory_knowledge_graph.py:110: in test_correction_removes_the_superseded_wikilink_from_the_current_graph
+    self.assertNotIn('synthetic-current-target', result.stdout)
+E   AssertionError: 'synthetic-current-target' unexpectedly found in '\n🔗 Related Notes: "synthetic-lab-routing"\n──────────────────────────────────────────────────\n\n  Source: Synthetic lab routing (Research/research)\n  Tags: [untagged]\n\n  Wikilink references:\n    -> Research/synthetic-current-target -- "Synthetic current target"\n\n──────────────────────────────────────────────────\n1 direct connections.\n'
+_ KnowledgeGraphTests.test_every_graph_command_refuses_missing_context_before_any_note_delivery (command=('stats',)) _
+tests/test_memory_knowledge_graph.py:76: in test_every_graph_command_refuses_missing_context_before_any_note_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_every_graph_command_refuses_missing_context_before_any_note_delivery (command=('hubs',)) _
+tests/test_memory_knowledge_graph.py:76: in test_every_graph_command_refuses_missing_context_before_any_note_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_every_graph_command_refuses_missing_context_before_any_note_delivery (command=('find', 'synthetic')) _
+tests/test_memory_knowledge_graph.py:76: in test_every_graph_command_refuses_missing_context_before_any_note_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_every_graph_command_refuses_missing_context_before_any_note_delivery (command=('related', 'synthetic-lab-routing')) _
+tests/test_memory_knowledge_graph.py:76: in test_every_graph_command_refuses_missing_context_before_any_note_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_every_graph_command_refuses_missing_context_before_any_note_delivery (command=('traverse', 'synthetic-lab-routing')) _
+tests/test_memory_knowledge_graph.py:76: in test_every_graph_command_refuses_missing_context_before_any_note_delivery
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_forgotten_note_and_its_edge_leave_current_graph_navigation _
+tests/test_memory_knowledge_graph.py:100: in test_forgotten_note_and_its_edge_leave_current_graph_navigation
+    self.assertNotIn('Synthetic current target', result.stdout)
+E   AssertionError: 'Synthetic current target' unexpectedly found in '\n🔗 Related Notes: "synthetic-lab-routing"\n──────────────────────────────────────────────────\n\n  Source: Synthetic lab routing (Research/research)\n  Tags: [untagged]\n\n  Wikilink references:\n    -> Research/synthetic-current-target -- "Synthetic current target"\n\n──────────────────────────────────────────────────\n1 direct connections.\n'
+_____ KnowledgeGraphTests.test_invalid_connector_has_no_raw_graph_fallback _____
+tests/test_memory_knowledge_graph.py:143: in test_invalid_connector_has_no_raw_graph_fallback
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_project_only_context_cannot_borrow_unclassified_note_metadata _
+tests/test_memory_knowledge_graph.py:91: in test_project_only_context_cannot_borrow_unclassified_note_metadata
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_redirected_note_refuses_instead_of_reading_foreign_graph_content _
+tests/test_memory_knowledge_graph.py:137: in test_redirected_note_refuses_instead_of_reading_foreign_graph_content
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+____ KnowledgeGraphTests.test_revoked_author_cannot_navigate_current_notes _____
+tests/test_memory_knowledge_graph.py:84: in test_revoked_author_cannot_navigate_current_notes
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ KnowledgeGraphTests.test_unregistered_note_does_not_enter_the_managed_graph __
+tests/test_memory_knowledge_graph.py:119: in test_unregistered_note_does_not_enter_the_managed_graph
+    self.assertIn('Nodes: 2', result.stdout)
+E   AssertionError: 'Nodes: 2' not found in '\n📊 Knowledge Graph Statistics\n──────────────────────────────────────────────────\n  Nodes: 3 (People: 0, Companies: 0, Ideas: 0, Research: 3)\n  Edges: 7 (tag: 6, wikilink: 1, related: 0)\n  Avg connections per node: 2.0\n  Most connected: "synthetic-lab-routing" (2 edges)\n  Isolated nodes: 0 (no connections)\n  Tag clusters: untagged (3 notes)\n──────────────────────────────────────────────────\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_changed_registered_note_refuses_before_graph_metadata_delivery
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_correction_removes_the_superseded_wikilink_from_the_current_graph
+SUBFAILED(command=('stats',)) tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_every_graph_command_refuses_missing_context_before_any_note_delivery
+SUBFAILED(command=('hubs',)) tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_every_graph_command_refuses_missing_context_before_any_note_delivery
+SUBFAILED(command=('find', 'synthetic')) tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_every_graph_command_refuses_missing_context_before_any_note_delivery
+SUBFAILED(command=('related', 'synthetic-lab-routing')) tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_every_graph_command_refuses_missing_context_before_any_note_delivery
+SUBFAILED(command=('traverse', 'synthetic-lab-routing')) tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_every_graph_command_refuses_missing_context_before_any_note_delivery
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_forgotten_note_and_its_edge_leave_current_graph_navigation
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_invalid_connector_has_no_raw_graph_fallback
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_project_only_context_cannot_borrow_unclassified_note_metadata
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_redirected_note_refuses_instead_of_reading_foreign_graph_content
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_revoked_author_cannot_navigate_current_notes
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_unregistered_note_does_not_enter_the_managed_graph
+13 failed, 2 passed, 5 subtests passed in 9.93s

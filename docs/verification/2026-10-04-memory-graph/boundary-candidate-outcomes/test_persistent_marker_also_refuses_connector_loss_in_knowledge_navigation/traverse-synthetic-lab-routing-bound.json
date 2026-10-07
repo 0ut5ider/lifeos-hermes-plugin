@@ -1,0 +1,10 @@
+{
+  "arguments": [
+    "traverse",
+    "synthetic-lab-routing"
+  ],
+  "context": true,
+  "status": 1,
+  "stdout": "",
+  "stderr": "31 | \n32 | export function memoryAccess<T>(operation: string, arguments_: Record<string, unknown>,\n33 |                                 valid: (value: unknown) => value is T): T | undefined {\n34 |   if (operation !== \"pulse_http\" && !hasMemoryAccess()) return undefined;\n35 |   const path = resolve(homedir(), \".claude/LIFEOS/USER/CONFIG/memory-access.json\");\n36 |   const info = lstatSync(path);\n                    ^\nENOENT: no such file or directory, statx '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-kd8odn58/.claude/LIFEOS/USER/CONFIG/memory-access.json'\n    path: \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-kd8odn58/.claude/LIFEOS/USER/CONFIG/memory-access.json\",\n syscall: \"statx\",\n   errno: -2,\n    code: \"ENOENT\"\n\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:36:16)\n      at enumerateCanonicalCorpus (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/Cortex.ts:196:20)\n      at buildGraph (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts:220:38)\n      at cmdTraverse (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts:496:17)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-final/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts:878:5\n\nBun v1.3.14 (Linux x64)\n"
+}

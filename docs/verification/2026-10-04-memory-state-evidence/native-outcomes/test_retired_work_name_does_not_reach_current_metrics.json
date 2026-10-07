@@ -1,0 +1,67 @@
+{
+  "case": "test_retired_work_name_does_not_reach_current_metrics",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic retired evidence work\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3yxdkphc/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "work"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"metrics\": {\n    \"sessions_14d\": null,\n    \"sessions_30d\": null,\n    \"recent_session_names\": [],\n    \"phases_14d\": {},\n    \"commits_14d\": null,\n    \"commit_days_14d\": null\n  },\n  \"sources\": [\n    {\n      \"id\": \"work-registry\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"work.json missing or unreadable\"\n    },\n    {\n      \"id\": \"git\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"git log unavailable\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

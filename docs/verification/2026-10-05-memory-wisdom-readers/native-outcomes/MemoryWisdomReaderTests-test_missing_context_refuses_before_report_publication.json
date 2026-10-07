@@ -1,0 +1,17 @@
+{
+  "case": "test_missing_context_refuses_before_report_publication",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-euz7hyfz/.claude/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "360 | \n361 |   const governed = memoryAccess(\"wisdom_synthesis\", {base: BASE_DIR, health: values.health ?? false,\n362 |     dry_run: values[\"dry-run\"] ?? false, request_id: randomUUID()},\n363 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n364 |   if (governed !== undefined) {\n365 |     if (!governed.ok || typeof governed.stdout !== \"string\") throw new Error(\"Wisdom synthesis admission or publication is unavailable\");\n                                                                             ^\nerror: Wisdom synthesis admission or publication is unavailable\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomCrossFrameSynthesizer.ts:365:72\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {},
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-readers-candidate-distributed/lifeos/LifeOS/install"
+}

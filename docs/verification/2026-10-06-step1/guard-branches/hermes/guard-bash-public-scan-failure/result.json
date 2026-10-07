@@ -1,0 +1,122 @@
+{
+  "before": {
+    "project_files": [
+      ".git"
+    ],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [
+      ".git"
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": true,
+    "target_content_matches": true,
+    "model_received_block": true,
+    "tool_output_in_model": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_002252_92f2f0",
+  "seconds": 11.376,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-corrected/guard-bash-public-scan-failure",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-corrected/guard-bash-public-scan-failure",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT; false && gh repo create pair-guard-fixture --public"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-corrected/guard-bash-public-scan-failure/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "8243ec954d0dee15d2fa48184ae5892b1cb1999b1196c4ecbcbcc43abeacd52d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "73c1584f7ee52224af1e1ff7dbfa7c5eec9bb1ce7415e764b9eb6d04e95a57dd",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "55ed424e379cabf1cb26fde76bc09ef4abfe7474fb42526a138b3c2eb843b1db",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "7892499de6a004c740b050632321bc22b01a1109fb31b295474c041bd82f8db2",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "b80b188566588af112abb64487b45922dacb0301923fa1dd44bfdcf67db7a0a4",
+    "fixture-events.jsonl": "bba048e4f8cc711d63f9d7384ebe5f9a56a6a78e88a9baaac6e2791a016338f8",
+    "cli.log": "4d97f8d998338879932697c853c499a069d77d23edbcf713e208575a594e9c8e",
+    "before-state.json": "b8b4e0865d5afff2234b6fe41e8e3f3a8d9beeeba557697d9c46416f01f941ab",
+    "after-state.json": "a0efdc2219e7607f27c734fbe2a85787a65bfa6a51512777745c55737b3cae0c",
+    "fixture-files-before.json": "43537a1b0114ac02d475811bae07687b5b18dfa365a2f2d13ad7a556e5193414",
+    "fixture-files-after.json": "e16e70368ddba3b50263e7dbcd3f538d99e8d01c71ab75b90694de07bd80354d"
+  }
+}

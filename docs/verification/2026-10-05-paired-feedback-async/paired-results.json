@@ -1,0 +1,345 @@
+{
+  "cases": [
+    {
+      "id": "feedback-async-rating",
+      "registrations": [
+        "UserPromptSubmit.2.1"
+      ],
+      "native": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 8,
+              "source": "explicit",
+              "comment": "great result",
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 8,
+              "source": "explicit",
+              "comment": "great result",
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "feedback-async-bare-rating",
+      "registrations": [
+        "UserPromptSubmit.2.1"
+      ],
+      "native": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 10,
+              "source": "explicit",
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 10,
+              "source": "explicit",
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "feedback-async-praise",
+      "registrations": [
+        "UserPromptSubmit.2.1"
+      ],
+      "native": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 8,
+              "source": "implicit",
+              "sentiment_summary": "Direct praise: \"great job\"",
+              "confidence": 0.95,
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 8,
+              "source": "implicit",
+              "sentiment_summary": "Direct praise: \"great job\"",
+              "confidence": 0.95,
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "feedback-async-neutral",
+      "registrations": [
+        "UserPromptSubmit.2.1"
+      ],
+      "native": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [],
+          "learning_count": 0,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "feedback-async-low-rating",
+      "registrations": [
+        "UserPromptSubmit.2.1"
+      ],
+      "native": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 4,
+              "source": "explicit",
+              "comment": "needs clearer details",
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 1,
+          "learning_checks": {
+            "rating_matches": true,
+            "source_matches": true,
+            "feedback_matches": true,
+            "context_matches": true,
+            "principal_matches": true
+          },
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "rating_count": 1,
+          "learning_count": 0,
+          "cache_present": true
+        },
+        "after": {
+          "unrelated_rating_preserved": true,
+          "cache_preserved": true,
+          "captured_ratings": [
+            {
+              "rating": 4,
+              "source": "explicit",
+              "comment": "needs clearer details",
+              "timestamp_valid": true,
+              "session_matches": true,
+              "response_preview_matches_cache": true
+            }
+          ],
+          "learning_count": 1,
+          "learning_checks": {
+            "rating_matches": true,
+            "source_matches": true,
+            "feedback_matches": true,
+            "context_matches": true,
+            "principal_matches": true
+          },
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    }
+  ]
+}

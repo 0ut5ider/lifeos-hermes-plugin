@@ -1,0 +1,17 @@
+..F.................................                        [100%]
+=================================== FAILURES ===================================
+_ ProfileBackupTests.test_real_native_and_profile_writers_wait_for_one_coherent_snapshot _
+tests/test_profile_backup.py:179: in test_real_native_and_profile_writers_wait_for_one_coherent_snapshot
+    self.assertEqual(process.returncode, 0, stdout + stderr)
+E   AssertionError: 1 != 0 : Traceback (most recent call last):
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/profile_backup_process.py", line 81, in <module>
+E       run(json.loads(sys.stdin.read()))
+E       ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/profile_backup_process.py", line 46, in run
+E       result = backup.create(MemoryConfiguration(Path(settings['configuration'])), Path(settings['destination']))
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_backup.py", line 133, in create
+E       raise MemoryUnavailable('The selected profile changed during backup collection')
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The selected profile changed during backup collection
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_real_native_and_profile_writers_wait_for_one_coherent_snapshot
+1 failed, 35 passed, 13 subtests passed in 47.02s

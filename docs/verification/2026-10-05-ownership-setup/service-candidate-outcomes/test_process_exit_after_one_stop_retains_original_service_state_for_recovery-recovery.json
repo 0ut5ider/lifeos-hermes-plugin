@@ -1,0 +1,78 @@
+{
+  "before": {
+    "gateway": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-c2c40609805f4beb9aa67b6b2e01f801-gateway.service",
+      "MainPID": "894506",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-c2c40609805f4beb9aa67b6b2e01f801-gateway.service"
+    },
+    "dashboard": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-14877ac4c06543c480e7a0d0707d34cc-dashboard.service",
+      "MainPID": "894518",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-14877ac4c06543c480e7a0d0707d34cc-dashboard.service"
+    },
+    "pulse": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-1204e407924f4720b8832f7991820516-pulse.service",
+      "MainPID": "894529",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-1204e407924f4720b8832f7991820516-pulse.service"
+    }
+  },
+  "result": {
+    "state": "active",
+    "services_started": [
+      "dashboard",
+      "pulse",
+      "gateway"
+    ],
+    "owner_turn_verified": false
+  },
+  "after": {
+    "gateway": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-c2c40609805f4beb9aa67b6b2e01f801-gateway.service",
+      "MainPID": "894623",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-c2c40609805f4beb9aa67b6b2e01f801-gateway.service"
+    },
+    "dashboard": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-14877ac4c06543c480e7a0d0707d34cc-dashboard.service",
+      "MainPID": "894610",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-14877ac4c06543c480e7a0d0707d34cc-dashboard.service"
+    },
+    "pulse": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-1204e407924f4720b8832f7991820516-pulse.service",
+      "MainPID": "894616",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-1204e407924f4720b8832f7991820516-pulse.service"
+    }
+  },
+  "journal": {
+    "installed": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-062kg6yc/.claude",
+    "installed_physical": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-062kg6yc/.claude",
+    "profile": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-062kg6yc/.hermes",
+    "services": {
+      "dashboard": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-14877ac4c06543c480e7a0d0707d34cc-dashboard.service",
+        "definition": "e65ffc6580f21d876f189fd4157a2b425febc5d3b1c7657cf75336ea132307cf",
+        "unit": "lifeos-ownership-test-14877ac4c06543c480e7a0d0707d34cc-dashboard.service"
+      },
+      "gateway": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-c2c40609805f4beb9aa67b6b2e01f801-gateway.service",
+        "definition": "304cf5fc81475a12b4810dbd4e09f1b859fae098d4303e49c2e008dbaf32b796",
+        "unit": "lifeos-ownership-test-c2c40609805f4beb9aa67b6b2e01f801-gateway.service"
+      },
+      "pulse": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-1204e407924f4720b8832f7991820516-pulse.service",
+        "definition": "6df811d8466307ec6a7f1ddde2d369aa29a1d52912b4d96ccce74e1b30e3ccbf",
+        "unit": "lifeos-ownership-test-1204e407924f4720b8832f7991820516-pulse.service"
+      }
+    },
+    "state": "active",
+    "version": 1
+  }
+}

@@ -1,0 +1,123 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{}}"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUseFailure",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "b7145390-82e2-4b61-9568-4783a9caff54",
+  "seconds": 5.783,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-tools-20261005/results/generic-tool-failure-nudge",
+    "/home/lifeos-claude-ref/workspace/paired-generic-tools-20261005/results/generic-tool-failure-nudge",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: ls pair-missing-nudge"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUseFailure.2.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUseFailure.2.1 /home/lifeos-claude-ref/workspace/paired-generic-tools-20261005/results/generic-tool-failure-nudge/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQWxnb3JpdGhtTnVkZ2UuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/AlgorithmNudge.hook.ts": "c26501403433be9b2d2b534f1222b91cbc0949650649611d9bd2d65457430a61"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "2acc79c6c9902dddc4c7fbf39064fe30628a00cbd52f19b710be5412f6398403",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "c0657f99b25995ff0bffb864447669b5966acee230deeb093940fae19be5d456",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "9e059981be5742aeafc9a3ef3caeab5f818cdff76c77d6987adc4feef11e9f21",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "30e77d347b09635d7e309b5c83e9d672076b341591d8d37bfc63b063b661476f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "1dbc36c3a0d117ae420ad64602e9a5b3f3326ee0b482ea0b827821adb33adf22",
+    "fixture-events.jsonl": "52ca2887211f0f111c389fd26aab74ba70d486c5167e609c38622a6e4bf7a281",
+    "cli.log": "3d06ee497c46d5c106663a1143855374cd9e5e80a798f03e0f50ab43eed7b7a3",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "e1f4828df04850e4b603d0681934f9bfb0eeb414f587e47dacc0b66507649762",
+    "fixture-files-before.json": "ed9c89921ddf184fbd3d7a203caf70e3008a5fe65aa324a4ec8c834dfe5d5b17",
+    "fixture-files-after.json": "56e5e93d7a7a539dc423de5d12e69af0a1ae5dbb15b42c5cb562d2b83ba2061a"
+  }
+}

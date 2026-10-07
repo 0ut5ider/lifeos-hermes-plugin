@@ -1,0 +1,23 @@
+Do not start subagents, other agent CLIs, or any delegate skill.
+
+Task: perform an independent code review of the lasting-memory runtime modules that an earlier review of pull request #3 did not read, and write a findings report. Acceptance test: the report file and the data file below exist, the report lists every file in scope with either findings or an explicit "no defect found" or "not read" line, and every finding has a file, a line, a failure scenario, and a confidence.
+
+Context: the repository at /home/outsider/Projects/Hermes_agent/LifeOS_plugin is a Hermes agent plugin. The package lifeos_hook_bridge/ governs a LifeOS memory store (durable personal facts, proposals, backups, imports) and exposes it to Hermes, to a dashboard, and to optional remote clients. Review commit c083037 against base origin/main. Read file content with "git -C /home/outsider/Projects/Hermes_agent/LifeOS_plugin show c083037:<path>" and "git -C /home/outsider/Projects/Hermes_agent/LifeOS_plugin diff origin/main...c083037 -- <path>". Do not modify, stage, commit, or delete anything in the repository. Write only inside /home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-05-pr3-memory-modules-review and /tmp. Do not run the test suites; they need private fixtures. The shell has no network.
+
+Inputs, in priority order:
+1. lifeos_hook_bridge/memory_native.ts and lifeos_hook_bridge/memory_publication.ts
+2. lifeos_hook_bridge/memory_runtime.py, memory_http.py, memory_mcp.py, memory_rpc.py, memory_service.py, memory_policy.py, memory_access.py, memory_transaction.py
+3. lifeos_hook_bridge/memory_sources.py, memory_source_review.py, memory_prompt.py, memory_history.py, memory_lineage.py, memory_context_audit.py, memory_counts.py
+4. lifeos_hook_bridge/memory_pulse_adapters.py, memory_pulse.py, memory_freshness.py, memory_freshness_cache.py, memory_freshness_migration.py, memory_distill.py, memory_hypotheses.py, memory_wisdom.py, memory_interview.py, memory_interview_scan.py, memory_learning.py, memory_recurrence.py, memory_seed.py, memory_state.py, memory_telos.py, memory_graph.py, memory_evidence.py, memory_deny_hashes.py, memory_derived_sync.py
+5. patches/lifeos-memory-access.patch (6,091 lines; a patch applied to upstream LifeOS). Read at least the parts that add permission or audience checks.
+List the files that changed in this range first with "git -C /home/outsider/Projects/Hermes_agent/LifeOS_plugin diff origin/main...c083037 --stat -- lifeos_hook_bridge patches". If a listed file does not exist at c083037, say so.
+
+Look for real defects only: authorization or audience-policy bypass (a caller reading or writing facts outside its grant, a disabled or revoked client still served, private facts reaching a restricted audience or a model request), path traversal and symlink races, injection through values that reach SQL, shell, or subprocess arguments, data loss (overwriting or deleting user memory without a recoverable copy), transaction and locking errors (partial publication after a crash, lock ordering that can deadlock), failure handling that fails open, and resource exhaustion from unbounded input. Do not report style, naming, or formatting.
+
+Outputs:
+- Write your full final report to /home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-05-pr3-memory-modules-review/pr3-memory-modules-review.md
+- Write the raw data you gathered (per-file notes, the commands you ran, relevant code excerpts with line numbers) to /home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/agents/2026-10-05-pr3-memory-modules-review/data.md
+
+Report format: start with the date 2026-10-05, the role "independent reviewer of unreviewed memory modules", the question, and the model name. Then one table of findings ranked most severe first with columns: severity, file:line at c083037, one-sentence defect, concrete failure scenario, confidence (confirmed by reading / confirmed by experiment / plausible). Then a section "Coverage" that lists every input file as one of: read fully, read partially (say which part), not read. Then a short section "No defect found" naming the files you read fully without findings.
+
+Reply with the single word DONE when both files are written, otherwise reply with what failed.

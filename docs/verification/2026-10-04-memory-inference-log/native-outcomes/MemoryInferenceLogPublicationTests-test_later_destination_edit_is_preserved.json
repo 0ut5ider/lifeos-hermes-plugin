@@ -1,0 +1,25 @@
+{
+  "case": "test_later_destination_edit_is_preserved",
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_inference_log_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-9nuh8imi/memory.json",
+        "destination"
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"value\": null}, \"later_preserved\": true}\n",
+      "stderr": ""
+    }
+  ],
+  "before": "{\"synthetic\":\"previous verification\"}\n",
+  "artifacts": {
+    "LIFEOS/MEMORY/OBSERVABILITY/model-verification.jsonl": {
+      "content": "{\"synthetic_later\":\"preserved\"}\n",
+      "mode": "0o644"
+    }
+  },
+  "requests": [],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-inference-log-candidate-distributed/lifeos/LifeOS/install"
+}

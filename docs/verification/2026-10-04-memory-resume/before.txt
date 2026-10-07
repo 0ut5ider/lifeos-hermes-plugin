@@ -1,0 +1,56 @@
+F..FFFFF                                                                 [100%]
+=================================== FAILURES ===================================
+_ MemoryResumeTests.test_request_projection_cannot_refresh_an_applied_identity_proposal _
+tests/test_memory_resume.py:119: in test_request_projection_cannot_refresh_an_applied_identity_proposal
+    with self.assertRaisesRegex(MemoryAdmissionError, 'invalidated memory context'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryAdmissionError not raised
+_ MemoryResumeTests.test_resume_repairs_corrected_responses_history_and_keeps_the_current_receipt _
+tests/test_memory_resume.py:57: in test_resume_repairs_corrected_responses_history_and_keeps_the_current_receipt
+    runtime = self.resume()
+              ^^^^^^^^^^^^^
+tests/test_memory_resume.py:30: in resume
+    runtime.admit(self.fixture.metadata(), **self.fixture.route, is_first_turn=False, user_message=message)
+lifeos_hook_bridge/memory_runtime.py:196: in admit
+    raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory permissions or current facts changed. Start a new conversation before continuing.
+_ MemoryResumeTests.test_resume_repairs_retired_chat_history_before_the_next_request _
+tests/test_memory_resume.py:44: in test_resume_repairs_retired_chat_history_before_the_next_request
+    runtime = self.resume()
+              ^^^^^^^^^^^^^
+tests/test_memory_resume.py:30: in resume
+    runtime.admit(self.fixture.metadata(), **self.fixture.route, is_first_turn=False, user_message=message)
+lifeos_hook_bridge/memory_runtime.py:196: in admit
+    raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory permissions or current facts changed. Start a new conversation before continuing.
+________ MemoryResumeTests.test_resume_requires_verified_proposal_state ________
+tests/test_memory_resume.py:126: in test_resume_requires_verified_proposal_state
+    with self.assertRaisesRegex(MemoryAdmissionError, 'current facts changed'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryAdmissionError not raised
+_ MemoryResumeTests.test_resumed_auxiliary_call_remains_blocked_until_foreground_history_is_repaired _
+tests/test_memory_resume.py:78: in test_resumed_auxiliary_call_remains_blocked_until_foreground_history_is_repaired
+    runtime = self.resume()
+              ^^^^^^^^^^^^^
+tests/test_memory_resume.py:30: in resume
+    runtime.admit(self.fixture.metadata(), **self.fixture.route, is_first_turn=False, user_message=message)
+lifeos_hook_bridge/memory_runtime.py:196: in admit
+    raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory permissions or current facts changed. Start a new conversation before continuing.
+_ MemoryResumeTests.test_resumed_explicit_quote_does_not_authorize_appended_recall _
+tests/test_memory_resume.py:71: in test_resumed_explicit_quote_does_not_authorize_appended_recall
+    runtime = self.resume(self.marker)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_resume.py:30: in resume
+    runtime.admit(self.fixture.metadata(), **self.fixture.route, is_first_turn=False, user_message=message)
+lifeos_hook_bridge/memory_runtime.py:196: in admit
+    raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+E   lifeos_hook_bridge.memory_runtime.MemoryAdmissionError: Memory permissions or current facts changed. Start a new conversation before continuing.
+=========================== short test summary info ============================
+FAILED tests/test_memory_resume.py::MemoryResumeTests::test_request_projection_cannot_refresh_an_applied_identity_proposal
+FAILED tests/test_memory_resume.py::MemoryResumeTests::test_resume_repairs_corrected_responses_history_and_keeps_the_current_receipt
+FAILED tests/test_memory_resume.py::MemoryResumeTests::test_resume_repairs_retired_chat_history_before_the_next_request
+FAILED tests/test_memory_resume.py::MemoryResumeTests::test_resume_requires_verified_proposal_state
+FAILED tests/test_memory_resume.py::MemoryResumeTests::test_resumed_auxiliary_call_remains_blocked_until_foreground_history_is_repaired
+FAILED tests/test_memory_resume.py::MemoryResumeTests::test_resumed_explicit_quote_does_not_authorize_appended_recall
+6 failed, 2 passed in 13.76s

@@ -1,0 +1,74 @@
+diff --git a/agent/tool_result_classification.py b/agent/tool_result_classification.py
+--- a/agent/tool_result_classification.py
++++ b/agent/tool_result_classification.py
+@@ -56,3 +56,24 @@
+     if tool_name == "patch":
+         return data.get("success") is True
+     return False
++
++
++def web_extract_result_failed(tool_name: str, result: Any) -> bool | None:
++    """Classify the structured extraction envelope without interpreting document text."""
++    if tool_name != "web_extract":
++        return None
++    data = result
++    if isinstance(data, str):
++        try:
++            data = json.loads(data)
++        except (TypeError, ValueError):
++            return None
++    if not isinstance(data, dict):
++        return None
++    if data.get("error") or data.get("success") is False:
++        return True
++    rows = data.get("results")
++    if not isinstance(rows, list) or not rows or not all(isinstance(row, dict) for row in rows):
++        return None
++    return not any(isinstance(row.get("content"), str) and row["content"].strip()
++                   and not row.get("error") for row in rows)
+diff --git a/agent/display.py b/agent/display.py
+--- a/agent/display.py
++++ b/agent/display.py
+@@ -17,7 +17,7 @@
+ 
+ from utils import safe_json_loads
+ from agent.redact import redact_sensitive_text
+-from agent.tool_result_classification import file_mutation_result_landed, is_guardrail_refusal
++from agent.tool_result_classification import web_extract_result_failed, file_mutation_result_landed, is_guardrail_refusal
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -976,6 +976,10 @@
+     """Return ``(is_failure, suffix)`` for a tool result, e.g. ``(True, " [exit 1]")``."""
+     if result is None or file_mutation_result_landed(tool_name, result):
+         return False, ""
++    extraction_failed = web_extract_result_failed(tool_name, result)
++    if extraction_failed is not None:
++        return (True, " [error]") if extraction_failed else (False, "")
++
+     data = result if isinstance(result, dict) else safe_json_loads(result)
+     # A harness REFUSAL of a redundant call (repeated identical read/search) is not a
+     # failed call. This is the ``failed`` the executor hands the loop guardrail, so
+diff --git a/agent/tool_guardrails.py b/agent/tool_guardrails.py
+--- a/agent/tool_guardrails.py
++++ b/agent/tool_guardrails.py
+@@ -14,7 +14,7 @@
+ from typing import Any, Mapping
+ 
+ from utils import safe_json_loads
+-from agent.tool_result_classification import file_mutation_result_landed, is_guardrail_refusal
++from agent.tool_result_classification import web_extract_result_failed, file_mutation_result_landed, is_guardrail_refusal
+ 
+ 
+ IDEMPOTENT_TOOL_NAMES = frozenset({
+@@ -218,6 +218,10 @@
+     ``agent.display._detect_tool_failure`` so the guardrail never disagrees with the CLI's ``[error]`` tag."""
+     if result is None or file_mutation_result_landed(tool_name, result):
+         return False, ""
++
++    extraction_failed = web_extract_result_failed(tool_name, result)
++    if extraction_failed is not None:
++        return (True, " [error]") if extraction_failed else (False, "")
+ 
+     # A harness REFUSAL of a redundant call (repeated identical read/search) carries
+     # ``"error"`` for the model's benefit -- exactly what the substring test below keys

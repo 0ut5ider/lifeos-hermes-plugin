@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupTests.test_snapshot_reconstructs_committed_wal_data_as_a_standalone_database _
+lifeos_hook_bridge/memory_backup.py:206: in inspect
+    if (connection.execute('PRAGMA integrity_check').fetchall() != [('ok',)]
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   sqlite3.OperationalError: unable to open database file
+
+The above exception was the direct cause of the following exception:
+tests/test_memory_backup.py:97: in test_snapshot_reconstructs_committed_wal_data_as_a_standalone_database
+    result = create(self.fixture.memory, native_fixture.OWNER, self.destination)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_backup.py:132: in create
+    inspect(memory, scope, stage, signature)
+lifeos_hook_bridge/memory_backup.py:210: in inspect
+    raise MemoryUnavailable('The native backup database fails its integrity check') from error
+E   lifeos_hook_bridge.memory_access.MemoryUnavailable: The native backup database fails its integrity check
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup.py::MemoryBackupTests::test_snapshot_reconstructs_committed_wal_data_as_a_standalone_database
+1 failed, 11 deselected in 1.28s

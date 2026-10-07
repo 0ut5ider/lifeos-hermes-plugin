@@ -1,0 +1,37 @@
+{
+  "case": "test_health_queries_writes_and_foreign_origin_refuse",
+  "before": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "after": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "requests": [
+    {
+      "method": "POST",
+      "url": "http://127.0.0.1:38623/api/telos/health",
+      "status": 405,
+      "body": "{\"error\":\"Freshness views require GET\"}",
+      "cache-control": "no-store",
+      "content-type": "application/json"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38623/api/telos/health?root=foreign",
+      "status": 400,
+      "body": "{\"error\":\"Freshness views use the installed owner configuration\"}",
+      "cache-control": "no-store",
+      "content-type": "application/json"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:38623/api/telos/health",
+      "status": 403,
+      "body": "{\"error\":\"Freshness views require the current origin\"}",
+      "cache-control": "no-store",
+      "content-type": "application/json"
+    }
+  ],
+  "events": [],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-source-health-candidate-distributed/lifeos/LifeOS/install"
+}

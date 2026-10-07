@@ -1,0 +1,15 @@
+test_killed_global_publication_does_not_duplicate_an_already_started_review (test_native_memory_review_recovery.NativeMemoryReviewRecoveryTests.test_killed_global_publication_does_not_duplicate_an_already_started_review) ... FAIL
+
+======================================================================
+FAIL: test_killed_global_publication_does_not_duplicate_an_already_started_review (test_native_memory_review_recovery.NativeMemoryReviewRecoveryTests.test_killed_global_publication_does_not_duplicate_an_already_started_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_memory_review_recovery.py", line 66, in test_killed_global_publication_does_not_duplicate_an_already_started_review
+    self.assertEqual(len(fires),1,fires)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: 2 != 1 : [{'ts': '2026-10-07T05:37:14.751Z', 'turns_since_last_review': 1, 'spawned': True, 'reason': 'pid=3307855', 'session_id': 'interrupted-review', 'transcript_path': '/home/outsider/.cache/lhc6/tmpfv59jj0v/empty-transcript.jsonl'}, {'ts': '2026-10-07T05:37:14.855Z', 'turns_since_last_review': 1, 'spawned': True, 'reason': 'pid=3307871', 'session_id': 'interrupted-review', 'transcript_path': '/home/outsider/.cache/lhc6/tmpfv59jj0v/empty-transcript.jsonl'}]
+
+----------------------------------------------------------------------
+Ran 1 test in 0.457s
+
+FAILED (failures=1)

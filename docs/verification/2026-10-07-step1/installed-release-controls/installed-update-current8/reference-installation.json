@@ -1,0 +1,18 @@
+{
+  "installed_version": "7.40.4",
+  "upstream_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "steps": [
+    "InstallSettings",
+    "DeployCore",
+    "ScaffoldUser",
+    "LinkUser",
+    "InstallHooks",
+    "ActivateImports"
+  ],
+  "restart_required": true,
+  "dependencies": {
+    "bun_version": "1.3.14",
+    "packages": 12,
+    "catalog_sha256": "b30ae500179abf5b6a668c6b41637a0109032426786ddc279aab54fd03f6c822"
+  }
+}

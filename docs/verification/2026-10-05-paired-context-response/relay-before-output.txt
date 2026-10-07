@@ -1,0 +1,49 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ PairedResponseServerTests.test_native_beta_query_reaches_the_gateway_without_recording_authorization _
+
+self = <test_paired_response_server.PairedResponseServerTests testMethod=test_native_beta_query_reaches_the_gateway_without_recording_authorization>
+
+    def test_native_beta_query_reaches_the_gateway_without_recording_authorization(self):
+        requests = []
+        response_body = b'{"id":"fixture","content":[{"type":"text","text":"READY"}]}'
+    
+        class Gateway(http.server.BaseHTTPRequestHandler):
+            def do_POST(self):
+                requests.append((self.path, dict(self.headers),
+                    json.loads(self.rfile.read(int(self.headers['Content-Length'])))))
+                self.send_response(200)
+                self.send_header('Content-Type', 'application/json')
+                self.send_header('Content-Length', str(len(response_body)))
+                self.end_headers()
+                self.wfile.write(response_body)
+    
+            def log_message(self, *_):
+                pass
+    
+        gateway = http.server.ThreadingHTTPServer(('127.0.0.1', 0), Gateway)
+        with tempfile.TemporaryDirectory() as directory:
+            environment = Path(directory) / 'model.env'
+            environment.write_text(f'ANTHROPIC_BASE_URL=http://127.0.0.1:{gateway.server_port}\n'
+                'ANTHROPIC_MODEL=private-fixture\nANTHROPIC_AUTH_TOKEN=private-fixture-token\n')
+            environment.chmod(0o600)
+            relay = http.server.ThreadingHTTPServer(('127.0.0.1', 0), response_handler(environment))
+            relay.observed = []
+            threads = [threading.Thread(target=server.serve_forever, daemon=True)
+                for server in (gateway, relay)]
+            for thread in threads:
+                thread.start()
+            client = http.client.HTTPConnection('127.0.0.1', relay.server_port)
+            body = b'{"model":"lifecycle-fixture","messages":[],"stream":false}'
+            try:
+                client.request('POST', '/v1/messages?beta=true', body,
+                    {'Content-Type': 'application/json', 'Authorization': 'Bearer client-fixture-token',
+                     'anthropic-version': '2023-06-01'})
+                response = client.getresponse()
+>               self.assertEqual(response.status, 200)
+E               AssertionError: 401 != 200
+
+tests/test_paired_response_server.py:53: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_paired_response_server.py::PairedResponseServerTests::test_native_beta_query_reaches_the_gateway_without_recording_authorization
+1 failed in 1.05s

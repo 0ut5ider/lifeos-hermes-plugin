@@ -1,0 +1,64 @@
+.                                                              [100%]
+=================================== FAILURES ===================================
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...'skills'}, {'mode': 493, 'mtime_ns': 1791133188730277216, 'path': 'skills/retained'}], 'files': None, 'links': [], ...}) _
+tests/test_profile_backup.py:137: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    inspect(self.configuration, self.destination)
+lifeos_hook_bridge/profile_backup.py:162: in inspect
+    for index, item in enumerate(manifest['files']):
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: 'NoneType' object is not iterable
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': None, 'files': [{'copy': 0, 'digest': '721c9de669d4d710...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:137: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    inspect(self.configuration, self.destination)
+lifeos_hook_bridge/profile_backup.py:180: in inspect
+    for item in manifest['directories']:
+                ^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: 'NoneType' object is not iterable
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': None, ...}) _
+tests/test_profile_backup.py:137: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    inspect(self.configuration, self.destination)
+lifeos_hook_bridge/profile_backup.py:182: in inspect
+    for item in manifest['links']:
+                ^^^^^^^^^^^^^^^^^
+E   TypeError: 'NoneType' object is not iterable
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738980343, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:136: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:136: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:136: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...': 1791133188730277216, ...}, ...], 'links': [{'path': 'SOUL.md', 'target': 'memories/MEMORY.md', 'mtime_ns': 0}], ...}) _
+tests/test_profile_backup.py:136: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...time_ns': 1791133188730277216, ...}, ...], 'links': [{'path': 'outside', 'target': '/unreviewed', 'mtime_ns': 0}], ...}) _
+tests/test_profile_backup.py:136: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ ProfileBackupTests.test_inspection_rejects_incomplete_and_ambiguous_source_metadata (candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) _
+tests/test_profile_backup.py:136: in test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...'skills'}, {'mode': 493, 'mtime_ns': 1791133188730277216, 'path': 'skills/retained'}], 'files': None, 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': None, 'files': [{'copy': 0, 'digest': '721c9de669d4d710...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': None, ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738980343, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...': 1791133188730277216, ...}, ...], 'links': [{'path': 'SOUL.md', 'target': 'memories/MEMORY.md', 'mtime_ns': 0}], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...time_ns': 1791133188730277216, ...}, ...], 'links': [{'path': 'outside', 'target': '/unreviewed', 'mtime_ns': 0}], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+SUBFAILED(candidate={'created': '2026-10-04T16:59:49.049880+00:00', 'directories': [{'mode': 448, 'mtime_ns': 1791133188738638398, 'path':...d5d3445d0286995a2a38839df5cc12edc58c7efa4', 'mode': 420, 'mtime_ns': 1791133188730277216, ...}, ...], 'links': [], ...}) tests/test_profile_backup.py::ProfileBackupTests::test_inspection_rejects_incomplete_and_ambiguous_source_metadata
+9 failed, 1 passed, 6 deselected, 1 subtests passed in 0.91s

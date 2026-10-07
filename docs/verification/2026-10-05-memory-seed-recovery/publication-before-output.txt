@@ -1,0 +1,55 @@
+F.F.F.                                                             [100%]
+=================================== FAILURES ===================================
+_ MemoryPublicationRecoveryTests.test_changed_expected_journal_hash_refuses_without_restoring_any_file _
+tests/test_memory_publication_recovery.py:84: in test_changed_expected_journal_hash_refuses_without_restoring_any_file
+    self.reserve(expected=self.digests())
+tests/test_memory_publication_recovery.py:31: in reserve
+    self.transaction.prepare('synthetic-writer', 'synthetic-operation', ['first', 'second'], **arguments)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_expected_publications_restore_only_original_or_owned_artifact_bytes _
+tests/test_memory_publication_recovery.py:59: in test_expected_publications_restore_only_original_or_owned_artifact_bytes
+    self.reserve(expected=self.digests())
+tests/test_memory_publication_recovery.py:31: in reserve
+    self.transaction.prepare('synthetic-writer', 'synthetic-operation', ['first', 'second'], **arguments)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (expected=[]) _
+tests/test_memory_publication_recovery.py:80: in test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+    self.transaction.prepare('writer', 'operation', ['first', 'second'], expected=expected)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (expected={}) _
+tests/test_memory_publication_recovery.py:80: in test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+    self.transaction.prepare('writer', 'operation', ['first', 'second'], expected=expected)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (expected={'first': 'bad', 'second': 'bad'}) _
+tests/test_memory_publication_recovery.py:80: in test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+    self.transaction.prepare('writer', 'operation', ['first', 'second'], expected=expected)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (expected={'first': 'ee61d67d0a7d067e98d381cc44e7828c3e955ded61079d9321e148bb8ed2959d'}) _
+tests/test_memory_publication_recovery.py:80: in test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+    self.transaction.prepare('writer', 'operation', ['first', 'second'], expected=expected)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (expected={'first': 'ee61d67d0a7d067e98d381cc44e7828c3e955ded61079d9321e148bb8ed2959d', 'second': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42', 'third': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}) _
+tests/test_memory_publication_recovery.py:80: in test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+    self.transaction.prepare('writer', 'operation', ['first', 'second'], expected=expected)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal (expected={'first': [], 'second': {}}) _
+tests/test_memory_publication_recovery.py:80: in test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+    self.transaction.prepare('writer', 'operation', ['first', 'second'], expected=expected)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+_ MemoryPublicationRecoveryTests.test_later_edit_refuses_before_any_member_of_the_group_is_restored _
+tests/test_memory_publication_recovery.py:66: in test_later_edit_refuses_before_any_member_of_the_group_is_restored
+    self.reserve(expected=self.digests())
+tests/test_memory_publication_recovery.py:31: in reserve
+    self.transaction.prepare('synthetic-writer', 'synthetic-operation', ['first', 'second'], **arguments)
+E   TypeError: MemoryTransaction.prepare() got an unexpected keyword argument 'expected'
+=========================== short test summary info ============================
+FAILED tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_changed_expected_journal_hash_refuses_without_restoring_any_file
+FAILED tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_expected_publications_restore_only_original_or_owned_artifact_bytes
+SUBFAILED(expected=[]) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+SUBFAILED(expected={}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+SUBFAILED(expected={'first': 'bad', 'second': 'bad'}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+SUBFAILED(expected={'first': 'ee61d67d0a7d067e98d381cc44e7828c3e955ded61079d9321e148bb8ed2959d'}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+SUBFAILED(expected={'first': 'ee61d67d0a7d067e98d381cc44e7828c3e955ded61079d9321e148bb8ed2959d', 'second': 'e1476bcaeb3db1f2ebdfad55034ad6b031f0ac4405a192a2752050fba274aa42', 'third': 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+SUBFAILED(expected={'first': [], 'second': {}}) tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_invalid_expected_hashes_refuse_without_creating_a_recovery_journal
+FAILED tests/test_memory_publication_recovery.py::MemoryPublicationRecoveryTests::test_later_edit_refuses_before_any_member_of_the_group_is_restored
+9 failed, 3 passed in 0.13s

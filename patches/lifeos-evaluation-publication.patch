@@ -1,0 +1,28 @@
+--- a/LifeOS/install/hooks/ConfigEvalFire.hook.ts
++++ b/LifeOS/install/hooks/ConfigEvalFire.hook.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Starts configuration evaluations after admitted sentinel changes.
++// ABOUTME: Publishes debounce state atomically during concurrent hook execution.
+ /**
+  * @version 1.0.1
+  * ConfigEvalFire — PostToolUse(Write|Edit) hook that fires the {{DA_NAME}} behavioural
+@@ -19,6 +21,7 @@
+ import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+ import { spawn } from 'node:child_process';
+ import { dirname, resolve } from 'node:path';
++import { randomUUID } from 'node:crypto';
+ import { homedir } from 'node:os';
+ import { isSubagentContext as isSubagent } from './lib/subagent';
+ 
+@@ -69,8 +72,8 @@
+ 
+ function saveLastFire(iso: string): void {
+   mkdirSync(dirname(STATE), { recursive: true });
+-  const tmp = `${STATE}.tmp`;
+-  writeFileSync(tmp, JSON.stringify({ last_fire: iso }, null, 2) + '\n');
++  const tmp = `${STATE}.${process.pid}.${randomUUID()}.tmp`;
++  writeFileSync(tmp, JSON.stringify({ last_fire: iso }, null, 2) + '\n', { flag: 'wx' });
+   renameSync(tmp, STATE);
+ }
+ 

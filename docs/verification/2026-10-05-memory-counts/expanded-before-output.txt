@@ -1,0 +1,27 @@
+...........                                         [100%]
+=================================== FAILURES ===================================
+_ MemoryCountsTests.test_redirected_selected_inventory_refuses_but_unrelated_single_count_remains_available (kind='ratings') _
+tests/test_memory_counts.py:134: in test_redirected_selected_inventory_refuses_but_unrelated_single_count_remains_available
+    self.successful('--single', 'skills')
+tests/test_memory_counts.py:51: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 236 |   const governed = memoryAccess<{ok: boolean; counts?: Counts}>("counts",
+E   237 |     {root: CLAUDE_DIR, lifeos_dir: LIFEOS_DIR, only: validSingle ?? null},
+E   238 |     (value): value is {ok: boolean; counts?: Counts} => memoryObject(value) && typeof value.ok === "boolean"
+E   239 |       && (value.ok === false || memoryObject(value.counts) && Object.keys(value.counts).length === Object.keys(COMPUTERS).length
+E   240 |         && Object.keys(COMPUTERS).every(key => Number.isSafeInteger(value.counts[key]) && value.counts[key] >= 0)));
+E   241 |   if (governed !== undefined && governed.ok !== true) throw new Error("Governed native installation counts are unavailable");
+E                                                                         ^
+E   error: Governed native installation counts are unavailable
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:241:65)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:263:23
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryCountsTests.test_redirected_selected_inventory_refuses_but_unrelated_single_count_remains_available (kind='research') _
+tests/test_memory_counts.py:132: in test_redirected_selected_inventory_refuses_but_unrelated_single_count_remains_available
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+SUBFAILED(kind='ratings') tests/test_memory_counts.py::MemoryCountsTests::test_redirected_selected_inventory_refuses_but_unrelated_single_count_remains_available
+SUBFAILED(kind='research') tests/test_memory_counts.py::MemoryCountsTests::test_redirected_selected_inventory_refuses_but_unrelated_single_count_remains_available
+2 failed, 11 passed, 19 subtests passed in 4.97s

@@ -1,0 +1,50 @@
+{
+  "final_response": "\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\n\ud83d\udde3\ufe0f Done.",
+  "last_reasoning": "We need answer user's request. Need produce final with \ud83e\uddea Cerebo: banner first? \"Start with \ud83e\uddea Cerebo: and return PAIR_INTERRUPT_RECOVERED exactly once.\n\nFORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner.\"\nNeed likely output banner first, then PAIR_INTERRUPT_RECOVERED exactly once, then closer last with \ud83d\udde3\ufe0f. Max 15 prose lines; max 2 em-dashes. Need ensure only one PAIR_INTERRUPT_RECOVERED. Maybe:\n\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\n\ud83d\udde3\ufe0f Recovered.\n\nBut \"Start with \ud83e\uddea Cerebo:\" and return PAIR_INTERRUPT_RECOVERED exactly once. \"banner first, \ud83d\udde3\ufe0f closer last\". Could be two lines. Need max 15 prose lines. No em-dashes needed. Ensure not extra PAIR. Maybe \"\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\" counts as returned. Closer last must start with \ud83d\udde3\ufe0f? Could be \"\ud83d\udde3\ufe0f Done.\" Good. Need check prose lines? Two lines. No em dash. final concise.\n",
+  "messages": [
+    {
+      "role": "user",
+      "content": "Start with \ud83e\uddea Cerebo: and return PAIR_INTERRUPT_RECOVERED exactly once.",
+      "timestamp": 1791353093.8911738,
+      "api_content": "Start with \ud83e\uddea Cerebo: and return PAIR_INTERRUPT_RECOVERED exactly once.\n\nFORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner."
+    },
+    {
+      "role": "assistant",
+      "content": "\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\n\ud83d\udde3\ufe0f Done.",
+      "reasoning": "We need answer user's request. Need produce final with \ud83e\uddea Cerebo: banner first? \"Start with \ud83e\uddea Cerebo: and return PAIR_INTERRUPT_RECOVERED exactly once.\n\nFORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner.\"\nNeed likely output banner first, then PAIR_INTERRUPT_RECOVERED exactly once, then closer last with \ud83d\udde3\ufe0f. Max 15 prose lines; max 2 em-dashes. Need ensure only one PAIR_INTERRUPT_RECOVERED. Maybe:\n\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\n\ud83d\udde3\ufe0f Recovered.\n\nBut \"Start with \ud83e\uddea Cerebo:\" and return PAIR_INTERRUPT_RECOVERED exactly once. \"banner first, \ud83d\udde3\ufe0f closer last\". Could be two lines. Need max 15 prose lines. No em-dashes needed. Ensure not extra PAIR. Maybe \"\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\" counts as returned. Closer last must start with \ud83d\udde3\ufe0f? Could be \"\ud83d\udde3\ufe0f Done.\" Good. Need check prose lines? Two lines. No em dash. final concise.\n",
+      "finish_reason": "stop",
+      "timestamp": 1791353105.4626176,
+      "reasoning_content": "We need answer user's request. Need produce final with \ud83e\uddea Cerebo: banner first? \"Start with \ud83e\uddea Cerebo: and return PAIR_INTERRUPT_RECOVERED exactly once.\n\nFORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner.\"\nNeed likely output banner first, then PAIR_INTERRUPT_RECOVERED exactly once, then closer last with \ud83d\udde3\ufe0f. Max 15 prose lines; max 2 em-dashes. Need ensure only one PAIR_INTERRUPT_RECOVERED. Maybe:\n\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\n\ud83d\udde3\ufe0f Recovered.\n\nBut \"Start with \ud83e\uddea Cerebo:\" and return PAIR_INTERRUPT_RECOVERED exactly once. \"banner first, \ud83d\udde3\ufe0f closer last\". Could be two lines. Need max 15 prose lines. No em-dashes needed. Ensure not extra PAIR. Maybe \"\ud83e\uddea Cerebo: PAIR_INTERRUPT_RECOVERED\" counts as returned. Closer last must start with \ud83d\udde3\ufe0f? Could be \"\ud83d\udde3\ufe0f Done.\" Good. Need check prose lines? Two lines. No em dash. final concise.\n"
+    }
+  ],
+  "api_calls": 1,
+  "completed": true,
+  "turn_exit_reason": "text_response(finish_reason=stop)",
+  "failed": false,
+  "partial": false,
+  "interrupted": false,
+  "response_transformed": false,
+  "pre_transform_response": null,
+  "response_previewed": false,
+  "model": "lifecycle-fixture",
+  "requested_model": "lifecycle-fixture",
+  "served_model": null,
+  "provider": "custom",
+  "base_url": "http://127.0.0.1:42019/v1",
+  "input_tokens": 675,
+  "output_tokens": 299,
+  "cache_read_tokens": 0,
+  "cache_write_tokens": 0,
+  "reasoning_tokens": 276,
+  "prompt_tokens": 675,
+  "completion_tokens": 299,
+  "total_tokens": 974,
+  "last_prompt_tokens": 675,
+  "estimated_cost_usd": 0.0,
+  "cost_status": "unknown",
+  "cost_source": "none",
+  "service_tier": null,
+  "session_id": "20261007_060453_623310",
+  "turn_id": "20261007_060453_623310:6d5d3648-9619-46d8-b5aa-d4b6c000868a:6e12134a",
+  "current_turn_user_idx": 0
+}

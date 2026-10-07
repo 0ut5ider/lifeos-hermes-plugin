@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# ABOUTME: Runs child inference through the same installed Hermes source as the parent.
+# ABOUTME: Records diagnostics without changing the real model response.
+set -euo pipefail
+/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3 -m hermes_cli.main "$@" 2>>/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-operations-final-results/concurrent/hermes/child-stderr.log | tee -a /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-operations-final-results/concurrent/hermes/child-stdout.log

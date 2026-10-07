@@ -1,0 +1,714 @@
+{
+  "cases": [
+    {
+      "id": "generic-reminder-router",
+      "registrations": [
+        "UserPromptSubmit.3.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-memory-turn",
+      "registrations": [
+        "UserPromptSubmit.5.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/delta-surface-heartbeat": "<time>\n",
+            ".claude/LIFEOS/MEMORY/STATE/memory-inject/<session>.json": "{\"lastHash\":\"e3b0c44298fc1c14\",\"turnsSinceInject\":0}"
+          },
+          "outputs": [
+            "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: freshness: no data \u00b7 no curation runs yet\n</lifeos-memory-delta>"
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [
+            true
+          ],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/delta-surface-heartbeat": "<time>\n",
+            ".claude/LIFEOS/MEMORY/STATE/memory-inject/<session>.json": "{\"lastHash\":\"e3b0c44298fc1c14\",\"turnsSinceInject\":0}"
+          },
+          "outputs": [
+            "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: freshness: no data \u00b7 no curation runs yet\n</lifeos-memory-delta>"
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [
+            true
+          ],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-algorithm-nudge",
+      "registrations": [
+        "UserPromptSubmit.7.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":0,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{},\"primaryTranscript\":\"<transcript>\"}",
+            ".claude/LIFEOS/MEMORY/STATE/skill-usewhen-index.json": "{\"builtAt\":<epoch-ms>,\"entries\":[]}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":0,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{},\"primaryTranscript\":\"<transcript>\"}",
+            ".claude/LIFEOS/MEMORY/STATE/skill-usewhen-index.json": "{\"builtAt\":<epoch-ms>,\"entries\":[]}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-model-rung",
+      "registrations": [
+        "UserPromptSubmit.9.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/model-rung.jsonl": "{\"ts\":\"<time>\",\"event\":\"on-pin\",\"pin\":\"fable\",\"live\":null,\"model\":null}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/model-rung.jsonl": "{\"ts\":\"<time>\",\"event\":\"on-pin\",\"pin\":\"fable\",\"live\":null,\"model\":null}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-prompt-processing",
+      "registrations": [
+        "UserPromptSubmit.1.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/work-events.jsonl": "{\"v\":1,\"ts\":\"<time>\",\"slug\":\"native-<session>\",\"op\":\"upsert\",\"src\":\"PromptProcessing.hook.ts\",\"fields\":{\"task\":\"Reply with READY.\",\"sessionUUID\":\"<session>\",\"phase\":\"native\",\"progress\":\"0/0\",\"started\":\"<time>\",\"updatedAt\":\"<time>\",\"ratings\":[]},\"uuid\":\"<session>\"}\n",
+            ".claude/LIFEOS/MEMORY/STATE/work.json": "{\n  \"sessions\": {\n    \"native-<session>\": {\n      \"task\": \"Reply with READY.\",\n      \"sessionUUID\": \"<session>\",\n      \"phase\": \"native\",\n      \"progress\": \"0/0\",\n      \"started\": \"<time>\",\n      \"updatedAt\": \"<time>\",\n      \"ratings\": []\n    }\n  },\n  \"_events_offset\": <offset>,\n  \"_folded_at\": \"<time>\"\n}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/STATE/work-events.jsonl": "{\"v\":1,\"ts\":\"<time>\",\"slug\":\"native-<session>\",\"op\":\"upsert\",\"src\":\"PromptProcessing.hook.ts\",\"fields\":{\"task\":\"Reply with READY.\",\"sessionUUID\":\"<session>\",\"phase\":\"native\",\"progress\":\"0/0\",\"started\":\"<time>\",\"updatedAt\":\"<time>\",\"ratings\":[]},\"uuid\":\"<session>\"}\n",
+            ".claude/LIFEOS/MEMORY/STATE/work.json": "{\n  \"sessions\": {\n    \"native-<session>\": {\n      \"task\": \"Reply with READY.\",\n      \"sessionUUID\": \"<session>\",\n      \"phase\": \"native\",\n      \"progress\": \"0/0\",\n      \"started\": \"<time>\",\n      \"updatedAt\": \"<time>\",\n      \"ratings\": []\n    }\n  },\n  \"_events_offset\": <offset>,\n  \"_folded_at\": \"<time>\"\n}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-tab-state",
+      "registrations": [
+        "Stop.1.2"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-voice-completion",
+      "registrations": [
+        "Stop.1.3"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/VOICE/voice-events.jsonl": "{\"timestamp\":\"<time>\",\"session_id\":\"<session>\",\"event_type\":\"skipped\",\"hook\":\"VoiceCompletion\",\"reason\":\"remote_channel:discord\",\"message\":\"\",\"character_count\":0,\"voice_engine\":\"elevenlabs\"}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/VOICE/voice-events.jsonl": "{\"timestamp\":\"<time>\",\"session_id\":\"<session>\",\"event_type\":\"skipped\",\"hook\":\"VoiceCompletion\",\"reason\":\"remote_channel:discord\",\"message\":\"\",\"character_count\":0,\"voice_engine\":\"elevenlabs\"}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-spend-auditor",
+      "registrations": [
+        "Stop.1.5"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/spend-audit.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"audited\":false,\"reason\":\"not-eligible\"}\n",
+            ".claude/LIFEOS/MEMORY/STATE/spend-audit-state.json": "{\"<session>\":<epoch-ms>}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/spend-audit.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"audited\":false,\"reason\":\"not-eligible\"}\n",
+            ".claude/LIFEOS/MEMORY/STATE/spend-audit-state.json": "{\"<session>\":<epoch-ms>}"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-stop-gates",
+      "registrations": [
+        "Stop.1.6"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/format-gate.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"decision\":\"flag\",\"code\":\"no-banner\",\"detail\":\"first visible line is not the LifeOS banner: \\\"READY\\\"\"}\n",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/verification-gate.jsonl": "{\"ts\":\"<time>\",\"decision\":\"no-claim\"}\n",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/writing-gate.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"decision\":\"no-content\",\"strong\":false,\"weak\":false,\"words\":1}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/format-gate.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"decision\":\"flag\",\"code\":\"no-banner\",\"detail\":\"first visible line is not the LifeOS banner: \\\"READY\\\"\"}\n",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/verification-gate.jsonl": "{\"ts\":\"<time>\",\"decision\":\"no-claim\"}\n",
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/writing-gate.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"decision\":\"no-content\",\"strong\":false,\"weak\":false,\"words\":1}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-memory-review",
+      "registrations": [
+        "Stop.1.7"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/review-state.json": "{\n  \"turn_count_since_last_review\": 1,\n  \"last_review_at\": null,\n  \"last_message_at\": \"<time>\",\n  \"pending_review\": false,\n  \"schema_version\": 1\n}\n",
+            ".claude/LIFEOS/MEMORY/STATE/memory-review/<session>.json": "{\n  \"turn_count_since_last_review\": 1,\n  \"last_review_at\": null,\n  \"last_message_at\": \"<time>\",\n  \"schema_version\": 1\n}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/review-state.json": "{\n  \"turn_count_since_last_review\": 1,\n  \"last_review_at\": null,\n  \"last_message_at\": \"<time>\",\n  \"pending_review\": false,\n  \"schema_version\": 1\n}\n",
+            ".claude/LIFEOS/MEMORY/STATE/memory-review/<session>.json": "{\n  \"turn_count_since_last_review\": 1,\n  \"last_review_at\": null,\n  \"last_message_at\": \"<time>\",\n  \"schema_version\": 1\n}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-stop-health",
+      "registrations": [
+        "Stop.2.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            false
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "Stop",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "generic-integrity-check",
+      "registrations": [
+        "SessionEnd.1.6"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {},
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    }
+  ]
+}

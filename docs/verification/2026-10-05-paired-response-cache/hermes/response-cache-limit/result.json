@@ -1,0 +1,105 @@
+{
+  "before": {
+    "cache_present": true,
+    "prior_marker_present": true
+  },
+  "after": {
+    "cache_present": true,
+    "prior_marker_present": false,
+    "cache_is_nonempty": true,
+    "cache_within_limit": true,
+    "user_response_delivered": true,
+    "cache_matches_stop_message": true,
+    "stop_message_matches_user_response": true,
+    "user_response_exceeds_limit": true,
+    "cache_characters": 2000
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "Stop",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_130911_383029",
+  "seconds": 68.058,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-response-cache-20261005-v2/results/response-cache-limit",
+    "/home/lifeos-plugin-install-probe/workspace/paired-response-cache-20261005-v2/results/response-cache-limit",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Start with READY. Explain how to verify a reversible software installation in 24 numbered paragraphs. Each paragraph must contain three full sentences and a distinct concrete example. Cover installation, configuration, dependencies, permissions, service restart, interruption, backup, user data, and rollback. Write every paragraph in full. Do not abbreviate or summarize the requested answer."
+  ],
+  "hook_definitions": [
+    {
+      "id": "Stop.1.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run Stop.1.1 /home/lifeos-plugin-install-probe/workspace/paired-response-cache-20261005-v2/results/response-cache-limit/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvTGFzdFJlc3BvbnNlQ2FjaGUuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/LastResponseCache.hook.ts": "094652b94990ce05adaa12ea4a21115bfbea4bace86d2154b1773ce8e8ac306c"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "2e8463fd0d975a91ed947b6d60f5f3de8dabedde80744f6f95f8f172aedb3ea8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a6573083ef02c395b2768f26d75ca887fe25b5e32eb14697cd7c6904f6ef0f3e",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "627ae7d2dde7367ccc94d4c0c3b7c999ac9f22051442b69eab58c59d21d4a4f5",
+    "fixture-events.jsonl": "6d7b4616103e44b81dcfe5e140928e11b319477a0ce2b5387cc6c8e0ac53d4f6",
+    "cli.log": "3a3f8aec4bc3bd66796e15e7c407c62e9a6454cb61ea4eb0408253ba6f897fbb",
+    "before-state.json": "7b94d474688893b3b0dafce34c3cb87aac39098f7ea40832e0ac9a6c6b8a60c5",
+    "after-state.json": "5cf1ba626943f3bf7fb2eb571ab7a62f65a967868ec8baaf32e55851a64c6124",
+    "fixture-files-before.json": "d083d04a0ab76e0fdd3ecdd7cdaa7ef6c01b1e18117a117508385d3b44f2f2ca",
+    "fixture-files-after.json": "67bbdd41f1a1954003e75d3118562a9375a220ada5d4204a5ca5a9216da3a191"
+  }
+}

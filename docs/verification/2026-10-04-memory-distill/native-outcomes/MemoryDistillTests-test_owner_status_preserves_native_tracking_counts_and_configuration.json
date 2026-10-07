@@ -1,0 +1,140 @@
+{
+  "case": "test_owner_status_preserves_native_tracking_counts_and_configuration",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-distill-read-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md": {
+        "content": "---\nid: kb_b9dbefee10f3\ntype: research\ntitle: \"Synthetic lab routing\"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-05T02:59:17.521Z\nupdated: 2026-10-05T02:59:17.521Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSynthetic current distill marker\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/OBSERVABILITY/tier-b-writes.jsonl": {
+        "content": "{\"ts\":\"2026-10-05T02:59:17.524Z\",\"file\":\"LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md\",\"bytes_written\":321,\"type\":\"knowledge\"}\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/memory.json\"]}",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md": {
+        "content": "---\nid: kb_b9dbefee10f3\ntype: research\ntitle: \"Synthetic lab routing\"\ntags: [untagged]\nstatus: seedling\nquality: 2\nquality_inferred: true\nsource_kind: internal\ncreated: 2026-10-05T02:59:17.521Z\nupdated: 2026-10-05T02:59:17.521Z\nrelated: []\nconvention: kb-v3\n---\n\n# Synthetic lab routing\n\nSynthetic current distill marker\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CUSTOMIZATIONS/SKILLS/Cortex/DistillConfig.json": {
+        "content": "{\"maxDigestItems\": 4, \"windowDays\": 10}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/OBSERVABILITY/tier-b-writes.jsonl": {
+        "content": "{\"ts\":\"2026-10-05T02:59:17.524Z\",\"file\":\"LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md\",\"bytes_written\":321,\"type\":\"knowledge\"}\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONFIG/memory-access.json": {
+        "content": "{\"version\": 1, \"command\": [\"/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python\", \"/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_rpc.py\", \"--configuration\", \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/memory.json\"]}",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/STATE/distill.json": {
+        "content": "{\"schema_version\": 1, \"surfaced_slugs\": {\"synthetic-note\": \"2026-10-04\"}, \"item_hashes\": {\"synthetic-hash\": \"2026-10-04\"}, \"last_run\": \"2026-10-04\"}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"knowledge\",\"entity_type\":\"research\",\"name\":\"Synthetic lab routing\",\"content\":\"Synthetic current distill marker\",\"source_session\":\"none\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"knowledge\",\"entity_type\":\"research\",\"name\":\"Synthetic lab routing\",\"content\":\"Synthetic current distill marker\",\"source_session\":\"none\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"type\":\"knowledge\",\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude/LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md\",\"detail\":{\"bytes_written\":321,\"created_or_appended\":\"created\",\"related_links\":0}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-940oc9i4/.claude/LIFEOS/TOOLS/KnowledgeDistill.ts",
+        "status"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"last_run\": \"2026-10-04\",\n  \"surfaced_slugs\": 1,\n  \"item_hashes\": 1,\n  \"config\": {\n    \"maxIssues\": 5,\n    \"maxUpgrades\": 5,\n    \"maxDigestItems\": 4,\n    \"windowDays\": 10\n  }\n}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

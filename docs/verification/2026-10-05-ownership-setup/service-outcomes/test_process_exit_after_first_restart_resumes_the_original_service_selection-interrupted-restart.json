@@ -1,0 +1,78 @@
+{
+  "interrupted": {
+    "gateway": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-2b8cadaed27a4a4791c9bbf8f37d80ac-gateway.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    },
+    "dashboard": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-29ae368cb2eb46c6829bc3c18e1f43e3-dashboard.service",
+      "MainPID": "919813",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-29ae368cb2eb46c6829bc3c18e1f43e3-dashboard.service"
+    },
+    "pulse": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-13000e94c9404ccfb5d28bd83cb73338-pulse.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    }
+  },
+  "result": {
+    "state": "active",
+    "services_started": [
+      "dashboard",
+      "pulse",
+      "gateway"
+    ],
+    "owner_turn_verified": false
+  },
+  "after": {
+    "gateway": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-2b8cadaed27a4a4791c9bbf8f37d80ac-gateway.service",
+      "MainPID": "919828",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-2b8cadaed27a4a4791c9bbf8f37d80ac-gateway.service"
+    },
+    "dashboard": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-29ae368cb2eb46c6829bc3c18e1f43e3-dashboard.service",
+      "MainPID": "919813",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-29ae368cb2eb46c6829bc3c18e1f43e3-dashboard.service"
+    },
+    "pulse": {
+      "ActiveState": "active",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-13000e94c9404ccfb5d28bd83cb73338-pulse.service",
+      "MainPID": "919825",
+      "ControlGroup": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-13000e94c9404ccfb5d28bd83cb73338-pulse.service"
+    }
+  },
+  "journal": {
+    "installed": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-9sfxosyl/.claude",
+    "installed_physical": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-9sfxosyl/.claude",
+    "profile": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-9sfxosyl/.hermes",
+    "services": {
+      "dashboard": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-29ae368cb2eb46c6829bc3c18e1f43e3-dashboard.service",
+        "definition": "bd9b68e362905135b61cd43e3b6cdca84f46b2d9d5daef2c5b1e716243045caa",
+        "unit": "lifeos-ownership-test-29ae368cb2eb46c6829bc3c18e1f43e3-dashboard.service"
+      },
+      "gateway": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-2b8cadaed27a4a4791c9bbf8f37d80ac-gateway.service",
+        "definition": "2786ed8b086ca4ecf0aff751bfa8496541ec611c629333e51aa6cf1c302c3b3c",
+        "unit": "lifeos-ownership-test-2b8cadaed27a4a4791c9bbf8f37d80ac-gateway.service"
+      },
+      "pulse": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-13000e94c9404ccfb5d28bd83cb73338-pulse.service",
+        "definition": "6c12cb9ac24d1f827db29f5af673058db302539c26b5edff429c1dead71af0e2",
+        "unit": "lifeos-ownership-test-13000e94c9404ccfb5d28bd83cb73338-pulse.service"
+      }
+    },
+    "state": "active",
+    "version": 1
+  }
+}

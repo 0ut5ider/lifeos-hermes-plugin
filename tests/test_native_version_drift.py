@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import time
 import unittest
+from datetime import datetime
 from pathlib import Path
 
 from lifeos_hook_bridge.bridge import HookBridge
@@ -32,6 +33,10 @@ class NativeVersionDriftTests(unittest.TestCase):
                 (base / "LIFEOS/VERSION").write_text("7.40.4\n")
             hook = root / "hooks/VersionDrift.hook.ts"
             shutil.copy2(HOOK_PATH, hook)
+            for base in (source, root):
+                helper = base / 'LIFEOS/PULSE/lib/atomic-write.ts'
+                helper.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(Path(HOOK_PATH).parent.parent/'LIFEOS/PULSE/lib/atomic-write.ts', helper)
             hook.chmod(0o755)
             shutil.copy2(HOOK_PATH, source / "hooks/VersionDrift.hook.ts")
             subprocess.run(["git", "init", "-q", str(source)], check=True)
@@ -70,6 +75,10 @@ class NativeVersionDriftTests(unittest.TestCase):
                 (base / "LIFEOS/VERSION").write_text("7.40.4\n")
             hook = root / "hooks/VersionDrift.hook.ts"
             shutil.copy2(HOOK_PATH, hook)
+            for base in (source, root):
+                helper = base / 'LIFEOS/PULSE/lib/atomic-write.ts'
+                helper.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(Path(HOOK_PATH).parent.parent/'LIFEOS/PULSE/lib/atomic-write.ts', helper)
             hook.chmod(0o755)
             shutil.copy2(HOOK_PATH, source / "hooks/VersionDrift.hook.ts")
             for index in range(10):
@@ -98,6 +107,67 @@ class NativeVersionDriftTests(unittest.TestCase):
                 self.assertIsNone(second)
                 state = root / "LIFEOS/MEMORY/STATE/version-drift-nag.json"
                 self.assertEqual(json.loads(state.read_text())["count"], 1)
+                prior = state.read_bytes()
+                stamp = int(datetime.fromisoformat(json.loads(prior)["ts"].replace("Z", "+00:00")).timestamp() * 1000)
+                preload = home / "boundary-clock.cjs"
+                preload.write_text('// ABOUTME: Supplies a controlled clock to the native interval predicate.\n'
+                                   '// ABOUTME: Leaves native hook execution and filesystem effects unchanged.\n'
+                                   'Date.now = () => Number(process.env.LIFEOS_BOUNDARY_NOW_MS);\n')
+                original_command = bridge.hooks['UserPromptSubmit'][0]['hooks'][0]['command']
+                bridge.hooks['UserPromptSubmit'][0]['hooks'][0]['command'] = shlex.join([
+                    'bun', '--preload', str(preload), str(hook)])
+                bridge.environment['LIFEOS_VERSION_DRIFT_ROOT'] = str(root)
+                bridge.environment['LIFEOS_VERSION_DRIFT_SYSTEM_GIT'] = shutil.which('git')
+                for offset in (-1, 0, 1):
+                    with self.subTest(interval_offset_ms=offset):
+                        state.write_bytes(prior)
+                        bridge.environment['LIFEOS_BOUNDARY_NOW_MS'] = str(stamp + 3600000 + offset)
+                        boundary = bridge.pre_llm_call('Measure native nag interval', session_id='baseline-probe')
+                        if offset < 0:
+                            self.assertIsNone(boundary)
+                            self.assertEqual(state.read_bytes(), prior)
+                        else:
+                            self.assertIn('VERSION-DRIFT: 1 core file(s)', boundary['context'])
+                state.write_bytes(prior)
+                marker = home / 'state-write-started'
+                preload.write_text('''// ABOUTME: Widens the native file truncation interval for an interruption control.
+// ABOUTME: Leaves the final write to the native filesystem implementation.
+const fs = require('node:fs');
+Date.now = () => Number(process.env.LIFEOS_BOUNDARY_NOW_MS);
+const original = fs.writeFileSync;
+fs.writeFileSync = function(path, ...args) {
+  if (/version-drift-nag\\.json(?:\\.tmp\\..*)?$/.test(String(path))) {
+    fs.closeSync(fs.openSync(path, 'w'));
+    original(process.env.LIFEOS_WRITE_MARKER, 'started');
+    Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 30000);
+  }
+  return original.call(this, path, ...args);
+};
+''')
+                environment = {**bridge.environment, 'LIFEOS_WRITE_MARKER': str(marker),
+                               'LIFEOS_BOUNDARY_NOW_MS': str(stamp + 3600001)}
+                with tempfile.TemporaryFile(mode='w+t') as captured:
+                    writer = subprocess.Popen(['bun', '--preload', str(preload), str(hook)],
+                                              env=environment, stdout=captured, stderr=captured)
+                    try:
+                        deadline = time.monotonic() + 10
+                        while not marker.exists() and writer.poll() is None and time.monotonic() < deadline:
+                            time.sleep(.01)
+                        captured.seek(0)
+                        self.assertTrue(marker.exists(), captured.read())
+                    finally:
+                        if writer.poll() is None:
+                            writer.kill()
+                        writer.wait(timeout=5)
+                    captured.seek(0)
+                    self.assertEqual(captured.read(), '')
+                self.assertEqual(state.read_bytes(), prior, 'Interrupted native publication destroyed the prior nag state')
+                for temporary in state.parent.glob('version-drift-nag.json.tmp.*'):
+                    temporary.unlink()
+                bridge.hooks['UserPromptSubmit'][0]['hooks'][0]['command'] = original_command
+                bridge.environment.pop('LIFEOS_BOUNDARY_NOW_MS')
+                bridge.environment.pop('LIFEOS_VERSION_DRIFT_ROOT')
+                bridge.environment.pop('LIFEOS_VERSION_DRIFT_SYSTEM_GIT')
                 state.unlink()
                 (root / "LIFEOS/VERSION").write_text("7.40.5\n")
                 self.assertIsNone(bridge.pre_llm_call("Bump in flight", session_id="baseline-probe"))

@@ -1,0 +1,20 @@
+======================================================================
+FAIL: test_same_title_concurrent_sessions_retain_one_learning_each (test_native_work_lifecycle.NativeWorkLifecycleTests.test_same_title_concurrent_sessions_retain_one_learning_each)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_work_lifecycle.py", line 83, in test_same_title_concurrent_sessions_retain_one_learning_each
+    self.assertEqual(names, {})
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^
+AssertionError: {'session-1': 'Same fixture task', 'sessio[157 chars]ask'} != {}
++ {}
+- {'session-1': 'Same fixture task',
+-  'session-2': 'Same fixture task',
+-  'session-3': 'Same fixture task',
+-  'session-4': 'Same fixture task',
+-  'session-6': 'Same fixture task',
+-  'session-7': 'Same fixture task'}
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.972s
+
+FAILED (failures=1)

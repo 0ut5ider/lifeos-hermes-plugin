@@ -1,0 +1,132 @@
+diff --git a/LifeOS/install/hooks/LastResponseCache.hook.ts b/LifeOS/install/hooks/LastResponseCache.hook.ts
+--- a/LifeOS/install/hooks/LastResponseCache.hook.ts
++++ b/LifeOS/install/hooks/LastResponseCache.hook.ts
+@@ -20,7 +20,7 @@
+  */
+ 
+ import { readHookInput, parseTranscriptFromInput } from './lib/hook-io';
+-import { writeFileSync } from 'fs';
++import { atomicWriteText } from '../LIFEOS/PULSE/lib/atomic-write';
+ import { join } from 'path';
+ import { homedir } from "node:os";
+ 
+@@ -46,7 +46,7 @@
+     try {
+       const paiDir = process.env.LIFEOS_DIR || join(homedir(), '.claude', 'LIFEOS');
+       const cachePath = join(paiDir, 'MEMORY', 'STATE', 'last-response.txt');
+-      writeFileSync(cachePath, lastResponse.slice(0, 2000), 'utf-8');
++      atomicWriteText(cachePath, lastResponse.slice(0, 2000), 0o600);
+     } catch (err) {
+       console.error('[LastResponseCache] Failed to write:', err);
+     }
+diff --git a/LifeOS/install/hooks/AlgorithmNudge.hook.ts b/LifeOS/install/hooks/AlgorithmNudge.hook.ts
+--- a/LifeOS/install/hooks/AlgorithmNudge.hook.ts
++++ b/LifeOS/install/hooks/AlgorithmNudge.hook.ts
+@@ -66,6 +66,7 @@
+ import { join } from 'path';
+ import { resolveBun } from './lib/resolve-bin';
+ import { deriveAscent, type AscentState } from '../LIFEOS/TOOLS/ascent';
++import { atomicWriteText } from '../LIFEOS/PULSE/lib/atomic-write';
+ import { homedir } from "node:os";
+ 
+ const PAI = join(homedir(), '.claude');
+@@ -226,7 +227,7 @@
+ function saveState(sessionId: string, state: NudgeState): void {
+   try {
+     mkdirSync(STATE_DIR, { recursive: true });
+-    writeFileSync(join(STATE_DIR, `${sessionId}.json`), JSON.stringify(state));
++    atomicWriteText(join(STATE_DIR, `${sessionId}.json`), JSON.stringify(state), 0o600);
+   } catch {}
+ }
+ 
+diff --git a/LifeOS/install/hooks/SpendAuditor.hook.ts b/LifeOS/install/hooks/SpendAuditor.hook.ts
+--- a/LifeOS/install/hooks/SpendAuditor.hook.ts
++++ b/LifeOS/install/hooks/SpendAuditor.hook.ts
+@@ -35,6 +35,7 @@
+ import { join } from 'path';
+ import { resolveBun } from './lib/resolve-bin';
+ import { paiPath } from './lib/paths';
++import { atomicWriteText } from '../LIFEOS/PULSE/lib/atomic-write';
+ import { getISOTimestamp } from './lib/time';
+ 
+ const STATE_PATH = paiPath('MEMORY', 'STATE', 'spend-audit-state.json');
+@@ -384,7 +385,7 @@
+   if (allow) state[sessionId] = now;
+   try {
+     mkdirSync(join(STATE_PATH, '..'), { recursive: true });
+-    writeFileSync(STATE_PATH, JSON.stringify(state));
++    atomicWriteText(STATE_PATH, JSON.stringify(state), 0o600);
+   } catch { /* state is best-effort */ }
+   return allow;
+ }
+diff --git a/LifeOS/install/hooks/handlers/SystemIntegrity.ts b/LifeOS/install/hooks/handlers/SystemIntegrity.ts
+--- a/LifeOS/install/hooks/handlers/SystemIntegrity.ts
++++ b/LifeOS/install/hooks/handlers/SystemIntegrity.ts
+@@ -18,6 +18,7 @@
+ import { writeFileSync, mkdirSync, existsSync } from 'fs';
+ import { spawn } from 'child_process';
+ import { join } from 'path';
++import { atomicWriteText } from '../../LIFEOS/PULSE/lib/atomic-write';
+ import { paiPath } from '../lib/paths';
+ 
+ import {
+@@ -60,7 +61,7 @@
+       cooldown_until: getCooldownEndTime(),
+     };
+ 
+-    writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
++    atomicWriteText(STATE_FILE, JSON.stringify(state, null, 2), 0o600);
+     console.error('[SystemIntegrity] Updated state file');
+   } catch (error) {
+     console.error('[SystemIntegrity] Failed to update state:', error);
+diff --git a/LifeOS/install/hooks/MemoryTurnStart.hook.ts b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
+--- a/LifeOS/install/hooks/MemoryTurnStart.hook.ts
++++ b/LifeOS/install/hooks/MemoryTurnStart.hook.ts
+@@ -34,6 +34,7 @@
+ import { getRelevantContext } from "../LIFEOS/TOOLS/MemoryRetriever";
+ import { clearLedger as clearSystemDelta } from "./SystemChangeSurface.hook";
+ import { existsSync, readFileSync, writeFileSync, mkdirSync } from "node:fs";
++import { atomicWriteText } from "../LIFEOS/PULSE/lib/atomic-write";
+ import { createHash } from "node:crypto";
+ import { resolve as pathResolve } from "node:path";
+ import { homedir } from "node:os";
+@@ -71,10 +72,10 @@
+   const inject = !state || state.lastHash !== hash || state.turnsSinceInject >= REFRESH_TURNS;
+   try {
+     mkdirSync(STATE_DIR, { recursive: true });
+-    writeFileSync(statePath, JSON.stringify({
++    atomicWriteText(statePath, JSON.stringify({
+       lastHash: hash,
+       turnsSinceInject: inject ? 0 : (state!.turnsSinceInject + 1),
+-    }), "utf8");
++    }), 0o600);
+   } catch { /* best-effort — on state failure we fall back to injecting */ }
+   return inject;
+ }
+diff --git a/LifeOS/install/hooks/DriftReminder.hook.ts b/LifeOS/install/hooks/DriftReminder.hook.ts
+--- a/LifeOS/install/hooks/DriftReminder.hook.ts
++++ b/LifeOS/install/hooks/DriftReminder.hook.ts
+@@ -38,6 +38,7 @@
+ 
+ import { existsSync, mkdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
+ import { dirname, join } from "node:path";
++import { canReadMemorySources, filterMemorySource } from "../LIFEOS/TOOLS/lib/MemoryAccess";
+ import { firstBannedHit } from "./lib/banned-vocab";
+ import { homedir } from "node:os";
+ 
+@@ -142,12 +143,13 @@
+ 
+ function readLastResponse(): string | null {
+   try {
+-    if (!existsSync(LAST_RESPONSE_PATH)) return null;
++    if (!canReadMemorySources() || !existsSync(LAST_RESPONSE_PATH)) return null;
+     // Staleness guard: on the first prompt of a new session the cache still
+     // holds the PREVIOUS session's final response — never nag about day-old drift.
+     const ageMs = Date.now() - statSync(LAST_RESPONSE_PATH).mtimeMs;
+     if (ageMs > 30 * 60 * 1000) return null;
+-    return readFileSync(LAST_RESPONSE_PATH, "utf8");
++    return filterMemorySource(readFileSync(LAST_RESPONSE_PATH, "utf8"),
++      new Date(statSync(LAST_RESPONSE_PATH).mtimeMs).toISOString());
+   } catch {
+     return null;
+   }

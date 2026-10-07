@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# ABOUTME: Records actual child inference output in the isolated fixture.
+# ABOUTME: Preserves the installed inference process output and exit status.
+set -euo pipefail
+/var/tmp/lifeos-step1-20261006/plugins-current/lifeos-hook-bridge/bin/claude "$@" 2>>/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-operations-final-results/concurrent/hermes/child-stderr.log | tee -a /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-operations-final-results/concurrent/hermes/child-stdout.log

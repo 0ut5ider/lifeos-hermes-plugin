@@ -1,0 +1,163 @@
+{
+  "before": {
+    "activity_rows": 0,
+    "failure_rows": 0,
+    "loop_states": 0
+  },
+  "after": {
+    "activity": [
+      {
+        "event": "tool_use",
+        "ground_truth_command_matches": true,
+        "preview_command_matches": true,
+        "session_matches": true,
+        "tool_name": "Bash"
+      }
+    ],
+    "activity_rows_match_calls": true,
+    "failures": [],
+    "loop": {
+      "session_matches": true,
+      "seq_matches_calls": true,
+      "last_alert": 0,
+      "alert_count": 0,
+      "tools": [
+        "Bash"
+      ],
+      "failed": [
+        false
+      ],
+      "one_signature": true,
+      "state_count": 1
+    },
+    "alert_positions": {
+      "PostToolUse.11.1": [],
+      "PostToolUse.12.2": []
+    },
+    "other_context": false,
+    "at_least_required_calls": true,
+    "events": [
+      "PostToolUse"
+    ],
+    "tool_names": [
+      "Bash"
+    ],
+    "commands_match": true,
+    "model_received_loop_alert": false,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0,
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "04b4b217-332c-42e5-8101-edaec887f93b",
+  "seconds": 3.726,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-tool-log-20261005/results/tool-log-success",
+    "/home/lifeos-claude-ref/workspace/paired-tool-log-20261005/results/tool-log-success",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: printf 'PAIR_%s' TOOL_LOG"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.11.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.11.1 /home/lifeos-claude-ref/workspace/paired-tool-log-20261005/results/tool-log-success/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvRXZlbnRMb2dnZXIuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/EventLogger.hook.ts": "bed11b455bb8c8ddb724e94e834ede012883e1c0cd86fdbd5f6819ef597f5970"
+      }
+    },
+    {
+      "id": "PostToolUse.12.2",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.12.2 /home/lifeos-claude-ref/workspace/paired-tool-log-20261005/results/tool-log-success/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTG9vcERldGVjdG9yLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/LoopDetector.hook.ts": "46b1bd0ff6bfbf7fd992f162ff146414a8cf20a0a416aea5a9dbece8524d4229"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "63d644177c685ac717189d39d153990b7b4c4209c8441989db302733eabecf7b",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "5f67f4ce5326f8acd0ce86a9bc83397455d8d64a7812deb7fb053cf4e5b16c61",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "41b3bf4c0687dacad0a548b7d8208d5865de201e49fdfad50a428e83a2f63dc1",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "bb1a033a9ae912601b63a42716f5d2265a5ffc987b2541a414bdd9cea1e7649c",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "74566291db853fca4a7e78390f583ccb8ac9c8e0bf3435a40ae8846ff1d2d7cf",
+    "fixture-events.jsonl": "4829f256ce88649ef8f97e6fc5794eaf989fbcca5a940aecc3d8977a69f91bf8",
+    "cli.log": "a606cc6d12c6a68837ca95073c0c49f295f40e3484c0f1cd1258255bc4d66853",
+    "before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "after-state.json": "a486f535e94b82bb0999a08325f2ee436481d397c7d63db3ce2137c8a554a09d",
+    "fixture-files-before.json": "ea247690deb4f3daa6dfec85101d7da3b6370c9d6cc4d506caa8d9299aa4f9ca",
+    "fixture-files-after.json": "08baa9f33d07d66712530e276cf95ed59cbbbbe15bd2ef24e54aef280ac2e0d8"
+  }
+}

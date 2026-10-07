@@ -1,0 +1,52 @@
+{
+  "before": {
+    "credentials_present": false
+  },
+  "after": {
+    "credentials_present": false,
+    "usage_cache_present": false
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "2047e50f-6550-4919-9c81-e461ba5bb36b",
+  "seconds": 0.568,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.3",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.3 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/update-counts-no-oauth/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvVXBkYXRlQ291bnRzLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/UpdateCounts.hook.ts": "d8252b773fe13fc5372d80f7597c5a14ae6df1b9dfb78ce5d3798f22b10da060"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "9590841b7204e4af68ff985425a08cb76c0b185df3ebf0f72c8cdc42d30f1bde",
+    "fixture-events.jsonl": "0dc42209830a4d2a539fe7ffc7b7518410a4a3964e701ed146e8ded864d6e053",
+    "cli.log": "bc924f2de3c3bcb0006d8760c53119a638ffb91232f29cfdb5e62ab876c6b62c",
+    "before-state.json": "a59281e61f033027ce216bcdd32c2bf3546d662f33c88f14172114829b294293",
+    "after-state.json": "92f198da665429391dc79a0c8491468a217e30247c0c5e742c3a24a9bd60b3e7",
+    "fixture-files-before.json": "353a56de53d298802d4976889881b988a712b3b83e87ed04aacf03c39ff66059",
+    "fixture-files-after.json": "353a56de53d298802d4976889881b988a712b3b83e87ed04aacf03c39ff66059"
+  }
+}

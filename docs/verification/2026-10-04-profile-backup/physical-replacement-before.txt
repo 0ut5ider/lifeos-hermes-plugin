@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ ProfileBackupTests.test_replaced_database_cannot_borrow_the_prior_connection_snapshot _
+tests/test_profile_backup.py:234: in test_replaced_database_cannot_borrow_the_prior_connection_snapshot
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_replaced_database_cannot_borrow_the_prior_connection_snapshot
+1 failed, 9 deselected in 0.83s

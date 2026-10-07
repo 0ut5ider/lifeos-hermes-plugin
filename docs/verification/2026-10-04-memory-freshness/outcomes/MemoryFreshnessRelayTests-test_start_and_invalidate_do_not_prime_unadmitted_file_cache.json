@@ -1,0 +1,33 @@
+{
+  "case": "MemoryFreshnessRelayTests.test_start_and_invalidate_do_not_prime_unadmitted_file_cache",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-http-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T20:53:08.117Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n",
+      "LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md": "---\nlast_updated_by: MemorySystem.add\nlast_updated: 2026-10-04T20:53:08.117Z\n---\n<!-- BEGIN ENTRIES -->\nRULE: Synthetic authenticated PULSE fact\n<!-- END ENTRIES -->\n",
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n"
+    }
+  },
+  "events": [
+    {
+      "kind": "native_process",
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "import {start,invalidate,health} from \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-u5mvht75/.claude/LIFEOS/PULSE/modules/telos.ts\";\nawait start(); invalidate();console.log(\"SYNTHETIC_HEALTH=\"+JSON.stringify(health()));"
+      ],
+      "status": 0,
+      "stdout": "[telos] Starting...\n[telos] Started \u2014 telos: 0 sections (0 stale), context: 0 files (0 stale)\nSYNTHETIC_HEALTH={\"status\":\"degraded\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":null,\"telos_file_age_days\":null,\"telos_sections_total\":0,\"telos_sections_stale\":0,\"context_files_total\":0,\"context_files_stale\":0,\"last_read_at\":null}}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

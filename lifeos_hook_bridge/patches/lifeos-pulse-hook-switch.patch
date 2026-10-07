@@ -1,0 +1,17 @@
+--- a/LifeOS/install/LIFEOS/PULSE/pulse.ts
++++ b/LifeOS/install/LIFEOS/PULSE/pulse.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Serves LifeOS modules and schedules through the configured Pulse daemon.
++// ABOUTME: Applies module switches before dispatching each enabled service route.
+ /**
+  * LifeOS Pulse — The Unified Daemon
+  *
+@@ -846,6 +848,7 @@
+ 
+       // Hook routes: /hooks/*
+       if (pathname.startsWith("/hooks/")) {
++        if (config.hooks?.enabled === false) return new Response("", { status: 200 })
+         const resp = await handleHooksRequestAsync(req, pathname)
+         if (resp) return resp
+       }

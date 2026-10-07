@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-05",
+  "command": [
+    "ssh",
+    "-o", "BatchMode=yes",
+    "-o", "ConnectTimeout=8",
+    "outsider@192.168.8.212",
+    "sudo -n -u lifeos-hermes -H env XDG_RUNTIME_DIR=/run/user/1004 systemctl --user show hermes-gateway.service hermes-dashboard.service com.lifeos.pulse.service -p Id -p FragmentPath -p WorkingDirectory -p MainPID -p ActiveState -p ControlGroup -p KillMode --no-pager"
+  ],
+  "exit_code": 0,
+  "operation": "Read service properties only"
+}

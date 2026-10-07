@@ -57,6 +57,24 @@ class MemoryAgentTests(unittest.TestCase):
         self.assertEqual(self.fixture.fixture.fixture.fixture.memory.recall(OWNER,'synthetic denied fact'),[])
         self.outcome = result
 
+    def test_actual_agent_preserves_whitespace_and_the_current_quote_of_a_forgotten_fact(self):
+        marker = 'Synthetic forgotten quoted whitespace claim'
+        native = self.fixture.fixture.fixture.fixture
+        saved = native.remember(marker, 'whitespace-original')
+        native.memory.forget(OWNER, saved['reference'], 'whitespace-forget')
+        message = '  Explain this exact quote: ' + marker + '  \n'
+        result = self.fixture.initialize({'provider': 'lifeos-hook-bridge', 'memory_enabled': False, 'user_profile_enabled': False},
+            operation='conversation', message=message)
+        turn = result['conversation']
+        self.assertFalse(turn.get('failed'), turn)
+        self.assertNotEqual(turn.get('turn_exit_reason'), 'prompt_blocked', turn)
+        self.assertEqual(result['diagnostics'], '')
+        calls = [request for request in self.fixture.fixture.received if request['path'] == '/v1/chat/completions']
+        self.assertEqual(len(calls), 1)
+        users = [item['content'] for item in calls[0]['body']['messages'] if item['role'] == 'user']
+        self.assertEqual(users[-1], message)
+        self.assertEqual(native.memory.recall(OWNER, marker), [])
+
     def change_fact(self, operation, *, native_recall=False):
         marker = 'Synthetic superseded agent conversation claim'
         replacement = 'Synthetic corrected agent conversation claim'
@@ -65,7 +83,7 @@ class MemoryAgentTests(unittest.TestCase):
         saved = native.remember(prefix+marker, 'conversation-original','principal' if native_recall else 'project')
         if native_recall:
             connector = native.root/'LIFEOS/USER/CONFIG/memory-access.json'
-            connector.parent.mkdir()
+            connector.parent.mkdir(exist_ok=True)
             connector.write_text(json.dumps({'version':1,'command':[sys.executable,
                 str(Path(__file__).parents[1]/'lifeos_hook_bridge/memory_rpc.py'),
                 '--configuration',str(self.fixture.fixture.fixture.path)]}))
@@ -120,6 +138,42 @@ class MemoryAgentTests(unittest.TestCase):
 
     def test_actual_native_recall_forget_turn_removes_cached_hook_context(self):
         self.change_fact('forget',native_recall=True)
+
+    def resume_after_change(self, operation):
+        marker = 'Synthetic retired claim in a persisted conversation'
+        replacement = 'Synthetic current claim after conversation restart'
+        native = self.fixture.fixture.fixture.fixture
+        saved = native.remember(marker, 'persisted-conversation-original')
+        self.fixture.fixture.response_message = lambda _: {'role': 'assistant', 'content': marker}
+        flags = {'provider': 'lifeos-hook-bridge', 'memory_enabled': False, 'user_profile_enabled': False}
+        first = self.fixture.initialize(flags, operation='conversation', message='Read the synthetic current lab fact.')
+        history = first['conversation']['messages']
+        original = json.dumps(history, sort_keys=True)
+        if operation == 'correct':
+            changed = native.memory.correct(OWNER, saved['reference'], replacement, 'persisted-conversation-correct')
+        else:
+            changed = native.memory.forget(OWNER, saved['reference'], 'persisted-conversation-forget')
+        self.assertEqual(changed['status'], 'committed')
+        self.fixture.fixture.received.clear()
+        self.fixture.fixture.response_message = lambda _: {'role': 'assistant', 'content': 'Synthetic resumed turn complete.'}
+        result = self.fixture.initialize(flags, operation='conversation', message='Continue the synthetic lab conversation.',
+                                         conversation_history=history)
+        self.assertEqual(result['diagnostics'], '')
+        self.assertFalse(result['conversation'].get('failed'), result['conversation'])
+        self.assertEqual(result['conversation']['final_response'], 'Synthetic resumed turn complete.')
+        calls = [request for request in self.fixture.fixture.received if request['path'] == '/v1/chat/completions']
+        self.assertEqual(len(calls), 1)
+        self.assertNotIn(marker, json.dumps(calls[0]['body']))
+        self.assertEqual(json.dumps(history, sort_keys=True), original)
+        self.assertIn(marker, json.dumps(result['conversation']['messages']))
+        current = native.memory.recall(OWNER, 'conversation')
+        self.assertEqual([row['content'] for row in current], [replacement] if operation == 'correct' else [])
+
+    def test_actual_agent_restarts_and_repairs_a_forgotten_conversation(self):
+        self.resume_after_change('forget')
+
+    def test_actual_agent_restarts_and_repairs_a_corrected_conversation(self):
+        self.resume_after_change('correct')
 
 
 if __name__ == '__main__':

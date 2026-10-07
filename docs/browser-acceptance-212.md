@@ -2,6 +2,8 @@
 
 Date: 2026-10-02
 
+Retired on 2026-10-06. The account, its services, and its firewall rules no longer exist. See the [test environment record](test-environment.md).
+
 ## Open the installation
 
 1. Open [Hermes chat](http://192.168.8.212:8921/chat) from a computer on the local network.

@@ -1,0 +1,14 @@
+{
+ "method": "POST",
+ "path": "/installation/finalize",
+ "status": 200,
+ "body": {
+  "mounted": true,
+  "snapshot": "/home/hermes/.hermes/.lifeos-mount/a4ebf2b98a6a4419924a8cbf06b9b106",
+  "restart_required": true,
+  "state": "committed",
+  "output": "\u2713 SOUL.md            35500 chars (cap 100000), digest d62ef4e7dede\n\u2713 skills mounted     ~/.claude/skills (56 indexed in soul \u2014 the default routing path)\n\u2713 config.yaml        patched\n\u2713 plugins/lifeos/__init__.py installed\n\u2713 plugins/lifeos/guard.py installed\n\u2713 plugins/lifeos/plugin.yaml installed\n\u2713 plugins/lifeos/policy.json 28 read rules, 41 shell globs, 3 trusted egress hosts\n\u2713 .env               write-sandbox root set\n",
+  "baseline_created": true,
+  "upstream_commit": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c"
+ }
+}

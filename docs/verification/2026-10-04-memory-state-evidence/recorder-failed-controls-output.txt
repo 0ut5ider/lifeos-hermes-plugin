@@ -1,0 +1,33 @@
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-state-evidence/record_native_controls.py", line 79, in <module>
+    main()
+    ~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-state-evidence/record_native_controls.py", line 63, in main
+    test.run(result)
+    ~~~~~~~~^^^^^^^^
+  File "/usr/lib64/python3.14/unittest/case.py", line 673, in run
+    self.doCleanups()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-state-evidence/record_native_controls.py", line 58, in after
+    captured['after'] = snapshot(test)
+                        ~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-state-evidence/record_native_controls.py", line 22, in snapshot
+    if path.is_file() and not path.is_symlink() and not path.samefile(registry):
+                                                        ~~~~~~~~~~~~~^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 757, in samefile
+    other_st = other_path.stat()
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 654, in stat
+    return os.stat(self, follow_symlinks=follow_symlinks)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0dgwogcj/.claude/LIFEOS/MEMORY/STATE/memory-access.sqlite'
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/weakref.py", line 566, in _exitfunc
+    f()
+    ~^^
+  File "/usr/lib64/python3.14/weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/tempfile.py", line 962, in _cleanup
+    _warnings.warn(warn_message, ResourceWarning)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0dgwogcj'>

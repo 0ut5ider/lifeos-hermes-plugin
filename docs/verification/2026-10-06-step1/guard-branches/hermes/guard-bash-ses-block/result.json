@@ -1,0 +1,118 @@
+{
+  "before": {
+    "project_files": [],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": true,
+    "target_content_matches": true,
+    "model_received_block": true,
+    "tool_output_in_model": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_001708_e9acef",
+  "seconds": 11.565,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-ses-block",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-ses-block",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' GUARD_OUTPUT; aws ses send-email"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/guard-results-admitted/guard-bash-ses-block/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "fd953dc709e7b983b4d1126a98554b0e07ae7e5c697f73a2c5730d567c4aa0d7",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "143e920122cab9bac8a1b0ff17e646c8b2a418655a80b8d44be928152295cd27",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "eef5eb0a18ce3f53f0fc0f1057940268061eac9bcba2d743cbcc5149454c94a5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "4108edd7f34c4f5596e2ae7db23f729f72c75d81c255b6b311f635950882f513",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "76c1910578b3d641791b3be50a2fe5621b04c1ae26e87da75d36b5cee65e84e1",
+    "fixture-events.jsonl": "55dd107243dcf162cf0fa2696ade0ae8bdbed1692b9e8a74a472947c926567b6",
+    "cli.log": "7135d0fb74be6baef1be3a9be6aee7e36ad317d87de573fc77b21d3038f6641e",
+    "before-state.json": "10d487a25ae5aae9fa42751678c8c3f4ab3661aea79688524b0cba4787d86273",
+    "after-state.json": "7201a7568b3b077417c767a2265c3ca2b6a54741c3c01a5043481a7131ba114f",
+    "fixture-files-before.json": "53441dcb1e3fa75e3d90a347c42f486bbf0cac9443702dd187316a1be2c8a7d6",
+    "fixture-files-after.json": "40a8dc079429b764c7f81c4cb32328ef79a1c9104bdbdc71ecb98376af8a3709"
+  }
+}

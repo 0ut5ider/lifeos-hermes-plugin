@@ -1,0 +1,19 @@
+# Grouped interview seed recovery
+
+Date: 2026-10-05. This candidate unit publishes the selected native TELOS summary and state artifacts as one recoverable managed operation. It uses synthetic profiles and changes no deployed server, ownership, sharing, or job setting.
+
+Managed seeding admits both source collections and computes both artifacts through the existing native parsers. It checks current authority, sources, and destination bytes before publication. Each artifact uses mode 0600. One journal captures the complete selected artifact group. A second-generator failure publishes no member of that group. The native parent reports a failed operation with `written: false`.
+
+The journal stores the expected publication digest for each selected artifact. Recovery accepts original bytes, an originally absent destination, or exact bytes published by the interrupted operation. A later edit refuses before any group member is restored. Recovery retains the journal and the unknown receipt. Existing operations that do not supply expected digests keep their existing publication behavior. Journal validation checks operation and target shapes and recovery bytes before effects.
+
+The actual native parent control first leaves its summary updated when the second generator fails. The isolated original control reproduces `written: true`. The grouped service does not yet exist in the initial controls. The first fixture also writes through the native tools directory link and changes shared prepared test code. The corrected control uses a private tools copy. `fixture-repairs.json` records the two restored prepared files. Final verification uses a newly prepared distributed tree.
+
+Expanded controls compare managed and native parent envelopes, summary text, and state fields. Only generation timestamps are normalized. They verify a selected generator subset, an identical retry receipt, changed retry payload refusal, fixed root aliases, changed sources and authority after real native rendering, and later destination edits between publications. An actual child exits with status 73 after the first artifact. A separate native transaction restores both previous artifacts before fresh seeding.
+
+The extended controls expose invalid retry values being treated as new requests and refusal of a stable installed-root alias. Both corrected paths pass. Malformed journal controls also reproduce type, missing-field, and SQLite binding errors. Recovery now refuses those shapes without changing files. The raw failing controls remain in this directory.
+
+The final fresh distributed gate passes **198 tests and 116 subtests in 202.26 seconds**, with no skips, failures, or errors. It covers grouped seeding, publication recovery, the native parent, native facts, TELOS summary, state, derivative tracking, interview cadence, hypotheses, Wisdom frames, ratings, recurrence, and backup. `final-command.json` records commands, source pins, environment, dependencies, and source hashes. `final-output.txt` and `final.done` record completion. Nine synthetic native outcomes remain in `native-outcomes`.
+
+`source-comparison.json` confirms unchanged tested sources, all 55 native files equal to the prepared scratch source, and all 19 root/runtime patch pairs equal. This unit adds `SeedPulse.ts` to the existing memory patch. It adds no dependency or patch group. The frozen dependencies remain unchanged.
+
+The operation covers the interview's summary and state seeding. It does not group all earlier interview edits or establish full identity setup, import, source coverage, installed application acceptance, private model reasoning, scheduled authority, or production activation. Expected publication digests apply to this seed operation; other operations retain separate recovery coverage. The combined release remains open.

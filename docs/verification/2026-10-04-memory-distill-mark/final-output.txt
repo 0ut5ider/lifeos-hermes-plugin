@@ -1,0 +1,11 @@
+.............................................................................................................................. [ 61%]
+.......................................................... [ 89%]
+................F.....                                                   [100%]
+=================================== FAILURES ===================================
+_ MemoryDistillMarkTests.test_original_native_mark_matches_counts_and_state_bytes _
+tests/test_memory_distill_mark.py:154: in test_original_native_mark_matches_counts_and_state_bytes
+    self.assertEqual(self.state.read_bytes(), before)
+E   AssertionError: b'{\n  "schema_version": 1,\n  "surfaced_slu[146 chars]"\n}' != b'{"schema_version":1,"surfaced_slugs":{"syn[102 chars]04"}'
+=========================== short test summary info ============================
+FAILED tests/test_memory_distill_mark.py::MemoryDistillMarkTests::test_original_native_mark_matches_counts_and_state_bytes
+1 failed, 205 passed, 104 subtests passed in 252.65s (0:04:12)

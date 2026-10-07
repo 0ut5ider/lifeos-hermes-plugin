@@ -1,0 +1,49 @@
+{
+  "journal": {
+    "installed": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-xnllf38g/installed-alias",
+    "installed_physical": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-xnllf38g/.claude",
+    "profile": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/profile-services-xnllf38g/.hermes",
+    "services": {
+      "dashboard": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-f701a1119640454ab3a80934378c483c-dashboard.service",
+        "definition": "d90f05447882a4fc8b0458779eafccfde867320323cc4c6255652b318291af73",
+        "unit": "lifeos-ownership-test-f701a1119640454ab3a80934378c483c-dashboard.service"
+      },
+      "gateway": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-367d140fc9794ed79e7a17d9f60f83c6-gateway.service",
+        "definition": "83906582b3d787fa887b7a8130e245290a4c28fb664df0cb55c437c71e1823b9",
+        "unit": "lifeos-ownership-test-367d140fc9794ed79e7a17d9f60f83c6-gateway.service"
+      },
+      "pulse": {
+        "active": true,
+        "control_group": "/user.slice/user-1000.slice/user@1000.service/app.slice/lifeos-ownership-test-fe25013bf950411ea2e0e040c39fd179-pulse.service",
+        "definition": "ecee9e27f8248b04cf4f2e128c4579d6f8e33d37239209990a4eb94a1d1a8b0d",
+        "unit": "lifeos-ownership-test-fe25013bf950411ea2e0e040c39fd179-pulse.service"
+      }
+    },
+    "state": "stopped",
+    "version": 1
+  },
+  "after": {
+    "gateway": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-367d140fc9794ed79e7a17d9f60f83c6-gateway.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    },
+    "dashboard": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-f701a1119640454ab3a80934378c483c-dashboard.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    },
+    "pulse": {
+      "ActiveState": "inactive",
+      "FragmentPath": "/run/user/1000/systemd/user/lifeos-ownership-test-fe25013bf950411ea2e0e040c39fd179-pulse.service",
+      "MainPID": "0",
+      "ControlGroup": ""
+    }
+  }
+}

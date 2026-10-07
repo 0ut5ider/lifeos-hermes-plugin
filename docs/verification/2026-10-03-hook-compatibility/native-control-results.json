@@ -1,0 +1,331 @@
+{
+  "controls": [
+    {
+      "label": "toolsearch-v2-false",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Find the paired MCP ping tool with ToolSearch, call ping exactly once, then reply only with its marker. If ToolSearch is unavailable, report unavailable."
+      ],
+      "environment_overrides": {
+        "ENABLE_TOOL_SEARCH": "false"
+      },
+      "session_id": "2ed56c03-ec5a-42a4-9700-116ca6bf98e8",
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 22.122,
+      "result_type": "success",
+      "tool_calls": [
+        "Bash"
+      ],
+      "output_sha256": "9185b0a179e0542e60bb62d7a581eacbd59e05d60bb6641ee454d99355882fdf",
+      "tool_inventory_count": 125,
+      "toolsearch_present": false,
+      "multiedit_present": false,
+      "relevant_registrations": []
+    },
+    {
+      "label": "toolsearch-v2-true",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Find the paired MCP ping tool with ToolSearch, call ping exactly once, then reply only with its marker. If ToolSearch is unavailable, report unavailable."
+      ],
+      "environment_overrides": {
+        "ENABLE_TOOL_SEARCH": "true"
+      },
+      "session_id": "82b36eed-b82e-4ac3-b9af-2ba65d39b8fb",
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 9.839,
+      "result_type": "success",
+      "tool_calls": [
+        "ToolSearch"
+      ],
+      "output_sha256": "d1916ae182309bfd399794d8dda15fce2ba80eba4ff1b700b1eff6310e5d4dea",
+      "tool_inventory_count": 126,
+      "toolsearch_present": true,
+      "multiedit_present": false,
+      "relevant_registrations": [
+        {
+          "id": "PostToolUse.5.1",
+          "event": "PostToolUse",
+          "tool_name": "ToolSearch",
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "label": "stopfailure-v2-no-retries",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Reply with PAIR_FAILURE_212."
+      ],
+      "environment_overrides": {
+        "ANTHROPIC_BASE_URL": "http://127.0.0.1:31355",
+        "CLAUDE_CODE_MAX_RETRIES": "0"
+      },
+      "session_id": "af399749-2d93-482e-8e49-c72600a70c7b",
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 0.817,
+      "result_type": "success",
+      "tool_calls": [],
+      "output_sha256": "93bf653067e70dc82d93322d22bd7e697daef13ee17f6943a02d0e1ebd2bcc63",
+      "tool_inventory_count": 125,
+      "toolsearch_present": false,
+      "multiedit_present": false,
+      "relevant_registrations": []
+    },
+    {
+      "label": "toolsearch-shared-text",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Use ToolSearch exactly once with query \"memory search\". Do not call any other tool. Then reply with PAIR_TOOL_SEARCH_212."
+      ],
+      "environment_overrides": {
+        "ENABLE_TOOL_SEARCH": "true"
+      },
+      "session_id": "93957225-5e7d-4a44-80dd-b9107a74d53f",
+      "exit_code": 1,
+      "timeout": false,
+      "seconds": 3.174,
+      "result_type": "success",
+      "tool_calls": [
+        "ToolSearch"
+      ],
+      "output_sha256": "1b2dba78ccc7ec6aec8ac30483861ee6d5a31cf69824c31f21c54cce3bfa7ffb",
+      "tool_inventory_count": 126,
+      "toolsearch_present": true,
+      "multiedit_present": false,
+      "relevant_registrations": [
+        {
+          "id": "PostToolUse.5.1",
+          "event": "PostToolUse",
+          "tool_name": "ToolSearch",
+          "exit_code": 0
+        }
+      ]
+    },
+    {
+      "label": "webfetch-public",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Use WebFetch once to fetch https://github.com/anthropics/claude-code/blob/main/README.md and report the project name. Do not call any other tool."
+      ],
+      "environment_overrides": {
+        "ENABLE_TOOL_SEARCH": "false",
+        "HTTPS_PROXY": "http://127.0.0.1:31366",
+        "HTTP_PROXY": "http://127.0.0.1:31366",
+        "NO_PROXY": "127.0.0.1,localhost,192.168.8.90"
+      },
+      "session_id": "e8bc31b2-b378-4905-8c9e-91e67cd6a361",
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 23.239,
+      "result_type": "success",
+      "tool_calls": [
+        "WebFetch"
+      ],
+      "output_sha256": "c8d26e05d1d3c4cf24071c7f820eb7942afe042a50f62cfc1f63245d68191c21",
+      "tool_inventory_count": 125,
+      "toolsearch_present": false,
+      "multiedit_present": false,
+      "relevant_registrations": []
+    },
+    {
+      "label": "webfetch-verified-public",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Use WebFetch once to fetch https://github.com/anthropics/claude-code/blob/main/README.md and report the project name. Do not call any other tool."
+      ],
+      "environment_overrides": {
+        "ENABLE_TOOL_SEARCH": "false",
+        "HTTPS_PROXY": "http://127.0.0.1:31366",
+        "HTTP_PROXY": "http://127.0.0.1:31366",
+        "NO_PROXY": "127.0.0.1,localhost,192.168.8.90"
+      },
+      "session_id": "644fa9c8-068e-41d7-a53f-5ef97d102aba",
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 12.554,
+      "result_type": "success",
+      "tool_calls": [
+        "WebFetch"
+      ],
+      "output_sha256": "7841567d9d67d6eea144bdf37516aa9c436694111423044ac51540a5abd3c084",
+      "tool_inventory_count": 125,
+      "toolsearch_present": false,
+      "multiedit_present": false,
+      "relevant_registrations": []
+    },
+    {
+      "label": "websearch-private-control",
+      "command": [
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+        "-p",
+        "--verbose",
+        "--output-format",
+        "stream-json",
+        "--model",
+        "claude-haiku-4-5",
+        "--effort",
+        "medium",
+        "--max-turns",
+        "3",
+        "--strict-mcp-config",
+        "--mcp-config",
+        "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/mcp.json",
+        "--",
+        "Use WebSearch once with query \"Claude Code hooks documentation\". Do not call any other tool. Then report whether search returned results."
+      ],
+      "environment_overrides": {
+        "ENABLE_TOOL_SEARCH": "false",
+        "CLAUDE_CODE_MAX_RETRIES": "0"
+      },
+      "session_id": "cc040dc3-8d5d-4423-b0ad-4565d82bada7",
+      "exit_code": 0,
+      "timeout": false,
+      "seconds": 8.536,
+      "result_type": "success",
+      "tool_calls": [
+        "WebSearch"
+      ],
+      "output_sha256": "75859af1441bb48b4be63ee3b79daba710143d27666aa3d39249a2be6c03f4a1",
+      "tool_inventory_count": 125,
+      "toolsearch_present": false,
+      "multiedit_present": false,
+      "relevant_registrations": []
+    }
+  ],
+  "interactive_failure": {
+    "seconds": 2.725,
+    "prompt_sent": true,
+    "trusted_folder": false,
+    "stop_failure": [
+      {
+        "id": "StopFailure.1.1",
+        "event": "StopFailure",
+        "session_id": "2d00699b-66f0-4dae-9b16-92fbc638eb21",
+        "exit_code": 0,
+        "stdout_size": 0,
+        "stderr_size": 0
+      }
+    ],
+    "hook_ids": [
+      "SessionEnd.1.1",
+      "SessionEnd.1.2",
+      "SessionEnd.1.3",
+      "SessionEnd.1.4",
+      "SessionEnd.1.5",
+      "SessionEnd.1.6",
+      "SessionStart.1.1",
+      "SessionStart.1.2",
+      "SessionStart.1.3",
+      "SessionStart.1.4",
+      "SessionStart.1.5",
+      "StopFailure.1.1",
+      "UserPromptSubmit.2.1",
+      "UserPromptSubmit.3.1",
+      "UserPromptSubmit.4.1",
+      "UserPromptSubmit.5.1",
+      "UserPromptSubmit.6.1",
+      "UserPromptSubmit.7.1",
+      "UserPromptSubmit.8.1",
+      "UserPromptSubmit.9.1"
+    ],
+    "command": [
+      "/home/lifeos-claude-ref/workspace/hook-evidence-20261003/home/.local/bin/claude",
+      "--model",
+      "flashnext-w4a16-fp8ple",
+      "--effort",
+      "medium",
+      "Reply with PAIR_FAILURE_212."
+    ],
+    "screen_bytes": 3743,
+    "authentication_error_visible": true,
+    "exit_code": 143
+  }
+}

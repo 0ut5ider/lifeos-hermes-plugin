@@ -1,0 +1,44 @@
+./home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/_pytest/unraisableexception.py:67: PytestUnraisableExceptionWarning: Exception ignored on calling weakref callback <finalize object at 0x7fb7eab8d4a0; dead>: None
+
+Traceback (most recent call last):
+  File "/usr/lib64/python3.14/weakref.py", line 490, in __call__
+    return info.func(*info.args, **(info.kwargs or {}))
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/tempfile.py", line 962, in _cleanup
+    _warnings.warn(warn_message, ResourceWarning)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ResourceWarning: Implicitly cleaning up <TemporaryDirectory '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-c3nana46'>
+
+
+  warnings.warn(pytest.PytestUnraisableExceptionWarning(msg))
+
+=================================== FAILURES ===================================
+_ MemorySourceRegistryAliasTests.test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock (relative='LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md') _
+tests/test_memory_source_registry_alias.py:58: in test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+    self.assertEqual(after['state'], 'blocked', {'path': relative,
+E   AssertionError: 'acquired' != 'blocked'
+E   - acquired
+E   + blocked
+E    : {'path': 'LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md', 'before': {'state': 'blocked', 'message': 'database is locked'}, 'after': {'state': 'acquired'}, 'refusal': 'The native wiki source is not valid UTF-8'}
+_ MemorySourceRegistryAliasTests.test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock (relative='LIFEOS/MEMORY/WORK/synthetic-source/ISA.md') _
+tests/test_memory_source_registry_alias.py:58: in test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+    self.assertEqual(after['state'], 'blocked', {'path': relative,
+E   AssertionError: 'acquired' != 'blocked'
+E   - acquired
+E   + blocked
+E    : {'path': 'LIFEOS/MEMORY/WORK/synthetic-source/ISA.md', 'before': {'state': 'blocked', 'message': 'database is locked'}, 'after': {'state': 'acquired'}, 'refusal': 'The native wiki source is not valid UTF-8'}
+_ MemorySourceRegistryAliasTests.test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock (relative='LIFEOS/DOCUMENTATION/synthetic-source.md') _
+tests/test_memory_source_registry_alias.py:58: in test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+    self.assertEqual(after['state'], 'blocked', {'path': relative,
+E   AssertionError: 'acquired' != 'blocked'
+E   - acquired
+E   + blocked
+E    : {'path': 'LIFEOS/DOCUMENTATION/synthetic-source.md', 'before': {'state': 'blocked', 'message': 'database is locked'}, 'after': {'state': 'acquired'}, 'refusal': 'The native wiki source is not valid UTF-8'}
+=========================== short test summary info ============================
+SUBFAILED(relative='LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md') tests/test_memory_source_registry_alias.py::MemorySourceRegistryAliasTests::test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+SUBFAILED(relative='LIFEOS/MEMORY/WORK/synthetic-source/ISA.md') tests/test_memory_source_registry_alias.py::MemorySourceRegistryAliasTests::test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+SUBFAILED(relative='LIFEOS/DOCUMENTATION/synthetic-source.md') tests/test_memory_source_registry_alias.py::MemorySourceRegistryAliasTests::test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! KeyboardInterrupt !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_transaction.py:46: KeyboardInterrupt
+(to show a full traceback on KeyboardInterrupt use --full-trace)
+3 failed, 1 passed in 20.79s

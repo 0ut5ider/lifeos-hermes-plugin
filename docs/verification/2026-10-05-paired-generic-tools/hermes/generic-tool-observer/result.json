@@ -1,0 +1,121 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":1,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":1,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":1,\"lastNudgeAt\":{}}",
+      ".claude/LIFEOS/MEMORY/STATE/loop-detector/<session>.json": "{\n  \"window\": [\n    {\n      \"sig\": \"Bash:<id>\",\n      \"tool\": \"Bash\",\n      \"failed\": false,\n      \"ts\": \"<time>\"\n    }\n  ],\n  \"alerted\": [],\n  \"seq\": 1,\n  \"lastAlert\": 0\n}"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_005209_773aaa",
+  "seconds": 11.665,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-observer",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-observer",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_%s' OBSERVED"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.12.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.12.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-tools-20261005/results/generic-tool-observer/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL1Bvc3RUb29sT2JzZXJ2ZXIuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/PostToolObserver.hook.ts": "afadd5fc8ec07ed9571ccf5042073d2b0391f9d9908b2b52a0c498e0f0abcc7c"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "487e60bfa8f0fba5b108c9cd740b699131c5086a5ea150799dd0c236ea2ba39c",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "406072b21cfc7af2f887a0eafe6490d6868b15c3f2c8da301187bfcaea905caa",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "e9d3c2e59835c3fb3bc110eec0f91950b9e551bb44587578c71c4ffdc853e015",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "cc5b449ab61b94d7ecc702ca119c5ba800a698aea327d8b838ac8bd06712ddf0",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "2835d9cd3da824ec8c09c4cf9077e86b7d7a719c0bed052b249e28d0911099ba",
+    "fixture-events.jsonl": "d7943a6b9d243c8ea2965e3c1cbb3d229268fd3a5f05e5962a699bf6c95f85e6",
+    "cli.log": "82238acffa24063794248b663ceece8d4bb08417ae6d904fdb32145621606f16",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "33ff9132ff075a567e422eea3152a4bd7fe8ea1fa499281c6b7d2cffd4ba20db",
+    "fixture-files-before.json": "0dca1a588312c4f43cfa151aa0adeda2ba141614902ab50e975f1ca083ca8fa2",
+    "fixture-files-after.json": "64754b5d030efca2ff6d70b51ae2879f371dcf4edd971b2b7b6e1fc2d9288ed3"
+  }
+}

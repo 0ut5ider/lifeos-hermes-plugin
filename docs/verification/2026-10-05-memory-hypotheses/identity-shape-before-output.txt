@@ -1,0 +1,21 @@
+F.                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryHypothesisTests.test_unsupported_identity_path_section_returns_a_refusal _
+tests/test_memory_hypotheses.py:292: in test_unsupported_identity_path_section_returns_a_refusal
+    result = MemoryService(self.fixture.configuration).native(self.fixture.context, 'learning_hypotheses', {
+lifeos_hook_bridge/memory_service.py:243: in native
+    return derive(memory, scope, arguments, check_current=check_current)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_hypotheses.py:175: in derive
+    initial = _collect(memory, scope, connection, arguments)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_hypotheses.py:118: in _collect
+    identity = _identity(memory, scope, connection)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_hypotheses.py:51: in _identity
+    user = value.get('paths', {}).get('userDir', value.get('paths', {}).get('user_dir'))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'str' object has no attribute 'get'
+=========================== short test summary info ============================
+FAILED tests/test_memory_hypotheses.py::MemoryHypothesisTests::test_unsupported_identity_path_section_returns_a_refusal
+1 failed, 1 passed in 1.39s

@@ -1,0 +1,123 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl": "{\"ts\":\"<time>\",\"tool\":\"Bash\",\"cmd_prefix\":\"touch pair-permission-marker\",\"cmd_sha\":\"2f3da5b062edc00a\",\"decision\":\"neutral\",\"reasons\":[\"default-defer\"],\"cache\":\"n/a\"}\n"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PermissionRequest",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "2e354a0e-a824-4ed1-82a9-db2b71f5a95b",
+  "seconds": 3.879,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-permission-20261005/results/generic-tool-permission",
+    "/home/lifeos-claude-ref/workspace/paired-generic-permission-20261005/results/generic-tool-permission",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: touch pair-permission-marker"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PermissionRequest.1.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PermissionRequest.1.1 /home/lifeos-claude-ref/workspace/paired-generic-permission-20261005/results/generic-tool-permission/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvU2FmZXR5Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/Safety.hook.ts": "513a0cdfe13f76741de78bfc08e93d491e26a0cbf1c41792c5b9cbadb96ee470"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "45fd2bbec3dafab11ec8b42385e99dcc8c67334e3274c5bee434591d15375358",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "e3fa42147f79732b79487022801254e385737f5abc17ce046134a3195682fc1c",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "16a117ba2b784c93a0de46779ba6755958c681ea4077add6ec447c0c25836a48",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "5c73124958c2382b8d66c90c08a16fe457837f334f2817d27e8838364f70e8d7",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "15dfa5f1d9e0426a525658e895d1f0b775701ccde307a139d98117b78f728e36",
+    "fixture-events.jsonl": "3a0a2eedb9da3b29f765dff073b334e42274c8a840457edb214052445a09b037",
+    "cli.log": "246a3e58141fa92aa0cd3b297856214901b0b537ce490d81ec26a387fa07bd92",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "67950752db429cb9edb00a7ec6034403ed2a4f675a5f54717de7e6c84b351f11",
+    "fixture-files-before.json": "a96ff17d51e9a2c7c457bf5fdd918026441c9a1fc4e1fb8f00a1f9996fce1f2a",
+    "fixture-files-after.json": "88d47dd6f46ed042fafd1d8ca1405c83ba1f5731554b924fae99384263f336b6"
+  }
+}

@@ -1,5 +1,21 @@
 # Memory implementation and activation gates
 
+## October 4 continuation
+
+The [headless synthesis gate](verification/2026-10-04-memory-distill-synthesis/README.md) passes 218 tests and 104 subtests. Native synthesis uses current admitted notes, validates generated items, preserves native digest and state bytes, and journals both publications. Actual process death restores the previous pair. Scripted local HTTP establishes request assembly and selected effects. Live private model acceptance, other publishers, aggregate recovery, and ownership activation remain open.
+
+Adrian directs work to proceed through steps 2 to 7 of the [full experience plan](full-experience-release-plan.md). Hook compatibility remains a combined release gate. Candidate feature work proceeds without changing the active `.212` installation.
+
+The [verified resume gate](verification/2026-10-04-memory-resume/README.md) passes 100 tests and 68 subtests. Fact-only restart admission preserves a stale generation until foreground request repair. Applied identity proposals cannot use that refresh. Actual SDK and complete Hermes process checks preserve the transcript while excluding the retired claim from the next model request.
+
+The [compression gate](verification/2026-10-04-memory-compression/README.md) passes 149 tests and 95 subtests. Actual child rotation and in-place compression complete their next owner turn. Recorded lineage transfers the caller's thread binding. Auxiliary final admission adopts only unchanged authority, while generated-content and stale-generation refusals remain active. The host preserves exact user whitespace. Process-death recovery between native child commit and lineage publication remains open.
+
+The subsequent [interruption gate](verification/2026-10-04-memory-lineage-recovery/README.md) passes 165 tests and 98 subtests. An actual process exit after native child commit leaves no LifeOS child admission. A separate process recovers through verified native lineage and unchanged parent authority, then completes its next owner turn. The gate covers fork exclusions, ambiguous lineage, changed authority, and unavailable session databases. Aggregate ownership recovery and restricted-context delivery remain open.
+
+The [native reconstruction gate](verification/2026-10-04-native-backup-recovery/README.md) passes 69 tests and 15 subtests. A Hermes command reconstructs a verified native backup into a separate private tree. It verifies active references, keeps retired status, preserves later data in the original store, and survives interruption without changing ownership. Profile configuration, history, skills, program and service recovery, and current-state cutover remain open.
+
+The [native backup note](../notes/2026-10-04-native-memory-backup.md) records coherent private snapshots and the Hermes create and inspect commands. Its final gate passes 47 tests and 14 subtests. Snapshot reconstruction in a disposable store preserves current references and forgotten status. Full ownership backup, product restore, configuration and service recovery, compression rotation, and the remaining source and delivery gates remain open. Ownership activation stays disabled.
+
 Date: 2026-09-30. Adrian authorizes implementation of the reviewed memory design now. This authorization changes the earlier implementation sequence. Hook parity remains a separate completion gate. Memory ownership and remote sharing require their acceptance evidence before activation.
 
 ## Work sequence
@@ -368,3 +384,122 @@ Native PULSE remount uses the incoming authenticated session through the fixed l
 The isolated `.212` service and browser checks now verify native setup, private-model chat and a terminal tool turn, eleven native HTTP admission cases, process-kill mount recovery, and a same-revision update with a real gateway restart. The browser version restore control uses current owner authority and refuses changed user data before it changes the job. A second successful update followed by a browser restore identifies a native configuration audit appended after the snapshot. The strict restore guard refuses it. Preserve later audit data without reviving retired facts before closing successful browser version restore. The development recorder captures all ten detached handoffs from its corrected run. The [browser acceptance guide](browser-acceptance-212.md) gives the entry point, operating limits, and reversal of server changes.
 
 The first corrected complete memory regression passes 592 cases without skips. The final regression records the later restore and database-read corrections separately. Full PULSE reader governance, remaining derivatives, restricted delivery, retained-session reconstruction, source-review page controls, schema rollback compatibility, ownership activation, installation trials and removal, and the independent release gate remain open. Do not activate lasting-memory ownership during this acceptance batch.
+
+## 2026-10-04 current KnowledgeGraph navigation
+
+Native KnowledgeGraph navigation also uses the registered current-note corpus. Its five commands retain native output under owner admission. Positive tag lookup and adopted typed relationships preserve labels and traversal weights. Missing context, revoked or restricted authority, invalid connectors, changed sources, and redirected paths refuse delivery. Forgotten targets and superseded wikilinks leave navigation. Shared tags remain independent current edges.
+
+The [graph gate](verification/2026-10-04-memory-knowledge-graph/README.md) passes 92 tests and 38 subtests. KnowledgeGraph is the 29th native file in the memory patch; the previous 28 files remain identical. MemoryGraph caches, other publishers, complete inventory, restricted delivery, ownership, and the remaining release plan stay open. No active server changes.
+
+## 2026-10-04 native graph publication
+
+MemoryGraph supplies current registered Knowledge notes and admitted WORK, WISDOM, and synthesis text to its native algorithms. Native metadata, typed relationships, lexical inference, communities, centrality, and pattern reports retain their behavior. Statistics and patterns use current sources. Duplicate slugs preserve native domain selection and warnings. Both graph commands and KnowledgeGraph retain managed mode after connector loss when the durable marker remains.
+
+The existing memory journal publishes both graph artifacts and restores the previous pair after a real interrupted write. Source or authority changes after rendering refuse publication. Artifacts cannot alias the open registry. The [distributed gate](verification/2026-10-04-memory-graph/README.md) passes 229 tests and 154 subtests without skips or failures. The patch changes 31 native files and fixes the existing TOOLS dependencies with a Bun lockfile. The authenticated graph view, other publishers, complete inventory, restricted delivery, ownership, migration, and remaining release work stay open. No active server changes.
+
+## 2026-10-04 profile backup and separate recovery
+
+The selected-profile backup captures Hermes configuration, history, memory files, skills, installed profile files, and covered links together with native data. Real competing SQLite and native writers remain blocked through collection. Closing a direct database descriptor initially breaks the SQLite barrier. Both collectors now serialize their open connection without direct file reads. Physical replacement and hard-link aliases refuse collection. The [backup gate](verification/2026-10-04-profile-backup/README.md) passes 47 tests and 20 subtests.
+
+Profile recovery reconstructs a separate candidate, rebinds its native configuration and supported connectors, and keeps ownership and sharing disabled. The candidate preserves native references and opens actual Hermes history in a new process. Recovery keeps all later original facts, forget decisions, profile edits, and history. Captured native programs include their hooks and dependencies; the recovery uses those tools when available. The [recovery gate](verification/2026-10-04-profile-recovery/README.md) passes 58 tests and 24 subtests. External program sources, service recovery, current-state activation review, native consumer coverage, and the aggregate ownership transaction remain required. No server deployment or ownership activation occurs.
+
+
+## 2026-10-04 authenticated native graph view
+
+The managed graph HTTP route renders the current registered notes and admitted retained silos through the existing native algorithms and native response formatter. Both the primary PULSE memory router and Observability use request authentication. They refuse anonymous, revoked, cross-origin, malformed, and disconnected requests. Forgetting a note removes it from the next request on the same authenticated connection. The raw graph cache remains unchanged. Standalone Observability keeps its native cached response.
+
+The graph tooltip renders titles and categories as literal text. Four actual Chromium function cases preserve formatting and reject markup interpretation. The frontend production build succeeds. Separate type checks retain two errors outside the changed component, with identical original and candidate results. Complete page and deployed service acceptance remain required. The [evidence record](verification/2026-10-04-memory-graph-relay/README.md) retains the controls and limits. No active server changes.
+
+
+## 2026-10-04 current TELOS dimension publication
+
+UpdateLifeosState computes its native current-state and ideal-state percentages from admitted fixed dimension sources. Managed publication requires unrestricted current owner authority and uses the existing memory journal. Source or authority changes after rendering refuse publication. A real process interruption restores the previous state before a fresh calculation. Output remains private and cannot redirect to a foreign file or the open registry. Standalone calculations and console output retain their native behavior.
+
+Exact older dimension sources can use the existing owner source-review operation after retirement. Source review does not admit known retired content and remains bound to the current retirement state. The [state record](verification/2026-10-04-memory-state/README.md) retains baseline failures, native controls, and distributed verification. Other TELOS publishers, PULSE readers, derivative orchestration, restricted delivery, ownership, migration, and the release plan remain open. No active server changes.
+
+
+## 2026-10-04 admitted TELOS summary publication
+
+GenerateTelosSummary retains native section parsing, unified and legacy precedence, plural headings, templates, and output under admitted owner sources. It reads declared current TELOS and identity text. The memory journal protects the fixed summary artifact. Source or authority changes after rendering refuse publication. A real process interruption restores the previous summary before fresh publication. Managed names cannot fall back to unadmitted settings. Exact older-source review remains bound to current content and retirement state.
+
+The [distributed gate](verification/2026-10-04-memory-telos/README.md) passes 182 tests and 79 subtests without skips or failures. A [caller supplement](verification/2026-10-04-memory-telos/caller-supplement.json) records two TELOS writers omitted by the earlier MEMORY-focused search. The 227 historical candidates are not complete inventory coverage. Freshness, alternate soul generation, adapters, other publishers, source inventory, restricted delivery, ownership, and remaining release work stay open. No active server changes.
+
+## 2026-10-04 source registry lock preservation
+
+Source paths now reject aliases to the SQLite registry before content reads. Actual competing writers stay blocked until the transaction closes. The [gate](verification/2026-10-04-memory-source-alias/README.md) passes 264 tests and 111 subtests without skips, failures, errors, or warnings. Freshness, other publishers, ownership, and the combined release remain open. No active server changes occur.
+
+## 2026-10-04 current freshness reads
+
+The native freshness CLI, exported readers, and five authenticated PULSE views use current admitted source text and file times. Native Date objects, all 25 legacy section files, review-age grades, source inheritance, and custom state dimensions remain intact. Post-render source, owner, and installation changes refuse delivery. Managed startup and invalidation preserve the file cache instead of using ambient authority.
+
+The [final gate](verification/2026-10-04-memory-freshness/README.md) passes 263 tests and 180 subtests without skips, failures, errors, or warnings. Thirty-five actual native controls are recorded, and all 36 native patch files match the distributed preparation. Timestamp and cache writers, Interview and migration callers, other publishers, restricted delivery, ownership, and the combined release remain open. Managed source health omits ambient cache details and needs final service acceptance. No active server changes occur.
+
+## 2026-10-04 native timestamp and cache publication
+
+The [publication gate](verification/2026-10-04-memory-freshness-writes/README.md) preserves native timestamp transformations and the constitutional cache payload. It journals source and cache changes after current source and owner checks. Read-only cache printing creates no publication directory. Actual interrupted publication restores previous user and fixed system sources. Source conflicts preserve later edits, including edits that admission excludes.
+
+The broad candidate gate passes 350 tests and 233 subtests. A subsequent excluded-edit probe finds a separate recovery defect. The final correction gate passes 90 tests and 60 subtests after its fix. All 38 native controls are recorded. The distributed patch contains 37 native files. Interview and migration callers, other publishers, aggregate service recovery, restricted delivery, ownership, and the combined release remain open. No active server changes occur.
+
+## 2026-10-04 native freshness migration
+
+The [migration gate](verification/2026-10-04-memory-freshness-migration/README.md) supplies admitted context and state sources to the original native transformations. Source changes and original-byte backups share one publication journal. Failed managed preflight blocks the batch. Actual user and system interruptions recover previous sources and backups. Read-only owners retain previews. Current owner checks, source conflicts, registry aliases, fixed destinations, private permissions, complete large ASCII/UTF-8 bodies, and native reports pass.
+
+The final gate passes 212 tests and 152 subtests without failures, errors, skips, or warnings. All 23 native controls are recorded. The distributed patch contains 38 native files. Interview evidence and reminders, other publishers, aggregate service recovery, restricted delivery, ownership, and the combined release remain open. No active server changes occur.
+
+## 2026-10-04 native StateEvidence
+
+The [StateEvidence gate](verification/2026-10-04-memory-state-evidence/README.md) admits decoded JSON strings before native calculation. Exact source review retains original bytes and refuses decoded private or retired claims. All four domain payloads match the pinned original implementation at the same calculation date. Current source and owner checks govern reads and recoverable private cache publication. Managed cache reads recalculate from admitted current sources when a cache exists.
+
+The final regression gate passes 183 tests and 124 subtests without failures, errors, skips, or warnings. The corrected recorder captures 24 passing native controls. All 39 distributed native files match the scratch candidate. Interview reminders and scan, other publishers, aggregate recovery, restricted delivery, ownership activation, import, and the combined release remain open. No external feeds or active server changes occur.
+
+## 2026-10-04 native InterviewDue
+
+The [InterviewDue gate](verification/2026-10-04-memory-interview-due/README.md) supplies current admitted sources to the original input and verdict rules. Read and publication paths check current owner authority. Completion state and verdict cache use fixed private journaled destinations. Process interruption restores previous bytes. Source conflicts preserve later edits, including oversized edits and edits to already excluded completion state. The bridge tracks a raw source digest separately from the admitted input map.
+
+The broad gate passes 165 tests and 123 subtests. The final excluded-source correction gate passes 93 tests and 55 subtests. The broad gate predates that correction and is not rerun. The corrected recorder captures 19 passing native controls. All 40 distributed native files match the scratch candidate. InterviewScan, other publishers, orchestration, aggregate recovery, restricted delivery, ownership activation, import, and combined release verification remain open. No active server changes occur.
+
+## Native interview scan and standalone soul publication
+
+The [InterviewScan gate](verification/2026-10-04-memory-interview-scan/README.md) passes 263 tests and 186 subtests. Six native output modes match the pinned original scanner. Shared identity admission checks decoded names in scan, generic identity reads, and exact source review.
+
+The [standalone soul publisher gate](verification/2026-10-04-memory-hermes-soul-writer/README.md) admits current sources and publishes the fixed profile and workspace pair. Actual interruption restores previous bytes or removes a new output. Recovery refuses changed destinations. Native capture refuses an unfinished pair journal. The broad gate passes 142 tests and 51 subtests. Subsequent retirement and backup corrections have separate gates: 62 tests and 22 subtests, then 59 tests and 31 subtests. Sixteen native controls retain their inputs and process results. An additional name control confirms nondefault names in both artifacts. The 42-file distributed patch matches its candidate.
+
+The original standalone template contains terminal-only policy. Installation integration must resolve its role before release acceptance. Derivative orchestration, other publishers, aggregate service recovery, restricted delivery, ownership activation, import, and combined release verification remain open. No active server changes occur.
+
+## Native private-token hashing
+
+The [hash gate](verification/2026-10-04-memory-deny-hashes/README.md) supplies admitted current sources to native token extraction. Exact source review does not expand generic reads. The existing publication journal protects both the environment and hash artifact. Actual source and authority conflicts preserve later edits and refuse stale token output. Actual process interruption restores previous bytes or removes a new hash destination.
+
+The broad gate passes 128 tests and 94 subtests. A later environment correction preserves CRLF bytes and passes 47 tests and 31 subtests. Fourteen native controls retain synthetic inputs and actual process output without generated salts. All 43 distributed native files match the candidate. Derivative orchestration, other publishers, aggregate recovery, restricted delivery, ownership activation, import, and combined release verification remain open. No active server changes occur.
+
+
+## Native derivative synchronization
+
+The October 4 [derivative gate](verification/2026-10-04-memory-derived-sync/README.md) passes 166 tests and 107 subtests. The current owner plan supplies admitted source hashes to the native CLI. Each child retains caller context and receives a current plan recheck. Native retry behavior preserves failed writer triggers. Tracking state and logs publish as a recoverable private pair. Actual interruption controls recover previous files or remove a new destination. The original pinned command matches the selected plan and child effects. Eighteen recorded controls preserve actual process results.
+
+The managed CLI does not hold the memory writer lock across children or place long adapter work in the short connector request. Managed PULSE adapter admission remains open. A separate production-layout baseline finds that path checks reject the intended `.claude` alias to `.hermes`; this correction precedes ownership activation. Aggregate ownership, import, management, background jobs, routing, voice, and the combined release remain open. No server configuration or ownership changes occur.
+
+
+## Hermes profile root alias
+
+The October 4 [profile-alias gate](verification/2026-10-04-memory-profile-alias/README.md) passes 213 tests and 107 subtests. It reproduces the production layout in an isolated synthetic profile. Native owner plan, hash review, publication, and system-source readback accept the intended configured root alias. Fixed path checks use a captured resolved root. Redirected child paths and actual root changes refuse publication. A later request cannot reuse a derivative plan after root retargeting. Seven recorded native controls and the corrected checker probe pass. All final source hashes match.
+
+This closes the measured top-level alias refusal. It does not close aggregate profile service recovery, ownership activation, remaining native publishers, import, management, background jobs, routing, voice, or release requirements. The native distribution and both memory patch copies remain unchanged. No server changes occur. Continue with the measured PULSE adapter boundary.
+
+## PULSE adapter admission
+
+The October 4 [PULSE adapter gate](verification/2026-10-04-memory-pulse-adapter/README.md) passes 126 tests and 90 subtests. It admits installed manifests, prompts, and declared sources. It governs cache reads, cache age, page/metadata pair publication, errors, indexes, and logs. Current source hashes and authority govern readback and publication. Actual exit 73 recovery restores the previous page pair. The recorder captures 25 passing native controls. All 47 distributed native files and both patch copies match the final candidate.
+
+Cached and missing-source results retain native behavior. The isolated fixture has no model executable. This gate does not establish generation or private FlashNext routing. DerivedSync adapter plans remain refused pending the combined child gate. Complete adapter transactions, aggregate service recovery, other publishers, ownership activation, import, management, jobs, voice, and combined deployment remain open. No server changes occur.
+
+The [PULSE destination correction](verification/2026-10-04-memory-pulse-destinations/README.md) captures destination bytes during collection. Publication refuses later edits instead of accepting those edits as its baseline. Two failing scheduling probes reproduce lost log and page updates. The final gate passes 136 tests and 92 subtests. Both later edits remain intact, and interrupted pair recovery remains covered. The native distribution and patch copies remain unchanged.
+
+The [native adapter inference gate](verification/2026-10-04-memory-pulse-inference/README.md) passes five controls through the shipped command shim and actual local HTTP. Native validation, publication, and cache reuse pass. An unapproved route and private source send no request. Source edits and revocation during a request prevent publication. The server supplies scripted content, so live private FlashNext generation remains unverified. No product or server changes occur.
+
+The [combined derivative adapter gate](verification/2026-10-04-memory-derived-adapter/README.md) passes 154 tests and 102 subtests. Actual generation, cached children, and native missing-source skips complete their tracking publication. Revocation during a model request refuses page and tracking publication. The original native parent matches selected cached-child effects. The temporary adapter dependency refusal is removed. Other publishers, aggregate recovery, ownership, and the combined release remain open.
+
+## KnowledgeDistill reader admission
+
+The [native distill reader gate](verification/2026-10-04-memory-distill/README.md) passes 192 tests and 104 subtests. Managed gather uses registered current Knowledge notes and retains the native parser and candidate ranking. Status admits exact tracking and configuration inputs. Missing, revoked, restricted, redirected, and private-source cases refuse access. Eleven recorded controls include original-native gather equality and standalone output. All 48 patched native files and both distributed patches match. Digest marking and headless synthesis remain ungoverned until their publication work completes. No server changes occur.
+
+The [digest marking gate](verification/2026-10-04-memory-distill-mark/README.md) governs CLI marking with current owner write authority, fixed digest and state paths, private and retirement checks, and journal recovery. It preserves later edits after revocation at reservation. Actual exit 73 restores the previous state. The wide gate has one format failure and 205 passes; the isolated format correction passes 25 tests and two subtests. Original-native counters and full state bytes match. Fourteen recorded controls pass. Headless synthesis publication and aggregate ownership remain open.

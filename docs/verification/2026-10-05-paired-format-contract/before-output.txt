@@ -1,0 +1,150 @@
+......................................FFFFF                    [100%]
+=================================== FAILURES ===================================
+_ PairedLifecycleFixtureTests.test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes (name='format-contract-clean') _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes>
+
+    def test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes(self):
+        for name, stale in [('format-contract-clean', False), ('format-contract-stale', True)]:
+            with self.subTest(name=name):
+>               home, settings, definitions = self.fixture(name)
+                                              ^^^^^^^^^^^^^^^^^^
+
+tests/test_paired_lifecycle_effects.py:321: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes>
+name = 'format-contract-clean'
+
+    def fixture(self, name):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        source = base / 'source'
+>       for _, relative in CASES[name]:
+                           ^^^^^^^^^^^
+E       KeyError: 'format-contract-clean'
+
+tests/test_paired_lifecycle_effects.py:277: KeyError
+_ PairedLifecycleFixtureTests.test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes (name='format-contract-stale') _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes>
+
+    def test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes(self):
+        for name, stale in [('format-contract-clean', False), ('format-contract-stale', True)]:
+            with self.subTest(name=name):
+>               home, settings, definitions = self.fixture(name)
+                                              ^^^^^^^^^^^^^^^^^^
+
+tests/test_paired_lifecycle_effects.py:321: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes>
+name = 'format-contract-stale'
+
+    def fixture(self, name):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        source = base / 'source'
+>       for _, relative in CASES[name]:
+                           ^^^^^^^^^^^
+E       KeyError: 'format-contract-stale'
+
+tests/test_paired_lifecycle_effects.py:277: KeyError
+_ PairedFormatContractTests.test_clean_response_still_emits_on_the_next_turn_and_advances_state _
+
+self = <test_paired_lifecycle_effects.PairedFormatContractTests testMethod=test_clean_response_still_emits_on_the_next_turn_and_advances_state>
+
+    def test_clean_response_still_emits_on_the_next_turn_and_advances_state(self):
+        case = self.case('format-contract-clean', previous=' Last response was clean (3 lines).')
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['format-contract-clean: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'format-contract-clean: unknown case'
+E       
+E       - ['format-contract-clean: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:411: AssertionError
+_ PairedFormatContractTests.test_default_budget_reports_all_seeded_violations __
+
+self = <test_paired_lifecycle_effects.PairedFormatContractTests testMethod=test_default_budget_reports_all_seeded_violations>
+
+    def test_default_budget_reports_all_seeded_violations(self):
+        case = self.case('format-contract-violations',
+            previous=" Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).")
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['format-contract-violations: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'format-contract-violations: unknown case'
+E       
+E       - ['format-contract-violations: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:425: AssertionError
+_ PairedFormatContractTests.test_depth_lifts_only_the_line_limit_and_preserves_measured_violations _
+
+self = <test_paired_lifecycle_effects.PairedFormatContractTests testMethod=test_depth_lifts_only_the_line_limit_and_preserves_measured_violations>
+
+    def test_depth_lifts_only_the_line_limit_and_preserves_measured_violations(self):
+        previous = " Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'."
+        case = self.case('format-contract-depth', previous=previous)
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['format-contract-depth: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'format-contract-depth: unknown case'
+E       
+E       - ['format-contract-depth: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:418: AssertionError
+_ PairedFormatContractTests.test_first_prompt_initializes_state_and_delivers_the_contract_to_the_model _
+
+self = <test_paired_lifecycle_effects.PairedFormatContractTests testMethod=test_first_prompt_initializes_state_and_delivers_the_contract_to_the_model>
+
+    def test_first_prompt_initializes_state_and_delivers_the_contract_to_the_model(self):
+        case = self.case('format-contract-empty', state_present=False)
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['format-contract-empty: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'format-contract-empty: unknown case'
+E       
+E       - ['format-contract-empty: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:405: AssertionError
+_ PairedFormatContractTests.test_stale_cache_cannot_contribute_previous_session_violations _
+
+self = <test_paired_lifecycle_effects.PairedFormatContractTests testMethod=test_stale_cache_cannot_contribute_previous_session_violations>
+
+    def test_stale_cache_cannot_contribute_previous_session_violations(self):
+        case = self.case('format-contract-stale')
+>       self.assertEqual(check_pair(case), [])
+E       AssertionError: Lists differ: ['format-contract-stale: unknown case'] != []
+E       
+E       First list contains 1 additional elements.
+E       First extra element 0:
+E       'format-contract-stale: unknown case'
+E       
+E       - ['format-contract-stale: unknown case']
+E       + []
+
+tests/test_paired_lifecycle_effects.py:431: AssertionError
+=========================== short test summary info ============================
+SUBFAILED(name='format-contract-clean') tests/test_paired_lifecycle_effects.py::PairedLifecycleFixtureTests::test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes
+SUBFAILED(name='format-contract-stale') tests/test_paired_lifecycle_effects.py::PairedLifecycleFixtureTests::test_format_fixture_seeds_recent_and_stale_caches_without_changing_their_bytes
+FAILED tests/test_paired_lifecycle_effects.py::PairedFormatContractTests::test_clean_response_still_emits_on_the_next_turn_and_advances_state
+FAILED tests/test_paired_lifecycle_effects.py::PairedFormatContractTests::test_default_budget_reports_all_seeded_violations
+FAILED tests/test_paired_lifecycle_effects.py::PairedFormatContractTests::test_depth_lifts_only_the_line_limit_and_preserves_measured_violations
+FAILED tests/test_paired_lifecycle_effects.py::PairedFormatContractTests::test_first_prompt_initializes_state_and_delivers_the_contract_to_the_model
+FAILED tests/test_paired_lifecycle_effects.py::PairedFormatContractTests::test_stale_cache_cannot_contribute_previous_session_violations
+7 failed, 38 passed, 8 subtests passed in 0.15s

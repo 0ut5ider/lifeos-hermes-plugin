@@ -1,0 +1,16 @@
+{
+ "method": "GET",
+ "path": "/installation/selection",
+ "status": 200,
+ "body": {
+  "configured": false,
+  "home": "/home/hermes",
+  "running_home": "/home/hermes",
+  "job": {
+   "state": "rolled_back",
+   "unit": "lifeos-bridge-selection-4db12ce62a4c4951ad495340a58754ff",
+   "error": "The mount journal belongs to another installation or is invalid",
+   "job": "/home/hermes/.local/state/lifeos-hook-bridge/selections/selection-a34a0cedd5074d9f99af328a2d7cc637"
+  }
+ }
+}

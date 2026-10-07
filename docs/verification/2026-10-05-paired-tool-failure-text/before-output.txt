@@ -1,0 +1,38 @@
+.......................................................................FF...............
+======================================================================
+FAIL: test_every_selected_case_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedToolLogTests.test_every_selected_case_accepts_only_its_required_effect) (name='tool-log-success')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.alUUSTcePD/tests/test_paired_lifecycle_effects.py", line 862, in test_every_selected_case_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['tool-log-success: tool log effect is missing'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'tool-log-success: tool log effect is missing'
+
+- ['tool-log-success: tool log effect is missing']
++ []
+
+======================================================================
+FAIL: test_every_selected_case_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedToolLogTests.test_every_selected_case_accepts_only_its_required_effect) (name='tool-log-failure')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.alUUSTcePD/tests/test_paired_lifecycle_effects.py", line 862, in test_every_selected_case_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['tool-log-failure: tool log effect is missing'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'tool-log-failure: tool log effect is missing'
+
+- ['tool-log-failure: tool log effect is missing']
++ []
+
+----------------------------------------------------------------------
+Ran 87 tests in 0.205s
+
+FAILED (failures=2)
+exit 1

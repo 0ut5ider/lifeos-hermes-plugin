@@ -1,0 +1,28 @@
+{
+  "cases": [
+    {
+      "id": "allow",
+      "executed": true,
+      "approval_callbacks": 0,
+      "result": "{\"result\": \"PAIR_MCP_212\"}"
+    },
+    {
+      "id": "deny",
+      "executed": false,
+      "approval_callbacks": 0,
+      "result": "{\"error\": \"LifeOS MCP permission rule denied mcp__permission__ping\"}"
+    },
+    {
+      "id": "ask-once",
+      "executed": true,
+      "approval_callbacks": 1,
+      "result": "{\"result\": \"PAIR_MCP_212\"}"
+    },
+    {
+      "id": "ask-deny",
+      "executed": false,
+      "approval_callbacks": 1,
+      "result": "{\"error\": \"BLOCKED: User denied this potentially dangerous action (matched 'LifeOS requests review of MCP call mcp__permission__ping'). Do NOT retry \u2014 the user has explicitly rejected it.\"}"
+    }
+  ]
+}

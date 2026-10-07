@@ -1,0 +1,26 @@
+Warning: custom (unreviewed) source — not from the Hermes catalog.
+Cloning https://github.com/0ut5ider/lifeos-hermes-plugin.git (subdir: 
+lifeos_hook_bridge)...
+
+lifeos-hook-bridge declares Python dependencies:
+  - tree-sitter==0.26.0
+  - tree-sitter-bash==0.25.1
+  - pathspec==1.1.1
+  - mcp==2.0.0
+Non-interactive install — skipping dependency install. Run `hermes plugins 
+enable` when ready to prepare them.
+
+
+╭──────────────────────────────── ✓ Installed ─────────────────────────────────╮
+│ Plugin installed:                                                            │
+│ https://github.com/0ut5ider/lifeos-hermes-plugin.git#lifeos_hook_bridge      │
+│ Location: /home/hermes/.hermes/plugins/lifeos-hook-bridge                    │
+╰──────────────────────────────────────────────────────────────────────────────╯
+
+✗ Cannot enable lifeos-hook-bridge: dependency install skipped (non-interactive)
+The plugin stays installed but disabled; re-enable after resolving the conflict.
+Plugin installed but not enabled. Run `hermes plugins enable lifeos-hook-bridge`
+to activate.
+Restart the gateway for the plugin to take effect:
+  hermes gateway restart
+

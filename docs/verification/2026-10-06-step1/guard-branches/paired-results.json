@@ -1,0 +1,1321 @@
+{
+  "cases": [
+    {
+      "id": "guard-bash-egress-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-egress-public",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [
+            "OpenRouter.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "OpenRouter.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [
+            "OpenRouter.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "OpenRouter.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-gmail-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-gmail-mention",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-gmail-read",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-gmail-routed",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            "gmail.ts"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-public-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [
+            ".git",
+            "tracked.txt"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            ".git",
+            "tracked.txt"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [
+            ".git",
+            "tracked.txt"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            ".git",
+            "tracked.txt"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-public-scan-failure",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [
+            ".git"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            ".git"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [
+            ".git"
+          ],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [
+            ".git"
+          ],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-ses-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-system-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-system-clean",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-system-user",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-voice-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": true,
+          "target_content_matches": true,
+          "model_received_block": true,
+          "tool_output_in_model": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-voice-health",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-bash-voice-silent",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 0,
+        "model_successful_responses": 2
+      },
+      "hermes": {
+        "before": {
+          "project_files": [],
+          "target_content_matches": true
+        },
+        "after": {
+          "project_files": [],
+          "tool_name": "Bash",
+          "command_matches": true,
+          "block_message_emitted": false,
+          "target_content_matches": true,
+          "model_received_block": false,
+          "tool_output_in_model": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-edit-outside-allow",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-edit-system-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": true,
+          "model_received_block": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": true,
+          "model_received_block": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-edit-system-clean",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-edit-user-allow",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-write-outside-allow",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-write-system-block",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": true,
+          "model_received_block": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": true,
+          "model_received_block": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          2
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-write-system-clean",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    },
+    {
+      "id": "guard-file-write-user-allow",
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "native": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_content_matches": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Write"
+          ],
+          "file_path_matches": true,
+          "input_content_matches": true,
+          "block_message_emitted": false,
+          "model_received_block": false,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PreToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 2,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    }
+  ]
+}

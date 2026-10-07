@@ -1,0 +1,51 @@
+{
+  "cases": [
+    {
+      "id": "sync-work",
+      "created": true,
+      "phase_change": true,
+      "completed": true,
+      "actual_html": true,
+      "read_retains_content": true,
+      "resumed_phase": "learn",
+      "iteration": 2,
+      "view_matches": true
+    },
+    {
+      "id": "sync-skill",
+      "created": true,
+      "phase_change": true,
+      "completed": true,
+      "actual_html": true,
+      "read_retains_content": true,
+      "resumed_phase": "learn",
+      "iteration": 2,
+      "view_matches": true
+    },
+    {
+      "id": "sync-outside",
+      "created": true,
+      "phase_change": true,
+      "completed": true,
+      "actual_html": true,
+      "read_retains_content": true,
+      "resumed_phase": "learn",
+      "iteration": 2,
+      "view_matches": true
+    },
+    {
+      "id": "checkpoint",
+      "retrievable": true,
+      "skill_sidecar_outside": true,
+      "excluded_repository_retained": true,
+      "repeat_no_commit": true,
+      "committed_iscs": [
+        "ISC-1",
+        "ISC-2",
+        "ISC-3"
+      ],
+      "commit_count": 3,
+      "multiple_closure_contract": "The first criterion commits changes; subsequent criteria retain identity without an empty commit."
+    }
+  ]
+}

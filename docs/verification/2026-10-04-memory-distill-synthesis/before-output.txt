@@ -1,0 +1,24 @@
+FFFF                                                                     [100%]
+=================================== FAILURES ===================================
+_ MemoryDistillSynthesisTests.test_actual_owner_synthesis_publishes_private_digest_and_state _
+tests/test_memory_distill_synthesis.py:98: in test_actual_owner_synthesis_publishes_private_digest_and_state
+    self.assertEqual(digest.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryDistillSynthesisTests.test_private_unregistered_note_never_enters_actual_request _
+tests/test_memory_distill_synthesis.py:109: in test_private_unregistered_note_never_enters_actual_request
+    self.assertNotIn('Synthetic hidden synthesis marker', json.dumps(self.received))
+E   AssertionError: 'Synthetic hidden synthesis marker' unexpectedly found in '[{"model": "synthetic-flashnext", "max_tokens": 4096, "output_config": {"effort": "high"}, "system": "You are the Distill synthesizer for a personal knowledge archive. From the candidate notes JSON, produce the week\'s digest items. Rules: every item cites >=2 source note paths from the candidates (field \\"sources\\", exact paths); every item has a one-sentence plain-language \\"pitch\\" and a \\"why_now\\" line grounded in recency or cluster growth; lanes are \\"content\\" (could become a post/newsletter/video), \\"system\\" (an improvement to the AI system itself), \\"health\\" (archive-quality observation). Quality over quantity \\u2014 return only items genuinely worth the principal\'s attention; zero items in a lane is a valid answer. Respond with ONLY a JSON object: {\\"items\\":[{\\"lane\\",\\"title\\",\\"pitch\\",\\"why_now\\",\\"sources\\",[\\"suggested_format\\"],[\\"recommendation\\"],[\\"target_surface\\"]}]}", "messages": [{"role": "user", "content": "{\\"candidates\\":[{\\"slug\\":\\"synthetic-distill-research\\",\\"path\\":\\"KNOWLEDGE/Research/synthetic-distill-research.md\\",\\"domain\\":\\"Research\\",\\"title\\":\\"Synthetic distill research\\",\\"tags\\":[\\"untagged\\"],\\"status\\":\\"seedling\\",\\"created\\":\\"2026-10-05T03:12:07.302Z\\",\\"updated\\":\\"2026-10-05T03:12:07.302Z\\",\\"summary\\":\\"Synthetic current distill synthesis marker\\"},{\\"slug\\":\\"synthetic-private-unregistered\\",\\"path\\":\\"KNOWLEDGE/Research/synthetic-private-unregistered.md\\",\\"domain\\":\\"Research\\",\\"title\\":\\"Synthetic hidden note\\",\\"tags\\":[],\\"status\\":\\"unknown\\",\\"created\\":\\"2026-10-04\\",\\"updated\\":\\"\\",\\"summary\\":\\"<private>Synthetic hidden synthesis marker.</private>\\"}],\\"hot_tags\\":[]}"}]}]'
+_ MemoryDistillSynthesisTests.test_revocation_during_http_refuses_digest_and_state _
+tests/test_memory_distill_synthesis.py:124: in test_revocation_during_http_refuses_digest_and_state
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryDistillSynthesisTests.test_source_change_during_http_refuses_digest_and_state _
+tests/test_memory_distill_synthesis.py:116: in test_source_change_during_http_refuses_digest_and_state
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_distill_synthesis.py::MemoryDistillSynthesisTests::test_actual_owner_synthesis_publishes_private_digest_and_state
+FAILED tests/test_memory_distill_synthesis.py::MemoryDistillSynthesisTests::test_private_unregistered_note_never_enters_actual_request
+FAILED tests/test_memory_distill_synthesis.py::MemoryDistillSynthesisTests::test_revocation_during_http_refuses_digest_and_state
+FAILED tests/test_memory_distill_synthesis.py::MemoryDistillSynthesisTests::test_source_change_during_http_refuses_digest_and_state
+4 failed in 6.18s

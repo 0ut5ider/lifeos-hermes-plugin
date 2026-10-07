@@ -1,0 +1,36 @@
+{
+  "case": "test_each_enabled_store_retains_its_own_graph_cards",
+  "before": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "after": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "events": [
+    {
+      "operation": "cards",
+      "source": "memory",
+      "flags": [
+        true,
+        false
+      ],
+      "status": 0,
+      "stdout": "{\"result\": [{\"source\": \"memory\", \"timestamp\": 1791172955, \"title\": \"Synthetic preserved journey memory.\", \"body\": \"Synthetic preserved journey memory.\", \"fingerprint\": \"cb67f08fb531\"}], \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    },
+    {
+      "operation": "cards",
+      "source": "memory",
+      "flags": [
+        false,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": [{\"source\": \"profile\", \"timestamp\": 1791172955, \"title\": \"Synthetic preserved journey preference.\", \"body\": \"Synthetic preserved journey preference.\", \"fingerprint\": \"b7b2999a077f\"}], \"unchanged\": true, \"bytes\": \"Synthetic preserved journey memory.\\n\"}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-learning-flags-final-distributed/hermes"
+}

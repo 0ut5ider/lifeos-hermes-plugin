@@ -1,0 +1,43 @@
+FF.                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemoryProfileAliasTests.test_owner_can_plan_and_publish_through_the_installed_profile_alias _
+tests/test_memory_profile_alias.py:19: in test_owner_can_plan_and_publish_through_the_installed_profile_alias
+    result = self.fixture.successful('--dry-run')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_derived_sync.py:34: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E   55 |   const response: unknown = JSON.parse(result.stdout);
+E   56 |   if (!valid(response)) throw new Error("The native memory service returned an invalid result");
+E                                          ^
+E   error: The native memory service returned an invalid result
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:568:20)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:596:29
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryProfileAliasTests.test_owner_hash_review_and_publication_accept_the_installed_profile_alias _
+tests/test_memory_profile_alias.py:27: in test_owner_hash_review_and_publication_accept_the_installed_profile_alias
+    result = self.fixture.fixture.successful('--dry-run', '--show-tokens')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_deny_hashes.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 220 | 
+E   221 | function main(): void {
+E   222 |   const governed = memoryAccess("deny_hashes", {args: process.argv.slice(2)},
+E   223 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   224 |   if (governed !== undefined) {
+E   225 |     if (!governed.ok || typeof governed.stdout !== "string") throw new Error("Deny hash admission or publication is unavailable");
+E                                                                                ^
+E   error: Deny hash admission or publication is unavailable
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts:225:72)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-derived-sync-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DeriveDenyHashes.ts:278:23
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_profile_alias.py::MemoryProfileAliasTests::test_owner_can_plan_and_publish_through_the_installed_profile_alias
+FAILED tests/test_memory_profile_alias.py::MemoryProfileAliasTests::test_owner_hash_review_and_publication_accept_the_installed_profile_alias
+2 failed, 1 passed in 1.47s

@@ -1,0 +1,51 @@
+FFF.F
+======================================================================
+FAIL: test_narrowed_grant_during_a_call_withholds_the_result (test_memory_review_fixes.RevocationDuringCallTests.test_narrowed_grant_during_a_call_withholds_the_result)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review_fixes.py", line 71, in test_narrowed_grant_during_a_call_withholds_the_result
+    self.assertEqual(result['status'], 'rejected', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ok' != 'rejected'
+- ok
++ rejected
+ : {'status': 'ok', 'results': [{'reference': {'id': 'ad1b212c3f7b4b3280371d66fe27b52b', 'revision': 1}, 'content': 'The synthetic lab uses port 9123.', 'category': 'project', 'project': 'lab', 'writer': 'local:owner', 'status': 'active', 'source': {'kind': 'explicit', 'session': '', 'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 12}]}
+
+======================================================================
+FAIL: test_read_by_reference_that_finishes_after_revocation_returns_no_fact (test_memory_review_fixes.RevocationDuringCallTests.test_read_by_reference_that_finishes_after_revocation_returns_no_fact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review_fixes.py", line 47, in test_read_by_reference_that_finishes_after_revocation_returns_no_fact
+    self.assertEqual(result['status'], 'rejected', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ok' != 'rejected'
+- ok
++ rejected
+ : {'status': 'ok', 'reference': {'id': 'af62516cfb3c4b1bb6a108e4b4501139', 'revision': 1}, 'content': 'The synthetic lab uses port 9123.', 'category': 'project', 'project': 'lab', 'writer': 'local:owner', 'source': {'session': '', 'kind': 'explicit'}}
+
+======================================================================
+FAIL: test_search_that_finishes_after_revocation_returns_no_fact (test_memory_review_fixes.RevocationDuringCallTests.test_search_that_finishes_after_revocation_returns_no_fact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review_fixes.py", line 40, in test_search_that_finishes_after_revocation_returns_no_fact
+    self.assertEqual(result['status'], 'rejected', result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'ok' != 'rejected'
+- ok
++ rejected
+ : {'status': 'ok', 'results': [{'reference': {'id': 'a5961b8d5b11454cb7b9a53325fb38b3', 'revision': 1}, 'content': 'The synthetic lab uses port 9123.', 'category': 'project', 'project': 'lab', 'writer': 'local:owner', 'status': 'active', 'source': {'kind': 'explicit', 'session': '', 'path': 'LIFEOS/MEMORY/KNOWLEDGE/Research/synthetic-lab-routing.md'}, 'score': 12}]}
+
+======================================================================
+FAIL: test_write_that_reaches_publication_after_revocation_is_not_published (test_memory_review_fixes.RevocationDuringCallTests.test_write_that_reaches_publication_after_revocation_is_not_published)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_review_fixes.py", line 55, in test_write_that_reaches_publication_after_revocation_is_not_published
+    self.assertNotEqual(result['status'], 'committed', result)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'committed' == 'committed' : {'status': 'committed', 'reference': {'id': '2ddb86bd0d394388a6ee0e9c6bc0c37e', 'revision': 1}, 'source': {'kind': 'explicit', 'session': ''}, 'writer': 'mcp:research', 'request_id': 'late-write'}
+
+----------------------------------------------------------------------
+Ran 5 tests in 3.615s
+
+FAILED (failures=4)
+exit 1

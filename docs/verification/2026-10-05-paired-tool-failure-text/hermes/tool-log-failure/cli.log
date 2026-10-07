@@ -1,0 +1,8 @@
+{"type": "system", "subtype": "init", "model": "lifecycle-fixture", "session_id": "20261005_202539_20c6ff", "timestamp": 1791231939812}
+{"type": "tool_use", "name": "terminal", "input": {"command": "ls pair-missing-tool-log"}, "timestamp": 1791231946574}
+/var/tmp/lifeos-paired-runtime-20261005b/hermes/pm/shell.py:13: SyntaxWarning: "\W" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\W"? A raw string is also an option.
+  minus C:\Windows\System32\bash.exe (the WSL launcher stub, first on PATH
+{"type": "tool_result", "name": "terminal", "output": "{\"output\": \"ls: cannot access 'pair-missing-tool-log': No such file or directory\", \"exit_code\": 2, \"error\": null}", "duration_ms": 546, "is_error": true, "timestamp": 1791231947127}
+{"type": "result", "session_id": "20261005_202539_20c6ff", "exit_code": 0, "text": "READY", "tokens": {"input": 6727, "output": 109, "total": 6836, "cache_read": 0, "cache_write": 0}, "duration_ms": 8409, "timestamp": 1791231948221}
+
+session_id: 20261005_202539_20c6ff

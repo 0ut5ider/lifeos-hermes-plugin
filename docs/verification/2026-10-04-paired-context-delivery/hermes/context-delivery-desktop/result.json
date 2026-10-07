@@ -1,0 +1,115 @@
+{
+  "before": {
+    "marker_present": false
+  },
+  "after": {
+    "relationship_present": true,
+    "wisdom_present": true,
+    "low_confidence_present": false,
+    "advisory_present": true,
+    "sources_preserved": true,
+    "marker": {
+      "keys": [
+        "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+      ],
+      "sessions_since_emit": 0,
+      "last_emitted_at_present": true
+    },
+    "timing_recorded": true,
+    "ready_present": false,
+    "model_context_contains": {
+      "relationship": true,
+      "wisdom": true,
+      "advisory": true,
+      "low_confidence": false
+    }
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 1,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "session_id": "20261004_135940_aa37bf",
+  "seconds": 4.987,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop",
+    "/home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.3",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.3 /home/lifeos-plugin-install-probe/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvTG9hZENvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/LoadContext.hook.ts": "fad2cf437beab40ac8b143374940f5d9a381a6935e1e557fa4332506f5c77253",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/learning-readback.ts": "52403f16d92d74fd253f5f64bd2f60ad78b4c1532af01f59a77f87459d85cb6b",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/advisory-readback.ts": "cd06025d13590aae1a76de1bc050314be55c6157d0ce9f6e93d665db667c2a47",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/lib/notifications.ts": "91315d1e4eef6a1cee4d16ebd236edb3a3b3f437911aa65ecab9a3c611e21127",
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/LIFEOS/TOOLS/lib/MemoryAccess.ts": "449229fbd3d5a786aefc70cc593f87523f60d2f3f0358ce2f3aa2aa7d4fb6fb0"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "19fbbc950fa2e942fd0a33730bedf73138d1c8f3180619434e2b65314c258928",
+      "model": "lifecycle-fixture",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "7dda6f2e1da5ebf0ccb612d7144873a5d1145f475fddff92650b3b7132d1f07d",
+    "fixture-events.jsonl": "02f51c9406056c98205172ebfcefd5cdade1ecf5e6a6b6c172e5c496137d9f41",
+    "cli.log": "ff1d0f88c17aba9f806c742714e3fb61a4be563c9acfb99e5e305a6ca5b1e073",
+    "before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "after-state.json": "2435caf8c41f3e37a64e91fb842d102a6c6a485348a41bd168508f754e3352aa",
+    "fixture-files-before.json": "88c7f99ec3500e307cabaf42f17a25940088efa126eba88536c6f70f94fac9df",
+    "fixture-files-after.json": "ad7d61c398fc5a0992de4441f664a20092deca3f31c2b43bd25e31b339f103ad"
+  }
+}

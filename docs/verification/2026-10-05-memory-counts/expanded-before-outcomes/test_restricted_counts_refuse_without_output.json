@@ -1,0 +1,13 @@
+[
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts",
+      "--shell"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "236 |   const governed = memoryAccess<{ok: boolean; counts?: Counts}>(\"counts\",\n237 |     {root: CLAUDE_DIR, lifeos_dir: LIFEOS_DIR, only: validSingle ?? null},\n238 |     (value): value is {ok: boolean; counts?: Counts} => memoryObject(value) && typeof value.ok === \"boolean\"\n239 |       && (value.ok === false || memoryObject(value.counts) && Object.keys(value.counts).length === Object.keys(COMPUTERS).length\n240 |         && Object.keys(COMPUTERS).every(key => Number.isSafeInteger(value.counts[key]) && value.counts[key] >= 0)));\n241 |   if (governed !== undefined && governed.ok !== true) throw new Error(\"Governed native installation counts are unavailable\");\n                                                                      ^\nerror: Governed native installation counts are unavailable\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:241:65)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:263:23\n\nBun v1.3.14 (Linux x64)\n"
+  }
+]

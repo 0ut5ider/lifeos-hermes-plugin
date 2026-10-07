@@ -1,0 +1,36 @@
+[
+  {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_context_audit_process.py",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-gctdvc8a/memory.json",
+      "exit",
+      "{\"transport\": \"chat-a\", \"author\": \"100\", \"destination\": \"200\", \"visibility\": \"private\", \"participants\": [\"owner\"], \"model_route\": \"local\", \"session_id\": \"native-session\"}"
+    ],
+    "returncode": 73,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+      "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_context_audit_process.py",
+      "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-gctdvc8a/memory.json",
+      "recover",
+      "{\"transport\": \"chat-a\", \"author\": \"100\", \"destination\": \"200\", \"visibility\": \"private\", \"participants\": [\"owner\"], \"model_route\": \"local\", \"session_id\": \"native-session\"}"
+    ],
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts"
+    ],
+    "returncode": 0,
+    "stdout": "Wrote /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-gctdvc8a/.claude/LIFEOS/MEMORY/STATE/context-audit/AUDIT.md\n\n| file | critical | warn | info |\n|------|---------:|-----:|-----:|\n| TELOS.md | 0 | 0 | 0 |\n| DA_IDENTITY.md | 0 | 0 | 0 |\n| PRINCIPAL_IDENTITY.md | 0 | 1 | 0 |\n| PROJECTS.md | 0 | 0 | 0 |\n| LIFEOS_SYSTEM_PROMPT.md | 0 | 0 | 1 |\n| PRINCIPAL_TELOS.md | 0 | 0 | 0 |\n| ARCHITECTURE_SUMMARY.md | 0 | 0 | 0 |\n| LifeosSystemArchitecture.md | 0 | 0 | 0 |\n",
+    "stderr": ""
+  }
+]

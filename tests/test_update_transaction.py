@@ -255,7 +255,7 @@ class UpdateTransactionTests(unittest.TestCase):
             self.assertFalse((installed / 'LIFEOS/MEMORY/user.txt').exists())
             self.assertEqual((installed / 'LIFEOS/MEMORY').resolve(), external / 'MEMORY')
 
-    def test_restore_refuses_embedded_memory_and_audit_changes(self):
+    def test_restore_carries_embedded_memory_changes_forward(self):
         for name in ('user.txt', 'OBSERVABILITY/config-changes.jsonl'):
             with self.subTest(file=name), tempfile.TemporaryDirectory() as directory:
                 installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(Path(directory))
@@ -266,10 +266,46 @@ class UpdateTransactionTests(unittest.TestCase):
                 apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
                              stop=stop, start=start, mount=mount, renew=renew, verify=verify)
                 file.write_text('Synthetic after update')
-                with self.assertRaisesRegex(UpdateTransactionError, 'User data changed'):
-                    restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                (installed / 'LIFEOS/MEMORY/later.txt').write_text('Synthetic later fact')
+                (installed / 'USER.md').write_text('Synthetic later user file')
+                result = restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+                self.assertEqual(result['state'], 'rolled_back')
+                self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
                 self.assertEqual(file.read_text(), 'Synthetic after update')
-                self.assertEqual(events, ['stop', 'start', 'verify'])
+                self.assertEqual((installed / 'LIFEOS/MEMORY/later.txt').read_text(), 'Synthetic later fact')
+                self.assertEqual((installed / 'USER.md').read_text(), 'Synthetic later user file')
+                archived = snapshot / 'prior-user-data/LIFEOS/MEMORY' / name
+                self.assertEqual(archived.read_text(), 'Synthetic before update')
+                self.assertFalse((snapshot / 'carry').exists())
+
+    def restore_interrupted_at(self, root, step):
+        installed, hermes, prior, selected, reference, baseline, snapshot = self.fixture(root)
+        events, stop, start, mount, renew, verify = self.callbacks(hermes, baseline)
+        apply_update(installed, hermes, prior, selected, reference, baseline, snapshot,
+                     stop=stop, start=start, mount=mount, renew=renew, verify=verify)
+        (installed / 'LIFEOS/MEMORY/user.txt').write_text('Synthetic after update')
+        from lifeos_hook_bridge import update_transaction as module
+        original = getattr(module, step)
+
+        def interrupted(*args, **kwargs):
+            original(*args, **kwargs)
+            raise KeyboardInterrupt(step)
+
+        with patch.object(module, step, interrupted), self.assertRaises(KeyboardInterrupt):
+            restore_update(snapshot, stop=stop, start=start, verify=lambda: None)
+        result = recover_update(snapshot, stop=stop, start=start, verify=lambda: None)
+        return installed, snapshot, result
+
+    def test_restore_recovery_completes_each_carry_step(self):
+        for step in ('_copy_user_data', '_swap_restored_programs', '_carry_user_data'):
+            with self.subTest(step=step), tempfile.TemporaryDirectory() as directory:
+                installed, snapshot, result = self.restore_interrupted_at(Path(directory), step)
+                self.assertEqual(result['state'], 'rolled_back')
+                self.assertEqual((installed / 'hooks/owned.ts').read_text(), 'owned-v1')
+                self.assertEqual((installed / 'LIFEOS/MEMORY/user.txt').read_text(), 'Synthetic after update')
+                self.assertEqual((snapshot / 'prior-user-data/LIFEOS/MEMORY/user.txt').read_text(),
+                                 'private memory')
+                self.assertFalse((snapshot / 'carry').exists())
 
     def test_restore_refuses_replaced_external_data_bindings(self):
         for mutation in ('link', 'target', 'prior-link'):

@@ -1,0 +1,40 @@
+.....F...                                                        [100%]
+=================================== FAILURES ===================================
+_ MemorySeedRecoveryTests.test_invalid_retry_identity_refuses_without_any_publication (request_id=0) _
+tests/test_memory_seed_recovery.py:186: in test_invalid_retry_identity_refuses_without_any_publication
+    self.assertFalse(self.call(request_id=request_id)['ok'])
+E   AssertionError: True is not false
+_ MemorySeedRecoveryTests.test_invalid_retry_identity_refuses_without_any_publication (request_id=False) _
+tests/test_memory_seed_recovery.py:186: in test_invalid_retry_identity_refuses_without_any_publication
+    self.assertFalse(self.call(request_id=request_id)['ok'])
+E   AssertionError: True is not false
+_ MemorySeedRecoveryTests.test_invalid_retry_identity_refuses_without_any_publication (request_id=[]) _
+tests/test_memory_seed_recovery.py:186: in test_invalid_retry_identity_refuses_without_any_publication
+    self.assertFalse(self.call(request_id=request_id)['ok'])
+E   AssertionError: True is not false
+_ MemorySeedRecoveryTests.test_invalid_retry_identity_refuses_without_any_publication (request_id={}) _
+tests/test_memory_seed_recovery.py:186: in test_invalid_retry_identity_refuses_without_any_publication
+    self.assertFalse(self.call(request_id=request_id)['ok'])
+E   AssertionError: True is not false
+_ MemorySeedRecoveryTests.test_invalid_retry_identity_refuses_without_any_publication (request_id='') _
+tests/test_memory_seed_recovery.py:186: in test_invalid_retry_identity_refuses_without_any_publication
+    self.assertFalse(self.call(request_id=request_id)['ok'])
+E   AssertionError: True is not false
+_ MemorySeedRecoveryTests.test_invalid_retry_identity_refuses_without_any_publication (request_id='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') _
+tests/test_memory_seed_recovery.py:187: in test_invalid_retry_identity_refuses_without_any_publication
+    self.assertEqual({name: Path(name).read_bytes() for name in self.original}, self.original)
+E   AssertionError: {'/ho[151 chars]': b'---\nlast_updated: 2026-10-05T08:00:16.07[1924 chars]}\n'} != {'/ho[151 chars]': b'# Synthetic previous interview summary\n'[194 chars]}\n'}
+E   Diff is 80601 characters long. Set self.maxDiff to None to see it.
+_ MemorySeedRecoveryTests.test_physical_installed_root_alias_keeps_the_same_native_seed_destination _
+tests/test_memory_seed_recovery.py:180: in test_physical_installed_root_alias_keeps_the_same_native_seed_destination
+    self.assertTrue(result['ok'], result)
+E   AssertionError: False is not true : {'ok': False, 'code': 'EINVAL_PATH', 'message': 'Interview seeding requires the installed root and fixed native generators'}
+=========================== short test summary info ============================
+SUBFAILED(request_id=0) tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_invalid_retry_identity_refuses_without_any_publication
+SUBFAILED(request_id=False) tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_invalid_retry_identity_refuses_without_any_publication
+SUBFAILED(request_id=[]) tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_invalid_retry_identity_refuses_without_any_publication
+SUBFAILED(request_id={}) tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_invalid_retry_identity_refuses_without_any_publication
+SUBFAILED(request_id='') tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_invalid_retry_identity_refuses_without_any_publication
+SUBFAILED(request_id='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx...xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx') tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_invalid_retry_identity_refuses_without_any_publication
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_physical_installed_root_alias_keeps_the_same_native_seed_destination
+7 failed, 8 passed, 2 subtests passed in 11.85s

@@ -1,0 +1,289 @@
+{
+  "case": "test_escaped_retired_assistant_name_cannot_reach_scan_prompts",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/GOALS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": {
+        "content": "---\nname: SyntheticScanName\n---\n# Synthetic assistant\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/WORK/config.yaml": {
+        "content": "synthetic_config: ready\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/PULSE.toml": {
+        "content": "[synthetic]\nvoice = false\n",
+        "mode": "0o644"
+      },
+      ".env": {
+        "content": "SYNTHETIC_OPTIONAL_SETUP=ready\n",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic retired evidence work\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/GOALS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": {
+        "content": "---\ncore:\n  name: \"\\u0053ynthetic retired evidence work\"\n---\n# Synthetic assistant\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/WORK/config.yaml": {
+        "content": "synthetic_config: ready\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/PULSE.toml": {
+        "content": "[synthetic]\nvoice = false\n",
+        "mode": "0o644"
+      },
+      ".env": {
+        "content": "SYNTHETIC_OPTIONAL_SETUP=ready\n",
+        "mode": "0o600"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic retired evidence work\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic retired evidence work\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[],\"count\":0,\"chars_used\":0,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[],\"count\":0,\"chars_used\":0,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic retired evidence work\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"prior_count\":0,\"new_count\":1,\"evictions\":[],\"additions\":[\"RULE: Synthetic retired evidence work\"]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic retired evidence work\"],\"count\":1,\"chars_used\":37,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic retired evidence work\"],\"count\":1,\"chars_used\":37,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic retired evidence work\"],\"count\":1,\"chars_used\":37,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic retired evidence work\"],\"count\":1,\"chars_used\":37,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"accepted\":0,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"prior_count\":1,\"new_count\":0,\"evictions\":[\"RULE: Synthetic retired evidence work\"],\"additions\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude/LIFEOS/TOOLS/InterviewScan.ts",
+        "--next"
+      ],
+      "status": 0,
+      "stdout": "\ud83d\udccb DA_IDENTITY  \u2014  0% complete  \u00b7  PHASE 0 \u2014 Setup (DA / Principal / voice / credentials / projects / work repo)\nFile: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-3oq1j0xk/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\nLeverage: 10/10  \u00b7  Priority: 2120  \u00b7  FILL mode \u2014 walk through prompts to populate\nWhy incomplete: file does not exist\n\nQuestions for LifeOS to ask:\n  1. What's your DA's name? (default: LifeOS)\n  2. Full name and a one-line origin story?\n  3. Display color in hex (e.g. #3B82F6)?\n  4. One-paragraph personality summary \u2014 direct, peer, opinionated, etc.?\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

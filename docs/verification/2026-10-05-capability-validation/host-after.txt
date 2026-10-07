@@ -1,0 +1,12 @@
+........................................................................ [ 57%]
+......................................................                   [100%]
+=============================== warnings summary ===============================
+tests/hermes_cli/test_plugin_validate.py::test_requires_hermes_spec_is_validated
+tests/hermes_cli/test_plugin_validate.py::TestRequiresHermesSpec::test_typoed_clause_fails_admission
+tests/hermes_cli/test_plugin_validate.py::TestRequiresHermesSpec::test_typoed_clause_fails_admission
+  /home/outsider/.cache/lifeos-full-experience-20261005/validator-fix/hermes/hermes_cli/plugins_manifest.py:410: DeprecationWarning: 'maxsplit' is passed as positional argument
+    parts = re.split(r"[-+]", str(v).strip().lstrip("v"), 1)[0].split(".")
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+126 passed, 3 warnings in 27.32s
+exit 0

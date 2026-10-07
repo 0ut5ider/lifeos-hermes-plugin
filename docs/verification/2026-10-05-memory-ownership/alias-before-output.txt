@@ -1,0 +1,22 @@
+.                                                                     [100%]
+=================================== FAILURES ===================================
+_ MemoryOwnershipTests.test_shared_or_merged_memory_settings_require_review_without_changing_other_sections (index=0) _
+tests/test_memory_ownership.py:295: in test_shared_or_merged_memory_settings_require_review_without_changing_other_sections
+    with self.assertRaisesRegex(MemoryUnavailable, 'shared|merged'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ MemoryOwnershipTests.test_shared_or_merged_memory_settings_require_review_without_changing_other_sections (index=1) _
+tests/test_memory_ownership.py:295: in test_shared_or_merged_memory_settings_require_review_without_changing_other_sections
+    with self.assertRaisesRegex(MemoryUnavailable, 'shared|merged'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+_ MemoryOwnershipTests.test_shared_or_merged_memory_settings_require_review_without_changing_other_sections (index=2) _
+tests/test_memory_ownership.py:295: in test_shared_or_merged_memory_settings_require_review_without_changing_other_sections
+    with self.assertRaisesRegex(MemoryUnavailable, 'shared|merged'):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+SUBFAILED(index=0) tests/test_memory_ownership.py::MemoryOwnershipTests::test_shared_or_merged_memory_settings_require_review_without_changing_other_sections
+SUBFAILED(index=1) tests/test_memory_ownership.py::MemoryOwnershipTests::test_shared_or_merged_memory_settings_require_review_without_changing_other_sections
+SUBFAILED(index=2) tests/test_memory_ownership.py::MemoryOwnershipTests::test_shared_or_merged_memory_settings_require_review_without_changing_other_sections
+3 failed, 1 passed, 13 deselected in 1.93s

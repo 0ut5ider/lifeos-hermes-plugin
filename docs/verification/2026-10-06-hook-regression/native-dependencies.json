@@ -1,0 +1,368 @@
+{
+  "bun_version": "1.3.14",
+  "packages": [
+    {
+      "name": ".",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ yaml@2.9.1\n\n1 package installed [147.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "yaml": "2.9.1"
+      },
+      "package_sha256": "abb838d152178b1e16ffa19db1a8e848c04d495299e0395e8a3e26577e8bcfb4",
+      "lock_sha256": "e6afdb6633af4b395bfdb79aa92a625fdc4a0f01cf5928ff70997179a90dfaf0"
+    },
+    {
+      "name": "LIFEOS/PULSE",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @anthropic-ai/claude-agent-sdk@0.1.77\n+ jose@5.10.0\n+ minisearch@7.2.0\n+ smol-toml@1.6.1\n+ yaml@2.9.0\n\n10 packages installed [139.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "@anthropic-ai/claude-agent-sdk": "0.1.77",
+        "jose": "5.10.0",
+        "minisearch": "7.2.0",
+        "smol-toml": "1.6.1",
+        "yaml": "2.9.0"
+      },
+      "package_sha256": "fc6e68d7feb6b1a1e41128e5dddc841eb59e2c44efa59d5a42762e9b14f59509",
+      "lock_sha256": "332b4280fd2f2eac1741f98b15b24c50c7c03351a5291600f2fccc547f5b2f61"
+    },
+    {
+      "name": "LIFEOS/PULSE/Observability",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/node@20.19.42\n+ @types/react@19.2.17\n+ @types/react-dom@19.2.3\n+ postcss@8.5.15\n+ tailwindcss@3.4.19\n+ typescript@5.9.3\n+ @radix-ui/react-progress@1.1.9\n+ @radix-ui/react-scroll-area@1.2.11\n+ @radix-ui/react-separator@1.1.9\n+ @radix-ui/react-slot@1.2.5\n+ @tanstack/react-query@5.101.0\n+ @types/d3@7.4.3\n+ class-variance-authority@0.7.1\n+ clsx@2.1.1\n+ d3@7.9.0\n+ date-fns@4.4.0\n+ framer-motion@11.18.2\n+ geist@1.7.2\n+ lucide-react@0.556.0\n+ next@15.5.19\n+ react@19.0.0\n+ react-dom@19.0.0\n+ react-markdown@10.1.0\n+ recharts@2.15.4\n+ rehype-highlight@7.0.2\n+ rehype-raw@7.0.0\n+ remark-gfm@4.0.1\n+ tailwind-merge@3.6.0\n+ tailwindcss-animate@1.0.7\n+ yaml@2.9.0\n\n329 packages installed [1.69s]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "@radix-ui/react-progress": "1.1.9",
+        "@radix-ui/react-scroll-area": "1.2.11",
+        "@radix-ui/react-separator": "1.1.9",
+        "@radix-ui/react-slot": "1.2.5",
+        "@tanstack/react-query": "5.101.0",
+        "@types/d3": "7.4.3",
+        "class-variance-authority": "0.7.1",
+        "clsx": "2.1.1",
+        "d3": "7.9.0",
+        "date-fns": "4.4.0",
+        "framer-motion": "11.18.2",
+        "geist": "1.7.2",
+        "lucide-react": "0.556.0",
+        "next": "15.5.19",
+        "react": "19.0.0",
+        "react-dom": "19.0.0",
+        "react-markdown": "10.1.0",
+        "recharts": "2.15.4",
+        "rehype-highlight": "7.0.2",
+        "rehype-raw": "7.0.0",
+        "remark-gfm": "4.0.1",
+        "tailwind-merge": "3.6.0",
+        "tailwindcss-animate": "1.0.7",
+        "yaml": "2.9.0",
+        "@types/node": "20.19.42",
+        "@types/react": "19.2.17",
+        "@types/react-dom": "19.2.3",
+        "postcss": "8.5.15",
+        "tailwindcss": "3.4.19",
+        "typescript": "5.9.3"
+      },
+      "package_sha256": "1d52218e4386aa8d52e745d82bb381badd796d3fb8675377287ecde00b96ee49",
+      "lock_sha256": "b056368d04b9b2162383058d855fd9234d0643b892dc2a2a5e19f0b4ef05a0b9"
+    },
+    {
+      "name": "LIFEOS/TOOLS",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ graphology@0.26.0\n+ graphology-communities-louvain@2.0.2\n+ graphology-metrics@2.4.2\n\n12 packages installed [24.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "graphology": "0.26.0",
+        "graphology-communities-louvain": "2.0.2",
+        "graphology-metrics": "2.4.2"
+      },
+      "package_sha256": "bfdeca0dcb0a5bdc1290e6feb3e03116aa8712e0b360abc27a4cef5a7b9237a7",
+      "lock_sha256": "d69253f639d43b42a5db9c50204785dfcf7b7ed9ed99f34ea43f7c6c9b9035d6"
+    },
+    {
+      "name": "LIFEOS/TOOLS/TokenXray",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ js-tiktoken@1.0.21\n\n2 packages installed [6.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "js-tiktoken": "1.0.21"
+      },
+      "package_sha256": "9227813c6a3c94ad7bd5e7bdf68ff2377a533be4f1652fb83a13c85f599e6d77",
+      "lock_sha256": "2e8b699ee4d8df9ddb04834f75a7f9b795b73a93a8b85e068a3f5ea924289b8f"
+    },
+    {
+      "name": "skills/Apify",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/bun@1.4.2\n+ typescript@5.9.3\n+ apify-client@2.25.0\n\n74 packages installed [146.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "apify-client": "2.25.0",
+        "@types/bun": "1.4.2",
+        "typescript": "5.9.3"
+      },
+      "package_sha256": "b5354823fe175ade7243f4e4865ec39ebe6ff9b2a06ee68a6443e9460755327d",
+      "lock_sha256": "49d56afbd00ea22b445509c9ffe762f99f0b9c05e956e8846e8c6e25e093357e"
+    },
+    {
+      "name": "skills/Art/Tools",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/bun@1.3.8\n+ @google/genai@1.40.0\n+ openai@6.18.0\n+ replicate@1.4.0\n+ typescript@5.9.3\n\n89 packages installed [200.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "@google/genai": "1.40.0",
+        "openai": "6.18.0",
+        "replicate": "1.4.0",
+        "@types/bun": "1.3.8"
+      },
+      "package_sha256": "45dfa8022365f172163373f006a44ffe47c7ff9dff914c601054b090eb9c4528",
+      "lock_sha256": "e20d54dbcaa778c20c607a975e13e5abf2cd9678d136516e69d8937c2302045f"
+    },
+    {
+      "name": "skills/Evals",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/bun@1.4.2\n+ typescript@5.9.3\n+ @ai-sdk/anthropic@2.0.74\n+ @langwatch/scenario@0.4.10\n+ ai@6.0.159\n\n330 packages installed [1.88s]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "@ai-sdk/anthropic": "2.0.74",
+        "@langwatch/scenario": "0.4.10",
+        "ai": "6.0.159",
+        "@types/bun": "1.4.2",
+        "typescript": "5.9.3"
+      },
+      "package_sha256": "069dd66716157b9bb7667a69cb2c7d21b00e89e3912755855775c72bd70522d5",
+      "lock_sha256": "522059c23df3536637e718722c003c8768a07dbc0dc692194b277970c3516fa5"
+    },
+    {
+      "name": "skills/Prompting/Templates/Tools",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/bun@1.3.4\n+ handlebars@4.7.8\n+ yaml@2.8.2\n+ typescript@5.9.3\n\n12 packages installed [63.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "handlebars": "4.7.8",
+        "yaml": "2.8.2",
+        "@types/bun": "1.3.4"
+      },
+      "package_sha256": "d3d703d673adb755ab2e5d101b672c9b5c56aff12efcffa8711341eb55de337f",
+      "lock_sha256": "4860296406a77812a80557e54b99b21ebdf7e2e55cd08f668ad7954de3244fde"
+    },
+    {
+      "name": "skills/Remotion/Tools",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/bun@1.4.2\n+ typescript@5.9.3\n+ remotion@4.0.533\n\n9 packages installed [54.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "@types/bun": "1.4.2",
+        "typescript": "5.9.3"
+      },
+      "package_sha256": "bf2e200c3cbe4740ea58e2cd8b1fbca0b7ad75e8ca6b016f630b4dc32d9462f3",
+      "lock_sha256": "b311e62b63c003a410920ac8539555f5aa091993b56429a7f0c4fd972e11ad0d"
+    },
+    {
+      "name": "skills/Telos/DashboardTemplate",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @tailwindcss/postcss@4.1.16\n+ @types/bun@1.3.1\n+ @types/node@24.9.2\n+ @types/react@19.2.2\n+ @types/react-dom@19.2.2\n+ autoprefixer@10.4.21\n+ postcss@8.5.6\n+ tailwindcss@4.1.16\n+ @radix-ui/react-slot@1.3.3\n+ class-variance-authority@0.7.1\n+ clsx@2.1.1\n+ lucide-react@0.546.0\n+ next@15.5.27\n+ react@19.2.0\n+ react-dom@19.2.0\n+ react-markdown@10.1.0\n+ tailwind-merge@3.3.1\n+ typescript@5.9.3\n\n152 packages installed [868.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "@radix-ui/react-slot": "1.3.3",
+        "class-variance-authority": "0.7.1",
+        "clsx": "2.1.1",
+        "lucide-react": "0.546.0",
+        "next": "15.5.27",
+        "react": "19.2.0",
+        "react-dom": "19.2.0",
+        "react-markdown": "10.1.0",
+        "tailwind-merge": "3.3.1",
+        "@tailwindcss/postcss": "4.1.16",
+        "@types/bun": "1.3.1",
+        "@types/node": "24.9.2",
+        "@types/react": "19.2.2",
+        "@types/react-dom": "19.2.2",
+        "autoprefixer": "10.4.21",
+        "postcss": "8.5.6",
+        "tailwindcss": "4.1.16"
+      },
+      "package_sha256": "f7cc57f913905f0373d37d6d6ebaef8ec2a1f8c239fdb12525657880eee2eb9d",
+      "lock_sha256": "6730998376137590a083fd4334a21693c0821f93a29766dd07dd9643a8d818f7"
+    },
+    {
+      "name": "skills/Telos/ReportTemplate",
+      "command": [
+        "/usr/bin/python3",
+        "-I",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py",
+        "--executable",
+        "/home/outsider/.bun/bin/bun",
+        "--root",
+        "/home/outsider/.cache/lifeos-hook-completion-20261006/complete-native-dependencies",
+        "--catalog",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/dependency_locks",
+        "--",
+        "install"
+      ],
+      "exit_code": 0,
+      "stdout": "bun install v1.3.14 (0d9b296a)\n\n+ @types/node@20.19.43\n+ @types/react@19.3.0\n+ @types/react-dom@19.3.0\n+ autoprefixer@10.6.1\n+ postcss@8.5.29\n+ tailwindcss@3.4.19\n+ typescript@5.9.3\n+ clsx@2.1.1\n+ lucide-react@0.294.0\n+ next@15.5.27\n+ react@19.3.0\n+ react-dom@19.3.0\n+ tailwind-merge@2.6.1\n\n109 packages installed [488.00ms]\n",
+      "stderr": "",
+      "direct_dependencies": {
+        "next": "15.5.27",
+        "react": "19.3.0",
+        "react-dom": "19.3.0",
+        "lucide-react": "0.294.0",
+        "clsx": "2.1.1",
+        "tailwind-merge": "2.6.1",
+        "@types/node": "20.19.43",
+        "@types/react": "19.3.0",
+        "@types/react-dom": "19.3.0",
+        "autoprefixer": "10.6.1",
+        "postcss": "8.5.29",
+        "tailwindcss": "3.4.19",
+        "typescript": "5.9.3"
+      },
+      "package_sha256": "db0b27820cd011c1b97de692148050b09387f5b0e7ec1f76706db909d09a329f",
+      "lock_sha256": "e8ec0eb4f0e26fbf4f850c2e0676632085c7996ae552ad024f154f3172b002a8"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "cases": [
+    {
+      "id": "generic-agent-post",
+      "registrations": [
+        "PostToolUse.1.1"
+      ],
+      "native": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_stop\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"description\":\"<model-text>\",\"duration_seconds\":null}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "files": 0
+        },
+        "after": {
+          "changed": {
+            ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_stop\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"description\":\"<model-text>\",\"duration_seconds\":null}\n"
+          },
+          "outputs": [
+            ""
+          ],
+          "stderr_present": [
+            true
+          ],
+          "context_in_model": [],
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 4,
+        "model_successful_responses": 3
+      },
+      "errors": []
+    }
+  ]
+}

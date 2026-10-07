@@ -1,0 +1,197 @@
+test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) ... 
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env PAIR=1 touch target') ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env -i PAIR=1 touch target') ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env -u PAIR touch target') ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env -- touch target') ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command="env PAIR='one two' touch target") ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='PAIR=1 touch target') ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='timeout 10 env PAIR=1 touch target') ... FAIL
+  test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env PAIR=1 timeout 10 touch target') ... FAIL
+test_environment_assignment_requires_review_for_inner_allow (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_assignment_requires_review_for_inner_allow) ... ok
+test_existing_wrapper_and_quoted_program_contract (test_bash_environment_rules.BashEnvironmentRuleTests.test_existing_wrapper_and_quoted_program_contract) ... ok
+test_unknown_env_options_do_not_grant_inner_allow (test_bash_environment_rules.BashEnvironmentRuleTests.test_unknown_env_options_do_not_grant_inner_allow) ... FAIL
+test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) ... 
+  test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) (command='env PAIR=1 cat target') ... FAIL
+  test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) (command='PAIR=1 cat target') ... FAIL
+  test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) (command='timeout 10 env PAIR=1 cat target') ... FAIL
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env PAIR=1 touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env -i PAIR=1 touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env -u PAIR touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env -- touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command="env PAIR='one two' touch target")
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='PAIR=1 touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'none' != 'deny'
+- none
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='timeout 10 env PAIR=1 touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_environment_and_assignment_prefixes_cannot_hide_denied_command (test_bash_environment_rules.BashEnvironmentRuleTests.test_environment_and_assignment_prefixes_cannot_hide_denied_command) (command='env PAIR=1 timeout 10 touch target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 25, in test_environment_and_assignment_prefixes_cannot_hide_denied_command
+    self.assertEqual(_bash_permission_rule_decision(command, [
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        {'allow': ['Bash(*)'], 'deny': ['Bash(touch target)']}]), 'deny')
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'allow' != 'deny'
+- allow
++ deny
+
+
+======================================================================
+FAIL: test_unknown_env_options_do_not_grant_inner_allow (test_bash_environment_rules.BashEnvironmentRuleTests.test_unknown_env_options_do_not_grant_inner_allow)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 37, in test_unknown_env_options_do_not_grant_inner_allow
+    self.assertEqual(bash_file_targets('env --unknown cat target'), ([], False))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ([], True) != ([], False)
+
+First differing element 1:
+True
+False
+
+- ([], True)
++ ([], False)
+
+======================================================================
+FAIL: test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) (command='env PAIR=1 cat target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 32, in test_wrapped_reader_keeps_actual_file_target
+    self.assertEqual(bash_file_targets(command), ([('read', 'target')], True))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ([], True) != ([('read', 'target')], True)
+
+First differing element 0:
+[]
+[('read', 'target')]
+
+- ([], True)
++ ([('read', 'target')], True)
+
+======================================================================
+FAIL: test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) (command='PAIR=1 cat target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 32, in test_wrapped_reader_keeps_actual_file_target
+    self.assertEqual(bash_file_targets(command), ([('read', 'target')], True))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ([], True) != ([('read', 'target')], True)
+
+First differing element 0:
+[]
+[('read', 'target')]
+
+- ([], True)
++ ([('read', 'target')], True)
+
+======================================================================
+FAIL: test_wrapped_reader_keeps_actual_file_target (test_bash_environment_rules.BashEnvironmentRuleTests.test_wrapped_reader_keeps_actual_file_target) (command='timeout 10 env PAIR=1 cat target')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_bash_environment_rules.py", line 32, in test_wrapped_reader_keeps_actual_file_target
+    self.assertEqual(bash_file_targets(command), ([('read', 'target')], True))
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Tuples differ: ([], True) != ([('read', 'target')], True)
+
+First differing element 0:
+[]
+[('read', 'target')]
+
+- ([], True)
++ ([('read', 'target')], True)
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.005s
+
+FAILED (failures=12)

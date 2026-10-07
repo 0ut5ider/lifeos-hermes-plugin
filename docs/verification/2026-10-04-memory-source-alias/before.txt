@@ -1,0 +1,20 @@
+.                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemorySourceRegistryAliasTests.test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock (relative='LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md') _
+tests/test_memory_source_registry_alias.py:55: in test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+    self.assertEqual(after['state'], 'blocked', {'path': relative,
+E   AssertionError: 'acquired' != 'blocked'
+E   - acquired
+E   + blocked
+E    : {'path': 'LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md', 'before': {'state': 'blocked', 'message': 'database is locked'}, 'after': {'state': 'acquired'}, 'refusal': 'The native wiki source is not valid UTF-8'}
+_ MemorySourceRegistryAliasTests.test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock (relative='LIFEOS/MEMORY/WORK/synthetic-source/ISA.md') _
+tests/test_memory_source_registry_alias.py:55: in test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+    self.assertEqual(after['state'], 'blocked', {'path': relative,
+E   AssertionError: 'acquired' != 'blocked'
+E   - acquired
+E   + blocked
+E    : {'path': 'LIFEOS/MEMORY/WORK/synthetic-source/ISA.md', 'before': {'state': 'blocked', 'message': 'database is locked'}, 'after': {'state': 'acquired'}, 'refusal': 'The native wiki source is not valid UTF-8'}
+=========================== short test summary info ============================
+SUBFAILED(relative='LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md') tests/test_memory_source_registry_alias.py::MemorySourceRegistryAliasTests::test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+SUBFAILED(relative='LIFEOS/MEMORY/WORK/synthetic-source/ISA.md') tests/test_memory_source_registry_alias.py::MemorySourceRegistryAliasTests::test_markdown_registry_alias_refusal_preserves_the_open_sqlite_lock
+2 failed, 1 passed in 0.67s

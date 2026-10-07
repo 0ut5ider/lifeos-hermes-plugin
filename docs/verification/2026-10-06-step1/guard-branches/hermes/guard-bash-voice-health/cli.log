@@ -1,0 +1,8 @@
+{"type": "system", "subtype": "init", "model": "lifecycle-fixture", "session_id": "20261007_001745_8eef1e", "timestamp": 1791332265794}
+{"type": "tool_use", "name": "terminal", "input": {"command": "printf 'PAIR_%s http://127.0.0.1:31337/voice/health' GUARD_OUTPUT"}, "timestamp": 1791332272824}
+/var/tmp/lifeos-paired-runtime-20261005e/hermes/pm/shell.py:13: SyntaxWarning: "\W" is an invalid escape sequence. Such sequences will not work in the future. Did you mean "\\W"? A raw string is also an option.
+  minus C:\Windows\System32\bash.exe (the WSL launcher stub, first on PATH
+{"type": "tool_result", "name": "terminal", "output": "{\"output\": \"PAIR_GUARD_OUTPUT http://127.0.0.1:31337/voice/health\", \"exit_code\": 0, \"error\": null}", "duration_ms": 299, "is_error": false, "timestamp": 1791332272993}
+{"type": "result", "session_id": "20261007_001745_8eef1e", "exit_code": 0, "text": "READY", "tokens": {"input": 6928, "output": 177, "total": 7105, "cache_read": 0, "cache_write": 0}, "duration_ms": 8125, "timestamp": 1791332273920}
+
+session_id: 20261007_001745_8eef1e

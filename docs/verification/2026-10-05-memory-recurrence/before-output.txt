@@ -1,0 +1,75 @@
+F.F.FFFFFF                                                       [100%]
+=================================== FAILURES ===================================
+______ MemoryRecurrenceTests.test_missing_context_cannot_append_registry _______
+tests/test_memory_recurrence.py:100: in test_missing_context_cannot_append_registry
+    self.assertNotEqual(self.call('append', context=False).returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryRecurrenceTests.test_missing_context_cannot_read_events_or_registry (mode='report') _
+tests/test_memory_recurrence.py:66: in test_missing_context_cannot_read_events_or_registry
+    self.assertNotEqual(self.call(mode, context=False).returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryRecurrenceTests.test_missing_context_cannot_read_events_or_registry (mode='events') _
+tests/test_memory_recurrence.py:66: in test_missing_context_cannot_read_events_or_registry
+    self.assertNotEqual(self.call(mode, context=False).returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryRecurrenceTests.test_missing_context_cannot_read_events_or_registry (mode='clusters') _
+tests/test_memory_recurrence.py:66: in test_missing_context_cannot_read_events_or_registry
+    self.assertNotEqual(self.call(mode, context=False).returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryRecurrenceTests.test_missing_context_cannot_read_events_or_registry (mode='registry') _
+tests/test_memory_recurrence.py:66: in test_missing_context_cannot_read_events_or_registry
+    self.assertNotEqual(self.call(mode, context=False).returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryRecurrenceTests.test_owner_append_retains_native_bytes_with_private_permissions _
+tests/test_memory_recurrence.py:127: in test_owner_append_retains_native_bytes_with_private_permissions
+    self.assertEqual(self.registry.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryRecurrenceTests.test_private_and_decoded_private_rows_stay_outside_counts _
+tests/test_memory_recurrence.py:74: in test_private_and_decoded_private_rows_stay_outside_counts
+    self.assertEqual(len(json.loads(result.stdout)), 1)
+E   AssertionError: 3 != 1
+____ MemoryRecurrenceTests.test_private_registry_record_refuses_publication ____
+tests/test_memory_recurrence.py:105: in test_private_registry_record_refuses_publication
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+___ MemoryRecurrenceTests.test_read_only_owner_can_report_but_cannot_append ____
+tests/test_memory_recurrence.py:112: in test_read_only_owner_can_report_but_cannot_append
+    self.assertNotEqual(self.call('append').returncode, 0)
+E   AssertionError: 0 == 0
+_____ MemoryRecurrenceTests.test_redirected_stream_refuses_foreign_content _____
+tests/test_memory_recurrence.py:97: in test_redirected_stream_refuses_foreign_content
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_______ MemoryRecurrenceTests.test_retired_error_cannot_return_in_events _______
+tests/test_memory_recurrence.py:86: in test_retired_error_cannot_return_in_events
+    self.assertEqual(json.loads(result.stdout), [])
+E   AssertionError: Lists differ: [{'classId': 'tool:terminal:synthetic-recu[149 chars]ic'}] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   {'classId': 'tool:terminal:synthetic-recurrence-failure', 'ts': '2026-10-05T05:15:09.330457+00:00', 'source': 'tool-failures', 'detail': 'Synthetic recurrence failure', 'sessionId': 'synthetic'}
+E   
+E   + []
+E   - [{'classId': 'tool:terminal:synthetic-recurrence-failure',
+E   -   'detail': 'Synthetic recurrence failure',
+E   -   'sessionId': 'synthetic',
+E   -   'source': 'tool-failures',
+E   -   'ts': '2026-10-05T05:15:09.330457+00:00'}]
+____________ MemoryRecurrenceTests.test_revoked_account_cannot_read ____________
+tests/test_memory_recurrence.py:90: in test_revoked_account_cannot_read
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_missing_context_cannot_append_registry
+SUBFAILED(mode='report') tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_missing_context_cannot_read_events_or_registry
+SUBFAILED(mode='events') tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_missing_context_cannot_read_events_or_registry
+SUBFAILED(mode='clusters') tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_missing_context_cannot_read_events_or_registry
+SUBFAILED(mode='registry') tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_missing_context_cannot_read_events_or_registry
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_owner_append_retains_native_bytes_with_private_permissions
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_private_and_decoded_private_rows_stay_outside_counts
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_private_registry_record_refuses_publication
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_read_only_owner_can_report_but_cannot_append
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_redirected_stream_refuses_foreign_content
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_retired_error_cannot_return_in_events
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_revoked_account_cannot_read
+12 failed, 2 passed, 4 subtests passed in 1.78s

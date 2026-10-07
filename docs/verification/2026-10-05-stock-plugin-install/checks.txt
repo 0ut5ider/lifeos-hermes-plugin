@@ -1,0 +1,1403 @@
+
+✓ manifest — plugin.yaml parses
+✓ manifest fields — name, version, description present
+✓ requires_hermes — not declared
+✓ config schema — shape valid
+✓ requires_env — all entries UPPER_SNAKE
+✓ loadable — entry: __init__.py
+✓ python dependencies — 4 requirements from manifest
+✓ capability probe — register() ran in isolation
+✓ declared tools — matches registrations
+✓ declared hooks — matches registrations
+✓ declared middleware — matches registrations
+✓ built-in tool collisions — no tools to check
+✓ security scan — safe
+⚠ provides_hooks declares api_request_error, augment_tool_result, 
+on_session_finalize, on_turn_result, post_tool_call, pre_command_approval, 
+pre_llm_call, pre_prompt_admission, pre_tool_call, pre_turn_stop but register() 
+did not register them
+⚠ provides_middleware declares llm_admission, llm_execution but register() did 
+not register them
+
+Validation passed.
+
+===doctor
+Plugin Doctor: /home/hermes/.hermes/plugins/lifeos-hook-bridge
+  manifest: lifeos-hook-bridge 0.1.0 (standalone)
+  ERROR: unknown hook 'pre_command_approval' in provides_hooks
+  ERROR: unknown hook 'augment_tool_result' in provides_hooks
+  ERROR: unknown hook 'pre_prompt_admission' in provides_hooks
+  ERROR: unknown hook 'pre_turn_stop' in provides_hooks
+  ERROR: unknown hook 'on_turn_result' in provides_hooks
+  WARN: manifest declares hook 'api_request_error' but registration did not add 
+it
+  WARN: manifest declares hook 'augment_tool_result' but registration did not 
+add it
+  WARN: manifest declares hook 'on_session_finalize' but registration did not 
+add it
+  WARN: manifest declares hook 'on_turn_result' but registration did not add it
+  WARN: manifest declares hook 'post_tool_call' but registration did not add it
+  WARN: manifest declares hook 'pre_command_approval' but registration did not 
+add it
+  WARN: manifest declares hook 'pre_llm_call' but registration did not add it
+  WARN: manifest declares hook 'pre_prompt_admission' but registration did not 
+add it
+  WARN: manifest declares hook 'pre_tool_call' but registration did not add it
+  WARN: manifest declares hook 'pre_turn_stop' but registration did not add it
+  registrations: 0 tool(s), 0 hook(s)
+===list
+
+                                    Plugins                                     
+┏━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━┳━━━━━━━━━┳━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━━━━━━━┓
+┃ Name            ┃ Status      ┃ Version ┃ Description     ┃ Source           ┃
+┡━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━╇━━━━━━━━━╇━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━━━━━━━┩
+│ browser-browse… │ enabled     │ 1.0.0   │ Browser Use     │ bundled          │
+│                 │             │         │ (https://brows… │                  │
+│                 │             │         │ cloud browser   │                  │
+│                 │             │         │ backend.        │                  │
+│                 │             │         │ Supports both   │                  │
+│                 │             │         │ direct          │                  │
+│                 │             │         │ BROWSER_USE_AP… │                  │
+│                 │             │         │ and the managed │                  │
+│                 │             │         │ Nous tool       │                  │
+│                 │             │         │ gateway. Also   │                  │
+│                 │             │         │ powers the      │                  │
+│                 │             │         │ 'Nous           │                  │
+│                 │             │         │ Subscription'   │                  │
+│                 │             │         │ UX flow that    │                  │
+│                 │             │         │ bills usage to  │                  │
+│                 │             │         │ a Nous          │                  │
+│                 │             │         │ subscription.   │                  │
+│ browser-browse… │ enabled     │ 1.0.0   │ Browserbase     │ bundled          │
+│                 │             │         │ (https://brows… │                  │
+│                 │             │         │ cloud browser   │                  │
+│                 │             │         │ backend.        │                  │
+│                 │             │         │ Requires        │                  │
+│                 │             │         │ BROWSERBASE_AP… │                  │
+│                 │             │         │ +               │                  │
+│                 │             │         │ BROWSERBASE_PR… │                  │
+│                 │             │         │ Supports        │                  │
+│                 │             │         │ stealth,        │                  │
+│                 │             │         │ proxies, and    │                  │
+│                 │             │         │ keep-alive      │                  │
+│                 │             │         │ sessions;       │                  │
+│                 │             │         │ auto-falls-back │                  │
+│                 │             │         │ when paid       │                  │
+│                 │             │         │ features are    │                  │
+│                 │             │         │ unavailable.    │                  │
+│ browser-firecr… │ enabled     │ 1.0.0   │ Firecrawl       │ bundled          │
+│                 │             │         │ (https://firec… │                  │
+│                 │             │         │ cloud browser   │                  │
+│                 │             │         │ backend.        │                  │
+│                 │             │         │ Requires        │                  │
+│                 │             │         │ FIRECRAWL_API_… │                  │
+│                 │             │         │ Distinct from   │                  │
+│                 │             │         │ the firecrawl   │                  │
+│                 │             │         │ WEB             │                  │
+│                 │             │         │ search/extract  │                  │
+│                 │             │         │ plugin — the    │                  │
+│                 │             │         │ two share an    │                  │
+│                 │             │         │ API key but     │                  │
+│                 │             │         │ operate on      │                  │
+│                 │             │         │ different       │                  │
+│                 │             │         │ endpoints.      │                  │
+│ chronos         │ not enabled │ 1.0.0   │ Chronos —       │ bundled          │
+│                 │             │         │ NAS-mediated    │                  │
+│                 │             │         │ managed cron    │                  │
+│                 │             │         │ provider for    │                  │
+│                 │             │         │ scale-to-zero   │                  │
+│                 │             │         │ hosted agents.  │                  │
+│                 │             │         │ Delegates the   │                  │
+│                 │             │         │ "wake me at     │                  │
+│                 │             │         │ time T" trigger │                  │
+│                 │             │         │ to Nous         │                  │
+│                 │             │         │ infrastructure  │                  │
+│                 │             │         │ so an idle      │                  │
+│                 │             │         │ gateway can     │                  │
+│                 │             │         │ scale to zero   │                  │
+│                 │             │         │ and still fire  │                  │
+│                 │             │         │ cron jobs. The  │                  │
+│                 │             │         │ agent computes  │                  │
+│                 │             │         │ each job's      │                  │
+│                 │             │         │ next-fire time  │                  │
+│                 │             │         │ and asks NAS to │                  │
+│                 │             │         │ arm a one-shot; │                  │
+│                 │             │         │ NAS calls the   │                  │
+│                 │             │         │ agent back at   │                  │
+│                 │             │         │ fire time over  │                  │
+│                 │             │         │ an              │                  │
+│                 │             │         │ authenticated   │                  │
+│                 │             │         │ webhook. Inert  │                  │
+│                 │             │         │ unless          │                  │
+│                 │             │         │ cron.provider=… │                  │
+│ basic           │ enabled     │ 1.0.0   │ Dashboard auth  │ bundled          │
+│                 │             │         │ provider —      │                  │
+│                 │             │         │ username/passw… │                  │
+│                 │             │         │ (no OAuth IDP). │                  │
+│                 │             │         │ A self-hosted   │                  │
+│                 │             │         │ 'just put a     │                  │
+│                 │             │         │ password on my  │                  │
+│                 │             │         │ dashboard'      │                  │
+│                 │             │         │ provider.       │                  │
+│                 │             │         │ Activates when  │                  │
+│                 │             │         │ dashboard.basi… │                  │
+│                 │             │         │ plus a password │                  │
+│                 │             │         │ (or             │                  │
+│                 │             │         │ password_hash)  │                  │
+│                 │             │         │ are configured  │                  │
+│                 │             │         │ via config.yaml │                  │
+│                 │             │         │ (canonical      │                  │
+│                 │             │         │ surface) or the │                  │
+│                 │             │         │ HERMES_DASHBOA… │                  │
+│                 │             │         │ env vars.       │                  │
+│                 │             │         │ Sessions are    │                  │
+│                 │             │         │ stateless       │                  │
+│                 │             │         │ HMAC-signed     │                  │
+│                 │             │         │ tokens minted   │                  │
+│                 │             │         │ by the          │                  │
+│                 │             │         │ provider;       │                  │
+│                 │             │         │ password        │                  │
+│                 │             │         │ hashing uses    │                  │
+│                 │             │         │ stdlib scrypt   │                  │
+│                 │             │         │ (no third-party │                  │
+│                 │             │         │ dependency).    │                  │
+│                 │             │         │ Set             │                  │
+│                 │             │         │ dashboard.basi… │                  │
+│                 │             │         │ for             │                  │
+│                 │             │         │ restart-surviv… │                  │
+│                 │             │         │ / multi-worker  │                  │
+│                 │             │         │ sessions.       │                  │
+│ drain           │ enabled     │ 1.0.0   │ Dashboard auth  │ bundled          │
+│                 │             │         │ provider —      │                  │
+│                 │             │         │ non-interactive │                  │
+│                 │             │         │ shared-bearer-… │                  │
+│                 │             │         │ for the gateway │                  │
+│                 │             │         │ drain-control   │                  │
+│                 │             │         │ endpoint. The   │                  │
+│                 │             │         │ first consumer  │                  │
+│                 │             │         │ of the generic  │                  │
+│                 │             │         │ token-auth      │                  │
+│                 │             │         │ capability      │                  │
+│                 │             │         │ (supports_toke… │                  │
+│                 │             │         │ nous-account-s… │                  │
+│                 │             │         │ provisions a    │                  │
+│                 │             │         │ per-agent       │                  │
+│                 │             │         │ unique secret   │                  │
+│                 │             │         │ via             │                  │
+│                 │             │         │ HERMES_DASHBOA… │                  │
+│                 │             │         │ this provider   │                  │
+│                 │             │         │ verifies an     │                  │
+│                 │             │         │ inbound         │                  │
+│                 │             │         │ Authorization   │                  │
+│                 │             │         │ bearer token    │                  │
+│                 │             │         │ against it with │                  │
+│                 │             │         │ a constant-time │                  │
+│                 │             │         │ compare and     │                  │
+│                 │             │         │ registers       │                  │
+│                 │             │         │ /api/gateway/d… │                  │
+│                 │             │         │ as              │                  │
+│                 │             │         │ token-authable. │                  │
+│                 │             │         │ Fails CLOSED: a │                  │
+│                 │             │         │ weak/short/low… │                  │
+│                 │             │         │ secret (< 256   │                  │
+│                 │             │         │ bits) is        │                  │
+│                 │             │         │ rejected at     │                  │
+│                 │             │         │ registration    │                  │
+│                 │             │         │ and the         │                  │
+│                 │             │         │ endpoint stays  │                  │
+│                 │             │         │ disabled. No-op │                  │
+│                 │             │         │ when the env    │                  │
+│                 │             │         │ var is unset.   │                  │
+│                 │             │         │ Behavioural     │                  │
+│                 │             │         │ knobs (scope,   │                  │
+│                 │             │         │ min_secret_cha… │                  │
+│                 │             │         │ live under      │                  │
+│                 │             │         │ dashboard.drai… │                  │
+│                 │             │         │ in config.yaml. │                  │
+│ nous            │ enabled     │ 1.0.0   │ Dashboard auth  │ bundled          │
+│                 │             │         │ provider —      │                  │
+│                 │             │         │ OAuth 2.0       │                  │
+│                 │             │         │ (authorization… │                  │
+│                 │             │         │ + PKCE) against │                  │
+│                 │             │         │ Nous Portal.    │                  │
+│                 │             │         │ Auto-activates  │                  │
+│                 │             │         │ when a          │                  │
+│                 │             │         │ client_id is    │                  │
+│                 │             │         │ configured via  │                  │
+│                 │             │         │ either          │                  │
+│                 │             │         │ dashboard.oaut… │                  │
+│                 │             │         │ in config.yaml  │                  │
+│                 │             │         │ (canonical      │                  │
+│                 │             │         │ surface) or     │                  │
+│                 │             │         │ HERMES_DASHBOA… │                  │
+│                 │             │         │ env var         │                  │
+│                 │             │         │ (operator       │                  │
+│                 │             │         │ override;       │                  │
+│                 │             │         │ Portal injects  │                  │
+│                 │             │         │ this at Fly.io  │                  │
+│                 │             │         │ provisioning).  │                  │
+│                 │             │         │ dashboard.oaut… │                  │
+│                 │             │         │ /               │                  │
+│                 │             │         │ HERMES_DASHBOA… │                  │
+│                 │             │         │ are optional    │                  │
+│                 │             │         │ and default to  │                  │
+│                 │             │         │ https://portal… │                  │
+│ self-hosted     │ enabled     │ 1.0.0   │ Dashboard auth  │ bundled          │
+│                 │             │         │ provider —      │                  │
+│                 │             │         │ generic         │                  │
+│                 │             │         │ self-hosted     │                  │
+│                 │             │         │ OpenID Connect  │                  │
+│                 │             │         │ (authorization… │                  │
+│                 │             │         │ + PKCE, public  │                  │
+│                 │             │         │ client). Works  │                  │
+│                 │             │         │ against any     │                  │
+│                 │             │         │ conformant OIDC │                  │
+│                 │             │         │ identity        │                  │
+│                 │             │         │ provider        │                  │
+│                 │             │         │ (Authentik,     │                  │
+│                 │             │         │ Keycloak,       │                  │
+│                 │             │         │ Zitadel,        │                  │
+│                 │             │         │ Authelia,       │                  │
+│                 │             │         │ Auth0, Okta,    │                  │
+│                 │             │         │ Google, …) via  │                  │
+│                 │             │         │ OIDC discovery. │                  │
+│                 │             │         │ Auto-activates  │                  │
+│                 │             │         │ when an issuer  │                  │
+│                 │             │         │ + client_id are │                  │
+│                 │             │         │ configured,     │                  │
+│                 │             │         │ either under    │                  │
+│                 │             │         │ dashboard.oaut… │                  │
+│                 │             │         │ in config.yaml  │                  │
+│                 │             │         │ (canonical      │                  │
+│                 │             │         │ surface) or via │                  │
+│                 │             │         │ the             │                  │
+│                 │             │         │ HERMES_DASHBOA… │                  │
+│                 │             │         │ +               │                  │
+│                 │             │         │ HERMES_DASHBOA… │                  │
+│                 │             │         │ env vars        │                  │
+│                 │             │         │ (operator       │                  │
+│                 │             │         │ override /      │                  │
+│                 │             │         │ secret          │                  │
+│                 │             │         │ injection).     │                  │
+│                 │             │         │ Scopes default  │                  │
+│                 │             │         │ to 'openid      │                  │
+│                 │             │         │ profile email'. │                  │
+│                 │             │         │ Verifies the    │                  │
+│                 │             │         │ OIDC ID token   │                  │
+│                 │             │         │ (RS256/ES256)   │                  │
+│                 │             │         │ against the     │                  │
+│                 │             │         │ discovered      │                  │
+│                 │             │         │ jwks_uri.       │                  │
+│ disk-cleanup    │ not enabled │ 2.0.0   │ Auto-track and  │ bundled          │
+│                 │             │         │ clean up        │                  │
+│                 │             │         │ ephemeral files │                  │
+│                 │             │         │ (test scripts,  │                  │
+│                 │             │         │ temp outputs,   │                  │
+│                 │             │         │ cron logs)      │                  │
+│                 │             │         │ created during  │                  │
+│                 │             │         │ Hermes          │                  │
+│                 │             │         │ sessions. Runs  │                  │
+│                 │             │         │ via plugin      │                  │
+│                 │             │         │ hooks — no      │                  │
+│                 │             │         │ agent action    │                  │
+│                 │             │         │ required.       │                  │
+│ google_meet     │ not enabled │ 0.2.0   │ Join a Google   │ bundled          │
+│                 │             │         │ Meet call,      │                  │
+│                 │             │         │ transcribe live │                  │
+│                 │             │         │ captions, speak │                  │
+│                 │             │         │ in realtime,    │                  │
+│                 │             │         │ and follow up   │                  │
+│                 │             │         │ afterwards. v1  │                  │
+│                 │             │         │ transcribe-only │                  │
+│                 │             │         │ is the default; │                  │
+│                 │             │         │ v2 realtime     │                  │
+│                 │             │         │ duplex audio    │                  │
+│                 │             │         │ via OpenAI      │                  │
+│                 │             │         │ Realtime +      │                  │
+│                 │             │         │ BlackHole/Puls… │                  │
+│                 │             │         │ ships with      │                  │
+│                 │             │         │ mode='realtime… │                  │
+│                 │             │         │ v3 remote node  │                  │
+│                 │             │         │ host lets the   │                  │
+│                 │             │         │ bot run on a    │                  │
+│                 │             │         │ different       │                  │
+│                 │             │         │ machine than    │                  │
+│                 │             │         │ the gateway     │                  │
+│                 │             │         │ (gateway on     │                  │
+│                 │             │         │ Linux,          │                  │
+│                 │             │         │ Chrome+signed-… │                  │
+│                 │             │         │ profile on the  │                  │
+│                 │             │         │ user's Mac).    │                  │
+│                 │             │         │ Explicit-by-de… │                  │
+│                 │             │         │ only joins      │                  │
+│                 │             │         │ meet.google.com │                  │
+│                 │             │         │ URLs passed in  │                  │
+│                 │             │         │ — no calendar   │                  │
+│                 │             │         │ scanning, no    │                  │
+│                 │             │         │ auto-dial.      │                  │
+│ deepinfra       │ enabled     │ 1.0.0   │ DeepInfra image │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend (FLUX,  │                  │
+│                 │             │         │ Qwen-Image, …)  │                  │
+│                 │             │         │ via             │                  │
+│                 │             │         │ OpenAI-compati… │                  │
+│                 │             │         │ /v1/images/gen… │                  │
+│                 │             │         │ Catalog         │                  │
+│                 │             │         │ discovered live │                  │
+│                 │             │         │ from            │                  │
+│                 │             │         │ api.deepinfra.… │                  │
+│ fal             │ enabled     │ 1.0.0   │ FAL.ai image    │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend         │                  │
+│                 │             │         │ (flux-2-klein,  │                  │
+│                 │             │         │ flux-2-pro,     │                  │
+│                 │             │         │ nano-banana-2,  │                  │
+│                 │             │         │ nano-banana-pr… │                  │
+│                 │             │         │ gpt-image-1.5,  │                  │
+│                 │             │         │ recraft-v3,     │                  │
+│                 │             │         │ etc.).          │                  │
+│ krea            │ enabled     │ 1.1.0   │ Krea image      │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend (Krea 2 │                  │
+│                 │             │         │ Large + Medium  │                  │
+│                 │             │         │ + Medium Turbo  │                  │
+│                 │             │         │ foundation      │                  │
+│                 │             │         │ models). Direct │                  │
+│                 │             │         │ KREA_API_KEY or │                  │
+│                 │             │         │ managed Nous    │                  │
+│                 │             │         │ Subscription    │                  │
+│                 │             │         │ gateway.        │                  │
+│ meta-ai-image-… │ enabled     │ 1.0.0   │ Meta Model API  │ bundled          │
+│                 │             │         │ image           │                  │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend         │                  │
+│                 │             │         │ (muse-image).   │                  │
+│                 │             │         │ OpenAI-compati… │                  │
+│                 │             │         │ /v1/images/gen… │                  │
+│                 │             │         │ Saves images to │                  │
+│                 │             │         │ $HERMES_HOME/c… │                  │
+│ openai          │ enabled     │ 1.0.0   │ OpenAI image    │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend (GPT    │                  │
+│                 │             │         │ Image 2 and GPT │                  │
+│                 │             │         │ Image 2.5       │                  │
+│                 │             │         │ Flare/Sunburst… │                  │
+│                 │             │         │ Saves generated │                  │
+│                 │             │         │ images to       │                  │
+│                 │             │         │ $HERMES_HOME/c… │                  │
+│ openai-codex    │ enabled     │ 1.0.0   │ OpenAI image    │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backed by       │                  │
+│                 │             │         │ ChatGPT/Codex   │                  │
+│                 │             │         │ OAuth           │                  │
+│                 │             │         │ (gpt-image-2    │                  │
+│                 │             │         │ via the native  │                  │
+│                 │             │         │ Codex           │                  │
+│                 │             │         │ images/generat… │                  │
+│                 │             │         │ and             │                  │
+│                 │             │         │ images/edits    │                  │
+│                 │             │         │ endpoints).     │                  │
+│                 │             │         │ Saves generated │                  │
+│                 │             │         │ images to       │                  │
+│                 │             │         │ $HERMES_HOME/c… │                  │
+│ openrouter      │ enabled     │ 1.1.0   │ OpenRouter +    │ bundled          │
+│                 │             │         │ Nous Portal     │                  │
+│                 │             │         │ image           │                  │
+│                 │             │         │ generation.     │                  │
+│                 │             │         │ Chat-completio… │                  │
+│                 │             │         │ image output    │                  │
+│                 │             │         │ (reference-gro… │                  │
+│                 │             │         │ plus            │                  │
+│                 │             │         │ OpenRouter's    │                  │
+│                 │             │         │ Dedicated Image │                  │
+│                 │             │         │ API             │                  │
+│                 │             │         │ (/images/gener… │                  │
+│                 │             │         │ for             │                  │
+│                 │             │         │ gpt-image-2,    │                  │
+│                 │             │         │ Krea 2, Qwen    │                  │
+│                 │             │         │ Image 3 Pro,    │                  │
+│                 │             │         │ MAI-Image-2.5   │                  │
+│                 │             │         │ and Grok        │                  │
+│                 │             │         │ Imagine — exact │                  │
+│                 │             │         │ per-model       │                  │
+│                 │             │         │ aspect ratios,  │                  │
+│                 │             │         │ resolution/qua… │                  │
+│                 │             │         │ up to 16        │                  │
+│                 │             │         │ reference       │                  │
+│                 │             │         │ images.         │                  │
+│                 │             │         │ Text-to-image   │                  │
+│                 │             │         │ and             │                  │
+│                 │             │         │ image-to-image. │                  │
+│ xai             │ enabled     │ 1.0.0   │ xAI image       │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend         │                  │
+│                 │             │         │ (grok-imagine-… │                  │
+│                 │             │         │ Text-to-image.  │                  │
+│ langfuse        │ not enabled │ 1.0.0   │ Optional        │ bundled          │
+│                 │             │         │ Langfuse        │                  │
+│                 │             │         │ observability   │                  │
+│                 │             │         │ for Hermes —    │                  │
+│                 │             │         │ traces          │                  │
+│                 │             │         │ conversations,  │                  │
+│                 │             │         │ LLM calls, and  │                  │
+│                 │             │         │ tool usage.     │                  │
+│                 │             │         │ Opt-in via      │                  │
+│                 │             │         │ `hermes plugins │                  │
+│                 │             │         │ enable          │                  │
+│                 │             │         │ observability/… │                  │
+│                 │             │         │ or `hermes      │                  │
+│                 │             │         │ tools →         │                  │
+│                 │             │         │ Langfuse        │                  │
+│                 │             │         │ Observability`. │                  │
+│ a2a-platform    │ enabled     │ 1.0.0   │ A2A             │ bundled          │
+│                 │             │         │ (Agent-to-Agen… │                  │
+│                 │             │         │ protocol v1.0   │                  │
+│                 │             │         │ support for     │                  │
+│                 │             │         │ Hermes Agent —  │                  │
+│                 │             │         │ both directions │                  │
+│                 │             │         │ of the open     │                  │
+│                 │             │         │ Linux           │                  │
+│                 │             │         │ Foundation      │                  │
+│                 │             │         │ standard for    │                  │
+│                 │             │         │ inter-agent     │                  │
+│                 │             │         │ communication.  │                  │
+│                 │             │         │ OUTBOUND        │                  │
+│                 │             │         │ (client tools): │                  │
+│                 │             │         │ a2a_discover,   │                  │
+│                 │             │         │ a2a_call,       │                  │
+│                 │             │         │ a2a_list,       │                  │
+│                 │             │         │ a2a_history,    │                  │
+│                 │             │         │ and             │                  │
+│                 │             │         │ a2a_orchestrate │                  │
+│                 │             │         │ let the agent   │                  │
+│                 │             │         │ fetch another   │                  │
+│                 │             │         │ agent's Agent   │                  │
+│                 │             │         │ Card and send   │                  │
+│                 │             │         │ it tasks over   │                  │
+│                 │             │         │ JSON-RPC —      │                  │
+│                 │             │         │ works with any  │                  │
+│                 │             │         │ A2A-compliant   │                  │
+│                 │             │         │ peer (Hermes,   │                  │
+│                 │             │         │ LangChain,      │                  │
+│                 │             │         │ CrewAI, Google  │                  │
+│                 │             │         │ ADK, OpenClaw,  │                  │
+│                 │             │         │ ...).           │                  │
+│                 │             │         │ INBOUND         │                  │
+│                 │             │         │ (platform       │                  │
+│                 │             │         │ adapter):       │                  │
+│                 │             │         │ exposes Hermes  │                  │
+│                 │             │         │ as an           │                  │
+│                 │             │         │ A2A-discoverab… │                  │
+│                 │             │         │ agent. An Agent │                  │
+│                 │             │         │ Card is served  │                  │
+│                 │             │         │ at              │                  │
+│                 │             │         │ /.well-known/a… │                  │
+│                 │             │         │ (v1.0 canonical │                  │
+│                 │             │         │ path; legacy    │                  │
+│                 │             │         │ agent.json also │                  │
+│                 │             │         │ answers) and    │                  │
+│                 │             │         │ incoming tasks  │                  │
+│                 │             │         │ are routed into │                  │
+│                 │             │         │ the agent's     │                  │
+│                 │             │         │ live gateway    │                  │
+│                 │             │         │ session like    │                  │
+│                 │             │         │ any other       │                  │
+│                 │             │         │ platform — so   │                  │
+│                 │             │         │ the agent that  │                  │
+│                 │             │         │ replies is the  │                  │
+│                 │             │         │ same one        │                  │
+│                 │             │         │ talking to its  │                  │
+│                 │             │         │ user, with full │                  │
+│                 │             │         │ memory and      │                  │
+│                 │             │         │ context, not a  │                  │
+│                 │             │         │ throwaway       │                  │
+│                 │             │         │ clone.          │                  │
+│                 │             │         │ Security is on  │                  │
+│                 │             │         │ by default: no  │                  │
+│                 │             │         │ bearer token    │                  │
+│                 │             │         │ configured =>   │                  │
+│                 │             │         │ localhost-only  │                  │
+│                 │             │         │ bind. Inbound   │                  │
+│                 │             │         │ task text       │                  │
+│                 │             │         │ passes through  │                  │
+│                 │             │         │ prompt-injecti… │                  │
+│                 │             │         │ filters;        │                  │
+│                 │             │         │ outbound text   │                  │
+│                 │             │         │ is scrubbed of  │                  │
+│                 │             │         │ credential-sha… │                  │
+│                 │             │         │ strings; every  │                  │
+│                 │             │         │ exchange is     │                  │
+│                 │             │         │ audit-logged    │                  │
+│                 │             │         │ and persisted   │                  │
+│                 │             │         │ to disk outside │                  │
+│                 │             │         │ the             │                  │
+│                 │             │         │ context-compac… │                  │
+│                 │             │         │ pipeline so     │                  │
+│                 │             │         │ conversations   │                  │
+│                 │             │         │ survive         │                  │
+│                 │             │         │ compaction and  │                  │
+│                 │             │         │ restarts.       │                  │
+│                 │             │         │ Pure stdlib     │                  │
+│                 │             │         │ transport       │                  │
+│                 │             │         │ (http.server +  │                  │
+│                 │             │         │ urllib) — no    │                  │
+│                 │             │         │ a2a-sdk         │                  │
+│                 │             │         │ dependency      │                  │
+│                 │             │         │ required.       │                  │
+│                 │             │         │                 │                  │
+│ buzz-platform   │ enabled     │ 1.0.0   │ Buzz gateway    │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Connects to a   │                  │
+│                 │             │         │ Buzz community  │                  │
+│                 │             │         │ relay (Block's  │                  │
+│                 │             │         │ open-source     │                  │
+│                 │             │         │ human+agent     │                  │
+│                 │             │         │ collaboration   │                  │
+│                 │             │         │ platform built  │                  │
+│                 │             │         │ on Nostr) and   │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between         │                  │
+│                 │             │         │ channels/DMs    │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Relay    │                  │
+│                 │             │         │ operations      │                  │
+│                 │             │         │ shell out to    │                  │
+│                 │             │         │ the buzz CLI    │                  │
+│                 │             │         │ binary (JSON    │                  │
+│                 │             │         │ in/out);        │                  │
+│                 │             │         │ verified        │                  │
+│                 │             │         │ inbound media   │                  │
+│                 │             │         │ uses Hermes'    │                  │
+│                 │             │         │ bundled HTTP    │                  │
+│                 │             │         │ client.         │                  │
+│                 │             │         │                 │                  │
+│ dingtalk-platf… │ enabled     │ 1.0.0   │ DingTalk        │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to DingTalk via │                  │
+│                 │             │         │ the             │                  │
+│                 │             │         │ dingtalk-stream │                  │
+│                 │             │         │ SDK (Stream     │                  │
+│                 │             │         │ Mode) and       │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between         │                  │
+│                 │             │         │ DingTalk chats  │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ text, images,   │                  │
+│                 │             │         │ audio, video,   │                  │
+│                 │             │         │ rich text,      │                  │
+│                 │             │         │ files, group    │                  │
+│                 │             │         │ @mention        │                  │
+│                 │             │         │ gating,         │                  │
+│                 │             │         │ free-response   │                  │
+│                 │             │         │ chats, and      │                  │
+│                 │             │         │ per-user        │                  │
+│                 │             │         │ allowlists.     │                  │
+│                 │             │         │                 │                  │
+│ discord-platfo… │ enabled     │ 1.0.0   │ Discord gateway │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Connects to     │                  │
+│                 │             │         │ Discord via the │                  │
+│                 │             │         │ discord.py      │                  │
+│                 │             │         │ library and     │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between Discord │                  │
+│                 │             │         │ guilds/DMs and  │                  │
+│                 │             │         │ the Hermes      │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ voice mode,     │                  │
+│                 │             │         │ slash commands, │                  │
+│                 │             │         │ free-response   │                  │
+│                 │             │         │ channels,       │                  │
+│                 │             │         │ role-based DM   │                  │
+│                 │             │         │ auth, threads,  │                  │
+│                 │             │         │ reactions, and  │                  │
+│                 │             │         │ channel skill   │                  │
+│                 │             │         │ bindings.       │                  │
+│                 │             │         │                 │                  │
+│ email-platform  │ enabled     │ 1.0.0   │ Email gateway   │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Polls an IMAP   │                  │
+│                 │             │         │ mailbox for     │                  │
+│                 │             │         │ inbound         │                  │
+│                 │             │         │ messages and    │                  │
+│                 │             │         │ replies over    │                  │
+│                 │             │         │ SMTP, relaying  │                  │
+│                 │             │         │ email threads   │                  │
+│                 │             │         │ to and from the │                  │
+│                 │             │         │ Hermes agent.   │                  │
+│                 │             │         │                 │                  │
+│ feishu-platform │ enabled     │ 1.0.0   │ Feishu / Lark   │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to Feishu       │                  │
+│                 │             │         │ (China) or Lark │                  │
+│                 │             │         │ (International) │                  │
+│                 │             │         │ via the         │                  │
+│                 │             │         │ official        │                  │
+│                 │             │         │ lark-oapi SDK   │                  │
+│                 │             │         │ over WebSocket  │                  │
+│                 │             │         │ or webhook and  │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between         │                  │
+│                 │             │         │ Feishu/Lark     │                  │
+│                 │             │         │ chats and the   │                  │
+│                 │             │         │ Hermes agent.   │                  │
+│                 │             │         │ Supports text,  │                  │
+│                 │             │         │ images, video,  │                  │
+│                 │             │         │ voice,          │                  │
+│                 │             │         │ documents,      │                  │
+│                 │             │         │ threads, DM     │                  │
+│                 │             │         │ pairing, group  │                  │
+│                 │             │         │ @mention        │                  │
+│                 │             │         │ gating, drive   │                  │
+│                 │             │         │ comment events, │                  │
+│                 │             │         │ and meeting     │                  │
+│                 │             │         │ invites.        │                  │
+│                 │             │         │                 │                  │
+│ google_chat-pl… │ enabled     │ 1.0.0   │ Google Chat     │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ through         │                  │
+│                 │             │         │ authenticated   │                  │
+│                 │             │         │ HTTP callbacks  │                  │
+│                 │             │         │ or an optional  │                  │
+│                 │             │         │ Cloud Pub/Sub   │                  │
+│                 │             │         │ pull            │                  │
+│                 │             │         │ subscription    │                  │
+│                 │             │         │ for inbound     │                  │
+│                 │             │         │ events, and     │                  │
+│                 │             │         │ uses the Google │                  │
+│                 │             │         │ Chat REST API   │                  │
+│                 │             │         │ for outbound    │                  │
+│                 │             │         │ messages.       │                  │
+│                 │             │         │ Native file     │                  │
+│                 │             │         │ attachments are │                  │
+│                 │             │         │ delivered via   │                  │
+│                 │             │         │ per-user OAuth  │                  │
+│                 │             │         │ (each user runs │                  │
+│                 │             │         │ /setup-files    │                  │
+│                 │             │         │ once in their   │                  │
+│                 │             │         │ own DM).        │                  │
+│                 │             │         │                 │                  │
+│ homeassistant-… │ enabled     │ 1.0.0   │ Home Assistant  │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent.          │                  │
+│                 │             │         │ Subscribes to   │                  │
+│                 │             │         │ HA's WebSocket  │                  │
+│                 │             │         │ event bus and   │                  │
+│                 │             │         │ forwards        │                  │
+│                 │             │         │ state-change    │                  │
+│                 │             │         │ events (with    │                  │
+│                 │             │         │ per-entity      │                  │
+│                 │             │         │ cooldowns and   │                  │
+│                 │             │         │ domain/entity   │                  │
+│                 │             │         │ filtering) to   │                  │
+│                 │             │         │ the agent.      │                  │
+│                 │             │         │ Outbound        │                  │
+│                 │             │         │ messages are    │                  │
+│                 │             │         │ delivered as HA │                  │
+│                 │             │         │ persistent      │                  │
+│                 │             │         │ notifications   │                  │
+│                 │             │         │ via the REST    │                  │
+│                 │             │         │ API.            │                  │
+│                 │             │         │ Out-of-process  │                  │
+│                 │             │         │ cron delivery   │                  │
+│                 │             │         │ via the         │                  │
+│                 │             │         │ ``notify.notif… │                  │
+│                 │             │         │ service is also │                  │
+│                 │             │         │ supported.      │                  │
+│                 │             │         │                 │                  │
+│ irc-platform    │ enabled     │ 1.0.0   │ IRC gateway     │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Connects to an  │                  │
+│                 │             │         │ IRC server and  │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between an IRC  │                  │
+│                 │             │         │ channel (or     │                  │
+│                 │             │         │ DMs) and the    │                  │
+│                 │             │         │ Hermes agent.   │                  │
+│                 │             │         │ No external     │                  │
+│                 │             │         │ dependencies —  │                  │
+│                 │             │         │ uses Python's   │                  │
+│                 │             │         │ stdlib asyncio  │                  │
+│                 │             │         │ for the IRC     │                  │
+│                 │             │         │ protocol.       │                  │
+│                 │             │         │                 │                  │
+│ line-platform   │ enabled     │ 1.0.0   │ LINE Messaging  │ bundled          │
+│                 │             │         │ API gateway     │                  │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Runs an aiohttp │                  │
+│                 │             │         │ webhook server  │                  │
+│                 │             │         │ that receives   │                  │
+│                 │             │         │ LINE webhook    │                  │
+│                 │             │         │ events (with    │                  │
+│                 │             │         │ HMAC-SHA256     │                  │
+│                 │             │         │ signature       │                  │
+│                 │             │         │ verification)   │                  │
+│                 │             │         │ and relays      │                  │
+│                 │             │         │ messages        │                  │
+│                 │             │         │ between LINE    │                  │
+│                 │             │         │ chats (1:1,     │                  │
+│                 │             │         │ groups, rooms)  │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Outbound │                  │
+│                 │             │         │ replies prefer  │                  │
+│                 │             │         │ the free reply  │                  │
+│                 │             │         │ token and fall  │                  │
+│                 │             │         │ back to the     │                  │
+│                 │             │         │ metered Push    │                  │
+│                 │             │         │ API when the    │                  │
+│                 │             │         │ token has       │                  │
+│                 │             │         │ expired or is   │                  │
+│                 │             │         │ absent. Slow    │                  │
+│                 │             │         │ LLM responses   │                  │
+│                 │             │         │ surface a       │                  │
+│                 │             │         │ Template        │                  │
+│                 │             │         │ Buttons         │                  │
+│                 │             │         │ postback bubble │                  │
+│                 │             │         │ so the user can │                  │
+│                 │             │         │ fetch the       │                  │
+│                 │             │         │ answer with a   │                  │
+│                 │             │         │ fresh reply     │                  │
+│                 │             │         │ token (free)    │                  │
+│                 │             │         │ once it's       │                  │
+│                 │             │         │ ready.          │                  │
+│                 │             │         │                 │                  │
+│ matrix-platform │ enabled     │ 1.0.0   │ Matrix gateway  │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Connects to a   │                  │
+│                 │             │         │ Matrix          │                  │
+│                 │             │         │ homeserver via  │                  │
+│                 │             │         │ mautrix (with   │                  │
+│                 │             │         │ optional E2EE)  │                  │
+│                 │             │         │ and relays      │                  │
+│                 │             │         │ messages        │                  │
+│                 │             │         │ between Matrix  │                  │
+│                 │             │         │ rooms/DMs and   │                  │
+│                 │             │         │ the Hermes      │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ threads,        │                  │
+│                 │             │         │ HTML/markdown   │                  │
+│                 │             │         │ rendering,      │                  │
+│                 │             │         │ native media    │                  │
+│                 │             │         │ uploads,        │                  │
+│                 │             │         │ mention gating, │                  │
+│                 │             │         │ free-response   │                  │
+│                 │             │         │ rooms, and      │                  │
+│                 │             │         │ per-room        │                  │
+│                 │             │         │ allowlists.     │                  │
+│                 │             │         │                 │                  │
+│ mattermost-pla… │ enabled     │ 1.0.0   │ Mattermost      │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to a            │                  │
+│                 │             │         │ self-hosted or  │                  │
+│                 │             │         │ cloud           │                  │
+│                 │             │         │ Mattermost      │                  │
+│                 │             │         │ instance via    │                  │
+│                 │             │         │ the v4 REST API │                  │
+│                 │             │         │ + WebSocket     │                  │
+│                 │             │         │ event stream    │                  │
+│                 │             │         │ and relays      │                  │
+│                 │             │         │ messages        │                  │
+│                 │             │         │ between         │                  │
+│                 │             │         │ Mattermost      │                  │
+│                 │             │         │ channels/DMs    │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ thread-mode     │                  │
+│                 │             │         │ replies, native │                  │
+│                 │             │         │ file uploads,   │                  │
+│                 │             │         │ channel-scoped  │                  │
+│                 │             │         │ allowlists, and │                  │
+│                 │             │         │ home-channel    │                  │
+│                 │             │         │ cron delivery.  │                  │
+│                 │             │         │                 │                  │
+│ ntfy-platform   │ enabled     │ 1.0.0   │ ntfy            │ bundled          │
+│                 │             │         │ push-notificat… │                  │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent.          │                  │
+│                 │             │         │ Subscribes to a │                  │
+│                 │             │         │ topic on        │                  │
+│                 │             │         │ ntfy.sh or any  │                  │
+│                 │             │         │ self-hosted     │                  │
+│                 │             │         │ ntfy server via │                  │
+│                 │             │         │ HTTP streaming, │                  │
+│                 │             │         │ and publishes   │                  │
+│                 │             │         │ replies via     │                  │
+│                 │             │         │ HTTP POST.      │                  │
+│                 │             │         │ Lightweight —   │                  │
+│                 │             │         │ no external     │                  │
+│                 │             │         │ SDK, only httpx │                  │
+│                 │             │         │ (already a      │                  │
+│                 │             │         │ Hermes          │                  │
+│                 │             │         │ dependency).    │                  │
+│                 │             │         │ ntfy has no     │                  │
+│                 │             │         │ native          │                  │
+│                 │             │         │ user-identity   │                  │
+│                 │             │         │ primitive; the  │                  │
+│                 │             │         │ adapter treats  │                  │
+│                 │             │         │ each topic as a │                  │
+│                 │             │         │ single trusted  │                  │
+│                 │             │         │ channel and     │                  │
+│                 │             │         │ never derives   │                  │
+│                 │             │         │ user identity   │                  │
+│                 │             │         │ from            │                  │
+│                 │             │         │ publisher-cont… │                  │
+│                 │             │         │ fields. Use a   │                  │
+│                 │             │         │ private topic + │                  │
+│                 │             │         │ read token for  │                  │
+│                 │             │         │ any real trust  │                  │
+│                 │             │         │ boundary.       │                  │
+│                 │             │         │                 │                  │
+│ photon-platform │ enabled     │ 0.3.0   │ Photon Spectrum │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to iMessage     │                  │
+│                 │             │         │ (and other      │                  │
+│                 │             │         │ Spectrum        │                  │
+│                 │             │         │ interfaces)     │                  │
+│                 │             │         │ through         │                  │
+│                 │             │         │ Photon's        │                  │
+│                 │             │         │ managed         │                  │
+│                 │             │         │ Spectrum        │                  │
+│                 │             │         │ platform. Both  │                  │
+│                 │             │         │ directions run  │                  │
+│                 │             │         │ over the        │                  │
+│                 │             │         │ `spectrum-ts`   │                  │
+│                 │             │         │ SDK's           │                  │
+│                 │             │         │ long-lived gRPC │                  │
+│                 │             │         │ stream via a    │                  │
+│                 │             │         │ small           │                  │
+│                 │             │         │ supervised Node │                  │
+│                 │             │         │ sidecar —       │                  │
+│                 │             │         │ inbound         │                  │
+│                 │             │         │ messages arrive │                  │
+│                 │             │         │ on the SDK's    │                  │
+│                 │             │         │ `app.messages`  │                  │
+│                 │             │         │ stream (no      │                  │
+│                 │             │         │ webhook, no     │                  │
+│                 │             │         │ public URL, no  │                  │
+│                 │             │         │ signing         │                  │
+│                 │             │         │ secret), and    │                  │
+│                 │             │         │ outbound        │                  │
+│                 │             │         │ messages are    │                  │
+│                 │             │         │ sent over the   │                  │
+│                 │             │         │ same sidecar.   │                  │
+│                 │             │         │ The plugin      │                  │
+│                 │             │         │ ships with a    │                  │
+│                 │             │         │ `hermes photon` │                  │
+│                 │             │         │ CLI for the     │                  │
+│                 │             │         │ one-time device │                  │
+│                 │             │         │ login + project │                  │
+│                 │             │         │ + user setup.   │                  │
+│                 │             │         │ Runtime         │                  │
+│                 │             │         │ credentials are │                  │
+│                 │             │         │ written to      │                  │
+│                 │             │         │ ``~/.hermes/.e… │                  │
+│                 │             │         │ (``PHOTON_PROJ… │                  │
+│                 │             │         │ = the Spectrum  │                  │
+│                 │             │         │ project id,     │                  │
+│                 │             │         │ ``PHOTON_PROJE… │                  │
+│                 │             │         │ like every      │                  │
+│                 │             │         │ other channel,  │                  │
+│                 │             │         │ with management │                  │
+│                 │             │         │ metadata        │                  │
+│                 │             │         │ (device token,  │                  │
+│                 │             │         │ dashboard       │                  │
+│                 │             │         │ project id) in  │                  │
+│                 │             │         │ ``~/.hermes/au… │                  │
+│                 │             │         │ Photon's free   │                  │
+│                 │             │         │ shared-line     │                  │
+│                 │             │         │ model lets      │                  │
+│                 │             │         │ users get       │                  │
+│                 │             │         │ started without │                  │
+│                 │             │         │ a paid plan.    │                  │
+│                 │             │         │                 │                  │
+│ raft-platform   │ enabled     │ 1.0.0   │ Raft gateway    │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Connects to a   │                  │
+│                 │             │         │ Raft workspace  │                  │
+│                 │             │         │ as an external  │                  │
+│                 │             │         │ agent via a     │                  │
+│                 │             │         │ local           │                  │
+│                 │             │         │ wake-channel    │                  │
+│                 │             │         │ bridge. The     │                  │
+│                 │             │         │ adapter starts  │                  │
+│                 │             │         │ a loopback HTTP │                  │
+│                 │             │         │ endpoint that   │                  │
+│                 │             │         │ receives        │                  │
+│                 │             │         │ content-free    │                  │
+│                 │             │         │ wake hints from │                  │
+│                 │             │         │ the bridge,     │                  │
+│                 │             │         │ then injects    │                  │
+│                 │             │         │ them into the   │                  │
+│                 │             │         │ Hermes gateway  │                  │
+│                 │             │         │ session         │                  │
+│                 │             │         │ pipeline. The   │                  │
+│                 │             │         │ agent reads and │                  │
+│                 │             │         │ sends messages  │                  │
+│                 │             │         │ through the     │                  │
+│                 │             │         │ Raft CLI — the  │                  │
+│                 │             │         │ adapter never   │                  │
+│                 │             │         │ touches message │                  │
+│                 │             │         │ bodies or       │                  │
+│                 │             │         │ delivery        │                  │
+│                 │             │         │ cursors.        │                  │
+│                 │             │         │                 │                  │
+│ simplex-platfo… │ enabled     │ 1.1.0   │ SimpleX Chat    │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to a local      │                  │
+│                 │             │         │ simplex-chat    │                  │
+│                 │             │         │ daemon via      │                  │
+│                 │             │         │ WebSocket and   │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between SimpleX │                  │
+│                 │             │         │ contacts/groups │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. SimpleX  │                  │
+│                 │             │         │ is              │                  │
+│                 │             │         │ decentralised   │                  │
+│                 │             │         │ and assigns no  │                  │
+│                 │             │         │ persistent user │                  │
+│                 │             │         │ IDs — every     │                  │
+│                 │             │         │ contact is an   │                  │
+│                 │             │         │ opaque internal │                  │
+│                 │             │         │ ID generated at │                  │
+│                 │             │         │ connection      │                  │
+│                 │             │         │ time, making it │                  │
+│                 │             │         │ one of the most │                  │
+│                 │             │         │ private         │                  │
+│                 │             │         │ messengers      │                  │
+│                 │             │         │ available.      │                  │
+│                 │             │         │                 │                  │
+│ slack-platform  │ enabled     │ 1.0.0   │ Slack gateway   │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Connects to     │                  │
+│                 │             │         │ Slack via       │                  │
+│                 │             │         │ slack-bolt in   │                  │
+│                 │             │         │ Socket Mode and │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between Slack   │                  │
+│                 │             │         │ channels/DMs    │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ slash commands, │                  │
+│                 │             │         │ threads, mrkdwn │                  │
+│                 │             │         │ rendering,      │                  │
+│                 │             │         │ approval        │                  │
+│                 │             │         │ blocks,         │                  │
+│                 │             │         │ free-response   │                  │
+│                 │             │         │ channels,       │                  │
+│                 │             │         │ mention gating, │                  │
+│                 │             │         │ and channel     │                  │
+│                 │             │         │ skill bindings. │                  │
+│                 │             │         │                 │                  │
+│ sms-platform    │ enabled     │ 1.0.0   │ SMS gateway     │ bundled          │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent    │                  │
+│                 │             │         │ via Twilio.     │                  │
+│                 │             │         │ Sends and       │                  │
+│                 │             │         │ receives SMS    │                  │
+│                 │             │         │ through the     │                  │
+│                 │             │         │ Twilio REST API │                  │
+│                 │             │         │ + inbound       │                  │
+│                 │             │         │ webhook,        │                  │
+│                 │             │         │ relaying texts  │                  │
+│                 │             │         │ between phone   │                  │
+│                 │             │         │ numbers and the │                  │
+│                 │             │         │ Hermes agent.   │                  │
+│                 │             │         │ Markdown is     │                  │
+│                 │             │         │ stripped to     │                  │
+│                 │             │         │ plain text.     │                  │
+│                 │             │         │                 │                  │
+│ teams-platform  │ enabled     │ 1.0.0   │ Microsoft Teams │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to Microsoft    │                  │
+│                 │             │         │ Teams via the   │                  │
+│                 │             │         │ Bot Framework   │                  │
+│                 │             │         │ and relays      │                  │
+│                 │             │         │ messages        │                  │
+│                 │             │         │ between Teams   │                  │
+│                 │             │         │ chats (personal │                  │
+│                 │             │         │ DMs, group      │                  │
+│                 │             │         │ chats, channel  │                  │
+│                 │             │         │ posts) and the  │                  │
+│                 │             │         │ Hermes agent.   │                  │
+│                 │             │         │ Supports        │                  │
+│                 │             │         │ Adaptive Card   │                  │
+│                 │             │         │ approval        │                  │
+│                 │             │         │ prompts.        │                  │
+│                 │             │         │                 │                  │
+│ telegram-platf… │ enabled     │ 1.0.0   │ Telegram        │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to Telegram via │                  │
+│                 │             │         │ python-telegra… │                  │
+│                 │             │         │ and relays      │                  │
+│                 │             │         │ messages        │                  │
+│                 │             │         │ between         │                  │
+│                 │             │         │ Telegram        │                  │
+│                 │             │         │ chats/groups/t… │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ threads/topics, │                  │
+│                 │             │         │ streaming       │                  │
+│                 │             │         │ edits, native   │                  │
+│                 │             │         │ media, inline   │                  │
+│                 │             │         │ keyboards,      │                  │
+│                 │             │         │ slash commands, │                  │
+│                 │             │         │ fallback        │                  │
+│                 │             │         │ network         │                  │
+│                 │             │         │ transport       │                  │
+│                 │             │         │ (direct-IP      │                  │
+│                 │             │         │ failover),      │                  │
+│                 │             │         │ notification    │                  │
+│                 │             │         │ modes, mention  │                  │
+│                 │             │         │ gating, and     │                  │
+│                 │             │         │ per-user/chat   │                  │
+│                 │             │         │ allowlists.     │                  │
+│                 │             │         │                 │                  │
+│ wecom-platform  │ enabled     │ 1.0.0   │ WeCom /         │ bundled          │
+│                 │             │         │ Enterprise      │                  │
+│                 │             │         │ WeChat gateway  │                  │
+│                 │             │         │ adapter for     │                  │
+│                 │             │         │ Hermes Agent.   │                  │
+│                 │             │         │ Registers two   │                  │
+│                 │             │         │ platforms:      │                  │
+│                 │             │         │ ``wecom``       │                  │
+│                 │             │         │ (Smart Robot    │                  │
+│                 │             │         │ over WebSocket) │                  │
+│                 │             │         │ and             │                  │
+│                 │             │         │ ``wecom_callba… │                  │
+│                 │             │         │ (self-built     │                  │
+│                 │             │         │ apps over an    │                  │
+│                 │             │         │ HTTP callback   │                  │
+│                 │             │         │ endpoint with   │                  │
+│                 │             │         │ AES message     │                  │
+│                 │             │         │ crypto). Relays │                  │
+│                 │             │         │ messages        │                  │
+│                 │             │         │ between WeCom   │                  │
+│                 │             │         │ chats and the   │                  │
+│                 │             │         │ Hermes agent.   │                  │
+│                 │             │         │                 │                  │
+│ whatsapp-platf… │ enabled     │ 1.0.0   │ WhatsApp        │ bundled          │
+│                 │             │         │ gateway adapter │                  │
+│                 │             │         │ for Hermes      │                  │
+│                 │             │         │ Agent. Connects │                  │
+│                 │             │         │ to WhatsApp via │                  │
+│                 │             │         │ a local Node.js │                  │
+│                 │             │         │ bridge          │                  │
+│                 │             │         │ (WhatsApp Web   │                  │
+│                 │             │         │ client) over an │                  │
+│                 │             │         │ HTTP API and    │                  │
+│                 │             │         │ relays messages │                  │
+│                 │             │         │ between         │                  │
+│                 │             │         │ WhatsApp chats  │                  │
+│                 │             │         │ and the Hermes  │                  │
+│                 │             │         │ agent. Supports │                  │
+│                 │             │         │ DM/group        │                  │
+│                 │             │         │ policies,       │                  │
+│                 │             │         │ mention gating, │                  │
+│                 │             │         │ free-response   │                  │
+│                 │             │         │ chats, and      │                  │
+│                 │             │         │ per-user        │                  │
+│                 │             │         │ allowlists.     │                  │
+│                 │             │         │                 │                  │
+│ security-guida… │ not enabled │ 0.1.0   │ Append security │ bundled          │
+│                 │             │         │ warnings to     │                  │
+│                 │             │         │ file-write tool │                  │
+│                 │             │         │ results when    │                  │
+│                 │             │         │ the new content │                  │
+│                 │             │         │ contains        │                  │
+│                 │             │         │ known-dangerous │                  │
+│                 │             │         │ patterns        │                  │
+│                 │             │         │ (pickle.load,   │                  │
+│                 │             │         │ yaml.load,      │                  │
+│                 │             │         │ eval(,          │                  │
+│                 │             │         │ os.system,      │                  │
+│                 │             │         │ dangerouslySet… │                  │
+│                 │             │         │ verify=False,   │                  │
+│                 │             │         │ ECB, XXE,       │                  │
+│                 │             │         │ GitHub Actions  │                  │
+│                 │             │         │ injection,      │                  │
+│                 │             │         │ ...). 25        │                  │
+│                 │             │         │ regex/substring │                  │
+│                 │             │         │ rules forked    │                  │
+│                 │             │         │ from            │                  │
+│                 │             │         │ Anthropic's     │                  │
+│                 │             │         │ claude-plugins… │                  │
+│                 │             │         │ under           │                  │
+│                 │             │         │ Apache-2.0.     │                  │
+│                 │             │         │ Non-blocking —  │                  │
+│                 │             │         │ the file is     │                  │
+│                 │             │         │ written and the │                  │
+│                 │             │         │ warning rides   │                  │
+│                 │             │         │ back to the     │                  │
+│                 │             │         │ model in the    │                  │
+│                 │             │         │ next turn so it │                  │
+│                 │             │         │ can             │                  │
+│                 │             │         │ self-correct.   │                  │
+│ spotify         │ enabled     │ 1.0.0   │ Native Spotify  │ bundled          │
+│                 │             │         │ integration — 7 │                  │
+│                 │             │         │ tools           │                  │
+│                 │             │         │ (playback,      │                  │
+│                 │             │         │ devices, queue, │                  │
+│                 │             │         │ search,         │                  │
+│                 │             │         │ playlists,      │                  │
+│                 │             │         │ albums,         │                  │
+│                 │             │         │ library) using  │                  │
+│                 │             │         │ Spotify Web API │                  │
+│                 │             │         │ + PKCE OAuth.   │                  │
+│                 │             │         │ Auth via        │                  │
+│                 │             │         │ `hermes auth    │                  │
+│                 │             │         │ spotify`. Tools │                  │
+│                 │             │         │ gate on         │                  │
+│                 │             │         │ `providers.spo… │                  │
+│                 │             │         │ in              │                  │
+│                 │             │         │ ~/.hermes/auth… │                  │
+│ teams_pipeline  │ not enabled │ 0.1.0   │ Microsoft Teams │ bundled          │
+│                 │             │         │ meeting         │                  │
+│                 │             │         │ pipeline plugin │                  │
+│                 │             │         │ with durable    │                  │
+│                 │             │         │ runtime state   │                  │
+│                 │             │         │ and operator    │                  │
+│                 │             │         │ CLI flows for   │                  │
+│                 │             │         │ Graph-backed    │                  │
+│                 │             │         │ transcript-fir… │                  │
+│                 │             │         │ meeting         │                  │
+│                 │             │         │ summaries.      │                  │
+│ deepinfra       │ enabled     │ 1.0.0   │ DeepInfra video │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ (text-to-video  │                  │
+│                 │             │         │ &               │                  │
+│                 │             │         │ image-to-video) │                  │
+│                 │             │         │ via the         │                  │
+│                 │             │         │ OpenAI-compati… │                  │
+│                 │             │         │ /v1/openai/vid… │                  │
+│                 │             │         │ endpoint.       │                  │
+│                 │             │         │ Catalog         │                  │
+│                 │             │         │ discovered live │                  │
+│                 │             │         │ from            │                  │
+│                 │             │         │ api.deepinfra.… │                  │
+│ fal             │ enabled     │ 1.0.0   │ FAL.ai video    │ bundled          │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend.        │                  │
+│                 │             │         │ Multi-model —   │                  │
+│                 │             │         │ Veo 3.1, Kling, │                  │
+│                 │             │         │ Pixverse —      │                  │
+│                 │             │         │ covering        │                  │
+│                 │             │         │ text-to-video   │                  │
+│                 │             │         │ and             │                  │
+│                 │             │         │ image-to-video  │                  │
+│                 │             │         │ via             │                  │
+│                 │             │         │ fal_client's    │                  │
+│                 │             │         │ queue API.      │                  │
+│ openrouter      │ enabled     │ 1.0.0   │ OpenRouter      │ bundled          │
+│                 │             │         │ video           │                  │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend. Every  │                  │
+│                 │             │         │ generative      │                  │
+│                 │             │         │ model on the    │                  │
+│                 │             │         │ /api/v1/videos  │                  │
+│                 │             │         │ API (Veo, Sora, │                  │
+│                 │             │         │ Kling,          │                  │
+│                 │             │         │ Seedance, Wan,  │                  │
+│                 │             │         │ Hailuo, Grok    │                  │
+│                 │             │         │ Imagine, FLUX   │                  │
+│                 │             │         │ Video, …) —     │                  │
+│                 │             │         │ text-to-video,  │                  │
+│                 │             │         │ image-to-video  │                  │
+│                 │             │         │ and             │                  │
+│                 │             │         │ reference-to-v… │                  │
+│                 │             │         │ catalog and     │                  │
+│                 │             │         │ per-model       │                  │
+│                 │             │         │ limits          │                  │
+│                 │             │         │ discovered      │                  │
+│                 │             │         │ live.           │                  │
+│ xai             │ enabled     │ 1.0.0   │ xAI Grok        │ bundled          │
+│                 │             │         │ Imagine video   │                  │
+│                 │             │         │ generation      │                  │
+│                 │             │         │ backend.        │                  │
+│                 │             │         │ Supports        │                  │
+│                 │             │         │ text-to-video,  │                  │
+│                 │             │         │ image-to-video, │                  │
+│                 │             │         │ reference-to-v… │                  │
+│                 │             │         │ video editing,  │                  │
+│                 │             │         │ video           │                  │
+│                 │             │         │ extension, and  │                  │
+│                 │             │         │ stored public   │                  │
+│                 │             │         │ URLs via the    │                  │
+│                 │             │         │ xAI async       │                  │
+│                 │             │         │ videos API.     │                  │
+│ web-brave-free  │ enabled     │ 1.0.0   │ Brave Search    │ bundled          │
+│                 │             │         │ (free tier) —   │                  │
+│                 │             │         │ web search via  │                  │
+│                 │             │         │ Brave's         │                  │
+│                 │             │         │ Data-for-Search │                  │
+│                 │             │         │ API. Requires   │                  │
+│                 │             │         │ BRAVE_SEARCH_A… │                  │
+│                 │             │         │ (free signup at │                  │
+│                 │             │         │ https://brave.… │                  │
+│                 │             │         │ 2k              │                  │
+│                 │             │         │ queries/month). │                  │
+│ web-ddgs        │ enabled     │ 1.0.0   │ DuckDuckGo web  │ bundled          │
+│                 │             │         │ search via the  │                  │
+│                 │             │         │ ddgs Python     │                  │
+│                 │             │         │ package — no    │                  │
+│                 │             │         │ API key         │                  │
+│                 │             │         │ required.       │                  │
+│                 │             │         │ Install with    │                  │
+│                 │             │         │ `pip install    │                  │
+│                 │             │         │ ddgs`.          │                  │
+│ web-exa         │ enabled     │ 1.0.0   │ Exa web search  │ bundled          │
+│                 │             │         │ and content     │                  │
+│                 │             │         │ extraction.     │                  │
+│                 │             │         │ Requires        │                  │
+│                 │             │         │ EXA_API_KEY —   │                  │
+│                 │             │         │ sign up at      │                  │
+│                 │             │         │ https://exa.ai. │                  │
+│ web-firecrawl   │ enabled     │ 1.0.0   │ Firecrawl web   │ bundled          │
+│                 │             │         │ search +        │                  │
+│                 │             │         │ content         │                  │
+│                 │             │         │ extraction.     │                  │
+│                 │             │         │ Supports        │                  │
+│                 │             │         │ keyless cloud,  │                  │
+│                 │             │         │ direct API, and │                  │
+│                 │             │         │ Nous-hosted     │                  │
+│                 │             │         │ tool-gateway    │                  │
+│                 │             │         │ routing for     │                  │
+│                 │             │         │ subscribers.    │                  │
+│ web-keenable    │ enabled     │ 1.0.0   │ Keenable web    │ bundled          │
+│                 │             │         │ search + page   │                  │
+│                 │             │         │ fetch           │                  │
+│                 │             │         │ (independent    │                  │
+│                 │             │         │ web index for   │                  │
+│                 │             │         │ AI apps). Works │                  │
+│                 │             │         │ keyless on      │                  │
+│                 │             │         │ Keenable's free │                  │
+│                 │             │         │ tier as part of │                  │
+│                 │             │         │ the default     │                  │
+│                 │             │         │ rotation; set   │                  │
+│                 │             │         │ KEENABLE_API_K… │                  │
+│                 │             │         │ for higher      │                  │
+│                 │             │         │ limits —        │                  │
+│                 │             │         │ https://keenab… │                  │
+│ web-openai-nat… │ enabled     │ 1.0.0   │ OpenAI native   │ bundled          │
+│                 │             │         │ web search —    │                  │
+│                 │             │         │ declares the    │                  │
+│                 │             │         │ Responses API   │                  │
+│                 │             │         │ server-side     │                  │
+│                 │             │         │ ``web_search``  │                  │
+│                 │             │         │ built-in        │                  │
+│                 │             │         │ instead of      │                  │
+│                 │             │         │ running a       │                  │
+│                 │             │         │ client-side     │                  │
+│                 │             │         │ search.         │                  │
+│                 │             │         │ Requires the    │                  │
+│                 │             │         │ Codex Responses │                  │
+│                 │             │         │ transport plus  │                  │
+│                 │             │         │ openai-codex    │                  │
+│                 │             │         │ OAuth (``hermes │                  │
+│                 │             │         │ auth add        │                  │
+│                 │             │         │ openai-codex``… │                  │
+│ web-parallel    │ enabled     │ 1.0.0   │ Parallel.ai web │ bundled          │
+│                 │             │         │ search +        │                  │
+│                 │             │         │ content         │                  │
+│                 │             │         │ extraction.     │                  │
+│                 │             │         │ Search returns  │                  │
+│                 │             │         │ objective-tuned │                  │
+│                 │             │         │ results;        │                  │
+│                 │             │         │ extract uses    │                  │
+│                 │             │         │ the async SDK   │                  │
+│                 │             │         │ for parallel    │                  │
+│                 │             │         │ page fetches.   │                  │
+│                 │             │         │ Requires        │                  │
+│                 │             │         │ PARALLEL_API_K… │                  │
+│                 │             │         │ — sign up at    │                  │
+│                 │             │         │ https://parall… │                  │
+│ web-perplexity  │ enabled     │ 1.0.0   │ Perplexity      │ bundled          │
+│                 │             │         │ Search API web  │                  │
+│                 │             │         │ search and      │                  │
+│                 │             │         │ query-relevant  │                  │
+│                 │             │         │ page snippets.  │                  │
+│                 │             │         │ Requires        │                  │
+│                 │             │         │ PERPLEXITY_API… │                  │
+│                 │             │         │ — get one at    │                  │
+│                 │             │         │ https://www.pe… │                  │
+│ web-searxng     │ enabled     │ 1.0.0   │ SearXNG web     │ bundled          │
+│                 │             │         │ search — free,  │                  │
+│                 │             │         │ self-hosted,    │                  │
+│                 │             │         │ privacy-respec… │                  │
+│                 │             │         │ metasearch      │                  │
+│                 │             │         │ engine.         │                  │
+│                 │             │         │ Requires        │                  │
+│                 │             │         │ SEARXNG_URL     │                  │
+│                 │             │         │ pointing at     │                  │
+│                 │             │         │ your instance.  │                  │
+│ web-tavily      │ enabled     │ 1.0.0   │ Tavily web      │ bundled          │
+│                 │             │         │ search +        │                  │
+│                 │             │         │ extract. Opt-in │                  │
+│                 │             │         │ keyless via     │                  │
+│                 │             │         │ hermes tools;   │                  │
+│                 │             │         │ set             │                  │
+│                 │             │         │ TAVILY_API_KEY  │                  │
+│                 │             │         │ for higher      │                  │
+│                 │             │         │ limits —        │                  │
+│                 │             │         │ https://app.ta… │                  │
+│ web-xai         │ enabled     │ 1.0.0   │ xAI Web Search  │ bundled          │
+│                 │             │         │ — search the    │                  │
+│                 │             │         │ web via Grok's  │                  │
+│                 │             │         │ agentic         │                  │
+│                 │             │         │ web_search tool │                  │
+│                 │             │         │ (Responses      │                  │
+│                 │             │         │ API). Requires  │                  │
+│                 │             │         │ xAI Grok OAuth  │                  │
+│                 │             │         │ (via `hermes    │                  │
+│                 │             │         │ auth`) or       │                  │
+│                 │             │         │ XAI_API_KEY     │                  │
+│                 │             │         │ (https://x.ai). │                  │
+│ lifeos-hook-br… │ enabled     │ 0.1.0   │ Runs installed  │ git              │
+│                 │             │         │ LifeOS Claude   │ pinned@d44fccd5  │
+│                 │             │         │ Code hooks at   │                  │
+│                 │             │         │ matching Hermes │                  │
+│                 │             │         │ lifecycle       │                  │
+│                 │             │         │ events.         │                  │
+└─────────────────┴─────────────┴─────────┴─────────────────┴──────────────────┘
+
+Compact view: hermes plugins list --plain --no-bundled
+Interactive toggle: hermes plugins
+Enable/disable: hermes plugins enable/disable <name>
+Plugins are opt-in by default — only 'enabled' plugins load.
+===version
+Hermes Agent v0.21.5+3604.g758ad51 (2026.9.24) · upstream a928a959
+Install directory: /home/hermes/.hermes/hermes-agent
+Install method: git
+Python: 3.14.7
+OpenAI SDK: 2.24.0
+Update available — run 'hermes update'
+758ad514eb0e800547e015edf05aa18f78b78d82
+PRETTY_NAME="Ubuntu 24.04 LTS"
+NAME="Ubuntu"

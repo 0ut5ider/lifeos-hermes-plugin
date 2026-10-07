@@ -147,14 +147,19 @@ class MemoryRuntime:
             raise MemoryAdmissionError('The rendered LifeOS prompt contains a removed or superseded claim. Refresh the LifeOS prompt before starting a conversation.')
         return hashlib.sha256(content.encode()).hexdigest()
 
-    def _stamp(self, configuration: dict[str, Any], context: SessionContext, connection, user_input=None) -> dict[str, Any]:
+    def _stamp(self, configuration: dict[str, Any], context: SessionContext, connection, user_input=None,
+               compression_parent=None) -> dict[str, Any]:
         scope = self._scope(configuration, replace(context, session_id=''))
         retained = [tuple(row) for row in connection.execute("SELECT id, revision, status FROM records WHERE status != 'active' ORDER BY id")]
         applied = [tuple(row) for row in connection.execute("SELECT id, revision, status FROM proposals WHERE status IN ('accepted','edited','auto-applied') ORDER BY id")]
         rendered = self._rendered_prompt(configuration,scope,connection)
         generation = hashlib.sha256(json.dumps({'retained':retained,'applied':applied,'rendered':rendered}, separators=(',', ':')).encode()).hexdigest()
-        return {'scope': scope.signature, 'generation': generation, 'rendered': rendered,
-                'context': json.loads(json.dumps(asdict(context))), 'user_input':user_input}
+        proposal_generation = hashlib.sha256(json.dumps(applied, separators=(',', ':')).encode()).hexdigest()
+        stamp = {'scope': scope.signature, 'generation': generation, 'proposal_generation': proposal_generation, 'rendered': rendered,
+                 'context': json.loads(json.dumps(asdict(context))), 'user_input':user_input}
+        if compression_parent is not None:
+            stamp['compression_parent'] = compression_parent
+        return stamp
 
     def _states(self) -> dict[str, Any]:
         if not self.state_path.exists() and not self.state_path.is_symlink():
@@ -176,6 +181,12 @@ class MemoryRuntime:
             return
         _BOUND.set(None)
         configuration = self.configuration.load()
+        markers = Path(configuration['root']) / 'LIFEOS/USER/CONFIG'
+        if not any((markers / name).exists() or (markers / name).is_symlink()
+                   for name in ('memory-access.json', 'memory-http.json')):
+            # Native code falls back to unmanaged memory reads when both markers are gone.
+            raise MemoryAdmissionError('LifeOS memory connection files are missing. Repair the LifeOS mount '
+                                       'from the plugin page before continuing.')
         metadata = dict(metadata)
         metadata['HERMES_SESSION_ID'] = session_id or metadata.get('HERMES_SESSION_ID', '')
         if not metadata.get('HERMES_SESSION_PLATFORM'):
@@ -191,12 +202,73 @@ class MemoryRuntime:
             states = self._states()
             previous = states.get(context.session_id)
             if previous is None and not is_first_turn:
-                raise MemoryAdmissionError('This conversation has no verified memory context. Start a new conversation.')
-            if previous is not None and any(previous.get(key)!=stamp.get(key) for key in ('scope','generation','rendered','context')):
-                raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+                previous = self._recover_compression(configuration,context,connection,states)
+            if isinstance(previous,dict) and 'compression_parent' in previous:
+                stamp['compression_parent'] = previous['compression_parent']
+            if previous is not None:
+                if (not isinstance(previous,dict) or not isinstance(previous.get('generation'),str)
+                        or any(previous.get(key)!=stamp.get(key) for key in ('scope','proposal_generation','rendered','context'))):
+                    raise MemoryAdmissionError('Memory permissions or current facts changed. Start a new conversation before continuing.')
+                # Keep the fact generation stale until foreground projection
+                # repairs readable history and final admission accepts it.
+                stamp['generation'] = previous['generation']
             states[context.session_id] = stamp
             publish(self.state_path, (json.dumps(states, sort_keys=True) + '\n').encode())
         _BOUND.set((self.key, context, stamp))
+
+    def _recover_compression(self, configuration, context, connection, states):
+        from .memory_lineage import compression_parent
+        try:
+            parent_id = compression_parent(self.configuration.path.parent, context)
+            previous = states.get(parent_id)
+            if not isinstance(previous,dict) or not isinstance(previous.get('generation'),str):
+                raise ValueError('The parent has no verified admission')
+            parent = parse_context(previous.get('context'))
+            if parent.session_id != parent_id or replace(parent,session_id=context.session_id) != context:
+                raise ValueError('The parent authority differs from the current host')
+            current = self._stamp(configuration,parent,connection,previous.get('user_input'),previous.get('compression_parent'))
+            if any(previous.get(key)!=current.get(key) for key in ('scope','proposal_generation','rendered','context')):
+                raise ValueError('The parent authority changed')
+            return {**previous, 'context':json.loads(json.dumps(asdict(context))), 'compression_parent':parent_id}
+        except (MemoryUnavailable, ValueError) as error:
+            raise MemoryAdmissionError('This conversation has no verified memory context. Compression recovery requires unchanged parent authority and verified native lineage.') from error
+
+    def rotate_session(self, new_session_id: str, parent_session_id: str, *, metadata=None) -> None:
+        if not self.enabled():
+            raise MemoryAdmissionError('Memory ownership changed during compression')
+        metadata = current_host_metadata() if metadata is None else metadata
+        if (not isinstance(new_session_id,str) or not new_session_id or not isinstance(parent_session_id,str)
+                or not parent_session_id or not metadata or metadata.get('HERMES_SESSION_ID') != new_session_id):
+            raise MemoryAdmissionError('Compression needs the current host-bound destination and verified parent')
+        configuration = self.configuration.load()
+        memory = NativeMemory(Path(configuration['root']))
+        with memory._transaction() as connection:
+            states = self._states()
+            previous = states.get(parent_session_id)
+            if not isinstance(previous,dict):
+                raise MemoryAdmissionError('Compression has no verified parent memory context')
+            try:
+                parent = parse_context(previous.get('context'))
+            except ValueError as error:
+                raise MemoryAdmissionError('Compression has an invalid parent memory context') from error
+            if parent.session_id != parent_session_id:
+                raise MemoryAdmissionError('Compression belongs to a different parent conversation')
+            context = replace(parent,session_id=new_session_id)
+            observed = host_context(configuration,metadata,model_route=parent.model_route,
+                                    hermes_home=str(self.configuration.path.parent))
+            if asdict(observed) != asdict(context):
+                raise MemoryAdmissionError('The current compression author or destination differs from its parent')
+            if self._stamp(configuration,parent,connection,previous.get('user_input'),previous.get('compression_parent')) != previous:
+                raise MemoryAdmissionError('Compression contains an invalidated memory context')
+            lineage = previous.get('compression_parent') if new_session_id == parent_session_id else parent_session_id
+            stamp = self._stamp(configuration,context,connection,previous.get('user_input'),lineage)
+            existing = states.get(new_session_id)
+            if existing is not None and existing != stamp:
+                raise MemoryAdmissionError('Compression cannot overwrite a different conversation')
+            if existing is None:
+                states[new_session_id] = stamp
+                publish(self.state_path,(json.dumps(states,sort_keys=True)+'\n').encode())
+        _BOUND.set((self.key,context,stamp))
 
     def _refuse_inactive_context(self, session_id: str, inherited: str) -> None:
         if self.context() is not None or inherited or (session_id and session_id in self._states()):
@@ -229,6 +301,7 @@ class MemoryRuntime:
         # Review forks use the main chat pipeline with a generated user-role prompt.
         provenance = sys.modules.get('tools.skill_provenance')
         auxiliary = bool(kwargs.get('aux_task') or provenance and provenance.is_background_review())
+        execution = project
         project = project and not auxiliary
         bound = _BOUND.get()
         metadata = current_host_metadata() if metadata is None else metadata
@@ -264,6 +337,15 @@ class MemoryRuntime:
             except ValueError as error:
                 raise MemoryAdmissionError('This model call has no admitted memory context') from error
         _, context, admitted = bound
+        if session_id and session_id != context.session_id and (execution or auxiliary):
+            child = states.get(session_id)
+            if (isinstance(child,dict) and child.get('compression_parent') == context.session_id
+                    and child.get('context') == json.loads(json.dumps(asdict(replace(context,session_id=session_id))))
+                    and all(child.get(key)==admitted.get(key) for key in ('scope','generation','proposal_generation','rendered'))
+                    and metadata and metadata.get('HERMES_SESSION_PLATFORM')):
+                context = replace(context,session_id=session_id)
+                admitted = child
+                bound = (self.key,context,admitted)
         if session_id and session_id != context.session_id:
             raise MemoryAdmissionError('The model call belongs to a different conversation')
         if metadata and metadata.get('HERMES_SESSION_PLATFORM'):
@@ -279,27 +361,28 @@ class MemoryRuntime:
             states = self._states()
             saved = states.get(context.session_id)
             # Prompt workers publish the next human input without changing this thread's binding.
-            if (project and isinstance(saved,dict) and saved.get('user_input') is not None
-                    and all(saved.get(key)==admitted.get(key) for key in ('scope','generation','rendered','context'))):
+            if ((execution or auxiliary) and isinstance(saved,dict) and saved.get('user_input') is not None
+                    and all(saved.get(key)==admitted.get(key) for key in ('scope','generation','proposal_generation','rendered','context','compression_parent'))):
                 admitted = saved
                 bound = (self.key,context,admitted)
-            current = self._stamp(configuration, context, connection,admitted.get('user_input'))
+            current = self._stamp(configuration, context, connection,admitted.get('user_input'),admitted.get('compression_parent'))
             can_refresh = (project and saved in (admitted,current)
-                           and all(current.get(key)==admitted.get(key) for key in ('scope','context','rendered','user_input')))
+                           and all(current.get(key)==admitted.get(key) for key in ('scope','proposal_generation','context','rendered','user_input')))
             if (current != admitted or saved != admitted) and not can_refresh:
                 raise MemoryAdmissionError('The model call contains an invalidated memory context. Start a new conversation.')
             scope = self._scope(configuration,context)
             user_input = None if auxiliary else admitted.get('user_input')
             timestamp = datetime.now(timezone.utc).isoformat()
             excluded = lambda content: memory._filter_history(connection,scope,content,timestamp)['excluded']
-            if project and ('messages' in body or current != admitted):
+            if project and ('messages' in body or isinstance(body.get('input'),(list,tuple)) or current != admitted):
                 try:
                     projected = project_request(body,excluded,user_input)
                 except ValueError as error:
                     raise MemoryAdmissionError(str(error)) from error
-                request = {**request,'messages':projected['messages']}
-                if isinstance(request.get('extra_body'),ContentMapping) and 'messages' in request['extra_body']:
-                    request['extra_body'] = {**request['extra_body'],'messages':projected['messages']}
+                field = 'messages' if 'messages' in body else 'input'
+                request = {**request,field:projected[field]}
+                if isinstance(request.get('extra_body'),ContentMapping) and field in request['extra_body']:
+                    request['extra_body'] = {**request['extra_body'],field:projected[field]}
                 body = _request_body(request)
             content = _system_text(body)
             if content and memory._filter_history(connection,self._scope(configuration,context),content,

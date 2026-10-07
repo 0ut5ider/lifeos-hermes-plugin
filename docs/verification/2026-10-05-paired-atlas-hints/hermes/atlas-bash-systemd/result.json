@@ -1,0 +1,120 @@
+{
+  "before": {
+    "event_rows": 1
+  },
+  "after": {
+    "prior_event_preserved": true,
+    "hints": [
+      {
+        "source": "systemd",
+        "tool": "Bash",
+        "timestamp_current": true
+      }
+    ],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261005_175648_4bdebb",
+  "seconds": 11.054,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-systemd",
+    "/home/lifeos-plugin-install-probe/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-systemd",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "terminal",
+    "-q",
+    "Run this exact shell command once: printf 'PAIR_ATLAS systemctl --user daemon-reload'"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.13.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.13.1 /home/lifeos-plugin-install-probe/workspace/paired-atlas-hints-probe-20261005/results/atlas-bash-systemd/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvQXRsYXNFdmVudENhcHR1cmUuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/AtlasEventCapture.hook.ts": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "d5dde98d919de207f5d1928b9035792f0e4426895dc786e9b2c6abb989a53291",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "8a376e94036defd77c5a31aa94eb5b748a84c4130957e7c08f21d4a5d1bdc209",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "e4cd63dbdaf79a7ac8ab536c7ce799068512edffb9e9a9791a2e7073d58517d2",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1aede787173c9febaefc916266b123022b83dd5c531b6c4ed5ff18f71965e199",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "c72a383ce2a2b7432184e18cfa84a58e40c2d08376c55c113bbd1d371460b460",
+    "fixture-events.jsonl": "ed9935d9ec516e55798d974d7a71658880e4bd929d1fd558baec63c307190821",
+    "cli.log": "329aee924a46baae52a850c218eb4b025b4f29e8bb6f45100afc19d179369fe4",
+    "before-state.json": "b705d7a96589d611a24b92cc9628c1a471897e500f67de316c54e070d78c6405",
+    "after-state.json": "55bebac9711f73675ef9477c828c2a4d5d75b6a399a69ec826cd25f14317538c",
+    "fixture-files-before.json": "dbe93bac022128577a298d282f7a7ae6ab99e2d768cbf20dddd2858d085060cf",
+    "fixture-files-after.json": "295c2ce9f3c1721d04d5e55a3d47dc2d36aaa9125c8e40ce96c453766fca3514"
+  }
+}

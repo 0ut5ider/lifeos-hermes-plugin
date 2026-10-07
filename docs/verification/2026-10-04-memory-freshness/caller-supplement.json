@@ -1,0 +1,225 @@
+{
+  "baseline": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+  "boundaries": [
+    {
+      "path": "LifeOS/install/LIFEOS/TOOLS/TelosFreshness.ts",
+      "purpose": "Native CLI and library freshness reads",
+      "status": "verified_bounded_reader",
+      "base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+      "baseline_sha256": "2aa79a802b6223cf0f5cabe7a68c350cfa6365961e33fe2bb7d6f3743551f3f7",
+      "candidate_sha256": "b476981f84178c3ca34b60b00e022549e80f5bfe1d545a96844db7356b8bd503",
+      "source_evidence": [
+        {
+          "line": 282,
+          "text": "export function stateFreshnessRegistry(sources?: FreshnessSources): ContextFile[] {"
+        },
+        {
+          "line": 284,
+          "text": "    const managed = managedRead(\"registry\", null, null, isRegistry);"
+        },
+        {
+          "line": 442,
+          "text": "export function legacyTelosFilePath(slug: string, telosPath: string = TELOS_PATH,"
+        },
+        {
+          "line": 445,
+          "text": "    const managed = managedRead(\"legacy_path\", resolve(telosPath), slug,"
+        },
+        {
+          "line": 455,
+          "text": "export function legacyTelosFileDate(slug: string, telosPath: string = TELOS_PATH,"
+        },
+        {
+          "line": 458,
+          "text": "    const managed = managedRead(\"legacy_date\", resolve(telosPath), slug,"
+        },
+        {
+          "line": 535,
+          "text": "export function readFileFrontmatter(path: string, sources?: FreshnessSources): Record<string, string> | null {"
+        },
+        {
+          "line": 537,
+          "text": "    const managed = managedRead(\"frontmatter\", resolve(path), null,"
+        },
+        {
+          "line": 608,
+          "text": "export function readTelosFreshness(path: string = TELOS_PATH, sources?: FreshnessSources): TelosFreshness {"
+        },
+        {
+          "line": 610,
+          "text": "    const managed = managedRead(\"telos\", resolve(path), null, isTelos, true);"
+        },
+        {
+          "line": 821,
+          "text": "export function readContextFreshness(sources?: FreshnessSources): ContextFreshness {"
+        },
+        {
+          "line": 823,
+          "text": "    const managed = managedRead(\"context\", null, null, isContext, true);"
+        },
+        {
+          "line": 836,
+          "text": "export function readStateFreshness(sources?: FreshnessSources): ContextFreshness {"
+        },
+        {
+          "line": 838,
+          "text": "    const managed = managedRead(\"state\", null, null, isContext, true);"
+        }
+      ],
+      "limits": [
+        "Timestamp mutations remain an uncompleted publication boundary.",
+        "InterviewScan and migration callers retain independent raw reads and writes."
+      ]
+    },
+    {
+      "path": "LifeOS/install/LIFEOS/PULSE/modules/telos.ts",
+      "purpose": "Five request-authenticated freshness HTTP views and startup cache isolation",
+      "status": "verified_bounded_reader",
+      "base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+      "baseline_sha256": "697b92a3e94c1b25f9207f7cb297636a242ef214dbd76817c3a1105087bd9d0e",
+      "candidate_sha256": "667f30883f1639ab1a3dc13796e407ff78bb3104d137056c4fccebefaa26ff9e",
+      "source_evidence": [
+        {
+          "line": 18,
+          "text": "import { hasManagedMemoryHTTP, memoryHTTPResponse } from \"../../TOOLS/lib/MemoryAccess\";"
+        },
+        {
+          "line": 73,
+          "text": "export async function start(): Promise<void> {"
+        },
+        {
+          "line": 98,
+          "text": "export function invalidate(): void {"
+        },
+        {
+          "line": 131,
+          "text": "export async function handleRequest(req: Request, pathname: string,"
+        },
+        {
+          "line": 149,
+          "text": "        return memoryHTTPResponse(req, view);"
+        }
+      ],
+      "limits": [
+        "Managed health omits source-derived fields and remains degraded without an ambient source cache.",
+        "Complete native PULSE service and browser acceptance remain open."
+      ]
+    }
+  ],
+  "callers": [
+    {
+      "path": "LifeOS/install/LIFEOS/PULSE/pulse.ts",
+      "sha256": "7dba360075f50a619624409d48976b3a2ff698b2a00ea351513b2889fbfbeb46",
+      "source_evidence": [
+        {
+          "line": 201,
+          "text": "      if (telosModule.start) await telosModule.start()"
+        },
+        {
+          "line": 922,
+          "text": "        const resp = await telosModule.handleRequest(req, pathname)"
+        }
+      ],
+      "status": "static_caller_inventory_only"
+    },
+    {
+      "path": "LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts",
+      "sha256": "8c3fadc6ff27570dfd17145e6488f91d2b9be74271bc7091482a0a89176c6711",
+      "source_evidence": [
+        {
+          "line": 25,
+          "text": "import { readContextFreshness } from \"./TelosFreshness\";"
+        },
+        {
+          "line": 71,
+          "text": "  const c = readContextFreshness();"
+        }
+      ],
+      "status": "static_caller_inventory_only"
+    },
+    {
+      "path": "LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts",
+      "sha256": "862024dbc320f2279883441c05c69f7a5b8826eeb9b8d3d8f825eb1e49f5cde7",
+      "source_evidence": [
+        {
+          "line": 28,
+          "text": "import { readTelosFreshness, readStateFreshness, sectionSlug, legacyTelosFilePath, daysBetween, type SectionFreshness } from \"./TelosFreshness\";"
+        },
+        {
+          "line": 264,
+          "text": "const freshness = readTelosFreshness();"
+        },
+        {
+          "line": 299,
+          "text": "  const legacyPath = legacyTelosFilePath(slug, TELOS_PATH);"
+        },
+        {
+          "line": 489,
+          "text": "// (TelosFreshness.readStateFreshness) and get grounded in observed data from"
+        },
+        {
+          "line": 553,
+          "text": "  const state = readStateFreshness();"
+        }
+      ],
+      "status": "static_caller_inventory_only"
+    },
+    {
+      "path": "LifeOS/install/LIFEOS/TOOLS/InterviewDue.ts",
+      "sha256": "33d66e3e46086d8aa136813c7f3ac74033689fa2647936537fa95c376fe7d425",
+      "source_evidence": [
+        {
+          "line": 33,
+          "text": "import { readContextFreshness } from \"./TelosFreshness\";"
+        },
+        {
+          "line": 258,
+          "text": " * readStateFreshness lands from a parallel work stream. Read it off the namespace so a"
+        },
+        {
+          "line": 261,
+          "text": "function readStateFreshnessSafe(): ContextFreshness | null {"
+        },
+        {
+          "line": 262,
+          "text": "  const fn = (Freshness as unknown as { readStateFreshness?: () => ContextFreshness }).readStateFreshness;"
+        },
+        {
+          "line": 273,
+          "text": "    return readContextFreshness();"
+        },
+        {
+          "line": 287,
+          "text": "  const state = readStateFreshnessSafe();"
+        }
+      ],
+      "status": "static_caller_inventory_only"
+    },
+    {
+      "path": "LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts",
+      "sha256": "ec8e5d723c8c8c4d9e245a3372d59ce6ca226af202619eb67d2d335d319138cf",
+      "source_evidence": [
+        {
+          "line": 25,
+          "text": "  readFileFrontmatter,"
+        },
+        {
+          "line": 172,
+          "text": "    readFileFrontmatter(entry.path);"
+        },
+        {
+          "line": 302,
+          "text": "    const { stateFreshnessRegistry } = require(\"./TelosFreshness\") as typeof import(\"./TelosFreshness\");"
+        },
+        {
+          "line": 303,
+          "text": "    const results = stateFreshnessRegistry().map((entry) => stampStateFile(entry, dryRun));"
+        }
+      ],
+      "status": "static_caller_inventory_only"
+    }
+  ],
+  "limits": [
+    "This supplements the historical MEMORY-focused search. It does not close the complete native source and writer inventory."
+  ]
+}

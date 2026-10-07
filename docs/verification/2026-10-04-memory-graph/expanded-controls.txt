@@ -1,0 +1,26 @@
+.F...F............                                         [100%]
+=================================== FAILURES ===================================
+______ MemoryGraphTests.test_all_layer_preserves_actual_lexical_inference ______
+tests/test_memory_graph.py:238: in test_all_layer_preserves_actual_lexical_inference
+    self.assertTrue(inferred, graph)
+E   AssertionError: [] is not true : {'generated': '2026-10-04T18:38:21.297Z', 'nodeCount': 3, 'edgeCount': 1, 'nodes': [{'id': 'synthetic-current-target', 'silo': 'knowledge', 'type': 'research', 'title': 'Synthetic current target', 'community': 0, 'pagerank': 0.4651161545800183, 'degree': 1, 'tags': ['untagged']}, {'id': 'synthetic-lab-routing', 'silo': 'knowledge', 'type': 'research', 'title': 'Synthetic lab routing', 'community': 0, 'pagerank': 0.4651161545800183, 'degree': 1, 'tags': ['untagged']}, {'id': 'work:synthetic-routing', 'silo': 'work', 'type': 'isa', 'title': 'Synthetic lab routing', 'community': 1, 'pagerank': 0.06976769083996354, 'degree': 0, 'tags': ['synthetic']}], 'edges': [{'from': 'synthetic-lab-routing', 'to': 'synthetic-current-target', 'weight': 3, 'kind': 'wikilink'}]}
+____ MemoryGraphTests.test_empty_current_corpus_builds_a_native_empty_graph ____
+tests/test_memory_graph.py:250: in test_empty_current_corpus_builds_a_native_empty_graph
+    self.successful('build')
+tests/test_memory_graph.py:52: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 680 | const cmd = process.argv[2] || "patterns";
+E   681 | const layer: EdgeLayer = process.argv.includes("--all") ? "all" : "declared";
+E   682 | 
+E   683 | const governed = memoryAccess("memory_graph", {root: MEMORY, command: cmd, layer, target: cmd === "related" ? process.argv[3] ?? null : null}, memoryObject);
+E   684 | if (governed !== undefined) {
+E   685 |   if (governed.ok !== true || typeof governed.stdout !== "string") throw new Error("Memory graph navigation is unavailable under the current policy");
+E                                                                                      ^
+E   error: Memory graph navigation is unavailable under the current policy
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/MemoryGraph.ts:685:78
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_all_layer_preserves_actual_lexical_inference
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_empty_current_corpus_builds_a_native_empty_graph
+2 failed, 16 passed, 14 subtests passed in 38.26s

@@ -1,0 +1,70 @@
+{
+  "case": "test_cli_payload_matches_the_published_cache",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CACHE/state-evidence.json": {
+        "content": "{\n  \"schema\": 1,\n  \"generated_at\": \"2026-10-04T23:04:57.610Z\",\n  \"domains\": {\n    \"health\": {\n      \"metrics\": {\n        \"sleep_h_avg_7d\": 7.5,\n        \"sleep_efficiency_avg_7d\": null,\n        \"hrv_avg_7d\": null,\n        \"sleep_hr_avg_7d\": null,\n        \"rhr_avg_7d\": null,\n        \"steps_avg_7d\": 321,\n        \"sleep_score_avg_7d\": null,\n        \"readiness_avg_7d\": null,\n        \"sleep_h_avg_30d\": 7.5,\n        \"sleep_efficiency_avg_30d\": null,\n        \"hrv_avg_30d\": null,\n        \"sleep_hr_avg_30d\": null,\n        \"rhr_avg_30d\": null,\n        \"steps_avg_30d\": 321,\n        \"sleep_score_avg_30d\": null,\n        \"readiness_avg_30d\": null,\n        \"latest_sleep_record_day\": \"2026-10-04\",\n        \"days_with_data_30d\": 1,\n        \"newest_observation\": \"2026-10-04\",\n        \"oldest_observation_30d\": \"2026-10-04\"\n      },\n      \"sources\": [\n        {\n          \"id\": \"oura\",\n          \"status\": \"live\",\n          \"last_observation\": \"2026-10-04\"\n        },\n        {\n          \"id\": \"apple\",\n          \"status\": \"dead\",\n          \"last_observation\": null,\n          \"reason\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"\n        },\n        {\n          \"id\": \"eightsleep\",\n          \"status\": \"unavailable\",\n          \"last_observation\": null,\n          \"reason\": \"not present in health current.json\"\n        },\n        {\n          \"id\": \"function\",\n          \"status\": \"unavailable\",\n          \"last_observation\": null,\n          \"reason\": \"not present in health current.json\"\n        }\n      ]\n    },\n    \"activity\": {\n      \"metrics\": {\n        \"total_minutes_avg_7d\": 60,\n        \"creation_minutes_avg_7d\": 20,\n        \"consumption_minutes_avg_7d\": null,\n        \"creation_ratio_7d\": 0.333,\n        \"total_minutes_avg_30d\": 60,\n        \"creation_minutes_avg_30d\": 20,\n        \"consumption_minutes_avg_30d\": null,\n        \"creation_ratio_30d\": 0.333,\n        \"top_apps_7d\": [\n          {\n            \"label\": \"Synthetic editor\",\n            \"minutes\": 20\n          }\n        ],\n        \"days_with_data_30d\": 1,\n        \"newest_observation\": \"2026-10-04\",\n        \"oldest_observation_30d\": \"2026-10-04\"\n      },\n      \"sources\": [\n        {\n          \"id\": \"conduit\",\n          \"status\": \"live\",\n          \"last_observation\": \"2026-10-04\"\n        }\n      ]\n    },\n    \"work\": {\n      \"metrics\": {\n        \"sessions_14d\": 1,\n        \"sessions_30d\": 1,\n        \"recent_session_names\": [\n          \"Synthetic Current Work\"\n        ],\n        \"phases_14d\": {\n          \"BUILD\": 1\n        },\n        \"commits_14d\": null,\n        \"commit_days_14d\": null\n      },\n      \"sources\": [\n        {\n          \"id\": \"work-registry\",\n          \"status\": \"live\",\n          \"last_observation\": null\n        },\n        {\n          \"id\": \"git\",\n          \"status\": \"unavailable\",\n          \"last_observation\": null,\n          \"reason\": \"git log unavailable\"\n        }\n      ]\n    },\n    \"money\": {\n      \"metrics\": {\n        \"monthly_recurring_total\": 22,\n        \"entries_total\": 2,\n        \"entries_needing_amount\": 0,\n        \"meta_updated\": \"2026-10-04\",\n        \"newest_observation\": \"2026-10-04\",\n        \"oldest_observation_30d\": \"2026-10-04\"\n      },\n      \"sources\": [\n        {\n          \"id\": \"expenses\",\n          \"status\": \"live\",\n          \"last_observation\": \"2026-10-04\"\n        }\n      ]\n    }\n  }\n}\n",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-y0lm9tdk/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--json"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"schema\": 1,\n  \"generated_at\": \"2026-10-04T23:04:57.610Z\",\n  \"domains\": {\n    \"health\": {\n      \"metrics\": {\n        \"sleep_h_avg_7d\": 7.5,\n        \"sleep_efficiency_avg_7d\": null,\n        \"hrv_avg_7d\": null,\n        \"sleep_hr_avg_7d\": null,\n        \"rhr_avg_7d\": null,\n        \"steps_avg_7d\": 321,\n        \"sleep_score_avg_7d\": null,\n        \"readiness_avg_7d\": null,\n        \"sleep_h_avg_30d\": 7.5,\n        \"sleep_efficiency_avg_30d\": null,\n        \"hrv_avg_30d\": null,\n        \"sleep_hr_avg_30d\": null,\n        \"rhr_avg_30d\": null,\n        \"steps_avg_30d\": 321,\n        \"sleep_score_avg_30d\": null,\n        \"readiness_avg_30d\": null,\n        \"latest_sleep_record_day\": \"2026-10-04\",\n        \"days_with_data_30d\": 1,\n        \"newest_observation\": \"2026-10-04\",\n        \"oldest_observation_30d\": \"2026-10-04\"\n      },\n      \"sources\": [\n        {\n          \"id\": \"oura\",\n          \"status\": \"live\",\n          \"last_observation\": \"2026-10-04\"\n        },\n        {\n          \"id\": \"apple\",\n          \"status\": \"dead\",\n          \"last_observation\": null,\n          \"reason\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"\n        },\n        {\n          \"id\": \"eightsleep\",\n          \"status\": \"unavailable\",\n          \"last_observation\": null,\n          \"reason\": \"not present in health current.json\"\n        },\n        {\n          \"id\": \"function\",\n          \"status\": \"unavailable\",\n          \"last_observation\": null,\n          \"reason\": \"not present in health current.json\"\n        }\n      ]\n    },\n    \"activity\": {\n      \"metrics\": {\n        \"total_minutes_avg_7d\": 60,\n        \"creation_minutes_avg_7d\": 20,\n        \"consumption_minutes_avg_7d\": null,\n        \"creation_ratio_7d\": 0.333,\n        \"total_minutes_avg_30d\": 60,\n        \"creation_minutes_avg_30d\": 20,\n        \"consumption_minutes_avg_30d\": null,\n        \"creation_ratio_30d\": 0.333,\n        \"top_apps_7d\": [\n          {\n            \"label\": \"Synthetic editor\",\n            \"minutes\": 20\n          }\n        ],\n        \"days_with_data_30d\": 1,\n        \"newest_observation\": \"2026-10-04\",\n        \"oldest_observation_30d\": \"2026-10-04\"\n      },\n      \"sources\": [\n        {\n          \"id\": \"conduit\",\n          \"status\": \"live\",\n          \"last_observation\": \"2026-10-04\"\n        }\n      ]\n    },\n    \"work\": {\n      \"metrics\": {\n        \"sessions_14d\": 1,\n        \"sessions_30d\": 1,\n        \"recent_session_names\": [\n          \"Synthetic Current Work\"\n        ],\n        \"phases_14d\": {\n          \"BUILD\": 1\n        },\n        \"commits_14d\": null,\n        \"commit_days_14d\": null\n      },\n      \"sources\": [\n        {\n          \"id\": \"work-registry\",\n          \"status\": \"live\",\n          \"last_observation\": null\n        },\n        {\n          \"id\": \"git\",\n          \"status\": \"unavailable\",\n          \"last_observation\": null,\n          \"reason\": \"git log unavailable\"\n        }\n      ]\n    },\n    \"money\": {\n      \"metrics\": {\n        \"monthly_recurring_total\": 22,\n        \"entries_total\": 2,\n        \"entries_needing_amount\": 0,\n        \"meta_updated\": \"2026-10-04\",\n        \"newest_observation\": \"2026-10-04\",\n        \"oldest_observation_30d\": \"2026-10-04\"\n      },\n      \"sources\": [\n        {\n          \"id\": \"expenses\",\n          \"status\": \"live\",\n          \"last_observation\": \"2026-10-04\"\n        }\n      ]\n    }\n  }\n}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

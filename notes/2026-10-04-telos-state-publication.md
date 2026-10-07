@@ -1,0 +1,9 @@
+# TELOS state publication
+
+Date: 2026-10-04. Native UpdateLifeosState computes seven dashboard percentages from current-state coverage or ideal-state articulation. Three original calculation controls pass. Eight original boundary cases fail: missing authority, revoked authority, restricted authority, connector loss, foreign source and output links, forgotten content, and file permissions. The first retirement fixture omits required fact metadata; the corrected fixture reproduces the retirement failure.
+
+The calculation now consumes declared admitted text. The managed writer journals the fixed state artifact, rechecks source bytes and current authority, and publishes a private file. Twenty tests and two subtests pass on a fresh distribution with 33 native files. A real process exits with status 73 after publication. The next transaction restores the previous output from the private journal. A fresh run then calculates 100 percent from the current health source. Output cannot alias the open registry, which protects the existing SQLite lock discipline.
+
+The first candidate correctly omits an ideal-state file created before a retirement. The test expected that file to remain eligible, which contradicted the conservative source-age policy. The fresh fallback fixture now creates its unrelated ideal source after retirement. A separate case reviews exact older dimension sources through the existing owner review operation. Current source and retirement digests bind this review. Known retired text remains rejected. No admission rule is weakened.
+
+The state artifact contains percentages, dates, and fixed dimension paths. It does not complete the other TELOS generators, PULSE source routes, derivative orchestration, ownership activation, or the combined release. No active server changes occur.

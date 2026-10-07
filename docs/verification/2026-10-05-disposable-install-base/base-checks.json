@@ -1,0 +1,55 @@
+{
+  "os": {
+    "command": [
+      "pct",
+      "exec",
+      "100",
+      "--",
+      "cat",
+      "/etc/os-release"
+    ],
+    "exit": 0,
+    "output": "PRETTY_NAME=\"Ubuntu 24.04 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  "network": {
+    "command": [
+      "pct",
+      "exec",
+      "100",
+      "--",
+      "ip",
+      "-j",
+      "address",
+      "show",
+      "eth0"
+    ],
+    "exit": 0,
+    "output": "[{\"ifindex\":2,\"link_index\":9,\"ifname\":\"eth0\",\"flags\":[\"BROADCAST\",\"MULTICAST\",\"UP\",\"LOWER_UP\"],\"mtu\":1500,\"qdisc\":\"noqueue\",\"operstate\":\"UP\",\"group\":\"default\",\"txqlen\":1000,\"link_type\":\"ether\",\"address\":\"bc:24:11:05:98:74\",\"broadcast\":\"ff:ff:ff:ff:ff:ff\",\"link_netnsid\":0,\"addr_info\":[{\"family\":\"inet\",\"local\":\"192.168.8.245\",\"prefixlen\":24,\"metric\":1024,\"broadcast\":\"192.168.8.255\",\"scope\":\"global\",\"dynamic\":true,\"label\":\"eth0\",\"valid_life_time\":3904,\"preferred_life_time\":3904},{\"family\":\"inet6\",\"local\":\"fe80::be24:11ff:fe05:9874\",\"prefixlen\":64,\"scope\":\"link\",\"valid_life_time\":4294967295,\"preferred_life_time\":4294967295}]}]\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  "systemd": {
+    "command": [
+      "pct",
+      "exec",
+      "100",
+      "--",
+      "systemctl",
+      "is-system-running"
+    ],
+    "exit": 0,
+    "output": "running\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  "config": {
+    "command": [
+      "pct",
+      "config",
+      "100"
+    ],
+    "exit": 0,
+    "output": "arch: amd64\ncores: 2\ncpulimit: 2\ncpuunits: 50\ndescription: Disposable LifeOS and Hermes installation acceptance fixture created 2026-10-05.%0A\nfeatures: nesting=1\nhostname: lifeos-install-probe\nmemory: 4096\nnet0: name=eth0,bridge=vmbr0,firewall=1,hwaddr=BC:24:11:05:98:74,ip=dhcp,ip6=manual,type=veth\nonboot: 0\nostype: ubuntu\nrootfs: local-zfs:subvol-100-disk-0,size=24G\nswap: 0\ntags: disposable;lifeos-test\nunprivileged: 1\n",
+    "stderr": "Plugin \"PVE::Storage::Custom::TrueNASPlugin\" is implementing an older storage API, an upgrade is recommended\n"
+  },
+  "existing_vm_configuration_unchanged": true
+}

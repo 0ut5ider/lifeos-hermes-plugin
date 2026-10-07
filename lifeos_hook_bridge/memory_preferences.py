@@ -3,15 +3,19 @@
 from __future__ import annotations
 
 from dataclasses import replace
+import hashlib
+import os
 from pathlib import Path
 import sqlite3
+import stat
 import subprocess
+import sys
+import types
 from typing import Any
 
 from .memory_access import NativeMemory, MemoryUnavailable
 from .memory_policy import CATEGORIES, MemoryPolicy, MemoryScope
 from .memory_service import MemoryConfiguration, MemoryService
-from .memory_sharing import MemorySharing
 
 
 REMAINING_GATES = {
@@ -23,12 +27,66 @@ REMAINING_GATES = {
 }
 
 
+SHARING_COMPONENT_SHA256 = '677cc5909520029dba91009161d615f5f699286f8d2b96f9e80cbd9a28e70515'
+
+
+def load_sharing_component(directory: Path):
+    directory = Path(directory).absolute()
+    source = directory / 'memory_sharing.py'
+    try:
+        parent, folder = directory.parent.stat(), directory.lstat()
+        descriptor = os.open(source, os.O_RDONLY | os.O_NOFOLLOW | os.O_CLOEXEC)
+    except FileNotFoundError as error:
+        raise MemoryUnavailable('SSH memory connections require the optional sharing component') from error
+    except OSError as error:
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access') from error
+    try:
+        with os.fdopen(descriptor, 'rb') as stream:
+            program = os.fstat(stream.fileno())
+            data = stream.read()
+    except OSError as error:
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access') from error
+    if (not stat.S_ISDIR(folder.st_mode) or not stat.S_ISREG(program.st_mode)
+            or any(info.st_uid != os.getuid() or info.st_mode & 0o022 for info in (parent, folder, program))):
+        raise MemoryUnavailable('The sharing component needs physical owner files without shared write access')
+    if hashlib.sha256(data).hexdigest() != SHARING_COMPONENT_SHA256:
+        raise MemoryUnavailable('The installed sharing component differs from the reviewed release')
+    # The verified bytes run directly. The standard source loader would read the file again
+    # and would prefer an unverified bytecode file beside the source.
+    name = __package__ + '.memory_sharing'
+    module = types.ModuleType(name)
+    module.__package__, module.__file__ = __package__, str(source)
+    sys.modules[name] = module
+    try:
+        exec(compile(data, str(source), 'exec', dont_inherit=True), module.__dict__)
+    except BaseException:
+        sys.modules.pop(name, None)
+        raise
+    return module
+
+
 class MemoryPreferences:
-    def __init__(self, configuration: Path, installed_root: Path, authorized_keys: Path,
-                 interpreter: Path, program: Path):
+    def __init__(self, configuration: Path, installed_root: Path, interpreter: Path, program: Path,
+                 *, sharing_component: Path | None = None, sharing_options: dict[str, Any] | None = None):
         self.configuration = MemoryConfiguration(configuration)
         self.root = installed_root.absolute()
-        self.connections = MemorySharing(configuration, authorized_keys, interpreter, program, installed_root=self.root)
+        self.sharing_component = Path(sharing_component or Path(configuration).parent / 'lifeos-memory-sharing')
+        self._sharing = (Path(configuration), interpreter, program, dict(sharing_options or {}))
+        if any(not path.is_absolute() for path in (Path(configuration), interpreter, program)):
+            raise ValueError('Memory connection paths must be absolute')
+
+    @property
+    def connections(self):
+        configuration, interpreter, program, options = self._sharing
+        return load_sharing_component(self.sharing_component).MemorySharing(
+            configuration, interpreter, program, installed_root=self.root, **options)
+
+    def connection_enrollment_available(self) -> bool:
+        try:
+            load_sharing_component(self.sharing_component)
+        except MemoryUnavailable:
+            return False
+        return True
 
     def _configuration(self, *, account: str | None = None):
         config = self.configuration.load()
@@ -41,7 +99,8 @@ class MemoryPreferences:
         result = {'state':'not_configured', 'ownership_enabled':False, 'sharing_enabled':False,
                   'activation_ready':False, 'remaining_gates':REMAINING_GATES,
                   'automatic_review':'Native LifeOS hooks', 'proposal_review_available':False,
-                  'native_health':'not_checked', 'active_facts':None, 'connections':[]}
+                  'native_health':'not_checked', 'active_facts':None, 'connections':[],
+                  'connection_enrollment_available':self.connection_enrollment_available()}
         if not self.configuration.path.exists() and not self.configuration.path.is_symlink():
             return result
         try:
@@ -63,6 +122,21 @@ class MemoryPreferences:
             result.update(state='unavailable', native_health='unavailable', message=str(error))
         return result
 
+    def claim(self, *, account: str) -> dict[str, Any]:
+        """Bind an unconfigured installation to the authenticated dashboard account."""
+        if not isinstance(account, str) or not account.startswith('dashboard:'):
+            raise PermissionError('An authenticated dashboard account must claim the installation')
+        if not (self.root / 'LIFEOS/VERSION').is_file():
+            raise MemoryUnavailable('Install LifeOS before claiming the installation')
+        config = {'version': 1, 'root': str(self.root), 'principal': 'owner', 'ownership_enabled': False,
+                  'sharing_enabled': False, 'accounts': {account: 'owner'}, 'destinations': {}, 'clients': {}}
+        self.configuration.validate(config)
+        with self.configuration._lock():
+            if self.configuration.path.exists() or self.configuration.path.is_symlink():
+                raise MemoryUnavailable('This installation already has an owner')
+            self.configuration._publish(config)
+        return self.status(account=account)
+
     @staticmethod
     def _owner_scope(config: dict[str, Any]) -> MemoryScope:
         return MemoryScope(config['principal'], 'dashboard:owner', tuple(sorted(CATEGORIES)),
@@ -79,6 +153,26 @@ class MemoryPreferences:
         from .memory_pulse import snapshot
         from .memory_http import installation_binding
         config = self._configuration(account=account)
+        from .memory_freshness import HTTP_VIEWS
+        if isinstance(view, str) and view in HTTP_VIEWS:
+            from .memory_freshness import view as freshness_view
+
+            def check_current():
+                if self._configuration(account=account) != config:
+                    raise MemoryUnavailable('The memory configuration changed during freshness rendering')
+
+            return (freshness_view(NativeMemory(self.root), self._owner_scope(config), view,
+                                   check_current=check_current),
+                    installation_binding(config, self.configuration.path))
+        if view == 'graph':
+            from .memory_graph import view as graph_view
+
+            def check_current():
+                if self._configuration(account=account) != config:
+                    raise MemoryUnavailable('The memory configuration changed during graph rendering')
+
+            return (graph_view(NativeMemory(self.root), self._owner_scope(config), check_current=check_current),
+                    installation_binding(config, self.configuration.path))
         return (snapshot(NativeMemory(self.root), self._owner_scope(config), view),
                 installation_binding(config,self.configuration.path))
 
@@ -111,6 +205,49 @@ class MemoryPreferences:
     def preview_adoption(self, *, account: str | None = None) -> dict[str, Any]:
         config = self._configuration(account=account)
         return NativeMemory(self.root).preview_adoption(self._owner_scope(config))
+
+    def preview_import(self, *, account=None):
+        from .memory_import import MemoryImport
+        self._configuration(account=account)
+        return MemoryImport(self.configuration).preview(account=account)
+
+    def prepare_fresh(self, candidate, *, principal_name, assistant_name, account=None):
+        from .fresh_store import FreshStore
+        from .install_source import IncompatibleLifeOS
+        self._configuration(account=account)
+        try:
+            return FreshStore(self.configuration).prepare(candidate,principal_name=principal_name,
+                assistant_name=assistant_name,account=account)
+        except IncompatibleLifeOS as error:
+            raise MemoryUnavailable('Fresh store preparation requires a verified native candidate') from error
+
+    def fresh_home(self, identifier, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).review_home(identifier, account=account)
+
+    def remove_fresh(self, identifier, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).remove(identifier, account=account)
+
+    def fresh_status(self, *, account=None):
+        from .fresh_store import FreshStore
+        self._configuration(account=account)
+        return FreshStore(self.configuration).status(account=account)
+
+    def prepare_import(self, request, *, account=None):
+        import hashlib
+        from uuid import uuid4
+        from .memory_import import MemoryImport
+        self._configuration(account=account)
+        if not isinstance(request, dict) or set(request) != {'signature'}:
+            raise ValueError('Provide the reviewed Hermes import signature')
+        profile = self.configuration.path.parent.absolute()
+        identity = hashlib.sha256(str(profile).encode()).hexdigest()[:24]
+        from .lifeos_installation import state_home
+        destination = state_home(profile) / '.local/state/lifeos-hook-bridge/imports' / identity / uuid4().hex
+        return MemoryImport(self.configuration).prepare(destination, request['signature'], account=account)
 
     def preview_sources(self, paths: list[str], *, account: str | None = None):
         from .memory_source_review import preview
@@ -173,4 +310,19 @@ class MemoryPreferences:
 
     def revoke(self, identifier: str, *, account: str | None = None) -> dict[str, Any]:
         self._configuration(account=account)
-        return self.connections.revoke(identifier, account=account)
+        if self.connection_enrollment_available():
+            result = self.connections.revoke(identifier, account=account)
+            self.configuration.update(lambda config: config.get('clients', {}).get(identifier, {}).pop(
+                'credential_entry_pending', None))
+            return result
+        def disable(config):
+            if Path(config['root']).absolute() != self.root:
+                raise MemoryUnavailable('Memory configuration belongs to a different LifeOS installation')
+            self.configuration.check_owner(config, account)
+            grant = config.get('clients', {}).get(identifier)
+            if grant is None:
+                raise ValueError('This memory connection does not exist')
+            grant['enabled'] = False
+            grant['credential_entry_pending'] = True
+        self.configuration.update(disable)
+        return {'status':'revoked', 'client':identifier, 'records_deleted':False, 'credential_entry_removed':False}

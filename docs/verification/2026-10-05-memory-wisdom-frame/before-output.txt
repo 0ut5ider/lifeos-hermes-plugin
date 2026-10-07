@@ -1,0 +1,64 @@
+FF.FFFFF                                                            [100%]
+=================================== FAILURES ===================================
+___ MemoryWisdomFrameTests.test_managed_publication_has_private_permissions ____
+tests/test_memory_wisdom_frame.py:56: in test_managed_publication_has_private_permissions
+    self.assertEqual(self.path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+___ MemoryWisdomFrameTests.test_missing_context_preserves_the_previous_frame ___
+tests/test_memory_wisdom_frame.py:61: in test_missing_context_preserves_the_previous_frame
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryWisdomFrameTests.test_owner_preserves_native_update_types_and_messages (kind='evolution') _
+tests/test_memory_wisdom_frame.py:51: in test_owner_preserves_native_update_types_and_messages
+    self.assertIn('Updated "communication" frame', result.stdout)
+E   AssertionError: 'Updated "communication" frame' not found in '{\n  "success": true,\n  "domain": "communication",\n  "type": "evolution",\n  "message": "Updated \\"communication\\" frame with evolution: Synthetic current observation",\n  "framePath": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nmx4usxv/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md"\n}\n'
+_ MemoryWisdomFrameTests.test_owner_preserves_native_update_types_and_messages (kind='principle') _
+tests/test_memory_wisdom_frame.py:51: in test_owner_preserves_native_update_types_and_messages
+    self.assertIn('Updated "communication" frame', result.stdout)
+E   AssertionError: 'Updated "communication" frame' not found in '{\n  "success": true,\n  "domain": "communication",\n  "type": "principle",\n  "message": "Updated \\"communication\\" frame with principle: Synthetic current observation",\n  "framePath": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nmx4usxv/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md"\n}\n'
+_ MemoryWisdomFrameTests.test_owner_preserves_native_update_types_and_messages (kind='contextual-rule') _
+tests/test_memory_wisdom_frame.py:51: in test_owner_preserves_native_update_types_and_messages
+    self.assertIn('Updated "communication" frame', result.stdout)
+E   AssertionError: 'Updated "communication" frame' not found in '{\n  "success": true,\n  "domain": "communication",\n  "type": "contextual-rule",\n  "message": "Updated \\"communication\\" frame with contextual-rule: Synthetic current observation",\n  "framePath": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nmx4usxv/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md"\n}\n'
+_ MemoryWisdomFrameTests.test_owner_preserves_native_update_types_and_messages (kind='prediction') _
+tests/test_memory_wisdom_frame.py:51: in test_owner_preserves_native_update_types_and_messages
+    self.assertIn('Updated "communication" frame', result.stdout)
+E   AssertionError: 'Updated "communication" frame' not found in '{\n  "success": true,\n  "domain": "communication",\n  "type": "prediction",\n  "message": "Updated \\"communication\\" frame with prediction: Synthetic current observation",\n  "framePath": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nmx4usxv/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md"\n}\n'
+_ MemoryWisdomFrameTests.test_owner_preserves_native_update_types_and_messages (kind='anti-pattern') _
+tests/test_memory_wisdom_frame.py:51: in test_owner_preserves_native_update_types_and_messages
+    self.assertIn('Updated "communication" frame', result.stdout)
+E   AssertionError: 'Updated "communication" frame' not found in '{\n  "success": true,\n  "domain": "communication",\n  "type": "anti-pattern",\n  "message": "Updated \\"communication\\" frame with anti-pattern: Synthetic current observation",\n  "framePath": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nmx4usxv/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md"\n}\n'
+_ MemoryWisdomFrameTests.test_private_observation_is_refused_before_publication _
+tests/test_memory_wisdom_frame.py:79: in test_private_observation_is_refused_before_publication
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+___ MemoryWisdomFrameTests.test_read_only_owner_preserves_the_previous_frame ___
+tests/test_memory_wisdom_frame.py:73: in test_read_only_owner_preserves_the_previous_frame
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryWisdomFrameTests.test_redirected_frame_does_not_change_the_foreign_file _
+tests/test_memory_wisdom_frame.py:98: in test_redirected_frame_does_not_change_the_foreign_file
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryWisdomFrameTests.test_retired_observation_cannot_return_through_frame_update _
+tests/test_memory_wisdom_frame.py:91: in test_retired_observation_cannot_return_through_frame_update
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+___ MemoryWisdomFrameTests.test_revoked_account_preserves_the_previous_frame ___
+tests/test_memory_wisdom_frame.py:67: in test_revoked_account_preserves_the_previous_frame
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_managed_publication_has_private_permissions
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_missing_context_preserves_the_previous_frame
+SUBFAILED(kind='evolution') tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_owner_preserves_native_update_types_and_messages
+SUBFAILED(kind='principle') tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_owner_preserves_native_update_types_and_messages
+SUBFAILED(kind='contextual-rule') tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_owner_preserves_native_update_types_and_messages
+SUBFAILED(kind='prediction') tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_owner_preserves_native_update_types_and_messages
+SUBFAILED(kind='anti-pattern') tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_owner_preserves_native_update_types_and_messages
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_private_observation_is_refused_before_publication
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_read_only_owner_preserves_the_previous_frame
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_redirected_frame_does_not_change_the_foreign_file
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_retired_observation_cannot_return_through_frame_update
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_revoked_account_preserves_the_previous_frame
+12 failed, 1 passed in 1.70s

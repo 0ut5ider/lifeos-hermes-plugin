@@ -1,0 +1,118 @@
+{
+  "before": {
+    "target_present": true
+  },
+  "after": {
+    "target_content_matches": true,
+    "tool_names": [
+      "Edit"
+    ],
+    "file_path_matches": true,
+    "warning_emitted": true,
+    "other_output": false,
+    "model_received_warning": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_020917_96a42b",
+  "seconds": 11.744,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-edit-complete-results/knowledge-edit-off-schema",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-edit-complete-results/knowledge-edit-off-schema",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "In the file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-edit-complete-results/knowledge-edit-off-schema/.claude/LIFEOS/MEMORY/KNOWLEDGE/Ideas/pair-idea.md, replace the text PAIR_OLD_LINE with PAIR_NEW_LINE. Use the file editing tool. Do not rewrite the whole file."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.9.6",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.6 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/knowledge-edit-complete-results/knowledge-edit-off-schema/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1zdGVwMS0yMDI2MTAwNi9saWZlb3MtZXZhbHVhdGlvbi1maW5hbC9ob29rcy9Lbm93bGVkZ2VXcml0ZUd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-step1-20261006/lifeos-evaluation-final/hooks/KnowledgeWriteGuard.hook.ts": "ef1063ceb4ef0696368901931bae9169e4f28a7547f9c281eccc0ad29eba0a58"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "b2db212096a2b9007c62f05538e77300458ad4a5575ae13de3f512f9bbc28990",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "5fdfe62cfa3c3e55fe730b104e1c38a3cadadf3f226d768d811399873e90c476",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "38e7ee2eb91beaf9112f74b4b9c37197459f38d2efc2627750088832fcc52dc5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "b331ba2052e8b510792a574334e27fba7468ce48e7f0cb779635f96c327e3bdb",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "e2e0887ca57861ca5a8871712c7e059fa1faf9f5aa265f20078606ab6e6e2ed7",
+    "fixture-events.jsonl": "96fcd1152046224ed792dad20004a0211d6e7b58007fbc6682be0bd62c087c8d",
+    "cli.log": "1b8046924e5d592d0635231b302d60c45a9e2569ab1e15d8f9e9c24bf247225b",
+    "before-state.json": "de6d76f7e98d9412ee3880df81afb80478efb34a1610bb80b8af4beb03f92b49",
+    "after-state.json": "4a154343ab6e1d84d41448f0984042846a487f5fff1881638170925af243af98",
+    "fixture-files-before.json": "704e3316827338f4639c72bea202162adbf19ccfa2ca28c54cd868ca33f623d8",
+    "fixture-files-after.json": "be5c87a4138e44a09675fe744fe7a8e802657dcaefe03cd29c90a40eb9b7ac7b"
+  }
+}

@@ -1,0 +1,16 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ ProfileServicesTests.test_recovery_quiesces_restarted_services_without_losing_original_selection _
+tests/test_profile_services.py:221: in test_recovery_quiesces_restarted_services_without_losing_original_selection
+    self.barrier().quiesce()
+    ^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'ProfileServices' object has no attribute 'quiesce'
+_ ProfileServicesTests.test_reviewed_service_state_refuses_a_change_before_any_stop _
+tests/test_profile_services.py:209: in test_reviewed_service_state_refuses_a_change_before_any_stop
+    reviewed = self.barrier().preview()
+               ^^^^^^^^^^^^^^^^^^^^^^
+E   AttributeError: 'ProfileServices' object has no attribute 'preview'
+=========================== short test summary info ============================
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_recovery_quiesces_restarted_services_without_losing_original_selection
+FAILED tests/test_profile_services.py::ProfileServicesTests::test_reviewed_service_state_refuses_a_change_before_any_stop
+2 failed, 11 deselected in 2.11s

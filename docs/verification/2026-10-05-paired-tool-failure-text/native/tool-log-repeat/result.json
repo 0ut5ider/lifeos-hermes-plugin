@@ -1,0 +1,190 @@
+{
+  "before": {
+    "activity_rows": 0,
+    "failure_rows": 0,
+    "loop_states": 0
+  },
+  "after": {
+    "activity": [],
+    "activity_rows_match_calls": true,
+    "failures": [],
+    "loop": {
+      "session_matches": true,
+      "seq_matches_calls": true,
+      "last_alert": 3,
+      "alert_count": 1,
+      "tools": [
+        "Bash"
+      ],
+      "failed": [
+        false
+      ],
+      "one_signature": true,
+      "state_count": 1
+    },
+    "alert_positions": {
+      "PostToolUse.12.2": [
+        3
+      ]
+    },
+    "other_context": false,
+    "at_least_required_calls": true,
+    "events": [
+      "PostToolUse"
+    ],
+    "tool_names": [
+      "Bash"
+    ],
+    "commands_match": true,
+    "model_received_loop_alert": true,
+    "tool_output_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0,
+    0,
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 4,
+  "metadata_requests": 0,
+  "model_successful_responses": 4,
+  "session_id": "fccf4a09-47bc-48e2-9f16-0eb0fa5c83f4",
+  "seconds": 10.265,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-tool-failure-text-20261005/results/tool-log-repeat",
+    "/home/lifeos-claude-ref/workspace/paired-tool-failure-text-20261005/results/tool-log-repeat",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message three times with the shell tool, as three separate tool calls with identical input. Make one tool call in each response and wait for its result before the next call. Do not change the command. Do not make a fourth call, even when a hook reports a loop. Then reply with exactly READY.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "6",
+    "Run this exact shell command three times: printf 'PAIR_%s' TOOL_LOG"
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.12.2",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.12.2 /home/lifeos-claude-ref/workspace/paired-tool-failure-text-20261005/results/tool-log-repeat/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTG9vcERldGVjdG9yLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/LoopDetector.hook.ts": "46b1bd0ff6bfbf7fd992f162ff146414a8cf20a0a416aea5a9dbece8524d4229"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "247b2272712f3cad01ed4a93bba7e20d39b24d7bf0228b938c105b7a2608d8b0",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "25f96290c439d33eabda02a324966bb665eea0db9aea7dd0724d0355e7d2ac76",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "2b411c5d4c3b39be518217a77ec1cd4a9ac38f6ffc2e8d19d4301c19b1b72465",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "3311818af71ffc89725760536b150f112dfbc6828ad05fa8702bf0826c5945dc",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "44113393119910712b4960dbad024f5f6bb7f4ace234cb069d1c656f45c4de83",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "7c365b286b7cc5763de1001acbec1227994fe2097fb7bad8b4bff3d93a25f213",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "7b707e49c384ee60fc37c562cf3df5ac13c48551c5842c0b72e5017695c10dd9",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "53325628d53096d5b7ad91bb5149e6e8d07bb500f3c8457352809c0180f98a40",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "1b3c2ed7e3aa5cbbf38798afdb182a370fd21306bbb3ac24b43a6326795aa593",
+    "fixture-events.jsonl": "da0b1e7f7ab288f05535df5f4369978f1d863fe09a12da3551c51b9da7a777c3",
+    "cli.log": "6d8e1d46bd530921f24f4e91a13d773c8cd4fb2a1c594f5c6642f93c213552be",
+    "before-state.json": "71fcc48163579d285235c0fe22b5f9434a6d7f3d3a00a9747bcadf46165802bb",
+    "after-state.json": "dbf2f65050ea8e9bcb695c0ee367ae31062b2d8b8a577bd0a92b7387defe6027",
+    "fixture-files-before.json": "fe44190e00771abf1af5d2e4aa793263c2b26548d178d5d8b0b6b1d7bf71c60a",
+    "fixture-files-after.json": "aa8b2c521bdff5c371c3bed67c35e51ccfaf351867a850db5f68a3971e769ac2"
+  }
+}

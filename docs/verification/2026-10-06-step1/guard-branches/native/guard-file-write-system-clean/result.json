@@ -1,0 +1,141 @@
+{
+  "before": {
+    "target_content_matches": true
+  },
+  "after": {
+    "target_content_matches": true,
+    "tool_names": [
+      "Write"
+    ],
+    "file_path_matches": true,
+    "input_content_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "9fa8e786-d712-4df3-886e-e53fdb9c1ab3",
+  "seconds": 15.655,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/results/guard-file-write-system-clean",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/results/guard-file-write-system-clean",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Read,Write",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Perform the exact file operation from the user message with the file tools. Then reply with exactly READY. If a tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "bypassPermissions",
+    "--max-turns",
+    "5",
+    "Read the existing file at /home/lifeos-claude-ref/workspace/paired-step1-20261006/results/guard-file-write-system-clean/.claude/hooks/guard-target.txt once. Then replace its entire content using the file writing tool once. The complete new content is exactly \"PAIR_PUBLIC_CONTENT\\n\". Remove every prior line. Do not use the editing tool or preserve existing content."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-claude-ref/workspace/paired-step1-20261006/results/guard-file-write-system-clean/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "d8cc1fed8216ca962343e867c8d17e5495a13f479e9a75dd76f7edb1fa6172eb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "cb57cd098e3a5889ac03c2a70b2ab35d114d155c4df707a63ef2b8fa08b12116",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "97b808367a49e0505d184803182a195e25d6038690965082d250f84f2d88a928",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "e0adc6372c19f939fe33d01bc7730f093dd1b114cba464a9ff2a298f71d351ad",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "93d4b08bcd67d8af0287314ce08249cd4e5b3162ac4b273ac9bb48936ec61b3c",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "66558ebb7b44968397f61b11f6a1c7b3764de6fb39fc5878e7ca24ff5db77950",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "ec41b06b32792610bb662097060f0026dd6d6e340531c6f389a3fa495d0bc598",
+    "fixture-events.jsonl": "abbdc744fd87f748300988c6876bf09d63cc093267a1b944f68066ea056393a2",
+    "cli.log": "ba5775551596c70a8d2768f9b3bb67da4f65a506ed7e3c36f41f83bacf679c19",
+    "before-state.json": "edf28c5124632b797d18160e4ae380d3aabe3242cea275f5b69c538b2aa530f5",
+    "after-state.json": "85085b3cbdcd3ac0f68556295215cfde024b232b803a9fcc6d64d524383f4b30",
+    "fixture-files-before.json": "da9f6392630f765179170a7b27d7b96c8a8a68933cc5a147f864acb799e4737b",
+    "fixture-files-after.json": "83152fe1952d4cdee92a291577fd11142274ad63fbe31820e681d109c7e51387"
+  }
+}

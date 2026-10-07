@@ -1,0 +1,27 @@
+test_actual_startup_and_resume_load_only_admitted_work (test_native_managed_prompt.NativeManagedPromptTests.test_actual_startup_and_resume_load_only_admitted_work) ... FAIL
+test_feedback_preview_requires_current_source_admission (test_native_managed_prompt.NativeManagedPromptTests.test_feedback_preview_requires_current_source_admission) ... FAIL
+test_interrupted_turn_injection_preserves_the_prior_bookkeeping (test_native_managed_prompt.NativeManagedPromptTests.test_interrupted_turn_injection_preserves_the_prior_bookkeeping) ... ok
+test_managed_drift_metrics_require_current_caller_and_destination (test_native_managed_prompt.NativeManagedPromptTests.test_managed_drift_metrics_require_current_caller_and_destination) ... ok
+
+======================================================================
+FAIL: test_actual_startup_and_resume_load_only_admitted_work (test_native_managed_prompt.NativeManagedPromptTests.test_actual_startup_and_resume_load_only_admitted_work)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_managed_prompt.py", line 103, in test_actual_startup_and_resume_load_only_admitted_work
+    self.assertIn('SYNTHETIC_MANAGED_ACTIVE_WORK',result.stdout)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SYNTHETIC_MANAGED_ACTIVE_WORK' not found in '\n✅ LifeOS session ready... (no dynamic context yet — enabled sources empty: relationship-notes, wisdom-frames, advisory-findings)\n'
+
+======================================================================
+FAIL: test_feedback_preview_requires_current_source_admission (test_native_managed_prompt.NativeManagedPromptTests.test_feedback_preview_requires_current_source_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_managed_prompt.py", line 86, in test_feedback_preview_requires_current_source_admission
+    self.assertEqual('SYNTHETIC_PRIOR_PRIVATE_RESPONSE' in json.dumps(row),admitted)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True != False
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.405s
+
+FAILED (failures=2)

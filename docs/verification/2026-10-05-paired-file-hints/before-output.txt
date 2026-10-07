@@ -1,0 +1,60 @@
+.............FFFFFF.....................................................................
+======================================================================
+FAIL: test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path (test_paired_lifecycle_effects.PairedFileHintTests.test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path) (key='hints')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 936, in test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path
+    self.assertIn('file-hint-edit-gear: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-edit-gear: file hint effect is missing' not found in []
+
+======================================================================
+FAIL: test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path (test_paired_lifecycle_effects.PairedFileHintTests.test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path) (key='target_content_matches')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 936, in test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path
+    self.assertIn('file-hint-edit-gear: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-edit-gear: file hint effect is missing' not found in []
+
+======================================================================
+FAIL: test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path (test_paired_lifecycle_effects.PairedFileHintTests.test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path) (key='file_path_matches')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 936, in test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path
+    self.assertIn('file-hint-edit-gear: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-edit-gear: file hint effect is missing' not found in []
+
+======================================================================
+FAIL: test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path (test_paired_lifecycle_effects.PairedFileHintTests.test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path) (key='tool_names')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 936, in test_tracked_file_requires_the_hint_the_real_content_and_the_exact_path
+    self.assertIn('file-hint-edit-gear: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-edit-gear: file hint effect is missing' not found in []
+
+======================================================================
+FAIL: test_untracked_file_rejects_a_hint_or_an_evaluation_state_change (test_paired_lifecycle_effects.PairedFileHintTests.test_untracked_file_rejects_a_hint_or_an_evaluation_state_change) (key='hints')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 944, in test_untracked_file_rejects_a_hint_or_an_evaluation_state_change
+    self.assertIn('file-hint-write-plain: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-write-plain: file hint effect is missing' not found in []
+
+======================================================================
+FAIL: test_untracked_file_rejects_a_hint_or_an_evaluation_state_change (test_paired_lifecycle_effects.PairedFileHintTests.test_untracked_file_rejects_a_hint_or_an_evaluation_state_change) (key='evaluation_state_preserved')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 944, in test_untracked_file_rejects_a_hint_or_an_evaluation_state_change
+    self.assertIn('file-hint-write-plain: file hint effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'file-hint-write-plain: file hint effect is missing' not found in []
+
+----------------------------------------------------------------------
+Ran 84 tests in 0.179s
+
+FAILED (failures=6)
+exit 1

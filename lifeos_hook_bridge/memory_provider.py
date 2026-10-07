@@ -78,6 +78,17 @@ class LifeOSMemoryProvider(MemoryProvider):
             return {'configuration': 'unavailable'}
 
     def on_session_switch(self, new_session_id: str, **kwargs) -> None:
+        if kwargs.get('reason') == 'compression' and not kwargs.get('reset'):
+            parent = kwargs.get('parent_session_id')
+            try:
+                if not parent or parent != self.session_id:
+                    raise MemoryAdmissionError('Compression belongs to a different provider conversation')
+                self.runtime.rotate_session(new_session_id,parent)
+            except Exception:
+                self.runtime.clear()
+                raise
+            self.session_id = new_session_id
+            return
         self.session_id = new_session_id
         self.runtime.clear()
 
@@ -97,4 +108,12 @@ def register_provider(ctx) -> MemoryRuntime:
         if REQUIRED_MIDDLEWARE_API_VERSION == 1:
             ctx.register_middleware('llm_execution', provider.runtime.project_call, required=True)
             ctx.register_middleware('llm_admission', provider.runtime.check_call, required=True)
+        else:
+            try:
+                enabled = provider.runtime.enabled()
+            except (ValueError, OSError, RuntimeError) as error:
+                raise MemoryAdmissionError(
+                    'LifeOS cannot confirm that lasting memory is disabled on this Hermes version') from error
+            if enabled:
+                raise MemoryAdmissionError('LifeOS lasting memory needs required model-request checks')
     return provider.runtime

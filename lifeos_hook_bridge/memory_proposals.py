@@ -14,7 +14,7 @@ UPGRADES = 'LIFEOS/MEMORY/UPGRADES/records'
 
 
 def enqueue(memory, scope: MemoryScope, item: dict[str, Any], request_id: str,
-            source_session: str) -> dict[str, Any]:
+            source_session: str, check_current=None) -> dict[str, Any]:
     if 'create' not in scope.proposals or not CATEGORIES <= set(scope.read) or '*' not in scope.projects:
         return {'ok':False, 'code':'EINVAL_ITEM', 'message':'This context has no complete proposal creation grant'}
     checked = memory._native('validate', item=item)
@@ -22,6 +22,8 @@ def enqueue(memory, scope: MemoryScope, item: dict[str, Any], request_id: str,
         return {'ok':False, 'code':'EINVAL_ITEM', 'message':checked.get('message', 'Native validation changed the proposal')}
 
     def save(connection):
+        if check_current is not None:
+            check_current(connection)
         if memory._blocked(connection, item["edit"]):
             return {"status":"rejected", "reason":"This proposal needs explicit reactivation after correction or forgetting"}
         result = memory._native('add', item=item)

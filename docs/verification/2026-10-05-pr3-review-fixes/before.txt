@@ -1,0 +1,31 @@
+F..F
+======================================================================
+FAIL: test_native_installation_runs_without_the_configuration_lock (test_review_fixes_pr3.FreshStoreLockTests.test_native_installation_runs_without_the_configuration_lock)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_review_fixes_pr3.py", line 74, in test_native_installation_runs_without_the_configuration_lock
+    self.assertEqual(observed, ['free'])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['held'] != ['free']
+
+First differing element 0:
+'held'
+'free'
+
+- ['held']
++ ['free']
+
+======================================================================
+FAIL: test_unsupported_host_version_refuses_enabled_lasting_memory (test_review_fixes_pr3.RequiredMiddlewareRegistrationTests.test_unsupported_host_version_refuses_enabled_lasting_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_review_fixes_pr3.py", line 42, in test_unsupported_host_version_refuses_enabled_lasting_memory
+    with self.assertRaisesRegex(MemoryAdmissionError, 'required model-request checks'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: MemoryAdmissionError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.004s
+
+FAILED (failures=2)
+exit 1

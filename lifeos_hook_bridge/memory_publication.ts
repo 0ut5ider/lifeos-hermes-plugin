@@ -24,10 +24,12 @@ export function observePublication(root: string, journal: string, destination: s
     throw new Error("The upgrade publication leaves its governed store");
   }
   let present = false;
+  let originalMode: number | null = null;
   try {
     const file = lstatSync(path);
     if (!file.isFile() || file.isSymbolicLink()) throw new Error("Upgrade publication needs a regular file destination");
     present = true;
+    originalMode = file.mode & 0o777;
   } catch (error: unknown) {
     if (!object(error) || error.code !== "ENOENT") throw error;
   }
@@ -38,7 +40,7 @@ export function observePublication(root: string, journal: string, destination: s
   const operation: unknown = JSON.parse(readFileSync(journal, "utf8"));
   if (!object(operation) || !Array.isArray(operation.copies)) throw new Error("Invalid native publication journal");
   if (operation.copies.some((copy: unknown) => object(copy) && copy.path === name)) return;
-  operation.copies.push({path: name, data: present ? readFileSync(path).toString("base64") : null});
+  operation.copies.push({path: name, data: present ? readFileSync(path).toString("base64") : null, mode: originalMode});
   const temporary = journal + "." + randomUUID();
   const fd = openSync(temporary, "wx", 0o600);
   try {

@@ -1,0 +1,9 @@
+y
+y
+  → Resolving Python dependencies…  → Resolving Python dependencies… Resolving despite existing lockfile due to r  → Resolving Python dependencies… Updating https://github.com/giampaolo/psutil  → Resolving Python dependencies… Updated https://github.com/giampaolo/psutil.  → Resolving Python dependencies… Resolved 334 packages in 9.75s                                                                                 ✓ Resolving Python dependencies
+  → Installing Python dependencies…  → Installing Python dependencies… Building hermes-agent @ file:///home/hermes  → Installing Python dependencies… Built hermes-agent @ file:///home/hermes/.h  → Installing Python dependencies… Installed 105 packages in 161ms              → Installing Python dependencies… Bytecode compiled 3919 files in 3.53s                                                                           ✓ Installing Python dependencies
+✓ Plugin lifeos-hook-bridge enabled. Takes effect on next session.
+Restart the gateway for the plugin to take effect:
+  hermes gateway restart
+lifeos-hook-bridge may not override built-in tools. Re-run `hermes plugins 
+enable lifeos-hook-bridge --allow-tool-override` to grant this later.

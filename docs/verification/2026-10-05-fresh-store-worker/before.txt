@@ -1,0 +1,53 @@
+.........sE/usr/lib64/python3.14/unittest/case.py:668: ResourceWarning: unclosed file <_io.TextIOWrapper name=5 encoding='UTF-8'>
+  with outcome.testPartExecutor(self):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib64/python3.14/unittest/case.py:668: ResourceWarning: unclosed file <_io.TextIOWrapper name=3 encoding='UTF-8'>
+  with outcome.testPartExecutor(self):
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py:42: ResourceWarning: unclosed file <_io.TextIOWrapper name=5 encoding='UTF-8'>
+  process = self.start(self.fixture.fixture.home / 'missing-candidate', identifier, principal)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py:42: ResourceWarning: unclosed file <_io.TextIOWrapper name=3 encoding='UTF-8'>
+  process = self.start(self.fixture.fixture.home / 'missing-candidate', identifier, principal)
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib64/python3.14/unittest/case.py:615: ResourceWarning: unclosed file <_io.TextIOWrapper name=7 encoding='UTF-8'>
+  result = method()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+/usr/lib64/python3.14/unittest/case.py:615: ResourceWarning: unclosed file <_io.TextIOWrapper name=4 encoding='UTF-8'>
+  result = method()
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+.s....EE...
+======================================================================
+ERROR: test_failed_preparation_is_reported_with_its_names_and_a_reason (test_fresh_store_worker.FreshStoreWorkerTests.test_failed_preparation_is_reported_with_its_names_and_a_reason)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py", line 35, in test_failed_preparation_is_reported_with_its_names_and_a_reason
+    self.assertEqual(self.row(), {'identifier': 'a' * 32, 'state': 'failed',
+                     ~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py", line 30, in row
+    return next(row for row in self.status()['stores'] if row['identifier'] == identifier)
+StopIteration
+
+======================================================================
+ERROR: test_removal_deletes_an_interrupted_or_failed_store_and_keeps_others (test_fresh_store_worker.FreshStoreWorkerTests.test_removal_deletes_an_interrupted_or_failed_store_and_keeps_others)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py", line 49, in test_removal_deletes_an_interrupted_or_failed_store_and_keeps_others
+    result = self.operation().remove('d' * 32, account='dashboard:owner')
+             ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'remove'
+
+======================================================================
+ERROR: test_removal_refuses_a_running_preparation_an_unknown_name_and_other_owners (test_fresh_store_worker.FreshStoreWorkerTests.test_removal_refuses_a_running_preparation_an_unknown_name_and_other_owners)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_worker.py", line 59, in test_removal_refuses_a_running_preparation_an_unknown_name_and_other_owners
+    self.operation().remove('d' * 32, account='dashboard:owner')
+    ^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'FreshStore' object has no attribute 'remove'
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.170s
+
+FAILED (errors=3, skipped=2)
+exit 1

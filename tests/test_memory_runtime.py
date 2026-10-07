@@ -24,6 +24,10 @@ class MemoryRuntimeTests(unittest.TestCase):
                               'destinations':{'chat-a:200':grant,'chat-b:400':grant},'sharing_enabled':False,'clients':{}}
         self.path = self.home / 'lifeos-memory.json'
         MemoryConfiguration(self.path).save(self.configuration)
+        # Ownership setup installs the persistent managed marker with the configuration.
+        markers = Path(self.configuration['root']) / 'LIFEOS/USER/CONFIG'
+        markers.mkdir(parents=True, exist_ok=True)
+        (markers / 'memory-http.json').write_text('{}')
         self.runtime = MemoryRuntime(self.path)
     def metadata(self, app='chat-a', user='100', destination='200', session='session', **changes):
         result = {'HERMES_SESSION_PLATFORM':app,'HERMES_SESSION_USER_ID':user,'HERMES_SESSION_CHAT_ID':destination,
@@ -31,6 +35,18 @@ class MemoryRuntimeTests(unittest.TestCase):
         return dict(result, **changes)
     def admit(self, **changes):
         return self.runtime.admit(self.metadata(**changes), **self.route, is_first_turn=True)
+    def test_lost_native_connection_markers_block_admission(self):
+        # Without both markers, native code would fall back to unmanaged memory reads.
+        config = Path(self.configuration['root']) / 'LIFEOS/USER/CONFIG'
+        for name in ('memory-access.json', 'memory-http.json'):
+            (config / name).unlink(missing_ok=True)
+        with self.assertRaisesRegex(MemoryAdmissionError, 'connection files are missing'):
+            self.admit()
+        self.assertIsNone(self.runtime.context())
+        config.mkdir(parents=True, exist_ok=True)
+        (config / 'memory-http.json').write_text('{}')
+        self.admit()
+        self.assertIsNotNone(self.runtime.context())
     def test_different_apps_bind_their_authenticated_authors(self):
         self.admit()
         first = self.runtime.context()
@@ -58,8 +74,9 @@ class MemoryRuntimeTests(unittest.TestCase):
         with self.assertRaises(MemoryAdmissionError):
             self.runtime.check_call(request={}, **self.route, session_id='session')
         other = MemoryRuntime(self.path)
-        with self.assertRaises(MemoryAdmissionError):
-            other.admit(self.metadata(), **self.route, is_first_turn=False)
+        other.admit(self.metadata(), **self.route, is_first_turn=False)
+        with self.assertRaisesRegex(MemoryAdmissionError,'invalidated memory context'):
+            other.check_call(request={}, **self.route, session_id='session')
         other.admit(self.metadata(session='fresh'), **self.route, is_first_turn=True)
 
     def test_rendered_soul_cannot_restore_forgotten_native_memory_in_a_fresh_session(self):

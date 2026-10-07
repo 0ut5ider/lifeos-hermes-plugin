@@ -1,0 +1,104 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "Stop",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261006_004502_d61582",
+  "seconds": 9.747,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-stop-health",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-stop-health",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "Stop.2.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run Stop.2.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-stop-health/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL01lbW9yeUhlYWx0aEdhdGUuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/MemoryHealthGate.hook.ts": "644d7e2d5ef3e9c5ac462d775b45a202f8735b9ee86a21215b1b5996f8381290"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "dbfe39b7b1a52c2573aa882319634cd8eae4faed831757dc3883c2b8ab3cef80",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "83422bdf6acbede5862e8d0b03b1e3e67369035cd0e3f3305d5f54dec77f0f46",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "3741fe9c8027fa5c988eb9cbf0fa00c5367b1e0359fe80f47583d8da34ce0997",
+    "fixture-events.jsonl": "526ec1a844cb193e0ac5eb0f07d339586c1cb82a3d97bfc575c5f456a8e1aefb",
+    "cli.log": "7f147a66f4ffb86c4d58a9d9c18062794245ad30483d246284ffd000ea108cd1",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "ddfe055ed544e5e41e0b4a534ff478e49babef5e2e56b763a1b4312a995c755b",
+    "fixture-files-before.json": "ee425518b636c044d5b58a09fc45d59f27faaa04acda4831149251156755e2e3",
+    "fixture-files-after.json": "3ea9de723efc580c30412c97406be0be6c3df58d877c9aa398e46860638f99a0"
+  }
+}

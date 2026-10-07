@@ -1,0 +1,150 @@
+{
+  "cases": [
+    {
+      "id": "config-external-sources",
+      "registrations": [
+        "ConfigChange.1.1"
+      ],
+      "native": {
+        "changes": [
+          {
+            "id": "user-one",
+            "source": "user_settings",
+            "file_path": ".claude/settings.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_CFG}: modified",
+            "native_audit_path": "<home>/.claude/settings.json"
+          },
+          {
+            "id": "user-two",
+            "source": "user_settings",
+            "file_path": ".claude/settings.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_CFG}: modified",
+            "native_audit_path": "<home>/.claude/settings.json"
+          },
+          {
+            "id": "project",
+            "source": "project_settings",
+            "file_path": "project/.claude/settings.json",
+            "config_key": "initial",
+            "change_summary": "initial snapshot (no prior to diff)",
+            "native_audit_path": "<home>/project/.claude/settings.json"
+          },
+          {
+            "id": "project-two",
+            "source": "project_settings",
+            "file_path": "project/.claude/settings.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_PROJECT}: modified",
+            "native_audit_path": "<home>/project/.claude/settings.json"
+          },
+          {
+            "id": "local",
+            "source": "local_settings",
+            "file_path": "project/.claude/settings.local.json",
+            "config_key": "initial",
+            "change_summary": "initial snapshot (no prior to diff)",
+            "native_audit_path": "<home>/project/.claude/settings.local.json"
+          },
+          {
+            "id": "local-two",
+            "source": "local_settings",
+            "file_path": "project/.claude/settings.local.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_PROJECT}: modified",
+            "native_audit_path": "<home>/project/.claude/settings.local.json"
+          },
+          {
+            "id": "skill",
+            "source": "skills",
+            "file_path": ".claude/skills/fixture-config/SKILL.md",
+            "config_key": "initial",
+            "change_summary": "initial snapshot (no prior to diff)",
+            "native_audit_path": "<home>/.claude/skills/fixture-config/SKILL.md"
+          },
+          {
+            "id": "skill-two",
+            "source": "skills",
+            "file_path": ".claude/skills/fixture-config/SKILL.md",
+            "config_key": "content",
+            "change_summary": "content: \u2192 \"87bd414e1555b12c9525ca5ba1b7b5e26040be17eac61037df28be6dd53c05b7\"",
+            "native_audit_path": "<home>/.claude/skills/fixture-config/SKILL.md"
+          }
+        ],
+        "hook_calls": 8,
+        "duplicate_rows": 0
+      },
+      "hermes": {
+        "changes": [
+          {
+            "id": "user-one",
+            "source": "user_settings",
+            "file_path": ".claude/settings.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_CFG}: modified",
+            "native_audit_path": "<home>/.claude/settings.json"
+          },
+          {
+            "id": "user-two",
+            "source": "user_settings",
+            "file_path": ".claude/settings.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_CFG}: modified",
+            "native_audit_path": "<home>/.claude/settings.json"
+          },
+          {
+            "id": "project",
+            "source": "project_settings",
+            "file_path": "project/.claude/settings.json",
+            "config_key": "initial",
+            "change_summary": "initial snapshot (no prior to diff)",
+            "native_audit_path": "<home>/project/.claude/settings.json"
+          },
+          {
+            "id": "project-two",
+            "source": "project_settings",
+            "file_path": "project/.claude/settings.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_PROJECT}: modified",
+            "native_audit_path": "<home>/project/.claude/settings.json"
+          },
+          {
+            "id": "local",
+            "source": "local_settings",
+            "file_path": "project/.claude/settings.local.json",
+            "config_key": "initial",
+            "change_summary": "initial snapshot (no prior to diff)",
+            "native_audit_path": "<home>/project/.claude/settings.local.json"
+          },
+          {
+            "id": "local-two",
+            "source": "local_settings",
+            "file_path": "project/.claude/settings.local.json",
+            "config_key": "env",
+            "change_summary": "env.{PAIR_PROJECT}: modified",
+            "native_audit_path": "<home>/project/.claude/settings.local.json"
+          },
+          {
+            "id": "skill",
+            "source": "skills",
+            "file_path": ".claude/skills/fixture-config/SKILL.md",
+            "config_key": "initial",
+            "change_summary": "initial snapshot (no prior to diff)",
+            "native_audit_path": "<home>/.claude/skills/fixture-config/SKILL.md"
+          },
+          {
+            "id": "skill-two",
+            "source": "skills",
+            "file_path": ".claude/skills/fixture-config/SKILL.md",
+            "config_key": "content",
+            "change_summary": "content: \u2192 \"87bd414e1555b12c9525ca5ba1b7b5e26040be17eac61037df28be6dd53c05b7\"",
+            "native_audit_path": "<home>/.claude/skills/fixture-config/SKILL.md"
+          }
+        ],
+        "hook_calls": 8,
+        "duplicate_rows": 0
+      }
+    }
+  ]
+}

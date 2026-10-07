@@ -1,0 +1,102 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/STATE/delta-surface-heartbeat": "<time>\n",
+      ".claude/LIFEOS/MEMORY/STATE/memory-inject/<session>.json": "{\"lastHash\":\"e3b0c44298fc1c14\",\"turnsSinceInject\":0}"
+    },
+    "outputs": [
+      "<lifeos-memory>\n## PRINCIPAL MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n\n## DA MEMORY [0/48 entries \u00b7 0/12288 chars]\n(no entries yet)\n</lifeos-memory>\n<lifeos-memory-delta>\nMemory status from the autonomic loop (computed deterministically by MemoryDeltaSurface.hook.ts). Render this line VERBATIM in your response as the \ud83e\udde0 MEMORY line of the output format, exactly once. Do not recompute or rephrase it:\n\ud83e\udde0 MEMORY: freshness: no data \u00b7 no curation runs yet\n</lifeos-memory-delta>"
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [
+      true
+    ],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "21a9d5d8-7ab3-452b-81fc-81977e57feac",
+  "seconds": 3.026,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-memory-turn",
+    "/home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-memory-turn",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.5.1 /home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-memory-turn/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTWVtb3J5VHVyblN0YXJ0Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/MemoryTurnStart.hook.ts": "2b15f178aa4c4f7e0b4e96d5a61c59fa5dab6bec4bc3b56d6d816a9a8cdf5c75"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "8a2ed47d42a749f023530002eb3f4eea4d053f364afa943ef56e7b64c4a1a714",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "242ce4d5ac511f431675cd0b2673b849604d591ffb0a5f643acc19ace5185bc0",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "a88643af835d7660af87d47e13b3134b75eef837b8cdeb3f99cd40b85270148f",
+    "fixture-events.jsonl": "b118261815e3f6787b8f8aecd7891165a6fca537f53fb9640e4e31342a2ab38f",
+    "cli.log": "70a80a4540813f4dcbdd0fe1d4690dbfa673bc42bddb682f38581e70a426df17",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "8d56c1502594fda23b3e001936d359e314aa96c04a9f37e67ed17bf05dd54d3a",
+    "fixture-files-before.json": "e411811d35a38f44c3d431bf99d6ef44371a98486bb74aaea5c529ab8e447a4e",
+    "fixture-files-after.json": "22b250d56ba5d3941e4ed0b807122ad76a97ea9b9a231649bcf5ecf22fc0d0f6"
+  }
+}

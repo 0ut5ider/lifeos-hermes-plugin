@@ -1,0 +1,33 @@
+test_callbacks_record_one_start_and_one_stop_per_actual_child_identity (test_child_lifecycle.ChildLifecycleTests.test_callbacks_record_one_start_and_one_stop_per_actual_child_identity) ... ERROR
+
+======================================================================
+ERROR: test_callbacks_record_one_start_and_one_stop_per_actual_child_identity (test_child_lifecycle.ChildLifecycleTests.test_callbacks_record_one_start_and_one_stop_per_actual_child_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_lifecycle.py", line 47, in test_callbacks_record_one_start_and_one_stop_per_actual_child_identity
+    list(workers.map(run, range(count)))
+    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 645, in result_iterator
+    yield _result_or_cancel(fs.pop())
+          ~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 312, in _result_or_cancel
+    return fut.result(timeout)
+           ~~~~~~~~~~^^^^^^^^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 447, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/concurrent/futures/_base.py", line 396, in __get_result
+    raise self._exception
+  File "/usr/lib64/python3.14/concurrent/futures/thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "/usr/lib64/python3.14/concurrent/futures/thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_lifecycle.py", line 38, in run
+    bridge.child_start(**values)
+    ^^^^^^^^^^^^^^^^^^
+AttributeError: 'HookBridge' object has no attribute 'child_start'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.128s
+
+FAILED (errors=1)

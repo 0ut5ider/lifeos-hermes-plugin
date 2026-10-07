@@ -1,0 +1,47 @@
+{
+ "method": "POST",
+ "path": "/installation/prepare-hermes",
+ "status": 200,
+ "body": {
+  "base_commit": "758ad514eb0e800547e015edf05aa18f78b78d82",
+  "patches": [
+   {
+    "name": "hermes-plugin-events.patch",
+    "sha256": "9f397fb842262afc3425fe122a45e908766420139f5576fe41635bf21c0fda5c"
+   },
+   {
+    "name": "hermes-turn-gates.patch",
+    "sha256": "e56f46bd0c9c2aa8cf18edd7b3a02f8ac5da8733aa4e0a96ca118a42e7b6e976"
+   },
+   {
+    "name": "hermes-command-policy.patch",
+    "sha256": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d"
+   },
+   {
+    "name": "hermes-session-lifecycle.patch",
+    "sha256": "d1fd475a0abfacb432165b901bed62bfcd7966ef8de8f2eed9f243791420cc9d"
+   },
+   {
+    "name": "hermes-child-routing.patch",
+    "sha256": "7787bc952ad801d80a1e8754724f4b457302add1bf306596f976363189634145"
+   },
+   {
+    "name": "hermes-strict-inference.patch",
+    "sha256": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c"
+   },
+   {
+    "name": "hermes-remote-files.patch",
+    "sha256": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85"
+   },
+   {
+    "name": "hermes-cron-bootstrap.patch",
+    "sha256": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445"
+   },
+   {
+    "name": "hermes-required-middleware.patch",
+    "sha256": "27351214aeebd8bd0d9994fc88d971b9de5c03d90be9d717842c758f8bbf8ab6"
+   }
+  ],
+  "tree_sha256": "a0ba71051f79746fafdf6460bd2378dca370f8754e2aed6cb1364425d199ae66"
+ }
+}

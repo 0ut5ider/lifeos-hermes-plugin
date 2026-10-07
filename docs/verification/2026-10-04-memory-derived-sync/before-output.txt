@@ -1,0 +1,39 @@
+FF..FFF                                                                [100%]
+=================================== FAILURES ===================================
+_____ MemoryDerivedSyncTests.test_foreign_identity_source_refuses_planning _____
+tests/test_memory_derived_sync.py:62: in test_foreign_identity_source_refuses_planning
+    self.assertNotEqual(self.call('--dry-run').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryDerivedSyncTests.test_foreign_state_destination_refuses_before_child_publication _
+tests/test_memory_derived_sync.py:86: in test_foreign_state_destination_refuses_before_child_publication
+    self.assertNotEqual(self.call('--force').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryDerivedSyncTests.test_missing_context_cannot_plan_or_read_status (arguments=['--dry-run']) _
+tests/test_memory_derived_sync.py:48: in test_missing_context_cannot_plan_or_read_status
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryDerivedSyncTests.test_missing_context_cannot_plan_or_read_status (arguments=['--status']) _
+tests/test_memory_derived_sync.py:48: in test_missing_context_cannot_plan_or_read_status
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryDerivedSyncTests.test_owner_sync_state_and_log_have_private_permissions _
+tests/test_memory_derived_sync.py:74: in test_owner_sync_state_and_log_have_private_permissions
+    self.assertEqual(self.state.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+____ MemoryDerivedSyncTests.test_private_identity_is_not_a_planning_source _____
+tests/test_memory_derived_sync.py:55: in test_private_identity_is_not_a_planning_source
+    self.assertIn('changed: 2', result.stdout)
+E   AssertionError: 'changed: 2' not found in 'changed: 3\n  /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s6j1u92l/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\n  /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s6j1u92l/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md\n  /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s6j1u92l/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\nplanned actions: 1\n  bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-s6j1u92l/.claude/LIFEOS/TOOLS/DeriveDenyHashes.ts\n'
+_ MemoryDerivedSyncTests.test_read_only_owner_cannot_publish_sync_state_or_log _
+tests/test_memory_derived_sync.py:67: in test_read_only_owner_cannot_publish_sync_state_or_log
+    self.assertFalse(self.state.exists())
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_foreign_identity_source_refuses_planning
+FAILED tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_foreign_state_destination_refuses_before_child_publication
+SUBFAILED(arguments=['--dry-run']) tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_missing_context_cannot_plan_or_read_status
+SUBFAILED(arguments=['--status']) tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_missing_context_cannot_plan_or_read_status
+FAILED tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_owner_sync_state_and_log_have_private_permissions
+FAILED tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_private_identity_is_not_a_planning_source
+FAILED tests/test_memory_derived_sync.py::MemoryDerivedSyncTests::test_read_only_owner_cannot_publish_sync_state_or_log
+7 failed, 2 passed in 5.02s

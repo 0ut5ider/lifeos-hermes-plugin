@@ -1,0 +1,59 @@
+{
+  "cases": [
+    {
+      "id": "knowledge-edit-off-schema",
+      "registrations": [
+        "PostToolUse.9.6"
+      ],
+      "native": {
+        "before": {
+          "target_present": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "warning_emitted": true,
+          "other_output": false,
+          "model_received_warning": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 3,
+        "metadata_requests": 0,
+        "model_successful_responses": 3
+      },
+      "hermes": {
+        "before": {
+          "target_present": true
+        },
+        "after": {
+          "target_content_matches": true,
+          "tool_names": [
+            "Edit"
+          ],
+          "file_path_matches": true,
+          "warning_emitted": true,
+          "other_output": false,
+          "model_received_warning": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "PostToolUse",
+        "cli_exit_code": 0,
+        "model_generation_requests": 2,
+        "metadata_requests": 2,
+        "model_successful_responses": 2
+      },
+      "errors": []
+    }
+  ]
+}

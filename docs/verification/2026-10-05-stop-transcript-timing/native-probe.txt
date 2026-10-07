@@ -1,0 +1,19 @@
+import json,sys,time
+from pathlib import Path
+p=json.load(sys.stdin); t=Path(p["transcript_path"]); out=[]
+for delay in (0,0.05,0.15,0.5,1.0):
+    time.sleep(delay-(out[-1]["delay"] if out else 0))
+    rows=[json.loads(l) for l in t.read_text().splitlines() if l.strip()] if t.exists() else []
+    texts=[]
+    for r in rows:
+        if r.get("type")=="assistant":
+            c=r["message"]["content"]; texts.append(c if isinstance(c,str) else " ".join(x.get("text","") for x in c if isinstance(x,dict)))
+    out.append({"delay":delay,"assistant_texts":texts,"candidate_present":p["last_assistant_message"] in texts})
+Path(sys.argv[1]).write_text(json.dumps(out))
+===RUN
+#!/bin/sh
+set -a; . <private model settings>; set +a
+export HOME=/home/lifeos-claude-ref/workspace/stop-timing-probe CLAUDE_CONFIG_DIR=/home/lifeos-claude-ref/workspace/stop-timing-probe/.claude CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC=1
+cd /home/lifeos-claude-ref/workspace/stop-timing-probe/project && echo "Reply with exactly READY." | /home/lifeos-claude-ref/.local/share/claude/versions/2.1.272 -p --effort medium --tools "" --output-format stream-json --verbose > /home/lifeos-claude-ref/workspace/stop-timing-probe/cli.log 2>&1
+===RESULT
+[{"delay": 0, "assistant_texts": [], "candidate_present": false}, {"delay": 0.05, "assistant_texts": [], "candidate_present": false}, {"delay": 0.15, "assistant_texts": ["", "\n\nREADY"], "candidate_present": false}, {"delay": 0.5, "assistant_texts": ["", "\n\nREADY"], "candidate_present": false}, {"delay": 1.0, "assistant_texts": ["", "\n\nREADY"], "candidate_present": false}]

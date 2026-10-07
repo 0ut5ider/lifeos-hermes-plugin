@@ -1,0 +1,17 @@
+# Asynchronous context and child lifecycle controls
+
+Date: 2026-10-06. The rebuilt candidate uses eleven Hermes patch groups and sixteen LifeOS patches. The combined gate passes 240 tests without skips.
+
+The initial real inference control records two child results and two native starts, but zero native stops. Hermes subagent callbacks now correlate installed AgentInvocation starts and stops with actual child identities. The concurrent component control runs eight children with the same goal. It verifies distinct identities, duplicate suppression, wrong-parent rejection, and cleared native start state.
+
+Three actual private gateway controls use isolated installed plugin profiles. Concurrent success delivers both results through the actual SDK command-line completion consumer, runs a subsequent parent inference request, and records durable delivery. Provider failure measures two actual HTTP 401 child refusals and two correlated native stops. Cancellation starts two actual terminal operations, interrupts the batch through the SDK session API, finalizes the parent, and retains both interrupted child results. The SDK aggregate status is error. This command-line delivery control does not establish Discord transport.
+
+The raw model response identifies flashnext-w4a16-fp8ple. Native child starts retain the selected alias lifecycle-fixture; stops retain the actual observed model. The failure control omits the observed child model because no successful child response exists. A separate failing component test prevents a request alias from being recorded as an observed response model. Main-session callback traces contain only the actual parent session identifier.
+
+One cancellation inference attempt dispatches the pair twice. Its raw wire, host log, and failed status remain in cancel-carrier-final2. The subsequent passing cancellation control remains in cancel-carrier-final3. The fixture also initially used a relative plugin symlink that did not resolve to the installed package. The runner resolves that path before linking it.
+
+Three actual detached native TimeContext executions initially inject three clock blocks. The corrected consumer emits one current-minute clock. Consumer protocol controls discard prior-minute, crossing-minute, and future clock timestamps, while retaining ordinary context. The selected installation resolves native HOME command forms. An actual parent killed with SIGKILL leaves one detached native clock result. A restarted bridge consumes it once.
+
+The real Hermes clarification queue and native TabState controls cover single and two-question requests, answer, duplicate answer, timeout, cancellation, and late answer. Session finalization resets only applicable transient terminal state. The remote control initially changes desktop state because setAscentTab bypasses setTabState. The existing desktop patch now guards both writers. Remote questions preserve the original desktop bytes. Desktop cleanup removes only the ended window and preserves another window.
+
+source-identity.json binds the current component candidate. live-source-identity.json binds the preceding live delegation fixture, which has the same child callback implementation and uses absolute native commands. The complete rebuilt candidate is tested separately in combined-tests.txt. Complete installed groups, actual gateway watchdog delivery, explicit-tier live metadata, and the final combined regression remain open.

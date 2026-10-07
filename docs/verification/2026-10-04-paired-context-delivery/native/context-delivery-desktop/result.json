@@ -1,0 +1,103 @@
+{
+  "before": {
+    "marker_present": false
+  },
+  "after": {
+    "relationship_present": true,
+    "wisdom_present": true,
+    "low_confidence_present": false,
+    "advisory_present": true,
+    "sources_preserved": true,
+    "marker": {
+      "keys": [
+        "doc.integrity.memory_dir missing_active:KNOWLEDGE"
+      ],
+      "sessions_since_emit": 0,
+      "last_emitted_at_present": true
+    },
+    "timing_recorded": true,
+    "ready_present": false,
+    "model_context_contains": {
+      "relationship": true,
+      "wisdom": true,
+      "advisory": true,
+      "low_confidence": false
+    }
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 1,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "session_id": "d0c4db05-12af-40d8-b7f0-c9560df9e5fe",
+  "seconds": 0.618,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop",
+    "/home/lifeos-claude-ref/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.3",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.3 /home/lifeos-claude-ref/workspace/paired-delivery-20261004/run-v2/context-delivery-desktop/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvTG9hZENvbnRleHQuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/LoadContext.hook.ts": "8bc6f039c8a23fb3283ee306ba05ea76d0bf72c26fb36b8bcf3147b6e2fcc8f8",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/learning-readback.ts": "55f814badd6dc15cb0ebfd5019dc559683b3d8f53f1e24a6f61e4d883bfad0c8",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/advisory-readback.ts": "2a1304b352c3c9736165e82f8357ac63adc5e67d32c539c69caf059ca88e6a4b",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/notifications.ts": "91315d1e4eef6a1cee4d16ebd236edb3a3b3f437911aa65ecab9a3c611e21127"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "22706945af7511a9b6d82eb40503bc1d128c149a41e824e09dbda970eab67d2e",
+      "model": "lifecycle-fixture",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "5d9655524479c60e3f4b8bc0b997e649744d8075a7f25acd42cdfdff5c915869",
+    "fixture-events.jsonl": "8d0cfe8eefe1d08cb0776a956e9dc847c361e4372e4470e05793b0a37581f9d0",
+    "cli.log": "df8d46b87eca95b4fd5e72c42626b3da0df1e7eb6e41b94b5d9f87f7cbf05add",
+    "before-state.json": "c4c7ec5f7313eba9c7140845ac50a80d042ca48a5a7baac530895d97e09cfa5f",
+    "after-state.json": "2435caf8c41f3e37a64e91fb842d102a6c6a485348a41bd168508f754e3352aa",
+    "fixture-files-before.json": "703764d8ff9ddee9ec6c69f86d34306cb2cd060a8715348d6a4304854c0b23d4",
+    "fixture-files-after.json": "4e7bb51ddbe4c211f1255ff503ff5989e8db1e8719158932b159c9425f5127ba"
+  }
+}

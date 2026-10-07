@@ -1,0 +1,103 @@
+{
+  "case": "test_missing_or_malformed_feed_keeps_native_unavailable_metrics",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-state-evidence-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"note\":NaN}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-pbmgwy8d/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "health"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"metrics\": {\n    \"sleep_h_avg_7d\": 7.5,\n    \"sleep_efficiency_avg_7d\": null,\n    \"hrv_avg_7d\": null,\n    \"sleep_hr_avg_7d\": null,\n    \"rhr_avg_7d\": null,\n    \"steps_avg_7d\": 321,\n    \"sleep_score_avg_7d\": null,\n    \"readiness_avg_7d\": null,\n    \"sleep_h_avg_30d\": 7.5,\n    \"sleep_efficiency_avg_30d\": null,\n    \"hrv_avg_30d\": null,\n    \"sleep_hr_avg_30d\": null,\n    \"rhr_avg_30d\": null,\n    \"steps_avg_30d\": 321,\n    \"sleep_score_avg_30d\": null,\n    \"readiness_avg_30d\": null,\n    \"latest_sleep_record_day\": \"2026-10-04\",\n    \"days_with_data_30d\": 1,\n    \"newest_observation\": \"2026-10-04\",\n    \"oldest_observation_30d\": \"2026-10-04\"\n  },\n  \"sources\": [\n    {\n      \"id\": \"oura\",\n      \"status\": \"live\",\n      \"last_observation\": \"2026-10-04\"\n    },\n    {\n      \"id\": \"apple\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"eightsleep\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"function\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-pbmgwy8d/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "health"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"metrics\": {\n    \"sleep_h_avg_7d\": 7.5,\n    \"sleep_efficiency_avg_7d\": null,\n    \"hrv_avg_7d\": null,\n    \"sleep_hr_avg_7d\": null,\n    \"rhr_avg_7d\": null,\n    \"steps_avg_7d\": 321,\n    \"sleep_score_avg_7d\": null,\n    \"readiness_avg_7d\": null,\n    \"sleep_h_avg_30d\": 7.5,\n    \"sleep_efficiency_avg_30d\": null,\n    \"hrv_avg_30d\": null,\n    \"sleep_hr_avg_30d\": null,\n    \"rhr_avg_30d\": null,\n    \"steps_avg_30d\": 321,\n    \"sleep_score_avg_30d\": null,\n    \"readiness_avg_30d\": null,\n    \"latest_sleep_record_day\": \"2026-10-04\",\n    \"days_with_data_30d\": 1,\n    \"newest_observation\": \"2026-10-04\",\n    \"oldest_observation_30d\": \"2026-10-04\"\n  },\n  \"sources\": [\n    {\n      \"id\": \"oura\",\n      \"status\": \"live\",\n      \"last_observation\": \"2026-10-04\"\n    },\n    {\n      \"id\": \"apple\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"eightsleep\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"function\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-pbmgwy8d/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "health"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"metrics\": {\n    \"sleep_h_avg_7d\": 7.5,\n    \"sleep_efficiency_avg_7d\": null,\n    \"hrv_avg_7d\": null,\n    \"sleep_hr_avg_7d\": null,\n    \"rhr_avg_7d\": null,\n    \"steps_avg_7d\": 321,\n    \"sleep_score_avg_7d\": null,\n    \"readiness_avg_7d\": null,\n    \"sleep_h_avg_30d\": 7.5,\n    \"sleep_efficiency_avg_30d\": null,\n    \"hrv_avg_30d\": null,\n    \"sleep_hr_avg_30d\": null,\n    \"rhr_avg_30d\": null,\n    \"steps_avg_30d\": 321,\n    \"sleep_score_avg_30d\": null,\n    \"readiness_avg_30d\": null,\n    \"latest_sleep_record_day\": \"2026-10-04\",\n    \"days_with_data_30d\": 1,\n    \"newest_observation\": \"2026-10-04\",\n    \"oldest_observation_30d\": \"2026-10-04\"\n  },\n  \"sources\": [\n    {\n      \"id\": \"oura\",\n      \"status\": \"live\",\n      \"last_observation\": \"2026-10-04\"\n    },\n    {\n      \"id\": \"apple\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"eightsleep\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"function\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-pbmgwy8d/.claude/LIFEOS/TOOLS/StateEvidence.ts",
+        "--domain",
+        "health"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"metrics\": {\n    \"sleep_h_avg_7d\": 7.5,\n    \"sleep_efficiency_avg_7d\": null,\n    \"hrv_avg_7d\": null,\n    \"sleep_hr_avg_7d\": null,\n    \"rhr_avg_7d\": null,\n    \"steps_avg_7d\": 321,\n    \"sleep_score_avg_7d\": null,\n    \"readiness_avg_7d\": null,\n    \"sleep_h_avg_30d\": 7.5,\n    \"sleep_efficiency_avg_30d\": null,\n    \"hrv_avg_30d\": null,\n    \"sleep_hr_avg_30d\": null,\n    \"rhr_avg_30d\": null,\n    \"steps_avg_30d\": 321,\n    \"sleep_score_avg_30d\": null,\n    \"readiness_avg_30d\": null,\n    \"latest_sleep_record_day\": \"2026-10-04\",\n    \"days_with_data_30d\": 1,\n    \"newest_observation\": \"2026-10-04\",\n    \"oldest_observation_30d\": \"2026-10-04\"\n  },\n  \"sources\": [\n    {\n      \"id\": \"oura\",\n      \"status\": \"live\",\n      \"last_observation\": \"2026-10-04\"\n    },\n    {\n      \"id\": \"apple\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"eightsleep\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    },\n    {\n      \"id\": \"function\",\n      \"status\": \"unavailable\",\n      \"last_observation\": null,\n      \"reason\": \"not present in health current.json\"\n    }\n  ]\n}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

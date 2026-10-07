@@ -1,0 +1,43 @@
+{
+  "case": "test_actual_inference_retains_private_native_verification_record",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-pvvsfv2j/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts",
+        "synthetic"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"manifest\": {\n    \"id\": \"synthetic\",\n    \"title\": \"Synthetic fixture\",\n    \"dataType\": \"CollectionPageSchema\",\n    \"sourceGlobs\": [\n      \"LIFEOS/USER/TELOS/BOOKS.md\"\n    ],\n    \"adapterPromptFile\": \"LIFEOS/PULSE/pages/synthetic.adapter.md\",\n    \"model\": \"haiku\",\n    \"rebuildButton\": true,\n    \"order\": 1,\n    \"adapterVersion\": \"1.0.0\"\n  },\n  \"status\": \"success\",\n  \"pageId\": \"synthetic\",\n  \"cached\": false,\n  \"costUSD\": 0,\n  \"latencyMs\": 177,\n  \"sourceCount\": 1,\n  \"warnings\": []\n}\n",
+      "stderr": ""
+    }
+  ],
+  "before": null,
+  "artifacts": {
+    "LIFEOS/MEMORY/OBSERVABILITY/model-verification.jsonl": {
+      "content": "{\"ts\":\"2026-10-05T03:42:35.400Z\",\"level\":\"low\",\"requested\":\"haiku\",\"expected_tier\":\"haiku\",\"executed\":\"synthetic-flashnext\",\"downgraded\":true,\"latency_ms\":177}\n",
+      "mode": "0o600"
+    }
+  },
+  "requests": [
+    {
+      "path": "/v1/messages",
+      "body": {
+        "model": "synthetic-flashnext",
+        "max_tokens": 4096,
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "Render the declared synthetic collection as JSON.\n",
+        "messages": [
+          {
+            "role": "user",
+            "content": "--- SOURCE BUNDLE ---\n\n### SOURCE: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-pvvsfv2j/.claude/LIFEOS/USER/TELOS/BOOKS.md\n\n# Synthetic collection\nA synthetic book.\n\n\n--- END SOURCE BUNDLE ---\n\nReturn ONLY a single JSON object. No prose, no markdown fence."
+          }
+        ]
+      }
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-inference-log-candidate-distributed/lifeos/LifeOS/install"
+}

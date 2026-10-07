@@ -1,0 +1,13 @@
+E
+======================================================================
+ERROR: test_empty_installation_gets_all_release_locks_before_native_deployment (test_native_dependencies.NativeDependenciesTests.test_empty_installation_gets_all_release_locks_before_native_deployment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_dependencies.py", line 56, in test_empty_installation_gets_all_release_locks_before_native_deployment
+    from lifeos_hook_bridge.native_dependencies import seed_release_locks
+ImportError: cannot import name 'seed_release_locks' from 'lifeos_hook_bridge.native_dependencies' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/native_dependencies.py)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.031s
+
+FAILED (errors=1)

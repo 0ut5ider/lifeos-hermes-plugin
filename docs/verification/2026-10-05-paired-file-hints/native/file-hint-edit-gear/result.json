@@ -1,0 +1,159 @@
+{
+  "before": {
+    "atlas_rows": 1,
+    "target_present": true,
+    "evaluation_state_present": false
+  },
+  "after": {
+    "prior_event_preserved": true,
+    "hint_sources": [
+      "gear"
+    ],
+    "hint_tools": [
+      "Edit"
+    ],
+    "hints_current": true,
+    "one_hint_per_call": true,
+    "target_content_matches": true,
+    "tool_names": [
+      "Edit"
+    ],
+    "file_path_matches": true,
+    "hook_outputs_empty": true,
+    "evaluation_state_preserved": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0,
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "1387dbf0-8855-46c7-ae60-9a774191bc9b",
+  "seconds": 5.985,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-file-hints-20261005/results/file-hint-edit-gear",
+    "/home/lifeos-claude-ref/workspace/paired-file-hints-20261005/results/file-hint-edit-gear",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Read,Edit",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Perform the exact file operation from the user message with the file tools. Then reply with exactly READY. If a tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "acceptEdits",
+    "--max-turns",
+    "5",
+    "In the file at the absolute path /home/lifeos-claude-ref/workspace/paired-file-hints-20261005/results/file-hint-edit-gear/project/GEAR.md, replace the text PAIR_OLD_LINE with PAIR_NEW_LINE. Use the file editing tool. Do not rewrite the whole file."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.9.5",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.5 /home/lifeos-claude-ref/workspace/paired-file-hints-20261005/results/file-hint-edit-gear/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQXRsYXNFdmVudENhcHR1cmUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/AtlasEventCapture.hook.ts": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+      }
+    },
+    {
+      "id": "PostToolUse.9.4",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.4 /home/lifeos-claude-ref/workspace/paired-file-hints-20261005/results/file-hint-edit-gear/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQ29uZmlnRXZhbEZpcmUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/ConfigEvalFire.hook.ts": "999dcaa059b7bedf644c8f249cb77e192aa62f500962dc728ae895098fce0022"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "c8a096e232888823dac424a8f4a209fa8d4310a059fcc337c07ca025b3351478",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a4f24e2c10594602b9802cfa2401cd0a6dd2e9925bf0dd56541ace48aaa943fd",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "f43efd662914d9a05072e464776f01d31079f1f86193d2ed14002d6e4afccd0e",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "51bff681e43e73ec1cbbbf4cddd6d39bf295e44d43c43d0e214e8f438f036379",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "60c04e8a189dd1b7aea7a2821749296f1bbf4fa33ea98127c220175ffe63227c",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "cc5f00d0d715b0ac5f1dc01c1a1eddbb495513e3b3d12e1d6123d4f13d1fe081",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "6a681d85e18b1c174e6754ecddbc4d538fa4d870e60c10cfb0aafeac8363909f",
+    "fixture-events.jsonl": "e7cb83dd50673d993e42f41e5cd02096c7de35a056f141f3eaa339c652098930",
+    "cli.log": "d2407a5d9e79721c20d773c630e4c2e2e873ec2303faf9aba96a96099d669480",
+    "before-state.json": "2a8d1e16645334068a224a1e6e3d40a2d0607024f39449682c709a3f7913474a",
+    "after-state.json": "45fa6ad1d83245f5252e15e483c3358f46f1c571056d8b37fa8747a7cfd3f2b7",
+    "fixture-files-before.json": "efacb79af1da05fcdf78872eb86b0a2b1f903fba48920f5a888fabb74ca9bd48",
+    "fixture-files-after.json": "efacb79af1da05fcdf78872eb86b0a2b1f903fba48920f5a888fabb74ca9bd48"
+  }
+}

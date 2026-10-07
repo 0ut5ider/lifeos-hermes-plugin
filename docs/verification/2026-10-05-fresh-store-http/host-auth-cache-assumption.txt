@@ -1,0 +1,16 @@
+E
+======================================================================
+ERROR: test_verified_owner_prepares_fixed_source_and_preserves_current_profile (test_fresh_store_dashboard.FreshStoreDashboardTests.test_verified_owner_prepares_fixed_source_and_preserves_current_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/.cache/lifeos-full-experience-20261005/named-store-git-archive/source/tests/test_fresh_store_dashboard.py", line 39, in test_verified_owner_prepares_fixed_source_and_preserves_current_profile
+    self.assertEqual(response.headers['cache-control'],'no-store')
+                     ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/httpx2/_models.py", line 316, in __getitem__
+    raise KeyError(key)
+KeyError: 'cache-control'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.167s
+
+FAILED (errors=1)

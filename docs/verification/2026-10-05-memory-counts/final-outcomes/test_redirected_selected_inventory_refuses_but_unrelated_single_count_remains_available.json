@@ -1,0 +1,50 @@
+[
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts",
+      "--single",
+      "ratings"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "243 |         && Object.keys(COMPUTERS).every(key => {\n244 |           const count = counts[key];\n245 |           return typeof count === \"number\" && Number.isSafeInteger(count) && count >= 0;\n246 |         });\n247 |     });\n248 |   if (governed !== undefined && governed.ok !== true) throw new Error(\"Governed native installation counts are unavailable\");\n                                                                      ^\nerror: Governed native installation counts are unavailable\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:248:65)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:270:23\n\nBun v1.3.14 (Linux x64)\n"
+  },
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts",
+      "--single",
+      "skills"
+    ],
+    "returncode": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts",
+      "--single",
+      "research"
+    ],
+    "returncode": 1,
+    "stdout": "",
+    "stderr": "243 |         && Object.keys(COMPUTERS).every(key => {\n244 |           const count = counts[key];\n245 |           return typeof count === \"number\" && Number.isSafeInteger(count) && count >= 0;\n246 |         });\n247 |     });\n248 |   if (governed !== undefined && governed.ok !== true) throw new Error(\"Governed native installation counts are unavailable\");\n                                                                      ^\nerror: Governed native installation counts are unavailable\n      at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:248:65)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts:270:23\n\nBun v1.3.14 (Linux x64)\n"
+  },
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-counts-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/GetCounts.ts",
+      "--single",
+      "skills"
+    ],
+    "returncode": 0,
+    "stdout": "0\n",
+    "stderr": ""
+  }
+]

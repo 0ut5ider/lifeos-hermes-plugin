@@ -1,0 +1,160 @@
+{
+  "before": {
+    "cache_present": false
+  },
+  "after": {
+    "total": 8,
+    "fresh_count": 2,
+    "total_matches_files": true,
+    "telos_stale": false,
+    "generated_at_present": true,
+    "cache_without_generated_at": {
+      "total": 8,
+      "fresh_count": 2,
+      "stale_count": 6,
+      "overall_pct": 25,
+      "overall_grade": "D",
+      "most_stale": {
+        "slug": "projects",
+        "name": "PROJECTS.md",
+        "age_days": null,
+        "threshold_days": 30,
+        "reviewed_age_days": null,
+        "pct": 0,
+        "grade": "F",
+        "why": "no frontmatter"
+      },
+      "files": [
+        {
+          "slug": "telos",
+          "name": "TELOS.md",
+          "age_days": 0,
+          "threshold_days": 30,
+          "reviewed_age_days": 0,
+          "pct": 100,
+          "grade": "A",
+          "stale": false
+        },
+        {
+          "slug": "da_identity",
+          "name": "DA_IDENTITY.md",
+          "age_days": null,
+          "threshold_days": 180,
+          "reviewed_age_days": null,
+          "pct": 0,
+          "grade": "F",
+          "stale": true,
+          "why": "no frontmatter"
+        },
+        {
+          "slug": "principal_identity",
+          "name": "PRINCIPAL_IDENTITY.md",
+          "age_days": null,
+          "threshold_days": 90,
+          "reviewed_age_days": null,
+          "pct": 0,
+          "grade": "F",
+          "stale": true,
+          "why": "no frontmatter"
+        },
+        {
+          "slug": "projects",
+          "name": "PROJECTS.md",
+          "age_days": null,
+          "threshold_days": 30,
+          "reviewed_age_days": null,
+          "pct": 0,
+          "grade": "F",
+          "stale": true,
+          "why": "no frontmatter"
+        },
+        {
+          "slug": "lifeos_system_prompt",
+          "name": "LIFEOS_SYSTEM_PROMPT.md",
+          "age_days": null,
+          "threshold_days": 90,
+          "reviewed_age_days": null,
+          "pct": 0,
+          "grade": "F",
+          "stale": true,
+          "why": "no frontmatter"
+        },
+        {
+          "slug": "principal_telos",
+          "name": "PRINCIPAL_TELOS.md",
+          "age_days": 0,
+          "threshold_days": 30,
+          "reviewed_age_days": 0,
+          "pct": 100,
+          "grade": "A",
+          "stale": false
+        },
+        {
+          "slug": "architecture_summary",
+          "name": "ARCHITECTURE_SUMMARY.md",
+          "age_days": null,
+          "threshold_days": 90,
+          "reviewed_age_days": null,
+          "pct": 0,
+          "grade": "F",
+          "stale": true,
+          "why": "source missing"
+        },
+        {
+          "slug": "lifeos_system_architecture",
+          "name": "LifeosSystemArchitecture.md",
+          "age_days": null,
+          "threshold_days": 90,
+          "reviewed_age_days": null,
+          "pct": 0,
+          "grade": "F",
+          "stale": true,
+          "why": "no frontmatter"
+        }
+      ]
+    }
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 0,
+  "session_id": "8eab9ebe-72f9-44c3-98ba-1c12cf753f83",
+  "seconds": 0.618,
+  "command": [
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.4",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionStart.1.4 /home/lifeos-claude-ref/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/freshness-reviewed/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvTElGRU9TL1RPT0xTL0ZyZXNobmVzc0NhY2hlLnRzIC0tcXVpZXQ=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/LIFEOS/TOOLS/FreshnessCache.ts": "8c3fadc6ff27570dfd17145e6488f91d2b9be74271bc7091482a0a89176c6711"
+      }
+    }
+  ],
+  "requests": [],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "d8189fb5a98928c65001b0a16a1484e7021e2b4cd6a5b7cb86a2a0a893b262dd",
+    "fixture-events.jsonl": "da5993a1c8bc42ddb2b478ab265cbd165e7e11e24bd9ea19f252eeda2710d0d6",
+    "cli.log": "9a6800604bb515c8ae3b7fde21b0f214b3886a7528182402f989c638196425bc",
+    "before-state.json": "91eb9ab2c9fd5c62fe90bef166d31b3c0574c2e33dd0dbad2b82133dd9775e7f",
+    "after-state.json": "11a937edd780fad3a2b5d5850add8e4abd74fb6a8dfeee50e9aafb0548085623",
+    "fixture-files-before.json": "b78c00cf082837edc90faeb554c95818f0c400ae363a12efac3cd8fd5493e4e8",
+    "fixture-files-after.json": "aefcaebfd4b31345b59f3ddfa295f1c34239977d06e0c47c05067468cf531c42"
+  }
+}

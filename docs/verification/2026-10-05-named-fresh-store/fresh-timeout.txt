@@ -1,0 +1,44 @@
+E.
+======================================================================
+ERROR: test_named_store_has_no_adopted_facts_and_preserves_originals (test_fresh_store.FreshStoreTests.test_named_store_has_no_adopted_facts_and_preserves_originals)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 266, in install_lifeos
+    result = subprocess.run(
+        [executable, str(skill_root / "Tools" / f"{name}.ts"),
+    ...<2 lines>...
+        cwd=installed.parent, env=environment, text=True, capture_output=True, timeout=300,
+    )
+  File "/usr/lib64/python3.14/subprocess.py", line 557, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1221, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 2154, in _communicate
+    self._check_timeout(endtime, orig_timeout, stdout, stderr)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/subprocess.py", line 1268, in _check_timeout
+    raise TimeoutExpired(
+    ...<2 lines>...
+            stderr=b''.join(stderr_seq) if stderr_seq else None)
+subprocess.TimeoutExpired: Command '['/home/outsider/.bun/bin/bun', '/home/outsider/.cache/lifeos-full-experience-20261005/fresh-store-paths/native-candidate/LifeOS/Tools/DeployCore.ts', '--config-root', '/tmp/native-memory-0pby8f9b/.local/state/lifeos-hook-bridge/fresh-stores/b23684c4803aacd5f7d41f6a/a1a48e2e9cf24d2bb58dd708136681ee/home/.claude', '--config-dir', '/tmp/native-memory-0pby8f9b/.local/state/lifeos-hook-bridge/fresh-stores/b23684c4803aacd5f7d41f6a/a1a48e2e9cf24d2bb58dd708136681ee/home/.config/LIFEOS', '--skill-root', '/home/outsider/.cache/lifeos-full-experience-20261005/fresh-store-paths/native-candidate/LifeOS', '--apply']' timed out after 300 seconds
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store.py", line 38, in test_named_store_has_no_adopted_facts_and_preserves_originals
+    result=self.operation().prepare(CANDIDATE,principal_name='Adrian',assistant_name='Cerebo',account='dashboard:owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/fresh_store.py", line 125, in prepare
+    installation=install_prepared_lifeos(candidate,installed,destination/'failed-install')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 295, in install_prepared_lifeos
+    return install_lifeos(candidate, installed, failed, "bun", SUPPORTED_LIFEOS_COMMIT,
+                          Path(__file__).parent / "patches", LIFEOS_PATCHES)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 289, in install_lifeos
+    raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: Command '['/home/outsider/.bun/bin/bun', '/home/outsider/.cache/lifeos-full-experience-20261005/fresh-store-paths/native-candidate/LifeOS/Tools/DeployCore.ts', '--config-root', '/tmp/native-memory-0pby8f9b/.local/state/lifeos-hook-bridge/fresh-stores/b23684c4803aacd5f7d41f6a/a1a48e2e9cf24d2bb58dd708136681ee/home/.claude', '--config-dir', '/tmp/native-memory-0pby8f9b/.local/state/lifeos-hook-bridge/fresh-stores/b23684c4803aacd5f7d41f6a/a1a48e2e9cf24d2bb58dd708136681ee/home/.config/LIFEOS', '--skill-root', '/home/outsider/.cache/lifeos-full-experience-20261005/fresh-store-paths/native-candidate/LifeOS', '--apply']' timed out after 300 seconds. Partial files were kept at /tmp/native-memory-0pby8f9b/.local/state/lifeos-hook-bridge/fresh-stores/b23684c4803aacd5f7d41f6a/a1a48e2e9cf24d2bb58dd708136681ee/failed-install
+
+----------------------------------------------------------------------
+Ran 2 tests in 302.641s
+
+FAILED (errors=1)

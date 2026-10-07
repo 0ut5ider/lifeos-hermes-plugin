@@ -89,6 +89,9 @@
             setResults(result.results ?? []);
             setMessage(result.status === "ok" ? "" : (result.reason ?? result.status));
           }
+        } else if (path === "/owner") {
+          setMemory(result);
+          setMessage("This dashboard account now owns the LifeOS installation. Ownership and sharing stay disabled.");
         } else {
           setMemory(await SDK.fetchJSON(memoryEndpoint));
           setMessage(result.status === "enrolled" ?
@@ -133,6 +136,11 @@
       h("h2", { className: "text-lg font-semibold" }, "Lasting memory"),
       h("p", { className: "text-sm" }, "LifeOS keeps durable facts and preferences. Hermes keeps conversation history and context compression."),
       memory?.state === "not_configured" ? h("p", null, "Memory setup is not configured. Your current memory settings have not been changed.") : null,
+      memory?.state === "not_configured" ? h("p", { className: "text-sm" },
+        "Claim the installation to prepare a fresh store or review memory. The claim binds this dashboard account as the owner. It does not enable ownership or sharing.") : null,
+      memory?.state === "not_configured" ? h("button", { type: "button", disabled: busy,
+        onClick: function () { return action("/owner", "POST"); },
+        className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Claim this LifeOS installation") : null,
       memory?.state === "unavailable" ? h("p", { role: "alert" }, "Memory is unavailable: " + memory.message) : null,
       configured ? h("p", null, "Native memory check: " + memory.native_health + ". Current indexed facts: " + (memory.active_facts ?? "unknown") + ".") : null,
       h("p", { className: "text-sm" }, "Ownership setup is still in development. This page cannot switch your memory provider until the checks below pass."),
@@ -244,9 +252,16 @@
                 h("p", null, "Projects: " + (connection.projects ?? []).join(", ") + ". Declared model route: " + (connection.model_route ?? "unknown") + "."),
                 connection.enabled ? h("button", { type: "button", disabled: busy,
                   onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
-                }, "Revoke " + connection.client) : null);
+                }, "Revoke " + connection.client) : null,
+                !connection.enabled && connection.credential_entry_pending ? h("p", null,
+                  "The SSH entry of this connection is still present. It cannot reach memory. Install the sharing component to remove it.") : null,
+                !connection.enabled && connection.credential_entry_pending && memory.connection_enrollment_available !== false ? h("button", { type: "button", disabled: busy,
+                  onClick: function () { return action("/connections/" + encodeURIComponent(connection.client), "DELETE"); }
+                }, "Remove SSH entry of " + connection.client) : null);
             }),
             h("p", { className: "text-sm" }, "A cloud model can receive every fact this connection returns. An unknown model route is unverified. Adding a connection enables sharing for the enabled connections listed above."),
+            memory.connection_enrollment_available === false ? h("p", { id: "memory_enrollment_unavailable", className: "text-sm" },
+              "Adding a connection needs the optional SSH sharing component. Install it on the server, then reload this page. Existing connections can still be revoked here.") :
             h("form", { id: "memory_enrollment", className: "space-y-3", onSubmit: function (event) {
               event.preventDefault();
               const read = ["project"]; if (principal) read.push("principal"); if (assistant) read.push("assistant");
@@ -261,6 +276,106 @@
               checkbox("memory_assistant", "Allow reading assistant preferences", assistant, setAssistant),
               checkbox("memory_project_write", "Allow writing project facts", writeProject, setWriteProject),
               h("button", { type: "submit", disabled: busy, className: "rounded border border-border px-3 py-2" }, "Add agent connection"))))) : null);
+  }
+
+  function FreshStores() {
+    const endpoint = "/api/plugins/lifeos-hook-bridge/memory/fresh";
+    const selectionEndpoint = "/api/plugins/lifeos-hook-bridge/installation/selection";
+    const [listing, setListing] = SDK.hooks.useState(null);
+    const [selection, setSelection] = SDK.hooks.useState(null);
+    const [principalName, setPrincipalName] = SDK.hooks.useState("");
+    const [assistantName, setAssistantName] = SDK.hooks.useState("");
+    const [busy, setBusy] = SDK.hooks.useState(false);
+    const [notice, setNotice] = SDK.hooks.useState("");
+
+    async function load() {
+      try { setListing(await SDK.fetchJSON(endpoint + "/status")); }
+      catch (error) { setNotice("Could not list fresh stores: " + error.message); }
+      try { setSelection(await SDK.fetchJSON(selectionEndpoint)); }
+      catch (error) { setNotice("Could not read the selected installation: " + error.message); }
+    }
+    async function choose(path, body, started) {
+      setBusy(true);
+      try {
+        await SDK.fetchJSON(selectionEndpoint + path, { method: "POST",
+          ...(body === undefined ? {} : { headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }) });
+        setNotice(started);
+        await load();
+      } catch (error) { setNotice(error.message); }
+      finally { setBusy(false); }
+    }
+    SDK.hooks.useEffect(function () { load(); }, []);
+
+    async function start(event) {
+      event.preventDefault();
+      setBusy(true);
+      try {
+        await SDK.fetchJSON(endpoint + "/start", { method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ principal_name: principalName, assistant_name: assistantName }) });
+        setNotice("Preparation started. It continues if this page closes.");
+        await load();
+      } catch (error) { setNotice(error.message); }
+      finally { setBusy(false); }
+    }
+    async function remove(identifier) {
+      setBusy(true);
+      try {
+        await SDK.fetchJSON(endpoint + "/stores/" + encodeURIComponent(identifier), { method: "DELETE" });
+        setNotice("Store removed. The current installation is unchanged.");
+        await load();
+      } catch (error) { setNotice(error.message); }
+      finally { setBusy(false); }
+    }
+    function describe(store) {
+      const names = store.names ? store.names.principal + " and " + store.names.assistant : "Unknown names";
+      if (store.state === "review") return names + ": ready for review, " + store.active_facts + " active facts";
+      if (store.state === "failed") return names + ": failed: " + store.reason;
+      if (store.state === "preparing") return names + ": preparing";
+      if (store.state === "interrupted") return names + ": interrupted. Remove it and start again.";
+      return "A store with unreadable or altered records";
+    }
+    const stores = listing ? listing.stores : [];
+    const job = selection?.job?.state ?? "none";
+    const pending = ["queued", "running", "recovering", "rolling_back", "interrupted"].includes(job);
+    const selectedStore = selection?.configured ? stores.find(function (store) {
+      return selection.home.includes("/" + store.identifier + "/");
+    }) : null;
+    return h("section", { className: "space-y-3" },
+      h("h3", { className: "font-semibold" }, "Fresh LifeOS store"),
+      h("p", { className: "text-sm" }, "Prepare a separate store with no existing facts. The current installation stays selected; preparing a store does not switch memory."),
+      h("form", { id: "fresh_store_start", className: "space-y-2", onSubmit: start },
+        h("label", { className: "block text-sm", htmlFor: "fresh_principal" }, "Your name",
+          h("input", { id: "fresh_principal", value: principalName, required: true,
+            className: "mt-1 block w-full rounded border border-border bg-background p-2",
+            onChange: function (event) { setPrincipalName(event.target.value); } })),
+        h("label", { className: "block text-sm", htmlFor: "fresh_assistant" }, "Assistant name",
+          h("input", { id: "fresh_assistant", value: assistantName, required: true,
+            className: "mt-1 block w-full rounded border border-border bg-background p-2",
+            onChange: function (event) { setAssistantName(event.target.value); } })),
+        h("button", { type: "submit", disabled: busy || !listing || listing.busy,
+          className: "rounded border border-border px-3 py-2" }, "Prepare fresh store")),
+      selection?.configured ? h("div", { className: "space-y-2 text-sm" },
+        h("p", null, "This profile uses the fresh store " + (selectedStore ? selectedStore.identifier.slice(0, 8) : selection.home) +
+          ". The previous installation and its data stay unchanged."),
+        h("button", { type: "button", disabled: busy || pending,
+          onClick: function () { return choose("/return", undefined, "Return started. Hermes restarts when it finishes."); },
+          className: "rounded border border-border px-3 py-2" }, "Return to the previous installation")) : null,
+      job === "interrupted" ? h("button", { type: "button", disabled: busy,
+        onClick: function () { return choose("/recover", undefined, "Recovery started."); },
+        className: "rounded border border-border px-3 py-2" }, "Recover interrupted selection") : null,
+      job !== "none" ? h("p", { role: "status", className: "text-sm" }, "Installation selection: " + job +
+        (selection.job.error ? ". " + selection.job.error : "")) : null,
+      stores.map(function (store) {
+        return h("article", { key: store.identifier, className: "rounded border border-border p-3 text-sm" },
+          h("p", null, describe(store)),
+          store.state === "review" && store !== selectedStore && !pending ? h("button", { type: "button", disabled: busy,
+            onClick: function () { return choose("", { store: store.identifier },
+              "Selection started. Hermes restarts with the fresh store when it finishes."); } },
+            "Use " + store.identifier.slice(0, 8)) : null,
+          h("button", { type: "button", disabled: busy || store.state === "preparing",
+            onClick: function () { return remove(store.identifier); } }, "Remove " + store.identifier.slice(0, 8)));
+      }),
+      notice ? h("p", { role: "status", className: "text-sm" }, notice) : null);
   }
 
   function LifeOSSettings() {
@@ -519,6 +634,17 @@
       }).finally(function () { setInstallationBusy(false); });
     }
 
+    function recoverHermes() {
+      setInstallationBusy(true);
+      setInstallationStatus("");
+      SDK.fetchJSON(installationEndpoint + "/recover-hermes", { method: "POST" }).then(function () {
+        setInstallationStatus("Returning Hermes to its stock files. The gateway will restart.");
+        refreshHostPatch(0);
+      }).catch(function (error) {
+        setInstallationStatus("Could not start Hermes recovery: " + error.message);
+      }).finally(function () { setInstallationBusy(false); });
+    }
+
     function refreshLifeOSUpdate(attempt) {
       SDK.fetchJSON(lifeosUpdateEndpoint).then(function (result) {
         setLifeosUpdate(result);
@@ -621,6 +747,7 @@
       h("div", null,
       h("h1", { className: "text-2xl font-semibold" }, "LifeOS Bridge"),
       h(MemoryPreferences),
+      h(FreshStores),
         h("p", { className: "text-muted-foreground" },
           "LifeOS asks for four levels of work. Choose a Hermes model and effort for each one. Using one model in every row is fine. The model currently selected in Hermes fills empty rows by default. Effort controls the amount of reasoning requested."),
         suggestedDefaults ? h("p", { role: "status", className: "mt-2 text-sm" },
@@ -674,7 +801,9 @@
             type: "button", disabled: installationBusy, onClick: finalizeLifeOS,
             className: "rounded border border-border px-4 py-2 disabled:opacity-50",
           }, installationBusy ? "Finishing..." : "Finish LifeOS setup") : null) : null,
-        installation?.lifeos === "installed" && installation.hermes === "stock" ? h("div", { className: "space-y-2 text-sm" },
+        installation?.dashboard_restart_required ? h("p", { role: "status" },
+          "Restart the Hermes dashboard to load the changed Hermes hooks. Until then, this page shows the hooks that the running dashboard loaded at start.") : null,
+        installation?.lifeos === "installed" && installation.hermes === "stock" && !installation.dashboard_restart_required ? h("div", { className: "space-y-2 text-sm" },
           h("p", null, "Current Hermes runs LifeOS pre-tool, post-tool, prompt-context, and session-end callbacks."),
           h("p", null, "Reduced mode cannot enforce LifeOS Bash permission decisions, block a user prompt, gate a final answer, or reliably add post-tool warnings after another result transformer. It also lacks the patched child model routes and remote file guards."),
           h("details", null,
@@ -714,9 +843,13 @@
           }, "Restore previous Hermes")) : null,
         ["staged", "applying", "restoring"].includes(hostPatch?.state) ? h("p", { role: "status" },
           "Hermes patch job is " + hostPatch.state + ". The gateway may be unavailable during restart.") : null,
+        hostPatch?.state === "interrupted" ? h("div", { className: "space-y-2 text-sm" },
+          h("p", { role: "alert" }, "A Hermes patch change stopped before it finished. The gateway may be stopped. Recovery returns Hermes to its stock files and starts the gateway."),
+          h("button", { type: "button", disabled: installationBusy, onClick: recoverHermes,
+            className: "rounded border border-border px-4 py-2 disabled:opacity-50" }, "Recover interrupted Hermes change")) : null,
         ["rolled_back", "rollback_failed", "restore_failed", "failed_preflight", "error"].includes(hostPatch?.state) ? h("p", { role: "status" },
           "Hermes patch job: " + hostPatch.state + (hostPatch.error ? ". " + hostPatch.error : "")) : null,
-        installation?.lifeos === "installed" && installation.hermes === "patched_hooks_present" ? h("p", { className: "text-sm" },
+        installation?.lifeos === "installed" && installation.hermes === "patched_hooks_present" && !installation.dashboard_restart_required ? h("p", { className: "text-sm" },
           "The required Hermes hook names are present. The complete patch set still needs a release verification before full parity can be claimed.") : null,
         installation?.hermes === "partial" ? h("p", { role: "status" },
           "Hermes exposes only part of the required hook contract. Use a tested compatible release before enabling the full bridge.") : null,

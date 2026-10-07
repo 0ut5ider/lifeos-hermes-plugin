@@ -1,0 +1,9 @@
+{
+  "arguments": [
+    "stats"
+  ],
+  "context": false,
+  "status": 1,
+  "stdout": "",
+  "stderr": "50 | function failure(command: string, code: string, message: string): CortexEnvelope { return { schema: SCHEMA, ok: false, command, data: null, error: { code, message } }; }\n51 | function ok(command: string, data: unknown): CortexRunResult { return checked({ exitCode: EXIT.OK, envelope: envelope(command, data) }); }\n52 | function fail(command: string, exitCode: number, code: string, message: string): CortexRunResult { return checked({ exitCode, envelope: failure(command, code, message) }); }\n53 | \n54 | class IntegrityError extends Error {}\n55 | function integrity(message: string): never { throw new IntegrityError(message); }\n                                                        ^\nerror: The governed canonical corpus is unavailable\n      at integrity (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/knowledge-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/Cortex.ts:55:52)\n      at enumerateCanonicalCorpus (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/knowledge-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/Cortex.ts:200:63)\n      at buildGraph (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/knowledge-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts:220:38)\n      at cmdStats (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/knowledge-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts:624:17)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/knowledge-graph-prepared/lifeos/LifeOS/install/LIFEOS/TOOLS/KnowledgeGraph.ts:891:5\n\nBun v1.3.14 (Linux x64)\n"
+}

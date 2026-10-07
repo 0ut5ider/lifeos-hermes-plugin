@@ -1,0 +1,65 @@
+{
+  "case": "test_later_source_authority_or_note_change_preserves_data",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/memory.json",
+        "source"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"Hypothesis sources or destinations change during derivation\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/memory.json",
+        "destination"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"Hypothesis sources or destinations change during derivation\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/memory.json",
+        "authority"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\": false, \"code\": \"EINVAL_PATH\", \"message\": \"Hypothesis authority changes during derivation\"}\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "Synthetic later hypothesis edit\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:48:46.733Z\",\n  \"claim_hashes\": {\n    \"clean-implementationsatisfaction\": {\n      \"hash\": \"42c02696a49bab60\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-uhixmt1t/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:48:46.733Z] run: window=7d dry-run=false\n[2026-10-05T05:48:46.733Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:48:46.733Z] clusters: 1\n[2026-10-05T05:48:46.733Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

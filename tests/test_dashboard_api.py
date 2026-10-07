@@ -89,6 +89,24 @@ class DashboardApiTests(unittest.TestCase):
                 host.VALID_HOOKS.add("pre_prompt_admission")
                 self.assertEqual(api.get_installation()["hermes"], "patched_hooks_present")
 
+    def test_installation_reports_a_dashboard_restart_after_a_host_change(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        stock = {"pre_tool_call", "post_tool_call", "pre_llm_call", "on_session_finalize", "api_request_error"}
+        cases = (("applied", stock, True), ("rolled_back", stock | api.PATCHED_HOOKS, True),
+                 ("applied", stock | api.PATCHED_HOOKS, False), ("rolled_back", stock, False))
+        for state, hooks, expected in cases:
+            with self.subTest(state=state, patched=hooks >= api.PATCHED_HOOKS), \
+                    tempfile.TemporaryDirectory() as directory:
+                api.INSTALLED_ROOT = Path(directory) / ".claude"
+                api.HOST_PATCH_ROOT = Path(directory) / "host-patches"
+                (api.HOST_PATCH_ROOT / "patch-1").mkdir(parents=True)
+                (api.HOST_PATCH_ROOT / "patch-1/manifest.json").write_text(json.dumps({"state": state}))
+                host = types.ModuleType("hermes_cli.plugins")
+                host.VALID_HOOKS = set(hooks)
+                with patch.dict(sys.modules, {"hermes_cli": types.ModuleType("hermes_cli"),
+                                              "hermes_cli.plugins": host}):
+                    self.assertIs(api.get_installation()["dashboard_restart_required"], expected)
+
     def test_prepares_candidate_only_when_lifeos_is_missing(self):
         api = self.load_api(lambda *_: [], lambda *_: [])
         with tempfile.TemporaryDirectory() as directory:
@@ -351,6 +369,32 @@ class DashboardApiTests(unittest.TestCase):
             self.assertTrue(any(command[0] == "systemd-run" for command in commands))
             self.assertEqual(api.get_host_patch_status()["state"], "staged")
 
+    def test_interrupted_host_change_reports_and_launches_recovery(self):
+        api = self.load_api(lambda *_: [], lambda *_: [])
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            api.HERMES_HOME = root / ".hermes"
+            api.HERMES_HOME.mkdir()
+            api.HOST_PATCH_ROOT = root / "patch-jobs"
+            snapshot = api.HOST_PATCH_ROOT / "patch-1"
+            snapshot.mkdir(parents=True)
+            (snapshot / "manifest.json").write_text(json.dumps({"state": "restoring", "unit": "lifeos-bridge-restore-1"}))
+            inactive = lambda command, **_: types.SimpleNamespace(returncode=3, stdout="inactive\n", stderr="")
+            with patch.object(api.subprocess, "run", side_effect=inactive):
+                status = api.get_host_patch_status()
+            self.assertEqual((status["state"], status["transaction_state"]), ("interrupted", "restoring"))
+            launched = []
+            with patch.object(api.subprocess, "run", side_effect=inactive), \
+                    patch.object(api, "_launch_host_patch", side_effect=lambda snap, action: launched.append((snap, action))):
+                result = api._recover_hermes_installation()
+            self.assertEqual(result, {"state": "recovering", "snapshot": str(snapshot)})
+            self.assertEqual(launched, [(snapshot, "recover")])
+            active = lambda command, **_: types.SimpleNamespace(returncode=0, stdout="active\n", stderr="")
+            with patch.object(api.subprocess, "run", side_effect=active):
+                self.assertEqual(api.get_host_patch_status()["state"], "restoring")
+                with self.assertRaises(api.HTTPException):
+                    api._recover_hermes_installation()
+
     def load_api(self, fields, save):
         settings = types.ModuleType("hermes_cli.plugins_settings")
         settings.plugin_settings_fields = fields
@@ -360,6 +404,28 @@ class DashboardApiTests(unittest.TestCase):
             module = importlib.util.module_from_spec(spec)
             spec.loader.exec_module(module)
         return module
+
+    def test_installation_paths_follow_the_selected_lifeos_home(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            account, store = root / "account", root / "store/home"
+            profile = account / ".hermes"
+            profile.mkdir(parents=True, mode=0o700)
+            (store / ".claude").mkdir(parents=True)
+            setting = (profile / "lifeos-installation.json")
+            setting.write_text(json.dumps({"version": 1, "home": str(store),
+                                           "workspace": str(account / "HermesWorkspace")}))
+            setting.chmod(0o600)
+            with patch.dict(os.environ, {"HOME": str(account), "HERMES_HOME": str(profile)}):
+                api = self.load_api(lambda *_: [], lambda *_: None)
+            self.assertEqual(api.INSTALLED_ROOT, store / ".claude")
+            self.assertEqual(api.BASELINE_PATH,
+                             store / ".local/state/lifeos-hook-bridge/version-drift-baseline.json")
+            self.assertEqual(api.INSTALL_CANDIDATE, account / ".local/share/lifeos-bridge/lifeos-candidate")
+            setting.unlink()
+            with patch.dict(os.environ, {"HOME": str(account), "HERMES_HOME": str(profile)}):
+                api = self.load_api(lambda *_: [], lambda *_: None)
+            self.assertEqual(api.INSTALLED_ROOT, account / ".claude")
 
     def test_reads_declared_settings(self):
         expected = [{"key": "haiku_effort", "value": "low", "type": "enum"}]

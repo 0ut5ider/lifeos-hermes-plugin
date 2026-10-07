@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_prepare_sources",
+    "test_lifeos_install_source",
+    "test_native_pretool_guards",
+    "test_native_command_reduction",
+    "test_protected_instruction_single_query",
+    "test_step1_acceptance",
+    "test_paired_evaluation_effects",
+    "-v"
+  ],
+  "source_environment": {
+    "TMPDIR": "/home/outsider/.cache/lhc6",
+    "PYTHONPATH": "tests:.:/home/outsider/.cache/lifeos-step1-20261006/prepared-complete/hermes",
+    "LIFEOS_PREPARE_HERMES_REPO": "/home/outsider/.cache/lifeos-footprint-20260929/hermes-clean",
+    "LIFEOS_PREPARE_LIFEOS_REPO": "/home/outsider/.cache/lifeos-footprint-20260929/lifeos-clean",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-complete/hermes",
+    "LIFEOS_PULSE_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-complete/lifeos/LifeOS/install",
+    "LIFEOS_GUARD_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-complete/lifeos/LifeOS/install",
+    "LIFEOS_RTK_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-complete/lifeos/LifeOS/install",
+    "LIFEOS_RTK_BINARY": "/home/outsider/.cache/lifeos-step1-20261006/rtk"
+  }
+}

@@ -1230,6 +1230,60 @@ class HookBridgeTests(unittest.TestCase):
         rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
         self.assertEqual(rows[-1]["message"]["content"], "revised")
 
+    def test_delegated_child_turn_runs_no_session_start_or_prompt_hooks_like_a_claude_subagent(self):
+        # Claude Code runs SessionStart and UserPromptSubmit hooks for the main session only, not for subagents.
+        from agent.delegation_context import delegated_child_context
+        marker = self.root / "child-events.jsonl"
+        command = self.make_hook(
+            "child_events.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).open('a').write(json.load(sys.stdin)['hook_event_name']+'\\n')\n",
+        )
+        group = [{"hooks": [{"type": "command", "command": command}]}]
+        bridge = self.bridge({"SessionStart": group, "UserPromptSubmit": group})
+        bridge.pre_llm_call("parent prompt", session_id="parent")
+        with delegated_child_context("child"):
+            self.assertIsNone(bridge.pre_llm_call("child task", session_id="child"))
+        self.assertEqual(marker.read_text().splitlines(), ["SessionStart", "UserPromptSubmit"])
+
+    def test_delegated_child_answer_runs_no_stop_hooks_like_a_claude_subagent(self):
+        from agent.delegation_context import delegated_child_context
+        marker = self.root / "child-stop.jsonl"
+        command = self.make_hook(
+            "child_stop.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).open('a').write(json.load(sys.stdin)['session_id']+'\\n')\n"
+            "print(json.dumps({'decision':'block','reason':'Main session gate'}))\n",
+        )
+        bridge = self.bridge({"Stop": [{"hooks": [{"type": "command", "command": command}]}]})
+        with delegated_child_context("child"):
+            self.assertIsNone(bridge.stop("child answer", session_id="child"))
+        self.assertFalse(marker.exists())
+        self.assertEqual(bridge.stop("parent answer", session_id="parent"),
+                         {"action": "continue", "message": "Main session gate"})
+
+    def test_stop_candidate_reaches_the_transcript_during_the_stop_hook_like_claude_code(self):
+        # Claude Code 2.1.272 shows the candidate in the transcript 50 to 150 ms after a Stop hook starts.
+        # LifeOS Stop gates wait 150 ms before they parse the transcript for the final answer.
+        marker = self.root / "stop-timing.json"
+        command = self.make_hook(
+            "stop_timing.py",
+            "import json,sys,time\nfrom pathlib import Path\n"
+            "data=json.load(sys.stdin)\n"
+            "path=Path(data['transcript_path'])\n"
+            "def texts():\n"
+            " rows=[json.loads(line) for line in path.read_text().splitlines()] if path.exists() else []\n"
+            " return [row['message']['content'] for row in rows if row['type']=='assistant']\n"
+            "early=texts(); time.sleep(0.3); late=texts()\n"
+            f"Path({str(marker)!r}).write_text(json.dumps({{'early':early,'late':late}}))\n",
+        )
+        bridge = self.bridge({"Stop": [{"hooks": [{"type": "command", "command": command}]}]})
+        bridge.pre_llm_call("question", session_id="s1")
+        self.assertIsNone(bridge.stop("READY", session_id="s1"))
+        self.assertEqual(json.loads(marker.read_text()), {"early": [], "late": ["READY"]})
+        rows = [json.loads(line) for line in bridge.transcript_path("s1").read_text().splitlines()]
+        self.assertEqual([row["message"]["content"] for row in rows if row["type"] == "assistant"], ["READY"])
+
     def test_stop_transcript_records_actual_hermes_model(self):
         bridge = self.bridge({})
         bridge.stop("answered", session_id="model-session", model="flashnext-w4a16-fp8ple")
@@ -1409,6 +1463,25 @@ class HookBridgeTests(unittest.TestCase):
             json.loads(marker.read_text())["prompt"],
             "Summarize these attachments.\nKeep the answer brief.",
         )
+
+    def test_failed_terminal_command_reports_exit_code_and_output_like_the_native_client(self):
+        marker = self.root / "terminal-failure.json"
+        command = self.make_hook(
+            "terminal_failure.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"Path({str(marker)!r}).write_text(json.dumps(json.load(sys.stdin)))\n",
+        )
+        bridge = self.bridge({"PostToolUseFailure": [{"hooks": [{"type": "command", "command": command}]}]})
+        result = json.dumps({"output": "ls: cannot access 'pair-missing': No such file or directory",
+                             "exit_code": 2, "error": None})
+        bridge.post_tool_call("terminal", {"command": "ls pair-missing"}, result, session_id="s1",
+                              tool_call_id="tc1", status="error", error_message="exit 2")
+        self.assertEqual(json.loads(marker.read_text())["error"],
+                         "Exit code 2\nls: cannot access 'pair-missing': No such file or directory")
+        marker.unlink()
+        bridge.post_tool_call("terminal", {"command": "false"}, json.dumps({"output": "", "exit_code": 1, "error": None}),
+                              session_id="s1", tool_call_id="tc2", status="error", error_message="exit 1")
+        self.assertEqual(json.loads(marker.read_text())["error"], "Exit code 1")
 
     def test_post_tool_failure_runs_failure_hook(self):
         marker = self.root / "failure.json"
@@ -1995,6 +2068,36 @@ class HookBridgeTests(unittest.TestCase):
         ])
         self.assertEqual(rows[0]["tool_input"]["model"], "local-small")
 
+    def test_agent_carrier_uses_current_request_and_ignores_tool_claims(self):
+        marker = self.root / "agent-carrier.jsonl"
+        command = self.make_hook(
+            "record-carrier.py",
+            "import json,sys\nfrom pathlib import Path\n"
+            f"with Path({str(marker)!r}).open('a') as stream: stream.write(json.dumps(json.load(sys.stdin))+'\\n')\n",
+        )
+        bridge = self.bridge({"PreToolUse": [{"matcher": "Agent", "hooks": [{"type": "command", "command": command}]}]})
+        bridge.stop("Previous answer", session_id="s1", model="previous-model")
+        bridge.observe_api_response(session_id="s1", model="request-alias", response_model="current-model", provider="private")
+        bridge.observe_api_response(session_id="s2", model="other-session-model", provider="private")
+        args = {"goal": "Inspect the report", "hermes_runtime": {"model": "spoofed-model"}}
+        bridge.pre_tool_call("delegate_task", args, session_id="s1")
+        bridge.pre_tool_call("delegate_task", {**args, "model": "opus"}, session_id="s1")
+        bridge.pre_tool_call("delegate_task", args, session_id="unobserved")
+        rows = [json.loads(line) for line in marker.read_text().splitlines()]
+        self.assertEqual(rows[0]["hermes_runtime"], {"model": "current-model", "provider": "private"})
+        self.assertNotIn("model", rows[0]["tool_input"])
+        self.assertEqual(rows[1]["tool_input"]["model"], "opus")
+        self.assertNotIn("hermes_runtime", rows[2])
+        bridge.session_end(session_id="s1")
+        bridge.pre_tool_call("delegate_task", args, session_id="s1")
+        self.assertNotIn("hermes_runtime", json.loads(marker.read_text().splitlines()[-1]))
+
+    def test_invalid_request_carrier_clears_previous_observation(self):
+        bridge = self.bridge({})
+        bridge.observe_api_response(session_id="s1", model="valid-model", provider="private")
+        bridge.observe_api_response(session_id="s1", model=None, provider="private")
+        self.assertNotIn("s1", bridge.session_carriers)
+
     def test_background_dispatch_is_reported_as_spawn_to_agent_hook(self):
         marker = self.root / "agent-dispatch.json"
         command = self.make_hook(
@@ -2047,6 +2150,19 @@ class HookBridgeTests(unittest.TestCase):
             self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], False)
             bridge.pre_tool_call("delegate_task", {"goal": "Inspect a synthetic report", "background": True}, session_id="s1")
             self.assertIs(json.loads(marker.read_text())["tool_input"]["run_in_background"], True)
+
+    def test_finite_session_reports_the_runtime_synchronous_fallback(self):
+        from gateway.session_context import clear_session_vars, set_session_vars
+        marker = self.root / 'finite-agent.json'
+        command = self.make_hook('record-finite.py',
+                              f'import json,sys\nfrom pathlib import Path\nPath({str(marker)!r}).write_text(sys.stdin.read())\n')
+        bridge = self.bridge({'PreToolUse': [{'matcher': 'Agent', 'hooks': [{'type': 'command', 'command': command}]}]})
+        tokens = set_session_vars(platform='cli', async_delivery=False)
+        try:
+            bridge.pre_tool_call('delegate_task', {'tasks': [{'goal': 'Inspect report'}], 'background': 'false'}, session_id='s1')
+            self.assertIs(json.loads(marker.read_text())['tool_input']['run_in_background'], False)
+        finally:
+            clear_session_vars(tokens)
 
     def test_background_agent_watchdog_instruction_uses_hermes_delivery(self):
         command = self.make_hook(
@@ -3440,6 +3556,17 @@ class HookBridgeTests(unittest.TestCase):
         self.assertEqual(events[0]["tool_input"]["questions"][0]["options"], [
             {"label": "A", "description": ""}, {"label": "B", "description": ""},
         ])
+
+    def test_clarify_batch_maps_the_questions_that_hermes_displays(self):
+        args = {"question": "Batch title", "questions": [
+            {"question": "Choose the fixture mode", "choices": ["A", "B"], "multi_select": True},
+            {"question": "Describe the fixture"},
+        ]}
+        self.assertEqual(_tool_input("AskUserQuestion", args, "/tmp", ""), {"questions": [
+            {"question": "Choose the fixture mode", "options": [
+                {"label": "A", "description": ""}, {"label": "B", "description": ""}], "multiSelect": True},
+            {"question": "Describe the fixture", "multiSelect": False},
+        ]})
 
     def test_multi_file_patch_checks_each_changed_file(self):
         command = self.make_hook(

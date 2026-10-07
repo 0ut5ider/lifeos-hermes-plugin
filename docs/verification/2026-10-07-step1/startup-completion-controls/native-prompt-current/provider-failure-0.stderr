@@ -1,0 +1,112 @@
+[PromptProcessing] Hook started
+[tab-setter] getKittyEnv: no kitty env found for session native-p (no env vars, no session file, no default socket)
+[tab-setter] getKittyEnv: no kitty env found for session native-p (no env vars, no session file, no default socket)
+[PromptProcessing] Running inference (tab title + session name)...
+[PromptProcessing] Inference failed: Traceback (most recent call last):
+  File "<frozen runpy>", line 203, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/hermes_cli/main.py", line 3691, in <module>
+    main()
+    ~~~~^^
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/hermes_cli/main.py", line 3683, in main
+    rc = args.func(args)
+  File "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-prompt-current-provider-failure/.hermes/plugins/lifeos-hook-bridge/bin/claude_direct.py", line 142, in main
+    return _run_hermes_provider(args, system_prompt, content, provider)
+  File "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-prompt-current-provider-failure/.hermes/plugins/lifeos-hook-bridge/bin/claude_direct.py", line 113, in _run_hermes_provider
+    response = call_llm(
+        provider=provider, model=args.model,
+    ...<4 lines>...
+        allow_provider_fallback=False,
+    )
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 2565, in wrapped
+    return callback(*args, **kwargs)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 7887, in call_llm
+    response = _call_llm_impl(
+        task=task, provider=provider, model=model, base_url=base_url, api_key=api_key,
+    ...<4 lines>...
+        allow_provider_fallback=allow_provider_fallback,
+    )
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 8083, in _call_llm_impl
+    return _drive_ladder(
+        _start_recovery_ladder(first_err, req, retry_kwargs, task=task, async_mode=False,
+                               route_info=route_info, allow_provider_fallback=allow_provider_fallback),
+        _perform)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 7816, in _drive_ladder
+    step = next(ladder)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 7810, in _aux_recovery_ladder
+    raise first_err
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 8056, in _call_llm_impl
+    return _primary(provider=request_provider, base_url=req.base_info)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 8041, in _primary
+    _relay_sync_completion(
+    ~~~~~~~~~~~~~~~~~~~~~~^
+        client, kwargs, provider=request_provider, api_mode=req.resolved_api_mode,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        ),
+        ^^
+    ),
+    ^
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 2635, in _relay_sync_completion
+    return run_with_aux_hooks(
+        lambda: relay_llm.execute_current(
+    ...<5 lines>...
+        provider=provider_name, model=model_name, api_mode=str(metadata.get("api_mode") or ""),
+    )
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_hooks.py", line 234, in run_with_aux_hooks
+    response = call()
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 2636, in <lambda>
+    lambda: relay_llm.execute_current(
+            ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        kwargs, lambda request: _run_protected_sync_provider_call(callback, request),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        name=provider_name, model_name=model_name, metadata=metadata,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        defer_logical_completion=True,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ),
+    ^
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/relay_llm.py", line 189, in execute
+    return callback(request)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 2637, in <lambda>
+    kwargs, lambda request: _run_protected_sync_provider_call(callback, request),
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 450, in _run_protected_sync_provider_call
+    return callback(kwargs)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 8043, in <lambda>
+    create=lambda request: _create_with_progress(
+                           ~~~~~~~~~~~~~~~~~~~~~^
+        client, request, task,
+        ^^^^^^^^^^^^^^^^^^^^^^
+        force_stream=_provider_requires_stream(
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            request_provider, req.base_info or req.resolved_base_url),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ),
+    ^
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 6927, in _create_with_progress
+    return _create_with_progress_once(client, kwargs, task, force_stream=force_stream)
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/hermes-child-final/agent/auxiliary_client.py", line 6980, in _create_with_progress_once
+    response = client.chat.completions.create(**kwargs)
+  File "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.hermes/installs/2cd77f30ab6c57b5/environments/de1515ba6e674677ba2da15650b65812/venv/lib/python3.14/site-packages/openai/_utils/_utils.py", line 286, in wrapper
+    return func(*args, **kwargs)
+  File "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.hermes/installs/2cd77f30ab6c57b5/environments/de1515ba6e674677ba2da15650b65812/venv/lib/python3.14/site-packages/openai/resources/chat/completions/completions.py", line 1204, in create
+    return self._post(
+           ~~~~~~~~~~^
+        "/chat/completions",
+        ^^^^^^^^^^^^^^^^^^^^
+    ...<47 lines>...
+        stream_cls=Stream[ChatCompletionChunk],
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.hermes/installs/2cd77f30ab6c57b5/environments/de1515ba6e674677ba2da15650b65812/venv/lib/python3.14/site-packages/openai/_base_client.py", line 1297, in post
+    return cast(ResponseT, self.request(cast_to, opts, stream=stream, stream_cls=stream_cls))
+                           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.hermes/installs/2cd77f30ab6c57b5/environments/de1515ba6e674677ba2da15650b65812/venv/lib/python3.14/site-packages/openai/_base_client.py", line 1070, in request
+    raise self._make_status_error_from_response(err.response) from None
+openai.AuthenticationError: Error code: 401 - {'error': 'Unauthorized'}
+
+[PromptProcessing] Named session: "Build Synthetic Fixture Dashboard Laboratory" (deterministic-fallback)
+[tab-setter] getKittyEnv: no kitty env found for session native-p (no env vars, no session file, no default socket)
+[tab-setter] getKittyEnv: no kitty env found for session native-p (no env vars, no session file, no default socket)

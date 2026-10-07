@@ -1,0 +1,14 @@
+F.
+======================================================================
+FAIL: test_fresh_install_excludes_inherited_user_store_and_path_settings (test_fresh_store_paths.FreshStorePathTests.test_fresh_install_excludes_inherited_user_store_and_path_settings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_paths.py", line 79, in test_fresh_install_excludes_inherited_user_store_and_path_settings
+    self.assertEqual((selected/'.claude/LIFEOS/USER').resolve(),fresh)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: PosixPath('/tmp/fresh-paths-nuexfs04/current-home/.config/LIFEOS/USER') != PosixPath('/tmp/fresh-paths-nuexfs04/selected-home/.config/LIFEOS/USER')
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.468s
+
+FAILED (failures=1)

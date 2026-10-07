@@ -1,0 +1,57 @@
+[
+  {
+    "command": [
+      "bun",
+      "--no-install",
+      "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-context-audit-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/ContextAudit.ts",
+      "--json"
+    ],
+    "returncode": 0,
+    "stdout": "{\n  \"generated_at\": \"2026-10-05T11:58:20.567Z\",\n  \"summary\": [\n    {\n      \"file\": \"TELOS.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 0\n    },\n    {\n      \"file\": \"DA_IDENTITY.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 0\n    },\n    {\n      \"file\": \"PRINCIPAL_IDENTITY.md\",\n      \"critical\": 0,\n      \"warn\": 1,\n      \"info\": 0\n    },\n    {\n      \"file\": \"PROJECTS.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 0\n    },\n    {\n      \"file\": \"LIFEOS_SYSTEM_PROMPT.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 1\n    },\n    {\n      \"file\": \"PRINCIPAL_TELOS.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 0\n    },\n    {\n      \"file\": \"ARCHITECTURE_SUMMARY.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 0\n    },\n    {\n      \"file\": \"LifeosSystemArchitecture.md\",\n      \"critical\": 0,\n      \"warn\": 0,\n      \"info\": 0\n    },\n    {\n      \"file\": \"**TOTAL**\",\n      \"critical\": 0,\n      \"warn\": 1,\n      \"info\": 1\n    }\n  ],\n  \"files\": [\n    {\n      \"slug\": \"telos\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/USER/TELOS/TELOS.md\",\n      \"findings\": []\n    },\n    {\n      \"slug\": \"da_identity\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md\",\n      \"findings\": []\n    },\n    {\n      \"slug\": \"principal_identity\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md\",\n      \"findings\": [\n        {\n          \"severity\": \"warn\",\n          \"kind\": \"empty-section\",\n          \"message\": \"## Synthetic empty section has less than 20 chars of substantive content\",\n          \"line\": 9\n        }\n      ]\n    },\n    {\n      \"slug\": \"projects\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/USER/PROJECTS.md\",\n      \"findings\": []\n    },\n    {\n      \"slug\": \"lifeos_system_prompt\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/LIFEOS_SYSTEM_PROMPT.md\",\n      \"findings\": [\n        {\n          \"severity\": \"info\",\n          \"kind\": \"model-drift\",\n          \"message\": \"latest model ID 'claude-opus-5' (from models.ts registry) not found - may have drifted; verify against current model family\"\n        }\n      ]\n    },\n    {\n      \"slug\": \"principal_telos\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md\",\n      \"findings\": []\n    },\n    {\n      \"slug\": \"architecture_summary\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md\",\n      \"findings\": []\n    },\n    {\n      \"slug\": \"lifeos_system_architecture\",\n      \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/audit-installed-alias/LIFEOS/DOCUMENTATION/LifeosSystemArchitecture.md\",\n      \"findings\": []\n    }\n  ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "native_arguments": {
+      "root": null,
+      "json_output": false
+    },
+    "native_result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Context audit requires the selected installation and a fixed output mode"
+    }
+  },
+  {
+    "native_arguments": {
+      "root": "relative",
+      "json_output": false
+    },
+    "native_result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Context audit requires the selected installation and a fixed output mode"
+    }
+  },
+  {
+    "native_arguments": {
+      "root": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/.claude",
+      "json_output": 1
+    },
+    "native_result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Context audit requires the selected installation and a fixed output mode"
+    }
+  },
+  {
+    "native_arguments": {
+      "root": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xpvp69u8/.claude",
+      "json_output": []
+    },
+    "native_result": {
+      "ok": false,
+      "code": "EINVAL_PATH",
+      "message": "Context audit requires the selected installation and a fixed output mode"
+    }
+  }
+]

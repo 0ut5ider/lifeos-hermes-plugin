@@ -103,7 +103,7 @@ class MemoryKnowledgeRelayTests(unittest.TestCase):
             'nodes': [{'id': 'synthetic', 'title': 'SyntheticKnowledgeRawGraphMarker', 'type': 'research',
                 'degree': 0, 'tags': [], 'pagerank': 1}], 'edges': []}))
         response = httpx.get(self.native + '/api/memory/graph')
-        self.assertEqual(response.status_code, 404, response.text)
+        self.assertEqual(response.status_code, 401, response.text)
         self.assertEqual(response.headers.get('cache-control'), 'no-store')
         self.assertNotIn('SyntheticKnowledgeRawGraphMarker', response.text)
 

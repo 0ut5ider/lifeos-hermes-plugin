@@ -1,0 +1,105 @@
+{
+  "before": {
+    "changed_core_files": 10,
+    "tag": null,
+    "tag_age_hours": 0,
+    "version": "1.0.0",
+    "prior_nag_present": false,
+    "asynchronous": false
+  },
+  "after": {
+    "hook_context": null,
+    "state": null,
+    "worktree_preserved": true,
+    "model_nag_present": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_171706_1746a8",
+  "seconds": 8.845,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-version-drift-20261005/results/version-drift-untagged",
+    "/home/lifeos-plugin-install-probe/workspace/paired-version-drift-20261005/results/version-drift-untagged",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.4.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.4.1 /home/lifeos-plugin-install-probe/workspace/paired-version-drift-20261005/results/version-drift-untagged/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvVmVyc2lvbkRyaWZ0Lmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/VersionDrift.hook.ts": "f246a7bf2ba340fd0255ddf6f873c76f61434abc7161afecb2da9436ecde4497"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "dc13959e80b74b9361c08e6322d4580fcbc7d577e6ca9da244d78539b5f37aa5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "2cdbe645c0e0f9bcf7d40585f84807b28fa3f772eb2deca67c61cbe00ade57d7",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "8c9235c9f64e36e5802229855e193b153f51a4d4db6f93fbb2370966ce42d709",
+    "fixture-events.jsonl": "cd40640cd212df7b08b7ad43c593ec7264693d7ca35ce2905621f459e3f4348b",
+    "cli.log": "da40c290525683ddc724174ce87af9ca35aa8e78ec71f66a3e2b1f40cf3fbba9",
+    "before-state.json": "92f6586fbe26574967dda8e8dbf680569aa0419287bd7fe55267e24e0fd53e94",
+    "after-state.json": "ae3da302de2199443417b89f4efd6e6e2a67c8917a125567c6ca275aa98de379",
+    "fixture-files-before.json": "e943256c41e827c32a8baca3ca93a849ee6013dc20dc56c9ca3413fec9ff8d06",
+    "fixture-files-after.json": "ab1813894bebc55e4e2b719b7aca11c0377f6d0df0161ca53a9d4038a0bae966"
+  }
+}

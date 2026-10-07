@@ -1,0 +1,48 @@
+{
+  "case": "test_expired_live_slug_can_create_a_current_hypothesis",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-yws6a02k/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-yws6a02k/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=1 emitted=1 updated=0\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-yws6a02k/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "---\nstatus: hypothesis\nslug: clean-implementationsatisfaction\ntarget_frame: new\nconfidence: 0.76\ngenerated: 2026-10-05T05:48:41.881Z\nexpires: 2026-11-04T05:48:41.881Z\nsource: ratings\nenforcement_surface: context\nevidence_signals:\n  - sig:2026-10-05T05:48:40.645627+00:00\n  - sig:2026-10-05T05:48:40.645638+00:00\n  - sig:2026-10-05T05:48:40.645641+00:00\n  - sig:2026-10-05T05:48:40.645643+00:00\n  - sig:2026-10-05T05:48:40.645645+00:00\n  - sig:2026-10-05T05:48:40.645646+00:00\n  - sig:2026-10-05T05:48:40.645647+00:00\n  - sig:2026-10-05T05:48:40.645649+00:00\nfalsifier: \"Refuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\"\n---\n## Claim\n\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\n\n## Evidence\n\n- sig:2026-10-05T05:48:40.645627+00:00\n- sig:2026-10-05T05:48:40.645638+00:00\n- sig:2026-10-05T05:48:40.645641+00:00\n- sig:2026-10-05T05:48:40.645643+00:00\n- sig:2026-10-05T05:48:40.645645+00:00\n- sig:2026-10-05T05:48:40.645646+00:00\n- sig:2026-10-05T05:48:40.645647+00:00\n- sig:2026-10-05T05:48:40.645649+00:00\n- (cluster size: 8; pattern: Clean Implementation)\n\n## Falsifier\n\nRefuted if next 8 signals matching \"Clean Implementation\" average rating \u2264 4.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:48:41.881Z \u2014 emitted by deriver loop\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-yws6a02k/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:48:41.881Z\",\n  \"claim_hashes\": {\n    \"clean-implementationsatisfaction\": {\n      \"hash\": \"42c02696a49bab60\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-yws6a02k/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/_archive/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "---\nstatus: expired\nslug: clean-implementationsatisfaction\ntarget_frame: new\nconfidence: 0.76\ngenerated: 2026-10-05T05:48:40.773Z\nexpires: 2000-01-01T00:00:00Z\nsource: ratings\nenforcement_surface: context\nevidence_signals:\n  - sig:2026-10-05T05:48:40.645627+00:00\n  - sig:2026-10-05T05:48:40.645638+00:00\n  - sig:2026-10-05T05:48:40.645641+00:00\n  - sig:2026-10-05T05:48:40.645643+00:00\n  - sig:2026-10-05T05:48:40.645645+00:00\n  - sig:2026-10-05T05:48:40.645646+00:00\n  - sig:2026-10-05T05:48:40.645647+00:00\n  - sig:2026-10-05T05:48:40.645649+00:00\nfalsifier: \"Refuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\"\n---\n## Claim\n\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\n\n## Evidence\n\n- sig:2026-10-05T05:48:40.645627+00:00\n- sig:2026-10-05T05:48:40.645638+00:00\n- sig:2026-10-05T05:48:40.645641+00:00\n- sig:2026-10-05T05:48:40.645643+00:00\n- sig:2026-10-05T05:48:40.645645+00:00\n- sig:2026-10-05T05:48:40.645646+00:00\n- sig:2026-10-05T05:48:40.645647+00:00\n- sig:2026-10-05T05:48:40.645649+00:00\n- (cluster size: 8; pattern: Clean Implementation)\n\n## Falsifier\n\nRefuted if next 8 signals matching \"Clean Implementation\" average rating \u2264 4.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:48:40.773Z \u2014 emitted by deriver loop\n\n- 2026-10-05T05:48:41.881Z \u2014 auto-expired by deriver sweep\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-yws6a02k/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:48:40.773Z] run: window=7d dry-run=false\n[2026-10-05T05:48:40.773Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:48:40.773Z] clusters: 1\n[2026-10-05T05:48:40.773Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n[2026-10-05T05:48:41.881Z] run: window=7d dry-run=false\n[2026-10-05T05:48:41.881Z] expired: 2026-10-05_clean-implementationsatisfaction.md\n[2026-10-05T05:48:41.881Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:48:41.881Z] clusters: 1\n[2026-10-05T05:48:41.881Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

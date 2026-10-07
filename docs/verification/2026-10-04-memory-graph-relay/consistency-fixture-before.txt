@@ -1,0 +1,25 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemoryGraphViewConsistencyTests.test_installation_change_after_render_refuses_delivery _
+tests/test_memory_graph_view_consistency.py:53: in test_installation_change_after_render_refuses_delivery
+    self.render_then_change(lambda: self.fixture.configuration.update(
+tests/test_memory_graph_view_consistency.py:41: in render_then_change
+    self.assertEqual(len(rendered), 1)
+E   AssertionError: 0 != 1
+_ MemoryGraphViewConsistencyTests.test_owner_revocation_after_render_refuses_delivery _
+tests/test_memory_graph_view_consistency.py:49: in test_owner_revocation_after_render_refuses_delivery
+    self.render_then_change(lambda: self.fixture.configuration.update(
+tests/test_memory_graph_view_consistency.py:41: in render_then_change
+    self.assertEqual(len(rendered), 1)
+E   AssertionError: 0 != 1
+_ MemoryGraphViewConsistencyTests.test_retained_source_change_after_render_refuses_delivery _
+tests/test_memory_graph_view_consistency.py:46: in test_retained_source_change_after_render_refuses_delivery
+    self.render_then_change(lambda: self.path.write_text(self.path.read_text() + '\nSynthetic later edit\n'))
+tests/test_memory_graph_view_consistency.py:41: in render_then_change
+    self.assertEqual(len(rendered), 1)
+E   AssertionError: 0 != 1
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_view_consistency.py::MemoryGraphViewConsistencyTests::test_installation_change_after_render_refuses_delivery
+FAILED tests/test_memory_graph_view_consistency.py::MemoryGraphViewConsistencyTests::test_owner_revocation_after_render_refuses_delivery
+FAILED tests/test_memory_graph_view_consistency.py::MemoryGraphViewConsistencyTests::test_retained_source_change_after_render_refuses_delivery
+3 failed in 2.52s

@@ -1,0 +1,20 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessMigrationTests.test_all_supported_large_sources_keep_complete_bodies_and_backups _
+tests/test_memory_freshness_migration.py:269: in test_all_supported_large_sources_keep_complete_bodies_and_backups
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 380 |   const governed = memoryAccess("freshness_migration", {dry_run, state},
+E   381 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   382 |   if (governed !== undefined) {
+E   383 |     if (!memoryObject(governed.result) || typeof governed.result.stdout !== "string"
+E   384 |         || typeof governed.result.stderr !== "string" || ![0, 1].includes(governed.result.status as number)) {
+E   385 |       throw new Error("Freshness migration is unavailable under the current policy");
+E                         ^
+E   error: Freshness migration is unavailable under the current policy
+E         at main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-migration-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts:385:17)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-migration-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/MigrateContextFreshness.ts:398:16
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness_migration.py::MemoryFreshnessMigrationTests::test_all_supported_large_sources_keep_complete_bodies_and_backups
+1 failed, 20 deselected in 1.06s

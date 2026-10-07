@@ -1,0 +1,65 @@
+EE.....E....
+======================================================================
+ERROR: test_fresh_install_excludes_inherited_user_store_and_path_settings (test_fresh_store_paths.FreshStorePathTests.test_fresh_install_excludes_inherited_user_store_and_path_settings)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 268, in install_lifeos
+    raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS InstallSettings exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_paths.py", line 73, in test_fresh_install_excludes_inherited_user_store_and_path_settings
+    self.install(root,selected,{'HOME':str(current),'LIFEOS_CONFIG_DIR':str(current/'.config/LIFEOS'),
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        'LIFEOS_DIR':str(current/'.claude/LIFEOS'),'CLAUDE_CONFIG_DIR':str(current/'.claude')})
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_paths.py", line 52, in install
+    result=install_lifeos(candidate,home/'.claude',root/'failed','bun',revision,patches,('lifeos-test.patch',))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 284, in install_lifeos
+    raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS InstallSettings exited with code 1. Partial files were kept at /tmp/fresh-paths-f1unxbtr/failed
+
+======================================================================
+ERROR: test_native_install_contract_and_selected_names (test_fresh_store_paths.FreshStorePathTests.test_native_install_contract_and_selected_names)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 268, in install_lifeos
+    raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS InstallSettings exited with code 1
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_paths.py", line 61, in test_native_install_contract_and_selected_names
+    self.install(root,home,{'HOME':str(home),'LIFEOS_CONFIG_DIR':str(home/'.config/LIFEOS')})
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_paths.py", line 52, in install
+    result=install_lifeos(candidate,home/'.claude',root/'failed','bun',revision,patches,('lifeos-test.patch',))
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 284, in install_lifeos
+    raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
+lifeos_hook_bridge.install_source.IncompatibleLifeOS: LifeOS InstallSettings exited with code 1. Partial files were kept at /tmp/fresh-paths-emz7vrn2/failed
+
+======================================================================
+ERROR: test_finalization_mounts_and_records_installed_system_files (test_lifeos_install_source.InstallSourceTests.test_finalization_mounts_and_records_installed_system_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_lifeos_install_source.py", line 200, in test_finalization_mounts_and_records_installed_system_files
+    result = finalize_lifeos(candidate, installed, hermes_home, baseline,
+                             str(bun), str(hermes), revision, patches,
+                             ("lifeos-test.patch",), create_baseline, save_baseline)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 328, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 368, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 72, in _check_prepared_config
+    from hermes_cli import _launchers
+ModuleNotFoundError: No module named 'hermes_cli'
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.681s
+
+FAILED (errors=3)

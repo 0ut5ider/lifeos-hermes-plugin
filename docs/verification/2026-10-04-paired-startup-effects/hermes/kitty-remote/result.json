@@ -1,0 +1,79 @@
+{
+  "before": {
+    "stale_title_present": true
+  },
+  "after": {
+    "shared_environment_present": false,
+    "session_environment_present": false,
+    "stale_title_preserved": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261004_135224_8a1c81",
+  "seconds": 5.032,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-startup-20261004/run-v3/kitty-remote",
+    "/home/lifeos-plugin-install-probe/workspace/paired-startup-20261004/run-v3/kitty-remote",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.2",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run SessionStart.1.2 /home/lifeos-plugin-install-probe/workspace/paired-startup-20261004/run-v3/kitty-remote/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvS2l0dHlFbnZQZXJzaXN0Lmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/KittyEnvPersist.hook.ts": "a437c93490f85a44122439827df7f4ceba5b16e382b2be1a77db85210c00f7d3"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "53b15759e4d35b6579d0e418639354f19dcb553b0394d6f9c04bf067f238c59e",
+    "fixture-events.jsonl": "ee0c7a631e79e81f2b6845bcf5a3c6f29436a2a924949a8a89b24ae93f5d9e08",
+    "cli.log": "770b31a869f8af94cedf50cf3195cdfc404edba2c8d056acbdc40b41146386ed",
+    "before-state.json": "e8e75dc09b4c72d6f92c27cf3b4cce6dd92ee5e253a9e783a0e32d9b8cd3b065",
+    "after-state.json": "76358dea12f388430af47da8e2be986242a57cd9af0e4c33e0319d06e71178bd",
+    "fixture-files-before.json": "947ef0172cad22678a060aebfc743272bfc828a4465b46e2d9a93aef3a7bf53c",
+    "fixture-files-after.json": "947ef0172cad22678a060aebfc743272bfc828a4465b46e2d9a93aef3a7bf53c"
+  }
+}

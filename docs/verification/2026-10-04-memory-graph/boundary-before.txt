@@ -1,0 +1,48 @@
+FF                                                                 [100%]
+=================================== FAILURES ===================================
+_ MemoryGraphBoundaryTests.test_duplicate_slug_preserves_native_first_domain_selection _
+tests/test_memory_graph_boundaries.py:41: in test_duplicate_slug_preserves_native_first_domain_selection
+    self.assertEqual(selected['type'], 'person')
+E   AssertionError: 'company' != 'person'
+E   - company
+E   + person
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process (command=('build',)) _
+tests/test_memory_graph_boundaries.py:25: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process (command=('build', '--all')) _
+tests/test_memory_graph_boundaries.py:25: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process (command=('validate',)) _
+tests/test_memory_graph_boundaries.py:25: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process (command=('stats',)) _
+tests/test_memory_graph_boundaries.py:25: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process (command=('patterns',)) _
+tests/test_memory_graph_boundaries.py:25: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process (command=('related', 'synthetic-lab-routing')) _
+tests/test_memory_graph_boundaries.py:25: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryGraphBoundaryTests.test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process _
+tests/test_memory_graph_boundaries.py:27: in test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+    self.assertFalse(self.case.output.exists())
+E   AssertionError: True is not false
+----------------------------- Captured stdout call -----------------------------
+uuuuuu
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_duplicate_slug_preserves_native_first_domain_selection
+SUBFAILED(command=('build',)) tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+SUBFAILED(command=('build', '--all')) tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+SUBFAILED(command=('validate',)) tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+SUBFAILED(command=('stats',)) tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+SUBFAILED(command=('patterns',)) tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+SUBFAILED(command=('related', 'synthetic-lab-routing')) tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+FAILED tests/test_memory_graph_boundaries.py::MemoryGraphBoundaryTests::test_persistent_managed_marker_refuses_connector_loss_in_a_new_cli_process
+8 failed in 3.19s

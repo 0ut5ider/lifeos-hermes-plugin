@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ OwnershipSetupTests.test_external_writer_restart_between_configuration_writes_prevents_native_ownership _
+tests/test_ownership_setup.py:275: in test_external_writer_restart_between_configuration_writes_prevents_native_ownership
+    self.assertFalse(self.configuration.load()['ownership_enabled'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_ownership_setup.py::OwnershipSetupTests::test_external_writer_restart_between_configuration_writes_prevents_native_ownership
+1 failed, 10 deselected in 2.51s

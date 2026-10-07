@@ -3,6 +3,7 @@
 from contextlib import contextmanager
 import fcntl
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
@@ -13,6 +14,7 @@ import sys
 from uuid import uuid4
 
 from .memory_transaction import publish
+from .native_output import failure_message
 
 
 FILES = ('config.yaml', 'SOUL.md', '.env', 'plugins/lifeos/__init__.py',
@@ -64,7 +66,7 @@ def _run(command, installed, environment, label):
     result = subprocess.run(command, cwd=installed.parent, env=environment, text=True,
                             capture_output=True, timeout=120)
     if result.returncode:
-        raise MountError(f'LifeOS {label} exited with code {result.returncode}')
+        raise MountError(failure_message(f'LifeOS {label}', result))
     return result.stdout
 
 
@@ -79,6 +81,40 @@ def _check_prepared_config(installed, environment, stage):
             'config_command(Namespace(config_command="check"))\n')
     command = _launchers.runtime_command(source, [str(stage)], code=code, python=sys.executable)
     return _run(command, installed, environment, 'Hermes prepared config check')
+
+
+def _enable_batch_edits(stage):
+    from ruamel.yaml import YAML
+    from ruamel.yaml.error import YAMLError
+    path = stage / 'config.yaml'
+    data, _ = _read(path)
+    yaml = YAML()
+    try:
+        config = yaml.load(data.decode())
+    except (YAMLError, UnicodeError, AttributeError) as error:
+        raise MountError('The staged Hermes configuration cannot select file capabilities') from error
+    if not isinstance(config, dict):
+        raise MountError('The staged Hermes configuration requires a mapping')
+    existing = 'file_tools' in config
+    options = config.setdefault('file_tools', {})
+    if not isinstance(options, dict):
+        raise MountError('The staged Hermes file capabilities require a mapping')
+    if 'patch_format' in options:
+        return
+    options['patch_format'] = 'v4a'
+    output = io.StringIO()
+    yaml.dump({'file_tools': options}, output)
+    text = data.decode()
+    if existing:
+        lines = text.splitlines(keepends=True)
+        start = config.lc.key('file_tools')[0]
+        following = [config.lc.key(key)[0] for key in config if key != 'file_tools'
+                     and config.lc.key(key)[0] > start]
+        end = min(following, default=len(lines))
+        text = ''.join(lines[:start]) + output.getvalue() + ''.join(lines[end:])
+    else:
+        text = text.rstrip('\n') + '\n' + output.getvalue()
+    publish(path, text.encode())
 
 
 class MountTransaction:
@@ -121,11 +157,15 @@ class MountTransaction:
         if info['mode'] & 0o077:
             raise MountError('The mount journal requires private owner permissions')
         value = json.loads(data)
-        if (not isinstance(value, dict) or value.get('version') != 1
-                or value.get('profile') != str(self.profile) or value.get('installed') != str(self.installed)
-                or value.get('baseline') != (str(self.baseline) if self.baseline is not None else None)
+        if (not isinstance(value, dict) or value.get('version') != 1 or value.get('profile') != str(self.profile)
                 or value.get('state') not in PENDING | {'committed', 'rolled_back'}):
             raise MountError('The mount journal belongs to another installation or is invalid')
+        if (value.get('installed') != str(self.installed)
+                or value.get('baseline') != (str(self.baseline) if self.baseline is not None else None)):
+            if value['state'] in PENDING:
+                raise MountError('The mount journal belongs to another installation or is invalid')
+            # A finished operation of the previously selected LifeOS home leaves nothing to recover.
+            return None
         directory = Path(value['snapshot'])
         if (directory.parent != self.state or directory.resolve() != directory or directory.is_symlink()
                 or len(directory.name) != 32 or any(letter not in '0123456789abcdef' for letter in directory.name)):
@@ -194,6 +234,11 @@ class MountTransaction:
         if not isinstance(value, str):
             raise MountError('The mount workspace is invalid')
         workspace = Path(value)
+        from .lifeos_installation import selection
+        selected = selection(self.profile)
+        if selected.configured and workspace == selected.workspace and workspace.resolve() == workspace:
+            # A selected LifeOS home keeps the account workspace that the profile setting records.
+            return workspace
         if (not workspace.is_absolute() or workspace.resolve() != workspace
                 or workspace == self.installed.parent or not workspace.is_relative_to(self.installed.parent)):
             raise MountError('The mount workspace must belong to the installed owner home')
@@ -332,7 +377,13 @@ class MountTransaction:
             environment.pop('LIFEOS_MEMORY_INTERNAL', None)
             environment.pop('LIFEOS_MEMORY_CONTEXT', None)
             environment.pop('LIFEOS_MOUNT_DESTINATION', None)
-            workspace = self._workspace(environment.get('HERMES_WORKSPACE', str(self.installed.parent / 'HermesWorkspace')))
+            if 'HERMES_WORKSPACE' not in environment:
+                from .lifeos_installation import selection
+                selected = selection(self.profile)
+                # A selected LifeOS home keeps the account workspace that the profile records.
+                environment['HERMES_WORKSPACE'] = str(selected.workspace if selected.configured
+                                                      else self.installed.parent / 'HermesWorkspace')
+            workspace = self._workspace(environment['HERMES_WORKSPACE'])
             snapshot = self.state / uuid4().hex
             snapshot.mkdir(mode=0o700)
             _json(snapshot / 'identity.json', self._snapshot_identity())
@@ -350,6 +401,7 @@ class MountTransaction:
             if (set(plan) != {'version', 'home', 'keepOutputFormat', 'signature', 'previous_digest'}
                     or plan['version'] != 1 or plan['home'] != str(self.profile) or type(plan['keepOutputFormat']) is not bool):
                 raise MountError('The native mount plan is invalid')
+            _enable_batch_edits(stage)
             entries = []
             outputs = [(self.profile / name, *originals[name], _read(stage / name)[0]) for name in FILES]
             if baseline_data is not None:

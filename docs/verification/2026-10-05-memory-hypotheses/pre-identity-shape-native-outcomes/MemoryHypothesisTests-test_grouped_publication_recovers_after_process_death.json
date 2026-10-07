@@ -1,0 +1,43 @@
+{
+  "case": "test_grouped_publication_recovers_after_process_death",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xc7cs5u6/.claude/LIFEOS/TOOLS/LearningPatternSynthesis.ts",
+        "--hypothesize",
+        "--no-inference"
+      ],
+      "status": 0,
+      "stdout": "\ud83c\udf19 deriver: window=7d expired=0 emitted=1 updated=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_hypotheses_process.py",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xc7cs5u6/memory.json",
+        "interrupt"
+      ],
+      "status": 73,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xc7cs5u6/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json": {
+      "content": "{\n  \"schema_version\": 1,\n  \"last_run\": \"2026-10-05T05:41:27.419Z\",\n  \"claim_hashes\": {\n    \"clean-implementationsatisfaction\": {\n      \"hash\": \"42c02696a49bab60\",\n      \"archived_at\": null,\n      \"status\": \"hypothesis\"\n    }\n  }\n}",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xc7cs5u6/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/2026-10-05_clean-implementationsatisfaction.md": {
+      "content": "---\nstatus: hypothesis\nslug: clean-implementationsatisfaction\ntarget_frame: new\nconfidence: 0.76\ngenerated: 2026-10-05T05:41:27.419Z\nexpires: 2026-11-04T05:41:27.419Z\nsource: ratings\nenforcement_surface: context\nevidence_signals:\n  - sig:2026-10-05T05:41:27.286090+00:00\n  - sig:2026-10-05T05:41:27.286102+00:00\n  - sig:2026-10-05T05:41:27.286104+00:00\n  - sig:2026-10-05T05:41:27.286106+00:00\n  - sig:2026-10-05T05:41:27.286107+00:00\n  - sig:2026-10-05T05:41:27.286110+00:00\n  - sig:2026-10-05T05:41:27.286111+00:00\n  - sig:2026-10-05T05:41:27.286113+00:00\nfalsifier: \"Refuted if next 8 signals matching \\\"Clean Implementation\\\" average rating \u2264 4.\"\n---\n## Claim\n\nRecurring clean implementation pattern (8 signals, avg rating 8.0/10) \u2014 satisfaction cluster.\n\n## Evidence\n\n- sig:2026-10-05T05:41:27.286090+00:00\n- sig:2026-10-05T05:41:27.286102+00:00\n- sig:2026-10-05T05:41:27.286104+00:00\n- sig:2026-10-05T05:41:27.286106+00:00\n- sig:2026-10-05T05:41:27.286107+00:00\n- sig:2026-10-05T05:41:27.286110+00:00\n- sig:2026-10-05T05:41:27.286111+00:00\n- sig:2026-10-05T05:41:27.286113+00:00\n- (cluster size: 8; pattern: Clean Implementation)\n\n## Falsifier\n\nRefuted if next 8 signals matching \"Clean Implementation\" average rating \u2264 4.\n\n## Suggested Action\n\nStart a new frame at `MEMORY/WISDOM/FRAMES/clean-implementationsatisfaction.md` if User reviews and confirms the pattern.\n\n## Changelog\n\n- 2026-10-05T05:41:27.419Z \u2014 emitted by deriver loop\n",
+      "mode": "0o600"
+    },
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-xc7cs5u6/.claude/LIFEOS/MEMORY/OBSERVABILITY/deriver.log": {
+      "content": "[2026-10-05T05:41:27.419Z] run: window=7d dry-run=false\n[2026-10-05T05:41:27.419Z] signals: total=8 in_window=8 obs_clusters=0\n[2026-10-05T05:41:27.419Z] clusters: 1\n[2026-10-05T05:41:27.419Z] emitted: 2026-10-05_clean-implementationsatisfaction.md (src=ratings, conf=0.76, samples=8)\n",
+      "mode": "0o600"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hypotheses-final-distributed/lifeos/LifeOS/install"
+}

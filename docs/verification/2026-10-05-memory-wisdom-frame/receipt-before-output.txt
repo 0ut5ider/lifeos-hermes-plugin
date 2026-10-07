@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryWisdomFrameTests.test_retirement_refuses_a_previous_receipt_after_frame_removal _
+tests/test_memory_wisdom_frame.py:115: in test_retirement_refuses_a_previous_receipt_after_frame_removal
+    self.assertFalse(result['ok'], result)
+E   AssertionError: True is not false : {'ok': True, 'result': {'success': True, 'domain': 'communication', 'type': 'evolution', 'message': 'Created new frame for domain "communication" with initial observation', 'framePath': '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-k7pt5fbc/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md'}, 'receipt': {'status': 'committed', 'result': {'success': True, 'domain': 'communication', 'type': 'evolution', 'message': 'Created new frame for domain "communication" with initial observation', 'framePath': '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-k7pt5fbc/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md'}, 'writer': 'chat-a:100', 'request_id': 'wisdom-receipt'}}
+=========================== short test summary info ============================
+FAILED tests/test_memory_wisdom_frame.py::MemoryWisdomFrameTests::test_retirement_refuses_a_previous_receipt_after_frame_removal
+1 failed in 1.60s

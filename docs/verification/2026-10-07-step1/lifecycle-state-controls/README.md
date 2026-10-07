@@ -1,0 +1,21 @@
+# Lifecycle state and private routing controls
+
+Date: 2026-10-07. The rebuilt candidate uses eleven Hermes patch groups and eighteen LifeOS patches. The combined component gate passes 284 tests without skips. Ten real Pulse controls and one additional HTTP decision admission control also pass.
+
+Eight real native learning processes initially retain one record when distinct sessions have the same work title. The learning filename now includes a hash of the session and work slug. It uses the recorded work origin for its date and month. A missing ISA creation date falls back to the registry start. A next-day repeat initially duplicates the record; the corrected fallback preserves the original bytes. Partial work remains eligible when at least one claim is closed. Work with no closed claims remains ineligible.
+
+The session-name control widens the real native cleanup write interval by 100 milliseconds. The first run restores six deleted names. The bridge uses its existing private operating system lock for the installed learning and cleanup programs. Eight concurrent sessions now retain eight learning records, complete eight work rows, and leave no session names. The detached control records sixteen actual native process exits after the parent bridge closes. It verifies the same durable effects. Independent active work remains unchanged for normal, resumed, failed, and interrupted session reasons. Both learning-first and cleanup-first controls pass.
+
+Learning filenames now use the work origin rather than the capture minute. Their category, content, and native claim eligibility remain unchanged. These controls do not establish interruption safety for the learning file's own native publication.
+
+VersionDrift preserves its warning predicate at 60 minutes minus one millisecond, exactly 60 minutes, and plus one millisecond. A real process killed in its widened destination write initially leaves zero bytes. The hook now uses the existing Pulse atomicWriteText helper. The same interruption preserves the prior marker bytes. The next-turn asynchronous warning still passes. The helper adds no dependency.
+
+The tiers-final control performs two actual private inference requests. One child requests haiku and uses low effort. The other inherits the parent route and uses xhigh effort. The native starts retain the selected lifecycle-fixture alias, requested tier where present, and actual child reasoning configuration. Both stops retain the response model flashnext-w4a16-fp8ple. The raw wire independently confirms both effort values and response models. No response is fabricated. The four configured tier defaults remain unchanged.
+
+The gateway-pulse-final control starts the real native Pulse daemon and watchdog. The actual API gateway drains the actual watchdog event and performs private inference in the parent session. The stored conversation contains that feedback and ends with an assistant response. The gateway queue is empty after delivery. This control does not establish Discord transport. Its host log retains an upstream auxiliary session-title HTTP 500 and an SDK SyntaxWarning. The targeted watchdog inference succeeds; auxiliary title generation remains outside this passing result.
+
+Pulse outage and restart controls use the real daemon. The real watchdog terminates during session finalization and removes its transient files. Malformed native input returns the native empty failure response. A separate actual loopback HTTP endpoint supplies malformed decision bodies. That component protocol control verifies that invalid decisions cannot deny a task or start a watchdog. It does not claim native policy generation.
+
+source-manifest.json binds the complete rebuilt candidate. installer-source-manifest.json binds an independently prepared installation source. source-identity.json binds the component code and tests. tiers-source-identity.json binds the live tier driver, bridge, and exact selected SDK and native child programs. The gateway control precedes the tier metadata additions and retains its own raw proof. Both public captures pass a credential scan, including decoded base64 bodies.
+
+Complete installed groups, managed clock admission, remaining lifecycle branches, and final combined regression remain open. Actual Discord delivery remains combined-release acceptance.

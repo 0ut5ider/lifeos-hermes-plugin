@@ -1,0 +1,17 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupCommandTests.test_command_captures_the_selected_profile_and_native_data_together _
+tests/test_memory_backup_command.py:107: in test_command_captures_the_selected_profile_and_native_data_together
+    self.assertEqual(created.returncode, 0, created.stdout + created.stderr)
+E   AssertionError: 2 != 0 : usage: hermes [-h] [--version] [-z PROMPT] [--usage-file PATH] [-m MODEL]
+E                 [--provider PROVIDER] [--reasoning LEVEL] [-t TOOLSETS]
+E                 [--resume SESSION] [--no-restore-cwd] [--in DIR]
+E                 [--continue [SESSION_NAME]] [--worktree] [--accept-hooks]
+E                 [--skills SKILLS] [--yolo] [--pass-session-id]
+E                 [--ignore-user-config] [--ignore-rules] [--safe-mode] [--tui]
+E                 [--native] [--cli] [--dev]
+E                 <command> ...
+E   hermes: error: unrecognized arguments: --scope profile
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup_command.py::MemoryBackupCommandTests::test_command_captures_the_selected_profile_and_native_data_together
+1 failed, 5 deselected in 2.08s

@@ -1,0 +1,164 @@
+.............................F...............             [100%]
+=================================== FAILURES ===================================
+_ PairedLifecycleFixtureTests.test_async_feedback_fixture_uses_the_pinned_execution_setting _
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_async_feedback_fixture_uses_the_pinned_execution_setting>
+
+    def test_async_feedback_fixture_uses_the_pinned_execution_setting(self):
+>       home, settings, definitions = self.fixture('feedback-async-rating')
+                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+tests/test_paired_lifecycle_effects.py:334: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+self = <test_paired_lifecycle_effects.PairedLifecycleFixtureTests testMethod=test_async_feedback_fixture_uses_the_pinned_execution_setting>
+name = 'feedback-async-rating'
+
+    def fixture(self, name):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        base = Path(temporary.name)
+        source = base / 'source'
+>       for _, relative in CASES[name]:
+                           ^^^^^^^^^^^
+E       KeyError: 'feedback-async-rating'
+
+tests/test_paired_lifecycle_effects.py:277: KeyError
+_ PairedFeedbackEffectTests.test_asynchronous_feedback_requires_the_same_complete_effects (suffix='rating') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_asynchronous_feedback_requires_the_same_complete_effects>
+
+    def test_asynchronous_feedback_requires_the_same_complete_effects(self):
+        examples = [('rating', self.rating(8, comment='great result'), False),
+                    ('bare-rating', self.rating(10), False),
+                    ('praise', {**self.rating(8), 'source': 'implicit',
+                       'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95}, False),
+                    ('neutral', None, False),
+                    ('low-rating', self.rating(4, comment='needs clearer details'), True)]
+        for suffix, rating, learning in examples:
+            with self.subTest(suffix=suffix):
+                name = 'feedback-async-' + suffix
+                case = self.case(name, rating, learning)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-async-rating: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'feedback-async-rating: unknown case'
+E               
+E               - ['feedback-async-rating: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:409: AssertionError
+_ PairedFeedbackEffectTests.test_asynchronous_feedback_requires_the_same_complete_effects (suffix='bare-rating') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_asynchronous_feedback_requires_the_same_complete_effects>
+
+    def test_asynchronous_feedback_requires_the_same_complete_effects(self):
+        examples = [('rating', self.rating(8, comment='great result'), False),
+                    ('bare-rating', self.rating(10), False),
+                    ('praise', {**self.rating(8), 'source': 'implicit',
+                       'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95}, False),
+                    ('neutral', None, False),
+                    ('low-rating', self.rating(4, comment='needs clearer details'), True)]
+        for suffix, rating, learning in examples:
+            with self.subTest(suffix=suffix):
+                name = 'feedback-async-' + suffix
+                case = self.case(name, rating, learning)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-async-bare-rating: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'feedback-async-bare-rating: unknown case'
+E               
+E               - ['feedback-async-bare-rating: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:409: AssertionError
+_ PairedFeedbackEffectTests.test_asynchronous_feedback_requires_the_same_complete_effects (suffix='praise') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_asynchronous_feedback_requires_the_same_complete_effects>
+
+    def test_asynchronous_feedback_requires_the_same_complete_effects(self):
+        examples = [('rating', self.rating(8, comment='great result'), False),
+                    ('bare-rating', self.rating(10), False),
+                    ('praise', {**self.rating(8), 'source': 'implicit',
+                       'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95}, False),
+                    ('neutral', None, False),
+                    ('low-rating', self.rating(4, comment='needs clearer details'), True)]
+        for suffix, rating, learning in examples:
+            with self.subTest(suffix=suffix):
+                name = 'feedback-async-' + suffix
+                case = self.case(name, rating, learning)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-async-praise: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'feedback-async-praise: unknown case'
+E               
+E               - ['feedback-async-praise: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:409: AssertionError
+_ PairedFeedbackEffectTests.test_asynchronous_feedback_requires_the_same_complete_effects (suffix='neutral') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_asynchronous_feedback_requires_the_same_complete_effects>
+
+    def test_asynchronous_feedback_requires_the_same_complete_effects(self):
+        examples = [('rating', self.rating(8, comment='great result'), False),
+                    ('bare-rating', self.rating(10), False),
+                    ('praise', {**self.rating(8), 'source': 'implicit',
+                       'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95}, False),
+                    ('neutral', None, False),
+                    ('low-rating', self.rating(4, comment='needs clearer details'), True)]
+        for suffix, rating, learning in examples:
+            with self.subTest(suffix=suffix):
+                name = 'feedback-async-' + suffix
+                case = self.case(name, rating, learning)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-async-neutral: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'feedback-async-neutral: unknown case'
+E               
+E               - ['feedback-async-neutral: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:409: AssertionError
+_ PairedFeedbackEffectTests.test_asynchronous_feedback_requires_the_same_complete_effects (suffix='low-rating') _
+
+self = <test_paired_lifecycle_effects.PairedFeedbackEffectTests testMethod=test_asynchronous_feedback_requires_the_same_complete_effects>
+
+    def test_asynchronous_feedback_requires_the_same_complete_effects(self):
+        examples = [('rating', self.rating(8, comment='great result'), False),
+                    ('bare-rating', self.rating(10), False),
+                    ('praise', {**self.rating(8), 'source': 'implicit',
+                       'sentiment_summary': 'Direct praise: "great job"', 'confidence': 0.95}, False),
+                    ('neutral', None, False),
+                    ('low-rating', self.rating(4, comment='needs clearer details'), True)]
+        for suffix, rating, learning in examples:
+            with self.subTest(suffix=suffix):
+                name = 'feedback-async-' + suffix
+                case = self.case(name, rating, learning)
+>               self.assertEqual(check_pair(case), [])
+E               AssertionError: Lists differ: ['feedback-async-low-rating: unknown case'] != []
+E               
+E               First list contains 1 additional elements.
+E               First extra element 0:
+E               'feedback-async-low-rating: unknown case'
+E               
+E               - ['feedback-async-low-rating: unknown case']
+E               + []
+
+tests/test_paired_lifecycle_effects.py:409: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_paired_lifecycle_effects.py::PairedLifecycleFixtureTests::test_async_feedback_fixture_uses_the_pinned_execution_setting
+SUBFAILED(suffix='rating') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_asynchronous_feedback_requires_the_same_complete_effects
+SUBFAILED(suffix='bare-rating') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_asynchronous_feedback_requires_the_same_complete_effects
+SUBFAILED(suffix='praise') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_asynchronous_feedback_requires_the_same_complete_effects
+SUBFAILED(suffix='neutral') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_asynchronous_feedback_requires_the_same_complete_effects
+SUBFAILED(suffix='low-rating') tests/test_paired_lifecycle_effects.py::PairedFeedbackEffectTests::test_asynchronous_feedback_requires_the_same_complete_effects
+6 failed, 44 passed, 10 subtests passed in 0.15s

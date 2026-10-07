@@ -1,0 +1,43 @@
+.                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewScanReviewTests.test_generic_identity_reads_also_exclude_decoded_private_or_retired_names (name='\\u003cprivate\\u003eSyntheticPrivateScanName\\u003c/private\\u003e') _
+tests/test_memory_interview_scan_review.py:58: in test_generic_identity_reads_also_exclude_decoded_private_or_retired_names
+    self.assertEqual(read_markdown(self.memory, OWNER, [str(self.fixture.identity)]), [])
+E   AssertionError: Lists differ: [{'path': '/home/outsider/.cache/lifeos-pl[375 chars]00'}] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   {'path': '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-7bma_ggt/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'relative': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'content': '---\ncore:\n  name: "\\u003cprivate\\u003eSyntheticPrivateScanName\\u003c/private\\u003e"\n---\n# Synthetic assistant\n', 'lastModified': '2026-10-04T23:47:08.958000+00:00'}
+E   
+E   + []
+E   - [{'content': '---\n'
+E   -              'core:\n'
+E   -              '  name: '
+E   -              '"\\u003cprivate\\u003eSyntheticPrivateScanName\\u003c/private\\u003e"\n'
+E   -              '---\n'
+E   -              '# Synthetic assistant\n',
+E   -   'lastModified': '2026-10-04T23:47:08.958000+00:00',
+E   -   'path': '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-7bma_ggt/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+E   -   'relative': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md'}]
+_ MemoryInterviewScanReviewTests.test_generic_identity_reads_also_exclude_decoded_private_or_retired_names (name='\\u0053ynthetic retired evidence work') _
+tests/test_memory_interview_scan_review.py:58: in test_generic_identity_reads_also_exclude_decoded_private_or_retired_names
+    self.assertEqual(read_markdown(self.memory, OWNER, [str(self.fixture.identity)]), [])
+E   AssertionError: Lists differ: [{'path': '/home/outsider/.cache/lifeos-pl[345 chars]00'}] != []
+E   
+E   First list contains 1 additional elements.
+E   First extra element 0:
+E   {'path': '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-7bma_ggt/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'relative': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md', 'content': '---\ncore:\n  name: "\\u0053ynthetic retired evidence work"\n---\n# Synthetic assistant\n', 'lastModified': '2026-10-04T23:47:09.100000+00:00'}
+E   
+E   + []
+E   - [{'content': '---\n'
+E   -              'core:\n'
+E   -              '  name: "\\u0053ynthetic retired evidence work"\n'
+E   -              '---\n'
+E   -              '# Synthetic assistant\n',
+E   -   'lastModified': '2026-10-04T23:47:09.100000+00:00',
+E   -   'path': '/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-7bma_ggt/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md',
+E   -   'relative': 'LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md'}]
+=========================== short test summary info ============================
+SUBFAILED(name='\\u003cprivate\\u003eSyntheticPrivateScanName\\u003c/private\\u003e') tests/test_memory_interview_scan_review.py::MemoryInterviewScanReviewTests::test_generic_identity_reads_also_exclude_decoded_private_or_retired_names
+SUBFAILED(name='\\u0053ynthetic retired evidence work') tests/test_memory_interview_scan_review.py::MemoryInterviewScanReviewTests::test_generic_identity_reads_also_exclude_decoded_private_or_retired_names
+2 failed, 1 passed, 3 deselected in 2.21s

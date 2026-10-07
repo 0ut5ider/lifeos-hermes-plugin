@@ -1,0 +1,57 @@
+[
+  {
+    "path": "/api/show",
+    "body": {
+      "name": "lifecycle-fixture"
+    },
+    "body_base64": "eyJuYW1lIjoibGlmZWN5Y2xlLWZpeHR1cmUifQ==",
+    "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08"
+  },
+  {
+    "path": "/api/show",
+    "body": {
+      "name": "lifecycle-fixture"
+    },
+    "body_base64": "eyJuYW1lIjoibGlmZWN5Y2xlLWZpeHR1cmUifQ==",
+    "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08"
+  },
+  {
+    "path": "/v1/chat/completions",
+    "body": {
+      "messages": [
+        {
+          "role": "system",
+          "content": "Synthetic managed startup fixture.\n\nYou run on Hermes Agent (by Nous Research). When the user needs help with Hermes itself \u2014 configuring, setting up, using, extending, or troubleshooting it \u2014 or when you need to understand your own features, tools, or capabilities, the documentation at https://hermes-agent.nousresearch.com/docs is the authoritative reference and always holds the latest, most up-to-date information. Point the user there (or read it yourself if you have a way to fetch web content).\n\nActive Hermes profile: default. Other profiles (if any) live under /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/managed-startup-delivery-final-admitted/.hermes/profiles/<name>/. Each profile has its own skills/, plugins/, cron/, and memories/ that affect a different session than this one. Do not modify another profile's skills/plugins/cron/memories unless the user explicitly directs you to.\n\nYou're responding through an API server. The rendering layer is unknown \u2014 assume plain text. No markdown formatting (no asterisks, bullets, headers, code fences). Treat this like a conversation, not a document. Keep responses brief and natural. File/media delivery: images referenced as MEDIA:/absolute/path tags (.png/.jpg/.jpeg/.gif/.webp/.bmp, up to 5MB) are inlined as base64 data URLs in responses on the chat, completions, and responses endpoints. Non-image files are NOT intercepted anywhere, and the runs endpoint intercepts nothing \u2014 a MEDIA: tag there renders as literal text exposing a raw host filesystem path. For those cases, state the plain file path in your response text instead of a MEDIA: tag.\n\nConversation started: Wednesday, October 07, 2026 (UTC, UTC+00:00)\nModel: lifecycle-fixture\nProvider: custom\nPlatform: api_server\n\n# Hermes runtime environment\n\nHost: Linux (7.0.14-20-pve)\nUser home directory: /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/managed-startup-delivery-final-admitted\nCurrent working directory: /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/managed-startup-delivery-final-admitted\nScratch directory: /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/managed-startup-delivery-final-admitted/.hermes/cache/scratch (TMPDIR points here; write temporary files and probes there, never under the system temp dir; entries idle for 24h are pruned)\n\n<!-- End Hermes runtime environment -->\n\nRead the admitted synthetic startup context. Report the requested work title exactly. Do not invent unavailable context."
+        },
+        {
+          "role": "user",
+          "content": "What is the current synthetic active-work title in your startup context?\n\n\u2705 LifeOS session ready... (no dynamic context yet \u2014 enabled sources empty: relationship-notes, wisdom-frames, advisory-findings)\n\n\ud83d\udccb ACTIVE WORK:\n\n  \u2500\u2500 Recent Sessions (last 48h) \u2500\u2500\n\n  \u26a1 PAIR_ALLOWED_ACTIVE_WORK\n     2026-10-07 05:26 | Status: climbing\n     ISA: ISA (UNKNOWN, 0/0)\n\n\ud83d\udca1 To resume project: `bun run /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/managed-startup-delivery-final-admitted/.claude/LIFEOS/TOOLS/SessionProgress.ts resume <project>`\n\ud83d\udca1 To complete project: `bun run /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/managed-startup-delivery-final-admitted/.claude/LIFEOS/TOOLS/SessionProgress.ts complete <project>`"
+        }
+      ],
+      "model": "lifecycle-fixture",
+      "reasoning_effort": "medium"
+    },
+    "body_base64": "eyJtZXNzYWdlcyI6W3sicm9sZSI6InN5c3RlbSIsImNvbnRlbnQiOiJTeW50aGV0aWMgbWFuYWdlZCBzdGFydHVwIGZpeHR1cmUuXG5cbllvdSBydW4gb24gSGVybWVzIEFnZW50IChieSBOb3VzIFJlc2VhcmNoKS4gV2hlbiB0aGUgdXNlciBuZWVkcyBoZWxwIHdpdGggSGVybWVzIGl0c2VsZiDigJQgY29uZmlndXJpbmcsIHNldHRpbmcgdXAsIHVzaW5nLCBleHRlbmRpbmcsIG9yIHRyb3VibGVzaG9vdGluZyBpdCDigJQgb3Igd2hlbiB5b3UgbmVlZCB0byB1bmRlcnN0YW5kIHlvdXIgb3duIGZlYXR1cmVzLCB0b29scywgb3IgY2FwYWJpbGl0aWVzLCB0aGUgZG9jdW1lbnRhdGlvbiBhdCBodHRwczovL2hlcm1lcy1hZ2VudC5ub3VzcmVzZWFyY2guY29tL2RvY3MgaXMgdGhlIGF1dGhvcml0YXRpdmUgcmVmZXJlbmNlIGFuZCBhbHdheXMgaG9sZHMgdGhlIGxhdGVzdCwgbW9zdCB1cC10by1kYXRlIGluZm9ybWF0aW9uLiBQb2ludCB0aGUgdXNlciB0aGVyZSAob3IgcmVhZCBpdCB5b3Vyc2VsZiBpZiB5b3UgaGF2ZSBhIHdheSB0byBmZXRjaCB3ZWIgY29udGVudCkuXG5cbkFjdGl2ZSBIZXJtZXMgcHJvZmlsZTogZGVmYXVsdC4gT3RoZXIgcHJvZmlsZXMgKGlmIGFueSkgbGl2ZSB1bmRlciAvaG9tZS9saWZlb3MtcGx1Z2luLWluc3RhbGwtcHJvYmUvd29ya3NwYWNlL3BhaXJlZC1zdGVwMS0yMDI2MTAwNi9tYW5hZ2VkLXN0YXJ0dXAtZGVsaXZlcnktZmluYWwtYWRtaXR0ZWQvLmhlcm1lcy9wcm9maWxlcy88bmFtZT4vLiBFYWNoIHByb2ZpbGUgaGFzIGl0cyBvd24gc2tpbGxzLywgcGx1Z2lucy8sIGNyb24vLCBhbmQgbWVtb3JpZXMvIHRoYXQgYWZmZWN0IGEgZGlmZmVyZW50IHNlc3Npb24gdGhhbiB0aGlzIG9uZS4gRG8gbm90IG1vZGlmeSBhbm90aGVyIHByb2ZpbGUncyBza2lsbHMvcGx1Z2lucy9jcm9uL21lbW9yaWVzIHVubGVzcyB0aGUgdXNlciBleHBsaWNpdGx5IGRpcmVjdHMgeW91IHRvLlxuXG5Zb3UncmUgcmVzcG9uZGluZyB0aHJvdWdoIGFuIEFQSSBzZXJ2ZXIuIFRoZSByZW5kZXJpbmcgbGF5ZXIgaXMgdW5rbm93biDigJQgYXNzdW1lIHBsYWluIHRleHQuIE5vIG1hcmtkb3duIGZvcm1hdHRpbmcgKG5vIGFzdGVyaXNrcywgYnVsbGV0cywgaGVhZGVycywgY29kZSBmZW5jZXMpLiBUcmVhdCB0aGlzIGxpa2UgYSBjb252ZXJzYXRpb24sIG5vdCBhIGRvY3VtZW50LiBLZWVwIHJlc3BvbnNlcyBicmllZiBhbmQgbmF0dXJhbC4gRmlsZS9tZWRpYSBkZWxpdmVyeTogaW1hZ2VzIHJlZmVyZW5jZWQgYXMgTUVESUE6L2Fic29sdXRlL3BhdGggdGFncyAoLnBuZy8uanBnLy5qcGVnLy5naWYvLndlYnAvLmJtcCwgdXAgdG8gNU1CKSBhcmUgaW5saW5lZCBhcyBiYXNlNjQgZGF0YSBVUkxzIGluIHJlc3BvbnNlcyBvbiB0aGUgY2hhdCwgY29tcGxldGlvbnMsIGFuZCByZXNwb25zZXMgZW5kcG9pbnRzLiBOb24taW1hZ2UgZmlsZXMgYXJlIE5PVCBpbnRlcmNlcHRlZCBhbnl3aGVyZSwgYW5kIHRoZSBydW5zIGVuZHBvaW50IGludGVyY2VwdHMgbm90aGluZyDigJQgYSBNRURJQTogdGFnIHRoZXJlIHJlbmRlcnMgYXMgbGl0ZXJhbCB0ZXh0IGV4cG9zaW5nIGEgcmF3IGhvc3QgZmlsZXN5c3RlbSBwYXRoLiBGb3IgdGhvc2UgY2FzZXMsIHN0YXRlIHRoZSBwbGFpbiBmaWxlIHBhdGggaW4geW91ciByZXNwb25zZSB0ZXh0IGluc3RlYWQgb2YgYSBNRURJQTogdGFnLlxuXG5Db252ZXJzYXRpb24gc3RhcnRlZDogV2VkbmVzZGF5LCBPY3RvYmVyIDA3LCAyMDI2IChVVEMsIFVUQyswMDowMClcbk1vZGVsOiBsaWZlY3ljbGUtZml4dHVyZVxuUHJvdmlkZXI6IGN1c3RvbVxuUGxhdGZvcm06IGFwaV9zZXJ2ZXJcblxuIyBIZXJtZXMgcnVudGltZSBlbnZpcm9ubWVudFxuXG5Ib3N0OiBMaW51eCAoNy4wLjE0LTIwLXB2ZSlcblVzZXIgaG9tZSBkaXJlY3Rvcnk6IC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvcGFpcmVkLXN0ZXAxLTIwMjYxMDA2L21hbmFnZWQtc3RhcnR1cC1kZWxpdmVyeS1maW5hbC1hZG1pdHRlZFxuQ3VycmVudCB3b3JraW5nIGRpcmVjdG9yeTogL2hvbWUvbGlmZW9zLXBsdWdpbi1pbnN0YWxsLXByb2JlL3dvcmtzcGFjZS9wYWlyZWQtc3RlcDEtMjAyNjEwMDYvbWFuYWdlZC1zdGFydHVwLWRlbGl2ZXJ5LWZpbmFsLWFkbWl0dGVkXG5TY3JhdGNoIGRpcmVjdG9yeTogL2hvbWUvbGlmZW9zLXBsdWdpbi1pbnN0YWxsLXByb2JlL3dvcmtzcGFjZS9wYWlyZWQtc3RlcDEtMjAyNjEwMDYvbWFuYWdlZC1zdGFydHVwLWRlbGl2ZXJ5LWZpbmFsLWFkbWl0dGVkLy5oZXJtZXMvY2FjaGUvc2NyYXRjaCAoVE1QRElSIHBvaW50cyBoZXJlOyB3cml0ZSB0ZW1wb3JhcnkgZmlsZXMgYW5kIHByb2JlcyB0aGVyZSwgbmV2ZXIgdW5kZXIgdGhlIHN5c3RlbSB0ZW1wIGRpcjsgZW50cmllcyBpZGxlIGZvciAyNGggYXJlIHBydW5lZClcblxuPCEtLSBFbmQgSGVybWVzIHJ1bnRpbWUgZW52aXJvbm1lbnQgLS0+XG5cblJlYWQgdGhlIGFkbWl0dGVkIHN5bnRoZXRpYyBzdGFydHVwIGNvbnRleHQuIFJlcG9ydCB0aGUgcmVxdWVzdGVkIHdvcmsgdGl0bGUgZXhhY3RseS4gRG8gbm90IGludmVudCB1bmF2YWlsYWJsZSBjb250ZXh0LiJ9LHsicm9sZSI6InVzZXIiLCJjb250ZW50IjoiV2hhdCBpcyB0aGUgY3VycmVudCBzeW50aGV0aWMgYWN0aXZlLXdvcmsgdGl0bGUgaW4geW91ciBzdGFydHVwIGNvbnRleHQ/XG5cbuKchSBMaWZlT1Mgc2Vzc2lvbiByZWFkeS4uLiAobm8gZHluYW1pYyBjb250ZXh0IHlldCDigJQgZW5hYmxlZCBzb3VyY2VzIGVtcHR5OiByZWxhdGlvbnNoaXAtbm90ZXMsIHdpc2RvbS1mcmFtZXMsIGFkdmlzb3J5LWZpbmRpbmdzKVxuXG7wn5OLIEFDVElWRSBXT1JLOlxuXG4gIOKUgOKUgCBSZWNlbnQgU2Vzc2lvbnMgKGxhc3QgNDhoKSDilIDilIBcblxuICDimqEgUEFJUl9BTExPV0VEX0FDVElWRV9XT1JLXG4gICAgIDIwMjYtMTAtMDcgMDU6MjYgfCBTdGF0dXM6IGNsaW1iaW5nXG4gICAgIElTQTogSVNBIChVTktOT1dOLCAwLzApXG5cbvCfkqEgVG8gcmVzdW1lIHByb2plY3Q6IGBidW4gcnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvcGFpcmVkLXN0ZXAxLTIwMjYxMDA2L21hbmFnZWQtc3RhcnR1cC1kZWxpdmVyeS1maW5hbC1hZG1pdHRlZC8uY2xhdWRlL0xJRkVPUy9UT09MUy9TZXNzaW9uUHJvZ3Jlc3MudHMgcmVzdW1lIDxwcm9qZWN0PmBcbvCfkqEgVG8gY29tcGxldGUgcHJvamVjdDogYGJ1biBydW4gL2hvbWUvbGlmZW9zLXBsdWdpbi1pbnN0YWxsLXByb2JlL3dvcmtzcGFjZS9wYWlyZWQtc3RlcDEtMjAyNjEwMDYvbWFuYWdlZC1zdGFydHVwLWRlbGl2ZXJ5LWZpbmFsLWFkbWl0dGVkLy5jbGF1ZGUvTElGRU9TL1RPT0xTL1Nlc3Npb25Qcm9ncmVzcy50cyBjb21wbGV0ZSA8cHJvamVjdD5gIn1dLCJtb2RlbCI6ImxpZmVjeWNsZS1maXh0dXJlIiwicmVhc29uaW5nX2VmZm9ydCI6Im1lZGl1bSJ9",
+    "body_sha256": "f0740fcdc19beadc601f5ff629addf356a957d2c3486975a28e5d3123fdd7d0e",
+    "upstream_status": 200,
+    "response_body_sha256": "243c63069f12515834d8fc0850cdfe7506477ebc59583f28a5f3f88fcdadec3b",
+    "response_body_base64": "eyJpZCI6ImNoYXRjbXBsLTk2MDAzY2UzZDY5ZjdlNDkiLCJvYmplY3QiOiJjaGF0LmNvbXBsZXRpb24iLCJjcmVhdGVkIjoxNzkxMzUwNzk3LCJtb2RlbCI6ImZsYXNobmV4dC13NGExNi1mcDhwbGUiLCJjaG9pY2VzIjpbeyJpbmRleCI6MCwibWVzc2FnZSI6eyJyb2xlIjoiYXNzaXN0YW50IiwiY29udGVudCI6IlxuXG5UaGUgY3VycmVudCBzeW50aGV0aWMgYWN0aXZlLXdvcmsgdGl0bGUgaW4gdGhlIHN0YXJ0dXAgY29udGV4dCBpczpcblxuUEFJUl9BTExPV0VEX0FDVElWRV9XT1JLIiwicmVmdXNhbCI6bnVsbCwiYW5ub3RhdGlvbnMiOm51bGwsImF1ZGlvIjpudWxsLCJmdW5jdGlvbl9jYWxsIjpudWxsLCJyZWFzb25pbmciOiJUaGUgdXNlciBpcyBhc2tpbmcgbWUgdG8gcmVwb3J0IHRoZSBjdXJyZW50IHN5bnRoZXRpYyBhY3RpdmUtd29yayB0aXRsZSBmcm9tIG15IHN0YXJ0dXAgY29udGV4dC4gTGV0IG1lIGxvb2sgYXQgdGhlIGNvbnRleHQgcHJvdmlkZWQuXG5cbkluIHRoZSBBQ1RJVkUgV09SSyBzZWN0aW9uLCB1bmRlciBcIlJlY2VudCBTZXNzaW9ucyAobGFzdCA0OGgpXCIsIEkgY2FuIHNlZTpcblxu4pqhIFBBSVJfQUxMT1dFRF9BQ1RJVkVfV09SS1xuXG5UaGF0IGlzIHRoZSB0aXRsZSBsaXN0ZWQgYXMgdGhlIGFjdGl2ZSB3b3JrIGl0ZW0uIEkgc2hvdWxkIHJlcG9ydCBpdCBleGFjdGx5IGFzIGl0IGFwcGVhcnMuXG4ifSwibG9ncHJvYnMiOm51bGwsImZpbmlzaF9yZWFzb24iOiJzdG9wIiwic3RvcF9yZWFzb24iOm51bGwsInRva2VuX2lkcyI6bnVsbCwicm91dGVkX2V4cGVydHMiOm51bGx9XSwic2VydmljZV90aWVyIjpudWxsLCJzeXN0ZW1fZmluZ2VycHJpbnQiOiJ2bGxtLTAuMS4xLmRldjUwK2dlZWQxZjNkMGMuZDIwMjYwOTE1LXRwNC1wcDItZXAtYzUxMTRiM2EiLCJ1c2FnZSI6eyJwcm9tcHRfdG9rZW5zIjo4NDIsInRvdGFsX3Rva2VucyI6OTQxLCJjb21wbGV0aW9uX3Rva2VucyI6OTksInByb21wdF90b2tlbnNfZGV0YWlscyI6bnVsbCwiY29tcGxldGlvbl90b2tlbnNfZGV0YWlscyI6eyJyZWFzb25pbmdfdG9rZW5zIjo3OX19LCJwcm9tcHRfbG9ncHJvYnMiOm51bGwsInByb21wdF90b2tlbl9pZHMiOm51bGwsInByb21wdF90ZXh0IjpudWxsLCJrdl90cmFuc2Zlcl9wYXJhbXMiOm51bGwsImVjX3RyYW5zZmVyX3BhcmFtcyI6bnVsbCwibWV0cmljcyI6bnVsbH0=",
+    "actual_model": "flashnext-w4a16-fp8ple"
+  },
+  {
+    "path": "/api/show",
+    "body": {
+      "name": "lifecycle-fixture"
+    },
+    "body_base64": "eyJuYW1lIjoibGlmZWN5Y2xlLWZpeHR1cmUifQ==",
+    "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08"
+  },
+  {
+    "path": "/api/show",
+    "body": {
+      "name": "lifecycle-fixture"
+    },
+    "body_base64": "eyJuYW1lIjoibGlmZWN5Y2xlLWZpeHR1cmUifQ==",
+    "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08"
+  }
+]

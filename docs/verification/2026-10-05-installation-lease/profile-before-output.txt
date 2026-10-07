@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ ProfileLeaseTests.test_one_lease_covers_real_service_drain_backup_ownership_and_restart _
+tests/test_installation_lease.py:97: in test_one_lease_covers_real_service_drain_backup_ownership_and_restart
+    barrier = ProfileServices(profile, backup.fixture.fixture.root, units=services.units, installation_lease=lease)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: ProfileServices.__init__() got an unexpected keyword argument 'installation_lease'
+=========================== short test summary info ============================
+FAILED tests/test_installation_lease.py::ProfileLeaseTests::test_one_lease_covers_real_service_drain_backup_ownership_and_restart
+1 failed, 4 deselected in 1.45s

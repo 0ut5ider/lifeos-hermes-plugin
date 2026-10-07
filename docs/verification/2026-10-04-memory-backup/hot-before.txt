@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryBackupTests.test_unregistered_hot_entries_cannot_be_reported_as_coherent_governed_memory _
+tests/test_memory_backup.py:163: in test_unregistered_hot_entries_cannot_be_reported_as_coherent_governed_memory
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+FAILED tests/test_memory_backup.py::MemoryBackupTests::test_unregistered_hot_entries_cannot_be_reported_as_coherent_governed_memory
+1 failed, 10 deselected in 2.82s

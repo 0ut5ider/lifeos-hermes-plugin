@@ -1,0 +1,28 @@
+{
+  "case": "test_revoked_account_preserves_the_previous_frame",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-d3hshzwy/.claude/LIFEOS/TOOLS/WisdomFrameUpdater.ts",
+        "--domain",
+        "communication",
+        "--observation",
+        "Synthetic current observation",
+        "--type",
+        "evolution"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "311 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === \"boolean\");\n312 |   if (governed !== undefined) {\n313 |     const result = governed.result;\n314 |     if (!governed.ok || !memoryObject(result) || result.success !== true || typeof result.domain !== \"string\"\n315 |         || typeof result.type !== \"string\" || typeof result.message !== \"string\" || typeof result.framePath !== \"string\") {\n316 |       throw new Error(\"Wisdom frame admission or publication is unavailable\");\n                      ^\nerror: Wisdom frame admission or publication is unavailable\n      at updateFrame (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-frame-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts:316:17)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-frame-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/WisdomFrameUpdater.ts:367:18\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-d3hshzwy/.claude/LIFEOS/MEMORY/WISDOM/FRAMES/communication.md": {
+      "content": "# Frame: Communication Domain\n\n## Meta\n- **Confidence:** 50%\n- **Observation Count:** 1\n- **Last Crystallized:** 2026-10-01\n\n## Core Principles\n\n## Contextual Rules\n\n## Predictive Model\n\n## Anti-Patterns\n\n## Evolution Log\n- 2026-10-01: Synthetic retained observation\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-wisdom-frame-candidate-distributed/lifeos/LifeOS/install"
+}

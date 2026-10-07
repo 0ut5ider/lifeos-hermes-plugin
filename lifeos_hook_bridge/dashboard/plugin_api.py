@@ -49,13 +49,16 @@ create_baseline = version_module.create_baseline
 default_baseline_path = version_module.default_baseline_path
 load_baseline = version_module.load_baseline
 save_baseline = version_module.save_baseline
-INSTALLED_ROOT = Path.home() / ".claude"
 HERMES_HOME = Path(os.environ.get("HERMES_HOME", str(Path.home() / ".hermes")))
-BASELINE_PATH = default_baseline_path()
+# The profile setting selects the LifeOS home; selection and return restart this dashboard.
+LIFEOS_HOME = install_module.memory_module('lifeos_installation').selection(HERMES_HOME).home
+INSTALLED_ROOT = LIFEOS_HOME / ".claude"
+BASELINE_PATH = default_baseline_path(LIFEOS_HOME)
 INSTALL_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/lifeos-candidate"
 HERMES_CANDIDATE = Path.home() / ".local/share/lifeos-bridge/hermes-candidate"
 HOST_PATCH_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/host-patches"
 LIFEOS_UPDATE_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/updates"
+SELECTION_ROOT = Path.home() / ".local/state/lifeos-hook-bridge/selections"
 HOST_SOURCE = None
 PATCHED_HOOKS = {"pre_prompt_admission", "pre_command_approval", "augment_tool_result", "pre_turn_stop", "on_turn_result"}
 
@@ -113,8 +116,7 @@ def _memory_preferences():
         sys.modules[name] = package
     module = importlib.import_module(name + '.memory_preferences')
     return module.MemoryPreferences(HERMES_HOME / 'lifeos-memory.json', INSTALLED_ROOT,
-                                    Path.home() / '.ssh/authorized_keys', Path(sys.executable),
-                                    PLUGIN_DIR / 'memory_mcp.py')
+                                    Path(sys.executable), PLUGIN_DIR / 'memory_mcp.py')
 
 
 def _memory_action(action):
@@ -192,6 +194,12 @@ async def _fixed_mount_request(request: Request):
         raise HTTPException(status_code=400, detail='Mount requests use the installed owner configuration')
 
 
+@router.post('/memory/owner')
+async def claim_memory_owner(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    return await run_in_threadpool(_memory_action, lambda preferences: preferences.claim(account=account))
+
+
 @router.post('/memory/remount')
 async def remount_memory(request: Request, account: str = Depends(_memory_account)):
     await _fixed_mount_request(request)
@@ -224,7 +232,9 @@ async def recover_mount(request: Request, account: str = Depends(_memory_account
 
 
 @router.get('/memory/pulse/{view}')
-def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs'], request: Request,
+def get_memory_pulse(view: Literal['snapshot', 'state', 'health', 'runs', 'graph', 'telos_freshness',
+                                  'telos_stale', 'telos_freshness_summary', 'context_freshness',
+                                  'context_freshness_summary', 'telos_health'], request: Request,
                      account: str = Depends(_memory_account)):
     headers = {'Cache-Control': 'no-store'}
     if request.query_params:
@@ -297,6 +307,72 @@ def preview_memory_adoption(request: dict, account: str = Depends(_memory_accoun
     if request:
         raise HTTPException(status_code=400, detail='Source preview uses the installed LifeOS configuration')
     return _memory_action(lambda preferences:preferences.preview_adoption(account=account))
+
+
+@router.post('/memory/import/preview')
+def preview_memory_import(request: dict, account: str = Depends(_memory_account)):
+    if request:
+        raise HTTPException(status_code=400, detail='Import review uses the installed Hermes profile')
+    return _memory_action(lambda preferences: preferences.preview_import(account=account))
+
+
+@router.post('/memory/import/snapshot')
+def prepare_memory_import(request: dict, account: str = Depends(_memory_account)):
+    if set(request) != {'signature'}:
+        raise HTTPException(status_code=400, detail='Provide the reviewed Hermes import signature')
+    return _memory_action(lambda preferences: preferences.prepare_import(request, account=account))
+
+
+@router.post('/memory/fresh/prepare')
+async def prepare_fresh_store(request: dict, account: str = Depends(_memory_account)):
+    if (set(request) != {'principal_name','assistant_name'}
+            or any(not isinstance(value,str) for value in request.values())):
+        raise HTTPException(status_code=400, detail='Provide the principal and assistant display names')
+    return await run_in_threadpool(_memory_action, lambda preferences: preferences.prepare_fresh(
+        _candidate_path(), **request, account=account))
+
+
+def _launch_fresh_store(arguments, unit):
+    from hermes_cli import _launchers
+    code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
+    runtime = _launchers.runtime_command(_host_source(), [str(PLUGIN_DIR / 'fresh_store_worker.py'), *arguments],
+                                         code=code, python=sys.executable)
+    command = ['systemd-run', '--user', '--collect', f'--unit={unit}', f'--setenv=HOME={Path.home()}',
+               f'--setenv=HERMES_HOME={HERMES_HOME}', f"--setenv=PATH={os.environ.get('PATH', os.defpath)}", *runtime]
+    launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
+    if launched.returncode:
+        raise RuntimeError('Could not start the fresh store preparation')
+
+
+@router.post('/memory/fresh/start', status_code=202)
+def start_fresh_store(request: dict, account: str = Depends(_memory_account)):
+    if (set(request) != {'principal_name', 'assistant_name'}
+            or any(not isinstance(value, str) for value in request.values())):
+        raise HTTPException(status_code=400, detail='Provide the principal and assistant display names')
+
+    def start(preferences):
+        from lifeos_memory_settings.fresh_store import _name
+        preferences._configuration(account=account)
+        _name(request['principal_name']); _name(request['assistant_name'])
+        identifier = uuid4().hex
+        _launch_fresh_store(['--configuration', str(preferences.configuration.path), '--candidate', str(_candidate_path()),
+                             '--identifier', identifier, '--principal-name', request['principal_name'],
+                             '--assistant-name', request['assistant_name'], '--account', account],
+                            'lifeos-fresh-store-' + identifier)
+        return {'identifier': identifier, 'state': 'preparing'}
+    return _memory_action(start)
+
+
+@router.delete('/memory/fresh/stores/{identifier}')
+def remove_fresh_store(identifier: str, account: str = Depends(_memory_account)):
+    return _memory_action(lambda preferences: preferences.remove_fresh(identifier, account=account))
+
+
+@router.get('/memory/fresh/status')
+def get_fresh_store_status(request: Request, account: str = Depends(_memory_account)):
+    if request.query_params:
+        raise HTTPException(status_code=400, detail='Fresh store status uses the installed owner configuration')
+    return _memory_action(lambda preferences: preferences.fresh_status(account=account))
 
 
 @router.post('/memory/sources/preview')
@@ -390,6 +466,10 @@ def get_installation():
             host_candidate = validate_supported_hermes(HERMES_CANDIDATE)
         except (IncompatibleLifeOS, OSError) as error:
             host_candidate_error = str(error)
+    # The dashboard keeps the hook list it loaded at start; a later host change needs a restart.
+    host_state = get_host_patch_status()['state']
+    restart_required = ((host_state == 'applied' and hermes != 'patched_hooks_present')
+                        or (host_state == 'rolled_back' and hermes == 'patched_hooks_present'))
     mount = {'state':'none', 'recovery_required':False}
     if (HERMES_HOME / '.lifeos-mount').exists():
         try:
@@ -401,6 +481,7 @@ def get_installation():
         "lifeos": lifeos,
         "version": version_file.read_text(encoding="utf-8").strip() if version_file.is_file() else None,
         "hermes": hermes,
+        "dashboard_restart_required": restart_required,
         "missing_hooks": sorted(PATCHED_HOOKS - VALID_HOOKS),
         "candidate_ready": candidate is not None,
         "candidate_commit": candidate["upstream_commit"] if candidate else None,
@@ -699,6 +780,124 @@ def _resume_lifeos_update(previous: dict, account: str, action: str):
     return {"state": "recovering" if action == 'recover' else 'restoring', "job": str(job)}
 
 
+def _latest_selection():
+    if not SELECTION_ROOT.is_dir() or SELECTION_ROOT.is_symlink():
+        return None
+    jobs = [path for path in SELECTION_ROOT.iterdir()
+            if path.is_dir() and not path.is_symlink() and (path / 'request.json').is_file()]
+    return max(jobs, key=lambda path: path.stat().st_mtime_ns) if jobs else None
+
+
+def _selection_status():
+    job = _latest_selection()
+    if job is None:
+        return {'state': 'none'}
+    try:
+        status = json.loads((job / 'status.json').read_text(encoding='utf-8'))
+        if status.get('state') in {'queued', 'running', 'recovering'} and status.get('unit'):
+            active = subprocess.run(['systemctl', '--user', 'is-active', status['unit']],
+                                    text=True, capture_output=True, timeout=15)
+            if active.returncode or active.stdout.strip() != 'active':
+                journal = job / 'transaction/journal.json'
+                state = json.loads(journal.read_text())['state'] if journal.is_file() else 'failed'
+                status['state'] = state if state in {'applied', 'rolled_back'} else 'interrupted'
+        return {**status, 'job': str(job)}
+    except (OSError, ValueError, KeyError, subprocess.TimeoutExpired):
+        return {'state': 'error', 'job': str(job)}
+
+
+@router.get('/installation/selection')
+def get_installation_selection(account: str = Depends(_memory_account)):
+    selected = install_module.memory_module('lifeos_installation').selection(HERMES_HOME)
+    return {'configured': selected.configured, 'home': str(selected.home),
+            'running_home': str(LIFEOS_HOME), 'job': _selection_status()}
+
+
+def _launch_selection(job: Path, action: str):
+    from hermes_cli import _launchers
+    unit = f'lifeos-bridge-selection-{uuid4().hex}'
+    status = {'state': 'queued' if action == 'select' else 'recovering', 'unit': unit}
+    (job / 'status.json').write_text(json.dumps(status) + '\n')
+    os.chmod(job / 'status.json', 0o600)
+    arguments = [str(PLUGIN_DIR / 'selection_worker.py'), str(job), '--action', action]
+    code = "worker = sys.argv.pop(1)\nsys.argv[0] = worker\nrunpy.run_path(worker, run_name='__main__')\n"
+    runtime = _launchers.runtime_command(_host_source(), arguments, code=code, python=sys.executable)
+    command = ['systemd-run', '--user', '--collect', f'--unit={unit}', f'--setenv=HOME={Path.home()}',
+               f'--setenv=HERMES_HOME={HERMES_HOME}', f"--setenv=PATH={os.environ.get('PATH', os.defpath)}",
+               *runtime]
+    launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
+    if launched.returncode:
+        raise IncompatibleLifeOS('Could not start the LifeOS selection worker')
+
+
+def _queue_selection(account: str, store: str | None):
+    if _selection_status()['state'] in {'queued', 'running', 'recovering', 'interrupted', 'rolling_back'}:
+        raise HTTPException(status_code=409, detail='A LifeOS selection job already owns this installation')
+    selected = install_module.memory_module('lifeos_installation').selection(HERMES_HOME)
+    request = {'profile': str(HERMES_HOME), 'target_home': None, 'candidate': None,
+               'hermes_command': str(_host_source() / '.hermes/bin/hermes')}
+    try:
+        if store is None:
+            if not selected.configured:
+                raise HTTPException(status_code=409, detail='The account LifeOS home is already selected')
+            _memory_preferences()._configuration(account=account)
+        else:
+            home, review = _memory_preferences().fresh_home(store, account=account)
+            if selected.configured and selected.home == home:
+                raise HTTPException(status_code=409, detail='This fresh store is already selected')
+            if install_module.memory_administration().required(home / '.claude', HERMES_HOME):
+                raise HTTPException(status_code=409, detail='Selecting a managed memory installation is not supported yet')
+            candidate = _candidate_path()
+            if validate_prepared_lifeos(candidate) != review.get('source'):
+                raise HTTPException(status_code=409, detail='The fresh store was prepared from another LifeOS candidate')
+            request.update(target_home=str(home), candidate=str(candidate))
+        SELECTION_ROOT.mkdir(parents=True, exist_ok=True, mode=0o700)
+        job = SELECTION_ROOT / f'selection-{uuid4().hex}'
+        job.mkdir(mode=0o700)
+        (job / 'request.json').write_text(json.dumps(request) + '\n')
+        os.chmod(job / 'request.json', 0o600)
+        _launch_selection(job, 'select')
+    except PermissionError as error:
+        raise HTTPException(status_code=403, detail='The installation owner must select the LifeOS home') from error
+    except (IncompatibleLifeOS, OSError, ValueError, RuntimeError) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {'state': 'queued', 'job': str(job)}
+
+
+@router.post('/installation/selection')
+async def select_installation(request: Request, account: str = Depends(_memory_account)):
+    body = await request.json()
+    if (not isinstance(body, dict) or set(body) != {'store'} or not isinstance(body['store'], str)
+            or request.query_params):
+        raise HTTPException(status_code=400, detail='Choose one reviewed fresh store')
+    return await run_in_threadpool(_installation_action, lambda: _queue_selection(account, body['store']))
+
+
+@router.post('/installation/selection/return')
+async def return_installation(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+    return await run_in_threadpool(_installation_action, lambda: _queue_selection(account, None))
+
+
+@router.post('/installation/selection/recover')
+async def recover_installation_selection(request: Request, account: str = Depends(_memory_account)):
+    await _fixed_mount_request(request)
+
+    def recover():
+        status = _selection_status()
+        if status['state'] != 'interrupted':
+            raise HTTPException(status_code=409, detail='There is no interrupted LifeOS selection to recover')
+        try:
+            _memory_preferences()._configuration(account=account)
+            _launch_selection(Path(status['job']), 'recover')
+        except PermissionError as error:
+            raise HTTPException(status_code=403, detail='The installation owner must recover the selection') from error
+        except (IncompatibleLifeOS, OSError, ValueError, RuntimeError) as error:
+            raise HTTPException(status_code=409, detail=str(error)) from error
+        return {'state': 'recovering', 'job': status['job']}
+    return await run_in_threadpool(_installation_action, recover)
+
+
 @router.get("/installation/host-patch")
 def get_host_patch_status():
     snapshot = _latest_host_patch()
@@ -708,17 +907,30 @@ def get_host_patch_status():
         manifest = json.loads((snapshot / "manifest.json").read_text())
     except (OSError, ValueError):
         return {"state": "error", "snapshot": str(snapshot)}
-    return {"state": manifest.get("state", "error"), "snapshot": str(snapshot),
-            "error": manifest.get("error")}
+    state = manifest.get("state", "error")
+    if state in {"applying", "restoring"} and manifest.get("unit"):
+        active = subprocess.run(["systemctl", "--user", "is-active", manifest["unit"]],
+                                text=True, capture_output=True, timeout=15)
+        if active.returncode or active.stdout.strip() != "active":
+            # The worker died while it changed Hermes files; the page offers recovery.
+            return {"state": "interrupted", "transaction_state": state, "snapshot": str(snapshot),
+                    "error": manifest.get("error")}
+    return {"state": state, "snapshot": str(snapshot), "error": manifest.get("error")}
 
 
 def _launch_host_patch(snapshot: Path, action: str):
-    service = subprocess.run(["systemctl", "--user", "is-active", "hermes-gateway.service"],
-                             text=True, capture_output=True, timeout=15)
-    if service.returncode or service.stdout.strip() != "active":
-        raise IncompatibleLifeOS("A running Hermes gateway user service is required")
+    if action != "recover":
+        service = subprocess.run(["systemctl", "--user", "is-active", "hermes-gateway.service"],
+                                 text=True, capture_output=True, timeout=15)
+        if service.returncode or service.stdout.strip() != "active":
+            raise IncompatibleLifeOS("A running Hermes gateway user service is required")
+    unit = f"lifeos-bridge-{action}-{uuid4().hex}"
+    manifest_path = snapshot / "manifest.json"
+    manifest = json.loads(manifest_path.read_text())
+    manifest["unit"] = unit
+    install_module.memory_administration().publish(manifest_path, (json.dumps(manifest) + "\n").encode())
     command = ["systemd-run", "--user", "--collect",
-               f"--unit=lifeos-bridge-{action}-{uuid4().hex}",
+               f"--unit={unit}",
                f"--setenv=HERMES_HOME={HERMES_HOME}", sys.executable,
                str(PLUGIN_DIR / "install_source.py"), action, str(snapshot)]
     launched = subprocess.run(command, text=True, capture_output=True, timeout=30)
@@ -773,6 +985,23 @@ def _restore_hermes_installation():
             cancel_hermes_restore(snapshot, str(error))
         raise HTTPException(status_code=409, detail=str(error)) from error
     return {"state": "restoring", "snapshot": str(snapshot)}
+
+
+@router.post("/installation/recover-hermes", dependencies=[Depends(_fixed_mount_request)])
+def recover_hermes_installation():
+    return _installation_action(_recover_hermes_installation)
+
+
+def _recover_hermes_installation():
+    previous = get_host_patch_status()
+    if previous["state"] != "interrupted":
+        raise HTTPException(status_code=409, detail="There is no interrupted Hermes patch change to recover")
+    snapshot = Path(previous["snapshot"])
+    try:
+        _launch_host_patch(snapshot, "recover")
+    except (IncompatibleLifeOS, OSError, ValueError, subprocess.TimeoutExpired) as error:
+        raise HTTPException(status_code=409, detail=str(error)) from error
+    return {"state": "recovering", "snapshot": str(snapshot)}
 
 
 @router.get("/settings")

@@ -1,0 +1,39 @@
+{
+  "case": "MemoryStateTests.test_unknown_status_warning_keeps_native_fallback",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [
+        "--json"
+      ],
+      "options": {},
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: populated\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic health target TBD\n"
+        },
+        "artifact": null
+      },
+      "status": 0,
+      "stdout": "{\n  \"generated_at\": \"2026-10-04T20:05:45.328Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 90,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+      "stderr": "[UpdateLifeosState] WARNING: HEALTH.md has 1 unrecognized status keyword(s) (populated) \u2014 only have/partial/missing count toward coverage, so the reported percentage is wrong until fixed.\n",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/CURRENT_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nstatus: populated\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/MONEY.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic money target TBD TBD\n",
+          "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": "---\nlast_updated: 2026-10-04\n---\nSynthetic health target TBD\n"
+        },
+        "artifact": {
+          "sha256": "69102aaa7b43f037f269cb8aa918d75284629aaa28d4bf88877f62f121203cf6",
+          "content": "{\n  \"generated_at\": \"2026-10-04T20:05:45.328Z\",\n  \"dimensions\": {\n    \"health\": {\n      \"pct\": 90,\n      \"tbd_count\": 1,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/HEALTH.md\"\n    },\n    \"money\": {\n      \"pct\": 80,\n      \"tbd_count\": 2,\n      \"last_updated\": \"2026-10-04\",\n      \"source_file\": \"IDEAL_STATE/MONEY.md\"\n    },\n    \"freedom\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"FREEDOM.md\"\n    },\n    \"creative\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"CREATIVE.md\"\n    },\n    \"relationships\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RELATIONSHIPS.md\"\n    },\n    \"rhythms\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"RHYTHMS.md\"\n    },\n    \"infrastructure\": {\n      \"pct\": null,\n      \"tbd_count\": 0,\n      \"last_updated\": null,\n      \"source_file\": \"INFRASTRUCTURE.md\"\n    }\n  }\n}\n",
+          "mode": "0o600"
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

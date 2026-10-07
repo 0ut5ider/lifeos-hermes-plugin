@@ -1,0 +1,100 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/spend-audit.jsonl": "{\"ts\":\"<time>\",\"session_id\":\"<session>\",\"audited\":false,\"reason\":\"not-eligible\"}\n",
+      ".claude/LIFEOS/MEMORY/STATE/spend-audit-state.json": "{\"<session>\":<epoch-ms>}"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "Stop",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "f0e05536-c395-420b-8f64-9a186524b642",
+  "seconds": 1.924,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-spend-auditor",
+    "/home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-spend-auditor",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "Stop.1.5",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run Stop.1.5 /home/lifeos-claude-ref/workspace/paired-generic-hooks-20261005/results/generic-spend-auditor/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvU3BlbmRBdWRpdG9yLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/SpendAuditor.hook.ts": "c784e8cfaab519b3b511093b7eeab278ba27ac06ec5353ecc4ad77b8118498da"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "4cb748a0324e3b6806ce3105da31230992e69fb8ee5be3010f6b2b7f703c3231",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "c542f3f262532fc5d58250aebdc8029e43e6ba85e9e4adffd61cb3440e9f0d37",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "f4e91fae15f27e9c2850a4f99cfd6b3196c10c346d9f9b42d84d58cf67a1e0db",
+    "fixture-events.jsonl": "818adb751ec46954f14f89f01a4f2e2c9b4dd263fcc997ed6a5b9dde4e10263a",
+    "cli.log": "43e2e0cdd56b753c6921524ca1f41c2d71817f3389a8171ff2a670917778f1cf",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "cd4db251c3b05a54f8a70e093caa574f4a93bc8708c46ee0ce1946ab7e16d15e",
+    "fixture-files-before.json": "048fbfde0d09a5d7208985b37ed8de425d8bc0b16ac4b2ad2f60bc83aafe8d3c",
+    "fixture-files-after.json": "ff0bf8181898565ce486da23db6468a93a3994527ed07cb40d7966445fe6b11e"
+  }
+}

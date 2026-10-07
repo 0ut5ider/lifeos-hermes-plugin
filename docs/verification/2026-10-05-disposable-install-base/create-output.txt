@@ -1,0 +1,72 @@
+{"command": ["pveam", "download", "local", "ubuntu-24.04-standard_24.04-2_amd64.tar.zst"]}
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+downloading http://download.proxmox.com/images/system/ubuntu-24.04-standard_24.04-2_amd64.tar.zst to /var/lib/vz/template/cache/ubuntu-24.04-standard_24.04-2_amd64.tar.zst
+--2026-10-05 07:43:48--  http://download.proxmox.com/images/system/ubuntu-24.04-standard_24.04-2_amd64.tar.zst
+Resolving download.proxmox.com (download.proxmox.com)... 66.70.154.82, 2607:5300:400:7d00::80
+Connecting to download.proxmox.com (download.proxmox.com)|66.70.154.82|:80... connected.
+HTTP request sent, awaiting response... 200 OK
+Length: 141589318 (135M) [application/octet-stream]
+Saving to: '/var/lib/vz/template/cache/ubuntu-24.04-standard_24.04-2_amd64.tar.zst.tmp_dwnl.461291'
+     0K ........ ........ ........ ........ 23% 53.6M 2s
+ 32768K ........ ........ ........ ........ 47% 38.5M 2s
+ 65536K ........ ........ ........ ........ 71% 36.7M 1s
+ 98304K ........ ........ ........ ........ 94% 36.6M 0s
+131072K .......                            100% 30.1M=3.4s
+2026-10-05 07:43:52 (39.6 MB/s) - '/var/lib/vz/template/cache/ubuntu-24.04-standard_24.04-2_amd64.tar.zst.tmp_dwnl.461291' saved [141589318/141589318]
+calculating checksum...OK, checksum verified
+download of 'http://download.proxmox.com/images/system/ubuntu-24.04-standard_24.04-2_amd64.tar.zst' to '/var/lib/vz/template/cache/ubuntu-24.04-standard_24.04-2_amd64.tar.zst' finished
+{"command": ["pct", "create", "100", "local:vztmpl/ubuntu-24.04-standard_24.04-2_amd64.tar.zst", "--hostname", "lifeos-install-probe", "--unprivileged", "1", "--cores", "2", "--cpulimit", "2", "--cpuunits", "50", "--memory", "4096", "--swap", "0", "--rootfs", "local-zfs:24", "--net0", "name=eth0,bridge=vmbr0,ip=dhcp,ip6=manual,firewall=1", "--features", "nesting=1", "--onboot", "0", "--tags", "disposable;lifeos-test", "--description", "Disposable LifeOS and Hermes installation acceptance fixture created 2026-10-05."]}
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+extracting archive '/var/lib/vz/template/cache/ubuntu-24.04-standard_24.04-2_amd64.tar.zst'
+Total bytes read: 564490240 (539MiB, 203MiB/s)
+Detected container architecture: amd64
+Setting up 'proxmox-regenerate-snakeoil.service' to regenerate snakeoil certificate..
+Creating SSH host key 'ssh_host_rsa_key' - this may take some time ...
+done: SHA256:dX54rl37DqeMbg5bglsmFzO8PVYNHir8EIKI5qLxdtE root@lifeos-install-probe
+Creating SSH host key 'ssh_host_ecdsa_key' - this may take some time ...
+done: SHA256:WBTehOA6DsoklBrhVnJcMhad2ZUl0bW9E6Jn/3kx/Nk root@lifeos-install-probe
+Creating SSH host key 'ssh_host_ed25519_key' - this may take some time ...
+done: SHA256:R9mzQyhZpnTyH1Z3FoTWTq/0ByATgIk+XPD4Umsl2JQ root@lifeos-install-probe
+{"command": ["pct", "start", "100"]}
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+{"command": ["pct", "config", "100"]}
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+arch: amd64
+cores: 2
+cpulimit: 2
+cpuunits: 50
+description: Disposable LifeOS and Hermes installation acceptance fixture created 2026-10-05.%0A
+features: nesting=1
+hostname: lifeos-install-probe
+memory: 4096
+net0: name=eth0,bridge=vmbr0,firewall=1,hwaddr=BC:24:11:05:98:74,ip=dhcp,ip6=manual,type=veth
+onboot: 0
+ostype: ubuntu
+rootfs: local-zfs:subvol-100-disk-0,size=24G
+swap: 0
+tags: disposable;lifeos-test
+unprivileged: 1
+{"command": ["qm", "config", "801"]}
+Plugin "PVE::Storage::Custom::TrueNASPlugin" is implementing an older storage API, an upgrade is recommended
+agent: 1
+balloon: 0
+bios: ovmf
+boot: order=scsi0;ide2;net0
+cores: 28
+cpu: host
+efidisk0: local-zfs:vm-801-disk-0,efitype=4m,size=1M
+ide2: none,media=cdrom
+machine: q35
+memory: 102400
+meta: creation-qemu=11.0.2,ctime=1783213909
+name: processing
+net0: virtio=BC:24:11:5A:8A:46,bridge=vmbr0,firewall=1
+numa: 0
+onboot: 1
+ostype: l26
+scsi0: local-zfs:vm-801-disk-1,iothread=1,size=200G
+scsi1: /dev/sda,size=1953514584K
+scsihw: virtio-scsi-single
+smbios1: uuid=29c521e2-523a-4722-b510-486337846b1f
+sockets: 1
+vmgenid: 1663d68b-ba6b-4e99-90fd-d90e6b30eea2

@@ -1,0 +1,270 @@
+{
+  "actual_parent_response": "PAIR_PARENT_DISPATCHED",
+  "actual_completions": [
+    {
+      "type": "async_delegation",
+      "delegation_id": "deleg_fbdab568",
+      "session_key": "20261007_033051_aa18fe",
+      "origin_ui_session_id": "",
+      "origin_session_id": "",
+      "parent_session_id": "20261007_033051_aa18fe",
+      "goal": "2 parallel subagents: Reply with exactly PAIR_CHILD_A; Reply with exactly PAIR_CHILD_B",
+      "goals": [
+        "Reply with exactly PAIR_CHILD_A",
+        "Reply with exactly PAIR_CHILD_B"
+      ],
+      "context": null,
+      "toolsets": null,
+      "role": "leaf",
+      "model": "lifecycle-fixture",
+      "status": "error",
+      "is_batch": true,
+      "results": [
+        {
+          "task_index": 0,
+          "status": "failed",
+          "summary": "custom rejected your API key, so the model can't be reached. Update it in Settings \u2192 Providers, or run `hermes setup` in a terminal.\n\nProvider said: HTTP 401: {\"error\":\"Unauthorized\"}",
+          "api_calls": 1,
+          "duration_seconds": 0.21,
+          "model": "lifecycle-fixture",
+          "exit_reason": "error",
+          "truncated": false,
+          "tokens": {
+            "input": 0,
+            "output": 0
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "error": "HTTP 401: {\"error\":\"Unauthorized\"}",
+          "failure_reason": "auth",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/provider-failure-carrier-final2/.hermes/cache/delegation/live/deleg_fbdab568/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "failed",
+          "summary": "custom rejected your API key, so the model can't be reached. Update it in Settings \u2192 Providers, or run `hermes setup` in a terminal.\n\nProvider said: HTTP 401: {\"error\":\"Unauthorized\"}",
+          "api_calls": 1,
+          "duration_seconds": 0.09,
+          "model": "lifecycle-fixture",
+          "exit_reason": "error",
+          "truncated": false,
+          "tokens": {
+            "input": 0,
+            "output": 0
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "error": "HTTP 401: {\"error\":\"Unauthorized\"}",
+          "failure_reason": "auth",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/provider-failure-carrier-final2/.hermes/cache/delegation/live/deleg_fbdab568/task-1.log"
+        }
+      ],
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/provider-failure-carrier-final2/.hermes/cache/delegation/live/deleg_fbdab568/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/provider-failure-carrier-final2/.hermes/cache/delegation/live/deleg_fbdab568/task-1.log"
+      ],
+      "error": null,
+      "total_duration_seconds": 0.62,
+      "dispatched_at": 1791343860.2682009,
+      "completed_at": 1791343860.6381578
+    }
+  ],
+  "native_events": [
+    {
+      "timestamp": "2026-10-07T03:31:00+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_033051_aa18fe",
+      "subagent_id": "20261007_033051_aa18fe::Reply with exactly PAIR_CHILD_A [20261007_033100_0f788f]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "session-inherited",
+      "description": "Reply with exactly PAIR_CHILD_A [20261007_033100_0f788f]",
+      "prompt_preview": "Reply with exactly PAIR_CHILD_A"
+    },
+    {
+      "timestamp": "2026-10-07T03:31:00+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_033051_aa18fe",
+      "subagent_id": "20261007_033051_aa18fe::Reply with exactly PAIR_CHILD_B [20261007_033100_a48b94]",
+      "subagent_type": "leaf",
+      "subagent_model": "lifecycle-fixture",
+      "subagent_level": "session-inherited",
+      "description": "Reply with exactly PAIR_CHILD_B [20261007_033100_a48b94]",
+      "prompt_preview": "Reply with exactly PAIR_CHILD_B"
+    },
+    {
+      "timestamp": "2026-10-07T03:31:00+00:00",
+      "event": "subagent_stop",
+      "session_id": "20261007_033051_aa18fe",
+      "subagent_id": "20261007_033051_aa18fe::Reply with exactly PAIR_CHILD_A [20261007_033100_0f788f]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly PAIR_CHILD_A [20261007_033100_0f788f]",
+      "duration_seconds": 0
+    },
+    {
+      "timestamp": "2026-10-07T03:31:00+00:00",
+      "event": "subagent_stop",
+      "session_id": "20261007_033051_aa18fe",
+      "subagent_id": "20261007_033051_aa18fe::Reply with exactly PAIR_CHILD_B [20261007_033100_a48b94]",
+      "subagent_type": "leaf",
+      "description": "Reply with exactly PAIR_CHILD_B [20261007_033100_a48b94]",
+      "duration_seconds": 0
+    }
+  ],
+  "parent_session_id": "20261007_033051_aa18fe",
+  "progress": [
+    {
+      "event": "tool.started",
+      "tool": "delegate_task"
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-7d0b7c7c",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033100_0f788f",
+      "delegation_id": "deleg_fbdab568",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.start",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-639d1531",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033100_a48b94",
+      "delegation_id": "deleg_fbdab568",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-7d0b7c7c",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033100_0f788f",
+      "delegation_id": "deleg_fbdab568",
+      "tool_count": 0
+    },
+    {
+      "event": "subagent.thinking",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-639d1531",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033100_a48b94",
+      "delegation_id": "deleg_fbdab568",
+      "tool_count": 0
+    },
+    {
+      "event": "tool.completed",
+      "tool": "delegate_task",
+      "duration": 0.28228330612182617,
+      "is_error": false,
+      "result": "{\"status\": \"dispatched\", \"mode\": \"background\", \"count\": 2, \"delegation_id\": \"deleg_fbdab568\", \"goals\": [\"Reply with exactly PAIR_CHILD_A\", \"Reply with exactly PAIR_CHILD_B\"], \"note\": \"2 subagents are running in parallel in the background as 1 completion unit(s); each unit's results re-enter the conversation as their own new message when THAT unit finishes. Results are delivered only after you END YOUR TURN: do anything that does not depend on them, then stop with a one-line status. Do not poll transcripts or artifacts to wait for them.\", \"subagent_ids\": [\"sa-0-7d0b7c7c\", \"sa-1-639d1531\"], \"control_hint\": \"While a child runs you can orchestrate it live with this same tool: delegate_task(action='list') to see live children, action='steer' with subagent_id + message to redirect one, action='stop' with subagent_id to end one early.\", \"live_transcripts\": [\"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/provider-failure-carrier-final2/.hermes/cache/delegation/live/deleg_fbdab568/task-0.log\", \"/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/provider-failure-carrier-final2/.hermes/cache/delegation/live/deleg_fbdab568/task-1.log\"], \"live_transcripts_hint\": \"Each subagent streams a human-readable transcript of its operations to the file listed above (append-only, one per task). Read or `tail -f` these paths at any time to watch a child work while it runs.\"}"
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 1,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_B",
+      "subagent_id": "sa-1-639d1531",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033100_a48b94",
+      "delegation_id": "deleg_fbdab568",
+      "tool_count": 0,
+      "status": "failed",
+      "duration_seconds": 0.09,
+      "summary": "custom rejected your API key, so the model can't be reached. Update it in Settings \u2192 Providers, or run `hermes setup` in a terminal.\n\nProvider said: HTTP 401: {\"error\":\"Unauthorized\"}",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_tokens": 0,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "failure_reason": "auth",
+      "cost_usd": 0.0
+    },
+    {
+      "event": "subagent.complete",
+      "tool": null,
+      "task_index": 0,
+      "task_count": 2,
+      "goal": "Reply with exactly PAIR_CHILD_A",
+      "subagent_id": "sa-0-7d0b7c7c",
+      "depth": 0,
+      "model": "lifecycle-fixture",
+      "toolsets": [
+        "terminal"
+      ],
+      "child_session_id": "20261007_033100_0f788f",
+      "delegation_id": "deleg_fbdab568",
+      "tool_count": 0,
+      "status": "failed",
+      "duration_seconds": 0.21,
+      "summary": "custom rejected your API key, so the model can't be reached. Update it in Settings \u2192 Providers, or run `hermes setup` in a terminal.\n\nProvider said: HTTP 401: {\"error\":\"Unauthorized\"}",
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "reasoning_tokens": 0,
+      "api_calls": 1,
+      "files_read": [],
+      "files_written": [],
+      "output_tail": [],
+      "failure_reason": "auth",
+      "cost_usd": 0.0
+    },
+    {
+      "event": "reasoning.available",
+      "tool": "_thinking"
+    }
+  ],
+  "parent_completion_response": null,
+  "durable_delivery": null,
+  "main_callbacks": [
+    {
+      "session_id": "20261007_033051_aa18fe",
+      "event": "SessionStart"
+    },
+    {
+      "session_id": "20261007_033051_aa18fe",
+      "event": "UserPromptSubmit"
+    },
+    {
+      "session_id": "20261007_033051_aa18fe",
+      "event": "Stop"
+    }
+  ]
+}

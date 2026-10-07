@@ -1,0 +1,32 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryStateTests.test_owner_can_review_exact_older_state_sources_after_retirement _
+tests/test_memory_state.py:106: in test_owner_can_review_exact_older_state_sources_after_retirement
+    plan = preview(memory, OWNER, paths)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:88: in preview
+    return _snapshot(memory, connection, scope, paths)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:62: in _snapshot
+    classification = _classification(relative)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:28: in _classification
+    raise ValueError('Source review supports installed system Markdown and owner identity sources')
+E   ValueError: Source review supports installed system Markdown and owner identity sources
+_ MemoryStateTests.test_source_review_cannot_readmit_a_known_retired_state_claim _
+tests/test_memory_state.py:122: in test_source_review_cannot_readmit_a_known_retired_state_claim
+    plan = preview(memory, OWNER, paths)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:88: in preview
+    return _snapshot(memory, connection, scope, paths)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:62: in _snapshot
+    classification = _classification(relative)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_source_review.py:28: in _classification
+    raise ValueError('Source review supports installed system Markdown and owner identity sources')
+E   ValueError: Source review supports installed system Markdown and owner identity sources
+=========================== short test summary info ============================
+FAILED tests/test_memory_state.py::MemoryStateTests::test_owner_can_review_exact_older_state_sources_after_retirement
+FAILED tests/test_memory_state.py::MemoryStateTests::test_source_review_cannot_readmit_a_known_retired_state_claim
+2 failed in 1.83s

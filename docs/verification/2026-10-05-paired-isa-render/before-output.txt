@@ -1,0 +1,180 @@
+...........EEEFFFFFFFFFFF.............................................
+======================================================================
+ERROR: test_after_state_normalizes_paths_and_classifies_the_page (test_paired_lifecycle_effects.PairedISARenderFixtureTests.test_after_state_normalizes_paths_and_classifies_the_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 688, in test_after_state_normalizes_paths_and_classifies_the_page
+    from scripts.paired_lifecycle_effects import seed_render_state
+ImportError: cannot import name 'seed_render_state' from 'scripts.paired_lifecycle_effects' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+ERROR: test_fixture_binds_the_hook_to_stop_and_links_the_native_renderer (test_paired_lifecycle_effects.PairedISARenderFixtureTests.test_fixture_binds_the_hook_to_stop_and_links_the_native_renderer)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 670, in test_fixture_binds_the_hook_to_stop_and_links_the_native_renderer
+    home, settings = self.fixture('isa-render-complete')
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 666, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 700, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py", line 660, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'isa-render-complete'
+
+======================================================================
+ERROR: test_session_start_seeds_the_edit_state_for_the_real_session (test_paired_lifecycle_effects.PairedISARenderFixtureTests.test_session_start_seeds_the_edit_state_for_the_real_session)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 675, in test_session_start_seeds_the_edit_state_for_the_real_session
+    from scripts.paired_lifecycle_effects import seed_render_state
+ImportError: cannot import name 'seed_render_state' from 'scripts.paired_lifecycle_effects' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/paired_lifecycle_effects.py)
+
+======================================================================
+FAIL: test_completed_work_requires_a_rendered_page_and_cleared_state (test_paired_lifecycle_effects.PairedISARenderTests.test_completed_work_requires_a_rendered_page_and_cleared_state) (key='page')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 640, in test_completed_work_requires_a_rendered_page_and_cleared_state
+    self.assertIn('isa-render-complete: render effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'isa-render-complete: render effect is missing' not found in ['isa-render-complete: unknown case']
+
+======================================================================
+FAIL: test_completed_work_requires_a_rendered_page_and_cleared_state (test_paired_lifecycle_effects.PairedISARenderTests.test_completed_work_requires_a_rendered_page_and_cleared_state) (key='state_present')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 640, in test_completed_work_requires_a_rendered_page_and_cleared_state
+    self.assertIn('isa-render-complete: render effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'isa-render-complete: render effect is missing' not found in ['isa-render-complete: unknown case']
+
+======================================================================
+FAIL: test_completed_work_requires_a_rendered_page_and_cleared_state (test_paired_lifecycle_effects.PairedISARenderTests.test_completed_work_requires_a_rendered_page_and_cleared_state) (key='log')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 640, in test_completed_work_requires_a_rendered_page_and_cleared_state
+    self.assertIn('isa-render-complete: render effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'isa-render-complete: render effect is missing' not found in ['isa-render-complete: unknown case']
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedISARenderTests.test_every_selected_branch_accepts_only_its_required_effect) (name='isa-render-absent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 633, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['isa-render-absent: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'isa-render-absent: unknown case'
+
+- ['isa-render-absent: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedISARenderTests.test_every_selected_branch_accepts_only_its_required_effect) (name='isa-render-first-authoring')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 633, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['isa-render-first-authoring: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'isa-render-first-authoring: unknown case'
+
+- ['isa-render-first-authoring: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedISARenderTests.test_every_selected_branch_accepts_only_its_required_effect) (name='isa-render-missing')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 633, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['isa-render-missing: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'isa-render-missing: unknown case'
+
+- ['isa-render-missing: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedISARenderTests.test_every_selected_branch_accepts_only_its_required_effect) (name='isa-render-complete')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 633, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['isa-render-complete: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'isa-render-complete: unknown case'
+
+- ['isa-render-complete: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedISARenderTests.test_every_selected_branch_accepts_only_its_required_effect) (name='isa-render-resumed')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 633, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['isa-render-resumed: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'isa-render-resumed: unknown case'
+
+- ['isa-render-resumed: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedISARenderTests.test_every_selected_branch_accepts_only_its_required_effect) (name='isa-render-existing-page')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 633, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['isa-render-existing-page: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'isa-render-existing-page: unknown case'
+
+- ['isa-render-existing-page: unknown case']
++ []
+
+======================================================================
+FAIL: test_existing_page_requires_replacement_of_the_prior_content (test_paired_lifecycle_effects.PairedISARenderTests.test_existing_page_requires_replacement_of_the_prior_content)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 652, in test_existing_page_requires_replacement_of_the_prior_content
+    self.assertIn('isa-render-existing-page: render effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'isa-render-existing-page: render effect is missing' not found in ['isa-render-existing-page: unknown case']
+
+======================================================================
+FAIL: test_first_authoring_rejects_a_rendered_page (test_paired_lifecycle_effects.PairedISARenderTests.test_first_authoring_rejects_a_rendered_page)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_paired_lifecycle_effects.py", line 646, in test_first_authoring_rejects_a_rendered_page
+    self.assertIn('isa-render-first-authoring: render effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'isa-render-first-authoring: render effect is missing' not found in ['isa-render-first-authoring: unknown case']
+
+----------------------------------------------------------------------
+Ran 63 tests in 0.200s
+
+FAILED (failures=11, errors=3)
+exit 1

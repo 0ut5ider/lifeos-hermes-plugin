@@ -3,6 +3,7 @@
 
 import importlib.util
 import json
+import os
 import subprocess
 import tempfile
 import unittest
@@ -132,6 +133,32 @@ class InstallSourceTests(unittest.TestCase):
             self.assertEqual((failed / "CLAUDE.md").read_text(), "# LifeOS test\n")
             self.assertEqual((failed / "started").read_text(), "ran")
 
+    def test_prepared_and_installed_trees_are_not_group_writable_under_a_shared_umask(self):
+        # Ubuntu and Fedora give users umask 0002; private-tree checks refuse group-writable directories.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            candidate = root / "candidate"
+            previous = os.umask(0o002)
+            self.addCleanup(os.umask, previous)
+            prepare_lifeos(str(upstream), candidate, revision, patches, ("lifeos-test.patch",))
+            binary = root / "private-bin/bun"
+            binary.parent.mkdir()
+            binary.write_text('#!/bin/bash\numask 002\ntool=$(basename "$1" .ts)\n'
+                              'while [ $# -gt 0 ]; do case "$1" in --config-root) r="$2";; --config-dir) c="$2";; esac; shift; done\n'
+                              'case "$tool" in\n'
+                              ' InstallSettings) printf \'{"hooks":{"Stop":[{"hooks":[]}]}}\' > "$r/settings.json";;\n'
+                              ' DeployCore) mkdir -p "$r/LIFEOS/MEMORY/STATE"; echo 7.40.5 > "$r/LIFEOS/VERSION";;\n'
+                              ' ScaffoldUser) mkdir -p "$c/USER/PRINCIPAL"; echo principal > "$c/USER/PRINCIPAL/P.md";;\n'
+                              'esac\n')
+            binary.chmod(0o755)
+            installed = root / "home/.claude"
+            install_lifeos(candidate, installed, root / "failed", str(binary), revision, patches, ("lifeos-test.patch",))
+            for tree in (candidate, installed, root / "home/.config/LIFEOS"):
+                writable = [str(path) for path in [tree, *tree.rglob("*")]
+                            if not path.is_symlink() and path.stat().st_mode & 0o022]
+                self.assertEqual(writable, [], tree)
+
     def test_fresh_install_places_selected_bun_on_child_path(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
@@ -149,6 +176,23 @@ class InstallSourceTests(unittest.TestCase):
                     install_lifeos(candidate, root / "home/.claude", root / "failed", str(binary),
                                    revision, patches, ("lifeos-test.patch",))
             self.assertEqual(marker.read_text(), "yes")
+
+    def test_failed_install_step_reports_the_native_error_text(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            upstream, revision, patches = self.fixture(root)
+            candidate = root / "candidate"
+            prepare_lifeos(str(upstream), candidate, revision, patches,
+                           ("lifeos-test.patch",))
+            binary = root / "private-bin/bun"
+            binary.parent.mkdir()
+            binary.write_text('#!/bin/sh\necho progress\necho "first detail" >&2\n'
+                              'echo "Synthetic native failure reason" >&2\nexit 23\n')
+            binary.chmod(0o755)
+            with self.assertRaisesRegex(IncompatibleLifeOS,
+                    "InstallSettings exited with code 23: first detail\nSynthetic native failure reason"):
+                install_lifeos(candidate, root / "home/.claude", root / "failed", str(binary),
+                               revision, patches, ("lifeos-test.patch",))
 
     def test_fresh_install_refuses_existing_claude_root(self):
         with tempfile.TemporaryDirectory() as directory:

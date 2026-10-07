@@ -1,0 +1,10 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryOwnershipTests.test_lost_or_changed_connector_refuses_before_ownership_publication _
+tests/test_memory_ownership.py:199: in test_lost_or_changed_connector_refuses_before_ownership_publication
+    with self.assertRaises(MemoryUnavailable):
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   AssertionError: MemoryUnavailable not raised
+=========================== short test summary info ============================
+FAILED tests/test_memory_ownership.py::MemoryOwnershipTests::test_lost_or_changed_connector_refuses_before_ownership_publication
+1 failed, 10 deselected in 0.90s

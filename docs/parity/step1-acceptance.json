@@ -1,0 +1,2852 @@
+{
+  "date": "2026-10-07",
+  "complete": true,
+  "registration_inventory_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
+  "scope": "Step 1 accepted hook contract. Functional controls and unavailable native dispatch remain distinct. Actual Discord delivery is combined-release acceptance.",
+  "requirements": [
+    {
+      "id": "context-reduction",
+      "package": 2,
+      "registrations": [
+        "PreToolUse.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "context-reduction-01",
+          "expected": "Installed RTK rewrites git status and preserves other input fields.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_command_reduction.py"
+          ]
+        },
+        {
+          "id": "context-reduction-02",
+          "expected": "Installed RTK rewrites supported gh metadata commands.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_command_reduction.py"
+          ]
+        },
+        {
+          "id": "context-reduction-03",
+          "expected": "Environment prefixes, git flags, and command chains retain supported command semantics.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_command_reduction.py"
+          ]
+        },
+        {
+          "id": "context-reduction-04",
+          "expected": "Already rewritten commands, heredocs, multiline scripts, and unsupported reads stay unchanged.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_command_reduction.py"
+          ]
+        },
+        {
+          "id": "context-reduction-05",
+          "expected": "A later deny still blocks the rewritten command.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_command_reduction.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "pulse-skill",
+      "package": 2,
+      "registrations": [
+        "PreToolUse.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "pulse-skill-01",
+          "expected": "Valid, unknown, disabled, and blocked skills produce the real daemon policy decisions.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/pulse-tests.txt",
+            "tests/test_native_pulse_guards.py"
+          ]
+        },
+        {
+          "id": "pulse-skill-02",
+          "expected": "Malformed payload and unavailable daemon preserve the documented failure policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/pulse-tests.txt",
+            "tests/test_native_pulse_guards.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "pulse-agent",
+      "package": 5,
+      "registrations": [
+        "PreToolUse.3.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "pulse-agent-01",
+          "expected": "Foreground, background, fast-model, and timing agents receive their applicable policy.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_pulse_guards.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "pulse-agent-02",
+          "expected": "The live gateway delivers asynchronous policy feedback to the parent.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/proof.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/result.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/wire.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/gateway-pulse-final/host.log"
+          ]
+        },
+        {
+          "id": "pulse-agent-03",
+          "expected": "Unavailable daemon, malformed decision, restart denial, and watchdog cleanup preserve their policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_pulse_guards.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-lifecycle-final.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-decision-final.txt"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "agent-lifecycle",
+      "package": 5,
+      "registrations": [
+        "PreToolUse.3.2",
+        "PostToolUse.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "agent-lifecycle-01",
+          "expected": "Inherited and explicit tier metadata describe the served model.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/tiers-final/proof.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/tiers-final/result.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/tiers-final/wire.json"
+          ]
+        },
+        {
+          "id": "agent-lifecycle-02",
+          "expected": "Background success and failure correlate one start with one completion.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_child_lifecycle.py",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "agent-lifecycle-03",
+          "expected": "Concurrent children retain separate starts, results, and parent delivery.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_child_lifecycle.py",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "agent-lifecycle-04",
+          "expected": "Cancellation and parent shutdown clean up watchdogs and incomplete child state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_pulse_guards.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-lifecycle-final.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/pulse-decision-final.txt",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/cancel-carrier-final3/result.json"
+          ]
+        },
+        {
+          "id": "agent-lifecycle-05",
+          "expected": "Child dispatch does not run main-session lifecycle hooks.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_child_lifecycle.py",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "question-state",
+      "package": 5,
+      "registrations": [
+        "PreToolUse.4.1",
+        "PostToolUse.6.1",
+        "Stop.1.2"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "question-state-01",
+          "expected": "Single and batch questions set waiting state and restore the prior state after an answer.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "question-state-02",
+          "expected": "Timeout, cancellation, duplicate answer, and late answer preserve first resolution.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "question-state-03",
+          "expected": "Session finalization restores or removes applicable transient terminal state.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "question-state-04",
+          "expected": "Desktop and remote channels apply their documented terminal isolation.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "nested-pre-guards",
+      "package": 2,
+      "registrations": [
+        "PreToolUse.5.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "nested-pre-guards-01",
+          "expected": "System content Write, Edit, and batch deny identifying content; user and outside-tree content stay allowed.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-02",
+          "expected": "Stale whole-file ISA writes deny after an external change; fresh views and supported edits pass.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-03",
+          "expected": "Unsafe plutil extraction denies; the explicit output form passes.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-04",
+          "expected": "Remote and headless speaker calls deny; health and explicitly silent calls pass.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-05",
+          "expected": "Public push policy tests blocked, admitted, bypass, scan failure, and private destination cases on disposable repositories.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/public-guard/manual.json",
+            "docs/verification/2026-10-06-step1/public-guard/off.json",
+            "docs/verification/2026-10-06-step1/public-guard/yolo.json",
+            "docs/verification/2026-10-06-step1/public-guard/permanent.json",
+            "docs/verification/2026-10-06-step1/public-guard/tests.txt",
+            "docs/verification/2026-10-06-step1/public-guard/source-identity.json",
+            "docs/verification/2026-10-06-step1/public-guard/README.md"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-06",
+          "expected": "Raw Gmail and SES sends deny; skill-routed and read-only forms pass without external delivery.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-branches/README.md",
+            "docs/verification/2026-10-06-step1/guard-branches/paired-results.json"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-07",
+          "expected": "Tier-2 classified egress tests allowed content, above-ceiling content, and classification failure.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-08",
+          "expected": "Inline system writes through redirect, tee, copy, sed, and script forms preserve target classification.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-parser/README.md",
+            "docs/verification/2026-10-06-step1/guard-parser/guard-parser-after.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        },
+        {
+          "id": "nested-pre-guards-09",
+          "expected": "Malformed dispatcher input and isolated guard failure preserve each documented failure policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "external-safety",
+      "package": 7,
+      "registrations": [
+        "PostToolUse.2.1",
+        "PostToolUse.3.1",
+        "PostToolUse.4.1",
+        "PostToolUse.5.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "external-safety-01",
+          "expected": "Ordinary and injection-shaped web, MCP, and discovery results reach the next request with the correct Safety context.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/external-delivery-current4/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/external-delivery-current4/all-wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/verification/2026-10-06-hook-completion/web-results.json",
+            "docs/verification/2026-10-06-hook-completion/wire-proof.json"
+          ]
+        },
+        {
+          "id": "external-safety-02",
+          "expected": "Supported string, object, content-block, empty, failure, and partial-success results retain their actual data.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json"
+          ]
+        },
+        {
+          "id": "external-safety-03",
+          "expected": "The pinned configuration annotates every MCP result as external data and keeps ordinary file reads neutral.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json"
+          ]
+        },
+        {
+          "id": "external-safety-04",
+          "expected": "Native ToolSearch continuation records the private gateway tool-reference limitation.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/verification/2026-10-03-hook-compatibility/README.md",
+            "docs/verification/2026-10-03-hook-compatibility/toolsearch-hook-outputs.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "permission-safety",
+      "package": 2,
+      "registrations": [
+        "PermissionRequest.1.1",
+        "PermissionRequest.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "permission-safety-01",
+          "expected": "Actual Bash, Write, Edit, batch, and MCP targets receive allow, ask, or deny decisions.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-controls/permission-results.json",
+            "docs/verification/2026-10-06-step1/permission-controls/mcp-results.json",
+            "docs/verification/2026-10-06-step1/permission-controls/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-controls/required-repeat.txt",
+            "docs/verification/2026-10-06-step1/permission-controls/README.md"
+          ]
+        },
+        {
+          "id": "permission-safety-02",
+          "expected": "Interactive approval permits the reviewed operation; cancellation and unattended mode do not grant approval.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/approval-lifecycle/approval-results.json",
+            "docs/verification/2026-10-06-step1/approval-lifecycle/wire-proof.json",
+            "docs/verification/2026-10-06-step1/approval-lifecycle/source-identity.json",
+            "docs/verification/2026-10-06-step1/approval-lifecycle/README.md",
+            "docs/verification/2026-10-06-step1/evaluation-branches/paired-results.json"
+          ]
+        },
+        {
+          "id": "permission-safety-03",
+          "expected": "Prior approval, policy changes, managed policy, and trusted-project scope preserve denial precedence.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json"
+          ]
+        },
+        {
+          "id": "permission-safety-04",
+          "expected": "Compound commands, wrappers, redirects, path aliases, and remote namespaces preserve the supported rule contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json",
+            "docs/verification/2026-10-06-step1/remote-adapters/tests.txt"
+          ]
+        },
+        {
+          "id": "permission-safety-05",
+          "expected": "Malformed managed policy follows the installed review path without granting execution.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "isa-views",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.7.1",
+        "PostToolUse.8.2",
+        "PostToolUse.9.2",
+        "PostToolUse.10.2"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "isa-views-01",
+          "expected": "Read and applied Write, Edit, and batch updates record the actual local file view.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "isa-views-02",
+          "expected": "External mutation followed by a full-file write uses the changed file for the stale-write decision.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "isa-views-03",
+          "expected": "SSH and Docker views identify the actual backend and file.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/remote-adapters/tests.txt",
+            "docs/verification/2026-10-06-step1/remote-adapters/command.json",
+            "docs/verification/2026-10-06-step1/remote-adapters/README.md"
+          ]
+        },
+        {
+          "id": "isa-views-04",
+          "expected": "Failed and partial operations record only the applied file views.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "isa-sync",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.8.1",
+        "PostToolUse.9.1",
+        "PostToolUse.10.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "isa-sync-01",
+          "expected": "New ISA, phase change, completion, and resumed work synchronize registry and render state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "isa-sync-02",
+          "expected": "Work-tree, skill-owned, and outside-tree ISAs follow their applicable synchronization rules.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "isa-sync-03",
+          "expected": "Failed and partial operations synchronize only applied changes.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "checkpoints",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.8.3",
+        "PostToolUse.9.3",
+        "PostToolUse.10.3"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "checkpoints-01",
+          "expected": "Verified criterion closure creates one retrievable checkpoint in the admitted repository.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "checkpoints-02",
+          "expected": "Repeated closure produces no duplicate checkpoint; multiple new closures retain criterion identity.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "checkpoints-03",
+          "expected": "Skill-owned ISAs and repository boundaries preserve the checkpoint contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "checkpoints-04",
+          "expected": "Git failure and partial patch do not falsely record a completed checkpoint.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "evaluation",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.8.4",
+        "PostToolUse.9.4",
+        "PostToolUse.10.4"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "evaluation-01",
+          "expected": "Actual sentinel Write, Edit, and batch operations launch the configured real evaluation runner.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-operations/operation-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/wire-proof.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/source-identity.json"
+          ]
+        },
+        {
+          "id": "evaluation-02",
+          "expected": "Completed and failed evaluations publish their actual result and exit status.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-branches/README.md",
+            "docs/verification/2026-10-06-step1/evaluation-branches/paired-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-branches/wire-proof.json"
+          ]
+        },
+        {
+          "id": "evaluation-03",
+          "expected": "Recent debounce, concurrent edits, absent runner, and nonsentinel changes preserve their applicable state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-operations/operation-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/wire-proof.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/source-identity.json"
+          ]
+        },
+        {
+          "id": "evaluation-04",
+          "expected": "The actual Hermes file tool completes the measured CLAUDE.md sentinel write.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-branches/README.md",
+            "docs/verification/2026-10-06-step1/evaluation-branches/paired-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-branches/wire-proof.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "atlas",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.8.5",
+        "PostToolUse.9.5",
+        "PostToolUse.10.5",
+        "PostToolUse.13.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "atlas-01",
+          "expected": "Projects, gear, inventory, and service-unit changes emit the correct event for each applicable file tool.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/file-effects/native.json",
+            "docs/verification/2026-10-06-step1/file-effects/hermes.json",
+            "docs/verification/2026-10-06-step1/file-effects/source-identity.json",
+            "docs/verification/2026-10-06-step1/file-effects/tests.txt",
+            "docs/verification/2026-10-06-step1/file-effects/README.md"
+          ]
+        },
+        {
+          "id": "atlas-02",
+          "expected": "Supported shell mutation patterns emit their systemd, DNS, and Cloudflare hints.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "atlas-03",
+          "expected": "Read-only, unrelated, failed, and unapplied partial changes do not emit mutation events.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "knowledge-writes",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.8.6",
+        "PostToolUse.9.6",
+        "PostToolUse.10.6"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "knowledge-writes-01",
+          "expected": "Valid notes, invalid notes, index files, and outside-tree changes follow the knowledge-write contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/file-effects/native.json",
+            "docs/verification/2026-10-06-step1/file-effects/hermes.json",
+            "docs/verification/2026-10-06-step1/file-effects/source-identity.json",
+            "docs/verification/2026-10-06-step1/file-effects/tests.txt",
+            "docs/verification/2026-10-06-step1/file-effects/README.md"
+          ]
+        },
+        {
+          "id": "knowledge-writes-02",
+          "expected": "Write, Edit, and batch warnings reach the model for the actual applied changes.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/knowledge-edit/paired-results.json",
+            "docs/verification/2026-10-06-step1/knowledge-edit/wire-proof.json",
+            "docs/verification/2026-10-06-step1/knowledge-batch/result.json",
+            "docs/verification/2026-10-06-step1/knowledge-batch/wire-proof.json",
+            "docs/verification/2026-10-06-step1/knowledge-batch/source-identity.json",
+            "docs/verification/2026-10-06-step1/knowledge-batch/README.md",
+            "docs/verification/2026-10-05-paired-knowledge-guard/paired-results.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "complexity",
+      "package": 3,
+      "registrations": [
+        "PostToolUse.8.7",
+        "PostToolUse.9.7",
+        "PostToolUse.10.7"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "complexity-01",
+          "expected": "Write, Edit, and batch source changes accumulate actual line and dependency counts.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/file-effects/native.json",
+            "docs/verification/2026-10-06-step1/file-effects/hermes.json",
+            "docs/verification/2026-10-06-step1/file-effects/source-identity.json",
+            "docs/verification/2026-10-06-step1/file-effects/tests.txt",
+            "docs/verification/2026-10-06-step1/file-effects/README.md"
+          ]
+        },
+        {
+          "id": "complexity-02",
+          "expected": "Below, at, and above the configured budget produce the specified warning behavior.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/file-effects/native.json",
+            "docs/verification/2026-10-06-step1/file-effects/hermes.json",
+            "docs/verification/2026-10-06-step1/file-effects/source-identity.json",
+            "docs/verification/2026-10-06-step1/file-effects/tests.txt",
+            "docs/verification/2026-10-06-step1/file-effects/README.md"
+          ]
+        },
+        {
+          "id": "complexity-03",
+          "expected": "Partial and failed changes add only applied work; repeated events follow the documented counting contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "event-audit",
+      "package": 4,
+      "registrations": [
+        "PostToolUse.11.1",
+        "PostToolUseFailure.1.1",
+        "ConfigChange.1.1",
+        "StopFailure.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "event-audit-01",
+          "expected": "Skill execution, file activity, heartbeat, and work reconciliation record actual tool facts.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        },
+        {
+          "id": "event-audit-02",
+          "expected": "Failure rows for shell, file, MCP, and terminal model errors retain the actual error and truncation policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        },
+        {
+          "id": "event-audit-03",
+          "expected": "External configuration first observation, change, no change, deletion, and malformed source preserve source-specific audit state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "event-audit-04",
+          "expected": "Asynchronous logging during interruption and parallel activity preserves complete rows.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "tool-observers",
+      "package": 4,
+      "registrations": [
+        "PostToolUse.12.1",
+        "PostToolUse.12.2",
+        "PostToolUseFailure.3.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "tool-observers-01",
+          "expected": "Exact repeats through the full observer produce the expected alert.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        },
+        {
+          "id": "tool-observers-02",
+          "expected": "Oscillation, repeated failure, cooldown, and parallel activity preserve loop history and thresholds.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        },
+        {
+          "id": "tool-observers-03",
+          "expected": "System-change observations use actual tool results and transcript state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/state-controls/README.md",
+            "docs/verification/2026-10-06-step1/state-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/state-controls/source-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/state-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/file-tests.txt",
+            "docs/verification/2026-10-06-step1/state-controls/isa-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/isa-hermes.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-native.json",
+            "docs/verification/2026-10-06-step1/state-controls/files-hermes.json",
+            "docs/verification/2026-10-06-hook-completion/batch-results.json",
+            "tests/test_native_pretool_guards.py",
+            "tests/test_checkpoint_verification.py",
+            "tests/test_native_config_audit.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "work-learning",
+      "package": 6,
+      "registrations": [
+        "SessionEnd.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "work-learning-01",
+          "expected": "Eligible completed work produces learning; ineligible, incomplete, and repeated sessions preserve eligibility rules.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
+        },
+        {
+          "id": "work-learning-02",
+          "expected": "Concurrent learning and cleanup in both scheduling orders preserve the durable result.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "session-cleanup",
+      "package": 6,
+      "registrations": [
+        "SessionEnd.1.2"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "session-cleanup-01",
+          "expected": "Normal, resumed, failed, and interrupted sessions remove only applicable transient work.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
+        },
+        {
+          "id": "session-cleanup-02",
+          "expected": "Concurrent sessions retain each other's active state and durable results.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_work_lifecycle.py",
+            "tests/test_native_session_end_learning.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-before.json",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/session-names-after.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "usage-counts",
+      "package": 6,
+      "registrations": [
+        "SessionEnd.1.3"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "usage-counts-01",
+          "expected": "Absent, invalid, and expired OAuth credentials preserve the documented usage-cache behavior.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-network-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-fetch-network.log"
+          ]
+        },
+        {
+          "id": "usage-counts-02",
+          "expected": "Network failure preserves the prior valid usage state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-network-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-fetch-network.log"
+          ]
+        },
+        {
+          "id": "usage-counts-03",
+          "expected": "An authenticated real usage refresh is tested or recorded as an explicit unavailable enabled-feature control.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-network-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/usage-fetch-network.log"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "memory-health",
+      "package": 6,
+      "registrations": [
+        "SessionEnd.1.4",
+        "Stop.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "memory-health-01",
+          "expected": "Healthy, warning, and unavailable-tool states produce the applicable report at both registered events.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        },
+        {
+          "id": "memory-health-02",
+          "expected": "Synthetic managed memory enforces caller and destination admission.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        },
+        {
+          "id": "memory-health-03",
+          "expected": "Pinned asynchronous execution, interruption, and subsequent turn delivery preserve the report.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "doc-integrity",
+      "package": 6,
+      "registrations": [
+        "SessionEnd.1.5"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "doc-integrity-01",
+          "expected": "Supported documentation handlers detect changed and stale documentation.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_startup_surfaces.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        },
+        {
+          "id": "doc-integrity-02",
+          "expected": "Inference-dependent branches retain actual child routing and results.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_startup_surfaces.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        },
+        {
+          "id": "doc-integrity-03",
+          "expected": "Concurrent lifecycle effects preserve documentation state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_startup_surfaces.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "system-integrity",
+      "package": 6,
+      "registrations": [
+        "SessionEnd.1.6"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "system-integrity-01",
+          "expected": "Unchanged, changed, missing, and malformed baseline cases publish the applicable integrity result.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py"
+          ]
+        },
+        {
+          "id": "system-integrity-02",
+          "expected": "Interruption preserves prior valid integrity state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "prompt-processing",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "prompt-processing-01",
+          "expected": "First and subsequent prompts create or retain the correct session name and work state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/success-wire.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/provider-failure-wire.json"
+          ]
+        },
+        {
+          "id": "prompt-processing-02",
+          "expected": "Actual title inference success and failure preserve the naming contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/success-wire.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/provider-failure-wire.json"
+          ]
+        },
+        {
+          "id": "prompt-processing-03",
+          "expected": "Restart and concurrent prompts preserve session identity.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/success-wire.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/native-prompt-current/provider-failure-wire.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "satisfaction",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "satisfaction-01",
+          "expected": "Supported ratings, praise, directives, complaints, and numeric work text follow feedback eligibility.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_feedback.py",
+            "tests/test_native_managed_prompt.py",
+            "tests/test_native_completion_policies.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        },
+        {
+          "id": "satisfaction-02",
+          "expected": "Code/system exclusions and absent context avoid false feedback capture.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_feedback.py",
+            "tests/test_native_managed_prompt.py",
+            "tests/test_native_completion_policies.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        },
+        {
+          "id": "satisfaction-03",
+          "expected": "Very low ratings run actual FailureCapture and retain applicable learning.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_feedback.py",
+            "tests/test_native_managed_prompt.py",
+            "tests/test_native_completion_policies.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        },
+        {
+          "id": "satisfaction-04",
+          "expected": "ISA pulses, write failure, asynchronous interruption, and rapid shutdown preserve feedback state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_feedback.py",
+            "tests/test_native_managed_prompt.py",
+            "tests/test_native_completion_policies.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "reminders",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.3.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "reminders-01",
+          "expected": "Absent or unverified private repository configuration suppresses routing. Explicit reminder, research, and queued-work phrases retain native labels and date metadata.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/reminder-component-controls.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
+        },
+        {
+          "id": "reminders-02",
+          "expected": "Enabled supported reminder routing uses the configured test destination without duplicate operation.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/reminder-delivery/README.md",
+            "docs/verification/2026-10-07-step1/reminder-delivery/result.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/issues-created.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/issues-closed.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/delivery-state.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/registration.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/source-identity.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/cleanup.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/repository-cleanup.json",
+            "scripts/installed_reminder_delivery_controls.py"
+          ]
+        },
+        {
+          "id": "reminders-03",
+          "expected": "Interruption and unavailable destination preserve retry state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/reminder-component-controls.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "version-drift",
+      "package": 5,
+      "registrations": [
+        "UserPromptSubmit.4.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "version-drift-01",
+          "expected": "Changed-file count, tag age, no tag, bump in flight, and recent warning obey the thresholds.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_version_drift.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-before.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-after.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-boundary-final.txt"
+          ]
+        },
+        {
+          "id": "version-drift-02",
+          "expected": "The exact nag interval boundary and next-turn asynchronous delivery preserve warning policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_version_drift.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-before.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-after.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-boundary-final.txt"
+          ]
+        },
+        {
+          "id": "version-drift-03",
+          "expected": "Interrupted execution preserves prior valid warning state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/combined-tests.txt",
+            "tests/test_native_version_drift.py",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-before.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-interruption-after.txt",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/version-boundary-final.txt"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "memory-turn",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.5.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "memory-turn-01",
+          "expected": "First, subsequent, and resumed turns supply only admitted synthetic memory.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_memory_delta.py",
+            "tests/test_memory_resume.py",
+            "tests/test_native_managed_prompt.py"
+          ]
+        },
+        {
+          "id": "memory-turn-02",
+          "expected": "Unavailable memory, revoked caller, and changed destination do not expose prohibited context.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_memory_delta.py",
+            "tests/test_memory_resume.py",
+            "tests/test_native_managed_prompt.py"
+          ]
+        },
+        {
+          "id": "memory-turn-03",
+          "expected": "Interruption preserves turn injection bookkeeping.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_memory_delta.py",
+            "tests/test_memory_resume.py",
+            "tests/test_native_managed_prompt.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "drift-reminder",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.6.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "drift-reminder-01",
+          "expected": "Code exclusions, repeated prompts, and the exact staleness boundary preserve the line budget.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "tests/test_native_managed_prompt.py"
+          ]
+        },
+        {
+          "id": "drift-reminder-02",
+          "expected": "Malformed input or state and write failure preserve the documented failure behavior.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "tests/test_native_managed_prompt.py"
+          ]
+        },
+        {
+          "id": "drift-reminder-03",
+          "expected": "Synthetic managed source and destination enforce admission.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "tests/test_native_managed_prompt.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "algorithm-nudge",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.7.1",
+        "PostToolUseFailure.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "algorithm-nudge-01",
+          "expected": "Initial, later, and late-ISA turns emit the applicable capability and algorithm nudge.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "tests/test_native_algorithm_nudge.py"
+          ]
+        },
+        {
+          "id": "algorithm-nudge-02",
+          "expected": "Actual tool failure, absent state, and malformed state preserve counters and output.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "tests/test_native_algorithm_nudge.py"
+          ]
+        },
+        {
+          "id": "algorithm-nudge-03",
+          "expected": "Restart and interruption preserve valid nudge state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "tests/test_native_algorithm_nudge.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "time-context",
+      "package": 5,
+      "registrations": [
+        "UserPromptSubmit.8.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "time-context-01",
+          "expected": "Valid UTC, owner timezone, and invalid timezone follow the clock contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-05-paired-time-context/README.md",
+            "docs/verification/2026-10-05-paired-time-context/clock-proof.json",
+            "docs/verification/2026-10-05-paired-time-context/paired-results.json"
+          ]
+        },
+        {
+          "id": "time-context-02",
+          "expected": "Pinned asynchronous output reaches the next turn without duplicated stale clock context.",
+          "status": "verified",
+          "evidence": [
+            "tests/test_async_native_delivery.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
+        },
+        {
+          "id": "time-context-03",
+          "expected": "Interruption and synthetic managed source preserve admission and delivery policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/managed-clock-controls/tests.txt",
+            "docs/verification/2026-10-07-step1/managed-clock-controls/README.md",
+            "docs/verification/2026-10-07-step1/managed-clock-controls/source-identity.json",
+            "tests/test_async_native_delivery.py",
+            "tests/test_memory_delegation.py",
+            "tests/test_memory_native.py",
+            "lifeos_hook_bridge/bridge.py",
+            "lifeos_hook_bridge/bin/hook_runner.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "model-rung",
+      "package": 6,
+      "registrations": [
+        "UserPromptSubmit.9.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "model-rung-01",
+          "expected": "Actual served model and effort carriers produce the applicable rung guidance.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_model_rung_guard.py",
+            "tests/test_native_completion_policies.py",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md"
+          ]
+        },
+        {
+          "id": "model-rung-02",
+          "expected": "Inherited, explicit, absent, and malformed carriers preserve the accepted tier mapping.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_model_rung_guard.py",
+            "tests/test_native_completion_policies.py",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md"
+          ]
+        },
+        {
+          "id": "model-rung-03",
+          "expected": "Repeated turns and child requests retain the correct model context.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_model_rung_guard.py",
+            "tests/test_native_completion_policies.py",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "task-governance",
+      "package": 4,
+      "registrations": [
+        "TaskCreated.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "task-governance-01",
+          "expected": "Allowed and rejected task descriptions preserve quality rules.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        },
+        {
+          "id": "task-governance-02",
+          "expected": "The 50-task boundary and kanban task kinds follow their distinct rules.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        },
+        {
+          "id": "task-governance-03",
+          "expected": "Delegated child tasks use the correct session count and governance.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/observer-audit-controls/README.md",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/audit.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/interruption-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/lock-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-after.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/observer-before.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/source-identity.json",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/task-tests.txt",
+            "docs/verification/2026-10-06-step1/observer-audit-controls/tasks.json",
+            "tests/test_native_observer_branches.py",
+            "docs/verification/2026-10-03-hook-compatibility/paired-effects.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-failure-audit.json",
+            "docs/verification/2026-10-03-hook-compatibility/native-control-results.json",
+            "docs/verification/2026-10-03-hook-compatibility/hermes-control-results.json",
+            "docs/verification/2026-10-06-paired-task-created/paired-results.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "hook-healer",
+      "package": 6,
+      "registrations": [
+        "SessionStart.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "hook-healer-01",
+          "expected": "Actual interpreter and executable permission repairs affect only registered installed hooks.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        },
+        {
+          "id": "hook-healer-02",
+          "expected": "Already valid, missing, and unsupported interpreter cases preserve the documented repair policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "kitty-environment",
+      "package": 6,
+      "registrations": [
+        "SessionStart.1.2"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "kitty-environment-01",
+          "expected": "Desktop persistence, absent terminal, and subagent startup follow native terminal rules.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/kitty-tests.txt"
+          ]
+        },
+        {
+          "id": "kitty-environment-02",
+          "expected": "Remote startup preserves the accepted isolation from native Kitty files.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/kitty-tests.txt"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "load-context",
+      "package": 6,
+      "registrations": [
+        "SessionStart.1.3"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "load-context-01",
+          "expected": "Enabled, disabled, missing, and synthetic managed sources retain identity and admission policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_managed_prompt.py",
+            "tests/test_native_startup_surfaces.py"
+          ]
+        },
+        {
+          "id": "load-context-02",
+          "expected": "Active work and resumed sessions supply applicable context.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_managed_prompt.py",
+            "tests/test_native_startup_surfaces.py"
+          ]
+        },
+        {
+          "id": "load-context-03",
+          "expected": "Actual model requests and generated user delivery preserve the admitted context boundary.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/managed-startup-delivery-final/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/managed-startup-delivery-final/wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/managed-startup-delivery-final/revoked-result.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "freshness",
+      "package": 6,
+      "registrations": [
+        "SessionStart.1.4"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "freshness-01",
+          "expected": "Complete installed tree, stale cache, and missing source produce the applicable freshness result.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        },
+        {
+          "id": "freshness-02",
+          "expected": "Concurrent startup and interrupted refresh preserve valid cache state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "settings-merge",
+      "package": 6,
+      "registrations": [
+        "SessionStart.1.5"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "settings-merge-01",
+          "expected": "System and user merge, direct edit backport, and settings deletion preserve source ownership.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_settings_merge.py",
+            "tests/test_native_startup_surfaces.py"
+          ]
+        },
+        {
+          "id": "settings-merge-02",
+          "expected": "Concurrent edits and malformed settings preserve atomic output and the configured merge policies.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_settings_merge.py",
+            "tests/test_native_startup_surfaces.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "response-cache",
+      "package": 6,
+      "registrations": [
+        "Stop.1.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "response-cache-01",
+          "expected": "Absent and prior cache, short and long response, and repeated Stop retain the delivered final response with the exact limit.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/wire.json"
+          ]
+        },
+        {
+          "id": "response-cache-02",
+          "expected": "Interrupted completion does not publish an undelivered response as a completed answer.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/startup-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/component-tests.txt",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/command.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/result.json",
+            "docs/verification/2026-10-07-step1/startup-completion-controls/final-response-tiers-after/wire.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "voice-completion",
+      "package": 6,
+      "registrations": [
+        "Stop.1.3"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "voice-completion-01",
+          "expected": "Desktop, remote, headless, disabled, and malformed completion follow the configured notification policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_stop_surfaces.py"
+          ]
+        },
+        {
+          "id": "voice-completion-02",
+          "expected": "Interruption and repeated Stop preserve applicable final voice state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_stop_surfaces.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "isa-render",
+      "package": 6,
+      "registrations": [
+        "Stop.1.4"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "isa-render-01",
+          "expected": "Absent, authored, missing-document, completed, resumed, and existing-page cases preserve native rendering.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_stop_surfaces.py",
+            "tests/test_native_startup_surfaces.py"
+          ]
+        },
+        {
+          "id": "isa-render-02",
+          "expected": "Newer-page, spawn failure, interruption, and concurrent render follow the freshness contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_stop_surfaces.py",
+            "tests/test_native_startup_surfaces.py"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "spend-audit",
+      "package": 6,
+      "registrations": [
+        "Stop.1.5"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "spend-audit-01",
+          "expected": "Below, at, and above the prompt-length floor follow actual capability-use policy. Eligible audit uses real low-effort inference.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_completion_policies.py",
+            "scripts/native_inference_effect_controls.py",
+            "docs/verification/2026-10-07-step1/native-completion-controls/inference/result.json"
+          ]
+        },
+        {
+          "id": "spend-audit-02",
+          "expected": "Missing or malformed transcripts, repeated Stop, and interrupted marker publication preserve actual capability-audit state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/current-code-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-inference-pinned/result.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "stop-gates",
+      "package": 6,
+      "registrations": [
+        "Stop.1.6"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "stop-gates-01",
+          "expected": "Required format, verification, writing, stale-ISA, and structural gates return the specified continuation or block.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_stop_surfaces.py",
+            "tests/test_native_isa_gate.py"
+          ]
+        },
+        {
+          "id": "stop-gates-02",
+          "expected": "Satisfied gates permit completion through the actual final transcript.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/native-completion-controls/README.md",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-current.txt",
+            "docs/verification/2026-10-07-step1/native-completion-controls/native-completion-neighbors.txt",
+            "tests/test_native_stop_surfaces.py",
+            "tests/test_native_isa_gate.py"
+          ]
+        },
+        {
+          "id": "stop-gates-03",
+          "expected": "Repeated gate feedback and interruption preserve continuation state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/recovery-result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/turns.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "memory-review",
+      "package": 6,
+      "registrations": [
+        "Stop.1.7"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "memory-review-01",
+          "expected": "Eligible review uses actual inference and records proposals without automatic approval.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-trigger-admitted/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-trigger-admitted/all-wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
+        },
+        {
+          "id": "memory-review-02",
+          "expected": "Ineligible, debounce, unavailable inference, and revoked synthetic memory preserve review policy.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/native-completion-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-unavailable-current/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-unavailable-current/all-wire.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
+        },
+        {
+          "id": "memory-review-03",
+          "expected": "Concurrent or interrupted review does not duplicate publication.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/memory-review-trigger-admitted/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/review-recovery-before.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/review-recovery-after.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "event-contract",
+      "package": 2,
+      "registrations": [
+        "PreToolUse.1.1",
+        "PreToolUse.2.1",
+        "PreToolUse.3.1",
+        "PreToolUse.3.2",
+        "PreToolUse.4.1",
+        "PreToolUse.5.1",
+        "PostToolUse.1.1",
+        "PostToolUse.2.1",
+        "PostToolUse.3.1",
+        "PostToolUse.4.1",
+        "PostToolUse.5.1",
+        "PostToolUse.6.1",
+        "PostToolUse.7.1",
+        "PostToolUse.8.1",
+        "PostToolUse.8.2",
+        "PostToolUse.8.3",
+        "PostToolUse.8.4",
+        "PostToolUse.8.5",
+        "PostToolUse.8.6",
+        "PostToolUse.8.7",
+        "PostToolUse.9.1",
+        "PostToolUse.9.2",
+        "PostToolUse.9.3",
+        "PostToolUse.9.4",
+        "PostToolUse.9.5",
+        "PostToolUse.9.6",
+        "PostToolUse.9.7",
+        "PostToolUse.10.1",
+        "PostToolUse.10.2",
+        "PostToolUse.10.3",
+        "PostToolUse.10.4",
+        "PostToolUse.10.5",
+        "PostToolUse.10.6",
+        "PostToolUse.10.7",
+        "PostToolUse.11.1",
+        "PostToolUse.12.1",
+        "PostToolUse.12.2",
+        "PostToolUse.13.1",
+        "SessionEnd.1.1",
+        "SessionEnd.1.2",
+        "SessionEnd.1.3",
+        "SessionEnd.1.4",
+        "SessionEnd.1.5",
+        "SessionEnd.1.6",
+        "UserPromptSubmit.1.1",
+        "UserPromptSubmit.2.1",
+        "UserPromptSubmit.3.1",
+        "UserPromptSubmit.4.1",
+        "UserPromptSubmit.5.1",
+        "UserPromptSubmit.6.1",
+        "UserPromptSubmit.7.1",
+        "UserPromptSubmit.8.1",
+        "UserPromptSubmit.9.1",
+        "PostToolUseFailure.1.1",
+        "PostToolUseFailure.2.1",
+        "PostToolUseFailure.3.1",
+        "TaskCreated.1.1",
+        "ConfigChange.1.1",
+        "SessionStart.1.1",
+        "SessionStart.1.2",
+        "SessionStart.1.3",
+        "SessionStart.1.4",
+        "SessionStart.1.5",
+        "Stop.1.1",
+        "Stop.1.2",
+        "Stop.1.3",
+        "Stop.1.4",
+        "Stop.1.5",
+        "Stop.1.6",
+        "Stop.1.7",
+        "Stop.2.1",
+        "StopFailure.1.1",
+        "PermissionRequest.1.1",
+        "PermissionRequest.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "event-contract-01",
+          "expected": "SessionStart source matchers and SessionEnd reason matchers select the correct installed hooks.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json"
+          ]
+        },
+        {
+          "id": "event-contract-02",
+          "expected": "Changed inputs, ask decisions, hook failures, timeout, and asynchronous hook settings preserve the event contract.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-precedence/README.md",
+            "docs/verification/2026-10-06-step1/permission-precedence/policy-results.json",
+            "docs/verification/2026-10-06-step1/permission-precedence/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-precedence/source-identity.json",
+            "notes/2026-09-28-async-timeout-parity.md",
+            "docs/agents/2026-09-28-native-contract-probe/async-timeout-reference.jsonl",
+            "docs/agents/2026-09-28-native-contract-probe/async-timeout-hermes.jsonl"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "control-limits",
+      "package": 7,
+      "registrations": [
+        "PreToolUse.1.1",
+        "PreToolUse.2.1",
+        "PreToolUse.3.1",
+        "PreToolUse.3.2",
+        "PreToolUse.4.1",
+        "PreToolUse.5.1",
+        "PostToolUse.1.1",
+        "PostToolUse.2.1",
+        "PostToolUse.3.1",
+        "PostToolUse.4.1",
+        "PostToolUse.5.1",
+        "PostToolUse.6.1",
+        "PostToolUse.7.1",
+        "PostToolUse.8.1",
+        "PostToolUse.8.2",
+        "PostToolUse.8.3",
+        "PostToolUse.8.4",
+        "PostToolUse.8.5",
+        "PostToolUse.8.6",
+        "PostToolUse.8.7",
+        "PostToolUse.9.1",
+        "PostToolUse.9.2",
+        "PostToolUse.9.3",
+        "PostToolUse.9.4",
+        "PostToolUse.9.5",
+        "PostToolUse.9.6",
+        "PostToolUse.9.7",
+        "PostToolUse.10.1",
+        "PostToolUse.10.2",
+        "PostToolUse.10.3",
+        "PostToolUse.10.4",
+        "PostToolUse.10.5",
+        "PostToolUse.10.6",
+        "PostToolUse.10.7",
+        "PostToolUse.11.1",
+        "PostToolUse.12.1",
+        "PostToolUse.12.2",
+        "PostToolUse.13.1",
+        "SessionEnd.1.1",
+        "SessionEnd.1.2",
+        "SessionEnd.1.3",
+        "SessionEnd.1.4",
+        "SessionEnd.1.5",
+        "SessionEnd.1.6",
+        "UserPromptSubmit.1.1",
+        "UserPromptSubmit.2.1",
+        "UserPromptSubmit.3.1",
+        "UserPromptSubmit.4.1",
+        "UserPromptSubmit.5.1",
+        "UserPromptSubmit.6.1",
+        "UserPromptSubmit.7.1",
+        "UserPromptSubmit.8.1",
+        "UserPromptSubmit.9.1",
+        "PostToolUseFailure.1.1",
+        "PostToolUseFailure.2.1",
+        "PostToolUseFailure.3.1",
+        "TaskCreated.1.1",
+        "ConfigChange.1.1",
+        "SessionStart.1.1",
+        "SessionStart.1.2",
+        "SessionStart.1.3",
+        "SessionStart.1.4",
+        "SessionStart.1.5",
+        "Stop.1.1",
+        "Stop.1.2",
+        "Stop.1.3",
+        "Stop.1.4",
+        "Stop.1.5",
+        "Stop.1.6",
+        "Stop.1.7",
+        "Stop.2.1",
+        "StopFailure.1.1",
+        "PermissionRequest.1.1",
+        "PermissionRequest.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "control-limits-01",
+          "expected": "WebFetch, WebSearch, and MultiEdit retain measured native CLI limitations and expanded Hermes functional evidence.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/verification/2026-10-06-hook-completion/README.md"
+          ]
+        },
+        {
+          "id": "control-limits-02",
+          "expected": "Combined output, checkpoint subject, Kitty isolation, private routing, and other intentional changes retain explicit accepted differences.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md",
+            "docs/hook-parity.md",
+            "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "installed-groups",
+      "package": 8,
+      "registrations": [
+        "PreToolUse.1.1",
+        "PreToolUse.2.1",
+        "PreToolUse.3.1",
+        "PreToolUse.3.2",
+        "PreToolUse.4.1",
+        "PreToolUse.5.1",
+        "PostToolUse.1.1",
+        "PostToolUse.2.1",
+        "PostToolUse.3.1",
+        "PostToolUse.4.1",
+        "PostToolUse.5.1",
+        "PostToolUse.6.1",
+        "PostToolUse.7.1",
+        "PostToolUse.8.1",
+        "PostToolUse.8.2",
+        "PostToolUse.8.3",
+        "PostToolUse.8.4",
+        "PostToolUse.8.5",
+        "PostToolUse.8.6",
+        "PostToolUse.8.7",
+        "PostToolUse.9.1",
+        "PostToolUse.9.2",
+        "PostToolUse.9.3",
+        "PostToolUse.9.4",
+        "PostToolUse.9.5",
+        "PostToolUse.9.6",
+        "PostToolUse.9.7",
+        "PostToolUse.10.1",
+        "PostToolUse.10.2",
+        "PostToolUse.10.3",
+        "PostToolUse.10.4",
+        "PostToolUse.10.5",
+        "PostToolUse.10.6",
+        "PostToolUse.10.7",
+        "PostToolUse.11.1",
+        "PostToolUse.12.1",
+        "PostToolUse.12.2",
+        "PostToolUse.13.1",
+        "SessionEnd.1.1",
+        "SessionEnd.1.2",
+        "SessionEnd.1.3",
+        "SessionEnd.1.4",
+        "SessionEnd.1.5",
+        "SessionEnd.1.6",
+        "UserPromptSubmit.1.1",
+        "UserPromptSubmit.2.1",
+        "UserPromptSubmit.3.1",
+        "UserPromptSubmit.4.1",
+        "UserPromptSubmit.5.1",
+        "UserPromptSubmit.6.1",
+        "UserPromptSubmit.7.1",
+        "UserPromptSubmit.8.1",
+        "UserPromptSubmit.9.1",
+        "PostToolUseFailure.1.1",
+        "PostToolUseFailure.2.1",
+        "PostToolUseFailure.3.1",
+        "TaskCreated.1.1",
+        "ConfigChange.1.1",
+        "SessionStart.1.1",
+        "SessionStart.1.2",
+        "SessionStart.1.3",
+        "SessionStart.1.4",
+        "SessionStart.1.5",
+        "Stop.1.1",
+        "Stop.1.2",
+        "Stop.1.3",
+        "Stop.1.4",
+        "Stop.1.5",
+        "Stop.1.6",
+        "Stop.1.7",
+        "Stop.2.1",
+        "StopFailure.1.1",
+        "PermissionRequest.1.1",
+        "PermissionRequest.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "installed-groups-01",
+          "expected": "Complete startup and prompt groups run together in normal and resumed sessions.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/results.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/hook-trace.jsonl",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/resume-result.json"
+          ]
+        },
+        {
+          "id": "installed-groups-02",
+          "expected": "Complete pre-tool, permission, success, and failure groups preserve ordering and actual targets.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/turns.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/hook-trace.jsonl",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/host-result.json"
+          ]
+        },
+        {
+          "id": "installed-groups-03",
+          "expected": "Complete Stop and SessionEnd groups preserve delivery, durable learning, and transient cleanup.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/host-result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/delegation-delivery.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/hook-trace.jsonl"
+          ]
+        },
+        {
+          "id": "installed-groups-04",
+          "expected": "Multi-turn questions, delegation, parallel operations, denial, restart, and interruption preserve shared state.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/turns.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/delegation-delivery.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-session-current8/resume-result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-interrupt-observed/recovery-result.json"
+          ]
+        },
+        {
+          "id": "installed-groups-05",
+          "expected": "Clean install, update, and restore use the exact tested source and dependency manifests.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/installation/installer-receipt.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-update-current8/result.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-update-current8/reference-installation.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/README.md"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    },
+    {
+      "id": "release-adapter",
+      "package": 8,
+      "registrations": [
+        "PreToolUse.4.1",
+        "PostToolUse.6.1"
+      ],
+      "status": "unverified",
+      "scenarios": [
+        {
+          "id": "release-adapter-01",
+          "expected": "Actual Discord question, answer, timeout, and cancellation delivery pass after the single-gateway migration.",
+          "status": "unverified",
+          "evidence": []
+        }
+      ],
+      "release_acceptance": true
+    },
+    {
+      "id": "regression-gates",
+      "package": 9,
+      "registrations": [
+        "PreToolUse.1.1",
+        "PreToolUse.2.1",
+        "PreToolUse.3.1",
+        "PreToolUse.3.2",
+        "PreToolUse.4.1",
+        "PreToolUse.5.1",
+        "PostToolUse.1.1",
+        "PostToolUse.2.1",
+        "PostToolUse.3.1",
+        "PostToolUse.4.1",
+        "PostToolUse.5.1",
+        "PostToolUse.6.1",
+        "PostToolUse.7.1",
+        "PostToolUse.8.1",
+        "PostToolUse.8.2",
+        "PostToolUse.8.3",
+        "PostToolUse.8.4",
+        "PostToolUse.8.5",
+        "PostToolUse.8.6",
+        "PostToolUse.8.7",
+        "PostToolUse.9.1",
+        "PostToolUse.9.2",
+        "PostToolUse.9.3",
+        "PostToolUse.9.4",
+        "PostToolUse.9.5",
+        "PostToolUse.9.6",
+        "PostToolUse.9.7",
+        "PostToolUse.10.1",
+        "PostToolUse.10.2",
+        "PostToolUse.10.3",
+        "PostToolUse.10.4",
+        "PostToolUse.10.5",
+        "PostToolUse.10.6",
+        "PostToolUse.10.7",
+        "PostToolUse.11.1",
+        "PostToolUse.12.1",
+        "PostToolUse.12.2",
+        "PostToolUse.13.1",
+        "SessionEnd.1.1",
+        "SessionEnd.1.2",
+        "SessionEnd.1.3",
+        "SessionEnd.1.4",
+        "SessionEnd.1.5",
+        "SessionEnd.1.6",
+        "UserPromptSubmit.1.1",
+        "UserPromptSubmit.2.1",
+        "UserPromptSubmit.3.1",
+        "UserPromptSubmit.4.1",
+        "UserPromptSubmit.5.1",
+        "UserPromptSubmit.6.1",
+        "UserPromptSubmit.7.1",
+        "UserPromptSubmit.8.1",
+        "UserPromptSubmit.9.1",
+        "PostToolUseFailure.1.1",
+        "PostToolUseFailure.2.1",
+        "PostToolUseFailure.3.1",
+        "TaskCreated.1.1",
+        "ConfigChange.1.1",
+        "SessionStart.1.1",
+        "SessionStart.1.2",
+        "SessionStart.1.3",
+        "SessionStart.1.4",
+        "SessionStart.1.5",
+        "Stop.1.1",
+        "Stop.1.2",
+        "Stop.1.3",
+        "Stop.1.4",
+        "Stop.1.5",
+        "Stop.1.6",
+        "Stop.1.7",
+        "Stop.2.1",
+        "StopFailure.1.1",
+        "PermissionRequest.1.1",
+        "PermissionRequest.2.1"
+      ],
+      "status": "verified",
+      "scenarios": [
+        {
+          "id": "regression-gates-01",
+          "expected": "All paired acceptance results and retained artifact hashes pass the final evidence check.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-0.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-1.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-2.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/suite-3.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json"
+          ]
+        },
+        {
+          "id": "regression-gates-02",
+          "expected": "The complete patch rebuild and installed source identity checks pass.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/patch-rebuild-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installation/installer-receipt.json"
+          ]
+        },
+        {
+          "id": "regression-gates-03",
+          "expected": "Concurrent service admission errors are instrumented and resolved without weakening admission.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/service-isolation/README.md",
+            "tests/test_profile_services.py",
+            "docs/verification/2026-10-06-step1/service-isolation/service-isolated/0.log",
+            "docs/verification/2026-10-06-step1/service-isolation/service-isolated/1.log",
+            "docs/verification/2026-10-06-step1/service-isolation/service-isolated/2.log"
+          ]
+        },
+        {
+          "id": "regression-gates-04",
+          "expected": "Required regression suites pass with every skip explicitly classified against the acceptance scope.",
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/complete-command.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/complete-results.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/skip-classification.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/regression/separate-modules.json",
+            "docs/verification/2026-10-07-step1/installed-release-controls/services/tests.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/remote-tools/tests.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/browser-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/usage-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/installed-home-controls-final.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/reminder-component-controls.txt",
+            "docs/verification/2026-10-07-step1/installed-release-controls/prompt-source-reuse.json"
+          ]
+        }
+      ],
+      "release_acceptance": false
+    }
+  ]
+}

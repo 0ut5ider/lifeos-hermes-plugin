@@ -1,0 +1,118 @@
+{
+  "cases": [
+    {
+      "id": "reviewed-write-before-deny",
+      "admitted": true,
+      "reviewed": true,
+      "verified": true,
+      "result": "{\"bytes_written\": 7, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .txt files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\", \"files_modified\": [\"/home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"]}"
+    },
+    {
+      "id": "denial-after-human-approval",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "result": "{\"error\": \"LifeOS file permission rule denied Write: /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"}"
+    },
+    {
+      "id": "initial-user-allow",
+      "admitted": true,
+      "reviewed": false,
+      "verified": true,
+      "result": "{\"bytes_written\": 7, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .txt files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\", \"files_modified\": [\"/home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"]}"
+    },
+    {
+      "id": "changed-user-deny-after-grant",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "result": "{\"error\": \"LifeOS file permission rule denied Write: /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"}"
+    },
+    {
+      "id": "managed-deny-over-user-allow",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "result": "{\"error\": \"LifeOS file permission rule denied Write: /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"}"
+    },
+    {
+      "id": "managed-only-review",
+      "admitted": false,
+      "reviewed": true,
+      "verified": true,
+      "result": "{\"error\": \"BLOCKED: User denied this potentially dangerous action (matched 'LifeOS file rule requests review of Write for /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt'). Do NOT retry \u2014 the user has explicitly rejected it.\"}"
+    },
+    {
+      "id": "malformed-managed-review",
+      "admitted": false,
+      "reviewed": true,
+      "verified": true,
+      "result": "{\"error\": \"BLOCKED: User denied this potentially dangerous action (matched 'LifeOS file rule requests review of Write for /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt'). Do NOT retry \u2014 the user has explicitly rejected it.\"}"
+    },
+    {
+      "id": "untrusted-project-deny-does-not-govern",
+      "admitted": true,
+      "reviewed": false,
+      "verified": true,
+      "result": "{\"bytes_written\": 7, \"dirs_created\": true, \"verified\": true, \"lint\": {\"status\": \"skipped\", \"message\": \"No linter for .txt files\"}, \"resolved_path\": \"/home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\", \"files_modified\": [\"/home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"]}"
+    },
+    {
+      "id": "trusted-project-deny",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "result": "{\"error\": \"LifeOS file permission rule denied Write: /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/target.txt\"}"
+    },
+    {
+      "id": "compound",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "command": "printf PAIR; touch /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/marker",
+      "result": "{\"output\": \"\", \"exit_code\": -1, \"error\": \"BLOCKED: a plugin command policy denied this command.\", \"status\": \"blocked\", \"user_summary\": \"This command did not run.\"}"
+    },
+    {
+      "id": "timeout",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "command": "timeout 10 touch /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/marker",
+      "result": "{\"output\": \"\", \"exit_code\": -1, \"error\": \"BLOCKED: a plugin command policy denied this command.\", \"status\": \"blocked\", \"user_summary\": \"This command did not run.\"}"
+    },
+    {
+      "id": "environment",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "command": "env PAIR=1 touch /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/marker",
+      "result": "{\"output\": \"\", \"exit_code\": -1, \"error\": \"BLOCKED: a plugin command policy denied this command.\", \"status\": \"blocked\", \"user_summary\": \"This command did not run.\"}"
+    },
+    {
+      "id": "redirect",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "command": "printf PAIR > /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/marker",
+      "result": "{\"output\": \"\", \"exit_code\": -1, \"error\": \"BLOCKED: a plugin command policy denied this command.\", \"status\": \"blocked\", \"user_summary\": \"This command did not run.\"}"
+    },
+    {
+      "id": "directory",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "command": "cd /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project && printf PAIR > marker",
+      "result": "{\"output\": \"\", \"exit_code\": -1, \"error\": \"BLOCKED: a plugin command policy denied this command.\", \"status\": \"blocked\", \"user_summary\": \"This command did not run.\"}"
+    },
+    {
+      "id": "symlink",
+      "admitted": false,
+      "reviewed": false,
+      "verified": true,
+      "command": "printf PAIR > /home/outsider/.cache/lhc6/policy-effects-9y8rwnht/project/alias",
+      "result": "{\"output\": \"\", \"exit_code\": -1, \"error\": \"BLOCKED: a plugin command policy denied this command.\", \"status\": \"blocked\", \"user_summary\": \"This command did not run.\"}"
+    }
+  ],
+  "captured_policy_warnings": [
+    "LifeOS managed permission policy could not be read: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+  ]
+}

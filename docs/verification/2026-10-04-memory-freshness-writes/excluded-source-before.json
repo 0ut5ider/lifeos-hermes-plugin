@@ -1,0 +1,9 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-04-memory-freshness-writes/probe_source_exclusion.py"
+  ],
+  "status": 1,
+  "stdout": "{\n  \"result\": {\n    \"ok\": false,\n    \"report\": null\n  },\n  \"expected\": \"---\\nlast_updated: 2026-10-02\\nlast_reviewed: 2026-10-01\\nlast_reviewed_by: synthetic-owner\\n---\\n# Synthetic TELOS\\n## Mission\\n<!-- updated: 2026-10-01 by:synthetic -->\\nSynthetic freshness mission\\n## Goals\\nSynthetic freshness goal\\n\\n<private>Synthetic later excluded edit</private>\\n\",\n  \"immediate\": \"---\\nlast_updated: 2026-10-02\\nlast_reviewed: 2026-10-01\\nlast_reviewed_by: synthetic-owner\\n---\\n# Synthetic TELOS\\n## Mission\\n<!-- updated: 2026-10-01 by:synthetic -->\\nSynthetic freshness mission\\n## Goals\\nSynthetic freshness goal\\n\\n<private>Synthetic later excluded edit</private>\\n\",\n  \"after_next_transaction\": \"---\\nlast_updated: 2026-10-02\\nlast_reviewed: 2026-10-01\\nlast_reviewed_by: synthetic-owner\\n---\\n# Synthetic TELOS\\n## Mission\\n<!-- updated: 2026-10-01 by:synthetic -->\\nSynthetic freshness mission\\n## Goals\\nSynthetic freshness goal\\n\",\n  \"preserved\": false\n}\n",
+  "stderr": ""
+}

@@ -1,0 +1,19 @@
+# Separate selected-profile recovery
+
+Date: 2026-10-04. The [combined gate](gate.txt) passes 58 tests and 24 subtests in 98.45 seconds. It has no skips, failures, or uncaptured warnings. The [command](command.json) records the environment and tested source hashes. The [completion marker](gate.done) records exit status 0.
+
+The actual Hermes parser exposes `hermes lifeos-backup --scope profile --recover BACKUP --signature SIGNATURE --destination DIRECTORY`. The command requires a reviewed signature, the selected owner profile, and a new external destination. It publishes separate `profile` and `native` trees. Recovery preserves existing targets and all original stores.
+
+The recovered profile retains configuration, identity, memory files, skills, binary files, history, file metadata, directories, and covered links. Its memory configuration points to the recovered native root. Ownership and sharing stay disabled. Relative and absolute internal links point inside the recovered profile. Native data links point inside the recovered native data tree.
+
+Recognized native connector commands point to the candidate configuration. Commands that refer to unreviewed programs refuse recovery. The receipt lists rebound files. The [connector failures](connector-before.txt) record the original-store reference and missing refusal before correction. The [command failure](command-before.txt) records the absent profile recovery handler before correction.
+
+[Recovery outcomes](outcomes/) retain receipts and disabled configuration state. The [actual Hermes history result](outcomes/test_recovered_actual_hermes_history_opens_and_continues_in_a_separate_process/hermes-history.json) uses Hermes's SessionDB schema and message API. A new process opens both recovered messages and appends a third. The original database still has two messages. SQLite guard warnings are captured and asserted when the runtime emits them. No model request occurs.
+
+The actual native reader verifies the original stable reference in the candidate. Other controls keep later live facts, forget decisions, identity edits, and history unchanged. Recovery also works when original history and native data are unavailable. Candidate facts can include claims forgotten after the archive, so the disabled candidate requires current-state review before activation.
+
+The [captured-program refusal](profile-tools-before.txt) records recovery requiring unavailable original tools despite archiving them. Profile recovery now uses the captured tools when the profile contains the native program. A relative program link survives final publication. The actual native reader then uses tools inside the candidate profile. When the snapshot lacks native tools, recovery still requires the installed program. The [dependency fixture failure](profile-tools-fixture-dependency.txt) records the missing YAML package in the initial isolated fixture. The completed fixture captures actual hooks and dependencies, as described in the [engineering note](../../../notes/2026-10-04-profile-recovery.md).
+
+A real subprocess exits with status 73 after its candidate receipt exists and before publication. The [interruption result](outcomes/test_process_exit_before_publication_retains_an_inert_candidate_and_original_files/interruption.json) retains the private stage and disabled state. The original configuration remains identical. A fresh recovery succeeds while the interrupted stage remains available. Normal failures remove only their unpublished staging trees.
+
+The command does not start services, select ownership, install missing external program sources, or import personal data. External program and service recovery, current-state activation review, ownership, remaining native consumers, migration, installation updates, routing, voice, and combined release acceptance remain open. No active server changes.

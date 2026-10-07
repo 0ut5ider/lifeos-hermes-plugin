@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryRecurrenceTests.test_discovery_limit_applies_across_capture_directories _
+tests/test_memory_recurrence.py:212: in test_discovery_limit_applies_across_capture_directories
+    self.assertNotEqual(self.call().returncode, 0)
+E   AssertionError: 0 == 0
+=========================== short test summary info ============================
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_discovery_limit_applies_across_capture_directories
+1 failed in 1.90s

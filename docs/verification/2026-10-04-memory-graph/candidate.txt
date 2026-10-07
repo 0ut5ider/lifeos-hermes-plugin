@@ -1,0 +1,10 @@
+.....F....                                                      [100%]
+=================================== FAILURES ===================================
+_ MemoryGraphTests.test_owner_build_preserves_actual_algorithms_and_standalone_graph _
+tests/test_memory_graph.py:84: in test_owner_build_preserves_actual_algorithms_and_standalone_graph
+    self.assertEqual(managed, native)
+E   AssertionError: {'nod[52 chars]etic-current-target', 'silo': 'knowledge', 'ty[2254 chars]c'}]} != {'nod[52 chars]etic-lab-routing', 'silo': 'knowledge', 'type'[2254 chars]c'}]}
+E   Diff is 5675 characters long. Set self.maxDiff to None to see it.
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph.py::MemoryGraphTests::test_owner_build_preserves_actual_algorithms_and_standalone_graph
+1 failed, 9 passed, 9 subtests passed in 19.72s

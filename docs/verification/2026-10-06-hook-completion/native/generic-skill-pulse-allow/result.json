@@ -1,0 +1,126 @@
+{
+  "before": {
+    "guard_calls": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "guard_effect_valid": true,
+    "context_in_model": [],
+    "skill_content_delivered": true,
+    "skill_deny_delivered": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "7cbcc74f-c41a-4a36-b537-793801de8a1c",
+  "seconds": 4.382,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-skill-pulse-allow",
+    "/home/lifeos-claude-ref/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-skill-pulse-allow",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Skill",
+    "--allowedTools",
+    "Skill",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Load the named skill exactly once with the skill tool. Then reply with exactly READY. Do not retry a denied or failed skill. Do not execute the skill instructions or use other tools.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Load the fixture-allowed skill once, then reply READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.2.1",
+      "command": "http://127.0.0.1:35521/hooks/skill-guard",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/LIFEOS/PULSE/modules/hooks.ts": "c30807a2bd469a95f0436ac41af09c01c7ed9a9e372aef316e3255a7c8c47f56"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "f310469b753d893b36691b892dc1caf3a71cd3ed8af30ba8528641d2f807102d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "3cf9a37e4b6db1f9a651e915fc6245634bc284112d6e2d4ab9568a970318e139",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "54fbe9fbd06492ddbf0b827dd0f2c7f81244d8ec5131cd38c101b97ea47c159e",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "5bf86958a38bea90d707344acd72b6a54632242e1b1369e3e2751bc1b3d368e8",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "4c983c93cd5740e056a75598f29bea29a412561087b9dc2261275287bf618d42",
+    "fixture-events.jsonl": "e8ee916ad48352705779a748de5f104f1d581c93d72b099990d154e214505065",
+    "cli.log": "730cb71f7080e21a5870ab7bef4e9b4abc373394841ea281f89b84fa8e5cf3fd",
+    "before-state.json": "ccbcc12b580eaaf77ac574fd955cb2afca7b52e87aa1760e63d4ba300b788a2f",
+    "after-state.json": "0dc36d7a0e3505abb8f26eafe96e270c0e282e5fbdb9b5c481957e91430c4e26",
+    "fixture-files-before.json": "2505bb63031519fd09ebecab8e4a34375da61ca62fba50b2fd9027d0abee4ae1",
+    "fixture-files-after.json": "ddbcd331db1749110cc98b89818aa7c976a102a216ddfbce8fd68dc3ebe81932"
+  }
+}

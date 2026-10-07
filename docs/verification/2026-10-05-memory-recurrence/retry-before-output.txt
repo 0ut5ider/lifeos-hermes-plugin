@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryRecurrenceTests.test_registry_retry_returns_receipt_without_duplicate_append _
+tests/test_memory_recurrence.py:222: in test_registry_retry_returns_receipt_without_duplicate_append
+    self.assertTrue(second['ok'], second)
+E   AssertionError: False is not true : {'ok': False, 'receipt': {'status': 'conflict', 'reason': 'This request identifier names another operation'}}
+=========================== short test summary info ============================
+FAILED tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_registry_retry_returns_receipt_without_duplicate_append
+1 failed in 0.53s

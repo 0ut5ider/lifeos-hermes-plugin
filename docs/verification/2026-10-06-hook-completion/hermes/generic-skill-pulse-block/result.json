@@ -1,0 +1,121 @@
+{
+  "before": {
+    "guard_calls": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      "skill-denied"
+    ],
+    "stderr_present": [
+      false
+    ],
+    "guard_effect_valid": true,
+    "context_in_model": [],
+    "skill_content_delivered": false,
+    "skill_deny_delivered": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_182641_a5a67e",
+  "seconds": 14.92,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-skill-pulse-block",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-skill-pulse-block",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "skills",
+    "-q",
+    "Load the keybindings-help skill once, then reply READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.2.1",
+      "command": "http://127.0.0.1:36449/hooks/skill-guard",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/LIFEOS/PULSE/modules/hooks.ts": "c30807a2bd469a95f0436ac41af09c01c7ed9a9e372aef316e3255a7c8c47f56"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "622e93a0c99524f80bc2322ee910037a5f7f2b6b1d8b8915dcb2bb4c044b05d8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "eb239f4718f53b9bf4b91e49367ae27f70fa5bef5f5040220905ad882f9f2b11",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "ce1cc7d856d5ca54cbc616839ffb4c152bd357f1022313975a62436a0519fba9",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1e1506eb73c3f5abaac67f1f35986ea2e8a646dbb3f41596192b57d1228973b6",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "0047d79db5ca3b4bf8eeee3e2604afda658edf4748c2d0f75a5f42bec1fd5e16",
+    "fixture-events.jsonl": "491087aaf3c8fbc25edf9bb034ad4e6a1e77ab0d195f2a5ef1af0b7d72a3b97c",
+    "cli.log": "f95339947676f9875f66bfd4b55539de3645f7b5c9965b4da8b8579e364b0af9",
+    "before-state.json": "ccbcc12b580eaaf77ac574fd955cb2afca7b52e87aa1760e63d4ba300b788a2f",
+    "after-state.json": "c0bfe50b511a5fd3e4b1a2206622b412af52dacfd3473961997d5509ae005947",
+    "fixture-files-before.json": "6a07d2f7a74e06b4a3401acecce5042ecdcca8812aeae2e4dc64a9b752a85c50",
+    "fixture-files-after.json": "c41f31f78c9831c8eec0b19405e0595b2e1272840508eb191fae8685a3c683b7"
+  }
+}

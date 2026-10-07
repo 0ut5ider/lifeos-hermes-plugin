@@ -1,0 +1,335 @@
+................................................EEEEEEEEFFFFFFFFFFFFFFFF
+======================================================================
+ERROR: test_after_state_reports_a_preserved_worktree_and_an_untouched_prior_nag (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_after_state_reports_a_preserved_worktree_and_an_untouched_prior_nag)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 596, in test_after_state_reports_a_preserved_worktree_and_an_untouched_prior_nag
+    home, _ = self.fixture('version-drift-recent')
+              ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-recent'
+
+======================================================================
+ERROR: test_async_fixture_uses_the_pinned_execution_setting (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_async_fixture_uses_the_pinned_execution_setting)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 590, in test_async_fixture_uses_the_pinned_execution_setting
+    home, settings = self.fixture('version-drift-async-count')
+                     ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-async-count'
+
+======================================================================
+ERROR: test_fixture_measures_the_seeded_repository_before_the_client_runs (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_fixture_measures_the_seeded_repository_before_the_client_runs) (name='version-drift-count')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 584, in test_fixture_measures_the_seeded_repository_before_the_client_runs
+    home, _ = self.fixture(name)
+              ~~~~~~~~~~~~^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-count'
+
+======================================================================
+ERROR: test_fixture_measures_the_seeded_repository_before_the_client_runs (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_fixture_measures_the_seeded_repository_before_the_client_runs) (name='version-drift-aged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 584, in test_fixture_measures_the_seeded_repository_before_the_client_runs
+    home, _ = self.fixture(name)
+              ~~~~~~~~~~~~^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-aged'
+
+======================================================================
+ERROR: test_fixture_measures_the_seeded_repository_before_the_client_runs (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_fixture_measures_the_seeded_repository_before_the_client_runs) (name='version-drift-below')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 584, in test_fixture_measures_the_seeded_repository_before_the_client_runs
+    home, _ = self.fixture(name)
+              ~~~~~~~~~~~~^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-below'
+
+======================================================================
+ERROR: test_fixture_measures_the_seeded_repository_before_the_client_runs (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_fixture_measures_the_seeded_repository_before_the_client_runs) (name='version-drift-bump')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 584, in test_fixture_measures_the_seeded_repository_before_the_client_runs
+    home, _ = self.fixture(name)
+              ~~~~~~~~~~~~^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-bump'
+
+======================================================================
+ERROR: test_fixture_measures_the_seeded_repository_before_the_client_runs (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_fixture_measures_the_seeded_repository_before_the_client_runs) (name='version-drift-recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 584, in test_fixture_measures_the_seeded_repository_before_the_client_runs
+    home, _ = self.fixture(name)
+              ~~~~~~~~~~~~^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-recent'
+
+======================================================================
+ERROR: test_fixture_measures_the_seeded_repository_before_the_client_runs (test_paired_lifecycle_effects.PairedVersionDriftFixtureTests.test_fixture_measures_the_seeded_repository_before_the_client_runs) (name='version-drift-untagged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 584, in test_fixture_measures_the_seeded_repository_before_the_client_runs
+    home, _ = self.fixture(name)
+              ~~~~~~~~~~~~^^^^^^
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 572, in fixture
+    make_fixture(home, name, source, base / 'trace.py')
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 603, in make_fixture
+    commands = hook_commands(home, case, source, trace_script)
+  File "/tmp/tmp.4ogyMworl5/scripts/paired_lifecycle_effects.py", line 563, in hook_commands
+    for identifier, relative in CASES[case]:
+                                ~~~~~^^^^^^
+KeyError: 'version-drift-untagged'
+
+======================================================================
+FAIL: test_aged_tag_requires_the_reported_tag_age (test_paired_lifecycle_effects.PairedVersionDriftTests.test_aged_tag_requires_the_reported_tag_age)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 546, in test_aged_tag_requires_the_reported_tag_age
+    self.assertIn('version-drift-aged: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-aged: version drift effect is missing' not found in ['version-drift-aged: unknown case']
+
+======================================================================
+FAIL: test_async_first_turn_cannot_claim_model_delivery (test_paired_lifecycle_effects.PairedVersionDriftTests.test_async_first_turn_cannot_claim_model_delivery)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 560, in test_async_first_turn_cannot_claim_model_delivery
+    self.assertIn('version-drift-async-count: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-async-count: version drift effect is missing' not found in ['version-drift-async-count: unknown case']
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-count')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-count: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-count: unknown case'
+
+- ['version-drift-count: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-aged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-aged: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-aged: unknown case'
+
+- ['version-drift-aged: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-below')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-below: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-below: unknown case'
+
+- ['version-drift-below: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-bump')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-bump: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-bump: unknown case'
+
+- ['version-drift-bump: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-recent: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-recent: unknown case'
+
+- ['version-drift-recent: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-untagged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-untagged: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-untagged: unknown case'
+
+- ['version-drift-untagged: unknown case']
++ []
+
+======================================================================
+FAIL: test_every_selected_branch_accepts_only_its_required_effect (test_paired_lifecycle_effects.PairedVersionDriftTests.test_every_selected_branch_accepts_only_its_required_effect) (name='version-drift-async-count')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 533, in test_every_selected_branch_accepts_only_its_required_effect
+    self.assertEqual(check_pair(self.case(name)), [])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Lists differ: ['version-drift-async-count: unknown case'] != []
+
+First list contains 1 additional elements.
+First extra element 0:
+'version-drift-async-count: unknown case'
+
+- ['version-drift-async-count: unknown case']
++ []
+
+======================================================================
+FAIL: test_silent_branches_reject_a_nag_or_a_replaced_prior_state (test_paired_lifecycle_effects.PairedVersionDriftTests.test_silent_branches_reject_a_nag_or_a_replaced_prior_state) (name='version-drift-below')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 554, in test_silent_branches_reject_a_nag_or_a_replaced_prior_state
+    self.assertIn(f'{name}: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-below: version drift effect is missing' not found in ['version-drift-below: unknown case']
+
+======================================================================
+FAIL: test_silent_branches_reject_a_nag_or_a_replaced_prior_state (test_paired_lifecycle_effects.PairedVersionDriftTests.test_silent_branches_reject_a_nag_or_a_replaced_prior_state) (name='version-drift-bump')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 554, in test_silent_branches_reject_a_nag_or_a_replaced_prior_state
+    self.assertIn(f'{name}: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-bump: version drift effect is missing' not found in ['version-drift-bump: unknown case']
+
+======================================================================
+FAIL: test_silent_branches_reject_a_nag_or_a_replaced_prior_state (test_paired_lifecycle_effects.PairedVersionDriftTests.test_silent_branches_reject_a_nag_or_a_replaced_prior_state) (name='version-drift-untagged')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 554, in test_silent_branches_reject_a_nag_or_a_replaced_prior_state
+    self.assertIn(f'{name}: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-untagged: version drift effect is missing' not found in ['version-drift-untagged: unknown case']
+
+======================================================================
+FAIL: test_silent_branches_reject_a_nag_or_a_replaced_prior_state (test_paired_lifecycle_effects.PairedVersionDriftTests.test_silent_branches_reject_a_nag_or_a_replaced_prior_state) (name='version-drift-recent')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 554, in test_silent_branches_reject_a_nag_or_a_replaced_prior_state
+    self.assertIn(f'{name}: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-recent: version drift effect is missing' not found in ['version-drift-recent: unknown case']
+
+======================================================================
+FAIL: test_threshold_nag_requires_the_exact_line_state_and_model_delivery (test_paired_lifecycle_effects.PairedVersionDriftTests.test_threshold_nag_requires_the_exact_line_state_and_model_delivery) (key='model_nag_present')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 540, in test_threshold_nag_requires_the_exact_line_state_and_model_delivery
+    self.assertIn('version-drift-count: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-count: version drift effect is missing' not found in ['version-drift-count: unknown case']
+
+======================================================================
+FAIL: test_threshold_nag_requires_the_exact_line_state_and_model_delivery (test_paired_lifecycle_effects.PairedVersionDriftTests.test_threshold_nag_requires_the_exact_line_state_and_model_delivery) (key='state')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 540, in test_threshold_nag_requires_the_exact_line_state_and_model_delivery
+    self.assertIn('version-drift-count: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-count: version drift effect is missing' not found in ['version-drift-count: unknown case']
+
+======================================================================
+FAIL: test_threshold_nag_requires_the_exact_line_state_and_model_delivery (test_paired_lifecycle_effects.PairedVersionDriftTests.test_threshold_nag_requires_the_exact_line_state_and_model_delivery) (key='hook_context')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/tmp/tmp.4ogyMworl5/tests/test_paired_lifecycle_effects.py", line 540, in test_threshold_nag_requires_the_exact_line_state_and_model_delivery
+    self.assertIn('version-drift-count: version drift effect is missing', check_pair(case))
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'version-drift-count: version drift effect is missing' not found in ['version-drift-count: unknown case']
+
+----------------------------------------------------------------------
+Ran 56 tests in 0.023s
+
+FAILED (failures=16, errors=8)
+exit 1

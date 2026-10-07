@@ -6,7 +6,7 @@ from pathlib import Path
 import struct
 import unittest
 from lifeos_hook_bridge.memory_service import MemoryConfiguration
-from lifeos_hook_bridge.memory_sharing import MemorySharing
+from sharing_component import sharing
 import test_memory_service as service_fixture
 
 
@@ -23,8 +23,9 @@ class MemorySharingTests(unittest.TestCase):
         self.keys.parent.mkdir(mode=0o700)
         self.keys.write_text('# Existing unrelated account key\n')
         self.keys.chmod(0o600)
-        self.sharing = MemorySharing(self.fixture.config, self.keys, Path('/usr/bin/python3'),
-                                     Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py')
+        self.sharing = sharing().MemorySharing(self.fixture.config, Path('/usr/bin/python3'),
+                                               Path(__file__).parents[1]/'lifeos_hook_bridge/memory_mcp.py',
+                                               keys_file=self.keys)
     def test_new_key_binds_fixed_client_and_starts_project_read_only(self):
         result = self.sharing.enroll('newresearch',public_key(1)+'\n',projects=['lab'],model_route='unknown')
         self.assertEqual(result['status'],'enrolled')

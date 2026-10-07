@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_verified_owner_prepares_fixed_source_and_preserves_current_profile (test_fresh_store_dashboard.FreshStoreDashboardTests.test_verified_owner_prepares_fixed_source_and_preserves_current_profile)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_fresh_store_dashboard.py", line 23, in test_verified_owner_prepares_fixed_source_and_preserves_current_profile
+    originals={path:path.read_bytes() for path in (fixture.profile/'config.yaml',
+                    ~~~~~~~~~~~~~~~^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 777, in read_bytes
+    with self.open(mode='rb', buffering=0) as f:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/pathlib/__init__.py", line 771, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: '/tmp/native-memory-2m72kli9/hermes/memories/USER.md'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.004s
+
+FAILED (errors=1)

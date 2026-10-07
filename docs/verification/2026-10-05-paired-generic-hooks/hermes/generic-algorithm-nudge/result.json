@@ -1,0 +1,107 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/STATE/isa-nudge/<session>.json": "{\"toolCallsSinceISAEdit\":0,\"toolCallsSinceISAEditAbs\":0,\"toolCallsTotal\":0,\"lateISAFired\":false,\"runWasOpen\":false,\"delegateEvents\":0,\"primaryEvents\":0,\"silenceLogged\":false,\"buildCallsSinceDispatch\":0,\"workCallsSinceDispatch\":0,\"lastNudgeAt\":{},\"primaryTranscript\":\"<transcript>\"}",
+      ".claude/LIFEOS/MEMORY/STATE/skill-usewhen-index.json": "{\"builtAt\":<epoch-ms>,\"entries\":[]}"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      false
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261006_004330_b12419",
+  "seconds": 9.639,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-algorithm-nudge",
+    "/home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-algorithm-nudge",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.7.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.7.1 /home/lifeos-plugin-install-probe/workspace/paired-generic-hooks-20261005/results/generic-algorithm-nudge/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWQvbGlmZW9zL2hvb2tzL0FsZ29yaXRobU51ZGdlLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005d/lifeos/hooks/AlgorithmNudge.hook.ts": "c26501403433be9b2d2b534f1222b91cbc0949650649611d9bd2d65457430a61"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "c112b3a12eaa1b3552208e25621b0780cc7c9ff046fcf62b350717a0ac78742d",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "7dc314e4dab8388e38fa7e054d414069d984dd9331fed6675df6656e97e7b276",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "f96688f4caeb211e85671a3973c48ea6e369abedb0a61715011f6d451b4aa519",
+    "fixture-events.jsonl": "6304cf18a9eaf3c570b8639da206a8c40973c243dcd33079945b89a0bf40d47a",
+    "cli.log": "f1ef874200fa0459f5d517e4c762f63e9b76a1872643f8b0db1f75460a1bf9b1",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "c8fbe13cdbbb11e31d24716f62fa3fcf086b91560d7c81bab1d477f82027eb20",
+    "fixture-files-before.json": "65700b5c27326010acf8d78997b8ac864e6a236097d35e21c1d741d929e79594",
+    "fixture-files-after.json": "254d9fde5752e7775f4a2671ad45d4d086af4f0fcfb0559854f01723a2769fb0"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_installed_plugin_commands",
+    "-v"
+  ],
+  "environment": {
+    "PYTHONPATH": "tests:.:/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/hermes",
+    "TMPDIR": "/home/outsider/.cache/lhc6",
+    "LIFEOS_COMMAND_HERMES_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/hermes",
+    "LIFEOS_COMMAND_DEPENDENCIES": "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env",
+    "LIFEOS_VERSION_DRIFT_PATH": "/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/lifeos/LifeOS/install/hooks/VersionDriftGuard.hook.ts",
+    "LIFEOS_VERSION_DRIFT_TAGGED_REPO_PATH": "/home/outsider/.cache/lifeos-step1-20261006/command-control-final/lifeos-tagged"
+  }
+}

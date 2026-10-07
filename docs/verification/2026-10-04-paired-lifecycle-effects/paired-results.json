@@ -1,0 +1,280 @@
+{
+  "cases": [
+    {
+      "id": "healer-containment",
+      "registrations": [
+        "SessionStart.1.1"
+      ],
+      "native": {
+        "before": {
+          "target_executable": false
+        },
+        "after": {
+          "target_executable": false,
+          "containment_refused": true,
+          "target_content_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "target_executable": false
+        },
+        "after": {
+          "target_executable": false,
+          "containment_refused": true,
+          "target_content_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "kitty-cli",
+      "registrations": [
+        "SessionStart.1.2"
+      ],
+      "native": {
+        "before": {
+          "environment_present": false,
+          "stale_title_present": true
+        },
+        "after": {
+          "shared_environment_matches": true,
+          "session_environment_matches": true,
+          "stale_title_present": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "environment_present": false,
+          "stale_title_present": true
+        },
+        "after": {
+          "shared_environment_matches": true,
+          "session_environment_matches": true,
+          "stale_title_present": false
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionStart",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "memory-health-critical",
+      "registrations": [
+        "SessionEnd.1.4"
+      ],
+      "native": {
+        "before": {
+          "health_rows": 0
+        },
+        "after": {
+          "health_rows": 1,
+          "overall": "critical",
+          "critical_count": 14,
+          "critical_count_matches": true,
+          "required_hook_missing": true,
+          "warning_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "health_rows": 0
+        },
+        "after": {
+          "health_rows": 1,
+          "overall": "critical",
+          "critical_count": 14,
+          "critical_count_matches": true,
+          "required_hook_missing": true,
+          "warning_present": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "doc-inventory-drift",
+      "registrations": [
+        "SessionEnd.1.5"
+      ],
+      "native": {
+        "before": {
+          "inventory_events": 0
+        },
+        "after": {
+          "inventory_events": 1,
+          "ok": false,
+          "finding_count": 2,
+          "finding_keys": [
+            "missing_active:KNOWLEDGE",
+            "unknown_on_disk:SURPRISE"
+          ],
+          "unrelated_event_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "inventory_events": 0
+        },
+        "after": {
+          "inventory_events": 1,
+          "ok": false,
+          "finding_count": 2,
+          "finding_keys": [
+            "missing_active:KNOWLEDGE",
+            "unknown_on_disk:SURPRISE"
+          ],
+          "unrelated_event_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "doc-inventory-clean",
+      "registrations": [
+        "SessionEnd.1.5"
+      ],
+      "native": {
+        "before": {
+          "inventory_events": 0
+        },
+        "after": {
+          "inventory_events": 1,
+          "ok": true,
+          "finding_count": 0,
+          "finding_keys": [],
+          "unrelated_event_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "inventory_events": 0
+        },
+        "after": {
+          "inventory_events": 1,
+          "ok": true,
+          "finding_count": 0,
+          "finding_keys": [],
+          "unrelated_event_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    },
+    {
+      "id": "doc-inventory-unparseable",
+      "registrations": [
+        "SessionEnd.1.5"
+      ],
+      "native": {
+        "before": {
+          "inventory_events": 0
+        },
+        "after": {
+          "inventory_events": 1,
+          "ok": false,
+          "finding_count": 1,
+          "finding_keys": [
+            "inventory_unparseable:doc"
+          ],
+          "unrelated_event_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 0
+      },
+      "hermes": {
+        "before": {
+          "inventory_events": 0
+        },
+        "after": {
+          "inventory_events": 1,
+          "ok": false,
+          "finding_count": 1,
+          "finding_keys": [
+            "inventory_unparseable:doc"
+          ],
+          "unrelated_event_preserved": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "SessionEnd",
+        "cli_exit_code": 0,
+        "model_generation_requests": 0,
+        "metadata_requests": 2
+      },
+      "errors": []
+    }
+  ]
+}

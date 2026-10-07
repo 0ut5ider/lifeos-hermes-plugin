@@ -107,6 +107,9 @@ config_schema:
     choices: [minimal, low, medium, high, xhigh, max, ultra]
     default: xhigh
 provides_hooks:
+  - subagent_start
+  - subagent_stop
+  - post_api_request
   - pre_tool_call
   - post_tool_call
   - pre_command_approval
@@ -117,3 +120,6 @@ provides_hooks:
   - on_session_finalize
   - api_request_error
   - on_turn_result
+provides_middleware:
+  - llm_admission
+  - llm_execution

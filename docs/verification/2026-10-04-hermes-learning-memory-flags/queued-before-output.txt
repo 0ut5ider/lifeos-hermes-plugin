@@ -1,0 +1,24 @@
+..                                                                   [100%]
+=================================== FAILURES ===================================
+_ HermesLearningMemoryFlagsTests.test_queued_enabled_store_refuses_delete_after_current_flags_change (source='memory') _
+tests/test_hermes_learning_memory_flags.py:94: in test_queued_enabled_store_refuses_delete_after_current_flags_change
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'deleted memory from MEMORY.md'}, 'unchanged': False, 'loaded_enabled': [True]}
+_ HermesLearningMemoryFlagsTests.test_queued_enabled_store_refuses_delete_after_current_flags_change (source='profile') _
+tests/test_hermes_learning_memory_flags.py:94: in test_queued_enabled_store_refuses_delete_after_current_flags_change
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'deleted memory from USER.md'}, 'unchanged': False, 'loaded_enabled': [True]}
+_ HermesLearningMemoryFlagsTests.test_queued_enabled_store_refuses_edit_after_current_flags_change (source='memory') _
+tests/test_hermes_learning_memory_flags.py:86: in test_queued_enabled_store_refuses_edit_after_current_flags_change
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'updated memory in MEMORY.md'}, 'unchanged': False, 'loaded_enabled': [True]}
+_ HermesLearningMemoryFlagsTests.test_queued_enabled_store_refuses_edit_after_current_flags_change (source='profile') _
+tests/test_hermes_learning_memory_flags.py:86: in test_queued_enabled_store_refuses_edit_after_current_flags_change
+    self.assertFalse(result['result']['ok'],result)
+E   AssertionError: True is not false : {'result': {'ok': True, 'message': 'updated memory in USER.md'}, 'unchanged': False, 'loaded_enabled': [True]}
+=========================== short test summary info ============================
+SUBFAILED(source='memory') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_queued_enabled_store_refuses_delete_after_current_flags_change
+SUBFAILED(source='profile') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_queued_enabled_store_refuses_delete_after_current_flags_change
+SUBFAILED(source='memory') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_queued_enabled_store_refuses_edit_after_current_flags_change
+SUBFAILED(source='profile') tests/test_hermes_learning_memory_flags.py::HermesLearningMemoryFlagsTests::test_queued_enabled_store_refuses_edit_after_current_flags_change
+4 failed, 2 passed, 6 deselected in 1.33s

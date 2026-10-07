@@ -1,0 +1,14 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+_ MemoryInferenceLogTests.test_actual_inference_retains_private_native_verification_record _
+tests/test_memory_inference_log.py:28: in test_actual_inference_retains_private_native_verification_record
+    self.assertEqual(self.path.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+_ MemoryInferenceLogTests.test_redirected_log_preserves_foreign_bytes_and_native_inference _
+tests/test_memory_inference_log.py:39: in test_redirected_log_preserves_foreign_bytes_and_native_inference
+    self.assertEqual(foreign.read_bytes(), before)
+E   AssertionError: b'{"s[21 chars]g"}\n{"ts":"2026-10-05T03:37:49.288Z","level":[116 chars]1}\n' != b'{"s[21 chars]g"}\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_inference_log.py::MemoryInferenceLogTests::test_actual_inference_retains_private_native_verification_record
+FAILED tests/test_memory_inference_log.py::MemoryInferenceLogTests::test_redirected_log_preserves_foreign_bytes_and_native_inference
+2 failed in 11.87s

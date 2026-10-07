@@ -1,0 +1,44 @@
+FF                                                                       [100%]
+=================================== FAILURES ===================================
+__ MemoryHermesSoulRetirementTests.test_decoded_retired_full_name_is_excluded __
+tests/test_memory_hermes_soul_retirement.py:33: in test_decoded_retired_full_name_is_excluded
+    result = self.fixture.successful('--stdout')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_hermes_soul_writer.py:55: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hermes-soul-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at main (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-jr4cevbr/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:456:20)
+E         at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-jr4cevbr/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:498:23
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryHermesSoulRetirementTests.test_unrelated_retirement_preserves_current_native_soul _
+tests/test_memory_hermes_soul_retirement.py:27: in test_unrelated_retirement_preserves_current_native_soul
+    self.assertIn('Synthetic personality', self.fixture.successful('--stdout').stdout)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_hermes_soul_writer.py:55: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-hermes-soul-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at main (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0227fp1g/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:456:20)
+E         at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-0227fp1g/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:498:23
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_hermes_soul_retirement.py::MemoryHermesSoulRetirementTests::test_decoded_retired_full_name_is_excluded
+FAILED tests/test_memory_hermes_soul_retirement.py::MemoryHermesSoulRetirementTests::test_unrelated_retirement_preserves_current_native_soul
+2 failed in 5.59s

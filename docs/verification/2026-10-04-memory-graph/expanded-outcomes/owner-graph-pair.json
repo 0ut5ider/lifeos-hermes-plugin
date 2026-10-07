@@ -1,0 +1,306 @@
+{
+  "managed": {
+    "nodeCount": 6,
+    "edgeCount": 11,
+    "nodes": [
+      {
+        "id": "synthetic-current-target",
+        "silo": "knowledge",
+        "type": "research",
+        "title": "Synthetic current target",
+        "community": 0,
+        "pagerank": 0.34051089930697775,
+        "degree": 5,
+        "tags": [
+          "untagged"
+        ]
+      },
+      {
+        "id": "synthetic-lab-routing",
+        "silo": "knowledge",
+        "type": "research",
+        "title": "Synthetic lab routing",
+        "community": 0,
+        "pagerank": 0.08288645893318805,
+        "degree": 1,
+        "tags": [
+          "untagged"
+        ]
+      },
+      {
+        "id": "work:synthetic-prd",
+        "silo": "work",
+        "type": "isa",
+        "title": "Synthetic PRD fallback",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      },
+      {
+        "id": "work:synthetic-work",
+        "silo": "work",
+        "type": "isa",
+        "title": "Synthetic cross silo work",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      },
+      {
+        "id": "FRAMES--nested--frame",
+        "silo": "wisdom",
+        "type": "wisdom",
+        "title": "Synthetic wisdom frame",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      },
+      {
+        "id": "SYNTHESIS--lesson",
+        "silo": "synthesis",
+        "type": "lesson",
+        "title": "Synthetic synthesis lesson",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "synthetic-lab-routing",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "FRAMES--nested--frame",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "SYNTHESIS--lesson",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "work:synthetic-work",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "FRAMES--nested--frame",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "SYNTHESIS--lesson",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "FRAMES--nested--frame",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "SYNTHESIS--lesson",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "FRAMES--nested--frame",
+        "to": "SYNTHESIS--lesson",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      }
+    ]
+  },
+  "standalone": {
+    "nodeCount": 6,
+    "edgeCount": 11,
+    "nodes": [
+      {
+        "id": "synthetic-lab-routing",
+        "silo": "knowledge",
+        "type": "research",
+        "title": "Synthetic lab routing",
+        "community": 0,
+        "pagerank": 0.08288645893318805,
+        "degree": 1,
+        "tags": [
+          "untagged"
+        ]
+      },
+      {
+        "id": "synthetic-current-target",
+        "silo": "knowledge",
+        "type": "research",
+        "title": "Synthetic current target",
+        "community": 0,
+        "pagerank": 0.34051089930697775,
+        "degree": 5,
+        "tags": [
+          "untagged"
+        ]
+      },
+      {
+        "id": "work:synthetic-work",
+        "silo": "work",
+        "type": "isa",
+        "title": "Synthetic cross silo work",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      },
+      {
+        "id": "work:synthetic-prd",
+        "silo": "work",
+        "type": "isa",
+        "title": "Synthetic PRD fallback",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      },
+      {
+        "id": "FRAMES--nested--frame",
+        "silo": "wisdom",
+        "type": "wisdom",
+        "title": "Synthetic wisdom frame",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      },
+      {
+        "id": "SYNTHESIS--lesson",
+        "silo": "synthesis",
+        "type": "lesson",
+        "title": "Synthetic synthesis lesson",
+        "community": 0,
+        "pagerank": 0.14415066043995853,
+        "degree": 4,
+        "tags": [
+          "synthetic"
+        ]
+      }
+    ],
+    "edges": [
+      {
+        "from": "synthetic-lab-routing",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "FRAMES--nested--frame",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "SYNTHESIS--lesson",
+        "to": "synthetic-current-target",
+        "weight": 3,
+        "kind": "wikilink"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "work:synthetic-prd",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "FRAMES--nested--frame",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-work",
+        "to": "SYNTHESIS--lesson",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "FRAMES--nested--frame",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "work:synthetic-prd",
+        "to": "SYNTHESIS--lesson",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      },
+      {
+        "from": "FRAMES--nested--frame",
+        "to": "SYNTHESIS--lesson",
+        "weight": 1,
+        "kind": "tag",
+        "label": "synthetic"
+      }
+    ]
+  }
+}

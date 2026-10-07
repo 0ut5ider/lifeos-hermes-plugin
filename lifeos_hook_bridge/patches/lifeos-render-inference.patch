@@ -1,0 +1,128 @@
+diff --git a/LifeOS/install/LIFEOS/TOOLS/ISARender.ts b/LifeOS/install/LIFEOS/TOOLS/ISARender.ts
+--- a/LifeOS/install/LIFEOS/TOOLS/ISARender.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/ISARender.ts
+@@ -13,10 +13,11 @@
+  * Interceptor tabs without opening new ones; refresh failure is non-fatal.
+  */
+ 
+-import { readFileSync, writeFileSync, existsSync, statSync, renameSync, readdirSync } from "node:fs";
++import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";
+ import { resolve, dirname, basename, join } from "node:path";
+ import { spawn } from "node:child_process";
+ import { homedir } from "node:os";
++import { atomicWriteText } from "../PULSE/lib/atomic-write";
+ import { ASCENT, ASCENT_BRACKETS, PHASE_TO_ASCENT, type AscentState } from "./ascent";
+ 
+ const HOME = process.env.HOME || homedir();
+@@ -702,9 +703,7 @@
+   if (args.stdout) { process.stdout.write(html); return; }
+ 
+   // Atomic write
+-  const tmpPath = outPath + ".tmp";
+-  writeFileSync(tmpPath, html, "utf-8");
+-  renameSync(tmpPath, outPath);
++  atomicWriteText(outPath, html);
+ 
+   let refreshInfo: { refreshed: number; warning?: string } = { refreshed: 0 };
+   if (!args.noRefresh) refreshInfo = await refreshInterceptorTabs(outPath);
+diff --git a/LifeOS/install/LIFEOS/TOOLS/Inference.ts b/LifeOS/install/LIFEOS/TOOLS/Inference.ts
+--- a/LifeOS/install/LIFEOS/TOOLS/Inference.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/Inference.ts
+@@ -430,7 +430,9 @@
+         const objectMatch = output.match(/\{[\s\S]*\}/);
+         const arrayMatch = output.match(/\[[\s\S]*\]/);
+ 
+-        for (const candidate of [objectMatch?.[0], arrayMatch?.[0]]) {
++        const extracted = (arrayMatch?.index ?? Infinity) < (objectMatch?.index ?? Infinity)
++          ? [arrayMatch?.[0], objectMatch?.[0]] : [objectMatch?.[0], arrayMatch?.[0]];
++        for (const candidate of [output, ...extracted]) {
+           if (!candidate) continue;
+           try {
+             const parsed = JSON.parse(candidate);
+diff --git a/LifeOS/install/hooks/handlers/DocCrossRefIntegrity.ts b/LifeOS/install/hooks/handlers/DocCrossRefIntegrity.ts
+--- a/LifeOS/install/hooks/handlers/DocCrossRefIntegrity.ts
++++ b/LifeOS/install/hooks/handlers/DocCrossRefIntegrity.ts
+@@ -42,6 +42,7 @@
+ import { readFileSync, writeFileSync, existsSync, readdirSync } from 'fs';
+ import { join, basename } from 'path';
+ import { paiPath, getLifeosDir, getClaudeDir } from '../lib/paths';
++import { atomicWriteText } from '../../LIFEOS/PULSE/lib/atomic-write';
+ import { getIdentity } from '../lib/identity';
+ import { inference } from '../../LIFEOS/TOOLS/Inference';
+ import type { ParsedTranscript } from '../../LIFEOS/TOOLS/TranscriptParser';
+@@ -594,8 +595,13 @@
+         continue;
+       }
+ 
++      if (!docsToCheck.includes(edit.doc)) {
++        console.error(`${TAG} [INFERENCE] Doc is outside the reviewed inventory: ${edit.doc}, skipping edit`);
++        continue;
++      }
++
+       // Verify old_text exists in the doc
+-      const docPath = join(SYSTEM_DIR, edit.doc);
++      const docPath = join(DOCS_DIR, edit.doc);
+       if (!existsSync(docPath)) {
+         console.error(`${TAG} [INFERENCE] Doc not found: ${edit.doc}, skipping edit`);
+         continue;
+@@ -631,7 +637,7 @@
+   const applied: string[] = [];
+ 
+   for (const edit of edits) {
+-    const docPath = join(SYSTEM_DIR, edit.doc);
++    const docPath = join(DOCS_DIR, edit.doc);
+     try {
+       const content = readFileSync(docPath, 'utf-8');
+       if (!content.includes(edit.old_text)) {
+@@ -640,7 +646,7 @@
+       }
+ 
+       const updated = content.replace(edit.old_text, edit.new_text);
+-      writeFileSync(docPath, updated);
++      atomicWriteText(docPath, updated);
+ 
+       const summary = `[INFERENCE] ${edit.doc}: ${edit.reason} ("${edit.old_text.slice(0, 40)}..." → "${edit.new_text.slice(0, 40)}...")`;
+       console.error(`${TAG} [UPDATED] ${summary}`);
+@@ -671,7 +677,7 @@
+   const match = content.match(timestampRegex);
+   if (match && !content.includes(`**Last Updated:** ${today}`)) {
+     const updated = content.replace(timestampRegex, `$1${today}`);
+-    writeFileSync(docPath, updated);
++    atomicWriteText(docPath, updated);
+     return `Updated "Last Updated" in ${docFile}: ${match[0]} -> **Last Updated:** ${today}`;
+   }
+ 
+@@ -693,7 +699,7 @@
+     const oldCount = parseInt(content.match(/\*\*Status:\*\* Production - (\d+)/)?.[1] || '0', 10);
+     if (oldCount !== actualCount) {
+       const updated = content.replace(countRegex, `$1${actualCount}$2`);
+-      writeFileSync(docPath, updated);
++      atomicWriteText(docPath, updated);
+       return `Updated hook count in Hooks/HookSystem.md: ${oldCount} -> ${actualCount}`;
+     }
+   }
+diff --git a/LifeOS/install/hooks/ISARenderOnStop.hook.ts b/LifeOS/install/hooks/ISARenderOnStop.hook.ts
+--- a/LifeOS/install/hooks/ISARenderOnStop.hook.ts
++++ b/LifeOS/install/hooks/ISARenderOnStop.hook.ts
+@@ -19,7 +19,6 @@
+  */
+ 
+ import { readFileSync, existsSync, unlinkSync } from 'fs';
+-import { spawn } from 'child_process';
+ import { homedir } from 'os';
+ import { join, dirname } from 'path';
+ 
+@@ -91,9 +90,10 @@
+     continue;
+   }
+   try {
+-    const proc = spawn('bun', [ISA_RENDER, isaPath], {
+-      detached: true,
+-      stdio: 'ignore',
++    const proc = Bun.spawn(['bun', ISA_RENDER, isaPath], {
++      stdin: 'ignore',
++      stdout: 'ignore',
++      stderr: 'ignore',
+     });
+     proc.unref();
+     rendered.push(isaPath);

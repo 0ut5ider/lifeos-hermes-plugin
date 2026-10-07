@@ -129,6 +129,22 @@
       "event_filter": "TaskCreated.1.1",
       "native_trace_sha256": "7eb9fd308f26ea4a577efaa5becfe06da790dfab89f7623385d7702ac13603a0",
       "hermes_trace_sha256": "4ada7637af3fee61724c8e0c95ddda1b9f59bd8ec421065414ba99e711b94f46"
+    },
+    {
+      "label": "toolsearch",
+      "native_session": "93957225-5e7d-4a44-80dd-b9107a74d53f",
+      "hermes_session": "20261003_132035_dfe10c",
+      "event_filter": "PostToolUse.5.1",
+      "native_trace_sha256": "bf42efe409008c299055b303490ca017ffd7fdcd90003c7b93b0c883ad82c4e2",
+      "hermes_trace_sha256": "a0ceb13ceec7b851f17afb8052330e47ae053d06876c2c165186ce51fd66324e"
+    },
+    {
+      "label": "stopfailure-401",
+      "native_session": "2d00699b-66f0-4dae-9b16-92fbc638eb21",
+      "hermes_session": "20261003_133304_1e8884",
+      "event_filter": "StopFailure.1.1",
+      "native_trace_sha256": "8669e2b576a930ec954e1106bbadeec893b715f5c329e318d9838c3ab46886e6",
+      "hermes_trace_sha256": "6c53d52f8054bce2a7fcfc325f849a26fa18eb98504c4b41c27b5ee5989ec5d5"
     }
   ],
   "registrations": [
@@ -378,8 +394,30 @@
       "id": "PostToolUse.5.1",
       "event": "PostToolUse",
       "handler": "$HOME/.claude/hooks/Safety.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "toolsearch",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "ToolSearch"
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": true,
+              "stderr_present": false,
+              "tool_name": "ToolSearch"
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PostToolUse.6.1",
@@ -2806,8 +2844,30 @@
       "id": "StopFailure.1.1",
       "event": "StopFailure",
       "handler": "$HOME/.claude/hooks/EventLogger.hook.ts",
-      "status": "not_observed",
-      "cases": []
+      "status": "matched_dispatch_and_output_shape",
+      "cases": [
+        {
+          "scenario": "stopfailure-401",
+          "native": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "hermes": [
+            {
+              "exit_code": 0,
+              "stdout_present": false,
+              "stderr_present": false,
+              "tool_name": null
+            }
+          ],
+          "transport_match": true,
+          "incomparable_reason": null
+        }
+      ]
     },
     {
       "id": "PermissionRequest.1.1",
@@ -2869,9 +2929,21 @@
     }
   ],
   "counts": {
-    "matched_dispatch_and_output_shape": 63,
+    "matched_dispatch_and_output_shape": 65,
     "mismatch": 0,
     "observed_with_different_input": 0,
-    "not_observed": 11
-  }
+    "not_observed": 9
+  },
+  "studies": [
+    {
+      "date": "2026-09-29",
+      "scope": "Original 63 dispatch and output-shape controls.",
+      "trace_instrumentation_revision": "a5aded6"
+    },
+    {
+      "date": "2026-10-03",
+      "plugin_revision": "968de9d",
+      "scope": "ToolSearch and StopFailure controls on disposable profiles; effect assertions are in the hook compatibility evidence bundle."
+    }
+  ]
 }

@@ -1,0 +1,37 @@
+FFF                                                                      [100%]
+=================================== FAILURES ===================================
+___ OwnershipSetupTests.test_changed_review_refuses_before_any_service_stops ___
+tests/test_ownership_setup.py:79: in test_changed_review_refuses_before_any_service_stops
+    reviewed = self.prepare()
+               ^^^^^^^^^^^^^^
+tests/test_ownership_setup.py:40: in prepare
+    return self.setup_operation().prepare(self.backup.destination, account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ownership_setup.py:36: in setup_operation
+    from lifeos_hook_bridge.ownership_setup import OwnershipSetup
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.ownership_setup'
+_ OwnershipSetupTests.test_process_exit_after_first_configuration_write_recovers_before_restart _
+tests/test_ownership_setup.py:91: in test_process_exit_after_first_configuration_write_recovers_before_restart
+    reviewed = self.prepare()
+               ^^^^^^^^^^^^^^
+tests/test_ownership_setup.py:40: in prepare
+    return self.setup_operation().prepare(self.backup.destination, account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ownership_setup.py:36: in setup_operation
+    from lifeos_hook_bridge.ownership_setup import OwnershipSetup
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.ownership_setup'
+_ OwnershipSetupTests.test_reviewed_setup_and_return_preserve_later_facts_and_forgets _
+tests/test_ownership_setup.py:54: in test_reviewed_setup_and_return_preserve_later_facts_and_forgets
+    reviewed = self.prepare()
+               ^^^^^^^^^^^^^^
+tests/test_ownership_setup.py:40: in prepare
+    return self.setup_operation().prepare(self.backup.destination, account='dashboard:owner')
+           ^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ownership_setup.py:36: in setup_operation
+    from lifeos_hook_bridge.ownership_setup import OwnershipSetup
+E   ModuleNotFoundError: No module named 'lifeos_hook_bridge.ownership_setup'
+=========================== short test summary info ============================
+FAILED tests/test_ownership_setup.py::OwnershipSetupTests::test_changed_review_refuses_before_any_service_stops
+FAILED tests/test_ownership_setup.py::OwnershipSetupTests::test_process_exit_after_first_configuration_write_recovers_before_restart
+FAILED tests/test_ownership_setup.py::OwnershipSetupTests::test_reviewed_setup_and_return_preserve_later_facts_and_forgets
+3 failed in 4.09s

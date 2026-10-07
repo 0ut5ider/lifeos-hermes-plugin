@@ -1,0 +1,29 @@
+FF...FF.F                                                                [100%]
+=================================== FAILURES ===================================
+_ MemoryFreshnessCacheTests.test_foreign_cache_directory_refuses_before_modifying_foreign_files _
+tests/test_memory_freshness_cache.py:88: in test_foreign_cache_directory_refuses_before_modifying_foreign_files
+    self.assertNotEqual(self.call('--quiet').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessCacheTests.test_missing_context_does_not_create_a_publication_directory _
+tests/test_memory_freshness_cache.py:70: in test_missing_context_does_not_create_a_publication_directory
+    self.assertFalse(self.cache.parent.exists())
+E   AssertionError: True is not false
+_ MemoryFreshnessCacheTests.test_owner_read_without_write_preserves_previous_cache _
+tests/test_memory_freshness_cache.py:59: in test_owner_read_without_write_preserves_previous_cache
+    self.assertNotEqual(result.returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessCacheTests.test_registry_alias_refuses_before_recoverable_publication _
+tests/test_memory_freshness_cache.py:96: in test_registry_alias_refuses_before_recoverable_publication
+    self.assertNotEqual(self.call('--quiet').returncode, 0)
+E   AssertionError: 0 == 0
+_ MemoryFreshnessCacheTests.test_successful_publication_has_private_permissions _
+tests/test_memory_freshness_cache.py:80: in test_successful_publication_has_private_permissions
+    self.assertEqual(self.cache.stat().st_mode & 0o777, 0o600)
+E   AssertionError: 420 != 384
+=========================== short test summary info ============================
+FAILED tests/test_memory_freshness_cache.py::MemoryFreshnessCacheTests::test_foreign_cache_directory_refuses_before_modifying_foreign_files
+FAILED tests/test_memory_freshness_cache.py::MemoryFreshnessCacheTests::test_missing_context_does_not_create_a_publication_directory
+FAILED tests/test_memory_freshness_cache.py::MemoryFreshnessCacheTests::test_owner_read_without_write_preserves_previous_cache
+FAILED tests/test_memory_freshness_cache.py::MemoryFreshnessCacheTests::test_registry_alias_refuses_before_recoverable_publication
+FAILED tests/test_memory_freshness_cache.py::MemoryFreshnessCacheTests::test_successful_publication_has_private_permissions
+5 failed, 4 passed in 16.20s

@@ -1,0 +1,37 @@
+== 3a: component directory is a symlink to another directory (install)
+$ python3 /tmp/pr3review/src/optional/lifeos-memory-sharing/install.py --hermes-home /tmp/pr3review/exp3/p1
+The component directory must be a physical owner directory
+exit=0
+total 0
+drwx------. 2 outsider outsider 40 Oct  5 15:06 .
+drwxr-xr-x. 4 outsider outsider 80 Oct  5 15:06 ..
+== 3b: dangling symlink as component directory (install)
+$ python3 /tmp/pr3review/src/optional/lifeos-memory-sharing/install.py --hermes-home /tmp/pr3review/exp3/p2
+    ~~~~~~~~^^^^^^^^^^^^
+FileExistsError: [Errno 17] File exists: '/tmp/pr3review/exp3/p2/lifeos-memory-sharing'
+exit=0
+== 3c: installed file is a symlink to an outside file (install)
+$ python3 /tmp/pr3review/src/optional/lifeos-memory-sharing/install.py --hermes-home /tmp/pr3review/exp3/p3
+Installed the sharing component at /tmp/pr3review/exp3/p3/lifeos-memory-sharing
+exit=0
+outside3.txt now: outside content
+total 12
+drwx------. 2 outsider outsider   60 Oct  5 15:06 .
+drwx------. 3 outsider outsider   60 Oct  5 15:06 ..
+-rw-------. 1 outsider outsider 8853 Oct  5 15:06 memory_sharing.py
+== 3d: component directory is a symlink (remove)
+$ python3 /tmp/pr3review/src/optional/lifeos-memory-sharing/install.py --hermes-home /tmp/pr3review/exp3/p4 --remove
+Removed the sharing component. Existing connection grants and SSH entries are unchanged.
+exit=0
+elsewhere4 after remove:
+total 0
+drwx------. 2 outsider outsider  40 Oct  5 15:06 .
+drwxr-xr-x. 8 outsider outsider 180 Oct  5 15:06 ..
+== 3e: remove after a load created __pycache__
+$ python3 /tmp/pr3review/src/optional/lifeos-memory-sharing/install.py --hermes-home /tmp/pr3review/exp3/p5 --remove
+Removed the sharing component. Existing connection grants and SSH entries are unchanged.
+exit=0
+/tmp/pr3review/exp3/p5
+/tmp/pr3review/exp3/p5/lifeos-memory-sharing
+/tmp/pr3review/exp3/p5/lifeos-memory-sharing/__pycache__
+/tmp/pr3review/exp3/p5/lifeos-memory-sharing/__pycache__/memory_sharing.cpython-314.pyc

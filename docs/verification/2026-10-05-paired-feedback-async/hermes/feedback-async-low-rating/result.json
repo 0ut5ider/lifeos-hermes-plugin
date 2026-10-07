@@ -1,0 +1,118 @@
+{
+  "before": {
+    "rating_count": 1,
+    "learning_count": 0,
+    "cache_present": true
+  },
+  "after": {
+    "unrelated_rating_preserved": true,
+    "cache_preserved": true,
+    "captured_ratings": [
+      {
+        "rating": 4,
+        "source": "explicit",
+        "comment": "needs clearer details",
+        "timestamp_valid": true,
+        "session_matches": true,
+        "response_preview_matches_cache": true
+      }
+    ],
+    "learning_count": 1,
+    "learning_checks": {
+      "rating_matches": true,
+      "source_matches": true,
+      "feedback_matches": true,
+      "context_matches": true,
+      "principal_matches": true
+    },
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 2,
+  "model_successful_responses": 1,
+  "session_id": "20261005_135505_776663",
+  "seconds": 9.94,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-feedback-async-20261005/results/feedback-async-low-rating",
+    "/home/lifeos-plugin-install-probe/workspace/paired-feedback-async-20261005/results/feedback-async-low-rating",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "4 needs clearer details"
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.2.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.2.1 /home/lifeos-plugin-install-probe/workspace/paired-feedback-async-20261005/results/feedback-async-low-rating/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtY29udGV4dC1yZXNwb25zZS0yMDI2MTAwNS9saWZlb3MvaG9va3MvU2F0aXNmYWN0aW9uQ2FwdHVyZS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-context-response-20261005/lifeos/hooks/SatisfactionCapture.hook.ts": "edfaf872eeb26f61bf31a0df4c07ab184a456ed17a172b11d12487511416c38e"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "40a4c3d5a562808808913d986b0e4f0bdef1ae10aeb66af40e893870ef392fb8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "055e595a55e33e68bb9cc3d2b611e7a35010c3199bb052b40c52163de1bb9fd5",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "f1dfb87bacd4e606f392f25a0dc66cc69bc89ed17f425c98cc0a38cb978e4f01",
+    "fixture-events.jsonl": "7c04e3c3f4cd640d7340c442473c2fc5014c3955d4d549f7e1a48d56092fbaee",
+    "cli.log": "1273b236ad29cae1beb38c57b9f8281f764d914b40a2b5b7c0f4959b789e1945",
+    "before-state.json": "6a704179873f398e093f2aee29168d3e12f9152ccba005b8950fa6920d399fe0",
+    "after-state.json": "65d5ed03798c1e37f4fbab2d730e9ea1d00122e5a4649be650ef19b98beec6fd",
+    "fixture-files-before.json": "c4f7c0d7e74893be7127dfd7555de7ae1c8b9a8ffa9f249548053da74ad195b7",
+    "fixture-files-after.json": "31b88bfcf5176954ff427e321ff036792b63b9656c1ca84cf6aa5d4236d7ba93"
+  }
+}

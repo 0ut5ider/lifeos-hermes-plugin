@@ -1,0 +1,13 @@
+# Authenticated current source health
+
+Date: 2026-10-04. This gate runs the actual native PULSE module, local dashboard server, HTTP relay, and freshness formatter. All content and login identities are synthetic. It makes no server changes.
+
+The [baseline](before-output.txt) returns HTTP 200 and empty source counts for unauthenticated, revoked, write, query, and foreign-origin requests. Managed startup leaves its ambient source cache empty. The [baseline source](baseline-test-source.py) retains the controls. The initial candidate adds the native route but omits the relay and dashboard view declarations. Its [gate](candidate-output.txt) fails three tests and passes 51 tests and 38 subtests. The separate [current-source probe](current-output.txt) records six failures from the same omitted declarations.
+
+The managed health endpoint now uses the authenticated per-request relay. The memory service collects current admitted TELOS and context sources under one transaction. It rechecks both collections and current authority after native formatting. The native module keeps actual local uptime and running status. It returns source metadata without section content and sets Cache-Control: no-store. Ambient startup and invalidation still leave unadmitted caches untouched.
+
+The [final gate](final-output.txt) passes 72 tests and 59 subtests in 78.83 seconds. Current edits change the next source count. Retirement removes the previous source count and reports degraded source health. Revoked and invalid credentials, foreign origins, queries, writes, missing connectors, and unavailable backends refuse delivery. Selected original-native source fields match, including timestamps, age, section counts, and context counts.
+
+The [recorder](controls-output.txt) retains ten [passing controls](native-outcomes/). It captures HTTP status, metadata, response bodies, synthetic source bytes, and original-native process output. It excludes login responses and credential headers. The [source comparison](source-comparison.json) verifies all 49 distributed native files and identical patch copies. The [prepared manifest](prepared-source-manifest.json) and [final hashes](final-source-hashes.json) identify the tested fixture and bridge. Dependencies come from the preceding prepared fixture. This gate does not claim TypeScript type checking or a fresh dependency installation.
+
+Authenticated source-health delivery is verified in isolated services. The ambient module health function still exposes no source counts in managed mode. Deployed service acceptance, remaining native routes, aggregate ownership recovery, import, Hermes management, jobs, voice, and the combined release remain open. Running ownership and sharing remain disabled.

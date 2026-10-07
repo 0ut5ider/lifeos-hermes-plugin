@@ -1,0 +1,207 @@
+# ABOUTME: Checks complete registration coverage and the integrity of paired effect evidence.
+# ABOUTME: Refuses a completion claim supported only by dispatch or partial handler cases.
+from __future__ import annotations
+
+import argparse
+import csv
+import hashlib
+import json
+from pathlib import Path
+
+if __package__:
+    from .paired_lifecycle_effects import check_pair, model_chosen_calls
+    from .hook_completion_assertions import check_control
+else:
+    from paired_lifecycle_effects import check_pair, model_chosen_calls
+    from hook_completion_assertions import check_control
+
+ROOT = Path(__file__).resolve().parents[1]
+STATUSES = {'unverified', 'native_handler_checked', 'paired_case_verified', 'paired_effect_verified'}
+
+
+MODEL_CHOSEN_COUNTS = ('model_generation_requests', 'model_successful_responses', 'hook_exit_codes')
+
+
+def comparable(case_id: str, outcome: dict) -> dict:
+    # The model chooses how many tool calls it makes in these cases. check_pair validates each side;
+    # the equality rule then compares every other recorded field.
+    if case_id in model_chosen_calls():
+        return {key: value for key, value in outcome.items() if key not in MODEL_CHOSEN_COUNTS}
+    return outcome
+
+
+def check_lifecycle_case(identifier: str, case: dict, artifacts: dict, root: Path) -> list[str]:
+    label = f'{identifier}/{case["id"]}'
+    name = case.get('result_artifact')
+    if name not in artifacts or name not in case.get('artifacts', []):
+        return [f'lifecycle result is not retained: {label}']
+    target = (root / name).resolve()
+    if not target.is_relative_to(root) or not target.is_file():
+        return [f'lifecycle result is missing: {label}']
+    records = json.loads(target.read_text()).get('cases', [])
+    matches = [record for record in records if record.get('id') == case['id']]
+    if len(matches) != 1:
+        return [f'lifecycle case is missing or duplicated: {label}']
+    record = matches[0]
+    errors = [f'invalid lifecycle case: {label}: {error}' for error in check_pair(record)]
+    if identifier not in record.get('registrations', []):
+        errors.append(f'lifecycle case does not cover registration: {label}')
+    for side in ('native', 'hermes'):
+        outcome = {key: value for key, value in record[side].items() if key != 'metadata_requests'}
+        if case.get(side) != outcome:
+            errors.append(f'ledger outcome differs from lifecycle result: {label}/{side}')
+    return errors
+
+
+def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: bool = False) -> list[str]:
+    root = root.resolve()
+    identifiers = {row['id'] for row in csv.DictReader(inventory.read_text().splitlines())}
+    document = json.loads(ledger.read_text())
+    errors = []
+    if document.get('registrations_sha256') != hashlib.sha256(inventory.read_bytes()).hexdigest():
+        errors.append('registration inventory changed')
+    artifacts = document.get('artifacts', {})
+    for name, expected_hash in artifacts.items():
+        target = (root / name).resolve()
+        if not target.is_relative_to(root) or not target.is_file():
+            errors.append(f'missing or external artifact: {name}')
+        elif hashlib.sha256(target.read_bytes()).hexdigest() != expected_hash:
+            errors.append(f'changed artifact: {name}')
+    rows = {}
+    for row in document['registrations']:
+        identifier = row['id']
+        if identifier in rows:
+            errors.append(f'duplicate evidence: {identifier}')
+        rows[identifier] = row
+        if not row.get('expected_effect'):
+            errors.append(f'expected effect is missing: {identifier}')
+        status = row.get('effect_status')
+        if status not in STATUSES:
+            errors.append(f'unknown effect status: {identifier}')
+        cases = row.get('paired_cases', [])
+        if status in {'paired_case_verified', 'paired_effect_verified'} and not cases:
+            errors.append(f'paired case is missing: {identifier}')
+        for case in cases:
+            label = f'{identifier}/{case["id"]}'
+            if ('native' not in case or 'hermes' not in case
+                    or comparable(case['id'], case['native']) != comparable(case['id'], case['hermes'])):
+                errors.append(f'unequal paired case: {label}')
+            names = case.get('artifacts', [])
+            if not names or any(name not in artifacts for name in names):
+                errors.append(f'paired case lacks a retained artifact: {label}')
+            if case.get('kind') == 'paired_lifecycle':
+                errors.extend(check_lifecycle_case(identifier, case, artifacts, root))
+            elif case.get('kind') == 'effect_control':
+                result = case.get('result_artifact')
+                if result not in artifacts or result not in names:
+                    errors.append(f'functional control result is not retained: {label}')
+                else:
+                    target = (root / result).resolve()
+                    if not target.is_relative_to(root) or not target.is_file():
+                        errors.append(f'functional control result is missing or external: {label}')
+                        continue
+                    records = json.loads(target.read_text()).get('cases', [])
+                    matches = [record for record in records if record.get('id') == case['id']]
+                    if len(matches) != 1:
+                        errors.append(f'functional control is missing or duplicated: {label}')
+                    else:
+                        record = matches[0]
+                        errors.extend(f'invalid functional control: {label}: {error}' for error in check_control(record))
+                        if identifier not in record.get('registrations', []):
+                            errors.append(f'functional control does not cover registration: {label}')
+                        if any(case.get(side) != record.get(side) for side in ('native', 'hermes')):
+                            errors.append(f'ledger outcome differs from functional control: {label}')
+        if document.get('complete') and status != 'paired_effect_verified':
+            errors.append(f'complete claim includes partial effects: {identifier}')
+    for identifier in identifiers - rows.keys():
+        errors.append(f'missing evidence: {identifier}')
+    for identifier in rows.keys() - identifiers:
+        errors.append(f'unregistered evidence: {identifier}')
+    if require_complete:
+        pending = sorted(identifier for identifier, row in rows.items()
+                         if row.get('effect_status') != 'paired_effect_verified')
+        if pending:
+            errors.append('unverified effects: ' + ', '.join(pending))
+    return sorted(errors)
+
+
+def check_acceptance(inventory: Path, ledger: Path, acceptance: Path, root: Path,
+                     require_complete: bool = False, require_release: bool = False) -> list[str]:
+    root = root.resolve()
+    identifiers = {row['id'] for row in csv.DictReader(inventory.read_text().splitlines())}
+    document = json.loads(acceptance.read_text())
+    artifacts = json.loads(ledger.read_text()).get('artifacts', {})
+    errors = []
+    if document.get('registration_inventory_sha256') != hashlib.sha256(inventory.read_bytes()).hexdigest():
+        errors.append('acceptance registration inventory changed')
+    groups, scenarios, covered = set(), set(), set()
+    pending, pending_release = [], []
+    for group in document.get('requirements', []):
+        identifier = group['id']
+        if identifier in groups:
+            errors.append(f'duplicate acceptance group: {identifier}')
+        groups.add(identifier)
+        if group.get('status') not in {'unverified', 'in_progress', 'verified'}:
+            errors.append(f'unknown acceptance group status: {identifier}')
+        covered.update(group.get('registrations', []))
+        entries = group.get('scenarios', [])
+        if not entries:
+            errors.append(f'acceptance group lacks scenarios: {identifier}')
+        partial = False
+        for scenario in entries:
+            name = scenario['id']
+            if name in scenarios:
+                errors.append(f'duplicate acceptance scenario: {name}')
+            scenarios.add(name)
+            if not scenario.get('expected'):
+                errors.append(f'acceptance expectation is missing: {name}')
+            status = scenario.get('status')
+            if status not in {'unverified', 'verified'}:
+                errors.append(f'unknown acceptance scenario status: {name}')
+            if status != 'verified':
+                partial = True
+                (pending_release if group.get('release_acceptance') else pending).append(name)
+                if document.get('complete') and not group.get('release_acceptance'):
+                    errors.append(f'complete acceptance includes partial scenario: {name}')
+                continue
+            names = scenario.get('evidence', [])
+            if not names:
+                errors.append(f'verified acceptance lacks evidence: {name}')
+            for artifact in names:
+                target = (root / artifact).resolve()
+                if artifact not in artifacts or not target.is_relative_to(root) or not target.is_file():
+                    errors.append(f'acceptance artifact is not retained: {artifact}')
+                elif hashlib.sha256(target.read_bytes()).hexdigest() != artifacts[artifact]:
+                    errors.append(f'changed acceptance artifact: {artifact}')
+        if group.get('status') == 'verified' and partial:
+            errors.append(f'verified group includes partial scenario: {identifier}')
+    errors.extend(f'missing acceptance scope: {name}' for name in identifiers - covered)
+    errors.extend(f'unregistered acceptance scope: {name}' for name in covered - identifiers)
+    if require_complete and pending:
+        errors.append('unverified acceptance: ' + ', '.join(sorted(pending)))
+    if require_release and pending_release:
+        errors.append('unverified release acceptance: ' + ', '.join(sorted(pending_release)))
+    return sorted(set(errors))
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description='Check LifeOS hook effect evidence')
+    parser.add_argument('--inventory', type=Path, default=ROOT / 'docs/parity/registrations.csv')
+    parser.add_argument('--ledger', type=Path, default=ROOT / 'docs/parity/handler-effects.json')
+    parser.add_argument('--acceptance', type=Path, default=ROOT / 'docs/parity/step1-acceptance.json')
+    parser.add_argument('--require-complete', action='store_true')
+    parser.add_argument('--require-release', action='store_true')
+    args = parser.parse_args()
+    errors = check_evidence(args.inventory, args.ledger, ROOT, args.require_complete)
+    errors.extend(check_acceptance(args.inventory, args.ledger, args.acceptance, ROOT,
+                                   args.require_complete, args.require_release))
+    for error in errors:
+        print(error)
+    if errors:
+        return 1
+    print('Hook effect evidence has complete inventory and unchanged artifacts.')
+    return 0
+
+
+if __name__ == '__main__':
+    raise SystemExit(main())

@@ -1,0 +1,151 @@
+FF..F.FFFFF                                                           [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewScanTests.test_escaped_private_assistant_name_cannot_reach_scan_prompts _
+tests/test_memory_interview_scan.py:101: in test_escaped_private_assistant_name_cannot_reach_scan_prompts
+    self.assertNotIn('SyntheticPrivateScanName', self.successful('--next').stdout)
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryInterviewScanTests.test_escaped_retired_assistant_name_cannot_reach_scan_prompts _
+tests/test_memory_interview_scan.py:106: in test_escaped_retired_assistant_name_cannot_reach_scan_prompts
+    self.assertNotIn('Synthetic retired evidence work', self.successful('--next').stdout)
+                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+__ MemoryInterviewScanTests.test_invalid_target_preserves_native_exit_status ___
+tests/test_memory_interview_scan.py:97: in test_invalid_target_preserves_native_exit_status
+    self.assertIn('Not found: SyntheticUnsupportedTarget', result.stderr)
+E   AssertionError: 'Not found: SyntheticUnsupportedTarget' not found in '49 |   const executable = command.shift();\n50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");\n51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),\n52 |                                                env: {...process.env},\n53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});\n54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");\n                                                          ^\nerror: The native memory service is unavailable\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)\n      at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20\n\nBun v1.3.14 (Linux x64)\n'
+_ MemoryInterviewScanTests.test_old_identity_after_retirement_requires_exact_source_review _
+tests/test_memory_interview_scan.py:82: in test_old_identity_after_retirement_requires_exact_source_review
+    self.assertEqual(self.target('DA_IDENTITY')['content_length'], 0)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:42: in target
+    return json.loads(self.successful('--file', name).stdout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryInterviewScanTests.test_owner_scan_keeps_native_json_and_output_modes __
+tests/test_memory_interview_scan.py:45: in test_owner_scan_keeps_native_json_and_output_modes
+    value = json.loads(self.successful('--json').stdout)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+___ MemoryInterviewScanTests.test_private_identity_cannot_influence_scoring ____
+tests/test_memory_interview_scan.py:55: in test_private_identity_cannot_influence_scoring
+    value = self.target('DA_IDENTITY')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:42: in target
+    return json.loads(self.successful('--file', name).stdout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryInterviewScanTests.test_private_unified_telos_cannot_influence_scoring _
+tests/test_memory_interview_scan.py:61: in test_private_unified_telos_cannot_influence_scoring
+    self.assertEqual(self.target('Mission')['content_length'], 0)
+                     ^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:42: in target
+    return json.loads(self.successful('--file', name).stdout)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+__ MemoryInterviewScanTests.test_read_only_owner_can_scan_without_publishing ___
+tests/test_memory_interview_scan.py:89: in test_read_only_owner_can_scan_without_publishing
+    value = json.loads(self.successful('--json').stdout)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_interview_scan.py:37: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 49 |   const executable = command.shift();
+E   50 |   if (!executable || !isAbsolute(executable)) throw new Error("The native memory service requires an absolute executable");
+E   51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),
+E   52 |                                                env: {...process.env},
+E   53 |                                                encoding: "utf8", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});
+E   54 |   if (result.error || result.status !== 0) throw new Error("The native memory service is unavailable");
+E                                                             ^
+E   error: The native memory service is unavailable
+E         at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:54:54)
+E         at /home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/InterviewScan.ts:798:20
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_escaped_private_assistant_name_cannot_reach_scan_prompts
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_escaped_retired_assistant_name_cannot_reach_scan_prompts
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_invalid_target_preserves_native_exit_status
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_old_identity_after_retirement_requires_exact_source_review
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_owner_scan_keeps_native_json_and_output_modes
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_private_identity_cannot_influence_scoring
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_private_unified_telos_cannot_influence_scoring
+FAILED tests/test_memory_interview_scan.py::MemoryInterviewScanTests::test_read_only_owner_can_scan_without_publishing
+8 failed, 3 passed, 3 subtests passed in 5.97s

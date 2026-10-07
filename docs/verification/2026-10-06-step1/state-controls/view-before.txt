@@ -1,0 +1,20 @@
+test_isa_transitions_and_checkpoint_identity_use_applied_files (test_installed_isa_effects.InstalledISAEffectTests.test_isa_transitions_and_checkpoint_identity_use_applied_files) ... FAIL
+
+======================================================================
+FAIL: test_isa_transitions_and_checkpoint_identity_use_applied_files (test_installed_isa_effects.InstalledISAEffectTests.test_isa_transitions_and_checkpoint_identity_use_applied_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_installed_isa_effects.py", line 37, in test_isa_transitions_and_checkpoint_identity_use_applied_files
+    self.assertEqual(process.returncode, 0, process.stdout + process.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/isa_effect_controls_process.py", line 115, in <module>
+    assert recorded == current_hash, {'side': side, 'file': str(path), 'recorded': recorded, 'actual': current_hash, 'before_resume': hashlib.sha256(complete.encode()).hexdigest(), 'submitted': hashlib.sha256((complete + '\nNew follow-up\n').encode()).hexdigest()}
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'side': 'hermes', 'file': '/home/outsider/.cache/lhc6/isa-effects-nkoakwje/.claude/LIFEOS/MEMORY/WORK/fixture/ISA.md', 'recorded': '03a909ae71d38d99caec88b767e554a0db1f98c4b14db9a337eac55e7c203d98', 'actual': 'ddb1cba150c3f395d417c57786a9d5db5ce5f3dbd318bd53013d7665b49b7688', 'before_resume': 'a18d1b88bfe2d5ab6345c6bbd699d314f02a18b797ae0313a7904a357110e32e', 'submitted': '03a909ae71d38d99caec88b767e554a0db1f98c4b14db9a337eac55e7c203d98'}
+
+
+----------------------------------------------------------------------
+Ran 1 test in 10.389s
+
+FAILED (failures=1)

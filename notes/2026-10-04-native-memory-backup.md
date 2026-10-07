@@ -1,0 +1,13 @@
+# Native memory backup
+
+Date: 2026-10-04. The existing operation journal protects individual native writes. It does not provide a coherent native data backup. The first backup test fails collection because the capability is absent. The first implemented suite passes seven tests and fails one assertion: native ranking returns other relevant facts, so an empty result is not the forgetting contract. The corrected assertion checks the forgotten content and its referenced status.
+
+Two additional probes expose insufficient consistency checks. SQLite integrity passes when an external writer changes a registered body. Checking registered references alone also misses an unregistered hot entry. Both regressions fail before the respective product check. The backup now validates all active references and both complete native hot snapshots before and after collection.
+
+The snapshot contains native USER_DATA, binary files, empty directories, file permissions and timestamps, and serialized SQLite governance metadata. One cooperating transaction covers the collection. A second collection checks for source changes. Numeric private copy files avoid interpreting source paths as archive destinations. The manifest binds the installation and principal. Backup verification checks every copy and the database integrity and schema.
+
+Actual Hermes command discovery initially refuses `lifeos-backup`. The candidate registers create and inspect actions through the native command API. The selected profile supplies its private configuration. Installation and configuration locks precede the native writer lock. The command prints counts and signatures, not fact bodies. Another profile cannot verify the first profile's snapshot.
+
+A real process exits after manifest publication and before the final directory rename. The live fact remains available. The retained staging directory has mode 0700 and passes inspection. A new backup can complete without replacing that staged copy. Incomplete copies remain private; automated staging recovery and retention policy are not implemented.
+
+The final gate passes 47 tests and 14 subtests in 133.61 seconds without skips, failures, errors, or warnings. It covers the backup, actual Hermes command path, command registration, and existing native fact contracts. This component does not back up Hermes profile configuration, history, skills, program code, or service state. Product restore and the aggregate ownership transaction remain open. Disposable test code reconstructs a native store from the snapshot and verifies current and forgotten references. No live server changes occur.

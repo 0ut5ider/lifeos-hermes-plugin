@@ -15,7 +15,7 @@ import unittest
 
 from mcp import Client
 from mcp.client.stdio import StdioServerParameters, stdio_client
-from lifeos_hook_bridge.memory_sharing import MemorySharing
+from sharing_component import sharing as load_component
 from lifeos_hook_bridge.memory_service import MemoryConfiguration
 import test_memory_native as native_fixture
 
@@ -39,7 +39,7 @@ class MemorySSHTests(unittest.TestCase):
         installed = home / 'plugins/lifeos-hook-bridge'
         shutil.copytree(Path(__file__).parents[1] / 'lifeos_hook_bridge', installed,
                         ignore=shutil.ignore_patterns('__pycache__'))
-        sharing = MemorySharing(config, keys, Path(sys.executable), installed / 'memory_mcp.py')
+        sharing = load_component().MemorySharing(config, Path(sys.executable), installed / 'memory_mcp.py', keys_file=keys)
         sharing.enroll('sshreader', client_key.with_suffix('.pub').read_text(), projects=['lab'], model_route='unknown')
         saved = fixture.remember()
         fixture.remember('RULE: forbidden SSH private marker', 'private-ssh', 'principal')

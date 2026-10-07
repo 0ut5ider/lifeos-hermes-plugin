@@ -50,3 +50,18 @@ class PairedHookTraceTests(unittest.TestCase):
             row = json.loads(trace.read_text().splitlines()[0])
             self.assertEqual(row["id"], "Stop.1.1")
             self.assertEqual(row["exit_code"], 2)
+
+    def test_trace_retains_exact_input_for_effect_comparisons(self):
+        with tempfile.TemporaryDirectory() as directory:
+            trace = Path(directory) / "trace.jsonl"
+            request = b'{"tool_input":{"query":"fixture"}, "tool_response":{"content":[{"type":"tool_reference","tool_name":"mcp__paired__ping"}]}}\n'
+            result = subprocess.run(
+                ["python3", "scripts/paired_hook_trace.py", "run", "PostToolUse.5.1",
+                 str(trace), base64.b64encode(b"cat").decode()],
+                input=request, capture_output=True,
+            )
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stdout, request)
+            row = json.loads(trace.read_text())
+            self.assertEqual(base64.b64decode(row["stdin_base64"]), request)
+            self.assertEqual(trace.stat().st_mode & 0o777, 0o600)

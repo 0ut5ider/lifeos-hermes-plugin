@@ -29,6 +29,11 @@ from .version_drift import changed_paths, create_baseline, load_baseline, save_b
 from .memory_administration import (mount_environment, job_binding, required, revoke)
 from .memory_service import MemoryConfiguration
 from .installation_lock import installation_lock
+from .native_output import failure_message
+from . import program_lock
+
+# Running turns finish before the gateway stops; a longer turn fails the job before any change.
+TURN_WAIT_SECONDS = 600
 
 
 def _digest(path: Path) -> str:
@@ -84,7 +89,7 @@ def _run(command: list[str | Path], *, home: Path, timeout: int = 180, environme
                             env=dict(os.environ, HOME=str(home)) if environment is None else environment, capture_output=True,
                             text=True, timeout=timeout)
     if result.returncode:
-        raise RuntimeError(f"{Path(command[0]).name} exited with code {result.returncode}")
+        raise RuntimeError(failure_message(Path(command[0]).name, result))
     return result.stdout.strip()
 
 
@@ -237,7 +242,8 @@ def _run_authorized_update_job(job, action, installed, profile):
         mount_environment(installed, profile, request.get('memory_authorization'),
                           binding=job_binding(job, request, action))
     try:
-        return _execute_update_job(job, action)
+        with program_lock.exclusive(profile, TURN_WAIT_SECONDS):
+            return _execute_update_job(job, action)
     finally:
         if managed:
             revoke(MemoryConfiguration(profile / 'lifeos-memory.json'), request['memory_authorization'])

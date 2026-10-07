@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemorySeedRecoveryTests.test_native_parent_preserves_both_artifacts_when_the_second_generator_fails _
+tests/test_memory_seed_recovery.py:62: in test_native_parent_preserves_both_artifacts_when_the_second_generator_fails
+    self.assertFalse(outcome['written'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_seed_recovery.py::MemorySeedRecoveryTests::test_native_parent_preserves_both_artifacts_when_the_second_generator_fails
+1 failed, 8 deselected in 0.67s

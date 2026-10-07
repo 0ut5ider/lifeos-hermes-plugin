@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ MemoryDerivedSyncConsistencyTests.test_failed_exit_cannot_be_reported_as_a_successful_child _
+tests/test_memory_derived_sync_consistency.py:101: in test_failed_exit_cannot_be_reported_as_a_successful_child
+    self.assertFalse(result['ok'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+FAILED tests/test_memory_derived_sync_consistency.py::MemoryDerivedSyncConsistencyTests::test_failed_exit_cannot_be_reported_as_a_successful_child
+1 failed in 3.11s

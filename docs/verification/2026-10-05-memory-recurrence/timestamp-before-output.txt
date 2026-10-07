@@ -1,0 +1,16 @@
+.                                                                     [100%]
+=================================== FAILURES ===================================
+_ MemoryRecurrenceTests.test_all_streams_and_capture_timestamps_match_original_native (mode='events') _
+tests/test_memory_recurrence.py:147: in test_all_streams_and_capture_timestamps_match_original_native
+    self.assertEqual(actual.stdout, original.stdout)
+E   AssertionError: '[{"c[752 chars]0.876000+00:00","source":"failure-capture","de[56 chars]}]\n' != '[{"c[752 chars]0.876Z","source":"failure-capture","detail":"S[48 chars]}]\n'
+E   Diff is 3257 characters long. Set self.maxDiff to None to see it.
+_ MemoryRecurrenceTests.test_all_streams_and_capture_timestamps_match_original_native (mode='report') _
+tests/test_memory_recurrence.py:147: in test_all_streams_and_capture_timestamps_match_original_native
+    self.assertEqual(actual.stdout, original.stdout)
+E   AssertionError: '[{"c[1300 chars]0.876000+00:00","last_seen":"2026-10-05T05:19:[98 chars]}]\n' != '[{"c[1300 chars]0.876Z","last_seen":"2026-10-05T05:19:30.876Z"[82 chars]}]\n'
+E   Diff is 5611 characters long. Set self.maxDiff to None to see it.
+=========================== short test summary info ============================
+SUBFAILED(mode='events') tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_all_streams_and_capture_timestamps_match_original_native
+SUBFAILED(mode='report') tests/test_memory_recurrence.py::MemoryRecurrenceTests::test_all_streams_and_capture_timestamps_match_original_native
+2 failed, 1 passed, 1 subtests passed in 4.71s

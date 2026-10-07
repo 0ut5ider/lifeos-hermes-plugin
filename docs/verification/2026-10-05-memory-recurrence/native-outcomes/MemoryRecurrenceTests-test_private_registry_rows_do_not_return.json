@@ -1,0 +1,23 @@
+{
+  "case": "test_private_registry_rows_do_not_return",
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "-e",
+        "const m = await import(\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1w8c8to7/.claude/LIFEOS/TOOLS/RecurrenceLedger.ts\");console.log(JSON.stringify(m.readPatchRegistry()));"
+      ],
+      "status": 0,
+      "stdout": "[]\n",
+      "stderr": ""
+    }
+  ],
+  "artifacts": {
+    "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1w8c8to7/.claude/LIFEOS/MEMORY/LEARNING/PATCHES/registry.jsonl": {
+      "content": "{\"ts\": \"2026-10-05T05:22:47.364612+00:00\", \"class_id\": \"tool:terminal:synthetic-recurrence-failure\", \"hypothesis_slug\": \"synthetic-failure\", \"files\": [\"hooks/Synthetic.ts\"], \"fixture\": null, \"note\": \"<private>Synthetic patch secret</private>\"}\n",
+      "mode": "0o644"
+    }
+  },
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-recurrence-final-distributed/lifeos/LifeOS/install"
+}

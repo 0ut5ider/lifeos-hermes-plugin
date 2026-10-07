@@ -1,12 +1,16 @@
 # Plugin-managed LifeOS installation
 
-The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. The plugin must load before LifeOS exists so its settings page can guide installation. An absent `~/.claude/settings.json` now leaves its hooks inactive without making the plugin fail to load.
+The intended order is Hermes, LifeOS Bridge plugin, then LifeOS. [Fresh installation path checks](verification/2026-10-05-fresh-store-paths/README.md) bind the native program and data selectors to the selected home. They preserve an unrelated retained store. The plugin must load before LifeOS exists so its settings page can guide installation. An absent `~/.claude/settings.json` now leaves its hooks inactive without making the plugin fail to load.
 
 ## Requested page flow
 
 The [overall memory plan](memory-implementation-plan.md#installation-trial-and-removal-requirements) adds three planned evaluation choices: a separate trial profile, current-profile activation with reviewed memory import, and current-profile activation without import. Installing the plugin or LifeOS must not select memory ownership automatically. Profile isolation and shared Hermes code changes require separate acceptance evidence.
 
-The page must also offer a verified return to Hermes before removing the integration. It must distinguish restoring preserved Hermes memory from exporting selected current LifeOS facts. Data deletion is a separate owner action. These established-installation and removal workflows are planned, not implemented or verified by the fresh-install controls below.
+The page must also offer a verified return to Hermes before removing the integration. It must distinguish restoring preserved Hermes memory from exporting selected current LifeOS facts. Data deletion is a separate owner action. The candidate now has [private import review and recoverable item publication](verification/2026-10-05-memory-import/README.md). Complete established-installation and removal workflows remain open. The fresh-install controls below do not verify them.
+
+The candidate's [named-store preparation](verification/2026-10-05-named-fresh-store/README.md) initializes Adrian and Cerebo in a separate private native store. It retains existing facts and Hermes files outside that store. All six native tools complete with Bun 1.3.14 and verified locks for 12 package trees. The installer seeds locks only in an empty target and cancels each native process group after timeout or interruption. The two native tests and 20 installer tests pass. This primitive still requires authenticated page controls, selection, recovery, activation, and return acceptance.
+
+The [authenticated preparation endpoint](verification/2026-10-05-fresh-store-http/README.md) now accepts the two display names under the current owner binding. The server selects the source and destination. Native HTTP acceptance and four neighboring route tests pass. Page controls, restart-safe preparation, status, selection, recovery, activation, and return remain required. The [status listing](verification/2026-10-05-fresh-store-status/README.md) lets the owner read every prepared store and separates reviewed, running, interrupted, and altered preparations. Its gate passes 59 tests. Page controls, restart-safe preparation, cutover, recovery actions, activation, and return remain open. The [detached preparation](verification/2026-10-05-fresh-store-worker/README.md) runs as a systemd user unit, records failures, and lets the owner remove an interrupted or failed store. Its gate passes 41 tests.
 
 
 1. The page checks whether LifeOS is missing, partial, or installed.

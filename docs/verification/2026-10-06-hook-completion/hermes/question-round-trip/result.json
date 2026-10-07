@@ -1,0 +1,114 @@
+{
+  "before": {
+    "title": "Inspecting report",
+    "ascent": "traverse"
+  },
+  "after": {
+    "waiting_valid": true,
+    "restored_valid": true,
+    "answer_in_model": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0,
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261006_182639_62ba19",
+  "seconds": 12.547,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-question-stable/question-round-trip",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-question-stable/question-round-trip",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "/var/tmp/lifeos-pulse-guards-20261006/clarify_fixture_host.py",
+    "hermes-agent",
+    "Ask exactly one question, \"Choose fixture mode\", with exactly two options, PAIR_QUESTION_A and PAIR_QUESTION_B. Set the native header to \"Choose fixture\". Use the question tool once. Wait for the answer, then reply with exactly READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.4.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.4.1 /home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-question-stable/question-round-trip/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9UYWJTdGF0ZS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/TabState.hook.ts": "db62ad1f8663a25b186155d66565d62f1906797eba96e2ba40afff28f923421e"
+      }
+    },
+    {
+      "id": "PostToolUse.6.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.6.1 /home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-question-stable/question-round-trip/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9UYWJTdGF0ZS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/TabState.hook.ts": "db62ad1f8663a25b186155d66565d62f1906797eba96e2ba40afff28f923421e"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "b62d5748f50b6c451b98437741cc995502bf641372ab6a2f6ed0578729ec0763",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "2d8b82887c84bc5aac1f08040a5f44ef4229dd9b91bed5a41fb4d32626fc873f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "712edb20b54a4df16c780e0ab432d0d06909c760113fafc82d241401b439705e",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "77764f66c21fbcdbd976f3f0befee4aa4e6df229d7532acbfe0c14ed40b18dc2",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "prompt_input_exit",
+  "raw_artifacts": {
+    "hooks.jsonl": "3d5b5b168d196d5cddb3493a3f9f499fad25269e763a04aaca1996d907cf855c",
+    "fixture-events.jsonl": "f624bd6688392a85e6b93bb31289ffc3e419908da277b52b5a83c73a8b5c13eb",
+    "cli.log": "1a2446ded4d503aae70c313bb6112383bc5d7fd695b7ec5eaf0ceb4e114fe7a4",
+    "before-state.json": "28d8072059e10a94c88ca9f4c4c4fd6ee04810ac3901a54fa01ca881b253003d",
+    "after-state.json": "c4c677dbf80e63c3cdd35d837bb2a34d55dfa52393335ccdc1459e93c161cc27",
+    "fixture-files-before.json": "e48a04f8d74aabf47399798cf0e704e96882a65c54c14784097850b600b6c623",
+    "fixture-files-after.json": "7a4f86ea249df227d9da6232731ea38cdad818e011b8e37b8258822602b809f1"
+  }
+}

@@ -112,6 +112,7 @@ def route_delegate_args(args: Mapping[str, Any], mapping: Mapping[str, Any]) -> 
         if effort not in VALID_EFFORTS:
             raise ValueError(f"{tier} effort is not supported")
         child = dict(task)
+        child["_lifeos_requested_model"] = requested
         if model.strip():
             child["model"] = model.strip()
         else:

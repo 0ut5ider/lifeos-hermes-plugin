@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_callbacks_record_one_start_and_one_stop_per_actual_child_identity (tests.test_child_lifecycle.ChildLifecycleTests.test_callbacks_record_one_start_and_one_stop_per_actual_child_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_lifecycle.py", line 65, in test_callbacks_record_one_start_and_one_stop_per_actual_child_identity
+    self.assertNotIn('subagent_observed_model', last)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'subagent_observed_model' unexpectedly found in {'timestamp': '2026-10-07T03:28:26+00:00', 'event': 'subagent_stop', 'subagent_observed_model': 'requested-alias', 'session_id': 'parent', 'subagent_id': 'parent::No response model [unobserved]', 'subagent_type': 'general-purpose', 'description': 'No response model [unobserved]', 'duration_seconds': 0}
+
+----------------------------------------------------------------------
+Ran 1 test in 1.483s
+
+FAILED (failures=1)

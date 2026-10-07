@@ -1,0 +1,131 @@
+EEEEEEEEEE
+======================================================================
+ERROR: test_changed_source_config_target_and_grant_invalidate_review (test_memory_import.MemoryImportTests.test_changed_source_config_target_and_grant_invalidate_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 70, in test_changed_source_config_target_and_grant_invalidate_review
+    review=self.preview()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_exact_native_duplicates_and_retired_claims_are_explicit (test_memory_import.MemoryImportTests.test_exact_native_duplicates_and_retired_claims_are_explicit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 94, in test_exact_native_duplicates_and_retired_claims_are_explicit
+    result=self.preview()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_missing_read_error_invalid_encoding_and_symlink_have_distinct_outcomes (test_memory_import.MemoryImportTests.test_missing_read_error_invalid_encoding_and_symlink_have_distinct_outcomes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 101, in test_missing_read_error_invalid_encoding_and_symlink_have_distinct_outcomes
+    self.assertEqual(self.preview()['sources'][1]['status'],'missing')
+                     ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_owner_binding_and_builtin_provider_are_required (test_memory_import.MemoryImportTests.test_owner_binding_and_builtin_provider_are_required) (account=None)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 115, in test_owner_binding_and_builtin_provider_are_required
+    with self.assertRaises(PermissionError):self.operation().preview(account=account)
+                                            ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_owner_binding_and_builtin_provider_are_required (test_memory_import.MemoryImportTests.test_owner_binding_and_builtin_provider_are_required) (account='dashboard:other')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 115, in test_owner_binding_and_builtin_provider_are_required
+    with self.assertRaises(PermissionError):self.operation().preview(account=account)
+                                            ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_owner_binding_and_builtin_provider_are_required (test_memory_import.MemoryImportTests.test_owner_binding_and_builtin_provider_are_required) (account='chat:owner')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 115, in test_owner_binding_and_builtin_provider_are_required
+    with self.assertRaises(PermissionError):self.operation().preview(account=account)
+                                            ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_owner_binding_and_builtin_provider_are_required (test_memory_import.MemoryImportTests.test_owner_binding_and_builtin_provider_are_required)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 117, in test_owner_binding_and_builtin_provider_are_required
+    with self.assertRaises(MemoryUnavailable):self.preview()
+                                              ~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_preview_accounts_for_every_byte_and_preserves_duplicate_occurrences (test_memory_import.MemoryImportTests.test_preview_accounts_for_every_byte_and_preserves_duplicate_occurrences)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 40, in test_preview_accounts_for_every_byte_and_preserves_duplicate_occurrences
+    result=self.preview()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_snapshot_preserves_bytes_and_is_private_and_immutable (test_memory_import.MemoryImportTests.test_snapshot_preserves_bytes_and_is_private_and_immutable)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 58, in test_snapshot_preserves_bytes_and_is_private_and_immutable
+    review=self.preview()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+======================================================================
+ERROR: test_snapshot_tampering_and_live_tree_destination_are_rejected (test_memory_import.MemoryImportTests.test_snapshot_tampering_and_live_tree_destination_are_rejected)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 120, in test_snapshot_tampering_and_live_tree_destination_are_rejected
+    review=self.preview()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 37, in preview
+    return self.operation().preview(account='dashboard:owner')
+           ~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_import.py", line 33, in operation
+    from lifeos_hook_bridge.memory_import import MemoryImport
+ModuleNotFoundError: No module named 'lifeos_hook_bridge.memory_import'
+
+----------------------------------------------------------------------
+Ran 7 tests in 1.629s
+
+FAILED (errors=10)

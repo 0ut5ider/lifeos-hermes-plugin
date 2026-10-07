@@ -1,0 +1,21 @@
+# Governed native InterviewDue
+
+Date: 2026-10-04. This unit covers interview inputs, completion-state publication, and verdict-cache publication. All sources are synthetic. Production remains unchanged.
+
+The corrected [baseline](before-output.txt) reports nine failures and two passes. The failures cover ownerless and revoked completion writes, read-only publication, redirected completion reads and writes, arbitrary writer destinations, and public file permissions. The initial fixture run contains an incorrect nested fixture path and accidentally collects the imported StateEvidence tests. Its raw output remains under `fixture-correction-*`. The corrected baseline has neither fixture problem.
+
+The bridge supplies admitted current constitutional, state, evidence, and completion sources to the original native input and verdict rules. It preserves cadence, review thresholds, domain skew, reason ordering, headlines, completion fields, and native cache formatting. An actual control compares inputs with the pinned original implementation at the same calculation date.
+
+Reads require unrestricted owner recall and current configuration. Source or owner changes after native rendering refuse delivery. Managed callers supply an evidence selection, and the bridge calculates from current admitted evidence when selected. Caller-supplied evidence bodies do not become input sources. The cache publisher compares a supplied verdict with the native result before publication.
+
+Completion and cache writes require unrestricted owner write access and fixed installed destinations. The existing publication journal writes private artifacts and recovers previous bytes after actual process termination. Redirected destinations and registry aliases refuse before publication. The original Boolean write contract remains intact. A read-only owner can calculate a verdict without changing completion state or the cache.
+
+The first candidate passes 11 tests. An [actual-render source conflict](source-conflict-before-output.txt) then exposes recovery that erases a later completion edit beyond the 256 KiB limit. The corrected post-render check records a conflict receipt instead of leaving an unknown outcome. The expanded gate passes 16 tests and ten subtests.
+
+The [broad gate](final-output.txt) passes 165 tests and 123 subtests without failures, errors, skips, or warnings. It covers InterviewDue, StateEvidence, source admission/review, registry aliases, service dispatch, freshness reads and publication, native recovery, source preparation, patch packaging, and footprint checks.
+
+A subsequent [excluded-source control](excluded-before-output.txt) fails because an already excluded completion source has no admitted bytes to compare. The bridge now keeps a digest of its raw bytes and file time separately from the admitted source map. A later edit therefore changes the publication signature even when both source versions remain excluded from recall. The [final correction gate](correction-output.txt) passes 93 tests and 55 subtests without failures, errors, skips, or warnings. It retains its own [command and source hashes](correction-command.json). The 165-test broad gate predates this correction and is not rerun.
+
+The initial recorder captures 18 passing native controls. The corrected recorder captures [19 passing native controls](corrected-controls-output.txt), including the excluded-source case. [Case records](corrected-native-outcomes) retain complete synthetic source bytes and real process output. Large source bytes use SHA-256 named JSON blobs. All 40 [distributed native files](distributed-comparison.json) match the scratch candidate. Both patch copies are equal. The [Bun build](build-result.json) passes. Bundling does not validate TypeScript types, and the runtime and TOOLS packages declare no typecheck, lint, or test scripts.
+
+InterviewScan, derivative orchestration, other publishers, aggregate recovery, restricted delivery, ownership activation, import, and the combined release remain open. The controls do not configure external data integrations. The cooperative writer boundary does not protect against hostile same-UID replacement between the final path check and publication.

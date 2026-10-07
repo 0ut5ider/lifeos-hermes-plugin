@@ -1,0 +1,111 @@
+{
+  "before": {
+    "rating_count": 1,
+    "learning_count": 0,
+    "cache_present": true
+  },
+  "after": {
+    "unrelated_rating_preserved": true,
+    "cache_preserved": true,
+    "captured_ratings": [
+      {
+        "rating": 4,
+        "source": "explicit",
+        "comment": "needs clearer details",
+        "timestamp_valid": true,
+        "session_matches": true,
+        "response_preview_matches_cache": true
+      }
+    ],
+    "learning_count": 1,
+    "learning_checks": {
+      "rating_matches": true,
+      "source_matches": true,
+      "feedback_matches": true,
+      "context_matches": true,
+      "principal_matches": true
+    },
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "43197b42-08f0-49ef-9040-e684c296d85f",
+  "seconds": 3.929,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-feedback-async-20261005/results/feedback-async-low-rating",
+    "/home/lifeos-claude-ref/workspace/paired-feedback-async-20261005/results/feedback-async-low-rating",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "4 needs clearer details"
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.2.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.2.1 /home/lifeos-claude-ref/workspace/paired-feedback-async-20261005/results/feedback-async-low-rating/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvU2F0aXNmYWN0aW9uQ2FwdHVyZS5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/SatisfactionCapture.hook.ts": "edfaf872eeb26f61bf31a0df4c07ab184a456ed17a172b11d12487511416c38e"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "450d9cdaf755428d12ba579192f338f36c17dad77e7c69780fc32383d6879cb9",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "6455587a95489c8c0bd8c4652dba34e3555e7abdb7386400565c739efafecef1",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "f61ce643b18b0aedeb49d1e4e45f6347af1269adbb07eee018e6af6c05bb7961",
+    "fixture-events.jsonl": "65fb4fb89bfeee5e9fab7138788428348c584c7f18a5442a32295f2541864c8a",
+    "cli.log": "7c8b09fe1718b9edbd7d1dfc0572c0f75be5735faa31d27abb0bed9733258da2",
+    "before-state.json": "6a704179873f398e093f2aee29168d3e12f9152ccba005b8950fa6920d399fe0",
+    "after-state.json": "65d5ed03798c1e37f4fbab2d730e9ea1d00122e5a4649be650ef19b98beec6fd",
+    "fixture-files-before.json": "42607ab1279539ead34d98305c6f3667db34ec5ffc93b588157f1455daaaf14f",
+    "fixture-files-after.json": "1e7bed15a3e32e241b1e4f34b4faa6468ff034927cbccb5aaa87cc9d560f406d"
+  }
+}

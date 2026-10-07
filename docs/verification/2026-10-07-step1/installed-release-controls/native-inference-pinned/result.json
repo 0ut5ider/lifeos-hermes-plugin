@@ -1,0 +1,105 @@
+[
+  {
+    "mode": "failure-capture",
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-failure-capture/.claude/hooks/SatisfactionCapture.hook.ts"
+    ],
+    "returncode": 0,
+    "requests": 1,
+    "capture": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-failure-capture/.config/LIFEOS/USER/MEMORY/LEARNING/FAILURES/2026-10/2026-10-06-221605_claimed-command-succeeded-when-exit-status-was-seven"
+  },
+  {
+    "mode": "documentation",
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-documentation/doc-control.ts"
+    ],
+    "returncode": 0,
+    "requests": 1,
+    "document_after": "# Hook system\n\n## FixtureControl\nFixtureControl.hook.ts reports actual file-operation failures and emits a warning for exit status 7.\n"
+  },
+  {
+    "mode": "capability-audit",
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-capability-audit/.claude/hooks/SpendAuditor.hook.ts",
+      "--audit",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-capability-audit/synthetic-transcript.jsonl",
+      "capability-control"
+    ],
+    "returncode": 0,
+    "requests": 1,
+    "audit": {
+      "ts": "2026-10-07T05:16:13+00:00",
+      "session_id": "capability-control",
+      "audited": true,
+      "trigger": "zero-capability-sweep",
+      "prompt_gist": "Always confirm before deploying to the synthetic laboratory. This is a permanent operational rule, and it belongs in the operational rules file. The assistant must request my approval before each depl",
+      "capabilities": {
+        "skills": [],
+        "agents": [],
+        "tool_calls": 1
+      },
+      "verdict": {
+        "verdict": "match",
+        "confidence": 0.72,
+        "expected": "A simple file edit to add an operational rule \u2014 one write/edit tool call is appropriate",
+        "actual": "1 tool call, claimed success inline",
+        "reason": "Adding a rule to a file is a simple edit requiring ~1 tool call; the capability spend matches the task type, though the response quality (opaque success claim after being warned about that exact pattern) is an answer-quality issue, not a spend mismatch."
+      }
+    }
+  },
+  {
+    "mode": "memory-review",
+    "command": [
+      "bun",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-memory-review/.claude/LIFEOS/TOOLS/MemoryReviewer.ts",
+      "review",
+      "--input",
+      "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-memory-review/synthetic-transcript.jsonl",
+      "--turns",
+      "8"
+    ],
+    "returncode": 1,
+    "requests": 1,
+    "review": {
+      "ok": false,
+      "runId": "2026-10-07T05-16-25-838Z",
+      "transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-memory-review/synthetic-transcript.jsonl",
+      "exchanges": 1,
+      "inference_duration_ms": 9616,
+      "parse_ok": true,
+      "dispatch_summary": {
+        "total": 2,
+        "by_type": {
+          "memory": 1,
+          "proposal": 1
+        },
+        "succeeded": 2,
+        "failed": 0,
+        "failures": [],
+        "skipped_guard": 0,
+        "skips": [],
+        "proposals_auto_applied": 0,
+        "proposals_auto_apply_failed": 1
+      },
+      "error": "auto-apply failed for 1 proposal(s)"
+    },
+    "proposals": [
+      {
+        "id": "muxnnlvi-hp9g7u",
+        "ts": "2026-10-07T05:16:36.609Z",
+        "status": "pending",
+        "target_file": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/native-inference-pinned-memory-review/.claude/LIFEOS/USER/CONFIG/OPERATIONAL_RULES.md",
+        "target_kind": "operational-rule",
+        "edit": "**Synthetic-lab deployment gate** \u2014 before any deployment to the synthetic laboratory, LifeOS must pause and request explicit principal approval. If the deploy command fails, report the failure verbatim; never claim success. Principal stated this is a permanent, non-negotiable rule.",
+        "confidence": 0.95,
+        "rationale": "User explicitly stated this is a 'permanent operational rule' belonging in the operational rules file, stated the exact behavior required (request approval before each deployment), and flagged that the assistant violated it by claiming success after a failing command. Verbatim durability language, single-turn clarity.",
+        "observed_across_sessions": 1,
+        "source_session": null
+      }
+    ],
+    "target_unchanged": true
+  }
+]

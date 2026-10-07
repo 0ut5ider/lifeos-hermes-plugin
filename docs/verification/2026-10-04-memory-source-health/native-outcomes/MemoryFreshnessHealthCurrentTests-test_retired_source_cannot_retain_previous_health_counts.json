@@ -1,0 +1,294 @@
+{
+  "case": "test_retired_source_cannot_retain_previous_health_counts",
+  "before": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "after": {
+    "LIFEOS/USER/TELOS/TELOS.md": "---\nlast_updated: 2020-01-01\nlast_reviewed: 2020-01-01\n---\n# Synthetic TELOS\n## Mission\nSynthetic HTTP freshness mission\n"
+  },
+  "requests": [
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:39523/api/telos/health",
+      "status": 200,
+      "body": "{\"status\":\"healthy\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":\"2020-01-01T00:00:00.000Z\",\"telos_file_age_days\":2469,\"telos_sections_total\":1,\"telos_sections_stale\":1,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:12.634Z\"}}",
+      "cache-control": "no-store",
+      "content-type": "application/json;charset=utf-8"
+    },
+    {
+      "method": "GET",
+      "url": "http://127.0.0.1:39523/api/telos/health",
+      "status": 200,
+      "body": "{\"status\":\"degraded\",\"details\":{\"uptime_s\":2,\"telos_file_updated\":null,\"telos_file_age_days\":null,\"telos_sections_total\":0,\"telos_sections_stale\":0,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:14.369Z\"}}",
+      "cache-control": "no-store",
+      "content-type": "application/json;charset=utf-8"
+    }
+  ],
+  "events": [
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"status\":200,\"body\":{\"status\":\"healthy\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":\"2020-01-01T00:00:00.000Z\",\"telos_file_age_days\":2469,\"telos_sections_total\":1,\"telos_sections_stale\":1,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:12.634Z\"}}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic HTTP freshness mission\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic HTTP freshness mission\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic authenticated PULSE fact\"],\"count\":1,\"chars_used\":40,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"path\":\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\"}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic authenticated PULSE fact\"],\"count\":1,\"chars_used\":40,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic authenticated PULSE fact\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"item\":{\"type\":\"memory\",\"actor\":\"principal\",\"content\":\"RULE: Synthetic HTTP freshness mission\"}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"accepted\":2,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"prior_count\":1,\"new_count\":2,\"evictions\":[],\"additions\":[\"RULE: Synthetic HTTP freshness mission\"]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic authenticated PULSE fact\",\"RULE: Synthetic HTTP freshness mission\"],\"count\":2,\"chars_used\":78,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic authenticated PULSE fact\",\"RULE: Synthetic HTTP freshness mission\"],\"count\":2,\"chars_used\":78,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic authenticated PULSE fact\",\"RULE: Synthetic HTTP freshness mission\"],\"count\":2,\"chars_used\":78,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"entries\":[\"RULE: Synthetic authenticated PULSE fact\",\"RULE: Synthetic HTTP freshness mission\"],\"count\":2,\"chars_used\":78,\"cap_entries\":48,\"cap_chars\":12288,\"dropped_invalid\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"ok\":true,\"accepted\":1,\"dropped_malformed\":0,\"dropped_overlength\":0,\"dropped_duplicates\":0,\"prior_count\":2,\"new_count\":1,\"evictions\":[\"RULE: Synthetic HTTP freshness mission\"],\"additions\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"status\":200,\"body\":{\"status\":\"degraded\",\"details\":{\"uptime_s\":0,\"telos_file_updated\":null,\"telos_file_age_days\":null,\"telos_sections_total\":0,\"telos_sections_stale\":0,\"context_files_total\":8,\"context_files_stale\":8,\"last_read_at\":\"2026-10-05T03:51:14.369Z\"}}}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "/home/outsider/.bun/bin/bun",
+        "--no-install",
+        "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_native.ts",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-1a9f44c5/.claude"
+      ],
+      "status": 0,
+      "stdout": "{\"accepted\":[true]}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-source-health-candidate-distributed/lifeos/LifeOS/install"
+}

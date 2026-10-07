@@ -1,0 +1,240 @@
+{
+  "before": {
+    "isa_closed": false,
+    "repo_commits": 1,
+    "repo_dirty": true
+  },
+  "after": {
+    "isa_closed": true,
+    "tool_names": [
+      "Edit"
+    ],
+    "file_path_matches": true,
+    "registry": {
+      "phase": "execute",
+      "progress": "0/1",
+      "isa": "MEMORY/WORK/pair-run/ISA.md",
+      "task": "PAIR_ISA_TASK"
+    },
+    "view_matches_content": true,
+    "render_state_lists_isa": true,
+    "checkpoint_state": {
+      "committed_iscs": [
+        "ISC-1"
+      ],
+      "sha_matches_head": true
+    },
+    "checkpoint_commit": {
+      "count": 2,
+      "names_criterion": true,
+      "changed_files": [
+        "tracked.txt"
+      ]
+    },
+    "repo_dirty": false,
+    "atlas_rows": 1,
+    "evaluation_state_present": false,
+    "outputs": {
+      "PostToolUse.9.1": {
+        "continue_only": false,
+        "empty": false,
+        "context_head": "<lifeos-ascent-delta>"
+      },
+      "PostToolUse.9.2": {
+        "continue_only": true,
+        "empty": false,
+        "context_head": ""
+      },
+      "PostToolUse.9.3": {
+        "continue_only": true,
+        "empty": false,
+        "context_head": ""
+      },
+      "PostToolUse.9.4": {
+        "continue_only": false,
+        "empty": true,
+        "context_head": ""
+      },
+      "PostToolUse.9.5": {
+        "continue_only": false,
+        "empty": true,
+        "context_head": ""
+      },
+      "PostToolUse.9.6": {
+        "continue_only": false,
+        "empty": true,
+        "context_head": ""
+      },
+      "PostToolUse.9.7": {
+        "continue_only": false,
+        "empty": true,
+        "context_head": ""
+      }
+    },
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 2,
+  "model_successful_responses": 3,
+  "session_id": "20261006_001909_2fc137",
+  "seconds": 18.532,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close",
+    "/home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "In the file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/.claude/LIFEOS/MEMORY/WORK/pair-run/ISA.md, replace the exact text \"- [ ] ISC-1:\" with \"- [x] ISC-1:\". Use the file editing tool once. Do not change anything else."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.9.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.1 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0lTQVN5bmMuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/ISASync.hook.ts": "52d10b53aca85cdadec04a068fddb232934b942d9456c86eee369f3bec4c895a"
+      }
+    },
+    {
+      "id": "PostToolUse.9.2",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.2 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0lTQVN0YWxlV3JpdGVHdWFyZC5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/ISAStaleWriteGuard.hook.ts": "7e0627b6f95d736ce861cca5b0fdd8bd1591bc4a2e90d1c31b6af69f8c84f798"
+      }
+    },
+    {
+      "id": "PostToolUse.9.3",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.3 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0NoZWNrcG9pbnRQZXJJU0MuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/CheckpointPerISC.hook.ts": "454437e8869548ecfed07c4a3b01d416f5f96ba3a72539f7d4e8c17d2a10e24e"
+      }
+    },
+    {
+      "id": "PostToolUse.9.4",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.4 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0NvbmZpZ0V2YWxGaXJlLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/ConfigEvalFire.hook.ts": "74c701218778479f589f5c4ae5e20e4f353b5074a30ad96cd3e4ad367bb0c218"
+      }
+    },
+    {
+      "id": "PostToolUse.9.5",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.5 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0F0bGFzRXZlbnRDYXB0dXJlLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/AtlasEventCapture.hook.ts": "5832fb94b03d4d5bceba5a06aebfbb2f4f37f343faa6b27431f49f00a758c322"
+      }
+    },
+    {
+      "id": "PostToolUse.9.6",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.6 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0tub3dsZWRnZVdyaXRlR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/KnowledgeWriteGuard.hook.ts": "ef1063ceb4ef0696368901931bae9169e4f28a7547f9c281eccc0ad29eba0a58"
+      }
+    },
+    {
+      "id": "PostToolUse.9.7",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.9.7 /home/lifeos-plugin-install-probe/workspace/paired-isa-edit-group-20261005/results/isa-edit-close/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1wYWlyZWQtcnVudGltZS0yMDI2MTAwNWIvbGlmZW9zL2hvb2tzL0NvbXBsZXhpdHlSYXRjaGV0Lmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-paired-runtime-20261005b/lifeos/hooks/ComplexityRatchet.hook.ts": "03267a29c4427492e7844cf8db3d41b42d46ec93721feee2d73a411bf6a8089b"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "a57187dfa4eeb03252f8f98de2c8e0385b3caac16c94d24e0f5cbdf12bb5a450",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "7ff4808f692a5aaf0571e59dc44e94eb6e45c0cdb55b7ff6b84641c308249318",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "8e6d7378e86d33626b90109518add7aa7f3daa013be05df626293d188a68e57a",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "a218513ab4da7176a187b1a2156208220226ab2e359f921389a93a231579ec46",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "409250bdf1faa7791a414eb44fe6a8795c51baa380296c439b5156c0ac0a38cf",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "3245c91933a06a77c1d95e1b164faf043c280ead2095bb7d633b7e643239f556",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "26697bc34ca7cdbe0195c2f492db3b376565bb9fb94c75731a12804c084254a1",
+    "fixture-events.jsonl": "e6e5051891cedc8a98ce5510eec20c28b016aa8a69be49f8ade08cea660080c9",
+    "cli.log": "affdd3245cd5b7a7df637c076ecc1ff9175fe47b8ed527d6624bc1d19b95fec2",
+    "before-state.json": "ba9832ae19d4ab357136ab1ba2ab1dff579876e511977623a303285699f66906",
+    "after-state.json": "67069b968cf27f12f9c908b3466d81895724a23fd8fc05713354e0d963e7035c",
+    "fixture-files-before.json": "f86722aa1f6ca847b01cef7509ee161d394f8555b3e484b40bf3a7fb940a9225",
+    "fixture-files-after.json": "2ae259d06bf0558b94682958e181edb18bae72d56f90f02a15fce94af1a08d9b"
+  }
+}

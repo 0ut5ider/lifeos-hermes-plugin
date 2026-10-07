@@ -1,0 +1,38 @@
+{
+  "case": "test_queued_enabled_store_refuses_delete_after_current_flags_change",
+  "before": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n"
+  },
+  "after": {
+    "MEMORY.md": "Synthetic preserved journey memory.\n",
+    "USER.md": "Synthetic preserved journey preference.\n",
+    "MEMORY.md.lock": "",
+    "USER.md.lock": ""
+  },
+  "events": [
+    {
+      "operation": "delete",
+      "source": "memory",
+      "flags": [
+        true,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"message\": \"Built-in MEMORY.md is disabled in the selected profile\"}, \"unchanged\": true, \"loaded_enabled\": [true]}\n",
+      "stderr": ""
+    },
+    {
+      "operation": "delete",
+      "source": "profile",
+      "flags": [
+        true,
+        true
+      ],
+      "status": 0,
+      "stdout": "{\"result\": {\"ok\": false, \"message\": \"Built-in USER.md is disabled in the selected profile\"}, \"unchanged\": true, \"loaded_enabled\": [true]}\n",
+      "stderr": ""
+    }
+  ],
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/hermes-learning-flags-final-distributed/hermes"
+}

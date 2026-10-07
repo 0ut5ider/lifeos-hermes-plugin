@@ -126,7 +126,7 @@ class MemoryPulseRelayTests(unittest.TestCase):
         with httpx.Client() as client:
             self.login(client)
             for method,path,status in [('POST','/api/memory',405),('GET','/api/memory?owner=other',400),
-                                       ('GET','/api/memory/graph',404)]:
+                                       ('GET','/api/memory/unsupported',404)]:
                 with self.subTest(method=method,path=path):
                     response=client.request(method,self.native+path)
                     self.assertEqual(response.status_code,status,response.text)

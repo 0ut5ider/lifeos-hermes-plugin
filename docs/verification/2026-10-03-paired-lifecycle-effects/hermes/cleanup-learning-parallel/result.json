@@ -1,0 +1,81 @@
+{
+  "before": {
+    "work_phase": "execute",
+    "learning_count": 0
+  },
+  "after": {
+    "work_phase": "complete",
+    "isa_phase": "complete",
+    "isa_status": "COMPLETED",
+    "current_name_present": false,
+    "unrelated_name_preserved": true,
+    "learning_count": 1,
+    "learning_session_matches": true,
+    "claims_closed": "1/1"
+  },
+  "hook_exit_codes": [
+    0,
+    0
+  ],
+  "event": "SessionEnd",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261003_194253_c36a04",
+  "seconds": 6.038,
+  "command": [
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionEnd.1.1",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.1 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/cleanup-learning-parallel/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvV29ya0NvbXBsZXRpb25MZWFybmluZy5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/WorkCompletionLearning.hook.ts": "f52e218dc4b3c089b1c2410062976b78827238fdc4efb91d7e8a290872e26b3b"
+      }
+    },
+    {
+      "id": "SessionEnd.1.2",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionEnd.1.2 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/cleanup-learning-parallel/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvaG9va3MvU2Vzc2lvbkNsZWFudXAuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/hooks/SessionCleanup.hook.ts": "e8a1e04b8d2edf6a8faa2e3f36f792dab6f5a4e756fe612afbebb620738d151c"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "0e393e964329d1945f98cbd060a3ca7ba12d91826890739e1488cf13726c0c52",
+    "fixture-events.jsonl": "77e942904ae89e71310c5c2fac149976e081b146c9395a1cb8a5a2a0522e37aa",
+    "cli.log": "6b2a160fd18295cb7658e76eecc2b060b18849cfaea35073dbbe14f0587b76f0",
+    "before-state.json": "1d0232cf04a50402f0a4f43cb9428a3e851ce203433d26d25b8ffdf7405a966a",
+    "after-state.json": "4d2fd5e328be41e7c0a673272a33826e1f6fdf3d3644ce7684faed952c67f94a",
+    "fixture-files-before.json": "fec39a2052a4c811a65af5cca4b4bcff49dfa968604ba1572bcbff06fdd267b5",
+    "fixture-files-after.json": "ce986bb3a75149ec2bb9dfae79f7f6c669157a73b2d5b746cd06d3d3620dbc6c"
+  }
+}

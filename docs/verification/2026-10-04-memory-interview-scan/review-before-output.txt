@@ -1,0 +1,14 @@
+.                                                                      [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewScanReviewTests.test_review_rejects_decoded_private_or_retired_assistant_names (name='\\u003cprivate\\u003eSyntheticPrivateScanName\\u003c/private\\u003e') _
+tests/test_memory_interview_scan_review.py:27: in test_review_rejects_decoded_private_or_retired_assistant_names
+    self.assertFalse(snapshot['sources'][0]['accepted'])
+E   AssertionError: True is not false
+_ MemoryInterviewScanReviewTests.test_review_rejects_decoded_private_or_retired_assistant_names (name='\\u0053ynthetic retired evidence work') _
+tests/test_memory_interview_scan_review.py:27: in test_review_rejects_decoded_private_or_retired_assistant_names
+    self.assertFalse(snapshot['sources'][0]['accepted'])
+E   AssertionError: True is not false
+=========================== short test summary info ============================
+SUBFAILED(name='\\u003cprivate\\u003eSyntheticPrivateScanName\\u003c/private\\u003e') tests/test_memory_interview_scan_review.py::MemoryInterviewScanReviewTests::test_review_rejects_decoded_private_or_retired_assistant_names
+SUBFAILED(name='\\u0053ynthetic retired evidence work') tests/test_memory_interview_scan_review.py::MemoryInterviewScanReviewTests::test_review_rejects_decoded_private_or_retired_assistant_names
+2 failed, 1 passed, 2 deselected in 2.13s

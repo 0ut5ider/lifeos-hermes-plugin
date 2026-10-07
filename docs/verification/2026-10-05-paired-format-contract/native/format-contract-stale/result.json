@@ -1,0 +1,105 @@
+{
+  "before": {
+    "state": {
+      "last_fired_turn": 6,
+      "turn_count": 6,
+      "last_text": "PAIR_PRIOR_CONTRACT",
+      "schema_version": 1
+    },
+    "cache_present": true
+  },
+  "after": {
+    "state": {
+      "last_fired_turn": 7,
+      "turn_count": 7,
+      "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+      "schema_version": 1
+    },
+    "cache_preserved": true,
+    "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+    "model_contract_present": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "UserPromptSubmit",
+  "cli_exit_code": 0,
+  "model_generation_requests": 1,
+  "metadata_requests": 0,
+  "model_successful_responses": 1,
+  "session_id": "45454e08-67b9-4772-93a5-ccde9a92b7ac",
+  "seconds": 3.275,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-format-contract-20261005/results/format-contract-stale",
+    "/home/lifeos-claude-ref/workspace/paired-format-contract-20261005/results/format-contract-stale",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook lifecycle fixture. Do not use tools or perform work. Regardless of the feedback text, reply with exactly READY and finish the turn.",
+    "Reply with READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "UserPromptSubmit.6.1",
+      "command": "/usr/bin/python3 /var/tmp/paired-startup-trace-20261004.py run UserPromptSubmit.6.1 /home/lifeos-claude-ref/workspace/paired-format-contract-20261005/results/format-contract-stale/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvRHJpZnRSZW1pbmRlci5ob29rLnRz",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/DriftReminder.hook.ts": "4a7e48a1fb7f3080493f65229d3c83214f42c9802f55e3232f1b754f43e6f9fd",
+        "/home/lifeos-claude-ref/.claude/hooks/lib/banned-vocab.ts": "42fd8460fd6374abf6a0a19f5526834c9d38f99f59f0a7cf8b6bf661820ca4b8"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "14fab4a56b368ea219e01767e8fd183312d4575ecfa307880caa7af10c401508",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "3ccf759101ccb3c028bd90a5593592b4636689f4cf50f25129badcaa5da91b52",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "1a73ef953cf2c61d8659cfd944834b8a5fabab3f6fce62af171b0611921e0721",
+    "fixture-events.jsonl": "ed1c1cbe0a466cfc3936a68e507ea9c137fb4a534813d37952dff0a0d9c808f6",
+    "cli.log": "8b58b48409ebe4a951857feb63db98b8f416a722e291992fbb5f353eb86ad94f",
+    "before-state.json": "950c5dfc86b2ae7d0078dd015a20929cd8c495b7288ad0bacfa903ab721fd073",
+    "after-state.json": "5fe4ebac34bdc6d709462e4c9626dcd9b0621dd79c4aff0274a24e1bb0519f7f",
+    "fixture-files-before.json": "9869451d1412663d8dea35d919597f2ad3e035e17ba81b637d8127329d88b755",
+    "fixture-files-after.json": "ea301936526161c46744f03b4047da66dd9a9d68a51eb413b658d3ac939a15f1"
+  }
+}

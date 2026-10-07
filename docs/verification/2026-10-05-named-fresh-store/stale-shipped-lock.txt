@@ -1,0 +1,19 @@
+..F.
+======================================================================
+FAIL: test_native_shipped_dashboard_lock_stays_unchanged (test_native_dependencies.NativeDependenciesTests.test_native_shipped_dashboard_lock_stays_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_dependencies.py", line 49, in test_native_shipped_dashboard_lock_stays_unchanged
+    self.assertEqual(result.returncode,0,result.stdout+result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : bun install v1.3.14 (0d9b296a)
+Resolving dependencies
+Resolved, downloaded and extracted [84]
+error: lockfile had changes, but lockfile is frozen
+note: try re-running without --frozen-lockfile and commit the updated lockfile
+
+
+----------------------------------------------------------------------
+Ran 4 tests in 1.107s
+
+FAILED (failures=1)

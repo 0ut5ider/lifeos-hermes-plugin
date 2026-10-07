@@ -1,0 +1,22 @@
+▶ not activated — using HERMES_PYTHON: /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python
+▶ running per-file parallel test suite via run_tests_parallel.py
+  (TZ=UTC LANG=C.UTF-8 PYTHONHASHSEED=0; clean env)
+▶ pre-compiling bytecode cache
+▶ launching test runner
+Discovered 3 test files (~59 tests) under ['tests/tools/test_memory_tool.py', 'tests/tools/test_memory_tool_schema.py', 'tests/tools/test_memory_tool_import_fallback.py']; running with -j 2
+[  1.7% |     1/~59 | ✓1 | ✗0] ✓ tests/tools/test_memory_tool_import_fallback.py (1✓, 1.8s)
+[ 98.3% |    58/~59 | ✓61 | ✗ 0] ✓ tests/tools/test_memory_tool.py (60✓, 3.0s)
+[100.0% |    59/~59 | ✓62 | ✗ 0] ✓ tests/tools/test_memory_tool_schema.py (1✓, 1.5s)
+
+=== Summary: 3 files, 62 tests passed, 0 failed (100% complete) in 3.3s (2 workers) ===
+  Durations cached to test_durations.json (3 files)
+
+=== Per-file subprocess time distribution ===
+  Files:   3
+  Total subprocess CPU-wall: 6.3s  (runner wall: 3.3s, parallelism: 2x)
+  P50: 1.77s  P90: 3.00s  P95: 3.00s  P99: 3.00s  Max: 3.00s
+  <1s: 0 files (0%)  <2s: 2 files (67%)
+  Top 10 slowest:
+      3.00s  tests/tools/test_memory_tool.py
+      1.77s  tests/tools/test_memory_tool_import_fallback.py
+      1.52s  tests/tools/test_memory_tool_schema.py

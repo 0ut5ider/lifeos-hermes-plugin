@@ -1,0 +1,24 @@
+E
+======================================================================
+ERROR: test_functional_control_never_reads_an_external_artifact (test_hook_evidence.HookEvidenceTests.test_functional_control_never_reads_an_external_artifact)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_hook_evidence.py", line 168, in test_functional_control_never_reads_an_external_artifact
+    errors = check_evidence(inventory, ledger, root)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/scripts/check_hook_evidence.py", line 99, in check_evidence
+    records = json.loads((root / result).read_text()).get('cases', [])
+              ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/__init__.py", line 352, in loads
+    return _default_decoder.decode(s)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 345, in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib64/python3.14/json/decoder.py", line 363, in raw_decode
+    raise JSONDecodeError("Expecting value", s, err.value) from None
+json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (errors=1)

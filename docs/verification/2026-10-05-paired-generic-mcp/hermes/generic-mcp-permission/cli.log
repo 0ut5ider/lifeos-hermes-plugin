@@ -1,0 +1,8 @@
+{"type": "system", "subtype": "init", "model": "lifecycle-fixture", "session_id": "20261006_005853_6874f3", "timestamp": 1791248334183}
+{"type": "tool_use", "name": "tool_describe", "input": {"names": ["mcp__pair__ping"]}, "timestamp": 1791248338371}
+{"type": "tool_result", "name": "tool_describe", "output": "{\"tools\": {\"mcp__pair__ping\": {\"description\": \"Return the fixed PAIR_MCP_212 marker.\", \"parameters\": {\"type\": \"object\", \"properties\": {}, \"additionalProperties\": false, \"required\": []}}}}", "duration_ms": 15, "is_error": false, "timestamp": 1791248338379}
+{"type": "tool_use", "name": "mcp__pair__ping", "input": {}, "timestamp": 1791248339545}
+{"type": "tool_result", "name": "mcp__pair__ping", "output": "{\"result\": \"PAIR_MCP_212\"}", "duration_ms": 107, "is_error": false, "timestamp": 1791248339566}
+{"type": "result", "session_id": "20261006_005853_6874f3", "exit_code": 0, "text": "READY", "tokens": {"input": 6960, "output": 163, "total": 7123, "cache_read": 0, "cache_write": 0}, "duration_ms": 6119, "timestamp": 1791248340302}
+
+session_id: 20261006_005853_6874f3

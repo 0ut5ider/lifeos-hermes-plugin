@@ -1,0 +1,68 @@
+{
+  "before": {
+    "user_value": null
+  },
+  "after": {
+    "system_value": "system",
+    "user_value": "overlay",
+    "overlay_value": "overlay",
+    "snapshot_matches_generated": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "SessionStart",
+  "cli_exit_code": 0,
+  "model_generation_requests": 0,
+  "metadata_requests": 2,
+  "session_id": "20261003_194221_4c37c6",
+  "seconds": 6.293,
+  "command": [
+    "/home/lifeos-plugin-install-probe/acceptance-20261002/.hermes/tools/python-3.14.7+20260901-linux-x64/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "todo",
+    "-q",
+    "PAIR_BLOCK_BEFORE_MODEL"
+  ],
+  "hook_definitions": [
+    {
+      "id": "SessionStart.1.5",
+      "command": "/usr/bin/python3 /tmp/paired_hook_trace-effects-20261003.py run SessionStart.1.5 /home/lifeos-plugin-install-probe/workspace/paired-effects-20261003/lifecycle-paired-v2-20261003/settings-merge/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvaG9vay1ldmlkZW5jZS0yMDI2MTAwMy9ob21lLy5jbGF1ZGUvTElGRU9TL1RPT0xTL01lcmdlU2V0dGluZ3MudHMgLS1zeXN0ZW0gL2hvbWUvbGlmZW9zLXBsdWdpbi1pbnN0YWxsLXByb2JlL3dvcmtzcGFjZS9wYWlyZWQtZWZmZWN0cy0yMDI2MTAwMy9saWZlY3ljbGUtcGFpcmVkLXYyLTIwMjYxMDAzL3NldHRpbmdzLW1lcmdlLy5jbGF1ZGUvc2V0dGluZ3Muc3lzdGVtLmpzb24gLS11c2VyIC9ob21lL2xpZmVvcy1wbHVnaW4taW5zdGFsbC1wcm9iZS93b3Jrc3BhY2UvcGFpcmVkLWVmZmVjdHMtMjAyNjEwMDMvbGlmZWN5Y2xlLXBhaXJlZC12Mi0yMDI2MTAwMy9zZXR0aW5ncy1tZXJnZS8uY2xhdWRlL0xJRkVPUy9VU0VSL0NPTkZJRy9zZXR0aW5ncy51c2VyLmpzb24gLS1vdXRwdXQgL2hvbWUvbGlmZW9zLXBsdWdpbi1pbnN0YWxsLXByb2JlL3dvcmtzcGFjZS9wYWlyZWQtZWZmZWN0cy0yMDI2MTAwMy9saWZlY3ljbGUtcGFpcmVkLXYyLTIwMjYxMDAzL3NldHRpbmdzLW1lcmdlLy5jbGF1ZGUvc2V0dGluZ3MuanNvbg==",
+      "source_files": {
+        "/home/lifeos-plugin-install-probe/workspace/hook-evidence-20261003/home/.claude/LIFEOS/TOOLS/MergeSettings.ts": "f79be90fb31735262f0995e10e5e65e5a68ede9a7d2d9c04cd2a923f355c75eb"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    },
+    {
+      "path": "/api/show",
+      "body": {
+        "name": "lifecycle-fixture"
+      }
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "8e1d2a7cf9913ed83feebd5ff2b71896bc50b276f6d19c1e850175688aa2d6c8",
+    "fixture-events.jsonl": "103f246addbf677aead559f30f46a9c2cffc5adacfcc5cdf0faabc338bd10220",
+    "cli.log": "13d98b10d3e3c2597ecdb06a8dcc14436d0b6a5504f8fff2a0232ca0169feb9c",
+    "before-state.json": "8cff2120d8f575b91789863eb8e447f49ce5ef0d82468e7675fd7b6a07d77c90",
+    "after-state.json": "b531b3147e2c72266a9740b86780a2b36157e10bbfa161e98f808e81a2cb3299",
+    "fixture-files-before.json": "999bb1536cf3faa38648854bc38ed5e4ffc985f9143ce1f2f6dfdc2131720252",
+    "fixture-files-after.json": "1a3bfc2448b7df951597e6dcc5bd69cc2bf9b223f13ee2dd156ad8680a6584b8"
+  }
+}

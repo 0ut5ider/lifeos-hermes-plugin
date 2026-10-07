@@ -1,0 +1,28 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-W",
+    "error::ResourceWarning",
+    "-m",
+    "unittest",
+    "-v",
+    "test_native_hook_healer",
+    "test_native_freshness_cache",
+    "test_native_settings_merge",
+    "test_native_session_end_learning",
+    "test_native_session_end_all"
+  ],
+  "environment": {
+    "HOME": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home",
+    "TMPDIR": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp",
+    "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/hermes",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "LIFEOS_HOOK_HEALER_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/hooks/HookHealer.hook.ts",
+    "LIFEOS_SESSION_CLEANUP_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/hooks/SessionCleanup.hook.ts",
+    "LIFEOS_WORK_COMPLETION_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/hooks/WorkCompletionLearning.hook.ts",
+    "LIFEOS_FRESHNESS_CACHE_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts",
+    "LIFEOS_MERGE_SETTINGS_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/LIFEOS/TOOLS/MergeSettings.ts",
+    "LIFEOS_SETTINGS_BACKPORT_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/LIFEOS/TOOLS/SettingsBackport.ts",
+    "LIFEOS_SESSION_END_HOOK_DIR": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/lifeos/LifeOS/install/hooks"
+  }
+}

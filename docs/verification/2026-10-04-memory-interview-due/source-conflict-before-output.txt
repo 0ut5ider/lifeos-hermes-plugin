@@ -1,0 +1,9 @@
+.                                                                  [100%]
+=================================== FAILURES ===================================
+_ MemoryInterviewDueTests.test_post_render_source_changes_preserve_later_completion_state (mode='source_large', operation='interview_due_mark') _
+tests/test_memory_interview_due.py:150: in test_post_render_source_changes_preserve_later_completion_state
+    self.assertIn('synthetic_later', json.loads(self.state.read_text()))
+E   AssertionError: 'synthetic_later' not found in {'last_interview': '2026-10-04T00:00:00Z', 'marked_by': 'synthetic-interview'}
+=========================== short test summary info ============================
+SUBFAILED(mode='source_large', operation='interview_due_mark') tests/test_memory_interview_due.py::MemoryInterviewDueTests::test_post_render_source_changes_preserve_later_completion_state
+1 failed, 1 passed, 15 deselected, 5 subtests passed in 9.78s

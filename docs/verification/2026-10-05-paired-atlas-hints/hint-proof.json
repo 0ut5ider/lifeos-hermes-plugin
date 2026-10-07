@@ -1,0 +1,168 @@
+[
+  {
+    "case": "atlas-bash-systemd",
+    "side": "native",
+    "session_id": "1904e0d9-0e7d-46b9-a798-4acbaffa6654",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "fe133e3143c657e0d04773d1146df582a9af4cfd66ea60b9da95cf4665c95441",
+      "c6170fa532da94cad41db9fa63d987abc52c02fc8397beb6bc326794c753a867"
+    ],
+    "response_sha256": [
+      "cad0a81a1bd5b1c008bd4756c126b3dbacd81fec413c222c19bcc729954acc85",
+      "f8b79dfd4e7b389e2757dc1afefd822a42a912059db5ff4fc607f8ed7fc7c14f"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_ATLAS systemctl --user daemon-reload'",
+    "hint_sources": [
+      "systemd"
+    ],
+    "prior_event_preserved": true,
+    "tool_output_contains_marker": true,
+    "events_sha256": "b2ff3981a8527a8a229022dea965fd5a0cb25f77979923f8920f4afc77701bf1"
+  },
+  {
+    "case": "atlas-bash-systemd",
+    "side": "hermes",
+    "session_id": "20261005_175648_4bdebb",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "d5dde98d919de207f5d1928b9035792f0e4426895dc786e9b2c6abb989a53291",
+      "e4cd63dbdaf79a7ac8ab536c7ce799068512edffb9e9a9791a2e7073d58517d2"
+    ],
+    "response_sha256": [
+      "8a376e94036defd77c5a31aa94eb5b748a84c4130957e7c08f21d4a5d1bdc209",
+      "1aede787173c9febaefc916266b123022b83dd5c531b6c4ed5ff18f71965e199"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_ATLAS systemctl --user daemon-reload'",
+    "hint_sources": [
+      "systemd"
+    ],
+    "prior_event_preserved": true,
+    "tool_output_contains_marker": true,
+    "events_sha256": "22ab2347dbb4c2a377756cc4d5634324a9d4feb4f193c23beff7062584fa4c38"
+  },
+  {
+    "case": "atlas-bash-plain",
+    "side": "native",
+    "session_id": "a073c6ee-f5e4-47c2-a955-dd16d091f6f9",
+    "user_response_sha256": "67b9d49471b931339ddebbe94e3626646899a0ca1a355fb3a49bc86ad5a5d0b8",
+    "request_sha256": [
+      "7d19e78f636f21d585ac50ab93d58006259408771c5f0f40b3b3a1ea184b7e1b",
+      "5c52aa4ec0f46b27e597ec91111e04a6cd348d0eaf70aab7b8e7c3dc59bd0ee3"
+    ],
+    "response_sha256": [
+      "a3516ebb8c8ad3f77e12d694d230e43b96c897853e4cb9fb23323e343979bb9b",
+      "be76274ea06f9eed5d3b9a0be0aa70f09f731d107bc8968133c8a7e5c1968e5e"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_ATLAS plain command'",
+    "hint_sources": [],
+    "prior_event_preserved": true,
+    "tool_output_contains_marker": true,
+    "events_sha256": "9505abbbc5d29bf5716052980ab82fead5a8ede7210e5bbba7faf6b6a2d96c09"
+  },
+  {
+    "case": "atlas-bash-plain",
+    "side": "hermes",
+    "session_id": "20261005_175705_d1f404",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "2ede362eb476afe0251a1d393be4eea671822f443f2b9524f38b4c28747ff519",
+      "7b3551a387059a14cc704e9eeaf670d7b8c7b166f70f26ba41491531f308ed89"
+    ],
+    "response_sha256": [
+      "c1b5f41e3d507da2c04e9ab9202206efd3a2ce03d63fbcb7b40d290cc00bdeb4",
+      "98ea30e5141c8dffa5d2e67a093b2dcdd4f24312b965515f1275b120a6a81a80"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_ATLAS plain command'",
+    "hint_sources": [],
+    "prior_event_preserved": true,
+    "tool_output_contains_marker": true,
+    "events_sha256": "9505abbbc5d29bf5716052980ab82fead5a8ede7210e5bbba7faf6b6a2d96c09"
+  },
+  {
+    "case": "atlas-bash-multiple",
+    "side": "native",
+    "session_id": "1829abb7-c60a-4643-a0fd-814c47968b17",
+    "user_response_sha256": "d8ca8e8531088cbc9975ad9c08674808f72cb9079b4c41cd5b21cc2a77b1b539",
+    "request_sha256": [
+      "626b21acb93408b10fc151b3a29f04ecdd1aa2618132b6c3cd0eb968e9d18bcf",
+      "d4626cb8fe52cb33d7051a3c0e79ebb787fb6494f7dca07429dbc326b67a2ddf"
+    ],
+    "response_sha256": [
+      "162805a4b6e5c9016bff58ecf62254a98fdd13dad0c71f89fa52ff3eff737933",
+      "6e68b4718319ebeb9bc7be369ff1d57ddd9600914b6e26a66d09fadd857e7a39"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_ATLAS gh repo create fixture; launchctl load fixture'",
+    "hint_sources": [
+      "github",
+      "launchd"
+    ],
+    "prior_event_preserved": true,
+    "tool_output_contains_marker": true,
+    "events_sha256": "9ed564605ef54f409c28b91a09f0daa8aea5c328776cd12513b8fbf77192dc07"
+  },
+  {
+    "case": "atlas-bash-multiple",
+    "side": "hermes",
+    "session_id": "20261005_175722_f9f93d",
+    "user_response_sha256": "c2e3ac47f4a325469c1a2d5f117e463ec943c721986d5d9f09ac4540b7d80526",
+    "request_sha256": [
+      "9433a47d9db30cff474777a8862cd740ecae00cc7ff2d76c105ba072521276f2",
+      "7319a7649657dd053fdda76b152e9b4b236625dc863926f56ce065d3441c18c5"
+    ],
+    "response_sha256": [
+      "78143d96144ae046354bd4455d15a5040ac8b2e5754191c8dd21635deabc5f75",
+      "ee06f6b515c94ef78163222646aa5599d4623713aff5200df588750d8b82dccb"
+    ],
+    "actual_model": [
+      "flashnext-w4a16-fp8ple"
+    ],
+    "upstream_status": [
+      200,
+      200
+    ],
+    "command": "printf 'PAIR_ATLAS gh repo create fixture; launchctl load fixture'",
+    "hint_sources": [
+      "github",
+      "launchd"
+    ],
+    "prior_event_preserved": true,
+    "tool_output_contains_marker": true,
+    "events_sha256": "8992df53e8c7f4539a309e0a4b52a15c59df63dce788447bb8e4bc87940718a6"
+  }
+]

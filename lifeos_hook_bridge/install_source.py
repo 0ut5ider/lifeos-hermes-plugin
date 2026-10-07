@@ -4,12 +4,15 @@
 from __future__ import annotations
 
 import argparse
+from contextlib import nullcontext
 import hashlib
 import importlib
 import json
 import os
 import re
 import runpy
+import signal
+import stat
 import shutil
 import subprocess
 import sys
@@ -33,6 +36,8 @@ HERMES_PATCHES = (
     "hermes-remote-files.patch",
     "hermes-cron-bootstrap.patch",
     "hermes-required-middleware.patch",
+    "hermes-web-result-status.patch",
+    "hermes-protected-instruction-approval.patch",
 )
 LIFEOS_PATCHES = (
     "lifeos-task-governance.patch",
@@ -45,6 +50,19 @@ LIFEOS_PATCHES = (
     "lifeos-model-rung-effort.patch",
     "lifeos-hermes-carrier-probe.patch",
     "lifeos-memory-access.patch",
+    "lifeos-mount-yaml-blocks.patch",
+    "lifeos-config-audit.patch",
+    "lifeos-shell-literal-guard.patch",
+    "lifeos-pulse-hook-switch.patch",
+    "lifeos-evaluation-publication.patch",
+    "lifeos-system-surface.patch",
+    "lifeos-version-drift-state.patch",
+    "lifeos-work-learning-identity.patch",
+    "lifeos-completion-state.patch",
+    "lifeos-render-inference.patch",
+    "lifeos-feedback-admission.patch",
+    "lifeos-reminder-publication.patch",
+    "lifeos-review-admission.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")
@@ -62,6 +80,15 @@ def _git(*args: str, cwd: Path | None = None, timeout: int = 300) -> str:
         detail = getattr(error, "stderr", "") or str(error)
         raise IncompatibleLifeOS(f"Git {args[0]} failed: {detail.strip()}") from error
     return result.stdout.strip()
+
+
+def _remove_shared_write(root: Path) -> None:
+    """Clear group and other write bits, which a shared user umask such as 0002 sets."""
+    for directory, names, files in os.walk(root, followlinks=False):
+        for name in (directory, *(os.path.join(directory, entry) for entry in (*names, *files))):
+            info = os.lstat(name)
+            if not stat.S_ISLNK(info.st_mode) and info.st_mode & 0o022:
+                os.chmod(name, stat.S_IMODE(info.st_mode) & ~0o022)
 
 
 def latest_revision(source: str = UPSTREAM_LIFEOS) -> str:
@@ -146,6 +173,7 @@ def prepare_lifeos(source: str, target: Path, supported_revision: str,
         manifest = {"upstream": source, "upstream_commit": revision, "patches": applied,
                     "tree_sha256": _tree_digest(stage)}
         (stage / "lifeos-source-manifest.json").write_text(json.dumps(manifest, indent=2) + "\n")
+        _remove_shared_write(stage)
         os.replace(stage, target)
         return manifest
     finally:
@@ -231,6 +259,21 @@ def validate_supported_hermes(candidate: Path) -> dict:
                                      Path(__file__).parent / "patches", HERMES_PATCHES)
 
 
+def _install_step(command, *, cwd, environment, timeout=300):
+    process = subprocess.Popen(command, cwd=cwd, env=environment, text=True,
+                               stdout=subprocess.PIPE, stderr=subprocess.PIPE, start_new_session=True)
+    try:
+        output, errors = process.communicate(timeout=timeout)
+    except BaseException:
+        try:
+            os.killpg(process.pid, signal.SIGKILL)
+        except ProcessLookupError:
+            pass
+        process.communicate()
+        raise
+    return subprocess.CompletedProcess(command, process.returncode, output, errors)
+
+
 def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
                    supported_revision: str, patches: Path,
                    patch_names: tuple[str, ...]) -> dict:
@@ -246,7 +289,11 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
     executable = shutil.which(bun)
     if not executable:
         raise IncompatibleLifeOS("Bun is required to install LifeOS")
-    environment = dict(os.environ, PATH=str(Path(executable).parent) + os.pathsep + os.environ.get("PATH", ""))
+    config_dir = installed.parent / '.config/LIFEOS'
+    environment = dict(os.environ, HOME=str(installed.parent), CLAUDE_CONFIG_DIR=str(installed),
+                       LIFEOS_DIR=str(installed / 'LIFEOS'), LIFEOS_CONFIG_DIR=str(config_dir),
+                       PROJECTS_DIR=str(installed.parent / 'Projects'),
+                       PATH=str(Path(executable).parent) + os.pathsep + os.environ.get("PATH", ""))
     skill_root = candidate / "LifeOS"
     template = skill_root / "install/CLAUDE.template.md"
     if not template.is_file():
@@ -254,18 +301,36 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
     for name in INSTALL_STEPS:
         if not (skill_root / "Tools" / f"{name}.ts").is_file():
             raise IncompatibleLifeOS(f"LifeOS candidate lacks {name}.ts")
+    dependency_catalog = Path(__file__).parent / 'dependency_locks'
+    dependencies = None
+    if supported_revision == SUPPORTED_LIFEOS_COMMIT:
+        try:
+            dependencies = memory_module('native_dependencies').validate_release_dependencies(
+                skill_root / 'install', dependency_catalog, supported_revision)
+        except (ValueError, OSError) as error:
+            raise IncompatibleLifeOS(f"LifeOS dependency verification failed: {error}") from error
     installed.parent.mkdir(parents=True, exist_ok=True)
     installed.mkdir(mode=0o700)
     try:
         shutil.copy2(template, installed / "CLAUDE.md")
-        for name in INSTALL_STEPS:
-            result = subprocess.run(
-                [executable, str(skill_root / "Tools" / f"{name}.ts"),
-                 "--config-root", str(installed), "--skill-root", str(skill_root), "--apply"],
-                cwd=installed.parent, env=environment, text=True, capture_output=True, timeout=300,
-            )
-            if result.returncode:
-                raise IncompatibleLifeOS(f"LifeOS {name} exited with code {result.returncode}")
+        if dependencies:
+            memory_module('native_dependencies').seed_release_locks(installed, dependency_catalog)
+        dependency_context = (memory_module('native_dependencies').dependency_environment(
+            installed, executable, dependency_catalog) if dependencies else nullcontext({}))
+        with dependency_context as dependency_paths:
+            environment.update(dependency_paths)
+            for name in INSTALL_STEPS:
+                result = _install_step(
+                    [executable, str(skill_root / "Tools" / f"{name}.ts"),
+                     "--config-root", str(installed), "--config-dir", str(config_dir),
+                     "--skill-root", str(skill_root), "--apply"],
+                    cwd=installed.parent, environment=environment, timeout=300,
+                )
+                if result.returncode:
+                    raise IncompatibleLifeOS(memory_module("native_output").failure_message(f"LifeOS {name}", result))
+        for tree in (installed, config_dir):
+            if tree.is_dir():
+                _remove_shared_write(tree)
         source_version = (skill_root / "install/LIFEOS/VERSION").read_text().strip()
         version = (installed / "LIFEOS/VERSION").read_text().strip()
         settings = json.loads((installed / "settings.json").read_text())
@@ -282,8 +347,13 @@ def install_lifeos(candidate: Path, installed: Path, failed: Path, bun: str,
         if isinstance(error, KeyboardInterrupt):
             raise
         raise IncompatibleLifeOS(f"{error}. Partial files were kept at {failed}") from error
-    return {"installed_version": version, "upstream_commit": manifest["upstream_commit"],
-            "steps": list(INSTALL_STEPS), "restart_required": True}
+    receipt = {"installed_version": version, "upstream_commit": manifest["upstream_commit"],
+               "steps": list(INSTALL_STEPS), "restart_required": True}
+    if dependencies:
+        receipt['dependencies'] = {'bun_version': dependencies['bun_version'],
+            'packages': len(dependencies['packages']),
+            'catalog_sha256': hashlib.sha256((dependency_catalog / 'catalog.json').read_bytes()).hexdigest()}
+    return receipt
 
 
 def install_prepared_lifeos(candidate: Path, installed: Path, failed: Path) -> dict:
@@ -574,6 +644,34 @@ def restore_hermes_patch(snapshot: Path, *, stop: Callable[[], None],
     return manifest
 
 
+def recover_hermes_patch(snapshot: Path, *, stop: Callable[[], None],
+                         start: Callable[[], None], verify: Callable[[], None]) -> dict:
+    """Return Hermes to stock files after a worker died while applying or restoring the patch."""
+    manifest = _read_patch_state(snapshot)
+    state = manifest.get("state")
+    if state not in {"applying", "restoring"}:
+        raise IncompatibleLifeOS("There is no interrupted Hermes patch change to recover")
+    current = Path(manifest["current"])
+    try:
+        stop()
+        _write_patch_files(snapshot / "files", current, manifest["files"], "before")
+        if state == "applying":
+            shutil.copy2(snapshot / "config.yaml", Path(manifest["config"]))
+        start()
+        verify()
+        if _git("status", "--porcelain", "--untracked-files=all", cwd=current):
+            raise IncompatibleLifeOS("Hermes source remained changed after recovery")
+    except BaseException as error:
+        manifest["state"] = "rollback_failed"
+        manifest["error"] = str(error)[:300]
+        _write_patch_state(snapshot, manifest)
+        raise IncompatibleLifeOS(f"Hermes patch recovery failed: {error}") from error
+    manifest["state"] = "rolled_back"
+    manifest["error"] = f"Recovered an interrupted {'apply' if state == 'applying' else 'restore'}"
+    _write_patch_state(snapshot, manifest)
+    return manifest
+
+
 def request_hermes_restore(snapshot: Path) -> None:
     manifest = _read_patch_state(snapshot)
     if manifest.get("state") == "restoring":
@@ -636,12 +734,14 @@ def _run_hermes_patch_job(snapshot: Path, action: str) -> dict:
     service_path = re.search(r"\bpath=([^ ;}]+)", command.stdout)
     if command.returncode or service_path is None or service_path.group(1) != launcher:
         raise IncompatibleLifeOS("The Hermes gateway service does not run the staged source")
-    if _systemctl("is-active", service) != "active":
-        raise IncompatibleLifeOS("A running Hermes gateway service is required")
     prior = subprocess.run(["systemctl", "--user", "show", service, "-p", "MainPID", "--value"],
                            text=True, capture_output=True, timeout=30)
-    if prior.returncode or not prior.stdout.strip().isdigit() or int(prior.stdout.strip()) <= 0:
-        raise IncompatibleLifeOS("A running Hermes gateway service is required")
+    if action != "recover":
+        # Recovery runs after a dead worker, often with the gateway stopped.
+        if _systemctl("is-active", service) != "active":
+            raise IncompatibleLifeOS("A running Hermes gateway service is required")
+        if prior.returncode or not prior.stdout.strip().isdigit() or int(prior.stdout.strip()) <= 0:
+            raise IncompatibleLifeOS("A running Hermes gateway service is required")
     previous_pid = prior.stdout.strip()
     stop = lambda: _systemctl("stop", service)
     start = lambda: _systemctl("start", service)
@@ -651,12 +751,14 @@ def _run_hermes_patch_job(snapshot: Path, action: str) -> dict:
                                   verify_restored=verify)
     if action == "restore":
         return restore_hermes_patch(snapshot, stop=stop, start=start, verify=verify)
+    if action == "recover":
+        return recover_hermes_patch(snapshot, stop=stop, start=start, verify=verify)
     raise IncompatibleLifeOS("Unknown Hermes patch action")
 
 
 def _main() -> int:
     parser = argparse.ArgumentParser(description="Apply a tested Hermes source patch")
-    parser.add_argument("action", choices=("apply", "restore"))
+    parser.add_argument("action", choices=("apply", "restore", "recover"))
     parser.add_argument("snapshot", type=Path)
     args = parser.parse_args()
     try:

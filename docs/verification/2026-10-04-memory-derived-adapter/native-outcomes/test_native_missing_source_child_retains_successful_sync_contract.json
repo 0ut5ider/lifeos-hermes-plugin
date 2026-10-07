@@ -1,0 +1,66 @@
+{
+  "case": "test_native_missing_source_child_retains_successful_sync_contract",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "# Synthetic collection\nA synthetic book.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/PULSE_DATA/synthetic.error.json": {
+        "content": "{\n  \"schemaVersion\": \"1.0.0\",\n  \"pageId\": \"synthetic\",\n  \"occurredAt\": \"2026-10-05T02:51:19.595632+00:00\",\n  \"kind\": \"no-sources\",\n  \"message\": \"no source files\"\n}\n",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/PULSE_DATA/_index.json": {
+        "content": "{\n  \"schemaVersion\": \"1.0.0\",\n  \"generatedAt\": \"2026-10-05T02:51:20.374506+00:00\",\n  \"pages\": [\n    {\n      \"id\": \"synthetic\",\n      \"title\": \"Synthetic fixture\",\n      \"kind\": \"collection\",\n      \"lastBuildAt\": \"\",\n      \"hasError\": true,\n      \"costUSD\": 0,\n      \"provenance\": \"template\"\n    }\n  ]\n}\n",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/STATE/derived-sync.json": {
+        "content": "{\n  \"fileHashes\": {\n    \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q8dgkk_v/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\": \"4da834b535c20c1af35b924ab7d7734294c37e96357eb9bc02c4fd7c7596620f\",\n    \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q8dgkk_v/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\": \"4da834b535c20c1af35b924ab7d7734294c37e96357eb9bc02c4fd7c7596620f\"\n  },\n  \"lastRun\": \"2026-10-05T02:51:20.770Z\"\n}\n",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/OBSERVABILITY/derived-sync.jsonl": {
+        "content": "{\"ts\":\"2026-10-05T02:51:20.770Z\",\"changed\":[\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q8dgkk_v/.claude/LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md\",\"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q8dgkk_v/.claude/LIFEOS/USER/PRINCIPAL/PRINCIPAL_MEMORY.md\"],\"actions\":[{\"cmd\":\"bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q8dgkk_v/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts synthetic\",\"exit\":0,\"ms\":2595}],\"dryRun\":false}\n",
+        "mode": "0o600"
+      },
+      "LIFEOS/MEMORY/OBSERVABILITY/adapter-runs.jsonl": {
+        "content": "{\"manifest\":{\"id\":\"synthetic\",\"title\":\"Synthetic fixture\",\"dataType\":\"CollectionPageSchema\",\"sourceGlobs\":[\"LIFEOS/USER/TELOS/BOOKS.md\"],\"adapterPromptFile\":\"LIFEOS/PULSE/pages/synthetic.adapter.md\",\"model\":\"haiku\",\"rebuildButton\":true,\"order\":1,\"adapterVersion\":\"1.0.0\"},\"status\":\"no-sources\",\"pageId\":\"synthetic\",\"cached\":false,\"costUSD\":0,\"latencyMs\":0,\"sourceCount\":0,\"warnings\":[\"no source files matched globs: LIFEOS/USER/TELOS/BOOKS.md\"],\"errorMessage\":\"no source files\",\"startedAt\":\"2026-10-05T02:51:18.219Z\"}\n",
+        "mode": "0o600"
+      }
+    }
+  },
+  "requests": [],
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-q8dgkk_v/.claude/LIFEOS/TOOLS/DerivedSync.ts"
+      ],
+      "status": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "skips": []
+}

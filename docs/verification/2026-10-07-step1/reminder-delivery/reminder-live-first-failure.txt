@@ -1,0 +1,11 @@
+LifeOS async hook failed to start: [Errno 13] Permission denied: '/root'
+Traceback (most recent call last):
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/installed_reminder_delivery_controls.py", line 205, in <module>
+    run(arguments.native, arguments.installed_settings, arguments.gh, arguments.bun,
+    ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        arguments.repository, arguments.home, arguments.output, sys.stdin.read().strip())
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/var/tmp/lifeos-step1-20261006/delegation-callback-controls/installed_reminder_delivery_controls.py", line 121, in run
+    assert len(matching) == 1, matching
+           ^^^^^^^^^^^^^^^^^^
+AssertionError: []

@@ -1,0 +1,15 @@
+test_only_the_latest_native_clock_reaches_the_next_turn (test_async_native_delivery.AsyncNativeDeliveryTests.test_only_the_latest_native_clock_reaches_the_next_turn) ... FAIL
+
+======================================================================
+FAIL: test_only_the_latest_native_clock_reaches_the_next_turn (test_async_native_delivery.AsyncNativeDeliveryTests.test_only_the_latest_native_clock_reaches_the_next_turn)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_async_native_delivery.py", line 37, in test_only_the_latest_native_clock_reaches_the_next_turn
+    self.assertEqual(result['context'].count('<time-now>'), 1, result)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 3 != 1 : {'context': '<time-now>\n🕐 Current time: Wed 2026-10-07 03:20 UTC (late night)\n(The harness date line is date-only and can be stale mid-session — trust this live value.)\n</time-now>\n\n<time-now>\n🕐 Current time: Wed 2026-10-07 03:20 UTC (late night)\n(The harness date line is date-only and can be stale mid-session — trust this live value.)\n</time-now>\n\n<time-now>\n🕐 Current time: Wed 2026-10-07 03:20 UTC (late night)\n(The harness date line is date-only and can be stale mid-session — trust this live value.)\n</time-now>'}
+
+----------------------------------------------------------------------
+Ran 1 test in 0.195s
+
+FAILED (failures=1)

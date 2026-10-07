@@ -1,0 +1,9 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ KnowledgeGraphTests.test_correction_removes_the_superseded_wikilink_from_the_current_graph _
+tests/test_memory_knowledge_graph.py:110: in test_correction_removes_the_superseded_wikilink_from_the_current_graph
+    self.assertNotIn('Wikilink references', result.stdout)
+E   AssertionError: 'Wikilink references' unexpectedly found in '\n🔗 Related Notes: "synthetic-lab-routing"\n──────────────────────────────────────────────────\n\n  Source: Synthetic lab routing (Research/research)\n  Tags: [untagged]\n\n  Wikilink references:\n    -> Research/synthetic-current-target -- "Synthetic current target"\n\n──────────────────────────────────────────────────\n1 direct connections.\n'
+=========================== short test summary info ============================
+FAILED tests/test_memory_knowledge_graph.py::KnowledgeGraphTests::test_correction_removes_the_superseded_wikilink_from_the_current_graph
+1 failed, 9 deselected in 1.28s

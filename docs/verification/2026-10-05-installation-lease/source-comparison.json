@@ -1,0 +1,21 @@
+{
+  "source_hashes_unchanged": {
+    "lifeos_hook_bridge/installation_lock.py": true,
+    "lifeos_hook_bridge/profile_services.py": true,
+    "lifeos_hook_bridge/profile_backup.py": true,
+    "lifeos_hook_bridge/memory_ownership.py": true,
+    "tests/test_installation_lease.py": true,
+    "tests/test_profile_services.py": true
+  },
+  "fixture_units_remaining": [],
+  "cleanup_command": [
+    "systemctl",
+    "--user",
+    "list-unit-files",
+    "--no-pager",
+    "--no-legend"
+  ],
+  "cleanup_exit": 0,
+  "new_dependencies": [],
+  "upstream_patch_changes": []
+}

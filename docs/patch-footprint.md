@@ -1,6 +1,6 @@
 # Patch footprint and plugin ownership
 
-The bundle uses nine Hermes patch groups and ten LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
+The bundle uses eleven Hermes patch groups and twenty-three LifeOS patches. It targets the exact source revisions in `lifeos_hook_bridge/install_source.py`. A supported update must pass source preparation and behavior checks before installation.
 
 ## Hermes patch groups
 
@@ -14,11 +14,15 @@ The bundle uses nine Hermes patch groups and ten LifeOS patches. It targets the 
 | `hermes-strict-inference.patch` | Selected-provider inference without provider fallback |
 | `hermes-remote-files.patch` | Remote whole-file stale-write protection |
 | `hermes-cron-bootstrap.patch` | Installation-bound scheduled worker startup |
-| `hermes-required-middleware.patch` | Required admission before model requests and rejection of asynchronous required callbacks |
+| `hermes-required-middleware.patch` | Required admission before model requests, exact user text, and rejection of asynchronous required callbacks |
+| `hermes-web-result-status.patch` | External Safety delivery after successful and partial web extraction |
+| `hermes-protected-instruction-approval.patch` | Immediate refusal of unattended protected instruction writes |
+
+The additional native patches bind configuration audit rows to their actual source, detect shell-quoted literal write targets, honor the Pulse hook switch, and publish concurrent evaluation state through separate temporary files. The system-surface patch retains the latest observed criterion detail in the visible system line. The full declared order is in `scripts/prepare_sources.py`.
 
 The groups replace the earlier 20-patch development sequence. Each changed file belongs to one group. Required callback registration belongs to the plugin-event group, and actual turn-route metadata belongs to the turn-gate group. The required-middleware group supplies model-request admission and its tests. It does not remove the required host behavior.
 
-The redundant hook lookup helper is removed. Hermes's stock source launcher remains unchanged. The plugin registers `hermes lifeos-infer` and `hermes lifeos-probe` through the existing command API. These commands register before LifeOS is installed.
+The redundant hook lookup helper is removed. Hermes's stock source launcher remains unchanged. The plugin registers `hermes lifeos-infer`, `hermes lifeos-probe`, and `hermes lifeos-backup` through the existing command API. These commands register before LifeOS is installed. Backup execution requires the selected profile's private memory configuration and an available native store.
 
 ## LifeOS model observations
 

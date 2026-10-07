@@ -1,0 +1,132 @@
+{
+  "before": {
+    "target_content_matches": true
+  },
+  "after": {
+    "target_content_matches": true,
+    "tool_names": [
+      "Edit"
+    ],
+    "file_path_matches": true,
+    "input_content_matches": true,
+    "block_message_emitted": false,
+    "model_received_block": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 2,
+  "model_successful_responses": 3,
+  "session_id": "20261007_002536_82966d",
+  "seconds": 22.8,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-outside-allow",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-outside-allow",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "In the file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-outside-allow/project/guard-target.txt, replace the exact text PAIR_OLD_LINE with PAIR_DENY_TOKEN. Use the file editing tool once. Do not change any other text."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/file-results-corrected/guard-file-edit-outside-allow/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1hZ2VudC1pbnZvY2F0aW9uLTIwMjYxMDA2L2xpZmVvcy9ob29rcy9QcmVUb29sR3VhcmQuaG9vay50cw==",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "24e88ee2922fcd875f70b1b72e8f18e7f1fc23a74c69820beb55c965aa18de12",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "3931cc290f81ad1e1c3981b5e812dcc8073a8988354ed99fb1cca8187809a573",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "3f20f9d29f4d25d7cf9213fae5ebe18b5dd48aa8b9767e33943c32cb0c821bdb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "d1920d1ca693bfcedd093ca312d23bd984a02a8846d479f36292584af0806740",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "b8f8561cc8c504338398f91089089b12913ad9c233d42b74b422fb7ba82193d1",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "299207ca1e5f04be4e648259254c0954b74d531a25eb82dc2d4635ebcfc0a923",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "cb2ea1c04653eb442e6bacf98b18866d4aca52969d5a03671efb09b2bfe09447",
+    "fixture-events.jsonl": "a761b0df3e594936931a3fa32d084bb43508df368a7d145903842b83cda77b94",
+    "cli.log": "a8edd2ddb00cbf94633fe74db76aa6600eaf360d53787bf52aa4f02acd86cd99",
+    "before-state.json": "edf28c5124632b797d18160e4ae380d3aabe3242cea275f5b69c538b2aa530f5",
+    "after-state.json": "b712714694c25620eac30b02797095ca150d95415ec1b417c2bda33adb537647",
+    "fixture-files-before.json": "807dcde5caf3444e03fc4b19c1f2e89fb9f7e5d9d0726f7d46f48c450081f609",
+    "fixture-files-after.json": "c11414df1d52bc7a25e43a4cffcc80cf5b5ca27dae35b6b3d69c4255798dbda6"
+  }
+}

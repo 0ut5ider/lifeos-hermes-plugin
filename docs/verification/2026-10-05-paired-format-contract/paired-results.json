@@ -1,0 +1,339 @@
+{
+  "cases": [
+    {
+      "id": "format-contract-empty",
+      "registrations": [
+        "UserPromptSubmit.6.1"
+      ],
+      "native": {
+        "before": {
+          "state": null,
+          "cache_present": false
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 1,
+            "turn_count": 1,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "state": null,
+          "cache_present": false
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 1,
+            "turn_count": 1,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "format-contract-clean",
+      "registrations": [
+        "UserPromptSubmit.6.1"
+      ],
+      "native": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response was clean (3 lines).",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response was clean (3 lines).",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response was clean (3 lines).",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response was clean (3 lines).",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "format-contract-violations",
+      "registrations": [
+        "UserPromptSubmit.6.1"
+      ],
+      "native": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve', 17 lines (cap 15).",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "format-contract-depth",
+      "registrations": [
+        "UserPromptSubmit.6.1"
+      ],
+      "native": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): depth requested, line cap lifted; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes. Last response broke: no banner, no closer, 3 em-dashes, banned word 'delve'.",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    },
+    {
+      "id": "format-contract-stale",
+      "registrations": [
+        "UserPromptSubmit.6.1"
+      ],
+      "native": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 0,
+        "model_successful_responses": 1
+      },
+      "hermes": {
+        "before": {
+          "state": {
+            "last_fired_turn": 6,
+            "turn_count": 6,
+            "last_text": "PAIR_PRIOR_CONTRACT",
+            "schema_version": 1
+          },
+          "cache_present": true
+        },
+        "after": {
+          "state": {
+            "last_fired_turn": 7,
+            "turn_count": 7,
+            "last_text": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+            "schema_version": 1
+          },
+          "cache_preserved": true,
+          "hook_context": "FORMAT CONTRACT (check before writing, not after): max 15 prose lines; banner first, \ud83d\udde3\ufe0f closer last, max 2 em-dashes.",
+          "model_contract_present": true,
+          "user_response_delivered": true
+        },
+        "hook_exit_codes": [
+          0
+        ],
+        "event": "UserPromptSubmit",
+        "cli_exit_code": 0,
+        "model_generation_requests": 1,
+        "metadata_requests": 2,
+        "model_successful_responses": 1
+      },
+      "errors": []
+    }
+  ]
+}

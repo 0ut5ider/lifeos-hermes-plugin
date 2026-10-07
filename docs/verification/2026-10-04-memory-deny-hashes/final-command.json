@@ -1,0 +1,287 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-W",
+    "error::ResourceWarning",
+    "-m",
+    "pytest",
+    "-q",
+    "--tb=short",
+    "tests/test_memory_deny_hashes.py",
+    "tests/test_memory_deny_hashes_consistency.py",
+    "tests/test_memory_deny_hashes_sources.py",
+    "tests/test_memory_source_review.py",
+    "tests/test_memory_service.py",
+    "tests/test_memory_sources.py",
+    "tests/test_memory_source_registry_alias.py",
+    "tests/test_memory_freshness_writes.py",
+    "tests/test_memory_native.py",
+    "tests/test_memory_hermes_soul_writer.py",
+    "tests/test_prepare_sources.py",
+    "tests/test_footprint_contracts.py"
+  ],
+  "environment": {
+    "HOME": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home",
+    "TMPDIR": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp",
+    "PYTHONPATH": ".:tests:/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/hermes",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-deny-hashes-candidate-distributed/lifeos/LifeOS/install",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/hermes",
+    "LIFEOS_HERMES_REBUILD_SOURCE": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/hermes-rebuild",
+    "LIFEOS_PREPARE_HERMES_REPO": "/home/outsider/Projects/Hermes_agent/upstream/final-gate-baseline",
+    "LIFEOS_PREPARE_LIFEOS_REPO": "/home/outsider/.cache/lifeos-plugin-memory/managed-source",
+    "HERMES_POLICY_SOURCE": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/hermes",
+    "LIFEOS_COMMAND_HERMES_SOURCE": "/home/outsider/.cache/lifeos-hook-evidence-20261003/prepared-final/hermes",
+    "LIFEOS_COMMAND_DEPENDENCIES": "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env",
+    "LIFEOS_VERSION_DRIFT_TAGGED_REPO_PATH": "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/tagged-install",
+    "LIFEOS_TASK_HOOK_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/TaskGovernance.hook.ts",
+    "LIFEOS_CHECKPOINT_HOOK_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/CheckpointPerISC.hook.ts",
+    "LIFEOS_ALGORITHM_NUDGE_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/AlgorithmNudge.hook.ts",
+    "LIFEOS_DRIFT_REMINDER_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/DriftReminder.hook.ts",
+    "LIFEOS_EVENT_LOGGER_HOOK_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/EventLogger.hook.ts",
+    "LIFEOS_HOOK_HEALER_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/HookHealer.hook.ts",
+    "LIFEOS_KITTY_HOOK_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/KittyEnvPersist.hook.ts",
+    "LIFEOS_LOOP_DETECTOR_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/LoopDetector.hook.ts",
+    "LIFEOS_MODEL_RUNG_GUARD_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/ModelRungGuard.hook.ts",
+    "LIFEOS_PROMPT_PROCESSING_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/PromptProcessing.hook.ts",
+    "LIFEOS_REMINDER_ROUTER_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/ReminderRouter.hook.ts",
+    "LIFEOS_SESSION_CLEANUP_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/SessionCleanup.hook.ts",
+    "LIFEOS_WORK_COMPLETION_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/WorkCompletionLearning.hook.ts",
+    "LIFEOS_VERSION_DRIFT_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/VersionDrift.hook.ts",
+    "LIFEOS_VOICE_HOOK_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/VoiceCompletion.hook.ts",
+    "LIFEOS_PERMISSION_HOOK": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks/Safety.hook.ts",
+    "LIFEOS_FAILURE_CAPTURE_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/FailureCapture.ts",
+    "LIFEOS_WATCHDOG_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/AgentWatchdog.ts",
+    "LIFEOS_FRESHNESS_CACHE_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-freshness-migration-candidate-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/FreshnessCache.ts",
+    "LIFEOS_MERGE_SETTINGS_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/MergeSettings.ts",
+    "LIFEOS_SETTINGS_BACKPORT_PATH": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/SettingsBackport.ts",
+    "LIFEOS_SESSION_END_HOOK_DIR": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install/hooks",
+    "LIFEOS_PROMPT_MODEL_ENV_PATH": "/home/outsider/.cache/lifeos-hook-evidence-20261003/model.env",
+    "LIFEOS_CHILD_LAUNCHER_DIR": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/bin",
+    "LIFEOS_COMPRESSION_EVIDENCE_DIR": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/interrupted-regression",
+    "LIFEOS_MEMORY_GRAPH_EVIDENCE_DIR": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/freshness-write-gate-graph-outcomes",
+    "LIFEOS_FRESHNESS_CONTROL_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install"
+  },
+  "sources": {},
+  "native_graph_sha256": "adb09bf50309e45e199a79c21061825120c730a5a633d656dd24f64e001faf65",
+  "native_freshness_sha256": "b476981f84178c3ca34b60b00e022549e80f5bfe1d545a96844db7356b8bd503",
+  "native_telos_module_sha256": "667f30883f1639ab1a3dc13796e407ff78bb3104d137056c4fccebefaa26ff9e",
+  "dependencies": "Copies of unchanged frozen dependencies from memory-freshness-http-distributed.",
+  "source_manifest": {
+    "hermes": {
+      "base": "758ad514eb0e800547e015edf05aa18f78b78d82",
+      "patches": [
+        {
+          "name": "hermes-plugin-events.patch",
+          "sha256": "c0a94b49f5e26b4fa45c809eafc1212e27c5c018501535159e1ce46d82f79ee2"
+        },
+        {
+          "name": "hermes-turn-gates.patch",
+          "sha256": "e56f46bd0c9c2aa8cf18edd7b3a02f8ac5da8733aa4e0a96ca118a42e7b6e976"
+        },
+        {
+          "name": "hermes-command-policy.patch",
+          "sha256": "5396cc7dc07bbce54effcbd0cff48b3fecbfcbff2dc01f8347ff02b04e16585d"
+        },
+        {
+          "name": "hermes-session-lifecycle.patch",
+          "sha256": "d1fd475a0abfacb432165b901bed62bfcd7966ef8de8f2eed9f243791420cc9d"
+        },
+        {
+          "name": "hermes-child-routing.patch",
+          "sha256": "7787bc952ad801d80a1e8754724f4b457302add1bf306596f976363189634145"
+        },
+        {
+          "name": "hermes-strict-inference.patch",
+          "sha256": "4c5fd34a9fe45c5f793112e56449ea0d8e5c7bc17ade5f233afb87fb1000f91c"
+        },
+        {
+          "name": "hermes-remote-files.patch",
+          "sha256": "7bc7dc49bd44db0a9186fb3a13413ea183b2da4edeb8bdda83b5c3c58553df85"
+        },
+        {
+          "name": "hermes-cron-bootstrap.patch",
+          "sha256": "7fe031ff7101a91e2aeeee768d34e33a51a202f6eb3f9b04dcb6bedf2132a445"
+        },
+        {
+          "name": "hermes-required-middleware.patch",
+          "sha256": "322a6542a3a2d306031296c5ef87655cea2d879b0796521ce2f41317d4085313"
+        }
+      ]
+    },
+    "lifeos": {
+      "base": "5e2f2e8c0abde612da0e99c16c0d07d4ec21b88c",
+      "patches": [
+        {
+          "name": "lifeos-task-governance.patch",
+          "sha256": "2c8a37be323604824d22b3a0095332df254f68ac5b8ee016cfb34a7abd64f798"
+        },
+        {
+          "name": "lifeos-agent-watchdog.patch",
+          "sha256": "45857b723cf01d91a1a14cce2a0b25a552b4a15ec644621cd8a291cb7f289808"
+        },
+        {
+          "name": "lifeos-terminal-audit.patch",
+          "sha256": "a3400a519b682ecdd3f68c1f9a03ab55591f6ea14c9faee6d70040bade5f5886"
+        },
+        {
+          "name": "lifeos-checkpoint-verification.patch",
+          "sha256": "a117a3f96972763363b525e184a093f968414f07e1a6f2d4f041a0b92893837f"
+        },
+        {
+          "name": "lifeos-failure-capture.patch",
+          "sha256": "03a2127a888576c739a5b4f94372b8e87be760ad3199d7ce0665a2a02b75476e"
+        },
+        {
+          "name": "lifeos-remote-desktop-gate.patch",
+          "sha256": "b20fcbbbf494f310d0eb310363677206db31b80388bbc154564f08e423449038"
+        },
+        {
+          "name": "lifeos-remote-isa-view.patch",
+          "sha256": "e2d03bf8d82764291ab217dbd37bb0850aab1fe0d1a97d41598a09ccf2f0f84b"
+        },
+        {
+          "name": "lifeos-model-rung-effort.patch",
+          "sha256": "5fe5987146d76f667cc878beb6be704ef25e5601ac80c81b6f9fe5d67ed72dc9"
+        },
+        {
+          "name": "lifeos-hermes-carrier-probe.patch",
+          "sha256": "12168cb54f0478eb1d0aac7be3ea191fcf144bcc5a5ab963f19bddcc6379c1ae"
+        },
+        {
+          "name": "lifeos-memory-access.patch",
+          "sha256": "c9c5194b64f9b57749b3fd3aff09d0929803ac973a2ed2e5ab7bc4b3d0fa5962"
+        }
+      ]
+    }
+  },
+  "native_state_evidence_sha256": "4654556eeeedf05c368b369de273e217b527df9a0cf4a72a8f6053b1e7b0e0fd",
+  "source_sha256": {
+    "lifeos_hook_bridge/memory_policy.py": "7d73b82e876580991a765d8a8aa760e3d74ab869463b2e4167d7becdae38161b",
+    "lifeos_hook_bridge/memory_native.ts": "836dddb790b9278a67c1eecdf31bc751159b701e7f78cad935a020ec96e01a24",
+    "lifeos_hook_bridge/memory_access.py": "14399ccd076cf4487926eb10788808f49df0b32c1f47e2dad4b0b267edebddf9",
+    "lifeos_hook_bridge/memory_transaction.py": "c9d6d41c8234708fa441085eea58f476aaf6bc8c92919b959c559fd81b7aa882",
+    "lifeos_hook_bridge/memory_service.py": "12c5c387089f8eb3817a0444252d11a98fb73f299238830bec17c11c0758cc4e",
+    "lifeos_hook_bridge/memory_mcp.py": "53ce3967dcc45f8d4bee9d9ea480cda19c14b91940c289a846328250762a4901",
+    "lifeos_hook_bridge/memory_rpc.py": "9b32d66cfb8265e2e5dfd55d1c3c203ec7348b2cf4c3e61e8e17dc1f0feee9c6",
+    "lifeos_hook_bridge/memory_context.py": "a8ebc7293d1647e977c6348a537da6975c4517c6affdea28d1cc7c4baafcd9f4",
+    "lifeos_hook_bridge/memory_runtime.py": "05f0f008463c0ede41ae4f21fdb1c4a36ced372cbb1ddd8067b160a38a848bb0",
+    "lifeos_hook_bridge/memory_provider.py": "a378bad0ac6e7cfd7a2a3134767ddfaf23bb4144ed1a015893187beeeed4461b",
+    "lifeos_hook_bridge/memory_sharing.py": "a8d84bcb30f0f066e15f9e3f6497676338102489517f7a58cfdd6de2945f6eb0",
+    "lifeos_hook_bridge/memory_preferences.py": "36761c1c41b531664d9ffabbf6786db6cf889c5f7008b724870b032152e5c091",
+    "lifeos_hook_bridge/memory_proposals.py": "ee86c510a3309ae16127d34c865a9024792c6391730d1671916d7d09c773ae78",
+    "lifeos_hook_bridge/memory_publication.ts": "bb0ffc9a027754f9701764ef707c18adad86d32034b3e6a1364705da90bc3c8f",
+    "lifeos_hook_bridge/memory_adoption.py": "d5b095b404142babb813a5667e63f5938a9c5d76ab1b5c3d2c0727f35ac74b62",
+    "lifeos_hook_bridge/memory_sources.py": "44d89e5cc10b2840e1cd0b206d2e5edebc581d36f88e3c72d3e4148e9680283b",
+    "lifeos_hook_bridge/memory_history.py": "3b066d8d72a5c1a21aca45a4326d8c8a944258fd35cf7b98401527d9fe310495",
+    "lifeos_hook_bridge/memory_diagnostics.py": "249b2b2a585a41cfdc2b9b7826a249d3181f250547dd74b56114467e01633844",
+    "lifeos_hook_bridge/memory_pulse.py": "634953117fd3b30acd27fb3b486b34101408c38d48cc9dbb797a0902c457c7ae",
+    "lifeos_hook_bridge/memory_http.py": "eccc51ce919a086d5f3d165ba93b72b328363034c8b06c0ddee2919bced8f5f5",
+    "lifeos_hook_bridge/memory_canonical.py": "25e0c2baac599391dfac6eaac27f1a7fad971e805c69240181e667d1055fbbb9",
+    "lifeos_hook_bridge/memory_restore.py": "4fc61a824765381650902949e790247fccae099189ab58d00e1743f9730ea950",
+    "lifeos_hook_bridge/memory_staging.py": "36d85d8490f6936eedc41751a6fa7d79b2a52f6b7ca2f1509e68cd8d8208ab48",
+    "lifeos_hook_bridge/memory_wiki.py": "80ede1e1571718a10b9b3b5d465ff7a723ac59e501b34591d0cc5f0f1df2390e",
+    "lifeos_hook_bridge/memory_knowledge.py": "26b4e04eb5f466ffee5cc66a7d011da19a422c08d209c919eab68969780b1875",
+    "lifeos_hook_bridge/memory_prompt.py": "e3ce0be975d5d7c84131593b03bc0f22a1c33e62fb9998f7a286550f18169673",
+    "lifeos_hook_bridge/memory_source_review.py": "44964ddec9d3639122637562c7c92706d21db6cf7c59e8e1c861c406ee657c2e",
+    "lifeos_hook_bridge/memory_administration.py": "0f3166ac9e67d970348b1c12c9f36666c33958c6ef08e108e77a879f638a3466",
+    "lifeos_hook_bridge/memory_backup.py": "a9e99e899c4759865bf639575f5b01aba3b22022b313adff9d8d8efeda880125",
+    "lifeos_hook_bridge/memory_lineage.py": "0685c679ef7da7ae3ae4f805e8e1eac681fe1ecaebf50e4e61189dcc2554b0fd",
+    "lifeos_hook_bridge/memory_backup_recovery.py": "96a5bf3ff306b0ce2d9523878810a7daf7676b83ce6ea6b58f5f502707e97b36",
+    "lifeos_hook_bridge/memory_graph.py": "5bdf81fc31e33931f5336a8b07faaa329bb34dea3dace92a3e4a61a771530717",
+    "lifeos_hook_bridge/memory_state.py": "c9def094dadff763b0599bf0bb1c02198076f7e65ade4cf92b3d82ebedb2ffc2",
+    "lifeos_hook_bridge/memory_telos.py": "ed7eeb604bb58ff9ad191df9d5568b2d517ed74d4aa38a77c2960ceef8d3f59e",
+    "lifeos_hook_bridge/memory_freshness.py": "ed9066582707a89a37ef32f02133dc6154aa3cb0c6a51dce1e3cb04c2de89d6a",
+    "lifeos_hook_bridge/memory_freshness_cache.py": "ba0c893790402ebc3ed61bc9e3bd0b7184db10f90140de4608b3804505dcc0ca",
+    "lifeos_hook_bridge/memory_freshness_migration.py": "5bfde8448e713e204f77d25f11af24834aa95453ea94982b0df221736b8ae1f7",
+    "lifeos_hook_bridge/memory_evidence.py": "ba9b3ea831d937b716ffe6b0dead48a71313c12a8f0ee62d7779ba0d250a21f2",
+    "lifeos_hook_bridge/memory_interview.py": "bf9798762adc218e0cc1f706abffed4762c8ab4eeccbb8f8763a41725ba4f983",
+    "lifeos_hook_bridge/memory_interview_scan.py": "2a1b3793ffc10bc7261d4f7a76d8aec0cfe143cef78eb62670bc203732a89add",
+    "lifeos_hook_bridge/memory_hermes_soul.py": "ab8f47ec8115d08940f40cfb7ac76c065bf2e98c5b8e3e2e57d11c1f2b966dde",
+    "lifeos_hook_bridge/memory_deny_hashes.py": "1515739e343eb3e9fc3b8bbfba5519c71743ab62f1519057c1444cfcf86ee47b",
+    "tests/test_memory_policy.py": "6abe724b38249fb29e0e7b3def5727d3f659ecd648a47b49dda38d3801152228",
+    "tests/test_memory_native.py": "3a518fa8f05c488e1a2789a75104ef52435fbd2b79bf68277a3f3253dfeca43f",
+    "tests/test_memory_service.py": "6c2b8e2b0331a9d8e447f394bd35b1eac8cdb998a50fb85ce192876a6bf9aaf0",
+    "tests/test_memory_mcp.py": "7147fe9819b708bb13d93d6b149e0c38bf481cbb5bd75d72fb81345c8df241cd",
+    "tests/test_memory_curation.py": "a3fd4b7ff170ba2a3358396b79da0cc24e1e2efcd6948ab0f22e49373f9391f9",
+    "tests/test_memory_delegation.py": "ffddefb8d77404ff63696fc9b9f9504cebc55dc442bcc116daf049c7818af0e8",
+    "tests/test_memory_archive.py": "67ad4b8afafd9cf85fc13b2b286a4257c539eabbc6c87ec5d5ec2b0b1133e4e7",
+    "tests/test_memory_context.py": "119307c0ba7738b25ecbf6d57df68dd2afa129b399d3c42da46448cb4f55e2e1",
+    "tests/test_memory_runtime.py": "df5ac04ae2153e00d5a38df988b8c1babb5f1c2a6a8a684f6ca3d487360ccaf0",
+    "tests/test_memory_sharing.py": "7ea31a0bcf6baf4cba9860f9b4fccb5da88543b5f983782e286dc3c5c7d9066e",
+    "tests/test_memory_ssh.py": "63818e5175c6bf1ce8785fb1c560efd70420c774446117e8beac5a3c01cad017",
+    "tests/test_memory_children.py": "e0056624790f3752fe5e11da6b3dbe1933f3e75b30b6d73a5a81e3f11232358a",
+    "tests/test_memory_preferences.py": "d21b742a9924934628e630592d427ae8419a8c345a5cdc2a5bc62c4475192d8c",
+    "tests/test_memory_dashboard.py": "b99ef952621252581bf74232bda95ebcd2ce06c8db90868e1f06d57b8bb92e73",
+    "tests/test_memory_proposals.py": "44bd49febc9f2c60d12ad7c2423d49d17d963c7b889e4711697340498697bb3b",
+    "tests/test_memory_proposal_delegation.py": "5c8edfb30e906f3d6f7338773b21fd06678214d266eea6699ae9b2752d89cf9c",
+    "tests/test_memory_adoption.py": "f1be1589b54187de9b34c03674b65299764a80a32cf260d3e033b5f173276221",
+    "tests/test_memory_sources.py": "217151b52dad95ffbcfd3226b7f48505e154acf8d7d45ab5d8ba5835d48e96e8",
+    "tests/test_memory_model_calls.py": "2481fe89a64e0e37b407bbe72a2b4178a773451a1e68b18d85b982bafdd8edea",
+    "tests/test_memory_host.py": "9065eaba05dba8ef5c91a077250c7870da2eaedbb4abc2db978ce36e95907c73",
+    "tests/test_memory_agent.py": "f1824cc847824a4189bd0c842c7192179a212d1af8ce8c5c1d182c40373386be",
+    "tests/test_memory_history.py": "09b23c0c3181ce9d340649646942b1705bf4d02766d959a5505db74698e5ff28",
+    "tests/test_memory_review.py": "32e2022274f105c1fe449d2d7e3bcda1b00e6e0599dbbe0fddbae2240f9ae443",
+    "tests/test_memory_delta.py": "8e0d2663bab5460e9036d727545b3d41d2f0308d597ccae6e319cd3038459a7e",
+    "tests/test_memory_diagnostics.py": "fb4d4286cad40f85bcfe1b83cadc52bf13b7dd9fc0a1239d4ec61990d496cacf",
+    "tests/test_memory_cortex_health.py": "4ac3bfc5fc3617cc16f558ad9480f679960ed4d24c6b3531407edca9c4e4013d",
+    "tests/test_memory_pulse.py": "fff2e2ffea551b9c171f30aad660d02f2392c5a9c039fde4dece5ac32a8218b5",
+    "tests/test_memory_pulse_auth.py": "af848781f57df72070e573dc4942151152c83e045bc266d940ba7767c01df1c7",
+    "tests/test_memory_authorization.py": "f5531c0760922ecc5f6650a29737026af834da6a9a41f739259c009d6b6cb014",
+    "tests/test_memory_pulse_relay.py": "58431db171d24e12d97b571a4b8b25bf63cf5cf1609e55a3d1aa355890585fb4",
+    "tests/test_memory_http.py": "655bf209037602ff435c9f11738ed44c10e24a32f7f110806b2eecddfec52247",
+    "tests/test_memory_canonical.py": "7ffbe81eba3efaee2371e78d111b11613125814b1923de373e8f5faef7965b2a",
+    "tests/test_memory_knowledge_query.py": "43aac471f796065e8359d0856c1e9cc66235ff410029d0a22606ce2cf27b64dd",
+    "tests/test_memory_restore.py": "bd90c6e3c5ae1e23f73d6223ae8be3c20bc85c25600f23cb2df0cb0edfda4508",
+    "tests/test_memory_staging.py": "a6dc3f137a876cd0c836e4a2716044bc1bb342698d186f282bbafe4f416af472",
+    "tests/test_memory_context_builder.py": "8f2dc9ab7b652f2c4e60907dca385a783ac63ca16d5d62682e42f0033d01e166",
+    "tests/test_memory_wiki_render.py": "13f6c0f962c33b613f14a0394d5a1589fb31520dc89e7c39d8975f8033f3b06b",
+    "tests/test_memory_wiki_relay.py": "51a8fc4395c70c87760e9593b0d4802d520601482415b481a5c484ddc8bcdeb0",
+    "tests/test_memory_wiki_corpus.py": "84cdda2f04f1ee0bcc54e294c1aaaf4f9f1ea8404889b1ac7c6746d068b17b28",
+    "tests/test_memory_knowledge_relay.py": "a348a94ef16b5c5604149a2dbba04d6d825b1742cc91c8e849e770d5ca9f4ff9",
+    "tests/test_memory_knowledge_render.py": "8ad122ac70d0cf19a64100197a4b61989bb131c3bb131b5b498547cab9891a6b",
+    "tests/test_memory_prompt.py": "f6f7cc94d1abf3035977a18e5db97a06fe7f24a4f8208d0fc8b9361aaa5d6302",
+    "tests/test_memory_source_review.py": "5344b89d62c0abeece26961251844f3acce38e9b8eb75a7471a26a42f160a3cd",
+    "tests/test_memory_administration.py": "c8a9e1ba51d8d7726851ee3bd12798137511aeca1e92662ab050704eca4f6f84",
+    "tests/test_memory_admin_install.py": "fcfb20698d5e390a9bd9c68385c0320f8b862543d16005eb1a3c48646523f724",
+    "tests/test_memory_admin_dashboard.py": "7335760be3cf46bddec4af64b279e8a7f583fb4d45b82d190d426c2c9824d770",
+    "tests/test_memory_remount_relay.py": "aa647b46bb79ba6ddc03e47f2a28eba6487394cc9ecc8b15d40ff62c687db732",
+    "tests/test_memory_source_labels.py": "39a81afa33abae879b2492981cce44bb48cebb57ff5244d26f6f4ff2648a2646",
+    "tests/test_memory_resume.py": "ec313940a9a0c5fca99a0867d4159541d2ba8e54fd17be9e312740c680fbeaca",
+    "tests/test_memory_backup.py": "919293d19a447688fcd91a142d6d99ba5a188dce07384a5a500534b6753da812",
+    "tests/test_memory_backup_command.py": "0520ec98977da1e599251bf5ab88ed8ab24c3320e0e95e0ad36c8cf45f7d8f5a",
+    "tests/test_memory_compression.py": "10e5697f0806de420402e25336f6adb9652c6595f20737ca2f490d2fa304dbfe",
+    "tests/test_memory_rotation.py": "db08179f2e272b16270485df8d603caae274ef370dd4f645bd731644ef5fb11d",
+    "tests/test_memory_lineage_recovery.py": "085b07d3f9885044f1820d0b1211ad5ddce3cd6fa5a08168650c909bba5b0dfe",
+    "tests/test_memory_backup_recovery.py": "1245a2caeac8c95f1ba8156d39bc4d3bcaa6f507f2929b5fed86f436e96c09c8",
+    "tests/test_memory_knowledge_graph.py": "81a3fea61c2faf1eb6cd8529a0a5eb0fd5fedf4a97082549f0087a14e895b10e",
+    "tests/test_memory_graph.py": "eabefe6ac16e1cb535dc5164163515ad6de0ea20ececb18000082b97ef8331fa",
+    "tests/test_memory_graph_boundaries.py": "468275c7c2428cddcedad233b08b1756dbadd5ffdf29d9a6411552458fc60407",
+    "tests/test_memory_graph_relay.py": "274a7e8236aeb9528c14b1c8151d865a1ddc0fddd0e224a79eca03cff8ce3b0e",
+    "tests/test_memory_graph_view_consistency.py": "d532a9737f066cbd92979bc9dfb0a7da5c9eebf689c534284e280d40def070ad",
+    "tests/test_memory_state.py": "ff1799eb062f48600faec4bf09db18b663ab713bcaa8c0ba56dd384614aa1635",
+    "tests/test_memory_telos.py": "9c040cb9f0eae5e89f2d0142c005911a8ef5ff155c164d1dabb27d2b10a4a7db",
+    "tests/test_memory_source_registry_alias.py": "048f5f9ac3b1e0b4ec3919fe69cdb068c10235ca94b7a68593856392f7d71694",
+    "tests/test_memory_freshness.py": "7468287b3baa3d7d7ea6d3e7d293cedd395bf3569d3f5f3a8e3b0c742a410714",
+    "tests/test_memory_freshness_relay.py": "9a4bbdefca31e665a84f2e85aa76e95692af974bf95f8ed9000d1d927cc8b60f",
+    "tests/test_memory_freshness_consistency.py": "191221baa119d728fd406b7086459e6ad108c296cea6c47e50e80d0eb21b0c05",
+    "tests/test_memory_freshness_writes.py": "46d3e01ffadb1b30fc788211b48e6bc5c4e1bbc4f9b5c21c22f5d2f85d52361c",
+    "tests/test_memory_freshness_cache.py": "9f056af157375e1a91b2f327d7090916bf873df39c05b40440057a2e30986a3f",
+    "tests/test_memory_freshness_migration.py": "b1ee172a998e383455c76f8b1b80de144a28b4304182164f60473f9dd66b9d56",
+    "tests/test_memory_state_evidence.py": "927f8498289409fd359ce197200c91d494e01e232e71741ce7209d0cb8b00b54",
+    "tests/test_memory_interview_due.py": "a60eb0d8e03da13b0d6850535e4a4162e89f613fbaeda0afeec77fd8c9ecec37",
+    "tests/test_memory_interview_scan.py": "08aa05b72e743c04ddfc793c1516089db312a3dde51261a67638466e78cb0251",
+    "tests/test_memory_interview_scan_review.py": "2bf980b65d9c443a5962f9736f4857d2612a8c78db4e19f65463d9a30ad7ab43",
+    "tests/test_memory_interview_scan_consistency.py": "0a62548670de55ea75b2cf9edf0d0cf7bd89ee05517db85ac03cd48a4e01d8ed",
+    "tests/test_memory_hermes_soul_writer.py": "b462d594b7130cf2479b7c953df0888e9cb0b9cb69059c8e7a761c2ecc0669f8",
+    "tests/test_memory_deny_hashes.py": "9bf065423a1337ee15e8170331eb82ea7f3933c9e44b452e0c3366ab2280ba98",
+    "tests/test_memory_hermes_soul_retirement.py": "adaf19664e422c78f211b9520a67a9c56421c3c82fb6922f3777623b257c0767",
+    "tests/test_memory_hermes_soul_backup.py": "810d0c07aad792f628b240473d93bf1d826e6caf91b36a67277ac481b864babc",
+    "tests/test_memory_hermes_soul_names.py": "45b270665e01722e49fdbcfe74c54e8deabf3725f4778b568e5bc363662b2252",
+    "tests/test_memory_deny_hashes_consistency.py": "13ca76728227570be1da2146fe247caa3dfaaedc10ab6b6d50cee3e29fd66b0d",
+    "tests/test_memory_deny_hashes_sources.py": "06ce7c9e28a9addeaa176714b1f617ec0058f66bb0acb1baaa8cce7594cb436e",
+    "tests/memory_deny_hashes_process.py": "163ce220f412f11948b07b4b5478f7995b953dc26361bc809c6d90a5dd026805",
+    "patches/lifeos-memory-access.patch": "c9c5194b64f9b57749b3fd3aff09d0929803ac973a2ed2e5ab7bc4b3d0fa5962"
+  }
+}

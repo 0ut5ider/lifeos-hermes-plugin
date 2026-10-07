@@ -22,6 +22,8 @@ SKIP_PARTS = frozenset({
     "dist", "build", ".next", ".bun", "coverage",
 })
 RUNTIME_PATHS = ("LIFEOS/PULSE/state/",)
+# Native hooks regenerate these files during normal use, so their bytes are not reviewed source.
+GENERATED_FILES = frozenset({"LIFEOS/DOCUMENTATION/ARCHITECTURE_SUMMARY.md"})
 PLUGIN_SOURCE_FILES = ("LIFEOS/TOOLS/lib/MemoryAccess.ts", "hooks/lifeos-bridge-capabilities.json")
 NEW_FILE_SUFFIXES = frozenset({
     ".ts", ".tsx", ".js", ".mjs", ".cjs", ".py", ".sh", ".md",
@@ -31,8 +33,8 @@ VERSION = re.compile(r"[0-9]+\.[0-9]+\.[0-9]+\Z")
 HASH = re.compile(r"[0-9a-f]{64}\Z")
 
 
-def default_baseline_path() -> Path:
-    return Path.home() / ".local" / "state" / "lifeos-hook-bridge" / "version-drift-baseline.json"
+def default_baseline_path(home: Path | None = None) -> Path:
+    return (Path.home() if home is None else Path(home)) / ".local/state/lifeos-hook-bridge/version-drift-baseline.json"
 
 
 def adapter_error_path(baseline_path: Path) -> Path:
@@ -64,7 +66,7 @@ def _eligible(path: str) -> bool:
 
 
 def _installed_file(root: Path, name: str) -> Path | None:
-    if not _eligible(name) or name.startswith(RUNTIME_PATHS):
+    if not _eligible(name) or name.startswith(RUNTIME_PATHS) or name in GENERATED_FILES:
         return None
     path = root / name
     if not path.is_file() or path.is_symlink() or not path.resolve().is_relative_to(root.resolve()):
@@ -206,7 +208,7 @@ def changed_paths(baseline: dict[str, Any], installed: Path) -> list[str]:
     files = baseline["files"]
     changed = set()
     for name, previous in files.items():
-        if name.startswith(RUNTIME_PATHS):
+        if name.startswith(RUNTIME_PATHS) or name in GENERATED_FILES:
             continue
         path = _installed_file(installed, name)
         if path is None or _digest(path) != previous:

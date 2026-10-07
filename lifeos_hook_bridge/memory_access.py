@@ -57,12 +57,15 @@ class MemoryConflict(MemoryUnavailable):
 class NativeMemory:
     def __init__(self, installed_root: Path, *, bun: str | None = None):
         self.root = Path(installed_root).absolute()
+        self.physical_root = self.root.resolve()
         self.bun = bun or shutil.which("bun") or "bun"
         self.database = self.root / "LIFEOS/MEMORY/STATE/memory-access.sqlite"
         self.worker = Path(__file__).with_name("memory_native.ts")
-        self.transaction = MemoryTransaction(self.database.parent, self._path)
+        self.transaction = MemoryTransaction(self.database.parent, self._publication_path)
 
     def _boundary(self) -> None:
+        if self.root.resolve() != self.physical_root:
+            raise MemoryUnavailable("The installed root alias changed during the memory operation")
         user = self.root.parent / ".config/LIFEOS/USER"
         if not user.is_dir():
             raise MemoryUnavailable("The native USER_DATA boundary is missing")
@@ -165,6 +168,23 @@ class NativeMemory:
         user = (self.root.parent / ".config/LIFEOS/USER").resolve()
         if not path.resolve().is_relative_to(user):
             raise MemoryUnavailable("Native memory reference leaves the user boundary")
+        if path.exists() and self.database.exists() and path.samefile(self.database):
+            raise MemoryUnavailable("Native memory content cannot alias its SQLite registry")
+        return path
+
+    def _publication_path(self, name: str) -> Path:
+        if name.startswith(("LIFEOS/USER/", "LIFEOS/MEMORY/")):
+            return self._path(name)
+        from .memory_freshness import SYSTEM_PUBLICATIONS
+        from .memory_freshness_migration import is_system_backup
+        from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
+        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS and not is_system_backup(name):
+            raise MemoryUnavailable("This is not a journaled native system publication")
+        path = self.root / name
+        if (path.resolve() != self.physical_root / name or path.is_symlink()
+                or path.exists() and (not path.is_file() or path.stat().st_uid != os.getuid()
+                                      or self.database.exists() and path.samefile(self.database))):
+            raise MemoryUnavailable("The system publication changes its permitted owner path")
         return path
 
     @staticmethod
@@ -293,10 +313,11 @@ class NativeMemory:
         return {"id": identifier, "revision": 1}
 
     def _operation(self, scope: MemoryScope, request_id: str, payload: dict[str, Any],
-                   callback: Callable[[sqlite3.Connection], dict[str, Any]]) -> dict[str, Any]:
+                   callback: Callable[[sqlite3.Connection], dict[str, Any]], *,
+                   identity_payload: dict[str, Any] | None = None, publication_digests=None) -> dict[str, Any]:
         if not isinstance(request_id, str) or not request_id or len(request_id) > 256:
             return {"status": "rejected", "reason": "A bounded request identifier is required"}
-        payload_digest = _digest(json.dumps(payload, sort_keys=True))
+        payload_digest = _digest(json.dumps(payload if identity_payload is None else identity_payload, sort_keys=True))
         reserved = False
         try:
             with self._transaction() as connection:
@@ -309,7 +330,7 @@ class NativeMemory:
                 unknown = {"status": "unknown", "reason": "The operation outcome needs recovery before retry",
                            "writer": scope.writer, "request_id": request_id}
                 paths = self._publication_paths(connection, scope, payload)
-                self.transaction.prepare(scope.writer, request_id, paths)
+                self.transaction.prepare(scope.writer, request_id, paths, expected=publication_digests)
                 connection.execute("INSERT INTO operations VALUES (?,?,?,?)",
                                    (scope.writer, request_id, payload_digest, json.dumps(unknown)))
                 connection.commit()
@@ -333,6 +354,63 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'context_audit':
+            from .memory_context_audit import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'seed_pulse':
+            from .memory_seed import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'learning_hypotheses':
+            from .memory_hypotheses import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'recurrence_append':
+            from .memory_recurrence import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'learning_ratings':
+            from .memory_learning import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] in {'wisdom_frame_update', 'wisdom_synthesis'}:
+            from .memory_wisdom import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'distill_synthesis':
+            from .memory_distill import synthesis_paths
+            return synthesis_paths(self, scope, payload['date'])
+        if payload['operation'] == 'distill_mark':
+            from .memory_distill import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'pulse_data':
+            from .memory_pulse_adapters import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'derived_sync':
+            from .memory_derived_sync import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'deny_hashes':
+            from .memory_deny_hashes import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] in {'interview_due_cache_write', 'interview_due_mark'}:
+            from .memory_interview import publication_paths
+            return publication_paths(self, scope, payload)
+        if payload['operation'] == 'state_evidence_cache':
+            from .memory_evidence import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'freshness_migration':
+            from .memory_freshness_migration import publication_paths
+            return publication_paths(self, connection, scope, payload)
+        if payload['operation'] == 'freshness_cache':
+            from .memory_freshness_cache import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'freshness_write':
+            from .memory_freshness import publication_paths
+            return publication_paths(self, connection, scope, payload)
+        if payload['operation'] == 'telos_summary':
+            from .memory_telos import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'lifeos_state':
+            from .memory_state import publication_paths
+            return publication_paths(self, scope)
+        if payload['operation'] == 'memory_graph':
+            from .memory_graph import publication_paths
+            return publication_paths(self, scope)
         if payload['operation'] == 'restore':
             from .memory_restore import publication_paths
             return publication_paths(self,connection,scope,payload)
@@ -517,12 +595,12 @@ class NativeMemory:
         return adopt(self, scope, signature, projects, request_id)
 
     def native_add(self, scope: MemoryScope, item: dict[str, Any], *, request_id: str, project: str,
-                   observed_revision: str = "", source_session: str = "") -> dict[str, Any]:
+                   observed_revision: str = "", source_session: str = "", check_current=None) -> dict[str, Any]:
         if not isinstance(item, dict):
             return {"ok": False, "code": "EINVAL_ITEM", "message": "A native memory item is required"}
         if item.get("type") == "proposal":
             from .memory_proposals import enqueue
-            return enqueue(self, scope, item, request_id, source_session)
+            return enqueue(self, scope, item, request_id, source_session, check_current=check_current)
         category = item.get("actor") if item.get("type") == "memory" else "project"
         if not isinstance(category, str) or item.get("type") not in ("memory", "knowledge", "idea") or category not in CATEGORIES:
             return {"ok": False, "code": "EINVAL_ITEM", "message": "This native memory item needs a supported governed operation"}
@@ -573,7 +651,10 @@ class NativeMemory:
         return result
 
     def remember(self, scope: MemoryScope, *, category: str, content: str, title: str, project: str,
-                 request_id: str, source: dict[str, str] | None = None) -> dict[str, Any]:
+                 request_id: str, source: dict[str, str] | None = None,
+                 check_current=None, record_result=None) -> dict[str, Any]:
+        if any(callback is not None and not callable(callback) for callback in (check_current, record_result)):
+            raise ValueError('Memory publication requires callable review and receipt checks')
         source = source or {"kind": "explicit", "session": ""}
         if category not in CATEGORIES or category not in scope.write or not isinstance(content, str) or not content.strip():
             return {"status": "rejected", "reason": "The fact or write permission is invalid"}
@@ -590,7 +671,7 @@ class NativeMemory:
                  "source_session": source.get("session", "") or "none"} if category == "project" else
                 {"type": "memory", "actor": "principal" if category == "principal" else "assistant", "content": content})
 
-        def save(connection):
+        def save_fact(connection):
             invalid = self._validate(item, content, category)
             if invalid:
                 return {"status": "rejected", "reason": invalid}
@@ -612,6 +693,16 @@ class NativeMemory:
                 return {"status": "rejected", "reason": result.get("message", "Native memory rejected the fact")}
             reference = self._record(connection, scope, Path(result["path"]), content, category, project, source)
             return {"status": "committed", "reference": reference, "source": source}
+
+        def save(connection):
+            if check_current is not None:
+                check_current(connection)
+            receipt = save_fact(connection)
+            if record_result is not None:
+                receipt.setdefault('writer', scope.writer)
+                receipt.setdefault('request_id', request_id)
+                record_result(connection, receipt)
+            return receipt
 
         return self._operation(scope, request_id, {"operation": "remember", "item": item, "project": project, "source": source}, save)
 
@@ -729,8 +820,11 @@ class NativeMemory:
                     "category": row["category"], "project": row["project"], "writer": row["writer"],
                     "source": {"session": row["source_session"], "kind": row["source_kind"]}}
 
-    def correct(self, scope: MemoryScope, reference: dict[str, Any], content: str, request_id: str) -> dict[str, Any]:
+    def correct(self, scope: MemoryScope, reference: dict[str, Any], content: str, request_id: str,
+                check_current=None) -> dict[str, Any]:
         def change(connection):
+            if check_current is not None:
+                check_current(connection)
             row = self._target(connection, scope, reference)
             if row is None:
                 return {"status": "rejected", "reason": "The memory reference is unavailable or has no write grant"}
@@ -780,8 +874,11 @@ class NativeMemory:
             return {"status": "committed", "reference": new_reference, "supersedes": reference}
         return self._operation(scope, request_id, {"operation": "correct", "reference": reference, "content": content}, change)
 
-    def forget(self, scope: MemoryScope, reference: dict[str, Any], request_id: str) -> dict[str, Any]:
+    def forget(self, scope: MemoryScope, reference: dict[str, Any], request_id: str,
+               check_current=None) -> dict[str, Any]:
         def remove(connection):
+            if check_current is not None:
+                check_current(connection)
             row = self._target(connection, scope, reference)
             if row is None:
                 return {"status": "rejected", "reason": "The memory reference is unavailable or has no write grant"}

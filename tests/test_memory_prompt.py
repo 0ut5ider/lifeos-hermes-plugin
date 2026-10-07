@@ -44,7 +44,7 @@ class MemoryPromptTests(unittest.TestCase):
         return path
 
     def native(self, *, managed=True, context=True, declared=False, options=None, sources=None):
-        wire = {'declared': declared, 'options': options or {}, 'sources': sources or self.sources,
+        wire = {'declared': declared, 'options': options or {'integration': True}, 'sources': sources or self.sources,
                 'skills': [{'directory': 'SyntheticSkill', 'content': '---\nname: SyntheticSkill\ndescription: Synthetic skill summary. USE WHEN synthetic.\n---\n'}]}
         environment = dict(os.environ, HOME=str(self.fixture.fixture.home), BUN_CONFIG_NO_AUTO_INSTALL='1')
         environment.pop('LIFEOS_MEMORY_INTERNAL', None)
@@ -70,6 +70,13 @@ class MemoryPromptTests(unittest.TestCase):
         self.assertNotIn('SyntheticBanner', rendered['soul'])
         self.assertIn('SyntheticBanner', self.native(managed=False, options={'keepOutputFormat': True})['soul'])
         self.assertEqual(rendered['launcherName'], 'SyntheticAssistant')
+
+    def test_unmanaged_primary_renderer_keeps_its_sidecar_policy(self):
+        rendered = self.native(managed=False, options={'integration': False})
+        self.assertTrue(rendered['ok'], rendered)
+        self.assertIn('Constitution and identity for the LifeOS sidecar', rendered['soul'])
+        self.assertIn('Heavy work belongs in the terminal.', rendered['soul'])
+        self.assertIn('goes through this SMS path', rendered['soul'])
 
     def test_managed_renderer_has_no_raw_fallback_without_context(self):
         result = self.native(context=False)
@@ -114,8 +121,7 @@ class MemoryPromptTests(unittest.TestCase):
     def preferences(self):
         from lifeos_hook_bridge.memory_preferences import MemoryPreferences
         self.fixture.configuration.update(lambda value: value['accounts'].update({'dashboard:owner': 'owner'}))
-        return MemoryPreferences(self.fixture.configuration.path, self.root,
-            self.fixture.fixture.home / 'keys', Path('/usr/bin/python3'), Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
+        return MemoryPreferences(self.fixture.configuration.path, self.root, Path('/usr/bin/python3'), Path(__file__).parents[1] / 'lifeos_hook_bridge/memory_mcp.py')
 
     def test_owner_publication_has_a_fixed_destination_and_idempotent_retry(self):
         preferences = self.preferences()

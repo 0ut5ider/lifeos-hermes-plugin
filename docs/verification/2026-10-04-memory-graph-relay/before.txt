@@ -1,0 +1,39 @@
+FFF.F.                                                                [100%]
+=================================== FAILURES ===================================
+_ MemoryGraphRelayTests.test_anonymous_graph_read_cannot_borrow_ambient_owner_authority _
+tests/test_memory_graph_relay.py:34: in test_anonymous_graph_read_cannot_borrow_ambient_owner_authority
+    self.assertEqual(response.status_code, 401, response.text)
+E   AssertionError: 404 != 401 : {"error":"The managed graph cache is not a governed read view"}
+_ MemoryGraphRelayTests.test_forgetting_removes_the_note_from_existing_authenticated_graph_requests _
+tests/test_memory_graph_relay.py:66: in test_forgetting_removes_the_note_from_existing_authenticated_graph_requests
+    self.assertEqual(response.status_code, 200, response.text)
+E   AssertionError: 404 != 200 : {"error":"The managed graph cache is not a governed read view"}
+_ MemoryGraphRelayTests.test_owner_graph_renders_registered_notes_and_keeps_cache_unchanged _
+tests/test_memory_graph_relay.py:44: in test_owner_graph_renders_registered_notes_and_keeps_cache_unchanged
+    self.assertEqual(response.status_code, 200, response.text)
+E   AssertionError: 404 != 200 : {"error":"The managed graph cache is not a governed read view"}
+_ MemoryGraphRelayTests.test_query_writes_and_cross_origin_requests_refuse_before_source_delivery (method='POST', suffix='', headers={}) _
+tests/test_memory_graph_relay.py:98: in test_query_writes_and_cross_origin_requests_refuse_before_source_delivery
+    self.assertEqual(response.status_code, status, response.text)
+E   AssertionError: 404 != 405 : {"error":"The managed graph cache is not a governed read view"}
+_ MemoryGraphRelayTests.test_query_writes_and_cross_origin_requests_refuse_before_source_delivery (method='GET', suffix='?root=foreign', headers={}) _
+tests/test_memory_graph_relay.py:98: in test_query_writes_and_cross_origin_requests_refuse_before_source_delivery
+    self.assertEqual(response.status_code, status, response.text)
+E   AssertionError: 404 != 400 : {"error":"The managed graph cache is not a governed read view"}
+_ MemoryGraphRelayTests.test_query_writes_and_cross_origin_requests_refuse_before_source_delivery (method='GET', suffix='', headers={'Origin': 'http://foreign.invalid'}) _
+tests/test_memory_graph_relay.py:98: in test_query_writes_and_cross_origin_requests_refuse_before_source_delivery
+    self.assertEqual(response.status_code, status, response.text)
+E   AssertionError: 404 != 403 : {"error":"The managed graph cache is not a governed read view"}
+_ MemoryGraphRelayTests.test_revocation_and_connector_loss_refuse_without_raw_cache_fallback _
+tests/test_memory_graph_relay.py:80: in test_revocation_and_connector_loss_refuse_without_raw_cache_fallback
+    self.assertEqual(client.get(self.native + '/api/memory/graph').status_code, 200)
+E   AssertionError: 404 != 200
+=========================== short test summary info ============================
+FAILED tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_anonymous_graph_read_cannot_borrow_ambient_owner_authority
+FAILED tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_forgetting_removes_the_note_from_existing_authenticated_graph_requests
+FAILED tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_owner_graph_renders_registered_notes_and_keeps_cache_unchanged
+SUBFAILED(method='POST', suffix='', headers={}) tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_query_writes_and_cross_origin_requests_refuse_before_source_delivery
+SUBFAILED(method='GET', suffix='?root=foreign', headers={}) tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_query_writes_and_cross_origin_requests_refuse_before_source_delivery
+SUBFAILED(method='GET', suffix='', headers={'Origin': 'http://foreign.invalid'}) tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_query_writes_and_cross_origin_requests_refuse_before_source_delivery
+FAILED tests/test_memory_graph_relay.py::MemoryGraphRelayTests::test_revocation_and_connector_loss_refuse_without_raw_cache_fallback
+7 failed, 2 passed in 10.41s

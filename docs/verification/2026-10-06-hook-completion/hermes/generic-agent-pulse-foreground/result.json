@@ -1,0 +1,150 @@
+{
+  "before": {
+    "guard_calls": 0
+  },
+  "after": {
+    "changed": {},
+    "outputs": [
+      "foreground-warning"
+    ],
+    "stderr_present": [
+      false
+    ],
+    "guard_effect_valid": true,
+    "context_in_model": [
+      true
+    ],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 4,
+  "model_successful_responses": 3,
+  "session_id": "20261006_182738_92e692",
+  "seconds": 13.832,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-agent-pulse-foreground",
+    "/home/lifeos-plugin-install-probe/workspace/paired-pulse-guards-20261006/results-pulse-stable/generic-agent-pulse-foreground",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "delegation",
+    "-q",
+    "Delegate one task to a subagent."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.3.1",
+      "command": "http://127.0.0.1:43837/hooks/agent-guard",
+      "source_files": {
+        "/var/tmp/lifeos-agent-invocation-20261006/lifeos/LIFEOS/PULSE/modules/hooks.ts": "c30807a2bd469a95f0436ac41af09c01c7ed9a9e372aef316e3255a7c8c47f56"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "711776bb8008ef9e0b2f2c6101c55e161d1658ce1768aed1cf38ac5db7bf7691",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "672ccbf030eb4d94810b9355d643ea89d9fc805a7fe78a2f1bb9d4b70794b04f",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "59a84ab5cf141b247a1eb5574af395cf38d8cbe9398475486ead89cb3e7a1b99",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "6d74b7428f91a714cce496a7e6e2bb61dd2e012c15e96c2703aa1fbb2beaafb2",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "d3f200cefe01c4340ffe317f2ff3607536f208d58c8be85634daa3f5ac7f5acf",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "b76404d0d6c0323fd47cc98e8c67d388e740e42105518a589d0a6745b31b005d",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "aa10c5f2d07222520fd889037b6f27855458b4fb0bd21c6dff1b0188ea9fa751",
+    "fixture-events.jsonl": "0d2b43a72ed7afd70d2a15aaab3ef2866002bc45c6495fb99e6c0ab1d841e5f1",
+    "cli.log": "fbfa9708a187ddb37e9e5034c52c3875eb6f0db37674cea75a124f1ad85c8aa5",
+    "before-state.json": "ccbcc12b580eaaf77ac574fd955cb2afca7b52e87aa1760e63d4ba300b788a2f",
+    "after-state.json": "c4c2026e850ef7e0234c1008b84f92ba7f3530b3548bb2f1d3b742c81efd7903",
+    "fixture-files-before.json": "8e3df22d7ec27ffce395d5db32b4deb9b4a0727b42ce571d5ec47a58bf1aa70b",
+    "fixture-files-after.json": "ee03db8127eabc6ff58ea3d1341a392c022c5dcdca7d5274a6b2cc2ee6faea92"
+  }
+}

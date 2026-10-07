@@ -1,0 +1,7 @@
+# Graph HTTP and literal tooltips
+
+Date: 2026-10-04. The managed graph route returned 404 for every request. The graph CLI already rendered admitted current sources, but the browser route did not use that renderer. The first six actual HTTP cases produced seven failed outcomes and two passing outcomes. The replacement uses the same native Graphology algorithms and native HTTP formatter with declared current text. It does not read or publish the existing graph cache. The main PULSE memory module must handle this route because PULSE dispatches it before Observability.
+
+A native tooltip used `innerHTML` with note titles and category strings. An extracted actual native function, transpiled with Bun and executed in Chromium 148.0.7778.96, created elements for three synthetic markup cases. The SVG JavaScript probe remained zero, so this experiment establishes HTML interpretation and does not establish JavaScript execution. The correction uses `textContent` and styled DOM children. All four cases pass, including the unchanged formatting control.
+
+The native Next production build succeeds and generates 43 pages. Its configuration skips type validation. A separate TypeScript check reports the same two errors with both the original and corrected tooltip: the Telos v7 component passes an unsupported `openFile` property, and LifeosConfig uses `ImportMeta.main` without a declared type. These errors remain visible. The browser function test does not establish acceptance of the complete React page or deployed service.

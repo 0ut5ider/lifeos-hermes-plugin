@@ -1,0 +1,143 @@
+{
+  "before": {
+    "files": 0
+  },
+  "after": {
+    "changed": {
+      ".claude/LIFEOS/MEMORY/OBSERVABILITY/subagent-events.jsonl": "{\"timestamp\":\"<time>\",\"event\":\"subagent_stop\",\"session_id\":\"<session>\",\"subagent_id\":\"<model-text>\",\"subagent_type\":\"general-purpose\",\"description\":\"<model-text>\",\"duration_seconds\":null}\n"
+    },
+    "outputs": [
+      ""
+    ],
+    "stderr_present": [
+      true
+    ],
+    "context_in_model": [],
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "3c968ce0-b8b6-4bf6-82ad-05bb75dd58fc",
+  "seconds": 5.432,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-generic-agent-20261005/results/generic-agent-post",
+    "/home/lifeos-claude-ref/workspace/paired-generic-agent-20261005/results/generic-agent-post",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Agent",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Delegate exactly one task to one subagent with the agent delegation tool. The task text is: Reply with exactly SUBAGENT_READY. Wait for the result, then reply with exactly READY. Do not delegate a second task.",
+    "--permission-mode",
+    "default",
+    "--max-turns",
+    "3",
+    "Delegate one task to a subagent."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.1.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.1.1 /home/lifeos-claude-ref/workspace/paired-generic-agent-20261005/results/generic-agent-post/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQWdlbnRJbnZvY2F0aW9uLmhvb2sudHM=",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/AgentInvocation.hook.ts": "4e9057a11a45adae321677fb8b6332c65e53bf5605b93e010a0062b8c2ed758f"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "885d3de9c5578c477d73512f2d524075aeb11908ebea301c6d5ad1300cbab3c8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "6e40b9478b0496fd5ee65a51653af7857f98c0069edefd108e426effcf1ca594",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "aab58b2b49967cbb51c2c305d596ab42d52ac9b908c2dce73adaae124d647bfb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "9f82064955c75ed434b780b264f6f6895975da1996713a3a9c9ac675e2e0b924",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "f74bea6a20680f2e26ddc3b09bb02b24ccc8312ef970518417422392b00390eb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "558cc30f6b5e1b5bf5808985d28a97ed61ede9055ef2cc91486cc388a184ee79",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "5243a2cb1469aa67e3a5c8a1f397a8413c5916c4381d2acf689c1e46af6822d4",
+    "fixture-events.jsonl": "f6805af02da8addaf50559b629517d52ee90a523cf9dd2105372ac7f0f61d63d",
+    "cli.log": "ac62b2b647079ca5acba6f540e4951c944ceb160da4a6928c1626ae63da40e14",
+    "before-state.json": "8fd5cabed0e309af100b0d21afb9740c38b474cb2063b82bad2c145abe64bc59",
+    "after-state.json": "e78b0d95bc01b89ad9bb53cefd7550e9e7a57f66dedd8ba8db4ed4a87516511a",
+    "fixture-files-before.json": "91d2dc24070a1f70c7caeaab5a428f090daf34885fb10c8faa1042b974db334c",
+    "fixture-files-after.json": "14174cd917af0f75ecd64df8fbca291dac9b26342dcd65e62c69b3c4aab8f1af"
+  }
+}

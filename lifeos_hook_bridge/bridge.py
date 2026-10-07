@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import hashlib
 import logging
+import math
 import os
 import re
 import shlex
@@ -25,6 +26,8 @@ from uuid import uuid4
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
+
+from . import program_lock
 
 
 LOG = logging.getLogger(__name__)
@@ -65,6 +68,15 @@ elif os.name == "nt":
     POLICY_DIRECTORY = Path(os.environ.get("ProgramFiles", "C:/Program Files")) / "ClaudeCode"
 else:
     POLICY_DIRECTORY = Path("/etc/claude-code")
+
+
+def _failure_error(native_name: str, error_message: str, response: Any, result: Any) -> str:
+    # Claude Code reports a failed shell command as the exit code followed by the command output.
+    if native_name == "Bash" and isinstance(response, dict):
+        output, code = response.get("output"), response.get("exit_code")
+        if type(code) is int and code != 0 and isinstance(output, str):
+            return f"Exit code {code}\n{output.rstrip()}" if output.strip() else f"Exit code {code}"
+    return error_message or str(result)
 
 
 def _native_tool_name(tool_name: str) -> str | None:
@@ -178,6 +190,47 @@ def _is_native_version_drift(command: str, root: Path) -> bool:
     return Path(tokens[0]).expanduser().resolve() == (root / "hooks/VersionDrift.hook.ts").resolve()
 
 
+def _native_post_hook(command: str, root: Path) -> str:
+    try:
+        tokens = shlex.split(command)
+    except ValueError:
+        return ""
+    if len(tokens) == 2 and Path(tokens[0]).name == "bun":
+        tokens = tokens[1:]
+    if len(tokens) != 1:
+        return ""
+    token = tokens[0]
+    for prefix in ("$HOME/.claude/", "${HOME}/.claude/", "~/.claude/"):
+        if token.startswith(prefix):
+            token = str(root / token[len(prefix):])
+            break
+    path = Path(token).expanduser().resolve()
+    for name in ("ISASync", "ISAStaleWriteGuard", "PostToolObserver", "LoopDetector",
+                 "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet", "AgentInvocation", "TimeContext",
+                 "WorkCompletionLearning", "SessionCleanup", "LastResponseCache", "MemoryReviewFire",
+                 "SatisfactionCapture", "SpendAuditor", "ReminderRouter"):
+        if path == (root / "hooks" / (name + ".hook.ts")).resolve():
+            return name
+    return ""
+
+
+def _native_state_key(command: str, root: Path, event: str, session_id: str) -> str | None:
+    native = _native_post_hook(command, root)
+    if native == "MemoryReviewFire":
+        return "global-memory-review"
+    if native == "SpendAuditor":
+        return "global-spend-audit"
+    if native == "ReminderRouter":
+        return "global-reminder-router"
+    if native == "AgentInvocation":
+        return "global-agent-invocations"
+    if native in {"WorkCompletionLearning", "SessionCleanup", "SatisfactionCapture"}:
+        return "global-work-lifecycle"
+    if event in {"PostToolUse", "PostToolUseFailure"} and native:
+        return session_id
+    return None
+
+
 def _is_native_checkpoint(command: str) -> bool:
     try:
         tokens = shlex.split(command)
@@ -277,15 +330,26 @@ def _tool_input(name: str, args: dict[str, Any], cwd: str, task_id: str = "defau
             translated["prompt"] = tasks[0].get("goal", "")
     if name == "Skill" and "name" in translated:
         translated["skill"] = translated.pop("name")
-    if name == "AskUserQuestion" and isinstance(translated.get("question"), str):
-        question = {"question": translated["question"]}
-        choices = translated.get("choices")
-        if isinstance(choices, list):
-            question["options"] = [
-                {"label": choice, "description": ""} for choice in choices if isinstance(choice, str)
-            ]
-        question["multiSelect"] = bool(translated.get("multi_select"))
-        return {"questions": [question]}
+    if name == "AskUserQuestion":
+        questions = translated.get("questions")
+        if not isinstance(questions, list) or not questions:
+            questions = [translated] if isinstance(translated.get("question"), str) else []
+        if questions:
+            native_questions = []
+            for entry in questions:
+                if isinstance(entry, str):
+                    entry = {"question": entry}
+                if not isinstance(entry, dict) or not isinstance(entry.get("question"), str):
+                    continue
+                question = {"question": entry["question"]}
+                choices = entry.get("choices")
+                if isinstance(choices, list):
+                    question["options"] = [
+                        {"label": choice, "description": ""} for choice in choices if isinstance(choice, str)
+                    ]
+                question["multiSelect"] = bool(entry.get("multi_select"))
+                native_questions.append(question)
+            return {"questions": native_questions}
     return translated
 
 
@@ -420,6 +484,13 @@ def _agent_inputs(args: dict[str, Any]) -> list[dict[str, str]]:
             background = not is_delegated_child_context()
         except ImportError:
             background = True
+    try:
+        from gateway.session_context import async_delivery_supported, get_session_env, session_history_delivery_supported
+        if get_session_env('HERMES_SINGLE_QUERY_SESSION') == '1' or (
+                not async_delivery_supported() and not session_history_delivery_supported()):
+            background = False
+    except ImportError:
+        pass
     for index, task in enumerate(tasks):
         if not isinstance(task, dict) or not isinstance(task.get("goal"), str) or not task["goal"].strip():
             continue
@@ -581,19 +652,41 @@ def _project_root_for_cwd(cwd: str) -> Path:
     return directory
 
 
+STOP_TRANSCRIPT_DELAY = 0.1
+
+
+def _delegated_child() -> bool:
+    try:
+        from agent.delegation_context import is_delegated_child_context, is_delegated_child_process_context
+    except ImportError:
+        return False
+    return is_delegated_child_context() or is_delegated_child_process_context()
+
+
 class HookBridge:
     def __init__(
         self, settings_path: Path, root: Path,
         model_tiers_provider: Callable[[], dict[str, Any]] | None = None,
+        profile: Path | None = None, hold_turns: bool = False, lifeos_home: Path | None = None,
     ):
         self.settings_path = Path(settings_path)
         self.root = Path(root)
+        # Native hooks resolve their installation from HOME, so they run in the selected LifeOS home.
+        self.lifeos_home = Path(lifeos_home) if lifeos_home is not None else Path.home()
+        # The Hermes profile whose program lock turns hold; None disables the lock.
+        self.profile = Path(profile) if profile is not None else None
+        self.hold_turns = hold_turns
+        self.turn_leases: dict[str, int] = {}
         self.model_tiers_provider = model_tiers_provider
         self.base_environment = dict(os.environ)
         self._apply_settings(json.loads(self.settings_path.read_text()))
         self.started_sessions: set[str] = set()
         self.session_lock = threading.RLock()
+        self.child_lifecycle_enabled = False
+        self.child_invocations: dict[str, tuple[str, dict[str, Any]]] = {}
         self.session_platforms: dict[str, str] = {}
+        self.session_carriers: dict[str, dict[str, str]] = {}
+        self.response_models: dict[str, str] = {}
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
@@ -646,6 +739,8 @@ class HookBridge:
                 LOG.error("LifeOS config watcher failed: %s", error)
 
     def close(self) -> None:
+        for session_id in tuple(self.turn_leases):
+            self._end_turn(session_id)
         self.watcher_stop.set()
         if self.watcher is not None and self.watcher is not threading.current_thread():
             self.watcher.join(timeout=2)
@@ -800,9 +895,19 @@ class HookBridge:
         if not isinstance(hooks, dict):
             raise ValueError("LifeOS hooks setting must be an object")
         environment = dict(self.base_environment)
+        home = str(self.lifeos_home)
+        environment["HOME"] = home
+        account = Path.home()
+        if self.lifeos_home != account:
+            # Helper inference, Hermes commands, and Git identity stay with the account.
+            environment["LIFEOS_ACCOUNT_HOME"] = str(account)
+            if self.profile is not None:
+                environment.setdefault("HERMES_HOME", str(self.profile))
+            if (account / ".gitconfig").is_file():
+                environment.setdefault("GIT_CONFIG_GLOBAL", str(account / ".gitconfig"))
         for key, value in settings.get("env", {}).items():
             if isinstance(value, str):
-                environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+                environment[key] = value.replace("${HOME}", home).replace("$HOME", home)
         environment.setdefault("LIFEOS_DIR", str(self.root / "LIFEOS"))
         environment["PATH"] = (
             f"{Path(__file__).parent / 'bin'}:{Path.home() / '.bun/bin'}:"
@@ -1051,7 +1156,8 @@ class HookBridge:
                     settings = self.project_hook_settings.get(project / ".claude" / name, {})
                     for key, value in settings.get("env", {}).items():
                         if isinstance(value, str):
-                            environment[key] = value.replace("${HOME}", str(Path.home())).replace("$HOME", str(Path.home()))
+                            environment[key] = value.replace("${HOME}", str(self.lifeos_home)).replace(
+                                "$HOME", str(self.lifeos_home))
         if platform and platform not in {"cli", "tui", "desktop"}:
             environment["LIFEOS_NOTIFICATION_CHANNEL"] = platform
         environment.pop("LIFEOS_CARRIER_OBSERVATION", None)
@@ -1178,9 +1284,74 @@ class HookBridge:
             pass
         return {}
 
+    def child_start(
+        self, parent_session_id: str = "", child_session_id: str = "", child_goal: str = "",
+        child_role: str = "", child_model: str = "", child_provider: str = "",
+        child_requested_model: str = "", child_reasoning_config: Any = None, **_: Any,
+    ) -> None:
+        if not self.child_lifecycle_enabled or not parent_session_id or not child_session_id:
+            return
+        with self.session_lock:
+            if child_session_id in self.child_invocations:
+                return
+            native_input = {
+                "subagent_type": child_role or "general-purpose",
+                "description": f"{child_goal[:80]} [{child_session_id}]", "prompt": child_goal,
+            }
+            self.child_invocations[child_session_id] = (parent_session_id, native_input)
+            payload = self._payload("PreToolUse", parent_session_id, tool_name="Agent", tool_input=native_input)
+            effort = child_reasoning_config.get("effort", "") if isinstance(child_reasoning_config, dict) else ""
+            payload["hermes_runtime"] = {
+                "model": child_model, "provider": child_provider,
+                "child_requested_model": child_requested_model if isinstance(child_requested_model, str) else "",
+                "reasoning_effort": effort if isinstance(effort, str) else "",
+            }
+            self._run("PreToolUse", payload, "Agent", child_tracking_only=True)
+
+    def child_stop(
+        self, parent_session_id: str = "", child_session_id: str = "", child_status: str = "",
+        child_summary: str = "", **_: Any,
+    ) -> None:
+        if not self.child_lifecycle_enabled:
+            return
+        with self.session_lock:
+            saved = self.child_invocations.get(child_session_id)
+            if saved is None or saved[0] != parent_session_id:
+                return
+            self.child_invocations.pop(child_session_id)
+            payload = self._payload("PostToolUse", parent_session_id, tool_name="Agent", tool_input=saved[1],
+                                    tool_response={"status": child_status, "summary": child_summary})
+            self.session_carriers.pop(child_session_id, None)
+            observed = self.response_models.pop(child_session_id, "")
+            if observed:
+                payload["hermes_runtime"] = {"model": observed}
+            self._run("PostToolUse", payload, "Agent", child_tracking_only=True)
+
+    def observe_api_response(
+        self, session_id: str = "", model: str = "", provider: str = "", response_model: str = "", **_: Any,
+    ) -> None:
+        """Record the served carrier before tool dispatch, independently of transcript timing."""
+        if not isinstance(session_id, str) or not session_id:
+            return
+        with self.session_lock:
+            self.session_carriers.pop(session_id, None)
+            self.response_models.pop(session_id, None)
+            if isinstance(response_model, str) and response_model.strip():
+                model = response_model
+                self.response_models[session_id] = response_model.strip()
+                if len(self.response_models) > 1024:
+                    self.response_models.pop(next(iter(self.response_models)))
+            if isinstance(model, str) and model.strip():
+                self.session_carriers[session_id] = {"model": model.strip()}
+                if isinstance(provider, str) and provider.strip():
+                    self.session_carriers[session_id]["provider"] = provider.strip()
+                if len(self.session_carriers) > 1024:
+                    self.session_carriers.pop(next(iter(self.session_carriers)))
+
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
+        child_tracking_only: bool = False, response_cache_only: bool = False,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         host_paths = _task_uses_host_paths(task_id)
@@ -1203,6 +1374,10 @@ class HookBridge:
             if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
                 values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
             for hook in group.get("hooks", []):
+                if response_cache_only and hook.get("type") != "command":
+                    continue
+                if child_tracking_only and hook.get("type") != "command":
+                    continue
                 if hook.get("type") == "http":
                     if remote_project is not None:
                         url = hook.get("url", "")
@@ -1234,6 +1409,16 @@ class HookBridge:
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
                     continue
+                if event == "Stop" and (
+                    _native_post_hook(command, self.root) == "LastResponseCache"
+                ) != response_cache_only:
+                    continue
+                native_tracker = remote_project is None and _native_post_hook(command, self.root) == "AgentInvocation"
+                if child_tracking_only and not native_tracker:
+                    continue
+                if (native_tracker and self.child_lifecycle_enabled and tool_name == "Agent"
+                        and not child_tracking_only):
+                    continue
                 if skip_checkpoint and _is_native_checkpoint(command):
                     continue
                 hook_environment = environment
@@ -1241,7 +1426,7 @@ class HookBridge:
                     from .version_drift import default_baseline_path
                     hook_environment = dict(environment)
                     hook_environment["LIFEOS_VERSION_DRIFT_ROOT"] = str(self.root)
-                    hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path()))
+                    hook_environment.setdefault("LIFEOS_VERSION_DRIFT_BASELINE", str(default_baseline_path(self.lifeos_home)))
                     system_path = os.pathsep.join(
                         path for path in environment.get("PATH", "").split(os.pathsep)
                         if Path(path).resolve() != (Path(__file__).parent / "bin").resolve()
@@ -1278,16 +1463,28 @@ class HookBridge:
                 sync_hooks.append((callback, arguments))
         if not sync_hooks:
             return outcomes
+        roles = [
+            _native_post_hook(arguments[1], self.root)
+            if event == "PostToolUse" and callback == self._run_command else ""
+            for callback, arguments in sync_hooks
+        ]
+        # ISASync can rewrite a completed ISA. Its recorded view must describe that final file.
+        deferred = {index for index, role in enumerate(roles)
+                    if role == "ISAStaleWriteGuard" and "ISASync" in roles}
+        completed = {}
         with ThreadPoolExecutor(max_workers=min(len(sync_hooks), 32)) as executor:
-            futures = [executor.submit(callback, *arguments) for callback, arguments in sync_hooks]
-            for future in futures:
-                try:
-                    process = future.result()
-                except Exception as error:
-                    LOG.error("LifeOS %s hook failed: %s", event, error)
-                    continue
-                if process is not None:
-                    outcomes.append((process, _decode_output(process.stdout)))
+            for indexes in ([index for index in range(len(sync_hooks)) if index not in deferred], sorted(deferred)):
+                futures = [(index, executor.submit(sync_hooks[index][0], *sync_hooks[index][1]))
+                           for index in indexes]
+                for index, future in futures:
+                    try:
+                        process = future.result()
+                    except Exception as error:
+                        LOG.error("LifeOS %s hook failed: %s", event, error)
+                        continue
+                    if process is not None:
+                        completed[index] = (process, _decode_output(process.stdout))
+        outcomes.extend(completed[index] for index in sorted(completed))
         return outcomes
 
     def _run_command(
@@ -1295,11 +1492,16 @@ class HookBridge:
         environment: dict[str, str], process_cwd: str,
     ) -> subprocess.CompletedProcess[str] | None:
         try:
-            process = subprocess.run(
-                ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
-                capture_output=True, timeout=timeout, cwd=process_cwd,
-                env=environment, check=False,
-            )
+            from contextlib import nullcontext
+            from .hook_state import session_state
+            key = _native_state_key(command, self.root, event, payload.get("session_id", ""))
+            lock = session_state(self.root, key) if key is not None else nullcontext()
+            with lock:
+                process = subprocess.run(
+                    ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
+                    capture_output=True, timeout=timeout, cwd=process_cwd,
+                    env=environment, check=False,
+                )
         except (OSError, subprocess.TimeoutExpired) as error:
             LOG.error("LifeOS %s hook failed to execute: %s", event, error)
             return None
@@ -1341,6 +1543,10 @@ class HookBridge:
                 spool_path = Path(spool.name)
                 json.dump({"command": command, "payload": payload,
                            "cwd": process_cwd, "environment": environment,
+                           "context_kind": "clock" if _native_post_hook(command, self.root) == "TimeContext" else "",
+                           "queued_at": time.time(),
+                           "state_key": _native_state_key(command, self.root, payload.get("hook_event_name", ""), session_id),
+                           "state_root": str(self.root),
                            "result_path": str(result_path) if result_path else None}, spool)
             self._start_async_runner(spool_path, process_cwd, environment)
         except (OSError, subprocess.TimeoutExpired) as error:
@@ -1423,6 +1629,8 @@ class HookBridge:
         if not result_dir.is_dir():
             return []
         context = []
+        clock = []
+        minute = int(time.time()) // 60
         def modified(path: Path) -> int:
             try:
                 return path.stat().st_mtime_ns
@@ -1438,6 +1646,14 @@ class HookBridge:
                     continue
                 if result.get("session_id") != session_id:
                     continue
+                if result.get("context_kind") == "clock":
+                    stamps = (result.get("queued_at"), result.get("completed_at"))
+                    if not all(isinstance(stamp, (int, float)) and not isinstance(stamp, bool)
+                               and math.isfinite(stamp) and int(stamp) // 60 == minute for stamp in stamps):
+                        continue
+                    clock = [result[key].strip() for key in ("additionalContext", "systemMessage")
+                             if isinstance(result.get(key), str) and result[key].strip()]
+                    continue
                 for key in ("additionalContext", "systemMessage"):
                     value = result.get(key)
                     if isinstance(value, str) and value.strip():
@@ -1446,7 +1662,7 @@ class HookBridge:
                 LOG.warning("LifeOS async hook result could not be read: %s", error)
             finally:
                 claimed.unlink(missing_ok=True)
-        return context
+        return context + clock
 
     def _payload(self, event: str, session_id: str, **fields: Any) -> dict[str, Any]:
         child_fields = {}
@@ -1566,13 +1782,25 @@ class HookBridge:
     def _mcp_permission_verdict(
         self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str, task_id: str = "",
     ) -> dict[str, Any] | None:
+        from .mcp_permissions import permission_decision
+
+        self.poll_config_changes(force=True)
+        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
+        host_paths = _task_uses_host_paths(task_id)
+        rule_decision = permission_decision(tool_name, [
+            settings for settings, _ in self._permission_sources(payload, task_id, host_paths)
+        ])
+        if rule_decision == "deny":
+            return {"action": "block", "message": f"LifeOS MCP permission rule denied {tool_name}"}
+        if rule_decision == "allow":
+            return None
         groups = self._hook_groups(
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
-            _task_uses_host_paths(task_id), task_id,
+            host_paths, task_id,
         )
-        if not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups):
+        if (rule_decision == "none"
+                and not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups)):
             return None
-        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
         outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
         granted = False
         replacement = None
@@ -1583,7 +1811,7 @@ class HookBridge:
                 message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the MCP call"
                 return {"action": "block", "message": str(message)[:2000]}
             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
-                granted = True
+                granted = rule_decision not in {"ask", "unknown"}
                 updated = decision.get("updatedInput")
                 if updated is not None:
                     if not isinstance(updated, dict):
@@ -1600,6 +1828,7 @@ class HookBridge:
             "action": "approve",
             "message": f"LifeOS requests review of MCP call {tool_name}",
             "rule_key": f"lifeos-mcp:{tool_name}:{fingerprint}",
+            **({"args": replacement} if replacement is not None else {}),
         }
 
     def _file_permission_verdict(
@@ -1688,6 +1917,11 @@ class HookBridge:
         for native_input in native_inputs:
             hook_input = _native_file_input(native_name, native_input, task_id)
             payload = self._payload("PreToolUse", session_id, tool_name=native_name, tool_input=hook_input, cwd=cwd)
+            if native_name == "Agent":
+                with self.session_lock:
+                    carrier = dict(self.session_carriers.get(session_id, {}))
+                if carrier:
+                    payload["hermes_runtime"] = carrier
             code = args.get("code") if tool_name == "execute_code" else None
             for process, output in self._run(
                 "PreToolUse", payload, native_name,
@@ -1999,6 +2233,11 @@ class HookBridge:
         self, user_message: Any, session_id: str = "", is_first_turn: bool | None = None,
         platform: str = "", **_: Any,
     ) -> dict[str, str] | None:
+        if _delegated_child():
+            # Claude Code runs SessionStart and UserPromptSubmit hooks for the main session only.
+            return None
+        if not self._admit_turn(session_id):
+            return {"action": "block", "message": program_lock.BUSY_MESSAGE}
         prompt = _prompt_text(user_message)
         if platform:
             with self.session_lock:
@@ -2112,7 +2351,8 @@ class HookBridge:
                 item_event, session_id, tool_name=native_name,
                 tool_input=hook_input,
                 cwd=cwd,
-                **({"error": error_message or str(result)} if item_event == "PostToolUseFailure" else {"tool_response": item_response}),
+                **({"error": _failure_error(native_name, error_message, response, result)}
+                   if item_event == "PostToolUseFailure" else {"tool_response": item_response}),
             )
             external_content = tool_name in WEB_CONTENT_TOOLS or (
                 native_name == "Read" and _web_cache_read(native_input, cwd, task_id)
@@ -2153,9 +2393,12 @@ class HookBridge:
         self._run("SessionEnd", self._payload("SessionEnd", session_id, reason=native_reason), native_reason)
         shutil.rmtree(self._async_result_dir(session_id), ignore_errors=True)
         self._stop_agent_watchdog(session_id)
+        self._end_turn(session_id)
         with self.session_lock:
             self.started_sessions.discard(session_id)
             self.session_platforms.pop(session_id, None)
+            self.session_carriers.pop(session_id, None)
+            self.response_models.pop(session_id, None)
             self.session_projects.pop(session_id, None)
             self.remote_session_projects.pop(session_id, None)
             used_remote_projects = set().union(*self.remote_session_projects.values()) if self.remote_session_projects else set()
@@ -2189,11 +2432,45 @@ class HookBridge:
             if len(self.api_errors) > 1024:
                 self.api_errors.pop(next(iter(self.api_errors)))
 
+    def _admit_turn(self, session_id: str) -> bool:
+        """Refuse a turn during a program swap; on a patched host, hold the lock until turn end."""
+        if self.profile is None:
+            return True
+        lease = program_lock.shared(self.profile)
+        if lease is None:
+            return False
+        if not self.hold_turns:
+            program_lock.release(lease)
+            return True
+        with self.session_lock:
+            previous = self.turn_leases.pop(session_id, None)
+            self.turn_leases[session_id] = lease
+        if previous is not None:
+            program_lock.release(previous)
+        return True
+
+    def _end_turn(self, session_id: str) -> None:
+        with self.session_lock:
+            lease = self.turn_leases.pop(session_id, None)
+        if lease is not None:
+            program_lock.release(lease)
+
     def turn_end(
         self, session_id: str = "", turn_id: str = "", failed: bool = False,
         turn_exit_reason: str = "", failure_reason: str = "", final_response: str = "",
-        interrupted: bool = False, **_: Any,
+        interrupted: bool = False, completed: bool = False, **_: Any,
     ) -> None:
+        try:
+            if completed and not failed and not interrupted and final_response and not _delegated_child():
+                self._run("Stop", self._payload("Stop", session_id,
+                    last_assistant_message=final_response), response_cache_only=True)
+            self._turn_end(session_id, turn_id, failed, turn_exit_reason, failure_reason,
+                           final_response, interrupted)
+        finally:
+            self._end_turn(session_id)
+
+    def _turn_end(self, session_id, turn_id, failed, turn_exit_reason, failure_reason,
+                  final_response, interrupted) -> None:
         with self.session_lock:
             error = self.api_errors.pop((session_id, turn_id), None)
         if not failed or interrupted or error is None:
@@ -2212,10 +2489,25 @@ class HookBridge:
              model: str = "", platform: str = "", reasoning_effort: str = "",
              provider: str = "",
              **_: Any) -> dict[str, str] | None:
+        if _delegated_child():
+            # A Claude Code subagent ends with SubagentStop, not Stop; LifeOS registers no SubagentStop hook.
+            return None
         if platform:
             with self.session_lock:
                 self.session_platforms[session_id] = platform.lower()
         payload = self._payload("Stop", session_id, last_assistant_message=response, stop_hook_active=stop_hook_active)
+        # Claude Code adds the candidate to the transcript 50 to 150 ms after its Stop hooks start.
+        # LifeOS Stop gates wait 150 ms before they read the final answer, so the row follows the same delay.
+        appended = threading.Event()
+
+        def append():
+            if not appended.is_set():
+                appended.set()
+                self._append_transcript(session_id, "assistant", response, model=model,
+                                        reasoning_effort=reasoning_effort, provider=provider)
+        timer = threading.Timer(STOP_TRANSCRIPT_DELAY, append)
+        timer.daemon = True
+        timer.start()
         try:
             for process, output in self._run("Stop", payload):
                 if (output or {}).get("decision") == "block" or process.returncode == 2:
@@ -2223,5 +2515,6 @@ class HookBridge:
                     return {"action": "continue", "message": str(message)[:2000]}
             return None
         finally:
-            self._append_transcript(session_id, "assistant", response, model=model,
-                                    reasoning_effort=reasoning_effort, provider=provider)
+            timer.cancel()
+            timer.join()
+            append()

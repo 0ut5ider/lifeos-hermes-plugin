@@ -13,6 +13,7 @@ from lifeos_hook_bridge.install_source import SUPPORTED_HERMES_COMMIT
 GROUPS = {
     "hermes-plugin-events.patch": (
         "hermes_cli/plugins.py", "hermes_cli/plugins_dispatch.py", "model_tools.py",
+        "agent/learning_graph.py", "agent/learning_mutations.py", "tools/memory_tool.py",
         "tests/hermes_cli/test_plugins.py", "tests/hermes_cli/test_required_policy_hooks.py",
         "tests/hermes_cli/test_session_boundary_hooks.py", "tests/hermes_cli/test_stop_policy_dispatch.py",
         "tests/plugins/test_transform_tool_result_hook.py",
@@ -44,11 +45,17 @@ GROUPS = {
     "hermes-remote-files.patch": (
         "tools/file_operations.py", "tools/file_tools.py", "tools/file_tools_read_tracking.py",
         "tests/tools/test_remote_file_staleness.py",
+        "tests/test_lifeos_batch_schema.py",
     ),
     "hermes-cron-bootstrap.patch": ("cron/scheduler.py",),
     "hermes-required-middleware.patch": (
-        "agent/auxiliary_hooks.py", "hermes_cli/middleware.py", "tests/hermes_cli/test_required_middleware.py",
+        "agent/auxiliary_hooks.py", "agent/turn_request_assembly.py", "hermes_cli/middleware.py",
+        "hermes_cli/plugin_validate.py", "tests/hermes_cli/test_required_middleware.py",
     ),
+    "hermes-web-result-status.patch": (
+        "agent/display.py", "agent/tool_guardrails.py", "agent/tool_result_classification.py",
+    ),
+    "hermes-protected-instruction-approval.patch": ("tools/file_tools_write_guards.py",),
 }
 
 

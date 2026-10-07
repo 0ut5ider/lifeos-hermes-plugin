@@ -1,0 +1,147 @@
+{
+  "case": "test_private_unified_telos_cannot_influence_scoring",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-interview-scan-candidate-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic TELOS\n## Mission\n<!-- updated: 2026-10-01 by:synthetic -->\nSynthetic freshness mission\n## Goals\nSynthetic freshness goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/GOALS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": {
+        "content": "---\nname: SyntheticScanName\n---\n# Synthetic assistant\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/WORK/config.yaml": {
+        "content": "synthetic_config: ready\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/PULSE.toml": {
+        "content": "[synthetic]\nvoice = false\n",
+        "mode": "0o644"
+      },
+      ".env": {
+        "content": "SYNTHETIC_OPTIONAL_SETUP=ready\n",
+        "mode": "0o600"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/HEALTH/current.json": {
+        "content": "{\"sources\": {\"apple\": {\"status\": \"SYNTHETIC_CURRENT_SOURCE_NOTE\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/HEALTH/DATA/oura/2026-10-04.json": {
+        "content": "{\"metrics\": {\"sleep_duration_h\": 7.5, \"steps\": 321}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/CONDUIT/daily/2026-10-04.json": {
+        "content": "{\"totalMinutes\": 60, \"creationMinutes\": 20, \"blocks\": [{\"label\": \"Synthetic editor\", \"minutes\": 20}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/FINANCES/expenses.json": {
+        "content": "{\"meta\": {\"updated\": \"2026-10-04\"}, \"subscriptions\": [{\"cycle\": \"monthly\", \"amount\": 12, \"status\": \"active\"}, {\"cycle\": \"annual\", \"amount\": 120, \"status\": \"active\"}]}",
+        "mode": "0o644"
+      },
+      "LIFEOS/MEMORY/STATE/work.json": {
+        "content": "{\"sessions\": {\"synthetic\": {\"sessionName\": \"Synthetic Current Work\", \"phase\": \"BUILD\", \"updatedAt\": \"2026-10-04T00:00:00Z\"}}}",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/TELOS.md": {
+        "content": "## Mission\n<private>Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission Synthetic private mission </private>\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/GOALS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\nSynthetic legacy goal\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic principal summary\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/CURRENT_STATE/SYNTHETIC_CUSTOM.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\nreview_cadence: 11d\n---\n# Synthetic custom dimension\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/TELOS/IDEAL_STATE/HEALTH.md": {
+        "content": "---\nlast_updated: 2026-10-02\nlast_reviewed: 2026-10-01\nlast_reviewed_by: synthetic-owner\n---\n# Synthetic ideal health\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_MEMORY.md": {
+        "content": "---\nlast_updated_by: synthetic\n---\n<!-- BEGIN ENTRIES -->\n<!-- END ENTRIES -->\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/DIGITAL_ASSISTANT/DA_IDENTITY.md": {
+        "content": "---\nname: SyntheticScanName\n---\n# Synthetic assistant\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/USER/WORK/config.yaml": {
+        "content": "synthetic_config: ready\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/PULSE.toml": {
+        "content": "[synthetic]\nvoice = false\n",
+        "mode": "0o644"
+      },
+      ".env": {
+        "content": "SYNTHETIC_OPTIONAL_SETUP=ready\n",
+        "mode": "0o600"
+      }
+    }
+  },
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ugp5mwzd/.claude/LIFEOS/TOOLS/InterviewScan.ts",
+        "--file",
+        "Mission"
+      ],
+      "status": 0,
+      "stdout": "{\n  \"phase\": 1,\n  \"path\": \"/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-ugp5mwzd/.claude/LIFEOS/USER/TELOS/TELOS.md#mission\",\n  \"name\": \"Mission\",\n  \"category\": \"foundational\",\n  \"leverage\": 10,\n  \"prompts\": [\n    \"What's your north-star mission \u2014 the single sentence that captures why you're building all of this?\",\n    \"Any secondary missions that serve the north star but deserve their own articulation?\",\n    \"What's the longest-horizon mission (decade+ timescale)?\"\n  ],\n  \"content_length\": 0,\n  \"tbd_count\": 0,\n  \"seed_markers\": 0,\n  \"empty_sections\": 0,\n  \"required_fields_missing\": [],\n  \"completeness_score\": 0,\n  \"priority\": 1120,\n  \"review_mode\": false,\n  \"age_days\": null,\n  \"threshold_days\": 0,\n  \"stale\": false,\n  \"why_incomplete\": [\n    \"section does not exist\"\n  ]\n}\n",
+      "stderr": ""
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

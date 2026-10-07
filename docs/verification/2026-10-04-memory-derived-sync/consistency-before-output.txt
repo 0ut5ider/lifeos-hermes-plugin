@@ -1,0 +1,19 @@
+.....                                                            [100%]
+=================================== FAILURES ===================================
+_ MemoryDerivedSyncConsistencyTests.test_malformed_argument_types_return_a_service_refusal (value=[{}]) _
+tests/test_memory_derived_sync_consistency.py:88: in test_malformed_argument_types_return_a_service_refusal
+    result = service.native(context, 'derived_sync_plan', {'args': value})
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_service.py:272: in native
+    return handle(memory, scope, operation, arguments, check_current=check_current)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+lifeos_hook_bridge/memory_derived_sync.py:155: in handle
+    if not isinstance(args, list) or len(args) > 8 or any(arg not in {'--dry-run', '--status', '--force'} for arg in args):
+                                                      ^^^
+lifeos_hook_bridge/memory_derived_sync.py:155: in <genexpr>
+    if not isinstance(args, list) or len(args) > 8 or any(arg not in {'--dry-run', '--status', '--force'} for arg in args):
+                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   TypeError: cannot use 'dict' as a set element (unhashable type: 'dict')
+=========================== short test summary info ============================
+SUBFAILED(value=[{}]) tests/test_memory_derived_sync_consistency.py::MemoryDerivedSyncConsistencyTests::test_malformed_argument_types_return_a_service_refusal
+1 failed, 5 passed, 7 subtests passed in 27.13s

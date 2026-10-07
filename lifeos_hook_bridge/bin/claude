@@ -2,7 +2,8 @@
 # ABOUTME: Routes LifeOS child Claude calls to a configured local model.
 # ABOUTME: Restores gateway settings that LifeOS inference removes from its child environment.
 set -euo pipefail
-model_env="${LIFEOS_HOOK_MODEL_ENV:-$HOME/.config/lifeos-hook-bridge/model.env}"
+account_home="${LIFEOS_ACCOUNT_HOME:-$HOME}"
+model_env="${LIFEOS_HOOK_MODEL_ENV:-$account_home/.config/lifeos-hook-bridge/model.env}"
 if [[ -r "$model_env" ]]; then
   set -a
   source "$model_env"
@@ -46,4 +47,4 @@ if [[ -n "${LIFEOS_MEMORY_CONTEXT:-}" ]]; then
   printf '%s\n' 'LifeOS lasting memory requires child inference through the plugin.' >&2
   exit 1
 fi
-exec "$HOME/.local/bin/claude" "${args[@]}"
+exec "$account_home/.local/bin/claude" "${args[@]}"

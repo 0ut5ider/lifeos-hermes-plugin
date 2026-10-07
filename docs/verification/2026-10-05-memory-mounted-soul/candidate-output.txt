@@ -1,0 +1,42 @@
+...................FF.........................               [100%]
+=================================== FAILURES ===================================
+__ MemoryHermesSoulRetirementTests.test_decoded_retired_full_name_is_excluded __
+tests/test_memory_hermes_soul_retirement.py:33: in test_decoded_retired_full_name_is_excluded
+    result = self.fixture.successful('--stdout')
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_hermes_soul_writer.py:58: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 473 | function main(): void {
+E   474 |   const governed = memoryAccess("hermes_soul", {args: process.argv.slice(2), home: HERMES_HOME, workspace: WORKSPACE},
+E   475 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   476 |   if (governed !== undefined) {
+E   477 |     if (!governed.ok || typeof governed.stdout !== "string" || typeof governed.status !== "number") {
+E   478 |       throw new Error("Hermes soul admission or publication is unavailable");
+E                         ^
+E   error: Hermes soul admission or publication is unavailable
+E         at main (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-lx20g36b/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:478:17)
+E         at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-lx20g36b/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:516:23
+E   
+E   Bun v1.3.14 (Linux x64)
+_ MemoryHermesSoulRetirementTests.test_unrelated_retirement_preserves_current_native_soul _
+tests/test_memory_hermes_soul_retirement.py:27: in test_unrelated_retirement_preserves_current_native_soul
+    self.assertIn('Synthetic personality', self.fixture.successful('--stdout').stdout)
+                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_memory_hermes_soul_writer.py:58: in successful
+    self.assertEqual(result.returncode, 0, result.stderr)
+E   AssertionError: 1 != 0 : 473 | function main(): void {
+E   474 |   const governed = memoryAccess("hermes_soul", {args: process.argv.slice(2), home: HERMES_HOME, workspace: WORKSPACE},
+E   475 |     (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
+E   476 |   if (governed !== undefined) {
+E   477 |     if (!governed.ok || typeof governed.stdout !== "string" || typeof governed.status !== "number") {
+E   478 |       throw new Error("Hermes soul admission or publication is unavailable");
+E                         ^
+E   error: Hermes soul admission or publication is unavailable
+E         at main (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nnwc6yqd/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:478:17)
+E         at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-nnwc6yqd/.claude/LIFEOS/TOOLS/RenderHermesSoul.ts:516:23
+E   
+E   Bun v1.3.14 (Linux x64)
+=========================== short test summary info ============================
+FAILED tests/test_memory_hermes_soul_retirement.py::MemoryHermesSoulRetirementTests::test_decoded_retired_full_name_is_excluded
+FAILED tests/test_memory_hermes_soul_retirement.py::MemoryHermesSoulRetirementTests::test_unrelated_retirement_preserves_current_native_soul
+2 failed, 44 passed, 12 subtests passed in 136.65s (0:02:16)

@@ -1,0 +1,68 @@
+{
+  "case": "test_revocation_during_child_refuses_page_and_tracking",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install",
+  "sources": {
+    "before": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "# Synthetic collection\nA synthetic book.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      }
+    },
+    "after": {
+      "LIFEOS/USER/TELOS/BOOKS.md": {
+        "content": "# Synthetic collection\nA synthetic book.\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.manifest.toml": {
+        "content": "id = \"synthetic\"\ntitle = \"Synthetic fixture\"\ndataType = \"CollectionPageSchema\"\nsourceGlobs = [\"LIFEOS/USER/TELOS/BOOKS.md\"]\nadapterPromptFile = \"LIFEOS/PULSE/pages/synthetic.adapter.md\"\nmodel = \"haiku\"\nrebuildButton = true\norder = 1\nadapterVersion = \"1.0.0\"\n",
+        "mode": "0o644"
+      },
+      "LIFEOS/PULSE/pages/synthetic.adapter.md": {
+        "content": "Render the declared synthetic collection as JSON.\n",
+        "mode": "0o644"
+      }
+    }
+  },
+  "requests": [
+    {
+      "path": "/v1/messages",
+      "body": {
+        "model": "synthetic-flashnext",
+        "max_tokens": 4096,
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "Render the declared synthetic collection as JSON.\n",
+        "messages": [
+          {
+            "role": "user",
+            "content": "--- SOURCE BUNDLE ---\n\n### SOURCE: /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_vcq5xcn/.claude/LIFEOS/USER/TELOS/BOOKS.md\n\n# Synthetic collection\nA synthetic book.\n\n\n--- END SOURCE BUNDLE ---\n\nReturn ONLY a single JSON object. No prose, no markdown fence."
+          }
+        ]
+      }
+    }
+  ],
+  "events": [
+    {
+      "command": [
+        "bun",
+        "--no-install",
+        "/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_vcq5xcn/.claude/LIFEOS/TOOLS/DerivedSync.ts"
+      ],
+      "status": 1,
+      "stdout": "",
+      "stderr": "[DerivedSync] action failed: exit 1 for bun /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_vcq5xcn/.claude/LIFEOS/PULSE/Tools/AdapterCli.ts synthetic after 3015ms: error: adapter \"synthetic\" crashed: Error: The native memory service returned an invalid result\n    at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)\n    at checkCurrent (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_vcq5xcn/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:112:5)\n    at runAdapter (/home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-_vcq5xcn/.claude/LIFEOS/PULSE/adapters/AdapterRunner.ts:173:3)\n    at processTicksAndRejections (native:7:39)\n51 |   const result = spawnSync(executable, command, {input: JSON.stringify({operation, arguments: arguments_}),\n52 |                                                env: {...process.env},\n53 |                                                encoding: \"utf8\", timeout: 40_000, maxBuffer: 4 * 1024 * 1024});\n54 |   if (result.error || result.status !== 0) throw new Error(\"The native memory service is unavailable\");\n55 |   const response: unknown = JSON.parse(result.stdout);\n56 |   if (!valid(response)) throw new Error(\"The native memory service returned an invalid result\");\n                                       ^\nerror: The native memory service returned an invalid result\n      at memoryAccess (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts:56:35)\n      at runGovernedSync (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:358:21)\n      at async main (/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-pulse-adapter-final-distributed/lifeos/LifeOS/install/LIFEOS/TOOLS/DerivedSync.ts:570:30)\n\nBun v1.3.14 (Linux x64)\n"
+    }
+  ],
+  "errors": [],
+  "failures": [],
+  "skips": []
+}

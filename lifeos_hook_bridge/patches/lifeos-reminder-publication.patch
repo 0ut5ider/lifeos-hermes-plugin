@@ -1,0 +1,60 @@
+diff --git a/LifeOS/install/hooks/ReminderRouter.hook.ts b/LifeOS/install/hooks/ReminderRouter.hook.ts
+--- a/LifeOS/install/hooks/ReminderRouter.hook.ts
++++ b/LifeOS/install/hooks/ReminderRouter.hook.ts
+@@ -19,7 +19,8 @@
+  * Issue body includes the original prompt verbatim and any parsed absolute date.
+  */
+ 
+-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs";
++import { existsSync, readFileSync, mkdirSync } from "fs";
++import { atomicWriteText } from "../LIFEOS/PULSE/lib/atomic-write";
+ import { getDAName } from "./lib/identity"
+ 
+ import { createHash } from "crypto";
+@@ -149,7 +150,7 @@
+   // Cap: keep last 64 hashes per session.
+   if (data[sessionId].length > 64) data[sessionId] = data[sessionId].slice(-64);
+   mkdirSync(dirname(STATE_PATH), { recursive: true });
+-  writeFileSync(STATE_PATH, JSON.stringify(data));
++  atomicWriteText(STATE_PATH, JSON.stringify(data), 0o600);
+ }
+ 
+ // ── Issue creation ──────────────────────────────────────────────────────────
+@@ -189,15 +190,19 @@
+   return { title, body, labels };
+ }
+ 
+-async function createIssueDetached(repo: string, title: string, body: string, labels: string[]): Promise<void> {
++async function createIssue(repo: string, title: string, body: string, labels: string[]): Promise<boolean> {
+   const labelArgs = labels.flatMap((l) => ["--label", l]);
+-  // Detached so we never block the prompt; gh runs in the background.
++  // The registered hook runs asynchronously. Record delivery after the command succeeds.
+   const proc = Bun.spawn(
+     ["gh", "issue", "create", "--repo", repo, "--title", title, "--body", body, ...labelArgs],
+-    { stdout: "ignore", stderr: "pipe", timeout: 8000 },
++    { stdout: "ignore", stderr: "pipe", timeout: 4000 },
+   );
+-  // We do not await exited — fire-and-forget.
+-  proc.exited.catch(() => undefined);
++  const [exitCode, stderr] = await Promise.all([proc.exited, new Response(proc.stderr).text()]);
++  if (exitCode !== 0) {
++    console.error(`[ReminderRouter] issue creation failed (exit ${exitCode}): ${stderr.slice(0, 200)}`);
++    return false;
++  }
++  return true;
+ }
+ 
+ // ── Main ────────────────────────────────────────────────────────────────────
+@@ -226,10 +231,9 @@
+   if (alreadyRouted(sessionId, promptHash)) {
+     process.exit(0);
+   }
++  const { title, body, labels } = buildIssue(match, prompt);
++  if (!await createIssue(cfg.repo, title, body, labels)) process.exit(0);
+   markRouted(sessionId, promptHash);
+-
+-  const { title, body, labels } = buildIssue(match, prompt);
+-  await createIssueDetached(cfg.repo, title, body, labels);
+ 
+   console.error(`[ReminderRouter] routed ${match.kind} → ${cfg.repo}: ${title}`);
+   process.exit(0);

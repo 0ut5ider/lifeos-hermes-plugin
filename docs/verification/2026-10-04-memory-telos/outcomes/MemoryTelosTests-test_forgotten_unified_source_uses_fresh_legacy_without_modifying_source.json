@@ -1,0 +1,39 @@
+{
+  "case": "MemoryTelosTests.test_forgotten_unified_source_uses_fresh_legacy_without_modifying_source",
+  "native_source": "/home/outsider/.cache/lifeos-full-experience-20261004/lifecycle/memory-telos-final-distributed/lifeos/LifeOS/install",
+  "events": [
+    {
+      "kind": "native_cli",
+      "arguments": [],
+      "options": {
+        "context": true
+      },
+      "before": {
+        "sources": {
+          "LIFEOS/USER/TELOS/TELOS.md": "## Mission\n### M0: Synthetic unified mission\n\n## Goals\n### G0: Synthetic current goal\n\n## Context Filter\nSynthetic owner context filter.\n",
+          "LIFEOS/USER/TELOS/MISSION.md": "- M0: Synthetic current legacy mission\n",
+          "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\ncore:\n  full_name: SyntheticOperator\n---\n# Principal Identity\n"
+        },
+        "artifact": null
+      },
+      "status": 0,
+      "stdout": "\u2705 Generated PRINCIPAL_TELOS.md (36 lines) at /home/outsider/.cache/lifeos-plugin-memory/sol-review-fixes-final-diagnostics/home/tmp/native-memory-r_gv7emv/.claude/LIFEOS/USER/TELOS/PRINCIPAL_TELOS.md\n",
+      "stderr": "\ud83d\udccb TELOS summary regenerated: 36 lines from source files\n",
+      "after": {
+        "sources": {
+          "LIFEOS/USER/TELOS/TELOS.md": "## Mission\n### M0: Synthetic unified mission\n\n## Goals\n### G0: Synthetic current goal\n\n## Context Filter\nSynthetic owner context filter.\n",
+          "LIFEOS/USER/TELOS/MISSION.md": "- M0: Synthetic current legacy mission\n",
+          "LIFEOS/USER/PRINCIPAL/PRINCIPAL_IDENTITY.md": "---\ncore:\n  full_name: SyntheticOperator\n---\n# Principal Identity\n"
+        },
+        "artifact": {
+          "sha256": "ff73c01e53f7f383f532021bf9de601ae8ebc94febcb022d640195bd5d8646b9",
+          "content": "---\nlast_updated: 2026-10-04T20:05:49.258Z\nlast_updated_by: GenerateTelosSummary\nconvention: pai-freshness-v1\nderived_from: LIFEOS/USER/TELOS/TELOS.md\ngenerator: LIFEOS/TOOLS/GenerateTelosSummary.ts\n---\n\n# Principal TELOS\n\n> Auto-generated from TELOS source files. Do not edit manually.\n> Generated: 2026-10-04T20:05:49.258Z | Sources: MISSION, GOALS, PROBLEMS, STRATEGIES, PROJECTS, NARRATIVES, CHALLENGES, WRONG, TRAUMAS, MODELS, WISDOM\n\n## Missions\n\n- **M0**: Synthetic current legacy mission\n\n## Active Goals (2026)\n\n\n## Problems Being Solved\n\n\n## Strategies\n\n\n## Active Narratives\n\n\n## Personal Challenges\n\n\n## Context Filter\n\nWhen steering work, bias toward: human flourishing, Human 3.0 transition, AI augmentation strategies, becoming one's full self, correct framing.\n",
+          "mode": "0o600"
+        }
+      }
+    }
+  ],
+  "failures": [],
+  "errors": [],
+  "skips": []
+}

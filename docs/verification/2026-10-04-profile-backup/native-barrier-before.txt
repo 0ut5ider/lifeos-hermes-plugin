@@ -1,0 +1,15 @@
+F                                                                        [100%]
+=================================== FAILURES ===================================
+_ ProfileBackupTests.test_real_native_and_profile_writers_wait_for_one_coherent_snapshot _
+tests/test_profile_backup.py:174: in test_real_native_and_profile_writers_wait_for_one_coherent_snapshot
+    self.assertEqual(native_probe.returncode, 0, stdout + stderr)
+E   AssertionError: 1 != 0 : Traceback (most recent call last):
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/profile_backup_process.py", line 94, in <module>
+E       run(json.loads(sys.stdin.read()))
+E       ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E     File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/profile_backup_process.py", line 68, in run
+E       raise RuntimeError('The profile database writer bypasses the backup barrier')
+E   RuntimeError: The profile database writer bypasses the backup barrier
+=========================== short test summary info ============================
+FAILED tests/test_profile_backup.py::ProfileBackupTests::test_real_native_and_profile_writers_wait_for_one_coherent_snapshot
+1 failed, 9 deselected in 1.17s

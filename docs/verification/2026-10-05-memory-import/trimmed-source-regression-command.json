@@ -1,0 +1,26 @@
+{
+  "cwd": "/home/outsider/Projects/Hermes_agent/LifeOS_plugin",
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python3",
+    "-m",
+    "unittest",
+    "test_memory_import",
+    "test_memory_import_dashboard.MemoryImportDashboardTests",
+    "test_memory_publication_modes",
+    "test_memory_publication_recovery",
+    "test_memory_native",
+    "test_memory_proposals",
+    "test_memory_restore",
+    "test_memory_staging",
+    "test_memory_authorization",
+    "test_memory_backup",
+    "test_profile_backup",
+    "test_memory_preferences",
+    "test_memory_dashboard"
+  ],
+  "environment": {
+    "LIFEOS_MEMORY_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261005/paired-context-response/lifeos",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-full-experience-20261005/paired-context-response/hermes",
+    "PYTHONPATH": "tests:."
+  }
+}
