@@ -42,3 +42,17 @@ class HookCompletionAssertionTests(unittest.TestCase):
         for side in ('native', 'hermes'):
             record[side]['changes'][2]['native_audit_path'] = 'settings.json'
         self.assertTrue(check_control(record))
+
+    def test_real_evaluation_operations_require_every_measured_effect(self):
+        path = ROOT.parent / '2026-10-06-step1/evaluation-operations/operation-results.json'
+        for record in json.loads(path.read_text())['cases']:
+            self.assertEqual(check_control(record), [])
+            for field in ('hook_errors_absent', 'single_completed_run', 'runner_lock_absent',
+                          'valid_fire_state', 'passed', 'trial_output_matches', 'published_result_matches'):
+                changed = copy.deepcopy(record)
+                for side in ('native', 'hermes'):
+                    changed[side][field] = False
+                self.assertTrue(check_control(changed), field)
+            changed = copy.deepcopy(record)
+            changed['native_cli_dispatch'] = True
+            self.assertTrue(check_control(changed))

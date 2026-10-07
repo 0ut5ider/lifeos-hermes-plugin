@@ -6,6 +6,10 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Apply MCP deny and ask rules before transport execution. Preserve managed policy precedence and malformed policy review.
+- Publish concurrent evaluation fire state through separate temporary files. Preserve the evaluator's single-run lock.
+- Verify actual batch and concurrent file evaluations with private model responses.
+- Include the protected instruction approval patch in Hermes patch regeneration.
 - Deny unattended protected instruction writes before Hermes waits on an unavailable interactive approval queue.
 - Honor the native Pulse hook switch before dispatching skill or agent policy requests.
 - Detect shell-quoted literal system-write targets in the native Bash guard.

@@ -345,13 +345,19 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "permission-safety-01",
           "expected": "Actual Bash, Write, Edit, batch, and MCP targets receive allow, ask, or deny decisions.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/permission-controls/permission-results.json",
+            "docs/verification/2026-10-06-step1/permission-controls/mcp-results.json",
+            "docs/verification/2026-10-06-step1/permission-controls/tests.txt",
+            "docs/verification/2026-10-06-step1/permission-controls/required-repeat.txt",
+            "docs/verification/2026-10-06-step1/permission-controls/README.md"
+          ]
         },
         {
           "id": "permission-safety-02",
@@ -494,13 +500,17 @@
         "PostToolUse.9.4",
         "PostToolUse.10.4"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "evaluation-01",
           "expected": "Actual sentinel Write, Edit, and batch operations launch the configured real evaluation runner.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-operations/operation-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/wire-proof.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/source-identity.json"
+          ]
         },
         {
           "id": "evaluation-02",
@@ -515,8 +525,12 @@
         {
           "id": "evaluation-03",
           "expected": "Recent debounce, concurrent edits, absent runner, and nonsentinel changes preserve their applicable state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-operations/operation-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/wire-proof.json",
+            "docs/verification/2026-10-06-step1/evaluation-operations/source-identity.json"
+          ]
         },
         {
           "id": "evaluation-04",

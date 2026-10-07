@@ -1644,13 +1644,25 @@ class HookBridge:
     def _mcp_permission_verdict(
         self, tool_name: str, args: dict[str, Any], session_id: str, cwd: str, task_id: str = "",
     ) -> dict[str, Any] | None:
+        from .mcp_permissions import permission_decision
+
+        self.poll_config_changes(force=True)
+        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
+        host_paths = _task_uses_host_paths(task_id)
+        rule_decision = permission_decision(tool_name, [
+            settings for settings, _ in self._permission_sources(payload, task_id, host_paths)
+        ])
+        if rule_decision == "deny":
+            return {"action": "block", "message": f"LifeOS MCP permission rule denied {tool_name}"}
+        if rule_decision == "allow":
+            return None
         groups = self._hook_groups(
             "PermissionRequest", self._payload("PermissionRequest", session_id, cwd=cwd, tool_name=tool_name),
-            _task_uses_host_paths(task_id), task_id,
+            host_paths, task_id,
         )
-        if not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups):
+        if (rule_decision == "none"
+                and not any(_hook_matcher_matches(group.get("matcher", ""), tool_name) for group in groups)):
             return None
-        payload = self._payload("PermissionRequest", session_id, tool_name=tool_name, tool_input=args, cwd=cwd)
         outcomes = self._run("PermissionRequest", payload, tool_name, task_id=task_id)
         granted = False
         replacement = None
@@ -1661,7 +1673,7 @@ class HookBridge:
                 message = decision.get("reason") or process.stderr.strip() or "LifeOS denied the MCP call"
                 return {"action": "block", "message": str(message)[:2000]}
             if specific.get("hookEventName") == "PermissionRequest" and decision.get("behavior") == "allow":
-                granted = True
+                granted = rule_decision not in {"ask", "unknown"}
                 updated = decision.get("updatedInput")
                 if updated is not None:
                     if not isinstance(updated, dict):
@@ -1678,6 +1690,7 @@ class HookBridge:
             "action": "approve",
             "message": f"LifeOS requests review of MCP call {tool_name}",
             "rule_key": f"lifeos-mcp:{tool_name}:{fingerprint}",
+            **({"args": replacement} if replacement is not None else {}),
         }
 
     def _file_permission_verdict(

@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+# ABOUTME: Restores the isolated private relay for native child inference.
+# ABOUTME: Uses the pinned native CLI and selected local medium effort.
+import os,sys
+os.environ.update(ANTHROPIC_BASE_URL='http://127.0.0.1:42279', ANTHROPIC_AUTH_TOKEN="PAIR_EVAL", ANTHROPIC_MODEL="lifecycle-fixture", CLAUDE_CODE_EFFORT_LEVEL="medium")
+args=sys.argv[1:]
+for flag,value in [("--model","lifecycle-fixture"),("--effort","medium")]:
+ if flag in args: args[args.index(flag)+1]=value
+os.execv('/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-operations-final-results/batch/native/.local/bin/native-claude',["claude",*args])

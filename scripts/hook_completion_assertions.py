@@ -37,6 +37,13 @@ def check_control(record):
                 or actual.get('after', {}).get('context_in_model') != [True]
                 or actual.get('after', {}).get('user_response_delivered') is not True):
             errors.append('web result, safety annotation, or model delivery is missing')
+    elif name in {'evaluation-batch', 'evaluation-concurrent'}:
+        count = 2 if name == 'evaluation-batch' else 4
+        expected = {'files_applied': count, 'hook_calls': count, 'hook_errors_absent': True,
+                    'single_completed_run': True, 'runner_lock_absent': True, 'valid_fire_state': True,
+                    'passed': True, 'trial_output_matches': True, 'published_result_matches': True}
+        if record.get('errors') or native != expected:
+            errors.append('actual evaluation file effects, inference, or clean completion is missing')
     elif name in {'batch-success', 'batch-partial'}:
         partial = name == 'batch-partial'
         expected = {'isa_closed': True, 'view_matches_content': True, 'registry_present': True,

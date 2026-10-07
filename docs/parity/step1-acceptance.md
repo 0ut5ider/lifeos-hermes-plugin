@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 18 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 21 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -79,7 +79,7 @@ Registrations: PostToolUse.2.1, PostToolUse.3.1, PostToolUse.4.1, PostToolUse.5.
 
 Registrations: PermissionRequest.1.1, PermissionRequest.2.1.
 
-- [ ] `permission-safety-01`: Actual Bash, Write, Edit, batch, and MCP targets receive allow, ask, or deny decisions.
+- [x] `permission-safety-01`: Actual Bash, Write, Edit, batch, and MCP targets receive allow, ask, or deny decisions.
 - [ ] `permission-safety-02`: Interactive approval permits the reviewed operation; cancellation and unattended mode do not grant approval.
 - [ ] `permission-safety-03`: Prior approval, policy changes, managed policy, and trusted-project scope preserve denial precedence.
 - [ ] `permission-safety-04`: Compound commands, wrappers, redirects, path aliases, and remote namespaces preserve the supported rule contract.
@@ -115,9 +115,9 @@ Registrations: PostToolUse.8.3, PostToolUse.9.3, PostToolUse.10.3.
 
 Registrations: PostToolUse.8.4, PostToolUse.9.4, PostToolUse.10.4.
 
-- [ ] `evaluation-01`: Actual sentinel Write, Edit, and batch operations launch the configured real evaluation runner.
+- [x] `evaluation-01`: Actual sentinel Write, Edit, and batch operations launch the configured real evaluation runner.
 - [x] `evaluation-02`: Completed and failed evaluations publish their actual result and exit status.
-- [ ] `evaluation-03`: Recent debounce, concurrent edits, absent runner, and nonsentinel changes preserve their applicable state.
+- [x] `evaluation-03`: Recent debounce, concurrent edits, absent runner, and nonsentinel changes preserve their applicable state.
 - [x] `evaluation-04`: The actual Hermes file tool completes the measured CLAUDE.md sentinel write.
 
 ### atlas (package 3)

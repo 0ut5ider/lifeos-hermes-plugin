@@ -54,6 +54,7 @@ LIFEOS_PATCHES = (
     "lifeos-config-audit.patch",
     "lifeos-shell-literal-guard.patch",
     "lifeos-pulse-hook-switch.patch",
+    "lifeos-evaluation-publication.patch",
 )
 INSTALL_STEPS = ("InstallSettings", "DeployCore", "ScaffoldUser", "LinkUser",
                  "InstallHooks", "ActivateImports")

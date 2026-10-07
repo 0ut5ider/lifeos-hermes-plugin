@@ -69,10 +69,12 @@ class HostCommandPolicyTests(unittest.TestCase):
                         self.assertFalse(docker["approved"])
                         self.assertEqual(prompts, ["review", "docker"])
 
-                        hardline = check_all_command_guards(
-                            "rm -rf /", "local",
-                            approval_callback=lambda *args, **kwargs: self.fail("Hardline asked for approval"),
-                        )
+                        with self.assertLogs("tools.approval", level="WARNING") as blocked_log:
+                            hardline = check_all_command_guards(
+                                "rm -rf /", "local",
+                                approval_callback=lambda *args, **kwargs: self.fail("Hardline asked for approval"),
+                            )
+                        self.assertIn("Hardline block: recursive delete of root filesystem", blocked_log.output[0])
                         self.assertFalse(hardline["approved"])
 
                         log = Path(directory) / "LIFEOS/MEMORY/OBSERVABILITY/permission-decisions.jsonl"

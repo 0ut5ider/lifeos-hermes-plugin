@@ -5,10 +5,14 @@ import subprocess
 from pathlib import Path
 import tempfile
 import unittest
-from scripts.rebuild_hermes_patches import rebuild
+from scripts.rebuild_hermes_patches import GROUPS, rebuild
 from lifeos_hook_bridge.install_source import HERMES_PATCHES
 
 SOURCE = Path(os.environ.get('LIFEOS_HERMES_REBUILD_SOURCE', str(Path.home() / '.cache/lifeos-full-experience-20261005/validator-fix/hermes')))
+
+class PatchAssignmentTests(unittest.TestCase):
+    def test_all_distributed_patches_have_an_exact_file_group(self):
+        self.assertEqual(set(GROUPS), set(HERMES_PATCHES))
 
 @unittest.skipUnless((SOURCE / '.git').exists(), 'A prepared source checkout with new files marked for diff is required')
 class HermesPatchRegenerationTests(unittest.TestCase):

@@ -1,0 +1,21 @@
+{
+  "name": "paired-config-fixture",
+  "type": "regression",
+  "trials": 1,
+  "pass_threshold": 1,
+  "agent_level": "medium",
+  "judge_level": "medium",
+  "system_prompt": "Reply with exactly PAIR_EVAL_READY.",
+  "cases": [
+    {
+      "id": "marker",
+      "prompt": "Reply with exactly PAIR_EVAL_READY.",
+      "assert": [
+        {
+          "type": "equals",
+          "value": "PAIR_EVAL_READY"
+        }
+      ]
+    }
+  ]
+}

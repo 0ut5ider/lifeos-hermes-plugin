@@ -1,0 +1,23 @@
+{
+  "command": [
+    "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+    "-m",
+    "unittest",
+    "test_bridge",
+    "test_file_permissions",
+    "test_host_command_policy",
+    "test_mcp_permissions",
+    "test_mcp_rule_bridge",
+    "test_installed_permission_controls",
+    "test_native_evaluation_concurrency",
+    "-v"
+  ],
+  "environment": {
+    "TMPDIR": "/home/outsider/.cache/lhc6",
+    "PYTHONPATH": "tests:.:/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/hermes",
+    "LIFEOS_HERMES_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/hermes",
+    "LIFEOS_PERMISSION_HOOK": "/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/lifeos/LifeOS/install/hooks/Safety.hook.ts",
+    "LIFEOS_PERMISSION_EVIDENCE": "/home/outsider/.cache/lifeos-step1-20261006/permission-final",
+    "LIFEOS_GUARD_SOURCE": "/home/outsider/.cache/lifeos-step1-20261006/prepared-evaluation-final/lifeos/LifeOS/install"
+  }
+}

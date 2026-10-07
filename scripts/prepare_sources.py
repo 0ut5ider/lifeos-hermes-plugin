@@ -49,6 +49,7 @@ SOURCES = {
             "lifeos-config-audit.patch",
             "lifeos-shell-literal-guard.patch",
             "lifeos-pulse-hook-switch.patch",
+            "lifeos-evaluation-publication.patch",
         ),
     },
 }

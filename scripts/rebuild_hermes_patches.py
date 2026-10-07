@@ -54,6 +54,7 @@ GROUPS = {
     "hermes-web-result-status.patch": (
         "agent/display.py", "agent/tool_guardrails.py", "agent/tool_result_classification.py",
     ),
+    "hermes-protected-instruction-approval.patch": ("tools/file_tools_write_guards.py",),
 }
 
 
