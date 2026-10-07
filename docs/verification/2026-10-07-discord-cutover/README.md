@@ -1,41 +1,35 @@
 # Permanent Discord gateway cutover
 
-Date: 2026-10-07. Adrian selects `.252` as the sole future server and authorizes reuse of the existing Discord bot.
+Date: 2026-10-07. The actual Discord answer, timeout, cancellation, and recovery tests pass on `.252`. These results close `release-adapter-01` in the approved Step 1 checklist.
 
-The [deployment snapshot](deployment.json) records the source shutdown, destination connection, tested revisions, and current limits. The source gateway is inactive and masked. Its active configuration no longer contains the bot token. Existing source backups remain. The destination user service is active and enabled with linger. It connects as Shiny Hermes Bot in the existing `#hermes-212` channel.
+Adrian selects `.252` as the sole future server and authorizes reuse of Shiny Hermes Bot. The bot uses the existing `#hermes-212` channel. The `.212` gateway is masked and inactive, with MainPID 0. Its active configuration no longer contains the bot token. Existing source backups remain.
 
-## Verified preparation
-
-- The supported Hermes candidate applies all 11 compatibility patch groups.
-- The supported LifeOS candidate applies all 23 compatibility patch groups.
-- The destination runtime and Discord extra install successfully after `libatomic1` installation.
-- Plugin validation passes. It reports the stock `pre_llm_call` declaration warning on the patched host.
-- The fresh native installation and transactional mount complete for Adrian and Cerebo.
-- The private FlashNext carrier probe reports `HOLDS` at xhigh effort. Tier settings retain their existing values.
-- Credential files, configuration, capture configuration, and the recovery archive have mode 0600. The capture root has mode 0700.
-- The recorder's initial inventory sees all 74 registrations. Its 29 startup events contain no reported losses, capture gaps, incomplete invocations, or integrity issues.
-- Discord history access returns HTTP 200 from the destination account.
-
-These preparation checks do not close `release-adapter-01`. Managed memory ownership is not configured. No source conversations, personal memory, or scheduled jobs are imported.
+The [initial deployment snapshot](deployment.json) records preparation and the first gateway start. The [latest deployment](command-identity/deployment.json) publishes code commit `2d07208`, restores the 3600-second question timeout, and verifies the running service. Its source manifest contains all 11 Hermes patch groups. The LifeOS candidate contains all 23 compatibility patch groups. The fresh native store uses Adrian and Cerebo. No source conversations, personal memory, or scheduled jobs are imported. The private FlashNext effort mapping stays unchanged.
 
 ## Live acceptance
 
-Adrian confirms availability for the live tests. The first request uses marker `D252-ANSWER` and asks the model to call `clarify` with choices `D252-A` and `D252-B`. The actual tool result returns `D252-A`, and the delivered reply reports `D252-A`. Adrian confirms that he clicks `D252-A`. The returned option matches his selection. Question delivery and answer return pass. Subsequent requests must verify a genuine timeout and cancellation through Discord.
+The [answer evidence](answer.json) records the question at 16:37:36 UTC and the returned `D252-A` selection at 16:37:57 UTC. Adrian confirms that he clicks that choice. The bot reports the same choice. Both native question hooks exit 0.
 
-The [answer evidence](answer.json) records actual question delivery and answer return. The request arrives at 16:37:21 UTC. The bot posts the question at 16:37:36 UTC. The recorded tool result returns `D252-A` at 16:37:57 UTC. The bot delivers its matching report at 16:38:01 UTC. Both native question hooks complete with exit code 0. The capture contains 487 events with no reported losses, capture gaps, incomplete invocations, or integrity issues at this snapshot. Its 120 registration identities represent observed configuration versions, not 120 installed hooks.
+The [timeout evidence](timeout.json) records an unanswered question at 17:19:50 UTC. The tool waits 120.38 seconds and returns an empty answer with a two-minute timeout notice. No answer arrives before the delivered report. Both native question hooks exit 0.
 
-The [timeout evidence](timeout.json) verifies the unanswered `D252-TIMEOUT` request. The bot posts the question at 17:19:50 UTC. The tool waits 120.38 seconds and returns an empty answer with the notice `[user did not respond within 2m]`. No user text arrives between the request and the delivered timeout report at 17:21:56 UTC. Both native question hooks complete with exit code 0. The capture's 873 events contain no reported losses, capture gaps, incomplete invocations, or integrity issues. The recorder redacts the `timed_out` boolean; the empty answer, notice, duration, and delivered report remain observable.
+The [cancellation evidence](cancellation.json) records `D252-CANCEL-3` after a Discord client refresh. The question appears at 19:32:03 UTC. The observer receives Shiny Hermes Bot's `/stop` at 19:32:20 UTC. Authorization and defer succeed. The gateway invalidates the turn generation and releases the question. The tool finishes after 17.954 seconds against a 120-second deadline. Both native question hooks exit 0. The bot sends its stopped notice. The next request receives `D252-RECOVERY-3-PASS` at 19:33:09 UTC. Adrian confirms immediate stop and recovery and supplies a screenshot.
 
-Cancellation and post-cancellation recovery remain pending. The acceptance timeout is temporarily 120 seconds. Restore 3600 seconds after the tests. The cancellation request uses marker `D252-CANCEL`. The intended sequence sends `/stop` while the question is pending, then sends `D252-RECOVERY` to verify that the session accepts a normal next turn.
+The clarification tool represents a cleared waiter as an empty timeout result. The recovery model therefore gives a misleading timeout explanation. The interruption events, measured duration, and next reply establish cancellation. The recorder redacts the `timed_out` boolean, so that field is not evidence for this result.
 
-The [first cancellation attempt](cancellation-attempt.json) does not verify cancellation. The bot posts the question at 17:45:20 UTC. The tool waits 120.60 seconds and returns another timeout at 17:47:22 UTC. The bot reports that timeout at 17:47:27 UTC. Its claim that this behaves as planned cancellation is incorrect. The normal recovery request arrives at 18:23:54 UTC and receives `D252-RECOVERY-PASS` at 18:24:08 UTC. Adrian supplies a screenshot of that reply. This verifies recovery after timeout. It does not prove that `/stop` interrupts a pending question. Adrian confirms that he sends the Shiny Hermes Bot slash command while the question waits. This is a failed cancellation attempt. Keep `release-adapter-01` unverified.
+## Corrections and failed attempts
+
+The [first cancellation attempt](cancellation-attempt.json) reaches the full timeout and does not verify cancellation. The [gateway regression](cancellation-regression/README.md) independently reproduces a waiter that remains blocked after interruption. Synchronous cleanup after generation invalidation releases the waiter, rejects late answers, preserves another chat's question, and permits a successor question.
+
+The [second attempt and refresh](slash-refresh.json) show `Unknown Integration` before gateway delivery. Ctrl+R restores actual `/status` receipt and reply delivery. The [command identity regression](command-identity/README.md) verifies that the startup comparison deletes and recreates unchanged commands when Discord returns explicit default installation settings. A stale client command remains the supported inference for that delivery failure.
+
+The command sync correction compares inherited settings without treating them as edits. Changed commands use Discord's same-name/type upsert route. The real API preserves `/stop` ID and version. After deployment, startup preserves all 69 existing command IDs and versions and creates the missing `kanban` command. It updates, deletes, and recreates no existing commands. Nine deployed regression cases, 14 neighboring Discord cases, and 13 patch and source transaction cases pass.
 
 ## Evidence and recovery
 
-Private installation logs, receipts, identity originals, configuration archive, diagnostics, and Discord test messages stay under `/home/lifeos-hermes/migration/2026-10-07/` on `.252`. The recorder writes to `~/.local/state/lifeos-development-capture` as run `development-20261007T161339Z`. Captured conversation content stays outside Git.
+The final capture snapshot contains 2,679 events with no incomplete invocations, losses, capture failure processes, capture gaps, or integrity issues. The recorder pins 10 inspected sources. Its registration identities include observed configuration versions; the installed native inventory remains 74 registrations.
 
-Recovery stays on `.252`. Stop its gateway before restoring its private configuration archive, then restart and verify the connection. Do not reconnect the bot on `.212`.
+Private receipts, diagnostics, configuration recovery files, and raw Discord messages stay under `/home/lifeos-hermes/migration/2026-10-07/` on `.252`. The recorder writes under `~/.local/state/lifeos-development-capture` as run `development-20261007T161339Z`. Conversation content and screenshots stay outside Git. The capture root has mode 0700. Credential and configuration files have mode 0600.
 
-The [cutover notes](../../../notes/2026-10-07-discord-cutover.md) retain the partial-clone trap and the measured native mount failure with indentless YAML lists. The prepared account uses conventional list indentation. Voice, managed memory activation, and combined release verification remain separate gates.
+The latest deployment record names the private rollback directory. Stop the gateway before restoring saved source files, the source manifest, the plugin package, profile configuration, and capture configuration. Restart the gateway and verify its connection. The rollback configuration contains the temporary 120-second timeout. Set 3600 seconds when acceptance testing is finished. Do not reconnect the bot on `.212`.
 
-The [cancellation regression](cancellation-regression/README.md) reproduces a blocked question in the actual gateway stop routine. The staged correction releases that waiter. The repeat Discord test must still verify slash dispatch, immediate cancellation, and recovery.
+The [cutover notes](../../../notes/2026-10-07-discord-cutover.md) retain the partial-clone trap and native mount failure with indentless YAML lists. Runtime installation needs Ubuntu `libatomic1`. Plugin validation passes with the documented stock `pre_llm_call` declaration warning. Managed memory activation, Discord voice, and broader combined release verification remain separate gates.

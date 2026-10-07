@@ -2701,13 +2701,21 @@
         "PreToolUse.4.1",
         "PostToolUse.6.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "release-adapter-01",
           "expected": "Actual Discord question, answer, timeout, and cancellation delivery pass after the single-gateway migration.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-discord-cutover/README.md",
+            "docs/verification/2026-10-07-discord-cutover/answer.json",
+            "docs/verification/2026-10-07-discord-cutover/timeout.json",
+            "docs/verification/2026-10-07-discord-cutover/cancellation.json",
+            "docs/verification/2026-10-07-discord-cutover/slash-refresh.json",
+            "docs/verification/2026-10-07-discord-cutover/command-identity/deployment.json",
+            "docs/verification/2026-10-07-discord-cutover/command-identity/deployed-tests.txt"
+          ]
         }
       ],
       "release_acceptance": true

@@ -9,7 +9,7 @@ The bundle uses eleven Hermes patch groups and twenty-three LifeOS patches. It t
 | `hermes-plugin-events.patch` | Required policy dispatch, tool events, and result composition |
 | `hermes-turn-gates.patch` | Prompt admission, final-answer gates, turn outcomes, and effective route facts |
 | `hermes-command-policy.patch` | Command decisions, replacements, review scope, nested execution, and denial precedence |
-| `hermes-session-lifecycle.patch` | Session start, resume, clear, and end events |
+| `hermes-session-lifecycle.patch` | Session start, resume, clear, and end events; pending question interruption; Discord command identity |
 | `hermes-child-routing.patch` | Independent provider, model, and effort for each child |
 | `hermes-strict-inference.patch` | Selected-provider inference without provider fallback |
 | `hermes-remote-files.patch` | Remote whole-file stale-write protection |

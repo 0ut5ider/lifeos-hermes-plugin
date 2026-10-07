@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-07. This checklist implements the nine-package plan accepted by Adrian. 151 of 152 scenarios have verified evidence. Enabled delivery to the approved private GitHub test repository passes. All development scenarios pass; actual Discord delivery remains combined-release acceptance.
+Date: 2026-10-07. This checklist implements the nine-package plan accepted by Adrian. All 152 scenarios have verified evidence. Enabled delivery to the approved private GitHub test repository passes. All development scenarios and actual Discord delivery pass. The broader combined release remains separate.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Native web and batch dispatch limits remain distinct from functional handler evidence.
 
@@ -394,7 +394,7 @@ Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, P
 
 Registrations: PreToolUse.4.1, PostToolUse.6.1.
 
-- [ ] `release-adapter-01`: Actual Discord question, answer, timeout, and cancellation delivery pass after the single-gateway migration.
+- [x] `release-adapter-01`: Actual Discord question, answer, timeout, and cancellation delivery pass after the single-gateway migration.
 
 ### regression-gates (package 9)
 
