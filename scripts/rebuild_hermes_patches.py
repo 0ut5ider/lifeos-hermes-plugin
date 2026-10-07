@@ -39,6 +39,8 @@ GROUPS = {
         "cli.py", "gateway/slash_commands_session.py", "gateway/run_agent_cache.py", "hermes_cli/cli_commands_mixin.py",
         "hermes_cli/cli_session_mixin.py", "hermes_cli/cli_tui_runtime_mixin.py",
         "tests/gateway/test_resume_command.py", "tests/gateway/test_stop_clarify_waiters.py",
+        "plugins/platforms/discord/adapter.py", "tests/gateway/test_discord_command_identity.py",
+        "tests/gateway/test_discord_connect.py", "tests/gateway/test_discord_sync_limit.py",
         "tests/hermes_cli/test_cli_resume_command.py",
     ),
     "hermes-child-routing.patch": ("tools/delegate_tool.py", "tests/test_lifeos_delegate_tier_route.py"),

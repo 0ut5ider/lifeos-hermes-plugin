@@ -6,6 +6,7 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Preserve Discord command IDs during synchronization. Compare inherited settings without recreating unchanged commands.
 - Release pending clarification waiters when the gateway interrupts their turn.
 - Record Discord slash routing and dispatch without interaction tokens or option values.
 

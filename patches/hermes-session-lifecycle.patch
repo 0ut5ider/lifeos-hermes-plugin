@@ -123,6 +123,210 @@ index 9eeb62a63..439d5e04b 100644
 +        _run_cleanup(reason="prompt_input_exit" if at_prompt else "shutdown", session_id=self.session_id)
          self._print_exit_summary()
          self._release_active_session()
+diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
+index 905186ce2..0d0793bbd 100644
+--- a/plugins/platforms/discord/adapter.py
++++ b/plugins/platforms/discord/adapter.py
+@@ -1,3 +1,6 @@
++# ABOUTME: Connects the Discord gateway and routes messages, interactions, and replies.
++# ABOUTME: Synchronizes application commands while retaining existing command identities.
++
+ from __future__ import annotations
+ 
+ """
+@@ -2899,15 +2902,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+             current_existing_payload = self._existing_command_to_payload(current)
+             current_payload = self._canonicalize_app_command_payload(current_existing_payload)
+             desired_payload = self._canonicalize_app_command_payload(desired)
++            # Unset contexts inherit Discord's defaults; an explicit server value is not a change.
++            for field in ("contexts", "integration_types"):
++                if desired.get(field) is None:
++                    desired_payload[field] = current_payload[field]
+             if current_payload == desired_payload:
+                 summary["unchanged"] += 1
+                 continue
+-            if self._patchable_app_command_payload(current_existing_payload) == self._patchable_app_command_payload(desired):
+-                await mutate(http.delete_global_command, app_id, current.id)
+-                await mutate(http.upsert_global_command, app_id, desired)
+-                summary["recreated"] += 1
+-                continue
+-            await mutate(http.edit_global_command, app_id, current.id, desired)
++            # Discord's same-name/type upsert updates all fields and preserves the command ID.
++            await mutate(http.upsert_global_command, app_id, desired)
+             summary["updated"] += 1
+         summary["total"] = len(desired_payloads)
+         return summary
+diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
+new file mode 100644
+index 000000000..a2021d519
+--- /dev/null
++++ b/tests/gateway/test_discord_command_identity.py
+@@ -0,0 +1,107 @@
++# ABOUTME: Exercises command synchronization with real Discord command models and trees.
++# ABOUTME: Checks inherited settings, explicit updates, and command identity with isolated transport state.
++
++import copy
++import unittest
++
++import discord
++from discord.ext import commands
++
++from gateway.config import PlatformConfig
++from plugins.platforms.discord.adapter import DiscordAdapter
++
++
++class CommandTransport:
++    """Keep API state in memory for unit tests; live Discord acceptance is separate."""
++
++    def __init__(self, payload):
++        self.payloads = {payload["id"]: copy.deepcopy(payload)}
++        self.operations = []
++
++    async def get_global_commands(self, application_id):
++        return copy.deepcopy(list(self.payloads.values()))
++
++    async def close(self):
++        pass
++
++    async def delete_global_command(self, application_id, command_id):
++        self.operations.append(("delete", command_id))
++        del self.payloads[str(command_id)]
++
++    async def upsert_global_command(self, application_id, payload):
++        current = next((item for item in self.payloads.values()
++                        if item["name"] == payload["name"] and item["type"] == payload["type"]), None)
++        command_id = current["id"] if current else "456"
++        result = {**(current or {}), **copy.deepcopy(payload), "id": command_id,
++                  "application_id": str(application_id)}
++        self.payloads[command_id] = result
++        self.operations.append(("upsert", command_id))
++        return copy.deepcopy(result)
++
++    async def edit_global_command(self, application_id, command_id, payload):
++        # discord.py only forwards these fields on its edit route.
++        result = self.payloads[str(command_id)]
++        result.update({key: copy.deepcopy(payload[key]) for key in ("name", "description", "options")
++                       if key in payload})
++        self.operations.append(("edit", str(command_id)))
++        return copy.deepcopy(result)
++
++
++class DiscordCommandIdentityTests(unittest.IsolatedAsyncioTestCase):
++    async def asyncSetUp(self):
++        self.bot = commands.Bot(command_prefix="!", intents=discord.Intents.none(), application_id=999)
++        self.addAsyncCleanup(self.bot.close)
++
++        async def stop(interaction):
++            pass
++
++        self.command = discord.app_commands.Command(name="stop", description="Stop Hermes", callback=stop)
++        self.bot.tree.add_command(self.command)
++        self.payload = {**self.command.to_dict(self.bot.tree), "id": "123", "application_id": "999",
++                        "integration_types": [0, 1], "contexts": [0, 1, 2]}
++        self.transport = CommandTransport(self.payload)
++        self.bot.http = self.transport
++        self.bot.tree._http = self.transport
++        self.adapter = DiscordAdapter(PlatformConfig(enabled=True, token="synthetic-offline-token"))
++        self.adapter._client = self.bot
++
++    async def test_inherited_settings_keep_an_unchanged_command(self):
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["unchanged"], 1)
++        self.assertEqual(self.transport.operations, [])
++        self.assertIn("123", self.transport.payloads)
++
++    async def test_explicit_settings_change_keeps_the_command_id(self):
++        self.command.nsfw = True
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(summary["recreated"], 0)
++        self.assertIn("123", self.transport.payloads)
++        self.assertTrue(self.transport.payloads["123"]["nsfw"])
++        self.assertNotIn(("delete", 123), self.transport.operations)
++
++    async def test_description_and_settings_change_both_reach_the_api(self):
++        self.command.description = "Stop the running Hermes agent"
++        self.command.nsfw = True
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(self.transport.payloads["123"]["description"], self.command.description)
++        self.assertTrue(self.transport.payloads["123"]["nsfw"])
++
++    async def test_explicit_contexts_do_not_match_other_contexts(self):
++        self.command.allowed_contexts = discord.app_commands.AppCommandContext(guild=True, dm_channel=False,
++                                                                               private_channel=False)
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(self.transport.payloads["123"]["contexts"], [0])
++
++    async def test_description_change_updates_the_existing_command(self):
++        self.command.description = "Stop the running Hermes agent"
++        summary = await self.adapter._safe_sync_slash_commands()
++        self.assertEqual(summary["updated"], 1)
++        self.assertEqual(self.transport.payloads["123"]["description"], self.command.description)
++        self.assertEqual(summary["deleted"], 0)
++
++
++if __name__ == "__main__":
++    unittest.main()
+diff --git a/tests/gateway/test_discord_connect.py b/tests/gateway/test_discord_connect.py
+index ad1413251..4f29dd9ef 100644
+--- a/tests/gateway/test_discord_connect.py
++++ b/tests/gateway/test_discord_connect.py
+@@ -1,9 +1,12 @@
++# ABOUTME: Checks Discord connection, command synchronization, and gateway recovery behavior.
++# ABOUTME: Isolates network transport while verifying adapter state and command decisions.
++
+ import asyncio
+ import json
+ import os
+ import sys
+ from types import SimpleNamespace
+-from unittest.mock import AsyncMock, MagicMock
++from unittest.mock import AsyncMock, MagicMock, call
+ 
+ import pytest
+ 
+@@ -459,8 +462,10 @@ async def test_safe_sync_slash_commands_only_mutates_diffs():
+         "created": 1,
+         "deleted": 1,
+     }
+-    fake_http.edit_global_command.assert_awaited_once_with(999, 12, desired_updated)
+-    fake_http.upsert_global_command.assert_awaited_once_with(999, desired_created)
++    fake_http.edit_global_command.assert_not_awaited()
++    assert fake_http.upsert_global_command.await_args_list == [
++        call(999, desired_updated), call(999, desired_created),
++    ]
+     fake_http.delete_global_command.assert_awaited_once_with(999, 13)
+ 
+ 
+diff --git a/tests/gateway/test_discord_sync_limit.py b/tests/gateway/test_discord_sync_limit.py
+index ca8f298f8..4a94ec585 100644
+--- a/tests/gateway/test_discord_sync_limit.py
++++ b/tests/gateway/test_discord_sync_limit.py
+@@ -1,3 +1,6 @@
++# ABOUTME: Checks that Discord command synchronization stays below the command limit.
++# ABOUTME: Uses the actual payload comparison with isolated command transport calls.
++
+ """Test Discord slash command sync respects the 100-command hard limit."""
+ 
+ from types import SimpleNamespace
+@@ -51,7 +54,6 @@ def adapter():
+ 
+     adapter._sleep_between_command_sync_mutations = AsyncMock()
+     adapter._existing_command_to_payload = MagicMock(side_effect=lambda cmd: {"name": cmd.name})
+-    adapter._canonicalize_app_command_payload = MagicMock(side_effect=lambda p: p)
+     adapter._patchable_app_command_payload = MagicMock(side_effect=lambda p: p)
+ 
+     return adapter
+@@ -81,7 +83,6 @@ async def test_safe_sync_deletes_before_creating():
+     adapter._client.application_id = "test_app_id"
+     adapter._sleep_between_command_sync_mutations = AsyncMock()
+     adapter._existing_command_to_payload = MagicMock(side_effect=lambda cmd: {"name": cmd.name})
+-    adapter._canonicalize_app_command_payload = MagicMock(side_effect=lambda p: p)
+     adapter._patchable_app_command_payload = MagicMock(side_effect=lambda p: p)
+ 
+     # Simulate having 100 commands on Discord, with 1 that's no longer desired
 diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
 index a114eae37..ee2a0c2f1 100644
 --- a/tests/gateway/test_resume_command.py
