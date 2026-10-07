@@ -8,7 +8,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import tempfile
-import threading
+from queue import Queue
 import unittest
 
 from lifeos_hook_bridge.bridge import HookBridge, _tool_input
@@ -33,7 +33,7 @@ class NativeClarifyTests(unittest.TestCase):
                        "KITTY_LISTEN_ON": f"unix:{folder}/absent-kitty.sock", "TERM": "xterm-kitty"}
         return root, state, environment
 
-    def round_trip(self, outcome):
+    def round_trip(self, outcome, count=1, single=False):
         from tools import clarify_gateway as queue
         from tools.clarify_tool import clarify_tool
 
@@ -46,7 +46,9 @@ class NativeClarifyTests(unittest.TestCase):
             bridge.environment.update(environment)
             self.addCleanup(bridge.close)
             args = {"question": "Fixture batch title", "questions": [
-                {"question": "Choose the fixture mode", "choices": ["A", "B"]}]}
+                {"question": "Choose the fixture mode " + str(index), "choices": ["A", "B"]} for index in range(count)]}
+            if single:
+                args = {"question": "Choose the fixture mode", "choices": ["A", "B"]}
             native_input = _tool_input("AskUserQuestion", args, str(home), "")
             payload = {"tool_name": "AskUserQuestion", "tool_input": native_input,
                        "session_id": "fixture-parent", "transcript_path": str(home / "unused-transcript")}
@@ -72,27 +74,33 @@ class NativeClarifyTests(unittest.TestCase):
             self.assertEqual(waiting["previousTitle"], "Inspecting report")
             self.assertIn("Choose the fixture", waiting["title"])
             self.assertNotIn("batch title", waiting["title"])
-            pending = threading.Event()
+            pending = Queue()
+            entries = []
             entry_id = "fixture-question-" + outcome
 
             def adapter(question, choices, multi_select=False):
-                queue.register(entry_id, "fixture-chat", question, choices, multi_select)
-                pending.set()
-                return queue.wait_for_response(entry_id, 0.1 if outcome == "timeout" else 5)
+                current_id = entry_id + "-" + str(len(entries))
+                entries.append(current_id)
+                queue.register(current_id, "fixture-chat", question, choices, multi_select)
+                pending.put(current_id)
+                return queue.wait_for_response(current_id, 0.1 if outcome == "timeout" else 5)
 
             try:
                 with ThreadPoolExecutor(max_workers=1) as worker:
                     result = worker.submit(clarify_tool, **args, callback=adapter)
-                    self.assertTrue(pending.wait(5))
-                    self.assertFalse(result.done())
-                    if outcome == "answer":
-                        self.assertTrue(queue.resolve_gateway_clarify(entry_id, "A"))
-                        self.assertFalse(queue.resolve_gateway_clarify(entry_id, "B"))
-                    elif outcome == "cancel":
-                        self.assertEqual(queue.clear_session("fixture-chat"), 1)
+                    for index in range(count if outcome == "answer" else 1):
+                        current_id = pending.get(timeout=5)
+                        self.assertFalse(result.done())
+                        if outcome == "answer":
+                            self.assertTrue(queue.resolve_gateway_clarify(current_id, "A"))
+                            self.assertFalse(queue.resolve_gateway_clarify(current_id, "B"))
+                        elif outcome == "cancel":
+                            self.assertEqual(queue.clear_session("fixture-chat"), 1)
                     returned = result.result(timeout=6)
                 data = json.loads(returned)
-                self.assertEqual(data["responses"][0]["user_response"], "A" if outcome == "answer" else "")
+                responses = [data] if single else data["responses"]
+                self.assertEqual(len(responses), count)
+                self.assertTrue(all(row["user_response"] == ("A" if outcome == "answer" else "") for row in responses), data)
                 self.assertEqual(bool(data.get("timed_out")), outcome == "timeout")
                 bridge.post_tool_call("clarify", args, returned, session_id="fixture-parent", tool_call_id="question-1")
                 native("PostToolUse")
@@ -103,7 +111,7 @@ class NativeClarifyTests(unittest.TestCase):
                 self.assertNotIn("activity", restored)
                 self.assertNotIn("previousTitle", restored)
                 self.assertIsNone(queue.get_pending_for_session("fixture-chat", include_choice_prompts=True))
-                self.assertFalse(queue.resolve_gateway_clarify(entry_id, "late answer"))
+                self.assertTrue(all(not queue.resolve_gateway_clarify(current_id, "late answer") for current_id in entries))
             finally:
                 queue.clear_session("fixture-chat")
 
@@ -115,3 +123,39 @@ class NativeClarifyTests(unittest.TestCase):
 
     def test_cancel_restores_the_prior_state_without_reopening_the_prompt(self):
         self.round_trip("cancel")
+
+    def test_two_independent_questions_restore_the_same_prior_state(self):
+        self.round_trip("answer", count=2)
+
+    def test_single_question_restores_the_prior_state(self):
+        self.round_trip("answer", single=True)
+
+    def test_finalization_clears_pending_question_and_resets_only_desktop_state(self):
+        from tools import clarify_gateway as queue
+        for platform in ('cli', 'discord'):
+            with self.subTest(platform=platform), tempfile.TemporaryDirectory() as directory:
+                home = Path(directory)
+                root, state, environment = self.fixture(home, Path(SOURCE)/'hooks/TabState.hook.ts')
+                settings = json.loads((root/'settings.json').read_text())
+                settings['hooks']['SessionEnd'] = [{'hooks':[{'type':'command',
+                    'command': 'bun '+str(Path(SOURCE)/'hooks/SessionCleanup.hook.ts')}]}]
+                (root/'settings.json').write_text(json.dumps(settings))
+                bridge = HookBridge(root/'settings.json', root, lifeos_home=home)
+                self.addCleanup(bridge.close)
+                bridge.environment.update(environment)
+                bridge.environment['LIFEOS_NOTIFICATION_CHANNEL'] = 'desktop' if platform == 'cli' else 'discord'
+                bridge.session_platforms['ending'] = platform
+                prior = state.read_bytes()
+                other = state.with_name('778.json')
+                other.write_bytes(prior)
+                bridge.pre_tool_call('clarify', {'question':'Choose the fixture mode'}, session_id='ending')
+                queue.register('ending-question', 'ending', 'Choose the fixture mode', None)
+                bridge.session_end(session_id='ending', reason='prompt_input_exit')
+                self.assertEqual(queue.clear_session('ending'), 1)
+                self.assertEqual(queue.wait_for_response('ending-question', .1), None)
+                self.assertFalse(queue.resolve_gateway_clarify('ending-question', 'late'))
+                if platform == 'discord':
+                    self.assertEqual(state.read_bytes(), prior)
+                else:
+                    self.assertFalse(state.exists())
+                self.assertEqual(other.read_bytes(), prior)

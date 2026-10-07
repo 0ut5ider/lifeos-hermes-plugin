@@ -6,6 +6,12 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Correlate native child starts and stops with actual Hermes subagent callbacks.
+- Record the observed response model separately from the selected child model.
+- Coalesce current native clock context and discard stale asynchronous clock results.
+- Apply the remote terminal guard to native ascent-state writes.
+- Verify single and batch questions, finalization, child failure, and cancellation.
+
 - Coordinate native post-hook state writes for parallel calls in one session.
 - Verify detached audit rows after parent interruption and real task-board governance.
 

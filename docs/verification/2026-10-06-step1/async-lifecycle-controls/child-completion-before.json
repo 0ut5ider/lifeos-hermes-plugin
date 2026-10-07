@@ -1,0 +1,113 @@
+{
+  "actual_parent_response": "PAIR_PARENT_DISPATCHED",
+  "actual_completions": [
+    {
+      "type": "async_delegation",
+      "delegation_id": "deleg_e8f26ce9",
+      "session_key": "fixture-parent",
+      "origin_ui_session_id": "",
+      "origin_session_id": "",
+      "parent_session_id": "20261007_030824_b54efe",
+      "goal": "2 parallel subagents: Reply with exactly PAIR_CHILD_A; Reply with exactly PAIR_CHILD_B",
+      "goals": [
+        "Reply with exactly PAIR_CHILD_A",
+        "Reply with exactly PAIR_CHILD_B"
+      ],
+      "context": null,
+      "toolsets": null,
+      "role": "leaf",
+      "model": null,
+      "status": "completed",
+      "is_batch": true,
+      "results": [
+        {
+          "task_index": 0,
+          "status": "completed",
+          "summary": "PAIR_CHILD_A",
+          "api_calls": 1,
+          "duration_seconds": 1.47,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 775,
+            "output": 20
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/before2/.hermes/cache/delegation/live/deleg_e8f26ce9/task-0.log"
+        },
+        {
+          "task_index": 1,
+          "status": "completed",
+          "summary": "PAIR_CHILD_B",
+          "api_calls": 1,
+          "duration_seconds": 1.46,
+          "model": "lifecycle-fixture",
+          "exit_reason": "completed",
+          "truncated": false,
+          "tokens": {
+            "input": 775,
+            "output": 20
+          },
+          "tool_trace": [],
+          "cost_usd": 0.0,
+          "cost_status": "unknown",
+          "live_transcript": "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/before2/.hermes/cache/delegation/live/deleg_e8f26ce9/task-1.log"
+        }
+      ],
+      "live_transcripts": [
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/before2/.hermes/cache/delegation/live/deleg_e8f26ce9/task-0.log",
+        "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/before2/.hermes/cache/delegation/live/deleg_e8f26ce9/task-1.log"
+      ],
+      "error": null,
+      "total_duration_seconds": 1.69,
+      "dispatched_at": 1791342513.161431,
+      "completed_at": 1791342514.7622375
+    }
+  ],
+  "native_events": [
+    {
+      "timestamp": "2026-10-07T03:08:33+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_030824_b54efe",
+      "subagent_id": "20261007_030824_b54efe::Reply with exactly PAIR_CHILD_A",
+      "subagent_type": "general-purpose",
+      "subagent_model": "flashnext-w4a16-fp8ple",
+      "subagent_level": "session-inherited",
+      "description": "Reply with exactly PAIR_CHILD_A",
+      "prompt_preview": "Reply with exactly PAIR_CHILD_A"
+    },
+    {
+      "timestamp": "2026-10-07T03:08:33+00:00",
+      "event": "subagent_start",
+      "session_id": "20261007_030824_b54efe",
+      "subagent_id": "20261007_030824_b54efe::Reply with exactly PAIR_CHILD_B",
+      "subagent_type": "general-purpose",
+      "subagent_model": "flashnext-w4a16-fp8ple",
+      "subagent_level": "session-inherited",
+      "description": "Reply with exactly PAIR_CHILD_B",
+      "prompt_preview": "Reply with exactly PAIR_CHILD_B"
+    },
+    {
+      "timestamp": "2026-10-07T03:08:33+00:00",
+      "event": "subagent_spawned_async",
+      "session_id": "20261007_030824_b54efe",
+      "subagent_id": "20261007_030824_b54efe::Reply with exactly PAIR_CHILD_A",
+      "subagent_type": "general-purpose",
+      "description": "Reply with exactly PAIR_CHILD_A",
+      "duration_seconds": null
+    },
+    {
+      "timestamp": "2026-10-07T03:08:33+00:00",
+      "event": "subagent_spawned_async",
+      "session_id": "20261007_030824_b54efe",
+      "subagent_id": "20261007_030824_b54efe::Reply with exactly PAIR_CHILD_B",
+      "subagent_type": "general-purpose",
+      "description": "Reply with exactly PAIR_CHILD_B",
+      "duration_seconds": null
+    }
+  ],
+  "parent_session_id": "20261007_030824_b54efe"
+}

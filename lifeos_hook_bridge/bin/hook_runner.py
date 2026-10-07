@@ -8,6 +8,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import time
 from pathlib import Path
 
 
@@ -98,6 +99,8 @@ def _save_context(request: dict, response: str) -> None:
         "additionalContext": context if isinstance(context, str) else "",
         "systemMessage": message if isinstance(message, str) else "",
     }
+    if request.get("context_kind") == "clock":
+        values.update(context_kind="clock", queued_at=request.get("queued_at"), completed_at=time.time())
     if not values["additionalContext"].strip() and not values["systemMessage"].strip():
         return
     destination = request.get("result_path")

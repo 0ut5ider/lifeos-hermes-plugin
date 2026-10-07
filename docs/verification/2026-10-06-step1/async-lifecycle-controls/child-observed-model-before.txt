@@ -1,0 +1,15 @@
+test_callbacks_record_one_start_and_one_stop_per_actual_child_identity (test_child_lifecycle.ChildLifecycleTests.test_callbacks_record_one_start_and_one_stop_per_actual_child_identity) ... FAIL
+
+======================================================================
+FAIL: test_callbacks_record_one_start_and_one_stop_per_actual_child_identity (test_child_lifecycle.ChildLifecycleTests.test_callbacks_record_one_start_and_one_stop_per_actual_child_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_child_lifecycle.py", line 59, in test_callbacks_record_one_start_and_one_stop_per_actual_child_identity
+    self.assertTrue(all(row.get('subagent_observed_model') == 'actual-child-model' for row in stops), stops)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : [{'timestamp': '2026-10-07T03:22:28+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-2]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-2]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:28+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-1]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-1]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:28+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-0]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-0]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:28+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-3]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-3]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:29+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-4]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-4]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:29+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-5]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-5]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:29+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-7]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-7]', 'duration_seconds': 0}, {'timestamp': '2026-10-07T03:22:29+00:00', 'event': 'subagent_stop', 'session_id': 'parent', 'subagent_id': 'parent::Same goal for each child [child-6]', 'subagent_type': 'leaf', 'description': 'Same goal for each child [child-6]', 'duration_seconds': 0}]
+
+----------------------------------------------------------------------
+Ran 1 test in 1.118s
+
+FAILED (failures=1)

@@ -1,0 +1,13 @@
+======================================================================
+FAIL: test_finalization_clears_pending_question_and_resets_only_desktop_state (test_native_clarify.NativeClarifyTests.test_finalization_clears_pending_question_and_resets_only_desktop_state) (platform='discord')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_native_clarify.py", line 158, in test_finalization_clears_pending_question_and_resets_only_desktop_state
+    self.assertEqual(state.read_bytes(), prior)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: b'{"title":"\xf0\x9f\xa5\xbe\xe2\x8f\xb3 Choose the [190 chars]se"}' != b'{"title": "Inspecting report", "state": "working",[18 chars]se"}'
+
+----------------------------------------------------------------------
+Ran 6 tests in 2.299s
+
+FAILED (failures=1)

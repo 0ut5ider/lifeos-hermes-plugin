@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 import hashlib
 import logging
+import math
 import os
 import re
 import shlex
@@ -198,9 +199,14 @@ def _native_post_hook(command: str, root: Path) -> str:
         tokens = tokens[1:]
     if len(tokens) != 1:
         return ""
-    path = Path(tokens[0].replace("${HOME}", "~").replace("$HOME", "~")).expanduser().resolve()
+    token = tokens[0]
+    for prefix in ("$HOME/.claude/", "${HOME}/.claude/", "~/.claude/"):
+        if token.startswith(prefix):
+            token = str(root / token[len(prefix):])
+            break
+    path = Path(token).expanduser().resolve()
     for name in ("ISASync", "ISAStaleWriteGuard", "PostToolObserver", "LoopDetector",
-                 "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet"):
+                 "AlgorithmNudge", "SystemChangeSurface", "ComplexityRatchet", "AgentInvocation", "TimeContext"):
         if path == (root / "hooks" / (name + ".hook.ts")).resolve():
             return name
     return ""
@@ -657,8 +663,11 @@ class HookBridge:
         self._apply_settings(json.loads(self.settings_path.read_text()))
         self.started_sessions: set[str] = set()
         self.session_lock = threading.RLock()
+        self.child_lifecycle_enabled = False
+        self.child_invocations: dict[str, tuple[str, dict[str, Any]]] = {}
         self.session_platforms: dict[str, str] = {}
         self.session_carriers: dict[str, dict[str, str]] = {}
+        self.response_models: dict[str, str] = {}
         self.pending_tool_context: dict[tuple[str, str], list[str]] = {}
         self.task_ids: dict[str, set[str]] = {}
         self.task_counts: dict[str, int] = {}
@@ -1256,6 +1265,43 @@ class HookBridge:
             pass
         return {}
 
+    def child_start(
+        self, parent_session_id: str = "", child_session_id: str = "", child_goal: str = "",
+        child_role: str = "", child_model: str = "", child_provider: str = "", **_: Any,
+    ) -> None:
+        if not self.child_lifecycle_enabled or not parent_session_id or not child_session_id:
+            return
+        with self.session_lock:
+            if child_session_id in self.child_invocations:
+                return
+            native_input = {
+                "subagent_type": child_role or "general-purpose",
+                "description": f"{child_goal[:80]} [{child_session_id}]", "prompt": child_goal,
+            }
+            self.child_invocations[child_session_id] = (parent_session_id, native_input)
+            payload = self._payload("PreToolUse", parent_session_id, tool_name="Agent", tool_input=native_input)
+            payload["hermes_runtime"] = {"model": child_model, "provider": child_provider}
+            self._run("PreToolUse", payload, "Agent", child_tracking_only=True)
+
+    def child_stop(
+        self, parent_session_id: str = "", child_session_id: str = "", child_status: str = "",
+        child_summary: str = "", **_: Any,
+    ) -> None:
+        if not self.child_lifecycle_enabled:
+            return
+        with self.session_lock:
+            saved = self.child_invocations.get(child_session_id)
+            if saved is None or saved[0] != parent_session_id:
+                return
+            self.child_invocations.pop(child_session_id)
+            payload = self._payload("PostToolUse", parent_session_id, tool_name="Agent", tool_input=saved[1],
+                                    tool_response={"status": child_status, "summary": child_summary})
+            self.session_carriers.pop(child_session_id, None)
+            observed = self.response_models.pop(child_session_id, "")
+            if observed:
+                payload["hermes_runtime"] = {"model": observed}
+            self._run("PostToolUse", payload, "Agent", child_tracking_only=True)
+
     def observe_api_response(
         self, session_id: str = "", model: str = "", provider: str = "", response_model: str = "", **_: Any,
     ) -> None:
@@ -1264,8 +1310,12 @@ class HookBridge:
             return
         with self.session_lock:
             self.session_carriers.pop(session_id, None)
+            self.response_models.pop(session_id, None)
             if isinstance(response_model, str) and response_model.strip():
                 model = response_model
+                self.response_models[session_id] = response_model.strip()
+                if len(self.response_models) > 1024:
+                    self.response_models.pop(next(iter(self.response_models)))
             if isinstance(model, str) and model.strip():
                 self.session_carriers[session_id] = {"model": model.strip()}
                 if isinstance(provider, str) and provider.strip():
@@ -1276,6 +1326,7 @@ class HookBridge:
     def _run(
         self, event: str, payload: dict[str, Any], tool_name: str = "", matcher_alias: str = "",
         alias_input: dict[str, Any] | None = None, task_id: str = "", skip_checkpoint: bool = False,
+        child_tracking_only: bool = False,
     ) -> list[tuple[subprocess.CompletedProcess[str], dict[str, Any] | None]]:
         jobs = []
         host_paths = _task_uses_host_paths(task_id)
@@ -1298,6 +1349,8 @@ class HookBridge:
             if "LIFEOS_NOTIFICATION_CHANNEL" in environment:
                 values["LIFEOS_NOTIFICATION_CHANNEL"] = environment["LIFEOS_NOTIFICATION_CHANNEL"]
             for hook in group.get("hooks", []):
+                if child_tracking_only and hook.get("type") != "command":
+                    continue
                 if hook.get("type") == "http":
                     if remote_project is not None:
                         url = hook.get("url", "")
@@ -1328,6 +1381,12 @@ class HookBridge:
                     continue
                 command = hook.get("command")
                 if not isinstance(command, str) or not command.strip():
+                    continue
+                native_tracker = remote_project is None and _native_post_hook(command, self.root) == "AgentInvocation"
+                if child_tracking_only and not native_tracker:
+                    continue
+                if (native_tracker and self.child_lifecycle_enabled and tool_name == "Agent"
+                        and not child_tracking_only):
                     continue
                 if skip_checkpoint and _is_native_checkpoint(command):
                     continue
@@ -1404,9 +1463,10 @@ class HookBridge:
         try:
             from contextlib import nullcontext
             from .hook_state import session_state
-            lock = (session_state(self.root, payload.get("session_id", ""))
-                    if event in {"PostToolUse", "PostToolUseFailure"}
-                    and _native_post_hook(command, self.root) else nullcontext())
+            native = _native_post_hook(command, self.root)
+            lock = (session_state(self.root, "global-agent-invocations") if native == "AgentInvocation" else
+                    session_state(self.root, payload.get("session_id", ""))
+                    if event in {"PostToolUse", "PostToolUseFailure"} and native else nullcontext())
             with lock:
                 process = subprocess.run(
                     ["/bin/bash", "-c", command], input=json.dumps(payload), text=True,
@@ -1454,6 +1514,8 @@ class HookBridge:
                 spool_path = Path(spool.name)
                 json.dump({"command": command, "payload": payload,
                            "cwd": process_cwd, "environment": environment,
+                           "context_kind": "clock" if _native_post_hook(command, self.root) == "TimeContext" else "",
+                           "queued_at": time.time(),
                            "result_path": str(result_path) if result_path else None}, spool)
             self._start_async_runner(spool_path, process_cwd, environment)
         except (OSError, subprocess.TimeoutExpired) as error:
@@ -1536,6 +1598,8 @@ class HookBridge:
         if not result_dir.is_dir():
             return []
         context = []
+        clock = []
+        minute = int(time.time()) // 60
         def modified(path: Path) -> int:
             try:
                 return path.stat().st_mtime_ns
@@ -1551,6 +1615,14 @@ class HookBridge:
                     continue
                 if result.get("session_id") != session_id:
                     continue
+                if result.get("context_kind") == "clock":
+                    stamps = (result.get("queued_at"), result.get("completed_at"))
+                    if not all(isinstance(stamp, (int, float)) and not isinstance(stamp, bool)
+                               and math.isfinite(stamp) and int(stamp) // 60 == minute for stamp in stamps):
+                        continue
+                    clock = [result[key].strip() for key in ("additionalContext", "systemMessage")
+                             if isinstance(result.get(key), str) and result[key].strip()]
+                    continue
                 for key in ("additionalContext", "systemMessage"):
                     value = result.get(key)
                     if isinstance(value, str) and value.strip():
@@ -1559,7 +1631,7 @@ class HookBridge:
                 LOG.warning("LifeOS async hook result could not be read: %s", error)
             finally:
                 claimed.unlink(missing_ok=True)
-        return context
+        return context + clock
 
     def _payload(self, event: str, session_id: str, **fields: Any) -> dict[str, Any]:
         child_fields = {}
@@ -2295,6 +2367,7 @@ class HookBridge:
             self.started_sessions.discard(session_id)
             self.session_platforms.pop(session_id, None)
             self.session_carriers.pop(session_id, None)
+            self.response_models.pop(session_id, None)
             self.session_projects.pop(session_id, None)
             self.remote_session_projects.pop(session_id, None)
             used_remote_projects = set().union(*self.remote_session_projects.values()) if self.remote_session_projects else set()

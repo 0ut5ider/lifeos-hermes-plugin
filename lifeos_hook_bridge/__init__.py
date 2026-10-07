@@ -53,6 +53,10 @@ def register(ctx: Any) -> None:
         model_tiers_provider=model_tiers,
         profile=profile, hold_turns=patched_host, lifeos_home=home,
     )
+    if {"subagent_start", "subagent_stop"} <= VALID_HOOKS:
+        bridge.child_lifecycle_enabled = True
+        ctx.register_hook("subagent_start", bridge.child_start)
+        ctx.register_hook("subagent_stop", bridge.child_stop)
     if hasattr(ctx, "on_unload"):
         ctx.on_unload(bridge.close)
     if "post_api_request" in VALID_HOOKS:

@@ -36,3 +36,11 @@ index 9c290aa..20a780c 100755
    const { state, previousTitle, previousAscent, sessionId } = opts;
    const title = opts.title;
    const colors = TAB_COLORS[state];
+@@ -527,6 +529,7 @@ export interface AscentTabOptions {
+  * tab is one of the six run-state colors.
+  */
+ export function setAscentTab(state: AscentState, sessionId: string, summary?: string, opts: AscentTabOptions = {}): void {
++  if (!isDesktopChannel()) return;
+   const config = ASCENT[state];
+   if (!config) return;
+ 

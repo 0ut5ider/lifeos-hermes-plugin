@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 57 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 66 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -29,7 +29,7 @@ Registrations: PreToolUse.2.1.
 
 Registrations: PreToolUse.3.1.
 
-- [ ] `pulse-agent-01`: Foreground, background, fast-model, and timing agents receive their applicable policy.
+- [x] `pulse-agent-01`: Foreground, background, fast-model, and timing agents receive their applicable policy.
 - [ ] `pulse-agent-02`: The live gateway delivers asynchronous policy feedback to the parent.
 - [ ] `pulse-agent-03`: Unavailable daemon, malformed decision, restart denial, and watchdog cleanup preserve their policy.
 
@@ -38,19 +38,19 @@ Registrations: PreToolUse.3.1.
 Registrations: PreToolUse.3.2, PostToolUse.1.1.
 
 - [ ] `agent-lifecycle-01`: Inherited and explicit tier metadata describe the served model.
-- [ ] `agent-lifecycle-02`: Background success and failure correlate one start with one completion.
-- [ ] `agent-lifecycle-03`: Concurrent children retain separate starts, results, and parent delivery.
+- [x] `agent-lifecycle-02`: Background success and failure correlate one start with one completion.
+- [x] `agent-lifecycle-03`: Concurrent children retain separate starts, results, and parent delivery.
 - [ ] `agent-lifecycle-04`: Cancellation and parent shutdown clean up watchdogs and incomplete child state.
-- [ ] `agent-lifecycle-05`: Child dispatch does not run main-session lifecycle hooks.
+- [x] `agent-lifecycle-05`: Child dispatch does not run main-session lifecycle hooks.
 
 ### question-state (package 5)
 
 Registrations: PreToolUse.4.1, PostToolUse.6.1, Stop.1.2.
 
-- [ ] `question-state-01`: Single and batch questions set waiting state and restore the prior state after an answer.
-- [ ] `question-state-02`: Timeout, cancellation, duplicate answer, and late answer preserve first resolution.
-- [ ] `question-state-03`: Session finalization restores or removes applicable transient terminal state.
-- [ ] `question-state-04`: Desktop and remote channels apply their documented terminal isolation.
+- [x] `question-state-01`: Single and batch questions set waiting state and restore the prior state after an answer.
+- [x] `question-state-02`: Timeout, cancellation, duplicate answer, and late answer preserve first resolution.
+- [x] `question-state-03`: Session finalization restores or removes applicable transient terminal state.
+- [x] `question-state-04`: Desktop and remote channels apply their documented terminal isolation.
 
 ### nested-pre-guards (package 2)
 
@@ -267,7 +267,7 @@ Registrations: UserPromptSubmit.7.1, PostToolUseFailure.2.1.
 Registrations: UserPromptSubmit.8.1.
 
 - [ ] `time-context-01`: Valid UTC, owner timezone, and invalid timezone follow the clock contract.
-- [ ] `time-context-02`: Pinned asynchronous output reaches the next turn without duplicated stale clock context.
+- [x] `time-context-02`: Pinned asynchronous output reaches the next turn without duplicated stale clock context.
 - [ ] `time-context-03`: Interruption and synthetic managed source preserve admission and delivery policy.
 
 ### model-rung (package 6)

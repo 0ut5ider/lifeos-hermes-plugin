@@ -102,13 +102,16 @@
       "registrations": [
         "PreToolUse.3.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "pulse-agent-01",
           "expected": "Foreground, background, fast-model, and timing agents receive their applicable policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_pulse_guards.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "pulse-agent-02",
@@ -132,7 +135,7 @@
         "PreToolUse.3.2",
         "PostToolUse.1.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "agent-lifecycle-01",
@@ -143,14 +146,24 @@
         {
           "id": "agent-lifecycle-02",
           "expected": "Background success and failure correlate one start with one completion.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_child_lifecycle.py",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "agent-lifecycle-03",
           "expected": "Concurrent children retain separate starts, results, and parent delivery.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_child_lifecycle.py",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "agent-lifecycle-04",
@@ -161,8 +174,13 @@
         {
           "id": "agent-lifecycle-05",
           "expected": "Child dispatch does not run main-session lifecycle hooks.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_child_lifecycle.py",
+            "scripts/agent_lifecycle_controls.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         }
       ],
       "release_acceptance": false
@@ -175,31 +193,47 @@
         "PostToolUse.6.1",
         "Stop.1.2"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "question-state-01",
           "expected": "Single and batch questions set waiting state and restore the prior state after an answer.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "question-state-02",
           "expected": "Timeout, cancellation, duplicate answer, and late answer preserve first resolution.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "question-state-03",
           "expected": "Session finalization restores or removes applicable transient terminal state.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "question-state-04",
           "expected": "Desktop and remote channels apply their documented terminal isolation.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_native_clarify.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1433,7 +1467,7 @@
       "registrations": [
         "UserPromptSubmit.8.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "time-context-01",
@@ -1444,8 +1478,12 @@
         {
           "id": "time-context-02",
           "expected": "Pinned asynchronous output reaches the next turn without duplicated stale clock context.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "tests/test_async_native_delivery.py",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/README.md",
+            "docs/verification/2026-10-06-step1/async-lifecycle-controls/combined-tests.txt"
+          ]
         },
         {
           "id": "time-context-03",
