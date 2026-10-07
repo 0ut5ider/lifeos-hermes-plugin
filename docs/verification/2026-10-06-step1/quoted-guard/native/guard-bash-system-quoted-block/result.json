@@ -1,0 +1,121 @@
+{
+  "before": {
+    "project_files": [],
+    "target_content_matches": true
+  },
+  "after": {
+    "project_files": [],
+    "tool_name": "Bash",
+    "command_matches": true,
+    "block_message_emitted": true,
+    "target_content_matches": true,
+    "model_received_block": true,
+    "tool_output_in_model": false,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    2
+  ],
+  "event": "PreToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 0,
+  "model_successful_responses": 2,
+  "session_id": "f6fe16f4-0689-4f78-b79d-7ac85edc014d",
+  "seconds": 7.083,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-quoted-reviewed-results/guard-bash-system-quoted-block",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-quoted-reviewed-results/guard-bash-system-quoted-block",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Bash",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Run the exact shell command from the user message once with the shell tool. Do not change the command. Then reply with exactly READY. If the tool call is blocked or fails, do not retry it. Reply with exactly READY. The local fixture scripts contain only a marker print and no external transport. Execute only the exact requested command. Do not inspect files or run setup commands. The fixture already has every required file and permission.",
+    "--permission-mode",
+    "bypassPermissions",
+    "--max-turns",
+    "3",
+    "Run this exact shell command once: python3 -c 'from pathlib import Path; Path('\"'\"'/home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-quoted-reviewed-results/guard-bash-system-quoted-block/.claude/hooks/guard-target.txt'\"'\"').write_text('\"'\"'PAIR_DENY_TOKEN'\"'\"')'; printf 'PAIR_%s' GUARD_OUTPUT Preserve every character in the command, including the shell quote concatenation. Do not simplify or remove the double quotes that encode literal single quotes."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PreToolUse.5.1",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PreToolUse.5.1 /home/lifeos-claude-ref/workspace/paired-step1-20261006/guard-quoted-reviewed-results/guard-bash-system-quoted-block/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1zdGVwMS0yMDI2MTAwNi9saWZlb3MtY29tcGxldGUvaG9va3MvUHJlVG9vbEd1YXJkLmhvb2sudHM=",
+      "source_files": {
+        "/var/tmp/lifeos-step1-20261006/lifeos-complete/hooks/PreToolGuard.hook.ts": "9271377d89246997d9598525a1e081da94f00fd3822eda60f7f489081f354d74"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "63a902ca0ef4f6af2f450ad9392e70d2ec03c8210105620c95c4d27937f24d27",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "35c840ea133c88b6127f99f90b6ca9866340bbc696031238d5129228ede8eb7d",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "0d3a329a331c3942ccd326c0f6f8fb6c2227e276a5b415ba150820179219c2f5",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "f158751dbb1ac0a05987d74d043cc52521101af2c17811a5c9fa43d981257780",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "37ca360f3f16c14410dc7c3f9afe0d9878426d4c39369597cd65c34a356df659",
+    "fixture-events.jsonl": "ee6f125b2d5e774309aac55b257a071e5c668733ee67ff0ca23c497f16e018d4",
+    "cli.log": "3e6462eb2d7f12f8a71c5cf3be611ea99e676cad06a0fc205641d42cfb049870",
+    "before-state.json": "10d487a25ae5aae9fa42751678c8c3f4ab3661aea79688524b0cba4787d86273",
+    "after-state.json": "7201a7568b3b077417c767a2265c3ca2b6a54741c3c01a5043481a7131ba114f",
+    "fixture-files-before.json": "87beef59b67be82437e82bf714d87cb12338027152bf23e05e9fd203ab89357c",
+    "fixture-files-after.json": "87beef59b67be82437e82bf714d87cb12338027152bf23e05e9fd203ab89357c"
+  }
+}
