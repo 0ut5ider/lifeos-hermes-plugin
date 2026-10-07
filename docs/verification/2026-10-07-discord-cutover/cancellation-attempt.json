@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-07",
+  "status": "cancellation_unverified",
+  "observed_resolution": "timeout",
+  "host": "192.168.8.252",
+  "source_message_id": "1557448720071786657",
+  "source_timestamp": "2026-10-07T17:45:10.863000+00:00",
+  "question_message_id": "1557448760022532191",
+  "question_timestamp": "2026-10-07T17:45:20.388000+00:00",
+  "reply_message_id": "1557449291285663795",
+  "reply_timestamp": "2026-10-07T17:47:27.051000+00:00",
+  "tool_call_id": "chatcmpl-tool-a02c5871a1539878",
+  "tool_commit_event_id": "a58b082e3c4a4eaf99a987df3060eca4",
+  "tool_commit_timestamp": "2026-10-07T17:47:22.756676+00:00",
+  "tool_duration_seconds": 120.59537696838379,
+  "user_response": "",
+  "tool_notice": "[user did not respond within 2m]",
+  "recovery": {
+    "status": "passed_after_timeout",
+    "source_message_id": "1557458465880932503",
+    "source_timestamp": "2026-10-07T18:23:54.445000+00:00",
+    "reply_message_id": "1557458525473742881",
+    "reply_timestamp": "2026-10-07T18:24:08.653000+00:00",
+    "marker": "D252-RECOVERY-PASS"
+  },
+  "limits": [
+    "This request times out. It does not prove interruption by /stop.",
+    "The user confirms which action was attempted before another cancellation test.",
+    "The screenshot and Discord reply verify recovery after timeout, not recovery after cancellation."
+  ]
+}

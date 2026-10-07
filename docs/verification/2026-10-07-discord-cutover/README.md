@@ -28,6 +28,8 @@ The [timeout evidence](timeout.json) verifies the unanswered `D252-TIMEOUT` requ
 
 Cancellation and post-cancellation recovery remain pending. The acceptance timeout is temporarily 120 seconds. Restore 3600 seconds after the tests. The cancellation request uses marker `D252-CANCEL`. Adrian sends `/stop` while the question is pending, then sends `D252-RECOVERY` to verify that the session accepts a normal next turn.
 
+The [first cancellation attempt](cancellation-attempt.json) does not verify cancellation. The bot posts the question at 17:45:20 UTC. The tool waits 120.60 seconds and returns another timeout at 17:47:22 UTC. The bot reports that timeout at 17:47:27 UTC. Its claim that this behaves as planned cancellation is incorrect. The normal recovery request arrives at 18:23:54 UTC and receives `D252-RECOVERY-PASS` at 18:24:08 UTC. Adrian supplies a screenshot of that reply. This verifies recovery after timeout. It does not prove that `/stop` interrupts a pending question. Confirm the action Adrian attempts before repeating cancellation. Keep `release-adapter-01` unverified.
+
 ## Evidence and recovery
 
 Private installation logs, receipts, identity originals, configuration archive, diagnostics, and Discord test messages stay under `/home/lifeos-hermes/migration/2026-10-07/` on `.252`. The recorder writes to `~/.local/state/lifeos-development-capture` as run `development-20261007T161339Z`. Captured conversation content stays outside Git.
