@@ -1,0 +1,16 @@
+.....................................s.........s..s..........ss...............s................................................................... [ 85%]
+........................                                 [100%]
+=============================== warnings summary ===============================
+../../../.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53
+  /home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/lib64/python3.14/site-packages/starlette/testclient.py:53: DeprecationWarning: The anyio.abc.BlockingPortal alias is deprecated, use anyio.from_thread.BlockingPortal instead.
+    _PortalFactoryType = Callable[[], AbstractContextManager[anyio.abc.BlockingPortal]]
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_fresh_store_dashboard.py:20: The complete native candidate and Bun are required
+SKIPPED [1] tests/test_fresh_store_worker.py:85: The complete native candidate and Bun are required
+SKIPPED [1] tests/test_fresh_store_worker.py:93: The complete native candidate and Bun are required
+SKIPPED [1] tests/test_fresh_store.py:37: A complete prepared native candidate and Bun are required
+SKIPPED [1] tests/test_fresh_store.py:73: A complete prepared native candidate and Bun are required
+SKIPPED [1] tests/test_update_transaction.py:95: Prepared native TaskGovernance is required
+164 passed, 6 skipped, 1 warning, 86 subtests passed in 85.10s (0:01:25)

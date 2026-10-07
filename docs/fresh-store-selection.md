@@ -65,3 +65,15 @@ The setting therefore names one LifeOS home, not two separate paths:
 4. The memory configuration `root` names the same installed root. Selection updates it in the same transaction.
 5. A native Pulse unit, when present, receives a systemd drop-in that sets its working directory and `HOME`. Return removes the drop-in.
 6. The page needs an owner claim before preparation. The first authenticated dashboard account can claim an installation that has no memory configuration. The claim creates a configuration with ownership and sharing disabled.
+
+## Selection recovery and profile authorization (2026-10-07)
+
+Selection records the `mounting` state before the native mount can publish profile files. Rollback first recovers any pending target mount while the profile still selects that target. It records that recovery before restoring the previous setting and memory root. This order permits retry after process death during either target recovery or the previous mount. Recovery treats a `published` journal as a possible completed publication, because that state cannot establish whether files changed.
+
+The previous mount validates its native output and Hermes configuration. Selection checks that its setting and memory root agree before restarting services and reporting success. A later owner edit that conflicts with the mount journal prevents rollback and service restart. Recovery preserves that edit and reports the interruption for owner review.
+
+The dashboard selects jobs only for its physical Hermes profile. It checks the profile binding and current owner before launching recovery. The detached worker receives the verified account through `--account` and the invoking profile through `HERMES_HOME`. It checks both the request and recovery journal against that profile and rechecks the current owner before accessing services.
+
+Selection admission still checks pending jobs across the operating-system account because gateway and Pulse services are shared. Another profile's pending job requires that profile's owner to complete or recover it. The dashboard does not display or recover that job as its own.
+
+The [recovery regression evidence](verification/2026-10-07-selection-recovery/README.md) covers the original failures, native mounting with real process death, retry during rollback, later-edit preservation, and owner/profile refusal.

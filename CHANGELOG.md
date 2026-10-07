@@ -6,6 +6,9 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Recover an interrupted target mount before restoring the previous LifeOS selection and mounted files.
+- Bind selection status and recovery to the invoking Hermes profile. Recheck the owner in the detached worker.
+
 - Verify actual private GitHub reminder delivery, concurrent repeat suppression, authentication refusal, and retry.
 
 - Stamp global memory-review admission before starting detached inference. Preserve cadence across interrupted publication.

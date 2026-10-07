@@ -145,7 +145,7 @@ class MemoryAdminDashboardTests(unittest.TestCase):
             response = self.client.post(path, json={'store': 'a' * 32})
         self.assertEqual(response.status_code, 200, response.text)
         job = Path(response.json()['job'])
-        launched.assert_called_once_with(job, 'select')
+        launched.assert_called_once_with(job, 'select', self.account)
         request = json.loads((job / 'request.json').read_text())
         self.assertEqual(request['target_home'], str(folder / 'home'))
         self.assertEqual(request['profile'], str(self.fixture.profile))
