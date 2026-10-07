@@ -65,7 +65,8 @@ class NativeCommandReductionTests(unittest.TestCase):
         bridge = HookBridge(settings, self.root, lifeos_home=self.home)
         bridge.environment.update(self.environment)
         try:
-            return bridge.pre_tool_call('terminal', {'command': command, 'timeout': 17, 'description': 'Fixture'},
+            return bridge.pre_tool_call('terminal', {'command': command, 'timeout': 17, 'description': 'Fixture',
+                                                   'workdir': str(self.project)},
                                         session_id='rtk-contract')
         finally:
             bridge.close()
@@ -77,7 +78,7 @@ class NativeCommandReductionTests(unittest.TestCase):
         self.assertEqual(updated, {**data['tool_input'], 'command': 'rtk git status --short'})
         verdict = self.bridge(command)
         self.assertEqual(verdict['action'], 'modify')
-        self.assertEqual(verdict['args'], updated)
+        self.assertEqual(verdict['args'], {**updated, 'workdir': str(self.project)})
         (self.project / 'untracked.txt').write_text('Fixture content\n')
         raw = self.run_command(['git', 'status', '--short'])
         rewritten = self.run_command(['rtk', 'git', 'status', '--short'])

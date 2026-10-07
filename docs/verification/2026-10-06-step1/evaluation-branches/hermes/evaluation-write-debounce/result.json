@@ -1,0 +1,122 @@
+{
+  "before": {
+    "target_present": false,
+    "prior_fire_present": true
+  },
+  "after": {
+    "target_matches": true,
+    "input_matches": true,
+    "tool_names": [
+      "Write"
+    ],
+    "runner_lock_absent": true,
+    "fire_state_matches": true,
+    "run_events": 0,
+    "passed": null,
+    "trial_output_matches": null,
+    "published_result_matches": null,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 2,
+  "metadata_requests": 2,
+  "model_successful_responses": 2,
+  "session_id": "20261007_005903_75a075",
+  "seconds": 11.473,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-debounce",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-debounce",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "Write a file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-debounce/project/pair.hook.ts whose complete content is the single line PAIR_FILE_CONTENT. Use the file writing tool once."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.8.4",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.8.4 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-debounce/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1zdGVwMS0yMDI2MTAwNi9saWZlb3MtZ3VhcmQtZXZhbC9ob29rcy9Db25maWdFdmFsRmlyZS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-step1-20261006/lifeos-guard-eval/hooks/ConfigEvalFire.hook.ts": "74c701218778479f589f5c4ae5e20e4f353b5074a30ad96cd3e4ad367bb0c218"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "832896c3106272a33dd09141772efc6a492de4976f927a6937303f1d596a2a70",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "005e2d3918dc3170cf2b61c997960aa599bcc53718ce4a096ad162e5547a0ebb",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "45bc7cabdcbff8876987048f082cd670fae7c1317c3dda7d652abae406e33815",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "94df6c3a19f1ea368f972b9f99e64869acb3ca09dfaa4faf6d8a0ae8d265248b",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "3ebde27cf6df76d6b1d7d2ef367aed20c05ef27a5e9a6aea631c5d6af3b2a0d8",
+    "fixture-events.jsonl": "86f9d76ad65ea1b59544b0dde0147023b8a2fa391354ecac04a1de4f770bbf52",
+    "cli.log": "1be2bc7e2c2c73fb1cbc53f01bb8f329ab80d830087f812d9440810df2a5b194",
+    "before-state.json": "5345f994e58f29a5d8f032839b50315f7692df827f5fa6a14f4b749b64e805c4",
+    "after-state.json": "676b21d2552bea0f1b80bb7827cdf0de27527dcb0a1bec66d14f5e066833950c",
+    "fixture-files-before.json": "e4783652019e31c808593e11057b0ef73855a5fa7dc14861087c82aa78cdd865",
+    "fixture-files-after.json": "979fc55126d39818e18325c6f5091d5f69935e29b63a975cbffa46fbf0c74b3a"
+  }
+}

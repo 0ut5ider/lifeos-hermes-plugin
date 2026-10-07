@@ -1,0 +1,35 @@
+test_changed_installed_root_alias_refuses_recovery_before_any_restart (test_profile_services.ProfileServicesTests.test_changed_installed_root_alias_refuses_recovery_before_any_restart) ... FAIL
+test_changed_service_definition_refuses_before_any_restart (test_profile_services.ProfileServicesTests.test_changed_service_definition_refuses_before_any_restart) ... ok
+test_definition_change_during_drain_preserves_the_remaining_live_services (test_profile_services.ProfileServicesTests.test_definition_change_during_drain_preserves_the_remaining_live_services) ... ok
+test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units (test_profile_services.ProfileServicesTests.test_drain_stops_all_actual_writers_and_resume_restarts_the_selected_units) ... ok
+test_external_service_restart_invalidates_the_stopped_writer_barrier (test_profile_services.ProfileServicesTests.test_external_service_restart_invalidates_the_stopped_writer_barrier) ... ok
+test_fixed_installed_root_alias_drains_the_same_physical_services (test_profile_services.ProfileServicesTests.test_fixed_installed_root_alias_drains_the_same_physical_services) ... ok
+test_invalid_service_binding_values_refuse_without_stopping_units (test_profile_services.ProfileServicesTests.test_invalid_service_binding_values_refuse_without_stopping_units) ... ok
+test_process_exit_after_first_restart_resumes_the_original_service_selection (test_profile_services.ProfileServicesTests.test_process_exit_after_first_restart_resumes_the_original_service_selection) ... ok
+test_process_exit_after_one_stop_retains_original_service_state_for_recovery (test_profile_services.ProfileServicesTests.test_process_exit_after_one_stop_retains_original_service_state_for_recovery) ... ok
+test_recovery_preserves_an_originally_inactive_service (test_profile_services.ProfileServicesTests.test_recovery_preserves_an_originally_inactive_service) ... ok
+test_recovery_quiesces_restarted_services_without_losing_original_selection (test_profile_services.ProfileServicesTests.test_recovery_quiesces_restarted_services_without_losing_original_selection) ... ok
+test_reviewed_service_state_refuses_a_change_before_any_stop (test_profile_services.ProfileServicesTests.test_reviewed_service_state_refuses_a_change_before_any_stop) ... ok
+test_unit_from_another_profile_refuses_before_any_writer_stops (test_profile_services.ProfileServicesTests.test_unit_from_another_profile_refuses_before_any_writer_stops) ... ok
+
+======================================================================
+FAIL: test_changed_installed_root_alias_refuses_recovery_before_any_restart (test_profile_services.ProfileServicesTests.test_changed_installed_root_alias_refuses_recovery_before_any_restart)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_services.py", line 49, in setUp
+    self.start_unit(role)
+    ~~~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_services.py", line 58, in start_unit
+    self.command('systemctl', '--user', 'start', self.units[role])
+    ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_profile_services.py", line 54, in command
+    self.assertEqual(result.stderr, '')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+AssertionError: "Warning: The unit file, source configura[164 chars]s.\n" != ''
+- Warning: The unit file, source configuration file or drop-ins of lifeos-ownership-test-90d61a18b520422e94c0c3ad192c5b2d-gateway.service changed on disk. Run 'systemctl --user daemon-reload' to reload units.
+
+
+----------------------------------------------------------------------
+Ran 13 tests in 54.309s
+
+FAILED (failures=1)

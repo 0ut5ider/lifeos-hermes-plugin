@@ -17,8 +17,8 @@
           "expected": "Installed RTK rewrites git status and preserves other input fields.",
           "status": "verified",
           "evidence": [
-            "docs/verification/2026-10-06-step1/guard-parser/README.md",
-            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
             "tests/test_native_command_reduction.py"
           ]
         },
@@ -27,8 +27,8 @@
           "expected": "Installed RTK rewrites supported gh metadata commands.",
           "status": "verified",
           "evidence": [
-            "docs/verification/2026-10-06-step1/guard-parser/README.md",
-            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
             "tests/test_native_command_reduction.py"
           ]
         },
@@ -37,8 +37,8 @@
           "expected": "Environment prefixes, git flags, and command chains retain supported command semantics.",
           "status": "verified",
           "evidence": [
-            "docs/verification/2026-10-06-step1/guard-parser/README.md",
-            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
             "tests/test_native_command_reduction.py"
           ]
         },
@@ -47,8 +47,8 @@
           "expected": "Already rewritten commands, heredocs, multiline scripts, and unsupported reads stay unchanged.",
           "status": "verified",
           "evidence": [
-            "docs/verification/2026-10-06-step1/guard-parser/README.md",
-            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
             "tests/test_native_command_reduction.py"
           ]
         },
@@ -57,8 +57,8 @@
           "expected": "A later deny still blocks the rewritten command.",
           "status": "verified",
           "evidence": [
-            "docs/verification/2026-10-06-step1/guard-parser/README.md",
-            "docs/verification/2026-10-06-step1/guard-parser/rtk-tests-complete.txt",
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
             "tests/test_native_command_reduction.py"
           ]
         }
@@ -71,19 +71,27 @@
       "registrations": [
         "PreToolUse.2.1"
       ],
-      "status": "unverified",
+      "status": "verified",
       "scenarios": [
         {
           "id": "pulse-skill-01",
           "expected": "Valid, unknown, disabled, and blocked skills produce the real daemon policy decisions.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/pulse-tests.txt",
+            "tests/test_native_pulse_guards.py"
+          ]
         },
         {
           "id": "pulse-skill-02",
           "expected": "Malformed payload and unavailable daemon preserve the documented failure policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/pulse-tests.txt",
+            "tests/test_native_pulse_guards.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -207,26 +215,42 @@
         {
           "id": "nested-pre-guards-01",
           "expected": "System content Write, Edit, and batch deny identifying content; user and outside-tree content stay allowed.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         },
         {
           "id": "nested-pre-guards-02",
           "expected": "Stale whole-file ISA writes deny after an external change; fresh views and supported edits pass.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         },
         {
           "id": "nested-pre-guards-03",
           "expected": "Unsafe plutil extraction denies; the explicit output form passes.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         },
         {
           "id": "nested-pre-guards-04",
           "expected": "Remote and headless speaker calls deny; health and explicitly silent calls pass.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         },
         {
           "id": "nested-pre-guards-05",
@@ -237,14 +261,21 @@
         {
           "id": "nested-pre-guards-06",
           "expected": "Raw Gmail and SES sends deny; skill-routed and read-only forms pass without external delivery.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/guard-branches/README.md",
+            "docs/verification/2026-10-06-step1/guard-branches/paired-results.json"
+          ]
         },
         {
           "id": "nested-pre-guards-07",
           "expected": "Tier-2 classified egress tests allowed content, above-ceiling content, and classification failure.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         },
         {
           "id": "nested-pre-guards-08",
@@ -259,8 +290,12 @@
         {
           "id": "nested-pre-guards-09",
           "expected": "Malformed dispatcher input and isolated guard failure preserve each documented failure policy.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/source-controls/README.md",
+            "docs/verification/2026-10-06-step1/source-controls/current-source-tests.txt",
+            "tests/test_native_pretool_guards.py"
+          ]
         }
       ],
       "release_acceptance": false
@@ -459,7 +494,7 @@
         "PostToolUse.9.4",
         "PostToolUse.10.4"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "evaluation-01",
@@ -470,8 +505,12 @@
         {
           "id": "evaluation-02",
           "expected": "Completed and failed evaluations publish their actual result and exit status.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-branches/README.md",
+            "docs/verification/2026-10-06-step1/evaluation-branches/paired-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-branches/wire-proof.json"
+          ]
         },
         {
           "id": "evaluation-03",
@@ -482,8 +521,12 @@
         {
           "id": "evaluation-04",
           "expected": "The actual Hermes file tool completes the measured CLAUDE.md sentinel write.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/evaluation-branches/README.md",
+            "docs/verification/2026-10-06-step1/evaluation-branches/paired-results.json",
+            "docs/verification/2026-10-06-step1/evaluation-branches/wire-proof.json"
+          ]
         }
       ],
       "release_acceptance": false
@@ -1773,7 +1816,7 @@
         "PermissionRequest.1.1",
         "PermissionRequest.2.1"
       ],
-      "status": "unverified",
+      "status": "in_progress",
       "scenarios": [
         {
           "id": "regression-gates-01",
@@ -1790,8 +1833,14 @@
         {
           "id": "regression-gates-03",
           "expected": "Concurrent service admission errors are instrumented and resolved without weakening admission.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-06-step1/service-isolation/README.md",
+            "tests/test_profile_services.py",
+            "docs/verification/2026-10-06-step1/service-isolation/service-isolated/0.log",
+            "docs/verification/2026-10-06-step1/service-isolation/service-isolated/1.log",
+            "docs/verification/2026-10-06-step1/service-isolation/service-isolated/2.log"
+          ]
         },
         {
           "id": "regression-gates-04",

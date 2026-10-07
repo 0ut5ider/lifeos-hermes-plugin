@@ -6,6 +6,7 @@ import argparse
 import base64
 from datetime import datetime, timezone
 import hashlib
+import fcntl
 import http.server
 import json
 import os
@@ -17,6 +18,8 @@ import shutil
 import select
 import signal
 import subprocess
+import struct
+import termios
 import sys
 import threading
 import time
@@ -445,6 +448,11 @@ GUARD_BRANCHES = {
                                'message': 'EgressClassGuard', 'egress_script': True},
     'guard-bash-system-block': {'command': "printf PAIR_DENY_TOKEN > \"$HOME/.claude/hooks/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
                               'blocked': True, 'message': 'BashSystemWriteGuard'},
+    'guard-bash-system-quoted-block': {
+        'command': 'python3 -c ' + shlex.quote(
+            "from pathlib import Path; Path('{PAIR_HOME}/.claude/hooks/guard-target.txt').write_text('PAIR_DENY_TOKEN')")
+            + "; printf 'PAIR_%s' GUARD_OUTPUT",
+        'blocked': True, 'message': 'BashSystemWriteGuard'},
     'guard-bash-system-clean': {'command': "printf PAIR_PUBLIC_CONTENT > \"$HOME/.claude/hooks/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
                               'blocked': False, 'message': 'BashSystemWriteGuard', 'target_after': 'PAIR_PUBLIC_CONTENT'},
     'guard-bash-system-user': {'command': "printf PAIR_DENY_TOKEN > \"$HOME/.claude/LIFEOS/USER/CONFIG/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
@@ -458,6 +466,10 @@ GUARD_BRANCHES = {
 CASES.update({name: [('PreToolUse.5.1', 'hooks/PreToolGuard.hook.ts')] for name in GUARD_BRANCHES})
 TOOL_COMMANDS.update({name: definition['command'] for name, definition in GUARD_BRANCHES.items()})
 EXPECTED_EXITS.update({name: [2] for name, definition in GUARD_BRANCHES.items() if definition['blocked']})
+
+
+def tool_command(home: Path, case: str) -> str:
+    return TOOL_COMMANDS[case].replace('{PAIR_HOME}', str(home))
 
 
 def guard_message(case: str) -> str:
@@ -987,7 +999,7 @@ def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool =
         if not after:
             return {'activity_rows': len(rows['tool-activity']), 'failure_rows': len(rows['tool-failures']),
                     'loop_states': len(states)}
-        command = TOOL_COMMANDS[case]
+        command = tool_command(home, case)
         preview = lambda row: json.loads(row.get('tool_input_preview') or '{}').get('command') == command
         traces = read_json_lines(home / 'hooks.jsonl')
         payloads = [json.loads(base64.b64decode(trace['stdin_base64'])) for trace in traces]
@@ -1048,7 +1060,7 @@ def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool =
             trace = read_json_lines(home / 'hooks.jsonl')[0]
             payload = json.loads(base64.b64decode(trace['stdin_base64']))
             result.update(tool_name=payload.get('tool_name'),
-                          command_matches=payload.get('tool_input', {}).get('command') == TOOL_COMMANDS[case],
+                          command_matches=payload.get('tool_input', {}).get('command') == tool_command(home, case),
                           block_message_emitted=guard_message(case) in trace['stderr'])
         if case in GUARD_BRANCHES:
             target = guard_target(home, case)
@@ -1067,7 +1079,7 @@ def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool =
                            'timestamp_current': started.replace(microsecond=0) <= datetime.fromisoformat(
                                row['ts'].replace('Z', '+00:00')) <= finished} for row in rows[1:]],
                 'tool_name': payload.get('tool_name'),
-                'command_matches': payload.get('tool_input', {}).get('command') == TOOL_COMMANDS[case]}
+                'command_matches': payload.get('tool_input', {}).get('command') == tool_command(home, case)}
     if case.startswith('isa-render-'):
         work = root / RENDER_WORK
         document = work / 'paired-work/ISA.md'
@@ -1412,6 +1424,8 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
         task_fixture(home, source, trace_script)
     hooks = {event: [{'hooks': [{'type': 'command', 'command': observer}]}]
              for event in ('SessionStart', 'UserPromptSubmit', 'SessionEnd')}
+    if case == 'evaluation-write-claude':
+        hooks['Stop'] = [{'hooks': [{'type': 'command', 'command': observer}]}]
     event = commands[0][0].split('.')[0]
     hooks.setdefault(event, []).append({'hooks': [{'type': 'command', 'command': command, 'timeout': 30}
                                    for _, command, _ in commands]})
@@ -1784,6 +1798,62 @@ def conversation_request(row: dict, case: str) -> bool:
     return True
 
 
+def run_protected_file_approval(command, environment, home, execution):
+    # The pinned Hermes guard requires a human channel even under auto-approve.
+    command = [arg for arg in command if arg not in ('--oneshot', '-Q')]
+    position = command.index('--format')
+    del command[position:position + 2]
+    environment['TERM'] = 'xterm-256color'
+    master, slave = pty.openpty()
+    fcntl.ioctl(slave, termios.TIOCSWINSZ, struct.pack('HHHH', 45, 160, 0, 0))
+    process = subprocess.Popen(command, env=environment, cwd=home / 'project', stdin=slave,
+                               stdout=slave, stderr=slave, start_new_session=True, **execution)
+    os.close(slave)
+    terminal, approved, ended = bytearray(), False, False
+    last_exit_enter = 0
+    deadline = time.monotonic() + 120
+    try:
+        while process.poll() is None and time.monotonic() < deadline:
+            if select.select([master], [], [], 0.1)[0]:
+                try:
+                    terminal.extend(os.read(master, 65536))
+                    (home / 'terminal.log').write_bytes(terminal)
+                except OSError:
+                    break
+            if b'\x1b[6n' in terminal[-100:]:
+                os.write(master, b'\x1b[1;1R')
+            if not approved and b'<write to CLAUDE.md>' in terminal:
+                os.write(master, b'\r')
+                approved = True
+            path = home / 'fixture-events.jsonl'
+            events = read_json_lines(path) if path.is_file() else []
+            if any(row['hook_event_name'] == 'Stop' for row in events) and not ended:
+                time.sleep(0.5)
+                os.write(master, b'/quit\r')
+                ended = True
+                last_exit_enter = time.monotonic()
+            elif ended and time.monotonic() - last_exit_enter > 1:
+                os.write(master, b'\r')
+                last_exit_enter = time.monotonic()
+        if process.poll() is None:
+            raise TimeoutError('The actual protected-file approval session did not finish')
+        stops = [row for row in read_json_lines(home / 'fixture-events.jsonl')
+                 if row['hook_event_name'] == 'Stop']
+        if not approved or len(stops) != 1:
+            raise ValueError('The actual protected-file approval and completed turn were not observed')
+        with (home / 'cli.log').open('wb') as log:
+            log.write(terminal)
+            log.write(b'\n' + json.dumps({'type': 'result', 'text': stops[0]['last_assistant_message'],
+                                        'source': 'hermes-interactive-stop-event'}).encode() + b'\n')
+        return process.returncode
+    finally:
+        (home / 'terminal.log').write_bytes(terminal)
+        if process.poll() is None:
+            os.killpg(process.pid, signal.SIGTERM)
+            process.wait(timeout=10)
+        os.close(master)
+
+
 def successful_tool_outputs(requests: list[dict]) -> list[str]:
     outputs = []
     for request in requests:
@@ -1917,7 +1987,7 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
             environment['HERMES_EPHEMERAL_SYSTEM_PROMPT'] = FILE_SYSTEM_PROMPT
     elif case.startswith(TOOL_PREFIXES):
         command[-1] = 'Run this exact shell command once: ' + (GENERIC_CASES[case][2] if case in GENERIC_CASES
-                                                              else TOOL_COMMANDS[case])
+                                                              else tool_command(home, case))
         system_prompt = TOOL_SYSTEM_PROMPT
         if case in GUARD_BRANCHES and '-system-' in case:
             environment['HERMES_WRITE_SAFE_ROOT'] = str(home)
@@ -1925,8 +1995,11 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
             system_prompt += (' The local fixture scripts contain only a marker print and no external transport. '
                               'Execute only the exact requested command. Do not inspect files or run setup commands. '
                               'The fixture already has every required file and permission.')
+        if case == 'guard-bash-system-quoted-block':
+            command[-1] += (' Preserve every character in the command, including the shell quote concatenation. '
+                            'Do not simplify or remove the double quotes that encode literal single quotes.')
         if case in TOOL_REPEATS:
-            command[-1] = 'Run this exact shell command three times: ' + TOOL_COMMANDS[case]
+            command[-1] = 'Run this exact shell command three times: ' + tool_command(home, case)
             system_prompt = TOOL_REPEAT_SYSTEM_PROMPT
         if side == 'native':
             command[command.index('--tools') + 1] = 'Bash'
@@ -2020,6 +2093,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                        'a distinct concrete example. Cover installation, configuration, dependencies, '
                        'permissions, service restart, interruption, backup, user data, and rollback. '
                        'Write every paragraph in full. Do not abbreviate or summarize the requested answer.')
+    if case in EVALUATION_CASES:
+        command[-1] += ' After the file operation, reply with exactly READY.'
     if spec.get('isolate_tmp'):
         command = ['bwrap', '--ro-bind', '/', '/', '--dev-bind', '/dev', '/dev', '--bind', str(home), str(home),
                    '--tmpfs', '/tmp', *command]
@@ -2029,6 +2104,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
     execution = {'user': spec['uid'], 'group': spec['gid'], 'extra_groups': []} if os.geteuid() == 0 else {}
     if case == 'question-round-trip' and side == 'native':
         exit_code = run_interactive_question(command, environment, home, execution)
+    elif case == 'evaluation-write-claude' and side == 'hermes':
+        exit_code = run_protected_file_approval(command, environment, home, execution)
     else:
         with (home / 'cli.log').open('w') as log:
             process = subprocess.Popen(command, env=environment, cwd=project_dir(home, case),

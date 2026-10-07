@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. Six scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
+Date: 2026-10-06. This checklist implements the nine-package plan accepted by Adrian. 18 scenarios have verified evidence. The remaining scenarios stay open until their required branches are measured. No scenario status is inferred from registration dispatch.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Actual Discord delivery stays a named release acceptance requirement. Native web and batch dispatch limits remain separate from functional handler evidence.
 
@@ -22,8 +22,8 @@ Registrations: PreToolUse.1.1.
 
 Registrations: PreToolUse.2.1.
 
-- [ ] `pulse-skill-01`: Valid, unknown, disabled, and blocked skills produce the real daemon policy decisions.
-- [ ] `pulse-skill-02`: Malformed payload and unavailable daemon preserve the documented failure policy.
+- [x] `pulse-skill-01`: Valid, unknown, disabled, and blocked skills produce the real daemon policy decisions.
+- [x] `pulse-skill-02`: Malformed payload and unavailable daemon preserve the documented failure policy.
 
 ### pulse-agent (package 5)
 
@@ -56,15 +56,15 @@ Registrations: PreToolUse.4.1, PostToolUse.6.1, Stop.1.2.
 
 Registrations: PreToolUse.5.1.
 
-- [ ] `nested-pre-guards-01`: System content Write, Edit, and batch deny identifying content; user and outside-tree content stay allowed.
-- [ ] `nested-pre-guards-02`: Stale whole-file ISA writes deny after an external change; fresh views and supported edits pass.
-- [ ] `nested-pre-guards-03`: Unsafe plutil extraction denies; the explicit output form passes.
-- [ ] `nested-pre-guards-04`: Remote and headless speaker calls deny; health and explicitly silent calls pass.
+- [x] `nested-pre-guards-01`: System content Write, Edit, and batch deny identifying content; user and outside-tree content stay allowed.
+- [x] `nested-pre-guards-02`: Stale whole-file ISA writes deny after an external change; fresh views and supported edits pass.
+- [x] `nested-pre-guards-03`: Unsafe plutil extraction denies; the explicit output form passes.
+- [x] `nested-pre-guards-04`: Remote and headless speaker calls deny; health and explicitly silent calls pass.
 - [ ] `nested-pre-guards-05`: Public push policy tests blocked, admitted, bypass, scan failure, and private destination cases on disposable repositories.
-- [ ] `nested-pre-guards-06`: Raw Gmail and SES sends deny; skill-routed and read-only forms pass without external delivery.
-- [ ] `nested-pre-guards-07`: Tier-2 classified egress tests allowed content, above-ceiling content, and classification failure.
+- [x] `nested-pre-guards-06`: Raw Gmail and SES sends deny; skill-routed and read-only forms pass without external delivery.
+- [x] `nested-pre-guards-07`: Tier-2 classified egress tests allowed content, above-ceiling content, and classification failure.
 - [x] `nested-pre-guards-08`: Inline system writes through redirect, tee, copy, sed, and script forms preserve target classification.
-- [ ] `nested-pre-guards-09`: Malformed dispatcher input and isolated guard failure preserve each documented failure policy.
+- [x] `nested-pre-guards-09`: Malformed dispatcher input and isolated guard failure preserve each documented failure policy.
 
 ### external-safety (package 7)
 
@@ -116,9 +116,9 @@ Registrations: PostToolUse.8.3, PostToolUse.9.3, PostToolUse.10.3.
 Registrations: PostToolUse.8.4, PostToolUse.9.4, PostToolUse.10.4.
 
 - [ ] `evaluation-01`: Actual sentinel Write, Edit, and batch operations launch the configured real evaluation runner.
-- [ ] `evaluation-02`: Completed and failed evaluations publish their actual result and exit status.
+- [x] `evaluation-02`: Completed and failed evaluations publish their actual result and exit status.
 - [ ] `evaluation-03`: Recent debounce, concurrent edits, absent runner, and nonsentinel changes preserve their applicable state.
-- [ ] `evaluation-04`: The actual Hermes file tool completes the measured CLAUDE.md sentinel write.
+- [x] `evaluation-04`: The actual Hermes file tool completes the measured CLAUDE.md sentinel write.
 
 ### atlas (package 3)
 
@@ -402,5 +402,5 @@ Registrations: PreToolUse.1.1, PreToolUse.2.1, PreToolUse.3.1, PreToolUse.3.2, P
 
 - [ ] `regression-gates-01`: All paired acceptance results and retained artifact hashes pass the final evidence check.
 - [ ] `regression-gates-02`: The complete patch rebuild and installed source identity checks pass.
-- [ ] `regression-gates-03`: Concurrent service admission errors are instrumented and resolved without weakening admission.
+- [x] `regression-gates-03`: Concurrent service admission errors are instrumented and resolved without weakening admission.
 - [ ] `regression-gates-04`: Required regression suites pass with every skip explicitly classified against the acceptance scope.

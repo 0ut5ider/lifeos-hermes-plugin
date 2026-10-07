@@ -1,0 +1,32 @@
+test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return) ... ERROR
+test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return) ... ok
+test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return) ... ok
+test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return) ... ok
+test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return) ... ok
+
+======================================================================
+ERROR: test_originally_inactive_service_stays_inactive_after_setup_and_return (test_ownership_setup.OwnershipSetupTests.test_originally_inactive_service_stays_inactive_after_setup_and_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_ownership_setup.py", line 229, in test_originally_inactive_service_stays_inactive_after_setup_and_return
+    plan = self.prepare()
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_ownership_setup.py", line 41, in prepare
+    return self.setup_operation().prepare(self.backup.destination, account='dashboard:owner')
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/ownership_setup.py", line 137, in prepare
+    services.resume()
+    ~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 286, in resume
+    self._check_definition(document, role)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 175, in _check_definition
+    values, definition = self._inspect(role)
+                         ~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 157, in _inspect
+    raise MemoryUnavailable('The profile service has unreviewed program or process properties')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The profile service has unreviewed program or process properties
+
+----------------------------------------------------------------------
+Ran 5 tests in 60.404s
+
+FAILED (errors=1)

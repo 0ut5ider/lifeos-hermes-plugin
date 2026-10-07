@@ -1,0 +1,20 @@
+--- a/tools/file_tools_write_guards.py
++++ b/tools/file_tools_write_guards.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Enforces file mutation policy before the Hermes file tools execute.
++# ABOUTME: Requires a human channel for protected instruction file approval.
+ """Write-side safety guards for write_file / patch.
+ 
+ Every guard returns ``None`` when the write may proceed, else an error string
+@@ -309,6 +311,11 @@
+             return blocked.format(why=f"approval was withdrawn before the user answered ({decision['cancelled']}).")
+         choice, timed = decision.get("choice"), not decision.get("resolved")
+     else:
++        # A one-shot CLI has no running UI to answer this per-operation prompt.
++        # The protected-file gate requires human consent even under auto-approve.
++        from tools.approval_context import _is_single_query_approval_context
++        if _is_single_query_approval_context():
++            return blocked.format(why=_NO_HUMAN)
+         # CLI surface: per-thread approval callback (prompt_toolkit panel).
+         try:
+             from tools.terminal_tool import _get_approval_callback

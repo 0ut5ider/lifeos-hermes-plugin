@@ -1,20 +1,54 @@
 # ABOUTME: Verifies profile service drain and recovery through actual user systemd units.
 # ABOUTME: Uses isolated parent and child writers to check durable intent and control group boundaries.
 import json
+from contextlib import contextmanager
+import fcntl
 import os
 from pathlib import Path
 import subprocess
 import sys
 import tempfile
 import time
+import threading
 import unittest
 from uuid import uuid4
 
 from lifeos_hook_bridge.memory_access import MemoryUnavailable
 
 
+_manager_mutex = threading.RLock()
+_manager_holders = 0
+_manager_descriptor = None
+
+
+@contextmanager
+def service_manager_fixture():
+    # Unit enablement changes invalidate manager-wide admission properties.
+    # Nested fixtures share the same lease; their actual service writers still run concurrently.
+    global _manager_holders, _manager_descriptor
+    with _manager_mutex:
+        if not _manager_holders:
+            path = Path('/run/user') / str(os.getuid()) / 'lifeos-service-tests.lock'
+            descriptor = os.open(path, os.O_CREAT | os.O_RDWR | os.O_NOFOLLOW | os.O_CLOEXEC, 0o600)
+            try:
+                fcntl.flock(descriptor, fcntl.LOCK_EX)
+            except BaseException:
+                os.close(descriptor)
+                raise
+            _manager_descriptor = descriptor
+        _manager_holders += 1
+        try:
+            yield
+        finally:
+            _manager_holders -= 1
+            if not _manager_holders:
+                os.close(_manager_descriptor)
+                _manager_descriptor = None
+
+
 class ProfileServicesTests(unittest.TestCase):
     def setUp(self):
+        self.enterContext(service_manager_fixture())
         if hasattr(self, 'fixture_home'):
             self.home = Path(self.fixture_home)
         else:

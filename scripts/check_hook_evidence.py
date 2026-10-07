@@ -125,13 +125,76 @@ def check_evidence(inventory: Path, ledger: Path, root: Path, require_complete: 
     return sorted(errors)
 
 
+def check_acceptance(inventory: Path, ledger: Path, acceptance: Path, root: Path,
+                     require_complete: bool = False, require_release: bool = False) -> list[str]:
+    root = root.resolve()
+    identifiers = {row['id'] for row in csv.DictReader(inventory.read_text().splitlines())}
+    document = json.loads(acceptance.read_text())
+    artifacts = json.loads(ledger.read_text()).get('artifacts', {})
+    errors = []
+    if document.get('registration_inventory_sha256') != hashlib.sha256(inventory.read_bytes()).hexdigest():
+        errors.append('acceptance registration inventory changed')
+    groups, scenarios, covered = set(), set(), set()
+    pending, pending_release = [], []
+    for group in document.get('requirements', []):
+        identifier = group['id']
+        if identifier in groups:
+            errors.append(f'duplicate acceptance group: {identifier}')
+        groups.add(identifier)
+        if group.get('status') not in {'unverified', 'in_progress', 'verified'}:
+            errors.append(f'unknown acceptance group status: {identifier}')
+        covered.update(group.get('registrations', []))
+        entries = group.get('scenarios', [])
+        if not entries:
+            errors.append(f'acceptance group lacks scenarios: {identifier}')
+        partial = False
+        for scenario in entries:
+            name = scenario['id']
+            if name in scenarios:
+                errors.append(f'duplicate acceptance scenario: {name}')
+            scenarios.add(name)
+            if not scenario.get('expected'):
+                errors.append(f'acceptance expectation is missing: {name}')
+            status = scenario.get('status')
+            if status not in {'unverified', 'verified'}:
+                errors.append(f'unknown acceptance scenario status: {name}')
+            if status != 'verified':
+                partial = True
+                (pending_release if group.get('release_acceptance') else pending).append(name)
+                if document.get('complete') and not group.get('release_acceptance'):
+                    errors.append(f'complete acceptance includes partial scenario: {name}')
+                continue
+            names = scenario.get('evidence', [])
+            if not names:
+                errors.append(f'verified acceptance lacks evidence: {name}')
+            for artifact in names:
+                target = (root / artifact).resolve()
+                if artifact not in artifacts or not target.is_relative_to(root) or not target.is_file():
+                    errors.append(f'acceptance artifact is not retained: {artifact}')
+                elif hashlib.sha256(target.read_bytes()).hexdigest() != artifacts[artifact]:
+                    errors.append(f'changed acceptance artifact: {artifact}')
+        if group.get('status') == 'verified' and partial:
+            errors.append(f'verified group includes partial scenario: {identifier}')
+    errors.extend(f'missing acceptance scope: {name}' for name in identifiers - covered)
+    errors.extend(f'unregistered acceptance scope: {name}' for name in covered - identifiers)
+    if require_complete and pending:
+        errors.append('unverified acceptance: ' + ', '.join(sorted(pending)))
+    if require_release and pending_release:
+        errors.append('unverified release acceptance: ' + ', '.join(sorted(pending_release)))
+    return sorted(set(errors))
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description='Check LifeOS hook effect evidence')
     parser.add_argument('--inventory', type=Path, default=ROOT / 'docs/parity/registrations.csv')
     parser.add_argument('--ledger', type=Path, default=ROOT / 'docs/parity/handler-effects.json')
+    parser.add_argument('--acceptance', type=Path, default=ROOT / 'docs/parity/step1-acceptance.json')
     parser.add_argument('--require-complete', action='store_true')
+    parser.add_argument('--require-release', action='store_true')
     args = parser.parse_args()
     errors = check_evidence(args.inventory, args.ledger, ROOT, args.require_complete)
+    errors.extend(check_acceptance(args.inventory, args.ledger, args.acceptance, ROOT,
+                                   args.require_complete, args.require_release))
     for error in errors:
         print(error)
     if errors:

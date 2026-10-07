@@ -29,6 +29,7 @@ SOURCES = {
             "hermes-cron-bootstrap.patch",
             "hermes-required-middleware.patch",
             "hermes-web-result-status.patch",
+            "hermes-protected-instruction-approval.patch",
         ),
     },
     "lifeos": {
@@ -47,6 +48,7 @@ SOURCES = {
             "lifeos-mount-yaml-blocks.patch",
             "lifeos-config-audit.patch",
             "lifeos-shell-literal-guard.patch",
+            "lifeos-pulse-hook-switch.patch",
         ),
     },
 }

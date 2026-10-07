@@ -10,6 +10,15 @@ from scripts.paired_lifecycle_effects import GUARD_BRANCHES, guard_expectation, 
 
 
 class PairedGuardBranchTests(unittest.TestCase):
+    def test_quoted_system_write_uses_the_actual_home_literal(self):
+        import shlex
+        from scripts.paired_lifecycle_effects import tool_command
+        command = tool_command(Path('/tmp/fixture-home'), 'guard-bash-system-quoted-block')
+        code = shlex.split(command.split('; printf', 1)[0])[2]
+        self.assertIn("Path('/tmp/fixture-home/.claude/hooks/guard-target.txt')", code)
+        self.assertIn('PAIR_DENY_TOKEN', code)
+        self.assertIn("'\"'\"'", command)
+
     def test_execution_markers_require_successful_tool_results(self):
         requests = [{'body': {'messages': [
             {'role': 'assistant', 'content': 'PAIR_GUARD_OUTPUT'},

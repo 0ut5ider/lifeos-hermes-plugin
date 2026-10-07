@@ -6,6 +6,13 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Deny unattended protected instruction writes before Hermes waits on an unavailable interactive approval queue.
+- Honor the native Pulse hook switch before dispatching skill or agent policy requests.
+- Detect shell-quoted literal system-write targets in the native Bash guard.
+- Retain seven actual configuration evaluation pairs, including child inference and protected-file approval.
+- Verify acceptance scenarios and artifact hashes in addition to selected registration cases.
+- Isolate synthetic service fixtures from manager-wide unit enablement changes.
+
 - Record the served model for inherited agent calls before the Hermes transcript write. Preserve explicit tier selection.
 - Normalize question batches and record synchronous delegation when background delivery is unavailable.
 - Audit the actual configuration source and path with separate source baselines.

@@ -1,0 +1,135 @@
+{
+  "before": {
+    "target_present": false,
+    "prior_fire_present": false
+  },
+  "after": {
+    "target_matches": true,
+    "input_matches": true,
+    "tool_names": [
+      "Write"
+    ],
+    "runner_lock_absent": true,
+    "fire_state_matches": true,
+    "run_events": 1,
+    "passed": true,
+    "trial_output_matches": true,
+    "published_result_matches": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 2,
+  "model_successful_responses": 3,
+  "session_id": "20261007_010100_d673e5",
+  "seconds": 17.749,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-claude",
+    "/home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-claude",
+    "--tmpfs",
+    "/tmp",
+    "/var/tmp/lifeos-paired-context-response-final-20261005/python/bin/python3",
+    "-m",
+    "hermes_cli.main",
+    "chat",
+    "--oneshot",
+    "-Q",
+    "--format",
+    "stream-json",
+    "-t",
+    "file",
+    "-q",
+    "Write a file at the absolute path /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-claude/project/CLAUDE.md whose complete content is the single line PAIR_FILE_CONTENT. Use the file writing tool once."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.8.4",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.8.4 /home/lifeos-plugin-install-probe/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-claude/hooks.jsonl YnVuIC92YXIvdG1wL2xpZmVvcy1zdGVwMS0yMDI2MTAwNi9saWZlb3MtZ3VhcmQtZXZhbC9ob29rcy9Db25maWdFdmFsRmlyZS5ob29rLnRz",
+      "source_files": {
+        "/var/tmp/lifeos-step1-20261006/lifeos-guard-eval/hooks/ConfigEvalFire.hook.ts": "74c701218778479f589f5c4ae5e20e4f353b5074a30ad96cd3e4ad367bb0c218"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/api/show",
+      "body_sha256": "5ee1a8fa7450ca78dc59571ffeaf94ea5bbd4e7f8a8460fa7e66ca8246ddda08",
+      "model": null,
+      "body_keys": [
+        "name"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "35d28d5df26a1b185681e226d2b252975aee285211843e26c07924dc2a96bafb",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "9e61f61285c3707cee9fe7e5d73c16693e8c02b67df04884eb05ba7720b858ee",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "8b3f9f869c290c3ae9c505613e4b6ace4edd3ecf85ae7f2c45597b92e1e54b94",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1e12284807d63ff257d53b2d85397f933ccca0d076f2c6885b7293cec1f6459c",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/chat/completions",
+      "body_sha256": "3a3588a3020f5ede1d283e96efad0fb9d628c2c9b3471bafd808750e0a39ca90",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "dbf7bc41b4d6bc42f051c5c6bece56f9e6676786866d5fbf7a987c492a5cd96e",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "messages",
+        "model",
+        "reasoning_effort"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "prompt_input_exit",
+  "raw_artifacts": {
+    "hooks.jsonl": "9d0d46b9a0817a9e8a35981ee88473c9fd6a3ae206b8725c5243ec821440ef2f",
+    "fixture-events.jsonl": "2b08e783c2ca09a5336cbd05ca050720dc2da4f85417d57e2ae6c07f35c3b2c9",
+    "cli.log": "7f5c479f83c1bac1752bdc503ba23438c0368be741e0408c79e99ed96db2f910",
+    "before-state.json": "93ffb7f0337d47f201208714adf62b306adaa9728dea48bf6123f9e10d50d2a9",
+    "after-state.json": "29027f5c195942c11d57a1c2682a6a23bbc7049775c1360bb149b5899aa2e4b7",
+    "fixture-files-before.json": "0129263b1fb469499d46365c828cc568c6231ce35460a76b949428e7e5a1ec93",
+    "fixture-files-after.json": "2c1b3bc94f6cbd88483d4e97ed53c059d0483b51d56e3be2b6bdfe42de948c45"
+  }
+}

@@ -1,0 +1,55 @@
+test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory) ... ERROR
+test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory) ... ERROR
+test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory) ... ok
+test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory) ... ok
+test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory) ... ok
+
+======================================================================
+ERROR: test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_ownership_setup_host.py", line 58, in test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory
+    applied = operation.apply(plan['signature'], account='dashboard:owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/ownership_setup.py", line 157, in apply
+    services.drain(signature=document['service_signature'])
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 249, in drain
+    self._drain(document)
+    ~~~~~~~~~~~^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 209, in _drain
+    self._empty(document, role)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 181, in _empty
+    values = self._check_definition(document, role)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 175, in _check_definition
+    values, definition = self._inspect(role)
+                         ~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 157, in _inspect
+    raise MemoryUnavailable('The profile service has unreviewed program or process properties')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The profile service has unreviewed program or process properties
+
+======================================================================
+ERROR: test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory (test_ownership_setup_host.OwnershipSetupHostTests.test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_ownership_setup_host.py", line 57, in test_restarted_profile_uses_native_tools_and_returns_to_preserved_hermes_memory
+    plan = operation.prepare(fixture.fixture.fixture.fixture.home / 'coordinated-backup', account='dashboard:owner')
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/ownership_setup.py", line 129, in prepare
+    services.verify_stopped()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 270, in verify_stopped
+    self._empty(document, role)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 181, in _empty
+    values = self._check_definition(document, role)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 175, in _check_definition
+    values, definition = self._inspect(role)
+                         ~~~~~~~~~~~~~^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/profile_services.py", line 157, in _inspect
+    raise MemoryUnavailable('The profile service has unreviewed program or process properties')
+lifeos_hook_bridge.memory_access.MemoryUnavailable: The profile service has unreviewed program or process properties
+
+----------------------------------------------------------------------
+Ran 5 tests in 117.154s
+
+FAILED (errors=2)

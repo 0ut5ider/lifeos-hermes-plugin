@@ -1,0 +1,165 @@
+{
+  "before": {
+    "target_present": false,
+    "prior_fire_present": false
+  },
+  "after": {
+    "target_matches": true,
+    "input_matches": true,
+    "tool_names": [
+      "Write"
+    ],
+    "runner_lock_absent": true,
+    "fire_state_matches": true,
+    "run_events": 0,
+    "passed": null,
+    "trial_output_matches": null,
+    "published_result_matches": null,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 4,
+  "metadata_requests": 0,
+  "model_successful_responses": 4,
+  "session_id": "894df446-49ec-48f0-b9d8-43ec30a2f4a4",
+  "seconds": 26.274,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-nonsentinel-reviewed-results/evaluation-write-nonsentinel",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-nonsentinel-reviewed-results/evaluation-write-nonsentinel",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Write",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Perform the exact file operation from the user message with the file tools. Then reply with exactly READY. If a tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "acceptEdits",
+    "--max-turns",
+    "5",
+    "Write a file at the absolute path /home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-nonsentinel-reviewed-results/evaluation-write-nonsentinel/project/notes.md whose complete content is the single line PAIR_FILE_CONTENT. Use the file writing tool once. After the file operation, reply with exactly READY."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.8.4",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.8.4 /home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-nonsentinel-reviewed-results/evaluation-write-nonsentinel/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQ29uZmlnRXZhbEZpcmUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/ConfigEvalFire.hook.ts": "999dcaa059b7bedf644c8f249cb77e192aa62f500962dc728ae895098fce0022"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "d757c9c501e68115c0b151e7ab24a0324da93cadaa7fc8a85b75b68c63a07707",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "d98f409b7967a168fe64023605af853458f6598c6903d85a7dece47f6edcd08e",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "3c0d4f33ada957b3472ad17bc0ee75d953fc05567ff6cb77e4a79969f252938f",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "08e66f97c41b6104f34d2f4c5206e6d695ece45425149861514f6689f006e382",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "a3fe64775eb03b8514602f474ef3ad27a6666bb16752203f1ee0d4636067a5c8",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "397774a564d326da537968d3ac9d841874f01073fa6cfb84e96c3d6f36c86d04",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "da3070de5d830eea94ae060ebc8d7926971d64b8d003abcb6c8bdf7c70a01a6a",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "b28a3d5f5a92f6414324524b262596e1b5d5bf5bce68066cda70b8d40c510d76",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "d27200bcb5aa79f5844e4c86f4fd929b4a4a7ee3f8f64338bc47fe938f77ce53",
+    "fixture-events.jsonl": "19f4a21715580b38950c2ec9a065e8475182bb1484b4d3f9a6745928a3cfa4f2",
+    "cli.log": "47a4cd31e19dfe689ec8f6af88fd0e09d38ad87edc0279241c6f4cb1d6e2abaa",
+    "before-state.json": "93ffb7f0337d47f201208714adf62b306adaa9728dea48bf6123f9e10d50d2a9",
+    "after-state.json": "676b21d2552bea0f1b80bb7827cdf0de27527dcb0a1bec66d14f5e066833950c",
+    "fixture-files-before.json": "24b89026fdbeaa40298e73b7f0060bbce02087e9623e33355eaf59d057422367",
+    "fixture-files-after.json": "24b89026fdbeaa40298e73b7f0060bbce02087e9623e33355eaf59d057422367"
+  }
+}

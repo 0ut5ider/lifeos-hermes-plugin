@@ -57,7 +57,8 @@ class PulseFixture:
             if self.process.poll() is not None:
                 raise AssertionError(self.log.read_text())
             try:
-                self.request("skill-guard", {"tool_input": {"skill": "fixture-ready"}})
+                with urlopen(f"http://127.0.0.1:{self.port}/api/pulse/health", timeout=2):
+                    pass
                 return
             except URLError:
                 time.sleep(0.05)
@@ -132,6 +133,31 @@ class NativePulseGuardTests(unittest.TestCase):
     def test_invalid_native_skill_input_is_fail_open(self):
         body = self.fixture.request("skill-guard", {"tool_input": {"skill": {"invalid": "type"}}})
         self.assertEqual(body, "")
+
+    def test_skill_names_normalize_and_unknown_skills_pass(self):
+        for name in (' KEYBINDINGS-HELP ', 'KeYbInDiNgS-HeLp'):
+            with self.subTest(name=name):
+                result = json.loads(self.fixture.request('skill-guard', {'tool_input': {'skill': name}}))
+                self.assertEqual(result['hookSpecificOutput']['permissionDecision'], 'deny')
+        for payload in ({}, {'tool_input': {}}, {'tool_input': {'skill': 'fixture-unknown'}}):
+            with self.subTest(payload=payload):
+                self.assertEqual(self.fixture.request('skill-guard', payload), '')
+
+    def test_disabled_hooks_return_no_decision_to_the_native_client_or_bridge(self):
+        self.fixture.stop()
+        path = self.fixture.pulse / 'PULSE.toml'
+        path.write_text(path.read_text().replace('enabled = true', 'enabled = false'))
+        self.fixture.start()
+        self.assertEqual(self.fixture.request('skill-guard', {'tool_input': {'skill': 'keybindings-help'}}), '')
+        with self.assertNoLogs('lifeos_hook_bridge.bridge', level='WARNING'):
+            verdict = self.bridge.pre_tool_call('skill_view', {'name': 'keybindings-help'}, session_id='disabled')
+        self.assertIsNone(verdict)
+
+    def test_malformed_json_uses_the_native_empty_failure_response(self):
+        request = Request(f'http://127.0.0.1:{self.fixture.port}/hooks/skill-guard', data=b'{',
+                          headers={'Content-Type': 'application/json'})
+        with urlopen(request, timeout=2) as response:
+            self.assertEqual((response.status, response.read()), (200, b''))
 
     def test_background_guidance_starts_one_real_watchdog_with_session_routing(self):
         from gateway.session_context import clear_session_vars, set_session_vars

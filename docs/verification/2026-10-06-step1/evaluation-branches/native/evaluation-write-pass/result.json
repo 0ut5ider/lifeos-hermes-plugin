@@ -1,0 +1,145 @@
+{
+  "before": {
+    "target_present": false,
+    "prior_fire_present": false
+  },
+  "after": {
+    "target_matches": true,
+    "input_matches": true,
+    "tool_names": [
+      "Write"
+    ],
+    "runner_lock_absent": true,
+    "fire_state_matches": true,
+    "run_events": 1,
+    "passed": true,
+    "trial_output_matches": true,
+    "published_result_matches": true,
+    "user_response_delivered": true
+  },
+  "hook_exit_codes": [
+    0
+  ],
+  "event": "PostToolUse",
+  "cli_exit_code": 0,
+  "model_generation_requests": 3,
+  "metadata_requests": 0,
+  "model_successful_responses": 3,
+  "session_id": "3580682d-e5f0-4cc6-a262-c8c25589cf7a",
+  "seconds": 7.888,
+  "command": [
+    "bwrap",
+    "--ro-bind",
+    "/",
+    "/",
+    "--dev-bind",
+    "/dev",
+    "/dev",
+    "--bind",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-pass",
+    "/home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-pass",
+    "--tmpfs",
+    "/tmp",
+    "/home/lifeos-claude-ref/.local/share/claude/versions/2.1.272",
+    "-p",
+    "--verbose",
+    "--output-format",
+    "stream-json",
+    "--strict-mcp-config",
+    "--tools",
+    "Write",
+    "--model",
+    "lifecycle-fixture",
+    "--effort",
+    "medium",
+    "--append-system-prompt",
+    "This is a synthetic hook fixture. Perform the exact file operation from the user message with the file tools. Then reply with exactly READY. If a tool call is blocked or fails, do not retry it. Reply with exactly READY.",
+    "--permission-mode",
+    "acceptEdits",
+    "--max-turns",
+    "5",
+    "Write a file at the absolute path /home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-pass/project/pair.hook.ts whose complete content is the single line PAIR_FILE_CONTENT. Use the file writing tool once."
+  ],
+  "hook_definitions": [
+    {
+      "id": "PostToolUse.8.4",
+      "command": "/usr/local/bin/python3 /var/tmp/paired-startup-trace-20261004.py run PostToolUse.8.4 /home/lifeos-claude-ref/workspace/paired-step1-20261006/evaluation-final-results/evaluation-write-pass/hooks.jsonl YnVuIC9ob21lL2xpZmVvcy1jbGF1ZGUtcmVmLy5jbGF1ZGUvaG9va3MvQ29uZmlnRXZhbEZpcmUuaG9vay50cw==",
+      "source_files": {
+        "/home/lifeos-claude-ref/.claude/hooks/ConfigEvalFire.hook.ts": "999dcaa059b7bedf644c8f249cb77e192aa62f500962dc728ae895098fce0022"
+      }
+    }
+  ],
+  "requests": [
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "6a1cf20c142d3ac1324166c996445fbafab3d48e44440ed748ed30acff4cf870",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "1270d2711a2a140e063622d5ee02a138c9e9dc077d1ab00fd5ef5560ae8c1361",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "4ae1bfd33a14b86e6270e9c30c69e31c5b1c9fe973ec1a01264561ca7c373ae0",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "0917b247367184c5a11bec580061a61d7eca28a663da85d6458642bd8a2d0239",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    },
+    {
+      "path": "/v1/messages?beta=true",
+      "body_sha256": "4f01df9fbdea5eb43aeb76278528f4e370186f0f635f28621174b532ef50a44b",
+      "model": "lifecycle-fixture",
+      "upstream_status": 200,
+      "response_body_sha256": "c4d4fe7b07f14929bda97d2dc602196d259fa82b38362a68b7c0692f5870352a",
+      "actual_model": "flashnext-w4a16-fp8ple",
+      "body_keys": [
+        "context_management",
+        "max_tokens",
+        "messages",
+        "metadata",
+        "model",
+        "output_config",
+        "stream",
+        "system",
+        "thinking",
+        "tools"
+      ]
+    }
+  ],
+  "source": "startup",
+  "reason": "other",
+  "raw_artifacts": {
+    "hooks.jsonl": "33a6394e28c09f6aa175769116cae24dff1be7b680770a74afdf9802e3074fde",
+    "fixture-events.jsonl": "2f4d87f1f6a3f9f6f44f5d70b47a6d5823e19d4071efbf86b1f1fae15120b9c9",
+    "cli.log": "47e233e21b1d3b20f18a62b7ebae3bb4c65f3d0ac2a1ca4e31a7e6717682483b",
+    "before-state.json": "93ffb7f0337d47f201208714adf62b306adaa9728dea48bf6123f9e10d50d2a9",
+    "after-state.json": "29027f5c195942c11d57a1c2682a6a23bbc7049775c1360bb149b5899aa2e4b7",
+    "fixture-files-before.json": "890db4bbed1c832ac8ee844b7bd989963e4e679135ddeb8e73e03779825216fe",
+    "fixture-files-after.json": "434bc1e1035fb18807f5d155eff66bf0988114bcd7a468687d78e9d7d8822da6"
+  }
+}
