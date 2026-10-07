@@ -414,6 +414,99 @@ PINNED_ASYNC = {'tool-log-success': {'PostToolUse.11.1': 5}}
 TOOL_MATCHERS = {'atlas-bash-': 'Bash', 'guard-bash-': 'Bash|Write|Edit|MultiEdit'}
 EXPECTED_EXITS = {'guard-bash-plutil-block': [2], 'generic-task-block': [2]}
 GUARD_BLOCK_MESSAGE = '[PreToolGuard] blocked `plutil -extract` without -o'
+# Each command runs only inside a disposable account. The Gmail fixture prints a marker;
+# it has no transport. Denied commands must not reach even their first printf.
+GUARD_BRANCHES = {
+    'guard-bash-gmail-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; bun ./gmail.ts send",
+                             'blocked': True, 'message': 'CommunicationSkillGuard', 'script': True},
+    'guard-bash-gmail-routed': {'command': "LIFEOS_SKILL=fixture bun ./gmail.ts send",
+                              'blocked': False, 'message': 'CommunicationSkillGuard', 'script': True},
+    'guard-bash-gmail-read': {'command': "bun ./gmail.ts count", 'blocked': False,
+                            'message': 'CommunicationSkillGuard', 'script': True},
+    'guard-bash-gmail-mention': {'command': "printf 'PAIR_%s gmail.ts send' GUARD_OUTPUT",
+                               'blocked': False, 'message': 'CommunicationSkillGuard'},
+    'guard-bash-ses-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; aws ses send-email",
+                           'blocked': True, 'message': 'CommunicationSkillGuard'},
+    'guard-bash-voice-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; curl http://127.0.0.1:31337/notify",
+                             'blocked': True, 'message': 'VoiceEgressGuard'},
+    'guard-bash-voice-health': {'command': "printf 'PAIR_%s http://127.0.0.1:31337/voice/health' GUARD_OUTPUT",
+                              'blocked': False, 'message': 'VoiceEgressGuard'},
+    'guard-bash-voice-silent': {'command': "printf 'PAIR_%s http://127.0.0.1:31337/notify {\"voice_enabled\":false}' GUARD_OUTPUT",
+                              'blocked': False, 'message': 'VoiceEgressGuard'},
+    'guard-bash-egress-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; bun ./OpenRouter.ts --prompt LIFEOS/USER/CONTACTS.md",
+                              'blocked': True, 'message': 'EgressClassGuard'},
+    'guard-bash-egress-public': {'command': "bun ./OpenRouter.ts --prompt PUBLIC_FIXTURE", 'blocked': False,
+                               'message': 'EgressClassGuard', 'egress_script': True},
+    'guard-bash-system-block': {'command': "printf PAIR_DENY_TOKEN > \"$HOME/.claude/hooks/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
+                              'blocked': True, 'message': 'BashSystemWriteGuard'},
+    'guard-bash-system-clean': {'command': "printf PAIR_PUBLIC_CONTENT > \"$HOME/.claude/hooks/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
+                              'blocked': False, 'message': 'BashSystemWriteGuard', 'target_after': 'PAIR_PUBLIC_CONTENT'},
+    'guard-bash-system-user': {'command': "printf PAIR_DENY_TOKEN > \"$HOME/.claude/LIFEOS/USER/CONFIG/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
+                             'blocked': False, 'message': 'BashSystemWriteGuard', 'target_after': 'PAIR_DENY_TOKEN',
+                             'target_relative': '.claude/LIFEOS/USER/CONFIG/guard-target.txt'},
+    'guard-bash-public-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; gh repo create pair-guard-fixture --public",
+                              'blocked': True, 'message': 'PublicPushGate', 'repository': 'dirty'},
+    'guard-bash-public-scan-failure': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; gh repo create pair-guard-fixture --public",
+                                     'blocked': True, 'message': 'PublicPushGate', 'repository': 'empty'},
+}
+CASES.update({name: [('PreToolUse.5.1', 'hooks/PreToolGuard.hook.ts')] for name in GUARD_BRANCHES})
+TOOL_COMMANDS.update({name: definition['command'] for name, definition in GUARD_BRANCHES.items()})
+EXPECTED_EXITS.update({name: [2] for name, definition in GUARD_BRANCHES.items() if definition['blocked']})
+
+
+def guard_message(case: str) -> str:
+    return GUARD_BRANCHES.get(case, {}).get('message', GUARD_BLOCK_MESSAGE)
+
+
+def guard_files(case: str) -> list[str]:
+    definition = GUARD_BRANCHES.get(case, {})
+    return sorted((['gmail.ts'] if definition.get('script') else [])
+                  + (['OpenRouter.ts'] if definition.get('egress_script') else [])
+                  + (['.git', 'tracked.txt'] if definition.get('repository') == 'dirty' else
+                     ['.git'] if definition.get('repository') else []))
+
+
+def guard_target(home: Path, case: str) -> Path:
+    return home / GUARD_BRANCHES[case].get('target_relative', '.claude/hooks/guard-target.txt')
+
+
+def guard_expectation(case: str) -> tuple[dict, dict]:
+    blocked = case in EXPECTED_EXITS
+    before = {'project_files': guard_files(case)}
+    after = {**before, 'tool_name': 'Bash', 'command_matches': True,
+             'block_message_emitted': blocked, 'model_received_block': blocked,
+             'tool_output_in_model': not blocked, 'user_response_delivered': True}
+    if case in GUARD_BRANCHES:
+        before['target_content_matches'] = True
+        after['target_content_matches'] = True
+    return before, after
+
+
+def seed_guard(home: Path, case: str) -> None:
+    definition = GUARD_BRANCHES[case]
+    target = guard_target(home, case)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_text('PAIR_PRIOR_CONTENT')
+    security = home / '.claude/LIFEOS/USER/SECURITY'
+    security.mkdir(parents=True, exist_ok=True)
+    for name in ('DENY_LIST.txt', 'PublicScrubPatterns.txt'):
+        (security / name).write_text('PAIR_DENY_TOKEN\n')
+    project = project_dir(home, case)
+    for flag, name in (('script', 'gmail.ts'), ('egress_script', 'OpenRouter.ts')):
+        if definition.get(flag):
+            (project / name).write_text('// ABOUTME: Runs a local guard fixture with no external transport.\n'
+                                        '// ABOUTME: Prints an execution marker for the real shell tool.\n'
+                                        'console.log("PAIR_GUARD_OUTPUT");\n')
+    if definition.get('repository'):
+        git(project, 'init', '--quiet')
+        git(project, 'config', 'user.name', 'Fixture')
+        git(project, 'config', 'user.email', 'fixture@example.invalid')
+        if definition['repository'] == 'dirty':
+            (project / 'tracked.txt').write_text('PAIR_DENY_TOKEN\n')
+            git(project, 'add', 'tracked.txt')
+            git(project, 'commit', '--quiet', '-m', 'Guard fixture')
+
+
 ATLAS_SOURCES = {'atlas-bash-systemd': ['systemd'], 'atlas-bash-plain': [],
                  'atlas-bash-multiple': ['github', 'launchd']}
 ATLAS_EVENTS = '.local/state/lifeos/atlas/events.jsonl'
@@ -638,11 +731,8 @@ def check_pair(case: dict) -> list[str]:
             if before != {'activity_rows': 0, 'failure_rows': 0, 'loop_states': 0} or after != expected:
                 errors.append(f'{name}: tool log effect is missing')
         elif name.startswith('guard-bash-'):
-            blocked = name in EXPECTED_EXITS
-            expected = {'project_files': [], 'tool_name': 'Bash', 'command_matches': True,
-                        'block_message_emitted': blocked, 'model_received_block': blocked,
-                        'tool_output_in_model': not blocked, 'user_response_delivered': True}
-            if before != {'project_files': []} or after != expected:
+            expected_before, expected = guard_expectation(name)
+            if before != expected_before or after != expected:
                 errors.append(f'{name}: guard decision is missing')
         elif name.startswith('atlas-bash-'):
             expected = {'prior_event_preserved': True,
@@ -929,7 +1019,11 @@ def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool =
             payload = json.loads(base64.b64decode(trace['stdin_base64']))
             result.update(tool_name=payload.get('tool_name'),
                           command_matches=payload.get('tool_input', {}).get('command') == TOOL_COMMANDS[case],
-                          block_message_emitted=trace['stderr'].startswith(GUARD_BLOCK_MESSAGE))
+                          block_message_emitted=guard_message(case) in trace['stderr'])
+        if case in GUARD_BRANCHES:
+            target = guard_target(home, case)
+            expected = GUARD_BRANCHES[case].get('target_after', 'PAIR_PRIOR_CONTENT') if after else 'PAIR_PRIOR_CONTENT'
+            result['target_content_matches'] = target.is_file() and target.read_text() == expected
         return result
     if case.startswith('atlas-bash-'):
         rows = read_json_lines(home / ATLAS_EVENTS)
@@ -1352,6 +1446,8 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
         hooks[event][-1]['hooks'][0].update(timeout=5, **{'async': True})
     if case == 'version-drift-async-count':
         hooks[event][-1]['hooks'][0].update(timeout=10, **{'async': True})
+    if case in GUARD_BRANCHES:
+        seed_guard(home, case)
     settings = {'hooks': hooks}
     if case.startswith('time-context-'):
         settings['principal'] = {'timezone': clock_timezone(case)}
@@ -1934,7 +2030,7 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                 after['tool_output_in_model'] = 'PAIR_TOOL_LOG' in later
             if case.startswith('guard-bash-'):
                 later = json.dumps([row['body'] for row in generation[1:]], ensure_ascii=False)
-                after['model_received_block'] = GUARD_BLOCK_MESSAGE in later
+                after['model_received_block'] = guard_message(case) in later
                 after['tool_output_in_model'] = 'PAIR_GUARD_OUTPUT' in later
             if case.startswith('version-drift-'):
                 combined = json.dumps([row['body'] for row in generation], ensure_ascii=False)
