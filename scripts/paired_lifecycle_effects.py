@@ -22,6 +22,12 @@ import threading
 import time
 from zoneinfo import ZoneInfo
 
+if __package__:
+    from .paired_evaluation_effects import (EVALUATION_CASES, check_evaluation, configure_evaluation,
+                                          evaluation_snapshot, seed_evaluation, wait_evaluation)
+else:
+    from paired_evaluation_effects import (EVALUATION_CASES, check_evaluation, configure_evaluation,
+                                         evaluation_snapshot, seed_evaluation, wait_evaluation)
 
 # Cases that compare every LifeOS file change and every hook output between the clients.
 # Each entry: registration, hook program, user prompt.
@@ -226,7 +232,7 @@ ADVISORY_KEY = 'doc.integrity.memory_dir missing_active:KNOWLEDGE'
 RELATIONSHIP_TEXT = '- PAIR_RELATIONSHIP_NOTE\n'
 WISDOM_TEXT = '### PAIR_WISDOM_GUIDANCE [CRYSTAL: 95%]\n### PAIR_LOW_CONFIDENCE [CRYSTAL: 50%]\n'
 RESPONSE_PREFIXES = ('context-response-', 'response-cache-', 'feedback-', 'format-contract-', 'time-context-',
-                     'version-drift-', 'isa-render-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-', 'question-')
+                     'evaluation-', 'version-drift-', 'isa-render-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-', 'question-')
 FEEDBACK_PROMPTS = {'feedback-rating': '8 great result', 'feedback-bare-rating': '10',
                     'feedback-praise': 'great job', 'feedback-neutral': '2 of the files were inspected',
                     'feedback-low-rating': '4 needs clearer details'}
@@ -691,6 +697,8 @@ def check_pair(case: dict) -> list[str]:
                     after.get('skill_content_delivered') is not name.endswith('-allow')
                     or after.get('skill_deny_delivered') is not name.endswith('-block')):
                 errors.append(f'{name}: skill guard delivery is missing')
+        elif name in EVALUATION_CASES:
+            errors.extend(check_evaluation(name, before, after))
         elif name in ISA_CASES:
             if before != {'isa_closed': False, 'repo_commits': 1, 'repo_dirty': True} or after != isa_after(name):
                 errors.append(f'{name}: ISA edit effect is missing')
@@ -847,6 +855,8 @@ def seed_work(home: Path, case: str, session_id: str) -> None:
 
 
 def state_snapshot(home: Path, case: str, session_id: str = '', *, after: bool = False) -> dict:
+    if case in EVALUATION_CASES:
+        return evaluation_snapshot(home, case, after)
     if case == 'question-round-trip':
         if not after:
             return {'title': 'Inspecting report', 'ascent': 'traverse'}
@@ -1468,6 +1478,8 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
         hooks[event][-1]['hooks'][0].update(timeout=10, **{'async': True})
     if case in GUARD_BRANCHES:
         seed_guard(home, case)
+    if case in EVALUATION_CASES:
+        seed_evaluation(home, source, case)
     if case in GUARD_FILE_BRANCHES:
         target = project_dir(home, case) / 'guard-target.txt'
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -1582,7 +1594,7 @@ def make_fixture(home: Path, case: str, source: Path, trace_script: Path) -> lis
     write_json(root / 'settings.json', settings)
     if case.startswith('version-drift-'):
         seed_drift(root, case)
-    if event == 'SessionStart' or case in {'update-counts-no-oauth', 'memory-health-critical', 'question-round-trip'} or case.startswith(('doc-inventory-', 'response-cache-', 'feedback-', 'format-contract-', 'time-context-', 'version-drift-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-')):
+    if event == 'SessionStart' or case in {'update-counts-no-oauth', 'memory-health-critical', 'question-round-trip'} or case.startswith(('evaluation-', 'doc-inventory-', 'response-cache-', 'feedback-', 'format-contract-', 'time-context-', 'version-drift-', 'atlas-bash-', 'guard-bash-', 'guard-file-', 'tool-log-', 'file-hint-', 'knowledge-', 'isa-edit-', 'isa-write-', 'isa-read-', 'generic-')):
         write_json(home / 'before-state.json', state_snapshot(home, case))
         if case.startswith('generic-'):
             write_json(home / 'generic-before.json', generic_files(home, '', case))
@@ -1614,6 +1626,9 @@ GUARD_FILE_BRANCHES = {
         ('system', 'block'), ('system', 'clean'), ('user', 'allow'), ('outside', 'allow'))
 }
 FILE_CASES.update({name: (definition['tool'], 'guard-target.txt', []) for name, definition in GUARD_FILE_BRANCHES.items()})
+FILE_CASES.update({name: (tool, filename, []) for name, (tool, filename, _) in EVALUATION_CASES.items()})
+CASES.update({name: [(f'PostToolUse.{8 if tool == "Write" else 9}.4', 'hooks/ConfigEvalFire.hook.ts')]
+              for name, (tool, _, _) in EVALUATION_CASES.items()})
 CASES.update({name: [('PreToolUse.5.1', 'hooks/PreToolGuard.hook.ts')] for name in GUARD_FILE_BRANCHES})
 EXPECTED_EXITS.update({name: [2] for name, definition in GUARD_FILE_BRANCHES.items() if definition['blocked']})
 
@@ -1828,6 +1843,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                 os.chown(item, spec['uid'], spec['gid'])
         for parent in (home.parent, home.parent.parent):
             os.chown(parent, spec['uid'], spec['gid'])
+    if case in EVALUATION_CASES:
+        configure_evaluation(home, side, spec, endpoint, environment)
     response = case.startswith(RESPONSE_PREFIXES)
     delivery = response or case.startswith('context-delivery-')
     command = [*spec['command'], 'Reply with READY.' if delivery else BLOCK_REASON]
@@ -2045,6 +2062,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
         deadline = time.monotonic() + 30
         while render_page(home) != 'rendered' and time.monotonic() < deadline:
             time.sleep(0.5)
+    if case in EVALUATION_CASES:
+        wait_evaluation(home, case)
     requests = guard.observed[before_requests:]
     generation = [row for row in requests if conversation_request(row, case)]
     after = state_snapshot(home, case, session_id, after=True)
