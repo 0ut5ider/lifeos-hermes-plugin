@@ -24,7 +24,9 @@ Adrian confirms availability for the live tests. The first request uses marker `
 
 The [answer evidence](answer.json) records actual question delivery and answer return. The request arrives at 16:37:21 UTC. The bot posts the question at 16:37:36 UTC. The recorded tool result returns `D252-A` at 16:37:57 UTC. The bot delivers its matching report at 16:38:01 UTC. Both native question hooks complete with exit code 0. The capture contains 487 events with no reported losses, capture gaps, incomplete invocations, or integrity issues at this snapshot. Its 120 registration identities represent observed configuration versions, not 120 installed hooks.
 
-Timeout and cancellation remain pending. The acceptance timeout is temporarily 120 seconds. Restore 3600 seconds after the tests. The timeout request uses marker `D252-TIMEOUT`; Adrian must leave the question unanswered until the tool resolves.
+The [timeout evidence](timeout.json) verifies the unanswered `D252-TIMEOUT` request. The bot posts the question at 17:19:50 UTC. The tool waits 120.38 seconds and returns an empty answer with the notice `[user did not respond within 2m]`. No user text arrives between the request and the delivered timeout report at 17:21:56 UTC. Both native question hooks complete with exit code 0. The capture's 873 events contain no reported losses, capture gaps, incomplete invocations, or integrity issues. The recorder redacts the `timed_out` boolean; the empty answer, notice, duration, and delivered report remain observable.
+
+Cancellation and post-cancellation recovery remain pending. The acceptance timeout is temporarily 120 seconds. Restore 3600 seconds after the tests. The cancellation request uses marker `D252-CANCEL`. Adrian sends `/stop` while the question is pending, then sends `D252-RECOVERY` to verify that the session accepts a normal next turn.
 
 ## Evidence and recovery
 
