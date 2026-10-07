@@ -1,7 +1,7 @@
 {
   "date": "2026-10-07",
-  "complete": false,
-  "scope": "Accepted finite hook contract: 150 of 152 scenarios verified and 73 of 74 registration effects verified. Enabled reminder delivery and actual Discord release acceptance remain open. Native CLI limits and intentional differences stay explicit.",
+  "complete": true,
+  "scope": "Accepted finite hook contract: all 74 registration effects and 151 of 152 acceptance scenarios verified. All development scenarios pass. Actual Discord release acceptance remains open. Native CLI limits and intentional differences stay explicit.",
   "registrations_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "artifacts": {
     "docs/parity/paired-live-coverage.json": "f6fa3ece2d31a51f80bb4abd6ffbbbeee75c0e12f2794d3246ce3f8b1dc315d9",
@@ -3623,7 +3623,7 @@
     "docs/verification/2026-10-07-step1/installed-release-controls/patch-rebuild-final.txt": "511c6d97ecd04d37b2249d582e9c5b27374203c33bb4bb82e0c9ad858856c130",
     "docs/verification/2026-10-07-step1/installed-release-controls/review-recovery-before.txt": "0fda18cfe8f5824592cc459573e43fd2b27730b79f738bf32dd054ee5f4f3ec7",
     "docs/verification/2026-10-07-step1/installed-release-controls/review-recovery-after.txt": "034d7b170ddb99f04bb43ad71f846237ce99f89d3fcc4719f8d6337495182560",
-    "docs/verification/2026-10-07-step1/installed-release-controls/README.md": "3c1c465a4569afe7b51a0a851abb4e01cd5e821c9878c74a339c647bbbf80a14",
+    "docs/verification/2026-10-07-step1/installed-release-controls/README.md": "5b585b57b03641251609bcd751b5c6810d96990ede508207e7f80488dddd3aea",
     "docs/verification/2026-10-07-step1/installed-release-controls/browser-final.txt": "183e9b09c961530f9a65808c4b09b85f7c6baaec00c55ffdbee8c6cf442d7383",
     "docs/verification/2026-10-07-step1/installed-release-controls/browser-before.txt": "da78a6d820589bc957c65226952cad33fddbdcbf6a8bba610a1408aa9644d188",
     "docs/verification/2026-10-07-step1/installed-release-controls/browser-installation.json": "d4a8a913a94befc63908a89830e0ae592d3b8e3b7a5e6ccbe937744dd637c9c8",
@@ -3762,7 +3762,29 @@
     "docs/verification/2026-10-03-hook-compatibility/README.md": "3a110bdbb3a22e59bc5d2f22e2bd505f350fcc3aad7bf4f5b0ba0bade630afce",
     "docs/hook-parity.md": "1d50b47e6d11b9149557f7a3e4f20896bdbc7564f075932d8e079668fddbdb88",
     "docs/verification/2026-10-07-step1/installed-release-controls/cleanup.json": "a7f8da1febb331e6b39fa243cb2b74a802e1fedb539a49980ccf30a22ddc4ef5",
-    "docs/verification/2026-10-07-step1/installed-release-controls/evidence-final.txt": "7a90393bfcdf25cdf73c575129b8da56fd4858ffda1c9f406452e86e00179342"
+    "docs/verification/2026-10-07-step1/installed-release-controls/evidence-final.txt": "7a90393bfcdf25cdf73c575129b8da56fd4858ffda1c9f406452e86e00179342",
+    "docs/verification/2026-10-07-step1/reminder-delivery/result.json": "ace27d950c54d7c6fe23015fb1dd6f43e4c510f1f217f53ad029a3558a3d2363",
+    "docs/verification/2026-10-07-step1/reminder-delivery/source-identity.json": "f12c7d8190cb7510ef52751d7cba1821e14652357a7514192323af41eafc4928",
+    "docs/verification/2026-10-07-step1/reminder-delivery/issues-created.json": "35ba9261340ef61c4fec80d13fc3910bd7a1f4ada1a75d841077aec1ef51b2c4",
+    "docs/verification/2026-10-07-step1/reminder-delivery/.done": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa",
+    "docs/verification/2026-10-07-step1/reminder-delivery/cleanup.json": "f5ec7c5351e0d4e0fe7b2023b9ed7e89d91ff5903fb5856129d3a9b294e33ad6",
+    "docs/verification/2026-10-07-step1/reminder-delivery/delivery-state.json": "aaf2795842c0354e82d43226f0e75d2f2ce0ba84703e6797701dc9c39893880f",
+    "docs/verification/2026-10-07-step1/reminder-delivery/registration.json": "abbc0cebc6adb0cb100a4246049b06504690e07d3da64de273c3e30f6eaff634",
+    "docs/verification/2026-10-07-step1/reminder-delivery/authentication-refusal.txt": "33b0294298d5029730486a8c9671a03841dcf76b0b8afc686b0279a10cb55722",
+    "docs/verification/2026-10-07-step1/reminder-delivery/issues-closed.json": "d56a897259c8ba8a9fc420b55edcfba27abd1eb06080e68f017297a2563486a6",
+    "docs/verification/2026-10-07-step1/reminder-delivery/repository.json": "fd1f694a66c65db23fc8e69455aa3f3d26c48c2b704237fd8f6558e1caa6d4ac",
+    "docs/verification/2026-10-07-step1/reminder-delivery/readback-failure-delivery-state.json": "b37a7e23337c0175480b5cb608318c16f5f8d68d2f1cde0abe7ce1a7d773536c",
+    "docs/verification/2026-10-07-step1/reminder-delivery/reminder-live-first-failure.txt": "f5b1c443488d459199f7cad408a4646f0d9403db35c1ccf6ec485c06c52a253d",
+    "docs/verification/2026-10-07-step1/reminder-delivery/reminder-live-readback-failure.txt": "fad4a3548fb845d174fa2d567fe19a763df2e49f24c9431aa6cbf0ebf108225c",
+    "docs/verification/2026-10-07-step1/reminder-delivery/reminder-native-diagnostic.txt": "8012f47fa2be329cbabd820568b1ab3759348b07342ecb5b77b243c2b77dbcb2",
+    "docs/verification/2026-10-07-step1/reminder-delivery/reminder-readback-headers.txt": "f61e045b64259afc2a4c36864a42c7897cff27af49d895e2a7ed0d1bc5a9baa3",
+    "docs/verification/2026-10-07-step1/reminder-delivery/reminder-live-launch.py": "0db08faa41545bad99c9bf8f9d2424a6f08541d287587e14e44bea6235dd744a",
+    "docs/verification/2026-10-07-step1/reminder-delivery/repository-cleanup.json": "9d0b379eeededb58a3df35145fe09054d9793c0b6e59df802bc3d87efff9fdff",
+    "docs/verification/2026-10-07-step1/reminder-delivery/credential-scan.json": "4f25857d223bd5630880365a20f96e42803a8d1653532ffde640be83b1e89a1a",
+    "docs/verification/2026-10-07-step1/reminder-delivery/README.md": "b83c4bc24c10b937a785a3f5901ea6171e5bef8d3e49085b1836479e31ea36ab",
+    "scripts/installed_reminder_delivery_controls.py": "7d5f135dbb1536cf69e57ce42bbc69d382f218bee5912cce23c3aed5d62a7f54",
+    "docs/verification/2026-10-07-step1/reminder-delivery/tests.txt": "dd4d4a480b4e9093ebb81d8d399d9c850edabd0a6ab09fcabe5c9ecc237b78ba",
+    "docs/verification/2026-10-07-step1/reminder-delivery/remote-cleanup.json": "0c96ace8f6c0f2a91cf720242038b37d4cc5c824f8a68e47912317c3e122e472"
   },
   "registrations": [
     {
@@ -32122,7 +32144,7 @@
       "handler": "$HOME/.claude/hooks/ReminderRouter.hook.ts",
       "expected_effect": "Create a private GitHub issue for configured explicit reminder, research, or queue intent after confirmed command success.",
       "dispatch_status": "matched_dispatch_and_output_shape",
-      "effect_status": "paired_case_verified",
+      "effect_status": "paired_effect_verified",
       "paired_cases": [
         {
           "id": "generic-reminder-router",
@@ -32388,9 +32410,7 @@
       "related_native_tests": [
         "tests/test_native_reminder_router.py"
       ],
-      "remaining": [
-        "Enabled private GitHub issue delivery needs an approved test repository."
-      ],
+      "remaining": [],
       "acceptance_scenarios": [
         "reminders-01",
         "reminders-02",
@@ -32453,7 +32473,17 @@
         "docs/verification/2026-10-07-step1/installed-release-controls/source-identity.json",
         "docs/verification/2026-10-07-step1/installed-release-controls/usage-final.txt",
         "docs/verification/2026-10-07-step1/lifecycle-state-controls/README.md",
+        "docs/verification/2026-10-07-step1/reminder-delivery/README.md",
+        "docs/verification/2026-10-07-step1/reminder-delivery/cleanup.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/delivery-state.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/issues-closed.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/issues-created.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/registration.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/repository-cleanup.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/result.json",
+        "docs/verification/2026-10-07-step1/reminder-delivery/source-identity.json",
         "notes/2026-09-28-async-timeout-parity.md",
+        "scripts/installed_reminder_delivery_controls.py",
         "tests/test_profile_services.py"
       ]
     },

@@ -1,6 +1,6 @@
 {
   "date": "2026-10-07",
-  "complete": false,
+  "complete": true,
   "registration_inventory_sha256": "25105a06080489bb1a9e4ea59df467ce0cd4353f8ce49a9625826b06075d7b98",
   "scope": "Step 1 accepted hook contract. Functional controls and unavailable native dispatch remain distinct. Actual Discord delivery is combined-release acceptance.",
   "requirements": [
@@ -1522,7 +1522,7 @@
       "registrations": [
         "UserPromptSubmit.3.1"
       ],
-      "status": "in_progress",
+      "status": "verified",
       "scenarios": [
         {
           "id": "reminders-01",
@@ -1537,8 +1537,19 @@
         {
           "id": "reminders-02",
           "expected": "Enabled supported reminder routing uses the configured test destination without duplicate operation.",
-          "status": "unverified",
-          "evidence": []
+          "status": "verified",
+          "evidence": [
+            "docs/verification/2026-10-07-step1/reminder-delivery/README.md",
+            "docs/verification/2026-10-07-step1/reminder-delivery/result.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/issues-created.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/issues-closed.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/delivery-state.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/registration.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/source-identity.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/cleanup.json",
+            "docs/verification/2026-10-07-step1/reminder-delivery/repository-cleanup.json",
+            "scripts/installed_reminder_delivery_controls.py"
+          ]
         },
         {
           "id": "reminders-03",

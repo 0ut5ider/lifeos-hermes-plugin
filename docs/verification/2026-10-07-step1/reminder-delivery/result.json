@@ -1,0 +1,89 @@
+{
+  "repository": "0ut5ider/lifeos-reminder-test",
+  "private": true,
+  "target": "192.168.8.252",
+  "marker": "SYNTHETIC_LIFEOS_145db4fa49fa",
+  "controls": [
+    {
+      "kind": "reminder",
+      "issue_number": 3,
+      "url": "https://github.com/0ut5ider/lifeos-reminder-test/issues/3",
+      "labels": [
+        "Agent:Cerebo",
+        "Priority:P3",
+        "Property:internal",
+        "Status:queued",
+        "Type:reminder",
+        "pai-sync"
+      ],
+      "repeat_count": 2,
+      "issue_count": 1
+    },
+    {
+      "kind": "research",
+      "issue_number": 4,
+      "url": "https://github.com/0ut5ider/lifeos-reminder-test/issues/4",
+      "labels": [
+        "Agent:Cerebo",
+        "Priority:P3",
+        "Property:internal",
+        "Status:queued",
+        "Type:research",
+        "pai-sync"
+      ],
+      "repeat_count": 2,
+      "issue_count": 1
+    },
+    {
+      "kind": "queue",
+      "issue_number": 5,
+      "url": "https://github.com/0ut5ider/lifeos-reminder-test/issues/5",
+      "labels": [
+        "Agent:Cerebo",
+        "Priority:P3",
+        "Property:internal",
+        "Status:queued",
+        "Type:queue",
+        "pai-sync"
+      ],
+      "repeat_count": 2,
+      "issue_count": 1
+    },
+    {
+      "kind": "concurrent",
+      "submissions": 8,
+      "issue_count": 1,
+      "issue_number": 6,
+      "url": "https://github.com/0ut5ider/lifeos-reminder-test/issues/6"
+    },
+    {
+      "kind": "authenticated-retry",
+      "failure_http_status": 401,
+      "failure_published_marker": false,
+      "retry_issue_count": 1,
+      "issue_number": 7,
+      "url": "https://github.com/0ut5ider/lifeos-reminder-test/issues/7"
+    }
+  ],
+  "actual_runner_processes": 17,
+  "runner_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "issues_created": 5
+}

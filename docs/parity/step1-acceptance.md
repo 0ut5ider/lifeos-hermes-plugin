@@ -1,6 +1,6 @@
 # Step 1 acceptance checklist
 
-Date: 2026-10-07. This checklist implements the nine-package plan accepted by Adrian. 150 of 152 scenarios have verified evidence. Enabled reminder delivery needs an approved private GitHub test repository. Actual Discord delivery remains combined-release acceptance.
+Date: 2026-10-07. This checklist implements the nine-package plan accepted by Adrian. 151 of 152 scenarios have verified evidence. Enabled delivery to the approved private GitHub test repository passes. All development scenarios pass; actual Discord delivery remains combined-release acceptance.
 
 The development target is `192.168.8.252`. Private FlashNext effort mapping stays unchanged. Production receives one combined release. Native web and batch dispatch limits remain distinct from functional handler evidence.
 
@@ -227,7 +227,7 @@ Registrations: UserPromptSubmit.2.1.
 Registrations: UserPromptSubmit.3.1.
 
 - [x] `reminders-01`: Absent or unverified private repository configuration suppresses routing. Explicit reminder, research, and queued-work phrases retain native labels and date metadata.
-- [ ] `reminders-02`: Enabled supported reminder routing uses the configured test destination without duplicate operation.
+- [x] `reminders-02`: Enabled supported reminder routing uses the configured test destination without duplicate operation.
 - [x] `reminders-03`: Interruption and unavailable destination preserve retry state.
 
 ### version-drift (package 5)

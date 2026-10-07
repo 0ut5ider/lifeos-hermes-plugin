@@ -1,8 +1,8 @@
 # Registration effect matrix
 
-Date: 2026-10-07. The accepted finite contract verifies effects for 73 of 74 registrations. The ledger retains 152 equal selected comparisons and supplementary branch evidence. Enabled reminder delivery needs an approved private GitHub test repository. Actual Discord transport remains a release gate. Native web and batch controls remain functional comparisons with explicit native CLI limits.
+Date: 2026-10-07. The accepted finite contract verifies effects for all 74 registrations. The ledger retains 152 equal selected comparisons and supplementary branch evidence. Enabled reminder delivery passes against the approved private GitHub test repository. Actual Discord transport remains a release gate. Native web and batch controls remain functional comparisons with explicit native CLI limits.
 
-The [acceptance checklist](step1-acceptance.md) records 150 verified scenarios out of 152. The [final installed report](../verification/2026-10-07-step1/installed-release-controls/README.md) records full installed flows, regression results, source identity, and intentional limits.
+The [acceptance checklist](step1-acceptance.md) records 151 verified scenarios out of 152. The [final installed report](../verification/2026-10-07-step1/installed-release-controls/README.md) records full installed flows, regression results, source identity, and intentional limits.
 
 | Registration | Handler | Expected effect | Acceptance |
 | --- | --- | --- | --- |
@@ -52,7 +52,7 @@ The [acceptance checklist](step1-acceptance.md) records 150 verified scenarios o
 | SessionEnd.1.6 | $HOME/.claude/hooks/IntegrityCheck.hook.ts | Compare installed files with the native integrity baseline and report changes. | Verified accepted handler contract |
 | UserPromptSubmit.1.1 | $HOME/.claude/hooks/PromptProcessing.hook.ts | Create and persist the session name, including the configured child inference result. | Verified accepted handler contract |
 | UserPromptSubmit.2.1 | $HOME/.claude/hooks/SatisfactionCapture.hook.ts | Capture eligible satisfaction feedback from the submitted prompt. | Verified accepted handler contract |
-| UserPromptSubmit.3.1 | $HOME/.claude/hooks/ReminderRouter.hook.ts | Create a private GitHub issue for configured explicit reminder, research, or queue intent after confirmed command success. | Enabled external delivery remains open |
+| UserPromptSubmit.3.1 | $HOME/.claude/hooks/ReminderRouter.hook.ts | Create a private GitHub issue for configured explicit reminder, research, or queue intent after confirmed command success. | Verified accepted handler contract |
 | UserPromptSubmit.4.1 | $HOME/.claude/hooks/VersionDrift.hook.ts | Compare the installation with its selected baseline and emit the native drift warning. | Verified accepted handler contract |
 | UserPromptSubmit.5.1 | $HOME/.claude/hooks/MemoryTurnStart.hook.ts | Supply the admitted native memory context for the current turn. | Verified accepted handler contract |
 | UserPromptSubmit.6.1 | $HOME/.claude/hooks/DriftReminder.hook.ts | Return the applicable drift context within its per-prompt line budget. | Verified accepted handler contract |

@@ -6,6 +6,8 @@ Keep it equal to the version in both plugin manifests.
 
 ## Unreleased
 
+- Verify actual private GitHub reminder delivery, concurrent repeat suppression, authentication refusal, and retry.
+
 - Stamp global memory-review admission before starting detached inference. Preserve cadence across interrupted publication.
 - Verify complete installed sessions, real external-data delivery, actual request interruption, and full dependency-tree update and restore.
 
