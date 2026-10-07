@@ -444,9 +444,9 @@ GUARD_BRANCHES = {
     'guard-bash-system-user': {'command': "printf PAIR_DENY_TOKEN > \"$HOME/.claude/LIFEOS/USER/CONFIG/guard-target.txt\"; printf 'PAIR_%s' GUARD_OUTPUT",
                              'blocked': False, 'message': 'BashSystemWriteGuard', 'target_after': 'PAIR_DENY_TOKEN',
                              'target_relative': '.claude/LIFEOS/USER/CONFIG/guard-target.txt'},
-    'guard-bash-public-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; gh repo create pair-guard-fixture --public",
+    'guard-bash-public-block': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; false && gh repo create pair-guard-fixture --public",
                               'blocked': True, 'message': 'PublicPushGate', 'repository': 'dirty'},
-    'guard-bash-public-scan-failure': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; gh repo create pair-guard-fixture --public",
+    'guard-bash-public-scan-failure': {'command': "printf 'PAIR_%s' GUARD_OUTPUT; false && gh repo create pair-guard-fixture --public",
                                      'blocked': True, 'message': 'PublicPushGate', 'repository': 'empty'},
 }
 CASES.update({name: [('PreToolUse.5.1', 'hooks/PreToolGuard.hook.ts')] for name in GUARD_BRANCHES})
@@ -1849,7 +1849,7 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
                        'PAIR_NEW_LINE. Use the file editing tool. Do not rewrite the whole file.')
         if case in GUARD_FILE_BRANCHES:
             content = GUARD_FILE_BRANCHES[case]['content']
-            command[-1] = (f'Write the complete single line {content} to the absolute path {target} with the file writing tool once.'
+            command[-1] = (f'Read the existing file at {target} once. Then write the complete single line {content} to that absolute path with the file writing tool once.'
                            if tool == 'Write' else
                            f'In the file at the absolute path {target}, replace the exact text PAIR_OLD_LINE with {content}. '
                            'Use the file editing tool once. Do not change any other text.')
@@ -1865,6 +1865,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
             command[-1] = f'Read the file at the absolute path {target} once with the file reading tool.'
         if side == 'native':
             command[command.index('--tools') + 1] = {'Write': 'Write', 'Read': 'Read'}.get(tool, 'Read,Edit')
+            if case in GUARD_FILE_BRANCHES and tool == 'Write':
+                command[command.index('--tools') + 1] = 'Read,Write'
             command[command.index('--append-system-prompt') + 1] = FILE_SYSTEM_PROMPT
             # Claude Code treats files below its configuration directory as sensitive and asks for approval
             # even in acceptEdits mode. Cases that write into the LifeOS memory tree use bypass mode.
@@ -1877,6 +1879,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
         command[-1] = 'Run this exact shell command once: ' + (GENERIC_CASES[case][2] if case in GENERIC_CASES
                                                               else TOOL_COMMANDS[case])
         system_prompt = TOOL_SYSTEM_PROMPT
+        if case in GUARD_BRANCHES and '-system-' in case:
+            environment['HERMES_WRITE_SAFE_ROOT'] = str(home)
         if case in GUARD_BRANCHES:
             system_prompt += (' The local fixture scripts contain only a marker print and no external transport. '
                               'Execute only the exact requested command. Do not inspect files or run setup commands. '
@@ -1887,7 +1891,8 @@ def run_side(side: str, spec: dict, case: str, output: Path, endpoint: str, guar
         if side == 'native':
             command[command.index('--tools') + 1] = 'Bash'
             command[command.index('--append-system-prompt') + 1] = system_prompt
-            command[-1:-1] = ['--permission-mode', 'default', '--max-turns', '6' if case in TOOL_REPEATS else '3']
+            mode = 'bypassPermissions' if case in GUARD_BRANCHES and '-system-' in case else 'default'
+            command[-1:-1] = ['--permission-mode', mode, '--max-turns', '6' if case in TOOL_REPEATS else '3']
         else:
             command[command.index('-t') + 1] = 'terminal'
             environment['HERMES_EPHEMERAL_SYSTEM_PROMPT'] = system_prompt
