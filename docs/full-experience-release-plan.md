@@ -8,6 +8,8 @@ Adrian authorizes a fresh daily-use release with Discord text. Voice input and s
 
 Keep `.252` as the development server. Provision a separate daily-use server only after the release passes its acceptance gates. Give that server fresh Adrian and Cerebo data, a reserved address, and the existing Shiny Hermes Bot. Stop that bot on `.252` before starting it on the daily-use server. Development Discord needs a separate bot and channel. Preserve retained installations and test evidence.
 
+Adrian selects one private server text channel for daily use. The bot refuses direct messages, other channels, and threads in the selected mode. Managed memory requires current Discord permissions that admit only Adrian and the selected bot. The [channel controls](verification/2026-10-07-private-channel/README.md) pass in isolated SDK and native memory tests. The private channel ID, installed application acceptance, and final delivery authority checks remain open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

@@ -25,7 +25,7 @@ def route_identity(provider: str, model: str, base_url: str, api_mode: str) -> s
 
 
 def host_context(configuration: dict[str, Any], metadata: Mapping[str, str], *, model_route: str,
-                 hermes_home: str, author_id: str | None = None) -> SessionContext:
+                 hermes_home: str, author_id: str | None = None, audience_lookup=None) -> SessionContext:
     transport = metadata.get("HERMES_SESSION_PLATFORM", "")
     author = metadata.get("HERMES_SESSION_USER_ID", "") if author_id is None else author_id
     destination = metadata.get("HERMES_SESSION_CHAT_ID", "")
@@ -42,6 +42,13 @@ def host_context(configuration: dict[str, Any], metadata: Mapping[str, str], *, 
         destination += "/" + thread
     principal = configuration.get("accounts", {}).get(f"{transport}:{author}", "")
     participants = (principal,) if principal and visibility == "private" else ()
+    if (transport == 'discord' and visibility == 'unknown' and principal
+            and metadata.get('HERMES_CRON_SESSION') != '1'):
+        from .discord_audience import ChannelAudience, resolve_audience
+        audience = (audience_lookup or resolve_audience)(configuration, dict(metadata, HERMES_SESSION_USER_ID=author))
+        if (isinstance(audience, ChannelAudience) and audience.channel == destination
+                and audience.owner == author and audience.principal == principal):
+            visibility, participants = 'private', (principal,)
     return SessionContext(transport, author, destination, visibility, participants, model_route,
                           metadata.get("HERMES_SESSION_ID", ""))
 
@@ -63,7 +70,7 @@ def current_host_metadata() -> dict[str, str] | None:
         from gateway.session_context import get_session_env
     except ImportError:
         return None
-    keys = ('PLATFORM', 'USER_ID', 'CHAT_ID', 'THREAD_ID', 'CHAT_TYPE', 'ID')
+    keys = ('PLATFORM', 'USER_ID', 'CHAT_ID', 'THREAD_ID', 'CHAT_TYPE', 'SCOPE_ID', 'ID')
     metadata = {f'HERMES_SESSION_{key}': get_session_env(f'HERMES_SESSION_{key}') for key in keys}
     for key in ('HERMES_CRON_SESSION', 'HERMES_CRON_AUTO_DELIVER_PLATFORM',
                 'HERMES_CRON_AUTO_DELIVER_CHAT_ID', 'HERMES_CRON_AUTO_DELIVER_THREAD_ID'):

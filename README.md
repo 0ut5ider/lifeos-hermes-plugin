@@ -2,6 +2,8 @@
 
 **Version:** `0.1.0`. See [VERSION](VERSION) and the [changelog](CHANGELOG.md).
 
+The daily Discord release uses one private server text channel. The [channel restriction controls](docs/verification/2026-10-07-private-channel/README.md) verify message, command, outbound delivery, and memory admission rules. The candidate is staged for testing. The live channel configuration and managed memory activation remain open.
+
 This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
 
 

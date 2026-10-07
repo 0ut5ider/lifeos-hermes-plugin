@@ -1,0 +1,5 @@
+Command: LIFEOS_MEMORY_SOURCE=channel-sources/lifeos/LifeOS/install LIFEOS_HERMES_REBUILD_SOURCE=channel-sources/hermes LIFEOS_PREPARE_HERMES_REPO=channel-sources/hermes LIFEOS_PREPARE_LIFEOS_REPO=channel-sources/lifeos memory-plugin-test-env/bin/python -m pytest -q tests/test_discord_audience.py tests/test_memory_context.py tests/test_memory_runtime.py tests/test_memory_service.py tests/test_selection_service_files.py tests/test_installation_selection.py tests/test_hermes_patch_regeneration.py tests/test_patch_bundle.py tests/test_prepare_sources.py
+Dependencies: Native install uses bun install --frozen-lockfile.
+...................................... [ 49%]
+.......................................                                                             [100%]
+77 passed, 151 subtests passed in 29.12s

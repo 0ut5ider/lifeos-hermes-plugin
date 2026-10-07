@@ -1,0 +1,78 @@
+test_absent_opt_in_preserves_direct_message_admission (__main__.GuildChannelOnlyTests.test_absent_opt_in_preserves_direct_message_admission) ... ok
+test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) ... 
+  test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=[]) ... FAIL
+  test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=['60', '61']) ... FAIL
+  test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=['*']) ... FAIL
+  test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=['synthetic-private']) ... FAIL
+test_direct_messages_refuse_an_allowlisted_owner (__main__.GuildChannelOnlyTests.test_direct_messages_refuse_an_allowlisted_owner) ... FAIL
+test_other_guild_channel_refuses_messages_and_status (__main__.GuildChannelOnlyTests.test_other_guild_channel_refuses_messages_and_status) ... FAIL
+test_pairing_does_not_bypass_the_channel_restriction (__main__.GuildChannelOnlyTests.test_pairing_does_not_bypass_the_channel_restriction) ... FAIL
+test_private_channel_accepts_owner_messages_and_status (__main__.GuildChannelOnlyTests.test_private_channel_accepts_owner_messages_and_status) ... ok
+
+======================================================================
+FAIL: test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=[])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 84, in test_channel_only_requires_one_numeric_channel_id
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=['60', '61'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 84, in test_channel_only_requires_one_numeric_channel_id
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=['*'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 84, in test_channel_only_requires_one_numeric_channel_id
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_channel_only_requires_one_numeric_channel_id (__main__.GuildChannelOnlyTests.test_channel_only_requires_one_numeric_channel_id) (allowed=['synthetic-private'])
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 84, in test_channel_only_requires_one_numeric_channel_id
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_direct_messages_refuse_an_allowlisted_owner (__main__.GuildChannelOnlyTests.test_direct_messages_refuse_an_allowlisted_owner)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 65, in test_direct_messages_refuse_an_allowlisted_owner
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_other_guild_channel_refuses_messages_and_status (__main__.GuildChannelOnlyTests.test_other_guild_channel_refuses_messages_and_status)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 77, in test_other_guild_channel_refuses_messages_and_status
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.other),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+======================================================================
+FAIL: test_pairing_does_not_bypass_the_channel_restriction (__main__.GuildChannelOnlyTests.test_pairing_does_not_bypass_the_channel_restriction)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/lifeos-hermes/migration/2026-10-07/daily-text/test_discord_guild_channel_only.py", line 73, in test_pairing_does_not_bypass_the_channel_restriction
+    self.assertFalse(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: True is not false
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.016s
+
+FAILED (failures=7)

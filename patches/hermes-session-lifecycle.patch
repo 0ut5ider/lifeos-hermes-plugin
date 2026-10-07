@@ -1,5 +1,5 @@
 diff --git a/cli.py b/cli.py
-index 5d3055be6..e56f3ff34 100644
+index 5d3055be..e56f3ff3 100644
 --- a/cli.py
 +++ b/cli.py
 @@ -495,7 +495,7 @@ def _arm_exit_watchdog_on_shutdown_signal() -> None:
@@ -24,7 +24,7 @@ index 5d3055be6..e56f3ff34 100644
              _shutdown_agent_memory_provider(_active_agent_ref)
          except Exception as e:
 diff --git a/gateway/run_agent_cache.py b/gateway/run_agent_cache.py
-index e18672122..87c0a382b 100644
+index e1867212..87c0a382 100644
 --- a/gateway/run_agent_cache.py
 +++ b/gateway/run_agent_cache.py
 @@ -1,3 +1,5 @@
@@ -45,7 +45,7 @@ index e18672122..87c0a382b 100644
              threading.Thread(
                  target=copy_context().run,
 diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
-index 23c856091..ab8e0aa33 100644
+index 23c85609..ab8e0aa3 100644
 --- a/gateway/slash_commands_session.py
 +++ b/gateway/slash_commands_session.py
 @@ -896,6 +896,12 @@ class GatewaySessionCommandsMixin:
@@ -62,7 +62,7 @@ index 23c856091..ab8e0aa33 100644
          # Conversation boundary: clear ALL conversation-scoped per-session state (model/reasoning overrides
          # #10702, one-turn restores, model notes, last-resolved cache #58403, /queue overflow) + security
 diff --git a/hermes_cli/cli_commands_mixin.py b/hermes_cli/cli_commands_mixin.py
-index eaba807d2..739c28f0a 100644
+index eaba807d..739c28f0 100644
 --- a/hermes_cli/cli_commands_mixin.py
 +++ b/hermes_cli/cli_commands_mixin.py
 @@ -1306,6 +1306,8 @@ class CLICommandsMixin:
@@ -75,7 +75,7 @@ index eaba807d2..739c28f0a 100644
          _sync_process_session_id(target_id)
          # One lineage SELECT, two projections: model_history is alternation-repaired for live
 diff --git a/hermes_cli/cli_session_mixin.py b/hermes_cli/cli_session_mixin.py
-index f78528388..28e1463d5 100644
+index f7852838..28e1463d 100644
 --- a/hermes_cli/cli_session_mixin.py
 +++ b/hermes_cli/cli_session_mixin.py
 @@ -425,16 +425,16 @@ class CLISessionMixin:
@@ -109,7 +109,7 @@ index f78528388..28e1463d5 100644
          if self._session_db and old_session_id:
              # /new can arrive mid-turn before _flush_messages_to_session_db() ran — flush
 diff --git a/hermes_cli/cli_tui_runtime_mixin.py b/hermes_cli/cli_tui_runtime_mixin.py
-index 9eeb62a63..439d5e04b 100644
+index 9eeb62a6..439d5e04 100644
 --- a/hermes_cli/cli_tui_runtime_mixin.py
 +++ b/hermes_cli/cli_tui_runtime_mixin.py
 @@ -494,8 +494,9 @@ class CLITuiRuntimeMixin:
@@ -124,7 +124,7 @@ index 9eeb62a63..439d5e04b 100644
          self._print_exit_summary()
          self._release_active_session()
 diff --git a/plugins/platforms/discord/adapter.py b/plugins/platforms/discord/adapter.py
-index 905186ce2..0d0793bbd 100644
+index 905186ce..265ef86e 100644
 --- a/plugins/platforms/discord/adapter.py
 +++ b/plugins/platforms/discord/adapter.py
 @@ -1,3 +1,6 @@
@@ -134,7 +134,42 @@ index 905186ce2..0d0793bbd 100644
  from __future__ import annotations
  
  """
-@@ -2899,15 +2902,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+@@ -281,6 +284,17 @@ from gateway.platforms._shared import (
+ _UNAUTHORIZED = unauthorized_action_notice(Platform.DISCORD)
+ 
+ 
++def _guild_channel_target(restriction, allowed: set):
++    """Return the selected channel, None for disabled mode, or empty for refusal."""
++    if restriction is None or str(restriction).lower() in {'false', '0', 'no'}:
++        return None
++    if str(restriction).lower() not in {'true', '1', 'yes'}:
++        return ''
++    if len(allowed) == 1 and all(value.isascii() and value.isdecimal() for value in allowed):
++        return next(iter(allowed))
++    return ''
++
++
+ async def _read_url_image_with_redirect_guard(
+     session: Any, url: str, *, timeout: Any, request_kwargs: Dict[str, Any],
+ ) -> Tuple[int, bytes, Dict[str, str]]:
+@@ -556,6 +570,7 @@ _GATE_ENV_KEYS = (
+     "DISCORD_IGNORED_CHANNELS", "DISCORD_NO_THREAD_CHANNELS", "DISCORD_FREE_RESPONSE_CHANNELS",
+     "DISCORD_MISSED_MESSAGE_BACKFILL_CHANNELS", "DISCORD_ALLOW_ALL_USERS", "DISCORD_ALLOW_BOTS",
+     "GATEWAY_ALLOW_ALL_USERS", "GATEWAY_ALLOWED_USERS",
++    "DISCORD_GUILD_CHANNEL_ONLY",
+ )
+ 
+ 
+@@ -1441,6 +1456,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+                 return False, False
+         elif self._dedup.contains(message_id):
+             return False, False
++        if not self._guild_channel_allows(getattr(message, 'channel', None)):
++            return False, False
+         if message.author == self._client.user:
+             return False, False
+         if message.type not in {discord.MessageType.default, discord.MessageType.reply}:
+@@ -2899,15 +2916,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
              current_existing_payload = self._existing_command_to_payload(current)
              current_payload = self._canonicalize_app_command_payload(current_existing_payload)
              desired_payload = self._canonicalize_app_command_payload(desired)
@@ -156,9 +191,73 @@ index 905186ce2..0d0793bbd 100644
              summary["updated"] += 1
          summary["total"] = len(desired_payloads)
          return summary
+@@ -4003,6 +4020,8 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         Fail closed on malformed payloads: with an allowlist, a missing channel id/user REJECTS.
+         """
+         chan_obj = getattr(interaction, "channel", None)
++        if not self._guild_channel_allows(chan_obj):
++            return (False, 'The bot accepts commands only in its selected guild text channel')
+         in_dm = isinstance(chan_obj, discord.DMChannel) if chan_obj is not None else False
+         channel_ids: set = set()
+         channel_keys: set = set()
+@@ -4869,6 +4888,15 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         """This adapter's DISCORD_ALLOWED_CHANNELS gate (per-profile)."""
+         return self._gate_csv_set(self._gate_raw("allowed_channels", "DISCORD_ALLOWED_CHANNELS"))
+ 
++    def _guild_channel_restriction(self):
++        restriction = self._gate_raw('guild_channel_only', 'DISCORD_GUILD_CHANNEL_ONLY')
++        return _guild_channel_target(restriction, self._get_allowed_channels())
++
++    def _guild_channel_allows(self, channel) -> bool:
++        selected = self._guild_channel_restriction()
++        return (selected is None or isinstance(channel, discord.TextChannel)
++                and channel.type == discord.ChannelType.text and str(channel.id) == selected)
++
+     def _get_ignored_channels(self) -> set:
+         """This adapter's DISCORD_IGNORED_CHANNELS gate (per-profile)."""
+         return self._gate_csv_set(self._gate_raw("ignored_channels", "DISCORD_IGNORED_CHANNELS"))
+@@ -5210,10 +5238,13 @@ class DiscordAdapter(DiscordMediaMixin, BasePlatformAdapter):
+         dying in ``int()`` as a generic send failure."""
+         if isinstance(channel_id, str):
+             channel_id = discord_channel_id_from_link(channel_id.strip()) or channel_id
++        selected = self._guild_channel_restriction()
++        if selected is not None and str(channel_id) != selected:
++            return None
+         channel = self._client.get_channel(int(channel_id))
+         if not channel:
+             channel = await self._client.fetch_channel(int(channel_id))
+-        return channel
++        return channel if self._guild_channel_allows(channel) else None
+ 
+     def _thread_parent_channel(self, channel: Any) -> Any:
+         """Return the parent text channel when invoked from a thread."""
+@@ -6959,6 +6990,15 @@ async def _standalone_send(
+     Forum channels (type 15) reject ``POST /messages``, so a thread post is created via
+     ``POST /channels/{id}/threads`` with media as multipart attachments. Channel type: directory
+     cache → process-local probe cache → memoized GET. ``force_document`` accepted but unused."""
++    extra = getattr(pconfig, 'extra', None)
++    extra = extra if isinstance(extra, dict) else {}
++    restriction = (_scoped_gate_env('DISCORD_GUILD_CHANNEL_ONLY')
++                   or extra.get('guild_channel_only'))
++    allowed = (_scoped_gate_env('DISCORD_ALLOWED_CHANNELS')
++               or extra.get('allowed_channels'))
++    selected = _guild_channel_target(restriction, DiscordAdapter._gate_csv_set(allowed))
++    if selected is not None and (str(chat_id) != selected or thread_id):
++        return send_error('Discord delivery requires the selected guild text channel')
+     try:
+         import aiohttp
+     except ImportError:
+@@ -7298,6 +7338,7 @@ def _apply_yaml_config(yaml_cfg: dict, discord_cfg: dict) -> dict | None:
+         seeded_extra["missed_message_backfill"] = dict(backfill_cfg)
+     _gate("ignored_channels", "DISCORD_IGNORED_CHANNELS", from_platform_extra=False)
+     _gate("allowed_channels", "DISCORD_ALLOWED_CHANNELS", from_platform_extra=False)
++    _gate("guild_channel_only", "DISCORD_GUILD_CHANNEL_ONLY", from_platform_extra=True, lower=True)
+     _gate("no_thread_channels", "DISCORD_NO_THREAD_CHANNELS", from_platform_extra=False)
+     # history_backfill: recover mention-gated channel messages between bot turns.
+     if "history_backfill" in discord_cfg:
 diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
 new file mode 100644
-index 000000000..a2021d519
+index 00000000..a2021d51
 --- /dev/null
 +++ b/tests/gateway/test_discord_command_identity.py
 @@ -0,0 +1,107 @@
@@ -270,7 +369,7 @@ index 000000000..a2021d519
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tests/gateway/test_discord_connect.py b/tests/gateway/test_discord_connect.py
-index ad1413251..4f29dd9ef 100644
+index ad141325..4f29dd9e 100644
 --- a/tests/gateway/test_discord_connect.py
 +++ b/tests/gateway/test_discord_connect.py
 @@ -1,9 +1,12 @@
@@ -300,8 +399,132 @@ index ad1413251..4f29dd9ef 100644
      fake_http.delete_global_command.assert_awaited_once_with(999, 13)
  
  
+diff --git a/tests/gateway/test_discord_guild_channel_only.py b/tests/gateway/test_discord_guild_channel_only.py
+new file mode 100644
+index 00000000..572cbc3d
+--- /dev/null
++++ b/tests/gateway/test_discord_guild_channel_only.py
+@@ -0,0 +1,118 @@
++# ABOUTME: Verifies one guild channel gates Discord message and slash-command admission.
++# ABOUTME: Uses the actual Discord SDK and isolated pairing records for protocol controls.
++import json
++import asyncio
++from pathlib import Path
++import tempfile
++import unittest
++
++import discord
++from gateway.config import PlatformConfig
++from gateway.pairing import PairingStore
++from agent.secret_scope import set_secret_scope, reset_secret_scope
++from hermes_constants import set_hermes_home_override, reset_hermes_home_override
++from plugins.platforms.discord.adapter import DiscordAdapter, _GATE_ENV_KEYS, _standalone_send
++
++
++class GuildChannelOnlyTests(unittest.TestCase):
++    def setUp(self):
++        directory = tempfile.TemporaryDirectory()
++        self.addCleanup(directory.cleanup)
++        token = set_hermes_home_override(Path(directory.name))
++        self.addCleanup(reset_hermes_home_override, token)
++        secret_scope = set_secret_scope({'DISCORD_BOT_TOKEN':''})
++        self.addCleanup(reset_secret_scope, secret_scope)
++        self.client = discord.Client(intents=discord.Intents.none())
++        state = self.client._connection
++        self.bot_data = {'id':'30','username':'SyntheticBot','discriminator':'0000','avatar':None,'bot':True}
++        self.user_data = {'id':'20','username':'SyntheticOwner','discriminator':'0000','avatar':None}
++        state.user = discord.ClientUser(state=state, data=self.bot_data)
++        self.guild = discord.Guild(state=state, data={'id':'10','name':'Synthetic guild','owner_id':'20',
++            'roles':[], 'features':[], 'emojis':[], 'stickers':[], 'afk_timeout':300,
++            'verification_level':0,'default_message_notifications':0,'explicit_content_filter':0,'mfa_level':0})
++        state._guilds[10] = self.guild
++        self.channel_data = {'id':'60','name':'synthetic-private','type':0,'position':0,'permission_overwrites':[]}
++        self.channel = discord.TextChannel(state=state, guild=self.guild, data=self.channel_data)
++        self.other = discord.TextChannel(state=state, guild=self.guild, data={**self.channel_data,'id':'61'})
++        self.dm = discord.DMChannel(state=state, me=state.user, data={'id':'70','recipients':[self.user_data]})
++        self.guild._channels.update({60:self.channel, 61:self.other})
++        state._private_channels[70] = self.dm
++        self.adapter = DiscordAdapter(PlatformConfig(enabled=True))
++        self.adapter._client = self.client
++        self.adapter._allowed_user_ids = {'20'}
++        self.adapter._gate_env_snapshot = {key:'' for key in _GATE_ENV_KEYS}
++        self.adapter.config.extra = {'allowed_channels':['60'], 'guild_channel_only':True}
++
++    def message(self, channel):
++        return discord.Message(state=self.client._connection, channel=channel, data={
++            'id':'100000000000000000','type':0,'author':self.user_data,
++            'content':'<@30> synthetic request','mentions':[self.bot_data],'mention_roles':[],
++            'attachments':[], 'embeds':[], 'flags':0,'pinned':False,'tts':False,
++            'timestamp':'2026-10-07T20:00:00+00:00','edited_timestamp':None})
++
++    def interaction(self, channel):
++        payload = {'id':'100000000000000001','application_id':'30','type':2,'token':'synthetic-token',
++            'attachment_size_limit':33554432, 'entitlements':[],
++            'version':1,'locale':'en-US','app_permissions':'0',
++            'data':{'id':'200000000000000000','name':'status','type':1},
++            'channel_id':str(channel.id), 'channel':{**self.channel_data,'id':str(channel.id)}}
++        if isinstance(channel, discord.DMChannel):
++            payload.update(user=self.user_data,channel={'id':'70','type':1,'recipients':[self.user_data]})
++        else:
++            payload.update(guild_id='10',guild_locale='en-US',member={'user':self.user_data,
++                'roles':[],'joined_at':'2026-10-01T00:00:00+00:00','deaf':False,'mute':False,'permissions':'0','flags':0})
++        return discord.Interaction(data=payload,state=self.client._connection)
++
++    def test_private_channel_accepts_owner_messages_and_status(self):
++        self.assertTrue(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
++        self.assertTrue(self.adapter._evaluate_slash_authorization(self.interaction(self.channel))[0])
++
++    def test_direct_messages_refuse_an_allowlisted_owner(self):
++        self.assertFalse(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
++        self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.dm))[0])
++
++    def test_pairing_does_not_bypass_the_channel_restriction(self):
++        store = PairingStore()
++        code = store.generate_code('discord','20','SyntheticOwner')
++        self.assertIsNotNone(store.approve_code('discord',code))
++        self.assertTrue(store.is_approved('discord','20'))
++        self.assertFalse(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
++        self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.dm))[0])
++
++    def test_other_guild_channel_refuses_messages_and_status(self):
++        self.assertFalse(self.adapter._discord_message_admission(self.message(self.other),claim=False)[0])
++        self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.other))[0])
++
++    def test_outbound_messages_and_files_cannot_resolve_another_destination(self):
++        self.assertIs(asyncio.run(self.adapter._resolve_channel('60')), self.channel)
++        self.assertIsNone(asyncio.run(self.adapter._resolve_channel('61')))
++        self.assertIsNone(asyncio.run(self.adapter._resolve_channel('70')))
++
++    def test_standalone_text_and_media_refuse_another_channel_before_credentials(self):
++        config = PlatformConfig(enabled=True,extra={'guild_channel_only':True,'allowed_channels':['60']})
++        for target, thread in (('61',None), ('70',None), ('60','80')):
++            with self.subTest(target=target,thread=thread):
++                result = asyncio.run(_standalone_send(config,target,'Synthetic outbound request',
++                    thread_id=thread,media_files=[('/synthetic/attachment.txt',False)]))
++                self.assertIn('selected guild text channel',result['error'])
++
++    def test_standalone_selected_channel_reaches_credential_validation(self):
++        config = PlatformConfig(enabled=True,extra={'guild_channel_only':True,'allowed_channels':['60']})
++        result = asyncio.run(_standalone_send(config,'60','Synthetic outbound request'))
++        self.assertEqual(result['error'],'Discord standalone send: DISCORD_BOT_TOKEN is not set')
++
++    def test_channel_only_requires_one_numeric_channel_id(self):
++        for allowed in ([], ['60','61'], ['*'], ['synthetic-private']):
++            with self.subTest(allowed=allowed):
++                self.adapter.config.extra['allowed_channels'] = allowed
++                self.assertFalse(self.adapter._discord_message_admission(self.message(self.channel),claim=False)[0])
++                self.assertFalse(self.adapter._evaluate_slash_authorization(self.interaction(self.channel))[0])
++
++    def test_absent_opt_in_preserves_direct_message_admission(self):
++        self.adapter.config.extra.pop('guild_channel_only')
++        self.assertTrue(self.adapter._discord_message_admission(self.message(self.dm),claim=False)[0])
++        self.assertTrue(self.adapter._evaluate_slash_authorization(self.interaction(self.dm))[0])
++
++
++if __name__ == '__main__':
++    unittest.main()
 diff --git a/tests/gateway/test_discord_sync_limit.py b/tests/gateway/test_discord_sync_limit.py
-index ca8f298f8..4a94ec585 100644
+index ca8f298f..4a94ec58 100644
 --- a/tests/gateway/test_discord_sync_limit.py
 +++ b/tests/gateway/test_discord_sync_limit.py
 @@ -1,3 +1,6 @@
@@ -328,7 +551,7 @@ index ca8f298f8..4a94ec585 100644
  
      # Simulate having 100 commands on Discord, with 1 that's no longer desired
 diff --git a/tests/gateway/test_resume_command.py b/tests/gateway/test_resume_command.py
-index a114eae37..ee2a0c2f1 100644
+index a114eae3..ee2a0c2f 100644
 --- a/tests/gateway/test_resume_command.py
 +++ b/tests/gateway/test_resume_command.py
 @@ -103,6 +103,24 @@ class TestHandleResumeCommand:
@@ -358,7 +581,7 @@ index a114eae37..ee2a0c2f1 100644
          """Resume must not carry a previous session's /model override into the
 diff --git a/tests/gateway/test_stop_clarify_waiters.py b/tests/gateway/test_stop_clarify_waiters.py
 new file mode 100644
-index 000000000..a02771b2e
+index 00000000..a02771b2
 --- /dev/null
 +++ b/tests/gateway/test_stop_clarify_waiters.py
 @@ -0,0 +1,113 @@
@@ -476,7 +699,7 @@ index 000000000..a02771b2e
 +if __name__ == "__main__":
 +    unittest.main()
 diff --git a/tests/hermes_cli/test_cli_resume_command.py b/tests/hermes_cli/test_cli_resume_command.py
-index 365499669..a1548102d 100644
+index 36549966..a1548102 100644
 --- a/tests/hermes_cli/test_cli_resume_command.py
 +++ b/tests/hermes_cli/test_cli_resume_command.py
 @@ -210,6 +210,47 @@ class TestPendingResumeNumberedSelection:

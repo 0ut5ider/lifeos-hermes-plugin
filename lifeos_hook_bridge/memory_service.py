@@ -129,6 +129,8 @@ class MemoryConfiguration:
         if workspace is not None and (not isinstance(workspace, str) or not Path(workspace).is_absolute()):
             raise ValueError('Hermes publication needs an absolute installed workspace')
         MemoryPolicy(configuration)
+        from .discord_audience import validate_bindings
+        validate_bindings(configuration)
         clients = configuration.get("clients", {})
         if not isinstance(clients, dict):
             raise ValueError("Memory clients must have server-owned grants")
@@ -193,11 +195,12 @@ class MemoryConfiguration:
 
 
 class MemoryService:
-    def __init__(self, configuration: MemoryConfiguration):
+    def __init__(self, configuration: MemoryConfiguration, *, audience_lookup=None):
         self.configuration = configuration
+        self.audience_lookup = audience_lookup
 
     def scope(self, context: SessionContext) -> MemoryScope:
-        return MemoryPolicy(self.configuration.load()).resolve(context)
+        return self._context_scope(self.configuration.load(), context)
 
     def _prompt(self, configuration, scope, operation, arguments, *, check_authority=None):
         from .memory_prompt import bundle, preview, publish_prompt
@@ -242,10 +245,11 @@ class MemoryService:
     def native(self, context: SessionContext, operation: str, arguments: dict[str, Any]) -> dict[str, Any]:
         try:
             configuration = self.configuration.load()
-            scope = MemoryPolicy(configuration).resolve(context)
+            scope = self._context_scope(configuration, context)
             memory = NativeMemory(Path(configuration["root"]))
             if operation in ('prompt_bundle', 'prompt_preview', 'prompt_publish'):
-                return self._prompt(configuration, scope, operation, arguments)
+                return self._prompt(configuration, scope, operation, arguments,
+                    check_authority=lambda: self._check_current_context(configuration, context, scope))
             if operation == 'staged_preview' and set(arguments) == {'target','all','project'}:
                 from .memory_staging import preview
                 return {'ok':True,**preview(memory,scope,**arguments)}
@@ -307,7 +311,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Distill authority changed during collection')
 
                 if operation == 'distill_read' and set(arguments) == {'args'}:
@@ -322,7 +326,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Freshness authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
@@ -331,7 +335,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('PULSE authority changed during execution')
 
                 if operation == 'pulse_manifests' and not arguments:
@@ -358,7 +362,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Derivative sync authority changed during execution')
 
                 return handle(memory, scope, operation, arguments, check_current=check_current)
@@ -367,7 +371,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Deny hash authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -376,7 +380,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Hermes soul authority changed during rendering')
 
                 return run(memory, scope, self.configuration.path.parent, configuration.get('hermes_workspace'),
@@ -386,7 +390,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Interview scan authority changed during rendering')
 
                 return read(memory, scope, **arguments, check_current=check_current)
@@ -401,7 +405,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Interview authority changed during rendering')
 
                 return handler(memory, scope, **arguments, check_current=check_current)
@@ -416,7 +420,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('State evidence authority changed during rendering')
 
                 return handler(memory, scope, **arguments, check_current=check_current)
@@ -425,7 +429,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Freshness migration authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -434,7 +438,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Freshness cache authority changed during rendering')
 
                 return run(memory, scope, check_current=check_current)
@@ -443,7 +447,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Timestamp authority changed during rendering')
 
                 return write(memory, scope, **arguments, check_current=check_current)
@@ -452,7 +456,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Graph authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -461,7 +465,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Native count authority changes during collection')
 
                 return read(memory, scope, **arguments, check_current=check_current)
@@ -470,7 +474,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Context audit authority changes during the operation')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -480,7 +484,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('Interview seed authority changes during publication')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -489,7 +493,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('State authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -498,7 +502,7 @@ class MemoryService:
 
                 def check_current():
                     current = self.configuration.load()
-                    if current != configuration or MemoryPolicy(current).resolve(context).signature != scope.signature:
+                    if current != configuration or self._context_scope(current, context).signature != scope.signature:
                         raise MemoryUnavailable('TELOS summary authority changed during rendering')
 
                 return run(memory, scope, **arguments, check_current=check_current)
@@ -602,10 +606,32 @@ class MemoryService:
     def call_context(self, context: SessionContext, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         try:
             configuration = self.configuration.load()
-            scope = MemoryPolicy(configuration).resolve(context)
+            scope = self._context_scope(configuration, context)
         except (MemoryUnavailable, ValueError, OSError) as error:
             return {"status": "unavailable", "reason": str(error)}
-        return self._call(configuration, scope, name, arguments, source_session=context.session_id)
+        def check_current():
+            self._check_current_context(configuration, context, scope)
+        result = self._call(configuration, scope, name, arguments,
+                            source_session=context.session_id, check_current=check_current)
+        try:
+            check_current()
+        except (MemoryUnavailable, ValueError, OSError) as error:
+            return {'status':'unavailable', 'reason':str(error)}
+        return result
+
+    def _context_scope(self, configuration, context):
+        self._check_audience(configuration, context)
+        return MemoryPolicy(configuration).resolve(context)
+
+    def _check_current_context(self, configuration, context, scope):
+        current = self.configuration.load()
+        if current != configuration or self._context_scope(current, context).signature != scope.signature:
+            raise MemoryUnavailable('This memory conversation changes during the request')
+
+    def _check_audience(self, configuration, context):
+        from .discord_audience import context_audience_is_current
+        if not context_audience_is_current(configuration, context, audience_lookup=self.audience_lookup):
+            raise MemoryUnavailable('The Discord channel audience no longer permits private memory')
 
     def call(self, scope: MemoryScope, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         try:

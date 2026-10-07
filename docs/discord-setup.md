@@ -16,6 +16,27 @@ The user gateway service is enabled with systemd linger. The private development
 
 ## 1. Create and install the Discord bot
 
+### Daily release: one private text channel
+
+The daily release uses a private server text channel. Direct messages are disabled for this profile. The candidate patch introduces `DISCORD_GUILD_CHANNEL_ONLY=true`; this setting requires exactly one numeric ID in `DISCORD_ALLOWED_CHANNELS`. It gates messages, slash commands, adapter sends, and standalone text or attachment sends. Threads are refused. Older installed patches do not provide this setting.
+
+Configure the tested candidate with these values after verifying the channel permissions:
+
+```dotenv
+DISCORD_ALLOWED_USERS=<owner-user-id>
+DISCORD_ALLOWED_CHANNELS=<private-text-channel-id>
+DISCORD_GUILD_CHANNEL_ONLY=true
+DISCORD_FREE_RESPONSE_CHANNELS=<private-text-channel-id>
+DISCORD_NO_THREAD_CHANNELS=<private-text-channel-id>
+DISCORD_AUTO_THREAD=false
+DISCORD_FREE_RESPONSE_AUTO_THREAD=false
+DISCORD_HOME_CHANNEL=<private-text-channel-id>
+```
+
+The channel must deny **View Channel** to `@everyone`. Only the installation owner and the selected bot may read it. Discord server owners and administrators bypass channel permission overwrites. The memory check reads current roles and members, applies the channel permission rules, and refuses additional readers. The selected bot needs the Server Members privileged intent for that check.
+
+The memory configuration separately binds the channel to its guild, owner, bot, and private destination grant. A channel allowlist alone does not grant private-memory access. Memory requests recheck the audience, including before native publication and after tool reads. Installed application acceptance and the final delivery check remain release gates. See the [control results](verification/2026-10-07-private-channel/README.md).
+
 1. Create an application in the [Discord Developer Portal](https://discord.com/developers/applications). Choose the bot template or create a blank application. Set the bot's username on its **Bot** page.
 2. On **Bot**, enable **Public Bot** if you will use Discord's provided install link. Leave **Requires OAuth2 Code Grant** off. Enable the **Message Content** and **Server Members** privileged gateway intents, then save. The message content intent was required to clear the connection error in our setup.
 3. On **Bot**, reset and copy the bot token. Treat it as a password. The **Installation** link and application ID are not bot tokens.
