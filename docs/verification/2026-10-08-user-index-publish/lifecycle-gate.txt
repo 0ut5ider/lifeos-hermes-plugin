@@ -1,0 +1,31 @@
+..FF...........
+======================================================================
+FAIL: test_changes_after_actual_rendering_refuse_before_publication (test_memory_user_index_publish.MemoryUserIndexPublishTests.test_changes_after_actual_rendering_refuse_before_publication) (mode='source')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index_publish.py", line 189, in test_changes_after_actual_rendering_refuse_before_publication
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_user_index_render_process.py", line 8, in <module>
+    from lifeos_hook_bridge.memory_context import MemoryContext
+ImportError: cannot import name 'MemoryContext' from 'lifeos_hook_bridge.memory_context' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_context.py). Did you mean: 'memory_context'?
+
+
+======================================================================
+FAIL: test_changes_after_actual_rendering_refuse_before_publication (test_memory_user_index_publish.MemoryUserIndexPublishTests.test_changes_after_actual_rendering_refuse_before_publication) (mode='authority')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_user_index_publish.py", line 189, in test_changes_after_actual_rendering_refuse_before_publication
+    self.assertEqual(result.returncode, 0, result.stderr)
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 1 != 0 : Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/memory_user_index_render_process.py", line 8, in <module>
+    from lifeos_hook_bridge.memory_context import MemoryContext
+ImportError: cannot import name 'MemoryContext' from 'lifeos_hook_bridge.memory_context' (/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/memory_context.py). Did you mean: 'memory_context'?
+
+
+----------------------------------------------------------------------
+Ran 14 tests in 16.978s
+
+FAILED (failures=2)

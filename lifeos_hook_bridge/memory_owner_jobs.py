@@ -20,6 +20,7 @@ from .memory_service import MemoryService
 
 
 JOBS = {
+    'user-index': (('LIFEOS/PULSE/modules/user-index.ts', '--json'),),
     'memory-consolidation': (('LIFEOS/TOOLS/SessionHarvester.ts', '--recent', '20'),
                              ('LIFEOS/TOOLS/LearningPatternSynthesis.ts', '--week')),
     'life-morning-brief': (('LIFEOS/PULSE/checks/life-morning-brief.ts',),),

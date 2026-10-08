@@ -178,7 +178,8 @@ class NativeMemory:
         from .memory_freshness import SYSTEM_PUBLICATIONS
         from .memory_freshness_migration import is_system_backup
         from .memory_deny_hashes import SYSTEM_PUBLICATIONS as DENY_PUBLICATIONS
-        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS and not is_system_backup(name):
+        from .memory_user_index_publish import PUBLICATIONS as INDEX_PUBLICATIONS
+        if name not in SYSTEM_PUBLICATIONS | DENY_PUBLICATIONS | INDEX_PUBLICATIONS and not is_system_backup(name):
             raise MemoryUnavailable("This is not a journaled native system publication")
         path = self.root / name
         if (path.resolve() != self.physical_root / name or path.is_symlink()
@@ -357,6 +358,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'user_index_publish':
+            from .memory_user_index_publish import publication_paths
+            return publication_paths(self, connection, scope, payload)
         if payload['operation'] == 'upgrade_store':
             from .memory_upgrades import publication_paths
             return publication_paths(self,scope,payload)
