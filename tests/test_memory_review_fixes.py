@@ -105,6 +105,7 @@ class RecoveryPreservationTests(unittest.TestCase):
         self.state = Path(folder.name) / 'state'
         self.transaction = MemoryTransaction(self.state, lambda name: self.root / name)
         self.connection = sqlite3.connect(':memory:')
+        self.addCleanup(self.connection.close)
         self.connection.row_factory = sqlite3.Row
         self.connection.execute('CREATE TABLE operations (writer TEXT, request_id TEXT, payload_digest TEXT, receipt TEXT)')
 

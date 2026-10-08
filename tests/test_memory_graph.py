@@ -282,8 +282,10 @@ class MemoryGraphTests(unittest.TestCase):
         self.assertEqual(process.returncode, 0, process.stdout)
         response = json.loads(process.stdout)['result']
         self.assertFalse(response['ok'], response)
-        self.assertEqual(response['stdout'], '')
-        self.assertIn('authority changed during rendering', response['receipt']['reason'])
+        self.assertEqual(response['code'], 'EACCESS_CHANGED')
+        self.assertNotIn('stdout', response)
+        self.assertNotIn('receipt', response)
+        self.assertNotIn('Synthetic current target', json.dumps(response))
         self.assertEqual(self.cache(), before)
 
     def test_interrupted_artifact_pair_recovers_before_fresh_publication(self):

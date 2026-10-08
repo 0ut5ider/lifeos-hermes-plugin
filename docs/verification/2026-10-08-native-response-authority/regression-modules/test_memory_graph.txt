@@ -1,0 +1,32 @@
+test_all_commands_refuse_missing_context_and_preserve_existing_artifacts (test_memory_graph.MemoryGraphTests.test_all_commands_refuse_missing_context_and_preserve_existing_artifacts) ... ok
+test_all_layer_preserves_actual_lexical_inference (test_memory_graph.MemoryGraphTests.test_all_layer_preserves_actual_lexical_inference) ... ok
+test_authority_change_after_real_render_refuses_publication (test_memory_graph.MemoryGraphTests.test_authority_change_after_real_render_refuses_publication) ... ERROR
+test_changed_registered_source_refuses_before_overwriting_artifacts (test_memory_graph.MemoryGraphTests.test_changed_registered_source_refuses_before_overwriting_artifacts) ... ok
+test_correction_removes_superseded_wikilink_but_keeps_current_tag_edge (test_memory_graph.MemoryGraphTests.test_correction_removes_superseded_wikilink_but_keeps_current_tag_edge) ... ok
+test_empty_current_corpus_builds_a_native_empty_graph (test_memory_graph.MemoryGraphTests.test_empty_current_corpus_builds_a_native_empty_graph) ... ok
+test_foreign_work_link_refuses_before_delivery_or_publication (test_memory_graph.MemoryGraphTests.test_foreign_work_link_refuses_before_delivery_or_publication) ... ok
+test_forgotten_target_leaves_fresh_patterns_and_statistics (test_memory_graph.MemoryGraphTests.test_forgotten_target_leaves_fresh_patterns_and_statistics) ... ok
+test_interrupted_artifact_pair_recovers_before_fresh_publication (test_memory_graph.MemoryGraphTests.test_interrupted_artifact_pair_recovers_before_fresh_publication) ... ok
+test_invalid_graph_arguments_refuse_without_exposing_or_publishing_sources (test_memory_graph.MemoryGraphTests.test_invalid_graph_arguments_refuse_without_exposing_or_publishing_sources) ... ok
+test_native_typed_contradiction_keeps_label_weight_and_report (test_memory_graph.MemoryGraphTests.test_native_typed_contradiction_keeps_label_weight_and_report) ... ok
+test_owner_build_preserves_actual_algorithms_and_standalone_graph (test_memory_graph.MemoryGraphTests.test_owner_build_preserves_actual_algorithms_and_standalone_graph) ... ok
+test_poisoned_cache_is_not_a_current_source (test_memory_graph.MemoryGraphTests.test_poisoned_cache_is_not_a_current_source) ... ok
+test_restricted_context_and_invalid_connector_cannot_use_cache (test_memory_graph.MemoryGraphTests.test_restricted_context_and_invalid_connector_cannot_use_cache) ... ok
+test_retired_claim_in_work_history_cannot_enter_current_patterns (test_memory_graph.MemoryGraphTests.test_retired_claim_in_work_history_cannot_enter_current_patterns) ... ok
+test_revocation_refuses_even_fresh_pattern_cache (test_memory_graph.MemoryGraphTests.test_revocation_refuses_even_fresh_pattern_cache) ... ok
+test_source_change_after_real_render_refuses_publication (test_memory_graph.MemoryGraphTests.test_source_change_after_real_render_refuses_publication) ... ok
+test_unregistered_note_does_not_enter_current_graph (test_memory_graph.MemoryGraphTests.test_unregistered_note_does_not_enter_current_graph) ... ok
+
+======================================================================
+ERROR: test_authority_change_after_real_render_refuses_publication (test_memory_graph.MemoryGraphTests.test_authority_change_after_real_render_refuses_publication)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_graph.py", line 285, in test_authority_change_after_real_render_refuses_publication
+    self.assertEqual(response['stdout'], '')
+                     ~~~~~~~~^^^^^^^^^^
+KeyError: 'stdout'
+
+----------------------------------------------------------------------
+Ran 18 tests in 36.815s
+
+FAILED (errors=1)

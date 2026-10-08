@@ -1,0 +1,1797 @@
+{
+  "modules": [
+    "test_memory_admin_dashboard",
+    "test_memory_admin_install",
+    "test_memory_administration",
+    "test_memory_adoption",
+    "test_memory_agent",
+    "test_memory_archive",
+    "test_memory_authorization",
+    "test_memory_background_audience",
+    "test_memory_backup",
+    "test_memory_backup_command",
+    "test_memory_backup_recovery",
+    "test_memory_canonical",
+    "test_memory_children",
+    "test_memory_compression",
+    "test_memory_context",
+    "test_memory_context_audit",
+    "test_memory_context_builder",
+    "test_memory_cortex_health",
+    "test_memory_counts",
+    "test_memory_curation",
+    "test_memory_dashboard",
+    "test_memory_delegation",
+    "test_memory_delta",
+    "test_memory_deny_hashes",
+    "test_memory_deny_hashes_consistency",
+    "test_memory_deny_hashes_environment",
+    "test_memory_deny_hashes_sources",
+    "test_memory_derived_sync",
+    "test_memory_derived_sync_adapter",
+    "test_memory_derived_sync_consistency",
+    "test_memory_diagnostics",
+    "test_memory_distill",
+    "test_memory_distill_mark",
+    "test_memory_distill_synthesis",
+    "test_memory_freshness",
+    "test_memory_freshness_cache",
+    "test_memory_freshness_consistency",
+    "test_memory_freshness_health",
+    "test_memory_freshness_health_current",
+    "test_memory_freshness_migration",
+    "test_memory_freshness_relay",
+    "test_memory_freshness_writes",
+    "test_memory_graph",
+    "test_memory_graph_boundaries",
+    "test_memory_graph_relay",
+    "test_memory_graph_view_consistency",
+    "test_memory_hermes_soul_backup",
+    "test_memory_hermes_soul_names",
+    "test_memory_hermes_soul_retirement",
+    "test_memory_hermes_soul_writer",
+    "test_memory_history",
+    "test_memory_host",
+    "test_memory_http",
+    "test_memory_hypotheses",
+    "test_memory_import",
+    "test_memory_import_dashboard",
+    "test_memory_inference_log",
+    "test_memory_inference_log_publication",
+    "test_memory_interview_due",
+    "test_memory_interview_scan",
+    "test_memory_interview_scan_consistency",
+    "test_memory_interview_scan_review",
+    "test_memory_knowledge_graph",
+    "test_memory_knowledge_harvest",
+    "test_memory_knowledge_query",
+    "test_memory_knowledge_relay",
+    "test_memory_knowledge_render",
+    "test_memory_knowledge_views",
+    "test_memory_learning_ratings",
+    "test_memory_lineage_recovery",
+    "test_memory_mcp",
+    "test_memory_model_calls",
+    "test_memory_mounted_soul",
+    "test_memory_native",
+    "test_memory_native_response_authority",
+    "test_memory_owner_job_command",
+    "test_memory_owner_job_processes",
+    "test_memory_owner_jobs",
+    "test_memory_ownership",
+    "test_memory_policy",
+    "test_memory_preferences",
+    "test_memory_profile_alias",
+    "test_memory_prompt",
+    "test_memory_proposal_delegation",
+    "test_memory_proposal_gc",
+    "test_memory_proposals",
+    "test_memory_publication_authority",
+    "test_memory_publication_modes",
+    "test_memory_publication_recovery",
+    "test_memory_pulse",
+    "test_memory_pulse_adapter",
+    "test_memory_pulse_adapter_consistency",
+    "test_memory_pulse_adapter_data",
+    "test_memory_pulse_adapter_destination",
+    "test_memory_pulse_adapter_inference",
+    "test_memory_pulse_adapter_stale",
+    "test_memory_pulse_auth",
+    "test_memory_pulse_relay",
+    "test_memory_recurrence",
+    "test_memory_remount_relay",
+    "test_memory_restore",
+    "test_memory_resume",
+    "test_memory_review",
+    "test_memory_review_fixes",
+    "test_memory_rotation",
+    "test_memory_runtime",
+    "test_memory_seed_pulse",
+    "test_memory_seed_recovery",
+    "test_memory_service",
+    "test_memory_session_harvest",
+    "test_memory_sharing",
+    "test_memory_source_labels",
+    "test_memory_source_registry_alias",
+    "test_memory_source_review",
+    "test_memory_sources",
+    "test_memory_ssh",
+    "test_memory_staging",
+    "test_memory_staging_writers",
+    "test_memory_state",
+    "test_memory_state_evidence",
+    "test_memory_telos",
+    "test_memory_tool_arguments",
+    "test_memory_wiki_corpus",
+    "test_memory_wiki_relay",
+    "test_memory_wiki_render",
+    "test_memory_wisdom_frame",
+    "test_memory_wisdom_readers"
+  ],
+  "hermes": "/home/outsider/.cache/lifeos-daily-text-20261007/knowledge-views-final/hermes",
+  "lifeos": "/home/outsider/.cache/lifeos-daily-text-20261007/knowledge-views-final/lifeos/LifeOS/install",
+  "control": "/home/outsider/.cache/lifeos-daily-text-20261007/background-control-source/LifeOS/install",
+  "workers": 3,
+  "isolation": "one unittest process per module",
+  "plugin_commit": "86a2a9d1fdc182b0ebae8fda117554df7cb1bd39",
+  "versions": {
+    "fastapi": "0.142.2",
+    "starlette": "1.3.1",
+    "anyio": "4.14.2",
+    "httpx": "0.28.1"
+  },
+  "results": [
+    {
+      "module": "test_memory_admin_dashboard",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_admin_dashboard",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_admin_install",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_admin_install",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_administration",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_administration",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_adoption",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_adoption",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_agent",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_agent",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_archive",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_archive",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_authorization",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_authorization",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_background_audience",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_background_audience",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_backup",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_backup",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_backup_command",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_backup_command",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_backup_recovery",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_backup_recovery",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_canonical",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_canonical",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_children",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_children",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_compression",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_compression",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_context",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_context",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_context_audit",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_context_audit",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_context_builder",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_context_builder",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_cortex_health",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_cortex_health",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_counts",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_counts",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_curation",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_curation",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_dashboard",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_dashboard",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_delegation",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_delegation",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_delta",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_delta",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_deny_hashes",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_deny_hashes",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_deny_hashes_consistency",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_deny_hashes_consistency",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_deny_hashes_environment",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_deny_hashes_environment",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_deny_hashes_sources",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_deny_hashes_sources",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_derived_sync",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_derived_sync",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_derived_sync_adapter",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_derived_sync_adapter",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_derived_sync_consistency",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_derived_sync_consistency",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_diagnostics",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_diagnostics",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_distill",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_distill",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_distill_mark",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_distill_mark",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_distill_synthesis",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_distill_synthesis",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_cache",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_cache",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_consistency",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_consistency",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_health",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_health",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_health_current",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_health_current",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_migration",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_migration",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_relay",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_relay",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_freshness_writes",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_freshness_writes",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_graph",
+      "exit_code": 1,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_graph",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_graph_boundaries",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_graph_boundaries",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_graph_relay",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_graph_relay",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_graph_view_consistency",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_graph_view_consistency",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_hermes_soul_backup",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_hermes_soul_backup",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_hermes_soul_names",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_hermes_soul_names",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_hermes_soul_retirement",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_hermes_soul_retirement",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_hermes_soul_writer",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_hermes_soul_writer",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_history",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_history",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_host",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_host",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_http",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_http",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_hypotheses",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_hypotheses",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_import",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_import",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_import_dashboard",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_import_dashboard",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_inference_log",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_inference_log",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_inference_log_publication",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_inference_log_publication",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_interview_due",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_interview_due",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_interview_scan",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_interview_scan",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_interview_scan_consistency",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_interview_scan_consistency",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_interview_scan_review",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_interview_scan_review",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_knowledge_graph",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_knowledge_graph",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_knowledge_harvest",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_knowledge_harvest",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_knowledge_query",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_knowledge_query",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_knowledge_relay",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_knowledge_relay",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_knowledge_render",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_knowledge_render",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_knowledge_views",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_knowledge_views",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_learning_ratings",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_learning_ratings",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_lineage_recovery",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_lineage_recovery",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_mcp",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_mcp",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_model_calls",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_model_calls",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_mounted_soul",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_mounted_soul",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_native",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_native",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_native_response_authority",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_native_response_authority",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_owner_job_command",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_owner_job_command",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_owner_job_processes",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_owner_job_processes",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_owner_jobs",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_owner_jobs",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_ownership",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_ownership",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_policy",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_policy",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_preferences",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_preferences",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_profile_alias",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_profile_alias",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_prompt",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_prompt",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_proposal_delegation",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_proposal_delegation",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_proposal_gc",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_proposal_gc",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_proposals",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_proposals",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_publication_authority",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_publication_authority",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_publication_modes",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_publication_modes",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_publication_recovery",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_publication_recovery",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_adapter",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_adapter",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_adapter_consistency",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_adapter_consistency",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_adapter_data",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_adapter_data",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_adapter_destination",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_adapter_destination",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_adapter_inference",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_adapter_inference",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_adapter_stale",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_adapter_stale",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_auth",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_auth",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_pulse_relay",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_pulse_relay",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_recurrence",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_recurrence",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_remount_relay",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_remount_relay",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_restore",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_restore",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_resume",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_resume",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_review",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_review",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_review_fixes",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_review_fixes",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_rotation",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_rotation",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_runtime",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_runtime",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_seed_pulse",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_seed_pulse",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_seed_recovery",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_seed_recovery",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_service",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_service",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_session_harvest",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_session_harvest",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_sharing",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_sharing",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_source_labels",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_source_labels",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_source_registry_alias",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_source_registry_alias",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_source_review",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_source_review",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_sources",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_sources",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_ssh",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_ssh",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_staging",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_staging",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_staging_writers",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_staging_writers",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_state",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_state",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_state_evidence",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_state_evidence",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_telos",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_telos",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_tool_arguments",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_tool_arguments",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_wiki_corpus",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_wiki_corpus",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_wiki_relay",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_wiki_relay",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_wiki_render",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_wiki_render",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_wisdom_frame",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_wisdom_frame",
+        "-v"
+      ]
+    },
+    {
+      "module": "test_memory_wisdom_readers",
+      "exit_code": 0,
+      "command": [
+        "/home/outsider/.cache/lifeos-plugin-memory/memory-plugin-test-env/bin/python",
+        "-W",
+        "error",
+        "-m",
+        "unittest",
+        "test_memory_wisdom_readers",
+        "-v"
+      ]
+    }
+  ],
+  "exit_code": 1
+}
