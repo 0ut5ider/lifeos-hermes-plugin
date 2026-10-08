@@ -270,6 +270,15 @@ class MemoryPreferences:
         scope = replace(self._owner_scope(config), signature=MemoryPolicy(config).revision)
         return approve(NativeMemory(self.root), scope, **request, check_current=check_current)
 
+    def review_hypothesis(self, target, note, request_id, *, account=None):
+        from .memory_hypothesis_review import review
+        config = self._configuration(account=account)
+        def check_current():
+            if self._configuration(account=account) != config:
+                raise MemoryUnavailable('The memory configuration changes during hypothesis review')
+        return self._response(config, review(NativeMemory(self.root), self._owner_scope(config),
+            target=target, note=note, request_id=request_id, check_current=check_current), account=account)
+
     def hypothesis_response(self, target: str, *, account: str | None = None):
         from .memory_hypothesis_queue import view
         config = self._configuration(account=account)

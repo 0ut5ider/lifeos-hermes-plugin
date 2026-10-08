@@ -257,6 +257,30 @@ def review_memory(request: dict, account: str = Depends(_memory_account)):
     return _memory_action(lambda preferences:preferences.review(request['tool'], request['arguments'], account=account))
 
 
+@router.post('/memory/hypotheses/review')
+async def review_memory_hypothesis(request: Request, account: str = Depends(_memory_account)):
+    headers = {'Cache-Control':'no-store'}
+    content = bytearray()
+    async for chunk in request.stream():
+        content.extend(chunk)
+        if len(content)>65536:
+            return JSONResponse({'error':'Hypothesis review exceeds its request limit'}, status_code=400, headers=headers)
+    try:
+        body = json.loads(content)
+        if not isinstance(body,dict) or set(body)!={'target','note','request_id'}:
+            raise ValueError('Choose a fixed hypothesis review action')
+        result, binding = await run_in_threadpool(lambda: _memory_preferences().review_hypothesis(**body,account=account))
+    except LookupError:
+        return JSONResponse({'error':'Choose a governed hypothesis review action'},status_code=404,headers=headers)
+    except PermissionError:
+        return JSONResponse({'error':'This dashboard account has no installation owner binding'},status_code=403,headers=headers)
+    except ValueError:
+        return JSONResponse({'error':'Invalid hypothesis review request'},status_code=400,headers=headers)
+    except (OSError,RuntimeError,sqlite3.Error,subprocess.TimeoutExpired):
+        return JSONResponse({'error':'Hypothesis review is unavailable under the current policy'},status_code=409,headers=headers)
+    return JSONResponse(result['body'],status_code=result['status'],headers={**headers,'X-LifeOS-Memory-Installation':binding})
+
+
 @router.get('/memory/hypotheses')
 def get_memory_hypotheses(request: Request, account: str = Depends(_memory_account)):
     return _memory_source_read('hypotheses', request, account)

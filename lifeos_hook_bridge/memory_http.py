@@ -66,9 +66,11 @@ class NoRedirect(urllib.request.HTTPRedirectHandler):
 
 def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
     source_view = arguments.get('view') in ('wiki', 'knowledge', 'hypotheses')
-    expected = {'view','authorization','cookie'} | ({'target'} if source_view else set())
+    review = arguments.get('view') == 'hypothesis_review'
+    expected = {'view','authorization','cookie'} | ({'target'} if source_view else set()) | (
+        {'target','note','request_id'} if review else set())
     if (set(arguments)!=expected or not isinstance(arguments['view'],str)
-            or (arguments['view'] not in VIEWS and not source_view and arguments['view'] != 'remount')):
+            or (arguments['view'] not in VIEWS and not source_view and not review and arguments['view'] != 'remount')):
         return _response(400,{'error':'Choose a supported native memory view'})
     route = '/memory/pulse/' + arguments['view']
     remount = arguments['view'] == 'remount'
@@ -88,6 +90,20 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         except ValueError:
             return _response(400,{'error':'Invalid source read route'})
         route = '/memory/' + arguments['view'] + '?' + urllib.parse.urlencode({'target':target})
+    data = None
+    if review:
+        from .memory_hypothesis_review import action_target
+        try:
+            action_target(arguments['target'])
+            if (arguments['note'] is not None and (not isinstance(arguments['note'],str) or len(arguments['note'])>8192)
+                    or not isinstance(arguments['request_id'],str) or not 1<=len(arguments['request_id'])<=256):
+                raise ValueError('Choose bounded hypothesis review arguments')
+        except LookupError:
+            return _response(404,{'error':'Choose a governed hypothesis review route'})
+        except ValueError:
+            return _response(400,{'error':'Invalid hypothesis review arguments'})
+        route = '/memory/hypotheses/review'
+        data = json.dumps({key:arguments[key] for key in ('target','note','request_id')},ensure_ascii=False).encode()
     credentials={}
     for key in ('authorization','cookie'):
         value=arguments[key]
@@ -113,8 +129,9 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
         base=dashboard_base(settings['dashboard_base_url'])
         browser=(_dashboard_url(settings['dashboard_browser_url'],loopback=False)
                  if 'dashboard_browser_url' in settings else None)
-        request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route,
-                                      headers=credentials,method='POST' if remount else 'GET')
+        if review:credentials['Content-Type']='application/json'
+        request=urllib.request.Request(base+'/api/plugins/lifeos-hook-bridge'+route, data=data,
+                                      headers=credentials,method='POST' if remount or review else 'GET')
         opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
         try:
             response=opener.open(request,timeout=120 if remount else 8)
@@ -122,10 +139,10 @@ def relay(configuration: MemoryConfiguration, arguments: dict) -> dict:
             response=error
         with response:
             status=response.status
-            if status not in ({200,400,401,403,409} if remount else
+            if status not in ({200,400,401,403,404,409} if review else {200,400,401,403,409} if remount else
                               {200,400,401,403,404} if source_view else {200,400,401,403}):
                 return _response(503,{'error':'Authenticated memory is unavailable'})
-            if (status in ({200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
+            if (status in ({200,404,409} if review else {200,404} if source_view else {200}) and response.headers.get('x-lifeos-memory-installation')
                     !=installation_binding(config,configuration.path)):
                 raise ValueError('The authenticated response belongs to another installation')
             if response.headers.get_content_type()!='application/json':

@@ -6697,10 +6697,10 @@ index 0000000..a8d4be5
 +}
 diff --git a/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
 new file mode 100644
-index 0000000..d5052a1
+index 0000000..55b76b6
 --- /dev/null
 +++ b/LifeOS/install/LIFEOS/TOOLS/lib/MemoryAccess.ts
-@@ -0,0 +1,207 @@
+@@ -0,0 +1,217 @@
 +// ABOUTME: Delegates native memory operations to an optional governed local service.
 +// ABOUTME: Retains reviewer snapshot revisions and refuses invalid service responses.
 +
@@ -6708,6 +6708,7 @@ index 0000000..d5052a1
 +import { homedir } from "node:os";
 +import { isAbsolute, resolve } from "node:path";
 +import { spawnSync } from "node:child_process";
++import { randomUUID } from "node:crypto";
 +
 +const revisions = new Map<string, string>();
 +
@@ -6894,14 +6895,23 @@ index 0000000..d5052a1
 +}
 +
 +export function memoryHTTPResponse(request: Request, view: string, target?: string): Response {
++  return memoryHTTP({view, authorization: request.headers.get("authorization") ?? "",
++    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})});
++}
++
++export function memoryHTTPReview(request: Request, target: string, note: string | null): Response {
++  return memoryHTTP({view: "hypothesis_review", target, note, request_id: randomUUID(),
++    authorization: request.headers.get("authorization") ?? "", cookie: request.headers.get("cookie") ?? ""});
++}
++
++function memoryHTTP(arguments_: Record<string, unknown>): Response {
 +  const valid = (value: unknown): value is MemoryHTTPResponse => memoryObject(value)
 +    && typeof value.status === "number" && [200, 400, 401, 403, 404, 409, 503].includes(value.status)
 +    && typeof value.body === "string" && Array.isArray(value.headers)
 +    && value.headers.every(header => Array.isArray(header) && header.length === 2
 +      && typeof header[0] === "string" && typeof header[1] === "string"
 +      && ["content-type", "cache-control", "set-cookie"].includes(header[0]));
-+  const response = memoryAccess("pulse_http", {view, authorization: request.headers.get("authorization") ?? "",
-+    cookie: request.headers.get("cookie") ?? "", ...(target === undefined ? {} : {target})}, valid);
++  const response = memoryAccess("pulse_http", arguments_, valid);
 +  if (response === undefined) throw new Error("Authenticated memory is unavailable");
 +  const headers = new Headers();
 +  for (const header of response.headers) headers.append(header[0], header[1]);
@@ -7935,7 +7945,7 @@ index c4c7f14..8db00d9 100644
      const record: EventRecord = {
        timestamp: eventTimestamp(),
 diff --git a/LifeOS/install/LIFEOS/PULSE/modules/hypotheses.ts b/LifeOS/install/LIFEOS/PULSE/modules/hypotheses.ts
-index b8791bf..35708ae 100644
+index b8791bf..99ec162 100644
 --- a/LifeOS/install/LIFEOS/PULSE/modules/hypotheses.ts
 +++ b/LifeOS/install/LIFEOS/PULSE/modules/hypotheses.ts
 @@ -1,3 +1,5 @@
@@ -7948,7 +7958,7 @@ index b8791bf..35708ae 100644
  import { existsSync, readFileSync, readdirSync, writeFileSync, unlinkSync, mkdirSync } from "fs";
  import { join } from "path";
  import { homedir } from "node:os";
-+import { hasManagedMemoryHTTP, memoryHTTPResponse } from "../../TOOLS/lib/MemoryAccess";
++import { hasManagedMemoryHTTP, memoryHTTPResponse, memoryHTTPReview } from "../../TOOLS/lib/MemoryAccess";
  
  // Normalize env path vars that Claude Code injects without shell expansion (LifeOS#1404)
  for (const k of ["LIFEOS_DIR", "LIFEOS_CONFIG_DIR", "PROJECTS_DIR"]) {
@@ -7963,7 +7973,68 @@ index b8791bf..35708ae 100644
    const { fm, body } = parseFrontmatter(content);
    if (!fm.slug || !fm.status) return null;
  
-@@ -339,7 +346,32 @@ function summarizeForList(h: Hypothesis) {
+@@ -222,6 +229,12 @@ export function listPending(): Hypothesis[] {
+ 
+ // ── Mutations (graduate / reject) ──────────────────────────────────────────
+ 
++function archivedContent(content: string, newStatus: "graduated" | "rejected", note: string | undefined, stamp: string): string {
++  const noteLine = note ? `\n- ${stamp} — ${newStatus} with note: ${note}` : `\n- ${stamp} — ${newStatus}`;
++  const newContent = content.replace(/^status:\s*hypothesis/m, `status: ${newStatus}`) + noteLine + "\n";
++  return newContent;
++}
++
+ function archiveHypothesis(slug: string, newStatus: "graduated" | "rejected", note?: string): { ok: boolean; reason?: string } {
+   if (!existsSync(HYPOTHESES_DIR)) return { ok: false, reason: "directory_missing" };
+   const files = readdirSync(HYPOTHESES_DIR).filter(f => f.endsWith(".md") && f !== "README.md");
+@@ -235,8 +248,7 @@ function archiveHypothesis(slug: string, newStatus: "graduated" | "rejected", no
+   const src = join(HYPOTHESES_DIR, target);
+   const content = readFileSync(src, "utf-8");
+   const stamp = new Date().toISOString();
+-  const noteLine = note ? `\n- ${stamp} — ${newStatus} with note: ${note}` : `\n- ${stamp} — ${newStatus}`;
+-  const newContent = content.replace(/^status:\s*hypothesis/m, `status: ${newStatus}`) + noteLine + "\n";
++  const newContent = archivedContent(content, newStatus, note, stamp);
+   writeFileSync(join(ARCHIVE_DIR, target), newContent);
+   unlinkSync(src);
+ 
+@@ -272,23 +284,24 @@ function principleTitle(slug: string): string {
+   return slug.split(/[-_]+/).filter(Boolean).map((w) => w[0]!.toUpperCase() + w.slice(1)).join(" ");
+ }
+ 
+-function graduateToFrame(slug: string, target_frame: string, claim: string): void {
+-  // Append a section to the target frame, or create a new frame.
++function frameContent(slug: string, target_frame: string, claim: string, previous: string | null, stamp: string): string | null {
+   const principle = `### ${principleTitle(slug)} [CRYSTAL: ${CRYSTAL_ON_GRADUATION}%]\n\n${claim}\n`;
+   if (target_frame === "new") {
+-    const newFramePath = join(FRAMES_DIR, `${slug}.md`);
+-    if (!existsSync(newFramePath)) {
+-      const stamp = new Date().toISOString();
+-      const seed = `# Frame: ${slug}\n\n## Meta\n- **Domain:** ${slug}\n- **Confidence:** crystallized (human-graduated)\n- **Crystallized:** ${stamp}\n- **Source:** Graduated from hypothesis ${slug}\n\n## Principles\n\n${principle}`;
+-      writeFileSync(newFramePath, seed);
+-    }
+-    return;
++    if (previous !== null) return null;
++    const seed = `# Frame: ${slug}\n\n## Meta\n- **Domain:** ${slug}\n- **Confidence:** crystallized (human-graduated)\n- **Crystallized:** ${stamp}\n- **Source:** Graduated from hypothesis ${slug}\n\n## Principles\n\n${principle}`;
++    return seed;
+   }
+-  const framePath = join(FRAMES_DIR, `${target_frame}.md`);
+-  if (!existsSync(framePath)) return; // target frame missing — nothing to append
+-  const stamp = new Date().toISOString();
++  if (previous === null) return null;
+   const append = `\n\n## Hypothesis-Sourced (${stamp})\n\nGraduated from \`_hypotheses/${slug}\`:\n\n${principle}`;
+-  writeFileSync(framePath, readFileSync(framePath, "utf-8") + append);
++  return previous + append;
++}
++
++function graduateToFrame(slug: string, target_frame: string, claim: string): void {
++  const framePath = join(FRAMES_DIR, `${target_frame === "new" ? slug : target_frame}.md`);
++  if (target_frame === "new" && existsSync(framePath)) return;
++  const previous = existsSync(framePath) ? readFileSync(framePath, "utf-8") : null;
++  const content = frameContent(slug, target_frame, claim, previous, new Date().toISOString());
++  if (content !== null) writeFileSync(framePath, content);
+ }
+ 
+ // ── Exported actions (consumed by modules/upgrades.ts — the unified queue) ──
+@@ -339,7 +352,119 @@ function summarizeForList(h: Hypothesis) {
    };
  }
  
@@ -7979,14 +8050,101 @@ index b8791bf..35708ae 100644
 +  return found ? {status: 200, body: found} : {status: 404, body: {error: "not_found"}};
 +}
 +
++interface HypothesisReviewSources {
++  hypotheses: {filename: string; content: string}[];
++  frames: Record<string, string>;
++  state: string | null;
++}
++
++export async function renderHypothesisReview(sources: HypothesisReviewSources, slug: string,
++  verb: "graduate" | "reject", note: string | undefined, now: string): Promise<{
++    status: number; body: unknown; publications: {path: string; content: string | null}[];
++  }> {
++  const selected = sources.hypotheses.find(source => {
++    const item = parseHypothesis(source.filename, source.content);
++    return item?.slug === slug && item.status === "hypothesis";
++  });
++  const h = selected && parseHypothesis(selected.filename, selected.content);
++  if (!selected || !h) return {status: 404, body: {error: verb === "graduate" ? "not_found" : "not_found_or_already_archived"}, publications: []};
++  const stamp = new Date(now).toISOString();
++  const publications: {path: string; content: string | null}[] = [];
++  let body: unknown;
++  if (verb === "graduate" && h.has_patch && h.pending_slug && h.enforcement_surface !== "context") {
++    if (existsSync(join(LIFEOS_DIR, "TOOLS", "PromoteFixture.ts"))) {
++      throw new Error("Installed fixture promotion requires its governed publication capability");
++    }
++    const promo = await runPromoteFixture(h.pending_slug);
++    return {status: 200, body: {ok: true, slug, new_status: "hypothesis",
++      enforcement_surface: h.enforcement_surface, patch: "still-red-pending", patch_detail: promo.detail}, publications: []};
++  }
++  if (verb === "graduate") {
++    const name = `${h.target_frame === "new" ? slug : h.target_frame}.md`;
++    if (h.target_frame !== "new" && !Object.hasOwn(sources.frames, name)) {
++      return {status: 409, body: {error: "target_frame_unavailable"}, publications: []};
++    }
++    const content = frameContent(slug, h.target_frame, h.claim, sources.frames[name] ?? null, stamp);
++    if (content !== null) publications.push({path: `LIFEOS/MEMORY/WISDOM/FRAMES/${name}`, content});
++    body = {ok: true, slug, new_status: "graduated", target_frame: h.target_frame};
++  } else body = {ok: true, slug, new_status: "rejected"};
++  const status = verb === "graduate" ? "graduated" : "rejected";
++  publications.push({path: `LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/_archive/${selected.filename}`,
++    content: archivedContent(selected.content, status, note, stamp)});
++  if (sources.state !== null) {
++    try {
++      const state: unknown = JSON.parse(sources.state);
++      if (state !== null && typeof state === "object" && !Array.isArray(state) && "claim_hashes" in state
++          && state.claim_hashes !== null && typeof state.claim_hashes === "object" && !Array.isArray(state.claim_hashes)) {
++        const claim: unknown = Object.entries(state.claim_hashes).find(([key]) => key === slug)?.[1];
++        if (claim !== null && typeof claim === "object" && !Array.isArray(claim)) {
++          Object.assign(claim, {archived_at: stamp, status});
++          publications.push({path: "LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/.state.json", content: JSON.stringify(state, null, 2)});
++        }
++      }
++    } catch { /* Native state updates do not block note archival. */ }
++  }
++  publications.push({path: `LIFEOS/MEMORY/WISDOM/FRAMES/_hypotheses/${selected.filename}`, content: null});
++  return {status: 200, body, publications};
++}
++
  export async function handleRequest(req: Request, pathname: string): Promise<Response | null> {
 +  if ((pathname === "/api/hypotheses" || pathname.startsWith("/api/hypotheses/")) && hasManagedMemoryHTTP()) {
 +    const headers = {"content-type": "application/json", "cache-control": "no-store"};
-+    if (req.method !== "GET") return new Response(JSON.stringify({error: "Choose an authenticated owner review action"}), {status: 405, headers});
++    if (req.method !== "GET" && req.method !== "POST") return new Response(JSON.stringify({error: "Choose an authenticated owner review action"}), {status: 405, headers});
 +    try {
 +      const url = new URL(req.url);
 +      const origin = req.headers.get("origin");
 +      if (origin && origin !== url.origin) return new Response(JSON.stringify({error: "Hypothesis views require the current origin"}), {status: 403, headers});
++      if (req.method === "POST") {
++        if (url.search) return new Response(JSON.stringify({error: "Review actions require one fixed route"}), {status: 400, headers});
++        let content = "";
++        if (req.body) {
++          const reader = req.body.getReader();
++          const chunks: Uint8Array[] = [];
++          let bytes = 0;
++          for (;;) {
++            const chunk = await reader.read();
++            if (chunk.done) break;
++            bytes += chunk.value.length;
++            if (bytes > 32768) {
++              await reader.cancel();
++              return new Response(JSON.stringify({error: "Review request exceeds its byte limit"}), {status: 400, headers});
++            }
++            chunks.push(chunk.value);
++          }
++          content = Buffer.concat(chunks).toString("utf8");
++        }
++        let body: unknown;
++        try { body = JSON.parse(content || "{}"); } catch {
++          return new Response(JSON.stringify({error: "Review request requires JSON"}), {status: 400, headers});
++        }
++        if (body === null || typeof body !== "object" || Array.isArray(body)
++            || Object.keys(body).some(key => key !== "note")
++            || "note" in body && body.note !== null && typeof body.note !== "string") {
++          return new Response(JSON.stringify({error: "Choose a bounded review note"}), {status: 400, headers});
++        }
++        const note = "note" in body && typeof body.note === "string" ? body.note : null;
++        return memoryHTTPReview(req, pathname, note);
++      }
 +      return memoryHTTPResponse(req, "hypotheses", pathname + url.search);
 +    } catch {
 +      return new Response(JSON.stringify({error: "Authenticated hypotheses are unavailable"}), {status: 503, headers});

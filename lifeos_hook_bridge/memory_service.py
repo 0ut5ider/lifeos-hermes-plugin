@@ -260,6 +260,10 @@ class MemoryService:
     def _native_operation(self, context, operation, arguments, configuration, scope):
         try:
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'hypothesis_review' and set(arguments) == {'target','note','request_id'}:
+                from .memory_hypothesis_review import review
+                return review(memory, scope, **arguments,
+                    check_current=lambda: self._check_current_context(configuration, context, scope))
             if operation == 'hypothesis_view' and set(arguments) == {'target'}:
                 from .memory_hypothesis_queue import view
                 return view(memory, scope, **arguments,

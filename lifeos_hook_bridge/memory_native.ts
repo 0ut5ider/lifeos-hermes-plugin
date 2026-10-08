@@ -27,7 +27,20 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === 'hypothesis_view') {
+  if (input.action === 'hypothesis_review') {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
+    if (!object(module) || typeof module.renderHypothesisReview !== 'function' || !object(input.sources)
+        || !Array.isArray(input.sources.hypotheses) || !object(input.sources.frames)
+        || input.sources.hypotheses.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')
+        || Object.values(input.sources.frames).some(content => typeof content !== 'string')
+        || !(input.sources.state === null || typeof input.sources.state === 'string')
+        || typeof input.slug !== 'string' || (input.verb !== 'graduate' && input.verb !== 'reject')
+        || !(input.note === null || typeof input.note === 'string') || typeof input.now !== 'string') {
+      throw new Error('Native hypothesis review requires declared sources and actions');
+    }
+    result = await module.renderHypothesisReview(input.sources, input.slug, input.verb,
+      input.note === null ? undefined : input.note, input.now);
+  } else if (input.action === 'hypothesis_view') {
     const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/PULSE/modules/hypotheses.ts')).href);
     if (!object(module) || typeof module.renderHypothesesView !== 'function' || !Array.isArray(input.sources)
         || input.sources.some(source => !object(source) || typeof source.filename !== 'string' || typeof source.content !== 'string')

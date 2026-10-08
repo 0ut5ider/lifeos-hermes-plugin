@@ -357,6 +357,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'hypothesis_review':
+            from .memory_hypothesis_review import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'event_append':
             from .memory_events import publication_paths
             return publication_paths(self, scope, payload)
