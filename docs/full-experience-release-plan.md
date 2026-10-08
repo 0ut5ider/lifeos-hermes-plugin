@@ -12,6 +12,8 @@ Adrian selects one private server text channel for daily use. The bot refuses di
 
 The October 8 candidate adds [governed proposal cleanup](verification/2026-10-08-proposal-gc/README.md), [Hermes session consolidation](verification/2026-10-08-session-harvest/README.md), and [current authority before publication](verification/2026-10-08-publication-authority/README.md). The writer gate passes 161 tests. The installed profile now uses private directory permissions and a private service creation mask. Ownership activation and the installed acceptance gates remain open.
 
+The [clarification cancellation candidate](verification/2026-10-08-clarify-cancellation/README.md) passes 98 native tests with warnings treated as errors. It distinguishes `/stop` from an actual timeout, preserves earlier batch answers, and handles cancellation during card sending. The combined installed acceptance repeat remains open.
+
 The dependency order is:
 
 1. Complete managed memory activation and actual gateway, dashboard, and Pulse acceptance on `.252`.

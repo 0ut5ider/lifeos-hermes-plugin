@@ -149,6 +149,8 @@ The [resolved memory experience](notes/2026-09-30-memory-design.md) gives LifeOS
 
 The [publication authority checks](docs/verification/2026-10-08-publication-authority/README.md) recheck context-bound permissions after validation and source reads, immediately before native fact, curation, and proposal writes. The candidate gate passes 161 tests. The development profile uses private directory permissions and `UMask=0077` for its three services. Installed ownership and daily-release acceptance remain open.
 
+The [clarification cancellation checks](docs/verification/2026-10-08-clarify-cancellation/README.md) distinguish a cancelled wait from an actual timeout and a deliberate empty answer. Cancelled batches retain earlier answers and stop before the next question. The candidate gate passes 98 native tests with warnings treated as errors. Live release acceptance remains open.
+
 The [Hermes configuration failure checks](docs/verification/2026-10-05-hermes-memory-config/README.md) prevent malformed or unreadable settings from enabling the two built-in lasting stores. The combined gate passes 21 tests and 38 subtests, and the native runner passes 62 tests. Fresh native defaults remain enabled until valid setup explicitly disables both stores.
 
 The [native hypothesis derivation checks](docs/verification/2026-10-05-memory-hypotheses/README.md) govern candidate inputs and grouped note, archive, state, log, and daily-stamp publication. The expanded gate passes 116 tests and 53 subtests. Managed dry run writes no files. The public replay-harness absence and registered-source review limits remain explicit.

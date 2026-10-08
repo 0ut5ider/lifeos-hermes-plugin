@@ -1,0 +1,11 @@
+........................................................................ [ 74%]
+.........................                                                [100%]
+=============================== warnings summary ===============================
+tests/gateway/test_clarify_card_retire_on_timeout.py::test_batch_routing[answers0-asked0-payload0-0]
+  /usr/lib64/python3.14/weakref.py:104: RuntimeWarning: coroutine '_CardAdapter.retire_clarify_card' was never awaited
+    def __init__(self, other=(), /, **kw):
+  Enable tracemalloc to get traceback where the object was allocated.
+  See https://docs.pytest.org/en/stable/how-to/capture-warnings.html#resource-warnings for more info.
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+97 passed, 1 warning in 12.47s

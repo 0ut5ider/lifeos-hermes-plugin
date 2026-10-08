@@ -44,6 +44,106 @@ index e1867212..87c0a382 100644
          if _process_task_id and _process_baseline is not None:
              threading.Thread(
                  target=copy_context().run,
+diff --git a/gateway/run_turn_runner.py b/gateway/run_turn_runner.py
+index 76d8e5ec..e3f22318 100644
+--- a/gateway/run_turn_runner.py
++++ b/gateway/run_turn_runner.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Runs progress, approval, clarification, and status callbacks for one gateway turn.
++# ABOUTME: Carries actual platform wait outcomes into the agent's tool results.
+ """Per-turn callback runner (progress/status/voice/run_sync) for the gateway agent turn.
+ 
+ ``TurnRunner`` owns the per-turn callbacks ``GatewayRunner._run_agent_inner`` binds. ``gateway.run``
+@@ -1364,10 +1366,14 @@ class TurnRunner:
+                 entry.get("question", ""), entry.get("choices"), bool(entry.get("multi_select")),
+                 rearm=index == last)
+             if not answered:
++                from tools.clarify_outcome import ClarifyCancellation
+                 # The surface's own no-answer text ("could not be delivered", "did not respond
+                 # within Nm") rides along as ``notice``: blank answers alone read as user
+                 # inactivity, which is the misreport #112684 describes for an undelivered card.
+-                payload.update(timed_out=True, notice=raw)
++                if isinstance(raw, ClarifyCancellation):
++                    payload.update(cancelled=True, notice=str(raw))
++                else:
++                    payload.update(timed_out=True, notice=raw)
+                 break
+             answers[entry.get("qid") or f"q{index}"] = raw
+         return json.dumps(payload, ensure_ascii=False)
+@@ -1397,7 +1403,7 @@ class TurnRunner:
+             """Schedule the plain-text prompt when the native card cannot render; None = no such path."""
+             coro = text_fallback_coro(ctx._status_adapter, **send_kwargs)
+             return None if coro is None else self._schedule(coro, "Clarify text fallback failed to schedule")
+-        clarify_mod.register(
++        entry = clarify_mod.register(
+             clarify_id=clarify_id, session_key=session_key, question=question, choices=choices,
+             multi_select=bool(multi_select),
+         )
+@@ -1427,7 +1433,7 @@ class TurnRunner:
+         # failure — immediate or late — retries once as plain text before giving up.
+         response, answered = _clarify_send_then_wait(
+             fut, clarify_id=clarify_id, session_key=session_key, clarify_mod=clarify_mod,
+-            fallback=_text_fallback)
++            fallback=_text_fallback, entry=entry)
+         # Branch on the explicit flag, never on the text: a real answer can start with '[' (a
+         # "[A] staging" label, "[urgent] ..." free text) and must not be mistaken for a sentinel.
+         if not answered:
+@@ -1435,8 +1441,11 @@ class TurnRunner:
+             # looking answerable. Adapters without a persistent card have no such method.
+             retire = getattr(type(ctx._status_adapter), "retire_clarify_card", None)
+             if callable(retire):
++                from tools.clarify_outcome import ClarifyCancellation
++                notice = ('This prompt was cancelled. No answer was recorded.'
++                          if isinstance(response, ClarifyCancellation) else _CLARIFY_EXPIRED_NOTICE)
+                 self._schedule(
+-                    retire(ctx._status_adapter, clarify_id, _CLARIFY_EXPIRED_NOTICE),
++                    retire(ctx._status_adapter, clarify_id, notice),
+                     "Clarify card retire failed to schedule")
+         elif rearm:
+             # Reopen typing IMMEDIATELY, not on the LLM's first post-answer token (native streaming
+diff --git a/gateway/run_turn_runner_clarify_delivery.py b/gateway/run_turn_runner_clarify_delivery.py
+index 1370d1b3..1f3fa10b 100644
+--- a/gateway/run_turn_runner_clarify_delivery.py
++++ b/gateway/run_turn_runner_clarify_delivery.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Separates clarification delivery failure, cancellation, timeout, and user replies.
++# ABOUTME: Watches actual send disposition and releases or retires the pending prompt accordingly.
+ """Clarify prompt delivery on messaging platforms: send disposition, plain-text fallback, bounded wait.
+ 
+ A native clarify card (Telegram inline keyboard, Slack blocks, …) can fail to render in three ways
+@@ -13,6 +15,7 @@ from __future__ import annotations
+ 
+ import logging
+ from typing import Any, Callable, Optional
++from tools.clarify_outcome import ClarifyCancellation
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -77,7 +80,7 @@ def _clarify_send_disposition(fut, *, session_key: str, clarify_mod) -> Optional
+ 
+ 
+ def _clarify_send_then_wait(fut, *, clarify_id: str, session_key: str, clarify_mod,
+-                            fallback: Optional[Callable[[], Any]] = None) -> tuple[str, bool]:
++                            fallback: Optional[Callable[[], Any]] = None, entry=None) -> tuple[str, bool]:
+     """Resolve a clarify prompt: send disposition, plain-text fallback, then the bounded wait.
+ 
+     ``fallback()`` schedules the plain-text ``send_clarify`` and returns its future (or ``None``);
+@@ -106,11 +109,13 @@ def _clarify_send_then_wait(fut, *, clarify_id: str, session_key: str, clarify_m
+     late = _LateFailureWatch(fut, clarify_id=clarify_id, session_key=session_key,
+                              clarify_mod=clarify_mod, fallback=fallback)
+     timeout = clarify_mod.get_clarify_timeout()
+-    response = clarify_mod.wait_for_response(clarify_id, timeout=float(timeout))
++    response = clarify_mod.wait_for_response(entry if entry is not None else clarify_id, timeout=float(timeout))
+     late.disarm()
+     if late.undeliverable:
+         return late.undeliverable, False
+-    if response is None or response == "":
++    if isinstance(response, ClarifyCancellation):
++        return response, False
++    if response is None:
+         return f"[user did not respond within {int(timeout / 60)}m]", False
+     return response, True
+ 
 diff --git a/gateway/slash_commands_session.py b/gateway/slash_commands_session.py
 index 23c85609..ab8e0aa3 100644
 --- a/gateway/slash_commands_session.py
@@ -255,6 +355,197 @@ index 905186ce..265ef86e 100644
      _gate("no_thread_channels", "DISCORD_NO_THREAD_CHANNELS", from_platform_extra=False)
      # history_backfill: recover mention-gated channel messages between bot turns.
      if "history_backfill" in discord_cfg:
+diff --git a/tests/gateway/test_clarify_cancellation_outcome.py b/tests/gateway/test_clarify_cancellation_outcome.py
+new file mode 100644
+index 00000000..e4f206c5
+--- /dev/null
++++ b/tests/gateway/test_clarify_cancellation_outcome.py
+@@ -0,0 +1,154 @@
++# ABOUTME: Checks cancellation, timeout, and deliberate empty answers through the actual question queue.
++# ABOUTME: Preserves earlier batch answers and prevents cancellation notices from becoming user answers.
++from concurrent.futures import Future, ThreadPoolExecutor
++import asyncio
++import contextvars
++import json
++from pathlib import Path
++import tempfile
++import threading
++from types import SimpleNamespace
++import unittest
++
++from hermes_constants import set_hermes_home_override, reset_hermes_home_override
++from gateway.platforms.base import SendResult
++from gateway.run_turn_runner_clarify_delivery import _clarify_send_then_wait
++from tools import clarify_gateway as queue
++from tools.clarify_tool import clarify_tool
++
++
++class ClarifyCancellationOutcomeTests(unittest.TestCase):
++    def setUp(self):
++        directory = tempfile.TemporaryDirectory()
++        self.addCleanup(directory.cleanup)
++        token = set_hermes_home_override(Path(directory.name))
++        self.addCleanup(reset_hermes_home_override, token)
++        self.addCleanup(queue.clear_session, 'synthetic-cancellation')
++        self.addCleanup(queue.clear_session, 'synthetic-cancellation-other')
++        (Path(directory.name) / 'config.yaml').write_text('agent:\n  clarify_timeout: 1\n')
++        self.assertEqual(queue.get_clarify_timeout(), 1)
++
++    def completed_send(self):
++        future = Future()
++        future.set_result(SendResult(success=True, message_id='synthetic-offline-card'))
++        return future
++
++    def test_cancellation_is_not_a_timeout_or_an_answer(self):
++        entry = queue.register('cancel-outcome', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        sent = self.completed_send()
++        started = threading.Event()
++
++        class ObservedEvent(threading.Event):
++            def wait(self, timeout=None):
++                started.set()
++                return super().wait(timeout)
++
++        entry.event = ObservedEvent()
++
++        def wait():
++            return _clarify_send_then_wait(sent, clarify_id=entry.clarify_id,
++                session_key=entry.session_key, clarify_mod=queue)
++
++        with ThreadPoolExecutor(max_workers=1) as executor:
++            response = executor.submit(contextvars.copy_context().run, wait)
++            self.assertTrue(started.wait(2))
++            queue.clear_session(entry.session_key)
++            raw, answered = response.result(timeout=3)
++        result = json.loads(clarify_tool('Choose', ['A', 'B'], callback=lambda *_: raw))
++        self.assertFalse(answered)
++        self.assertEqual(result['user_response'], '')
++        self.assertTrue(result.get('cancelled'), result)
++        self.assertNotIn('timed_out', result)
++        self.assertNotIn('within', result.get('notice', ''))
++        self.assertFalse(queue.resolve_gateway_clarify(entry.clarify_id, 'A'))
++
++    def test_actual_timeout_keeps_the_timeout_outcome(self):
++        entry = queue.register('timeout-outcome', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        response = _clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
++            session_key=entry.session_key, clarify_mod=queue)
++        self.assertFalse(response[1])
++        self.assertIn('did not respond', response[0])
++
++    def test_cancelled_entry_does_not_remove_a_successor_with_the_same_identifier(self):
++        from tools.clarify_outcome import ClarifyCancellation
++        entry = queue.register('reused-outcome', 'synthetic-cancellation', 'First', ['A', 'B'])
++        queue.clear_session(entry.session_key)
++        successor = queue.register(entry.clarify_id, entry.session_key, 'Second', ['A', 'B'])
++        self.assertIsInstance(queue.wait_for_response(entry, 1), ClarifyCancellation)
++        self.assertIs(queue.get_pending_for_session(entry.session_key, include_choice_prompts=True), successor)
++        self.assertTrue(queue.resolve_gateway_clarify(successor.clarify_id, 'B'))
++        self.assertEqual(queue.wait_for_response(successor, 1), 'B')
++
++    def test_deliberate_empty_answer_does_not_report_a_timeout(self):
++        entry = queue.register('empty-outcome', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        self.assertTrue(queue.resolve_gateway_clarify(entry.clarify_id, ''))
++        self.assertEqual(_clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
++            session_key=entry.session_key, clarify_mod=queue), ('', True))
++
++    def test_batch_callback_accepts_the_actual_queue_cancellation_marker(self):
++        entry = queue.register('batch-marker', 'synthetic-cancellation', 'Choose', ['A', 'B'])
++        queue.clear_session(entry.session_key)
++
++        def callback(_question, _choices, *, questions):
++            return queue.wait_for_response(entry, 1)
++
++        result = json.loads(clarify_tool('', questions=[{'question': 'Choose', 'choices': ['A', 'B']}],
++                                        callback=callback))
++        self.assertTrue(result.get('cancelled'), result)
++        self.assertNotIn('timed_out', result)
++        self.assertEqual(result['responses'][0]['user_response'], '')
++
++    def test_user_text_that_matches_the_cancellation_notice_remains_an_answer(self):
++        entry = queue.register('literal-outcome', 'synthetic-cancellation', 'Choose', None)
++        self.assertTrue(queue.resolve_gateway_clarify(entry.clarify_id, '[clarify cancelled]'))
++        response = _clarify_send_then_wait(self.completed_send(), clarify_id=entry.clarify_id,
++            session_key=entry.session_key, clarify_mod=queue)
++        self.assertEqual(response, ('[clarify cancelled]', True))
++
++    def test_batch_cancellation_during_send_preserves_earlier_answers(self):
++        from gateway.run_turn_runner import TurnRunner
++
++        class CardSurface:
++            def __init__(self):
++                self.questions = []
++                self.retired = []
++
++            def pause_typing_for_chat(self, _chat):
++                pass
++
++            async def send_clarify(self, **arguments):
++                self.questions.append(arguments['question'])
++                if len(self.questions) == 1:
++                    queue.resolve_gateway_clarify(arguments['clarify_id'], 'A')
++                else:
++                    queue.clear_session(arguments['session_key'])
++                return SendResult(success=True, message_id='synthetic-offline-card')
++
++            async def retire_clarify_card(self, identifier, notice):
++                self.retired.append(notice)
++
++        surface = CardSurface()
++        runner = object.__new__(TurnRunner)
++        runner._ctx = SimpleNamespace(_status_adapter=surface, _status_chat_id='synthetic-channel',
++            _status_thread_metadata={}, session_key='synthetic-cancellation', stream_consumer_holder=[None])
++        runner._close_native_stream_boundary = lambda *args, **kwargs: None
++
++        def schedule(coroutine, _label):
++            future = Future()
++            future.set_result(asyncio.run(coroutine))
++            return future
++
++        runner._schedule = schedule
++        result = json.loads(clarify_tool('', questions=[{'question': question, 'choices': ['A', 'B']}
++            for question in ('First', 'Second', 'Third')], callback=runner._clarify_callback_sync))
++        self.assertEqual(surface.questions, ['First', 'Second'])
++        self.assertEqual([row['user_response'] for row in result['responses']], ['A', '', ''])
++        self.assertTrue(result.get('cancelled'), result)
++        self.assertNotIn('timed_out', result)
++        self.assertEqual(len(surface.retired), 1)
++        self.assertIn('cancel', surface.retired[0].lower())
++        self.assertNotIn('expired', surface.retired[0].lower())
++
++
++if __name__ == '__main__':
++    unittest.main()
+diff --git a/tests/gateway/test_clarify_delivery_fallback.py b/tests/gateway/test_clarify_delivery_fallback.py
+index 62d54002..00a7073d 100644
+--- a/tests/gateway/test_clarify_delivery_fallback.py
++++ b/tests/gateway/test_clarify_delivery_fallback.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Exercises clarification fallback and late delivery outcomes on an actual event loop.
++# ABOUTME: Drains scheduled retirement work before the fixture closes the loop.
+ """A clarify card that cannot render is retried as plain text, and a card that fails late does
+ not pass for user inactivity (#112684).
+ 
+@@ -65,8 +67,20 @@ def loop():
+     thread = threading.Thread(target=loop.run_forever, daemon=True)
+     thread.start()
+     yield loop
++
++    async def finish():
++        # Submitted retirement coroutines must enter the loop before its task inventory.
++        await asyncio.sleep(0)
++        pending = asyncio.all_tasks() - {asyncio.current_task()}
++        if pending:
++            await asyncio.gather(*pending)
++        await loop.shutdown_asyncgens()
++
++    asyncio.run_coroutine_threadsafe(finish(), loop).result(timeout=5)
+     loop.call_soon_threadsafe(loop.stop)
+     thread.join(timeout=5)
++    assert not thread.is_alive()
++    loop.close()
+ 
+ 
+ def _runner(adapter, loop, monkeypatch, timeout=5):
 diff --git a/tests/gateway/test_discord_command_identity.py b/tests/gateway/test_discord_command_identity.py
 new file mode 100644
 index 00000000..a2021d51
@@ -581,10 +872,10 @@ index a114eae3..ee2a0c2f 100644
          """Resume must not carry a previous session's /model override into the
 diff --git a/tests/gateway/test_stop_clarify_waiters.py b/tests/gateway/test_stop_clarify_waiters.py
 new file mode 100644
-index 00000000..a02771b2
+index 00000000..93e49c32
 --- /dev/null
 +++ b/tests/gateway/test_stop_clarify_waiters.py
-@@ -0,0 +1,113 @@
+@@ -0,0 +1,114 @@
 +# ABOUTME: Verifies that gateway interruption releases actual clarification waiters.
 +# ABOUTME: Checks session isolation and late answers without model or Discord requests.
 +
@@ -673,7 +964,8 @@ index 00000000..a02771b2
 +            try:
 +                await self.stop()
 +                self.assertTrue(agent._hard_interrupt_requested.is_set())
-+                self.assertEqual(await asyncio.wait_for(asyncio.wrap_future(response), timeout=2), "")
++                from tools.clarify_outcome import ClarifyCancellation
++                self.assertIsInstance(await asyncio.wait_for(asyncio.wrap_future(response), timeout=2), ClarifyCancellation)
 +                self.assertIsNone(queue.get_pending_for_session(self.key, include_choice_prompts=True))
 +                self.assertFalse(queue.resolve_gateway_clarify(entry.clarify_id, "late"))
 +                self.assertFalse(other.event.is_set())
@@ -750,3 +1042,212 @@ index 36549966..a1548102 100644
  class TestResumeFlushesBeforeEndSession:
      """Regression for #47202: /resume must flush un-persisted messages to
      the session DB before ending the old session, just like /new and
+diff --git a/tests/tools/test_clarify_gateway.py b/tests/tools/test_clarify_gateway.py
+index 5a92a1a5..70686123 100644
+--- a/tests/tools/test_clarify_gateway.py
++++ b/tests/tools/test_clarify_gateway.py
+@@ -77,7 +77,7 @@ class TestClarifyPrimitive:
+ 
+ 
+     def test_clear_session_cancels_pending_entries(self):
+-        """clear_session unblocks blocked threads with empty response."""
++        """clear_session unblocks blocked threads with an explicit cancellation outcome."""
+         from tools import clarify_gateway as cm
+ 
+         cm.register("id7", "sk7", "Q?", ["A"])
+@@ -91,8 +91,8 @@ class TestClarifyPrimitive:
+             cancelled = cm.clear_session("sk7")
+             assert cancelled == 1
+             result = fut.result(timeout=10.0)
+-            # clear_session sets response="" then the wait returns it
+-            assert result == ""
++            from tools.clarify_outcome import ClarifyCancellation
++            assert isinstance(result, ClarifyCancellation)
+ 
+ 
+     def test_clear_session_preserves_resolved_response(self):
+diff --git a/tools/clarify_gateway.py b/tools/clarify_gateway.py
+index e33a5ff0..f2d7025e 100644
+--- a/tools/clarify_gateway.py
++++ b/tools/clarify_gateway.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Stores clarification requests and releases blocked waiters on replies or session cleanup.
++# ABOUTME: Preserves the outcome when cancellation races with a scheduled prompt send.
+ """Gateway-side clarify primitive (blocking event-based queue). The agent runs on a worker
+ thread while the event loop handles the user's reply, so a pending clarify is stored
+ module-level (same shape as ``tools.approval``) and the agent thread blocks on an ``Event``
+@@ -12,6 +14,7 @@ import threading
+ import time
+ from dataclasses import dataclass, field
+ from typing import Callable, Dict, List, Optional
++from tools.clarify_outcome import CANCELLED_RESPONSE
+ 
+ logger = logging.getLogger(__name__)
+ 
+@@ -55,14 +58,15 @@ def register(clarify_id: str, session_key: str, question: str, choices: Optional
+     return entry
+ 
+ 
+-def wait_for_response(clarify_id: str, timeout: float) -> Optional[str]:
++def wait_for_response(clarify_id: str | _ClarifyEntry, timeout: float) -> Optional[str]:
+     """Block until the entry resolves or ``timeout`` (``<= 0`` = unlimited) elapses; None on
+     timeout/unknown id. Polls in 1s slices so the inactivity heartbeat keeps firing (a
+     single long ``Event.wait`` would let the gateway watchdog kill a live prompt)."""
+     with _lock:
+-        entry = _entries.get(clarify_id)
++        entry = clarify_id if isinstance(clarify_id, _ClarifyEntry) else _entries.get(clarify_id)
+     if entry is None:
+         return None
++    clarify_id = entry.clarify_id
+     try:
+         from tools.environments.base import touch_activity_if_due
+     except Exception:  # pragma: no cover - optional
+@@ -78,6 +82,9 @@ def wait_for_response(clarify_id: str, timeout: float) -> Optional[str]:
+         if touch_activity_if_due is not None:
+             touch_activity_if_due(activity_state, "waiting for user clarify response")
+     with _lock:
++        current = _entries.get(clarify_id)
++        if current is not None and current is not entry:
++            return entry.response
+         _entries.pop(clarify_id, None)  # regardless of outcome
+         ids = _session_index.get(entry.session_key) or []
+         if clarify_id in ids:
+@@ -240,8 +247,7 @@ def has_pending(session_key: str) -> bool:
+ def clear_session(session_key: str) -> int:
+     """Drop every pending clarify for a session (``/new``, shutdown, cached-agent eviction) so
+     blocked agent threads don't outlive it; returns how many were cancelled. Cancelled waiters
+-    see "" (callers tell it from a real reply only via their own timeout bookkeeping; most treat
+-    any falsy result as no response). First-writer-wins: an already-set entry was answered for
++    receive a typed cancellation notice. First-writer-wins: an already-set entry was answered for
+     real, so it is dropped but its response preserved. The loop stays inside the lock so a button
+     callback cannot slip between pop and check; entries go regardless of state so a cleared
+     session is never resurrected by late callbacks."""
+@@ -250,7 +256,7 @@ def clear_session(session_key: str) -> int:
+         for entry in (_entries.pop(cid, None) for cid in list(_session_index.pop(session_key, []) or [])):
+             if entry is None or entry.event.is_set():
+                 continue
+-            entry.response = ""
++            entry.response = CANCELLED_RESPONSE
+             entry.event.set()
+             cancelled += 1
+     return cancelled
+diff --git a/tools/clarify_outcome.py b/tools/clarify_outcome.py
+new file mode 100644
+index 00000000..a90bb34f
+--- /dev/null
++++ b/tools/clarify_outcome.py
+@@ -0,0 +1,9 @@
++# ABOUTME: Marks cancelled clarification waits without confusing user text with control state.
++# ABOUTME: Carries cancellation through the gateway callback until the tool serializes its result.
++
++
++class ClarifyCancellation(str):
++    """A typed notice distinguishes cancellation from an answer with identical text."""
++
++
++CANCELLED_RESPONSE = ClarifyCancellation('[clarify cancelled]')
+diff --git a/tools/clarify_tool.py b/tools/clarify_tool.py
+index 70d3a99d..58e402b6 100644
+--- a/tools/clarify_tool.py
++++ b/tools/clarify_tool.py
+@@ -1,3 +1,5 @@
++# ABOUTME: Validates structured questions and serializes the platform's answer or wait outcome.
++# ABOUTME: Preserves skipped answers, actual timeouts, and explicit cancellation as distinct results.
+ """Clarify tool: structured multiple-choice / open-ended questions to the user.
+ Schema, validation and a thin dispatcher; the UI lives in a platform-provided
+ callback (cli.py, gateway/run.py, tui_gateway)."""
+@@ -5,6 +7,7 @@ callback (cli.py, gateway/run.py, tui_gateway)."""
+ import inspect
+ import json
+ from typing import Dict, List, Optional, Callable
++from tools.clarify_outcome import ClarifyCancellation
+ 
+ MAX_CHOICES = 4  # the UI always appends an "Other (type your answer)" row
+ MAX_QUESTIONS = 5  # independent questions per batch call
+@@ -136,11 +139,10 @@ def _normalize_questions(questions) -> tuple:
+     return normalized, None
+ 
+ 
+-def _batch_result(normalized: List[dict], answers: dict, timed_out: bool, notice: Optional[str] = None) -> str:
+-    """Batch result JSON; unanswered -> "". The top-level ``timed_out`` flag (present only when
+-    true) tells the agent whether blanks are deliberate skips or the user walking away; ``notice``
+-    (surface-supplied, only beside ``timed_out``) says WHY the wait ended, so an undeliverable
+-    prompt never reads as user inactivity."""
++def _batch_result(normalized: List[dict], answers: dict, timed_out: bool, notice: Optional[str] = None,
++                  *, cancelled: bool = False) -> str:
++    """Batch result JSON; unanswered -> "". A timeout or cancellation flag identifies
++    why the wait ends. The surface notice distinguishes delivery failure from inactivity."""
+     responses = []
+     for entry in normalized:
+         raw = answers.get(entry["qid"])
+@@ -149,10 +151,12 @@ def _batch_result(normalized: List[dict], answers: dict, timed_out: bool, notice
+             "question": entry["question"], "choices_offered": entry["choices_offered"],
+             "user_response": _clean_answer(raw, entry["multi_select"]) if raw else ""})
+     result: Dict[str, object] = {"responses": responses}
+-    if timed_out:
++    if cancelled:
++        result['cancelled'] = True
++    elif timed_out:
+         result["timed_out"] = True
+-        if notice:
+-            result["notice"] = str(notice)
++    if (timed_out or cancelled) and notice:
++        result["notice"] = str(notice)
+     return json.dumps(result, ensure_ascii=False)
+ 
+ 
+@@ -165,24 +169,31 @@ def _run_batch(normalized: List[dict], callback, question: str) -> str:
+     walked away so the loop aborts instead of pestering them; earlier answers are kept."""
+     answers: dict = {}
+     timed_out = False
++    cancelled = False
+     notice = None
+     if _accepts_kwarg(callback, "questions"):
+         raw = callback(question, None, questions=normalized)
++        if isinstance(raw, ClarifyCancellation):
++            return _batch_result(normalized, answers, False, str(raw), cancelled=True)
+         timed_out = _is_timeout(raw)
+         if isinstance(raw, str):
+             raw = _json_as(raw, dict)  # the sentinel is not JSON -> None, timed_out stays True
+         if isinstance(raw, dict):
+             answers = dict(raw.get("answers") or {})
+             timed_out = bool(raw.get("timed_out"))
++            cancelled = bool(raw.get('cancelled'))
+             notice = raw.get("notice")
+-        return _batch_result(normalized, answers, timed_out, notice)
++        return _batch_result(normalized, answers, timed_out, notice, cancelled=cancelled)
+     for entry in normalized:
+         raw = _invoke_callback(callback, entry["question"], entry["choices"], entry["multi_select"])
++        if isinstance(raw, ClarifyCancellation):
++            cancelled, notice = True, str(raw)
++            break
+         if _is_timeout(raw):
+             timed_out = True
+             break
+         answers[entry["qid"]] = raw
+-    return _batch_result(normalized, answers, timed_out)
++    return _batch_result(normalized, answers, timed_out, notice, cancelled=cancelled)
+ 
+ 
+ def clarify_tool(question: str, choices: Optional[List[str]] = None, multi_select: bool = False,
+@@ -231,6 +242,9 @@ def clarify_tool(question: str, choices: Optional[List[str]] = None, multi_selec
+         raw_response = _invoke_callback(callback, question, shown, multi_select)
+     except Exception as exc:
+         return tool_error(f"Failed to get user input: {exc}")
++    if isinstance(raw_response, ClarifyCancellation):
++        return json.dumps({'question': question, 'choices_offered': choices, 'user_response': '',
++                           'cancelled': True, 'notice': str(raw_response)}, ensure_ascii=False)
+     return json.dumps({"question": question, "choices_offered": choices,
+                        "user_response": _clean_answer(raw_response, multi_select and choices is not None)},
+                       ensure_ascii=False)
+@@ -257,8 +271,8 @@ CLARIFY_SCHEMA = {
+         "enumerated inside the question text (choices render as pickable "
+         "rows; options written into the question are dead prose the user "
+         "can't click). Result: {responses: [...]} in question order (plus "
+-        "timed_out=true, and a notice saying why, if the user stopped "
+-        "part-way or the prompt could not be delivered). Prefer deciding "
++        "timed_out=true with a notice if the wait expires or delivery fails; "
++        "cancelled=true with a notice if the user or session cancels the wait). Prefer deciding "
+         "low-stakes questions yourself; don't use this for dangerous-command "
+         "confirmation (the terminal tool handles that)."
+     ),

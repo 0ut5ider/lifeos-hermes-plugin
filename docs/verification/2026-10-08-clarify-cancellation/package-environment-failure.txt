@@ -1,0 +1,47 @@
+test_runtime_contains_exact_hermes_patch_sequence (test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_hermes_patch_sequence) ... ok
+test_runtime_contains_exact_lifeos_patch_sequence (test_patch_bundle.PatchBundleTests.test_runtime_contains_exact_lifeos_patch_sequence) ... ok
+test_applies_patch_and_restores_after_failed_runtime_check (test_hermes_install_source.HermesSourceTests.test_applies_patch_and_restores_after_failed_runtime_check) ... ok
+test_applies_prepared_patch_without_changing_ignored_runtime (test_hermes_install_source.HermesSourceTests.test_applies_prepared_patch_without_changing_ignored_runtime) ... ok
+test_failed_restore_reapplies_the_prepared_patch (test_hermes_install_source.HermesSourceTests.test_failed_restore_reapplies_the_prepared_patch) ... ok
+test_prepares_clean_exact_source_with_ordered_patch (test_hermes_install_source.HermesSourceTests.test_prepares_clean_exact_source_with_ordered_patch) ... ok
+test_recovery_refuses_a_finished_host_change (test_hermes_install_source.HermesSourceTests.test_recovery_refuses_a_finished_host_change) ... ok
+test_recovery_returns_an_interrupted_host_change_to_stock (test_hermes_install_source.HermesSourceTests.test_recovery_returns_an_interrupted_host_change_to_stock) ... ok
+test_refuses_modified_or_unsupported_running_source (test_hermes_install_source.HermesSourceTests.test_refuses_modified_or_unsupported_running_source) ... ok
+test_restore_preserves_later_hermes_config_edit (test_hermes_install_source.HermesSourceTests.test_restore_preserves_later_hermes_config_edit) ... ok
+test_restore_request_prevents_duplicate_launch (test_hermes_install_source.HermesSourceTests.test_restore_request_prevents_duplicate_launch) ... ok
+test_start_failure_stops_gateway_before_restoring_code (test_hermes_install_source.HermesSourceTests.test_start_failure_stops_gateway_before_restoring_code) ... ok
+test_candidate_change_is_detected_before_installation (test_lifeos_install_source.InstallSourceTests.test_candidate_change_is_detected_before_installation) ... ok
+test_dashboard_standalone_module_prepares_source (test_lifeos_install_source.InstallSourceTests.test_dashboard_standalone_module_prepares_source) ... ok
+test_failed_fresh_install_preserves_partial_files_for_review (test_lifeos_install_source.InstallSourceTests.test_failed_fresh_install_preserves_partial_files_for_review) ... ok
+test_failed_install_step_reports_the_native_error_text (test_lifeos_install_source.InstallSourceTests.test_failed_install_step_reports_the_native_error_text) ... ok
+test_failed_mount_restores_hermes_files (test_lifeos_install_source.InstallSourceTests.test_failed_mount_restores_hermes_files) ... ok
+test_failed_patch_leaves_no_candidate (test_lifeos_install_source.InstallSourceTests.test_failed_patch_leaves_no_candidate) ... ok
+test_finalization_mounts_and_records_installed_system_files (test_lifeos_install_source.InstallSourceTests.test_finalization_mounts_and_records_installed_system_files) ... ERROR
+test_fresh_install_places_selected_bun_on_child_path (test_lifeos_install_source.InstallSourceTests.test_fresh_install_places_selected_bun_on_child_path) ... ok
+test_fresh_install_refuses_existing_claude_root (test_lifeos_install_source.InstallSourceTests.test_fresh_install_refuses_existing_claude_root) ... ok
+test_new_upstream_revision_is_not_silently_installed (test_lifeos_install_source.InstallSourceTests.test_new_upstream_revision_is_not_silently_installed) ... ok
+test_prepared_and_installed_trees_are_not_group_writable_under_a_shared_umask (test_lifeos_install_source.InstallSourceTests.test_prepared_and_installed_trees_are_not_group_writable_under_a_shared_umask) ... ok
+test_prepares_exact_upstream_revision_and_patch (test_lifeos_install_source.InstallSourceTests.test_prepares_exact_upstream_revision_and_patch) ... ok
+
+======================================================================
+ERROR: test_finalization_mounts_and_records_installed_system_files (test_lifeos_install_source.InstallSourceTests.test_finalization_mounts_and_records_installed_system_files)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_lifeos_install_source.py", line 244, in test_finalization_mounts_and_records_installed_system_files
+    result = finalize_lifeos(candidate, installed, hermes_home, baseline,
+                             str(bun), str(hermes), revision, patches,
+                             ("lifeos-test.patch",), create_baseline, save_baseline)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/install_source.py", line 398, in finalize_lifeos
+    result = transaction.execute(environment, bun_executable, hermes_executable,
+                                 baseline_data=selected.read_bytes())
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 444, in execute
+    _check_prepared_config(self.installed, checker_environment, stage)
+    ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/lifeos_hook_bridge/mount_transaction.py", line 74, in _check_prepared_config
+    from hermes_cli import _launchers
+ModuleNotFoundError: No module named 'hermes_cli'
+
+----------------------------------------------------------------------
+Ran 24 tests in 2.286s
+
+FAILED (errors=1)
