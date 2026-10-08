@@ -9,3 +9,5 @@ The scan refreshes source lines, call edges, and file hashes after index publica
 An API reference is not behavioral acceptance. The inventory retains unresolved classifications. Operational dashboard readers and live stream delivery still require their own tests. This scan does not establish complete caller coverage or permit memory activation.
 
 The first refresh counts 331 candidates because an unmanaged native comparison creates a synthetic user-index cache in LIFEOS/PULSE/state. The scanner now excludes that runtime directory before it opens any file. The baseline cache-exclusion test fails with a UTF-8 decoding error on deliberately invalid cache bytes. All four inventory tests pass after the correction. The corrected scan verifies 330 candidates in 1,579 public files. Earlier outputs remain under before-cache-exclusion filenames.
+
+The complete inventories use lossless JSON gzip files. inventory-compression.json records the exact original byte lengths and hashes. The source identity and changed-program reports remain plain JSON.
