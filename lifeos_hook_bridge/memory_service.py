@@ -247,6 +247,10 @@ class MemoryService:
             configuration = self.configuration.load()
             scope = self._context_scope(configuration, context)
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'proposal_gc' and set(arguments) == {'apply', 'auto', 'route'}:
+                from .memory_proposal_gc import run
+                return run(memory, scope, **arguments,
+                    check_current=lambda: self._check_current_context(configuration, context, scope))
             if operation in ('prompt_bundle', 'prompt_preview', 'prompt_publish'):
                 return self._prompt(configuration, scope, operation, arguments,
                     check_authority=lambda: self._check_current_context(configuration, context, scope))
@@ -609,7 +613,7 @@ class MemoryService:
             scope = self._context_scope(configuration, context)
         except (MemoryUnavailable, ValueError, OSError) as error:
             return {"status": "unavailable", "reason": str(error)}
-        def check_current():
+        def check_current(_connection=None):
             self._check_current_context(configuration, context, scope)
         result = self._call(configuration, scope, name, arguments,
                             source_session=context.session_id, check_current=check_current)

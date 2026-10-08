@@ -1,0 +1,56 @@
+FFFF..                                                                   [100%]
+=================================== FAILURES ===================================
+_____ MemoryProposalGCTests.test_managed_cleanup_is_private_and_idempotent _____
+
+self = <test_memory_proposal_gc.MemoryProposalGCTests testMethod=test_managed_cleanup_is_private_and_idempotent>
+
+    def test_managed_cleanup_is_private_and_idempotent(self):
+        result = self.call('--apply', '--json')
+        self.assertEqual(result.returncode, 0, result.stderr)
+        report, _ = json.JSONDecoder().raw_decode(result.stdout)
+        self.assertEqual(len(report['removals']), 2)
+>       self.assertEqual(self.target.stat().st_mode & 0o777, 0o600)
+E       AssertionError: 420 != 384
+
+tests/test_memory_proposal_gc.py:90: AssertionError
+______ MemoryProposalGCTests.test_missing_context_refuses_read_and_write _______
+
+self = <test_memory_proposal_gc.MemoryProposalGCTests testMethod=test_missing_context_refuses_read_and_write>
+
+    def test_missing_context_refuses_read_and_write(self):
+        before = self.target.read_bytes()
+        result = self.call('--apply', '--json', context=False)
+>       self.assertNotEqual(result.returncode, 0)
+E       AssertionError: 0 == 0
+
+tests/test_memory_proposal_gc.py:67: AssertionError
+______ MemoryProposalGCTests.test_restricted_write_grant_refuses_cleanup _______
+
+self = <test_memory_proposal_gc.MemoryProposalGCTests testMethod=test_restricted_write_grant_refuses_cleanup>
+
+    def test_restricted_write_grant_refuses_cleanup(self):
+        self.fixture.configuration.update(lambda value: value['destinations']['chat-a:200'].update(write=['project']))
+        before = self.target.read_bytes()
+        result = self.call('--apply', '--json')
+>       self.assertNotEqual(result.returncode, 0)
+E       AssertionError: 0 == 0
+
+tests/test_memory_proposal_gc.py:82: AssertionError
+___________ MemoryProposalGCTests.test_revoked_owner_refuses_cleanup ___________
+
+self = <test_memory_proposal_gc.MemoryProposalGCTests testMethod=test_revoked_owner_refuses_cleanup>
+
+    def test_revoked_owner_refuses_cleanup(self):
+        self.fixture.configuration.update(lambda value: value['accounts'].pop('chat-a:100'))
+        before = self.target.read_bytes()
+        result = self.call('--apply', '--json')
+>       self.assertNotEqual(result.returncode, 0)
+E       AssertionError: 0 == 0
+
+tests/test_memory_proposal_gc.py:75: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_memory_proposal_gc.py::MemoryProposalGCTests::test_managed_cleanup_is_private_and_idempotent
+FAILED tests/test_memory_proposal_gc.py::MemoryProposalGCTests::test_missing_context_refuses_read_and_write
+FAILED tests/test_memory_proposal_gc.py::MemoryProposalGCTests::test_restricted_write_grant_refuses_cleanup
+FAILED tests/test_memory_proposal_gc.py::MemoryProposalGCTests::test_revoked_owner_refuses_cleanup
+4 failed, 2 passed in 1.02s

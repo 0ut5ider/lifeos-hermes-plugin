@@ -27,7 +27,15 @@ async function main(): Promise<void> {
     upgrades.observeUpgradePublication((path: string) => observePublication(root, journal, path));
   }
   let result: unknown;
-  if (input.action === "learning_principal") {
+  if (input.action === "proposal_gc") {
+    const module: unknown = await import(pathToFileURL(resolve(root, 'LIFEOS/TOOLS/ProposalGC.ts')).href);
+    if (!object(module) || typeof module.renderProposalGC !== 'function' || !object(input.sources)
+        || Object.values(input.sources).some(content => typeof content !== 'string')
+        || typeof input.auto !== 'boolean' || typeof input.route !== 'boolean') {
+      throw new Error('Proposal cleanup requires declared sources and modes');
+    }
+    result = module.renderProposalGC(input.sources, input.auto, input.route);
+  } else if (input.action === "learning_principal") {
     const module: unknown = await import(pathToFileURL(resolve(root, "hooks/lib/identity.ts")).href);
     if (!object(module) || typeof module.getPrincipalName !== "function") throw new Error("Native principal identity is unavailable");
     result = {name: module.getPrincipalName()};

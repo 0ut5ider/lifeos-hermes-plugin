@@ -354,6 +354,9 @@ class NativeMemory:
 
     def _publication_paths(self, connection: sqlite3.Connection, scope: MemoryScope,
                            payload: dict[str, Any]) -> list[str]:
+        if payload['operation'] == 'proposal_gc':
+            from .memory_proposal_gc import publication_paths
+            return publication_paths(self, scope, payload)
         if payload['operation'] == 'context_audit':
             from .memory_context_audit import publication_paths
             return publication_paths(self, scope)

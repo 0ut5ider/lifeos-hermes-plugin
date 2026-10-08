@@ -4,6 +4,8 @@
 
 The daily Discord release uses one private server text channel. The [channel restriction controls](docs/verification/2026-10-07-private-channel/README.md) verify message, command, outbound delivery, and memory admission rules. The candidate is staged for testing. The live channel configuration and managed memory activation remain open.
 
+The [managed proposal cleanup controls](docs/verification/2026-10-08-proposal-gc/README.md) govern native `ProposalGC` reads and writes. The gate passes 102 tests and 102 subtests, including real publication interruption and source changes. Other native writers and installed memory activation remain release gates.
+
 This projects provides a connector that allows  [Daniel Miessler's LifeOS](https://github.com/danielmiessler/LifeOS/) to run inside of [Hermes Agent](https://hermes-agent.nousresearch.com/). 
 
 
