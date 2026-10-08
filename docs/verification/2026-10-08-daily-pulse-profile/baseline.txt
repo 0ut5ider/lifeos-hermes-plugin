@@ -1,0 +1,83 @@
+test_native_job_merger_has_no_raw_memory_command_or_external_output (test_daily_pulse_profile.DailyPulseProfileTests.test_native_job_merger_has_no_raw_memory_command_or_external_output) ... FAIL
+test_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces) ... FAIL
+test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis) ... FAIL
+test_native_spawn_and_actual_hermes_parser_render_the_morning_brief (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_render_the_morning_brief) ... FAIL
+test_native_spawn_refuses_memory_job_when_ownership_is_disabled (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_refuses_memory_job_when_ownership_is_disabled) ... FAIL
+test_native_spawn_runs_healthcheck_without_an_external_destination (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_healthcheck_without_an_external_destination) ... FAIL
+
+======================================================================
+FAIL: test_native_job_merger_has_no_raw_memory_command_or_external_output (test_daily_pulse_profile.DailyPulseProfileTests.test_native_job_merger_has_no_raw_memory_command_or_external_output)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 42, in test_native_job_merger_has_no_raw_memory_command_or_external_output
+    jobs = self.config()['jobs']
+           ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 27, in config
+    self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The daily profile must exist before native acceptance
+
+======================================================================
+FAIL: test_native_module_merger_disables_only_the_selected_optional_surfaces (test_daily_pulse_profile.DailyPulseProfileTests.test_native_module_merger_disables_only_the_selected_optional_surfaces)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 34, in test_native_module_merger_disables_only_the_selected_optional_surfaces
+    modules = self.config()['modules']
+              ~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 27, in config
+    self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The daily profile must exist before native acceptance
+
+======================================================================
+FAIL: test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 82, in test_native_spawn_and_actual_hermes_parser_publish_one_weekly_synthesis
+    fixture, environment = self.owner_fixture()
+                           ~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 59, in owner_fixture
+    self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The daily profile must exist before native acceptance
+
+======================================================================
+FAIL: test_native_spawn_and_actual_hermes_parser_render_the_morning_brief (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_and_actual_hermes_parser_render_the_morning_brief)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 94, in test_native_spawn_and_actual_hermes_parser_render_the_morning_brief
+    fixture, environment = self.owner_fixture()
+                           ~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 59, in owner_fixture
+    self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The daily profile must exist before native acceptance
+
+======================================================================
+FAIL: test_native_spawn_refuses_memory_job_when_ownership_is_disabled (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_refuses_memory_job_when_ownership_is_disabled)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 107, in test_native_spawn_refuses_memory_job_when_ownership_is_disabled
+    fixture, environment = self.owner_fixture()
+                           ~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 59, in owner_fixture
+    self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The daily profile must exist before native acceptance
+
+======================================================================
+FAIL: test_native_spawn_runs_healthcheck_without_an_external_destination (test_daily_pulse_profile.DailyPulseProfileTests.test_native_spawn_runs_healthcheck_without_an_external_destination)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 116, in test_native_spawn_runs_healthcheck_without_an_external_destination
+    fixture, environment = self.owner_fixture()
+                           ~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_daily_pulse_profile.py", line 59, in owner_fixture
+    self.assertTrue(PROFILE.is_file(), 'The daily profile must exist before native acceptance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true : The daily profile must exist before native acceptance
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.002s
+
+FAILED (failures=6)
