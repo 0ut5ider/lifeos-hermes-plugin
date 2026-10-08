@@ -7628,3 +7628,136 @@ index a9a1c6e..6b96417 100755
 +}
 +
 +if (import.meta.main) main();
+diff --git a/LifeOS/install/LIFEOS/TOOLS/KnowledgeLint.ts b/LifeOS/install/LIFEOS/TOOLS/KnowledgeLint.ts
+index 983338f..42b4222 100755
+--- a/LifeOS/install/LIFEOS/TOOLS/KnowledgeLint.ts
++++ b/LifeOS/install/LIFEOS/TOOLS/KnowledgeLint.ts
+@@ -1,4 +1,6 @@
+ #!/usr/bin/env bun
++// ABOUTME: Validates native Knowledge notes and preserves the native report formats.
++// ABOUTME: Delegates managed reports through current registered source and caller authority.
+ /**
+  * KnowledgeLint — validates the Knowledge Archive against the kb-v3 contract
+  * (KnowledgeSchema.ts). This is Karpathy's "Lint" step, made real: it reports
+@@ -20,6 +22,7 @@ import { readdirSync, readFileSync, existsSync } from "node:fs";
+ import { resolve as pathResolve, join as pathJoin } from "node:path";
+ import { homedir } from "node:os";
+ import { parseNote, validate, DIR_TO_TYPE, ALL_DIRS, slugFromPath, SCHEMA_VERSION, type CanonicalType } from "./KnowledgeSchema";
++import { hasMemoryAccess, memoryAccess, memoryObject } from "./lib/MemoryAccess";
+ 
+ const KNOWLEDGE_DIR = pathResolve(homedir(), ".claude/LIFEOS/MEMORY/KNOWLEDGE");
+ const DIRS = ALL_DIRS;
+@@ -32,14 +35,23 @@ function listNotes(dir: string): string[] {
+     .map((f) => pathJoin(abs, f));
+ }
+ 
+-function main() {
+-  const args = process.argv.slice(2);
++interface LintSource { path: string; content: string }
++interface LintOptions { json: boolean; list: number; directory: string | null }
++
++function options(args: string[]): LintOptions {
+   const json = args.includes("--json");
+   const listIdx = args.indexOf("--list");
+   const listN = listIdx >= 0 ? parseInt(args[listIdx + 1] || "20", 10) : 0;
+   const dirIdx = args.indexOf("--dir");
+   const onlyDir = dirIdx >= 0 ? args[dirIdx + 1] : null;
++  return {json, list: listN, directory: onlyDir ?? null};
++}
++
++export function renderKnowledgeLint(sources: readonly LintSource[], settings: LintOptions): string {
++  const {json, list: listN, directory: onlyDir} = settings;
+   const dirs = onlyDir ? [onlyDir] : [...DIRS];
++  const output: string[] = [];
++  const emit = (line: string): void => { output.push(line); };
+ 
+   // Two axes (Forge #7 / Advisor): ENVELOPE conformance = the schema is applied
+   // correctly (should reach ~100%); COMPLETENESS = per-type source fields the
+@@ -55,9 +67,9 @@ function main() {
+ 
+   for (const dir of dirs) {
+     const dd = { total: 0, ok: 0 };
+-    for (const path of listNotes(dir)) {
++    for (const {path, content} of sources.filter(source => pathResolve(source.path, "..") === pathJoin(KNOWLEDGE_DIR, dir))) {
+       total++; dd.total++;
+-      const parsed = parseNote(readFileSync(path, "utf8"));
++      const parsed = parseNote(content);
+       const dirType = DIR_TO_TYPE[dir] as CanonicalType;
+       const viols = validate(parsed, slugFromPath(path), dirType);
+       const envelopeViols = viols.filter((v) => !isCompleteness(v.problem));
+@@ -80,7 +92,7 @@ function main() {
+   const envPct = total ? ((envelopeConformant / total) * 100).toFixed(1) : "0";
+ 
+   if (json) {
+-    console.log(JSON.stringify({
++    emit(JSON.stringify({
+       schema_version: SCHEMA_VERSION, total,
+       fully_conformant: fullyConformant, conformance_pct: Number(pct),
+       envelope_conformant: envelopeConformant, envelope_pct: Number(envPct),
+@@ -88,33 +100,49 @@ function main() {
+       per_dir: Object.fromEntries([...perDir.entries()].map(([d, v]) => [d, v])),
+       top_problems: [...problemHistogram.entries()].sort((a, b) => b[1] - a[1]).slice(0, 20),
+     }, null, 2));
+-    process.exit(0);
++    return output.join("\n") + "\n";
+   }
+ 
+-  console.log(`\n${"=".repeat(64)}`);
+-  console.log(`  KnowledgeLint — conformance to ${SCHEMA_VERSION}`);
+-  console.log(`${"=".repeat(64)}`);
+-  console.log(`  Notes:              ${total}`);
+-  console.log(`  Envelope-conformant: ${envelopeConformant}  (${envPct}%)   ← schema applied correctly`);
+-  console.log(`  Fully conformant:    ${conformant}  (${pct}%)   ← incl. per-type source fields`);
+-  console.log(`  Completeness gaps:   ${completenessGaps} notes miss an optional per-type source field (enrichment, not a schema failure)`);
+-  console.log(`\n  Per-dir conformance:`);
++  emit(`\n${"=".repeat(64)}`);
++  emit(`  KnowledgeLint — conformance to ${SCHEMA_VERSION}`);
++  emit(`${"=".repeat(64)}`);
++  emit(`  Notes:              ${total}`);
++  emit(`  Envelope-conformant: ${envelopeConformant}  (${envPct}%)   ← schema applied correctly`);
++  emit(`  Fully conformant:    ${conformant}  (${pct}%)   ← incl. per-type source fields`);
++  emit(`  Completeness gaps:   ${completenessGaps} notes miss an optional per-type source field (enrichment, not a schema failure)`);
++  emit(`\n  Per-dir conformance:`);
+   for (const [d, v] of perDir) {
+     const p = v.total ? ((v.ok / v.total) * 100).toFixed(0) : "0";
+-    console.log(`    ${d.padEnd(11)} ${String(v.ok).padStart(5)}/${String(v.total).padStart(5)}  (${p}%)`);
++    emit(`    ${d.padEnd(11)} ${String(v.ok).padStart(5)}/${String(v.total).padStart(5)}  (${p}%)`);
+   }
+-  console.log(`\n  Top violation types:`);
++  emit(`\n  Top violation types:`);
+   for (const [k, n] of [...problemHistogram.entries()].sort((a, b) => b[1] - a[1]).slice(0, 15)) {
+-    console.log(`    ${String(n).padStart(5)}  ${k}`);
++    emit(`    ${String(n).padStart(5)}  ${k}`);
+   }
+   if (listN > 0) {
+-    console.log(`\n  Non-conformant notes (first ${listN}):`);
++    emit(`\n  Non-conformant notes (first ${listN}):`);
+     for (const nc of nonConformant.slice(0, listN)) {
+-      console.log(`    ${nc.path}\n        ${nc.violations.join(" · ")}`);
++      emit(`    ${nc.path}\n        ${nc.violations.join(" · ")}`);
++    }
++  }
++  emit("");
++  return output.join("\n") + "\n";
++}
++
++function main(): void {
++  const settings = options(process.argv.slice(2));
++  if (hasMemoryAccess()) {
++    const report = memoryAccess("knowledge_lint", {json: settings.json, list: settings.list, directory: settings.directory},
++      (value): value is Record<string, unknown> => memoryObject(value) && typeof value.ok === "boolean");
++    if (!report || report.ok !== true || typeof report.stdout !== "string") {
++      throw new Error("Native Knowledge lint is unavailable under current memory authority");
+     }
++    process.stdout.write(report.stdout);
++    return;
+   }
+-  console.log("");
+-  process.exit(0);
++  const dirs = settings.directory ? [settings.directory] : [...DIRS];
++  const sources = dirs.flatMap(dir => listNotes(dir).map(path => ({path, content: readFileSync(path, "utf8")})));
++  process.stdout.write(renderKnowledgeLint(sources, settings));
+ }
+ 
+-main();
++if (import.meta.main) main();

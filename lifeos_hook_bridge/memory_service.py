@@ -260,6 +260,10 @@ class MemoryService:
     def _native_operation(self, context, operation, arguments, configuration, scope):
         try:
             memory = NativeMemory(Path(configuration["root"]))
+            if operation == 'knowledge_lint' and set(arguments) == {'json','list','directory'}:
+                from .memory_knowledge_lint import run
+                return run(memory, scope, **arguments,
+                    check_current=lambda: self._check_current_context(configuration, context, scope))
             if operation == 'knowledge_view' and set(arguments) == {'view','request_id'}:
                 from .memory_knowledge_views import run
                 return run(memory, scope, **arguments, source_session=context.session_id,

@@ -471,6 +471,21 @@ async function main(): Promise<void> {
     const response: unknown = module.renderWikiView(sources, request, new URL(request.url).pathname);
     if (!(response instanceof Response)) throw new Error("Native wiki response is unavailable");
     result = {status: response.status, body: await response.json()};
+  } else if (input.action === "knowledge_lint") {
+    const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeLint.ts")).href);
+    if (!object(module) || typeof module.renderKnowledgeLint !== "function" || !Array.isArray(input.sources)
+        || typeof input.json !== "boolean" || typeof input.list !== "number" || !Number.isSafeInteger(input.list)
+        || input.list < 0 || input.list > 10000 || !(input.directory === null || typeof input.directory === "string")) {
+      throw new Error("Native Knowledge lint needs declared sources and bounded report options");
+    }
+    const sources: Array<{path: string; content: string}> = [];
+    for (const source of input.sources) {
+      if (!object(source) || typeof source.path !== "string" || typeof source.content !== "string") {
+        throw new Error("Native Knowledge lint needs declared source text");
+      }
+      sources.push({path: source.path, content: source.content});
+    }
+    result = {stdout: module.renderKnowledgeLint(sources, {json: input.json, list: input.list, directory: input.directory})};
   } else if (input.action === "knowledge_harvester_view") {
     const module: unknown = await import(pathToFileURL(resolve(root, "LIFEOS/TOOLS/KnowledgeHarvester.ts")).href);
     if (!object(module) || typeof module.renderKnowledgeView !== "function" || !Array.isArray(input.sources)

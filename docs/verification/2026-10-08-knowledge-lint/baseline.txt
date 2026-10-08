@@ -1,0 +1,16 @@
+test_native_report_options_match_the_original_command (test_memory_knowledge_lint.MemoryKnowledgeLintTests.test_native_report_options_match_the_original_command) ... ok
+test_unbound_lint_cannot_expose_private_filenames_or_counts (test_memory_knowledge_lint.MemoryKnowledgeLintTests.test_unbound_lint_cannot_expose_private_filenames_or_counts) ... FAIL
+
+======================================================================
+FAIL: test_unbound_lint_cannot_expose_private_filenames_or_counts (test_memory_knowledge_lint.MemoryKnowledgeLintTests.test_unbound_lint_cannot_expose_private_filenames_or_counts)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_knowledge_lint.py", line 53, in test_unbound_lint_cannot_expose_private_filenames_or_counts
+    self.assertNotEqual(result.returncode,0,result)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 0 == 0 : CompletedProcess(args=['bun', '--no-install', '/tmp/native-memory-xl15z17q/.claude/LIFEOS/TOOLS/KnowledgeLint.ts', '--list', '20'], returncode=0, stdout='\n================================================================\n  KnowledgeLint — conformance to kb-v3\n================================================================\n  Notes:              2\n  Envelope-conformant: 0  (0.0%)   ← schema applied correctly\n  Fully conformant:    0  (0.0%)   ← incl. per-type source fields\n  Completeness gaps:   0 notes miss an optional per-type source field (enrichment, not a schema failure)\n\n  Per-dir conformance:\n    People          0/    0  (0%)\n    Companies       0/    0  (0%)\n    Ideas           0/    1  (0%)\n    Blogs           0/    0  (0%)\n    Research        0/    1  (0%)\n    Books           0/    0  (0%)\n\n  Top violation types:\n        2  convention — not kb-v3 (dialect not migrated)\n        2  id — required envelope field missing\n        2  tags — required envelope field missing\n        2  convention — required envelope field missing\n        1  type — type "…" ≠ dir type "…"\n\n  Non-conformant notes (first 20):\n    Ideas/synthetic-idea-lint.md\n        convention: not kb-v3 (dialect not migrated) · id: required envelope field missing · tags: required envelope field missing · convention: required envelope field missing\n    Research/synthetic-private-lint.md\n        convention: not kb-v3 (dialect not migrated) · id: required envelope field missing · tags: required envelope field missing · convention: required envelope field missing · type: type "idea" ≠ dir type "research"\n\n', stderr='')
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.386s
+
+FAILED (failures=1)
