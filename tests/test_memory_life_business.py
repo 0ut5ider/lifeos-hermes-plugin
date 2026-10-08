@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 import unittest
 
 import httpx
@@ -95,8 +96,8 @@ class MemoryLifeBusinessTests(unittest.TestCase):
         saved = memory.remember(life_fixture.OWNER, category='principal', content='RULE: SyntheticRetiredReport',
             title='', project='', request_id='synthetic-business-retire-source')
         memory.forget(life_fixture.OWNER, saved['reference'], 'synthetic-business-retire')
-        os.utime(company, None)
-        for source in revenue.iterdir(): os.utime(source, None)
+        os.utime(company, ns=(time.time_ns(), time.time_ns()))
+        for source in revenue.iterdir(): os.utime(source, ns=(time.time_ns(), time.time_ns()))
         with httpx.Client(timeout=25) as client:
             self.login(client)
             response = self.get(client)
@@ -169,7 +170,7 @@ class MemoryLifeBusinessTests(unittest.TestCase):
             title='', project='', request_id='synthetic-company-label-source')
         memory.forget(life_fixture.OWNER, saved['reference'], 'synthetic-company-label-forget')
         for path in (renamed, directory / 'README.md', renamed / 'README.md', *list((renamed / 'REVENUE').iterdir())):
-            os.utime(path, None)
+            os.utime(path, ns=(time.time_ns(), time.time_ns()))
         with httpx.Client(timeout=25) as client:
             self.login(client)
             response = self.get(client)

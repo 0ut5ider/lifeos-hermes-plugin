@@ -1,4 +1,4 @@
-# ABOUTME: Records owner review of exact native system and identity source contents.
+# ABOUTME: Records owner review of declared native system, owner context, and Life sources.
 # ABOUTME: Keeps source approvals bound to current retirement state without storing another fact body.
 import hashlib
 import json
@@ -23,6 +23,7 @@ def _source_digest(memory, scope, relative, content):
 
 
 def _classification(relative):
+    from .memory_life_source_review import classification
     if relative in INTERVIEW_SETUP_FILES:
         return 'interview_setup'
     if is_evidence_source(relative):
@@ -33,10 +34,13 @@ def _classification(relative):
         return 'deny_hashes'
     if is_sync_source(relative):
         return 'derived_sync'
+    life = classification(relative)
+    if life is not None:
+        return life
     if (relative in SYSTEM_FILES or relative.startswith(SYSTEM_PREFIXES)
             or re.fullmatch(r'skills/[^/.][^/]*/SKILL\.md', relative)):
         return 'system'
-    raise ValueError('Source review supports installed system Markdown, owner identity, and TELOS sources')
+    raise ValueError('Source review supports declared system, owner context, and Life sources')
 
 
 def _retirement_digest(connection):
@@ -53,7 +57,9 @@ def is_reviewed(memory, connection, scope, relative, content):
                              (scope.principal, relative)).fetchone()
     if row is None:
         return False
-    _classification(relative)
+    if _classification(relative) == 'life_metadata':
+        from .memory_life_source_review import snapshot
+        content = snapshot(memory, scope, relative)[0]['content']
     return (row['digest'] == _source_digest(memory, scope, relative, content)
             and row['retirement_digest'] == _retirement_digest(connection))
 
@@ -71,7 +77,10 @@ def _snapshot(memory, connection, scope, paths):
         if relative.startswith('/') or any(part in ('.', '..', '') for part in relative.split('/')):
             raise ValueError('Source review needs exact installation-relative paths')
         classification = _classification(relative)
-        source, timestamp = (_text_source(memory, scope, str(memory.root / relative),
+        from .memory_life_source_review import snapshot, projection as life_projection
+        source, timestamp = (snapshot(memory, scope, relative)
+                             if classification in {'life_text', 'life_metadata'} else
+                             _text_source(memory, scope, str(memory.root / relative),
                                          suffix=Path(relative).suffix, interview_setup=True)
                              if classification == 'interview_setup' else
                              _text_source(memory, scope, str(memory.root / relative), suffix='.json', evidence=True)
@@ -82,9 +91,10 @@ def _snapshot(memory, connection, scope, paths):
                              _text_source(memory, scope, str(memory.root / relative), suffix=Path(relative).suffix, derived_sync=True)
                              if classification == 'derived_sync' else
                              _markdown_source(memory, scope, str(memory.root / relative)))
-        projection = (json_projection(source['content']) if classification == 'evidence' or classification in {'deny_hashes', 'derived_sync'} and relative.endswith('.json') else
+        projection = (life_projection(memory, relative, source['content']) if classification in {'life_text', 'life_metadata'} else
+                      json_projection(source['content']) if classification == 'evidence' or classification in {'deny_hashes', 'derived_sync'} and relative.endswith('.json') else
                       markdown_projection(memory, relative, source['content']))
-        total += len(source['content'].encode())
+        total += len(source['content'].encode()) + len((projection or '').encode())
         if total > CORPUS_LIMIT:
             raise MemoryUnavailable('The reviewed sources exceed their transport limit')
         sources.append({**source, 'classification': classification, 'timestamp': timestamp, 'projection': projection})

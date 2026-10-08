@@ -1,0 +1,29 @@
+............................F...............F.....
+======================================================================
+FAIL: test_current_escaped_retired_session_cannot_return (__main__.Probe.test_current_escaped_retired_session_cannot_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-life-source-review/failed_time_probe.py", line 15, in test_current_escaped_retired_session_cannot_return
+    super().test_current_escaped_retired_session_cannot_return()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_work.py", line 117, in test_current_escaped_retired_session_cannot_return
+    self.assertIn('SyntheticWorkProject', response.text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticWorkProject' not found in '{"projects": [], "currentFocus": "", "currentProject": "", "activeWorkstreams": "", "algorithmSessions": []}'
+
+======================================================================
+FAIL: test_current_escaped_retired_session_cannot_return (__main__.Probe.test_current_escaped_retired_session_cannot_return)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/docs/verification/2026-10-08-life-source-review/failed_time_probe.py", line 15, in test_current_escaped_retired_session_cannot_return
+    super().test_current_escaped_retired_session_cannot_return()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_work.py", line 117, in test_current_escaped_retired_session_cannot_return
+    self.assertIn('SyntheticWorkProject', response.text)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'SyntheticWorkProject' not found in '{"projects": [], "currentFocus": "", "currentProject": "", "activeWorkstreams": "", "algorithmSessions": []}'
+
+----------------------------------------------------------------------
+Ran 50 tests in 126.912s
+
+FAILED (failures=2)

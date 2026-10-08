@@ -1,0 +1,17 @@
+# Declared Life source review
+
+Date: 2026-10-08. The native source tree is the prepared business-view candidate. Bun is 1.3.14.
+
+The authenticated owner source-review operation accepts the declared Health, Finance, Business, and additional TELOS sources. The owner first requests a preview. Approval uses that exact signature. The operation binds the installation, principal, source path, original content, current authority, and retirement state. It does not rewrite sources, change timestamps, enable ownership, or create another fact body.
+
+Structured sources retain their original text. The operation validates decoded JSON, JSON Lines, YAML, and TOML strings before approval. The native installed YAML and Bun TOML parsers produce the decoded projection. Malformed input, private content, and known retired claims cannot receive approval. A Finance JSON Lines review binds the complete original file. Each displayed row still receives its own content checks. Windows line endings remain intact across preview and later native reads.
+
+Lab report and company directory review admits metadata only. It binds size, modification time, and directory type. It does not read a lab report body. A restored file with identical logical metadata can retain approval after an inode change. Physical owner checks still refuse redirects, hardlinks, registry aliases, and different file owners. Native Health renders only the admitted report filename. Source labels still receive private-content and retired-claim checks.
+
+A source has a 256 KiB text limit. Discovery and JSON Lines have a 2,048-entry limit. Original text and decoded projections share the 3 MiB transport budget. Approval rechecks exact state. Changed bytes, metadata, account authority, or retirement state invalidate the preview. Conversation callers cannot approve these sources.
+
+The [initial baseline](baseline.txt) runs five tests in 8.235 seconds and reports six failed assertions. The declared Life classes are unavailable. The [line-ending baseline](line-endings-baseline.txt) fails because the preview normalizes CRLF bytes. The [first gate](first-gate.txt) passes six tests in 16.094 seconds. The [expanded gate](expanded-gate.txt) passes nine tests in 20.570 seconds. The [focused gate](final-gate.txt) passes ten tests in 23.458 seconds with warnings treated as errors.
+
+The initial adjacent gate runs 265 tests in 350.188 seconds and reports one intermittent Work fixture failure. The [post-failure probe](failed-time-probe.json) reproduces two failed responses in 50 runs. All refreshed sources are older than retirement, by 24 and 550 microseconds. The [clock note](../../../notes/2026-10-08-retirement-fixture-clock.md) records the investigation. Finance, Work, and Business fixtures now pass explicit current nanosecond timestamps to os.utime. Production retirement policy remains unchanged. The [corrected adjacent gate](adjacent-gate.txt) passes all 265 cases in 352.437 seconds. It has no skips and treats warnings as errors.
+
+These checks use actual authenticated HTTP endpoints and the pinned native renderers. All five populated Life responses match the original native implementation after safe source approval. The fixtures retain original bytes and timestamps. Remaining native readers, writers, installed ownership acceptance, and combined release verification stay open. This candidate is not deployed during this gate.

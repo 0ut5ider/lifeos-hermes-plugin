@@ -1,0 +1,71 @@
+FFFFFF
+======================================================================
+FAIL: test_anonymous_revoked_and_redirected_sources_cannot_receive_review (test_memory_life_source_review.MemoryLifeSourceReviewTests.test_anonymous_revoked_and_redirected_sources_cannot_receive_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 140, in test_anonymous_revoked_and_redirected_sources_cannot_receive_review
+    snapshot = self.preview(client, [relative])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 58, in preview
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"Memory is unavailable under the current installation policy"}
+
+======================================================================
+FAIL: test_opaque_metadata_change_invalidates_lab_review (test_memory_life_source_review.MemoryLifeSourceReviewTests.test_opaque_metadata_change_invalidates_lab_review)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 126, in test_opaque_metadata_change_invalidates_lab_review
+    snapshot = self.preview(client, [relative])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 58, in preview
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"Memory is unavailable under the current installation policy"}
+
+======================================================================
+FAIL: test_private_and_decoded_retired_source_review_cannot_restore_excluded_claims (test_memory_life_source_review.MemoryLifeSourceReviewTests.test_private_and_decoded_retired_source_review_cannot_restore_excluded_claims) (path='LIFEOS/USER/FINANCES/vendors.yaml')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 98, in test_private_and_decoded_retired_source_review_cannot_restore_excluded_claims
+    snapshot = self.preview(client, [path])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 58, in preview
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"Memory is unavailable under the current installation policy"}
+
+======================================================================
+FAIL: test_private_and_decoded_retired_source_review_cannot_restore_excluded_claims (test_memory_life_source_review.MemoryLifeSourceReviewTests.test_private_and_decoded_retired_source_review_cannot_restore_excluded_claims) (path='LIFEOS/USER/HEALTH/CONDITIONS.md')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 98, in test_private_and_decoded_retired_source_review_cannot_restore_excluded_claims
+    snapshot = self.preview(client, [path])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 58, in preview
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"Memory is unavailable under the current installation policy"}
+
+======================================================================
+FAIL: test_safe_old_life_sources_restore_without_changing_bytes_or_timestamps (test_memory_life_source_review.MemoryLifeSourceReviewTests.test_safe_old_life_sources_restore_without_changing_bytes_or_timestamps)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 74, in test_safe_old_life_sources_restore_without_changing_bytes_or_timestamps
+    snapshot = self.preview(client, paths)
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 58, in preview
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"Memory is unavailable under the current installation policy"}
+
+======================================================================
+FAIL: test_source_change_and_new_retirement_invalidate_preview (test_memory_life_source_review.MemoryLifeSourceReviewTests.test_source_change_and_new_retirement_invalidate_preview)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 108, in test_source_change_and_new_retirement_invalidate_preview
+    snapshot = self.preview(client, [relative])
+  File "/home/outsider/Projects/Hermes_agent/LifeOS_plugin/tests/test_memory_life_source_review.py", line 58, in preview
+    self.assertEqual(response.status_code, 200, response.text[:500])
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 409 != 200 : {"detail":"Memory is unavailable under the current installation policy"}
+
+----------------------------------------------------------------------
+Ran 5 tests in 8.235s
+
+FAILED (failures=6)

@@ -164,7 +164,7 @@ def _source_time(info, *, milliseconds: bool = False) -> str:
     return (datetime(1970, 1, 1, tzinfo=timezone.utc) + timedelta(microseconds=microseconds)).isoformat()
 
 
-def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=False, derived_sync=False):
+def _text_source(memory, scope: MemoryScope, path: str, *, suffix='.md', evidence=False, interview_setup=False, deny_hashes=False, preserve_newlines=True, derived_sync=False):
     source, relative = _source_path(memory, scope, path, evidence=evidence, interview_setup=interview_setup, deny_hashes=deny_hashes, derived_sync=derived_sync)
     if source.suffix != suffix:
         raise MemoryUnavailable('The declared wiki source must be native Markdown')
@@ -200,12 +200,13 @@ def markdown_projection(memory, relative, content):
     return content + '\n' + name['name'] if len(name['name']) <= 256 else None
 
 
-def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None):
+def _admit(memory, connection, scope, content, relative, timestamp, *, projection=None, review_content=None):
     from .memory_source_review import is_reviewed
     labels = re.sub(r'(^|/)\d{8}-\d{6}_', r'\1', relative).replace('-', ' ').replace('_', ' ')
     return memory._filter_history(connection, scope, '\n'.join((content if projection is None else projection,
                                                               relative, labels)), timestamp,
-                                  reviewed=is_reviewed(memory, connection, scope, relative, content))
+                                  reviewed=is_reviewed(memory, connection, scope, relative,
+                                                       content if review_content is None else review_content))
 
 
 def source_labels(relative: str) -> str:
@@ -352,7 +353,8 @@ def read(memory, scope: MemoryScope, path: str) -> dict[str, Any]:
         source, relative = _source_path(memory,scope,path)
         if relative in CONTEXT_FILES and source.stat().st_size > 256 * 1024:
             raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
-        content = source.read_text(encoding='utf-8')
+        with source.open('r', encoding='utf-8', newline='') as stream:
+            content = stream.read()
         if relative in CONTEXT_FILES and len(content.encode('utf-8')) > 256 * 1024:
             raise MemoryUnavailable('The native identity source exceeds the 256 KiB limit')
         timestamp = _source_time(source.stat())

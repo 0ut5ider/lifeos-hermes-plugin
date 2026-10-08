@@ -80,7 +80,8 @@ def _admitted(memory, scope, connection, sources):
     admitted = []
     for (source, content, projection), accepted in zip(candidates, checked, strict=True):
         excluded = projection is None or accepted is not True or _admit(memory, connection, scope,
-            content, source['relative'], source['timestamp'], projection=projection)['excluded']
+            content, source['relative'], source['timestamp'], projection=projection,
+            review_content=source['content'])['excluded']
         admitted.append(None if excluded else content)
     result = []
     for relative, indices, jsonl in groups:

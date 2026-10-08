@@ -29,7 +29,8 @@ def _collect(memory, scope, connection):
         if path.is_file() and path.suffix == '.md':
             if before.st_size > SOURCE_LIMIT:
                 raise MemoryUnavailable('A health source exceeds its byte limit')
-            content = path.read_text(encoding='utf-8')
+            with path.open('r', encoding='utf-8', newline='') as stream:
+                content = stream.read()
             total += len(content.encode())
             if total > CORPUS_LIMIT:
                 raise MemoryUnavailable('Health sources exceed their transport limit')

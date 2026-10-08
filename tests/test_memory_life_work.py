@@ -5,6 +5,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 import unittest
 
 import httpx
@@ -108,7 +109,7 @@ class MemoryLifeWorkTests(unittest.TestCase):
             title='', project='', request_id='synthetic-retired-work-source')
         memory.forget(life_fixture.OWNER, saved['reference'], 'synthetic-retired-work-forget')
         for source in (path, directory / 'PROJECTS.md', directory / 'TELOS/CURRENT.md'):
-            os.utime(source, None)
+            os.utime(source, ns=(time.time_ns(), time.time_ns()))
         with httpx.Client(timeout=25) as client:
             self.login(client)
             response = self.get(client)

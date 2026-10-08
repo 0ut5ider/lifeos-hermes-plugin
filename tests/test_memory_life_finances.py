@@ -6,6 +6,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import time
 import unittest
 
 import httpx
@@ -142,7 +143,7 @@ class MemoryLifeFinanceTests(unittest.TestCase):
             self.assertEqual(response.json()['insights']['statement_spend']['record_count'], 0)
         # Unknown retained sources predating retirement need current source evidence or an owner review.
         for path in (*directory.iterdir(), *self.statement.parent.iterdir()):
-            os.utime(path, None)
+            os.utime(path, ns=(time.time_ns(), time.time_ns()))
         with httpx.Client(timeout=25) as client:
             self.login(client)
             response = self.get(client)
